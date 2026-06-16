@@ -112,6 +112,12 @@
   .single li{font-size:14px;padding:2px 0;color:#4a3a32;}
   .single li::before{content:"\2022";color:var(--amber);font-weight:700;margin-right:8px;}
   .single-m{margin-top:8px;font-size:13px;color:var(--cocoa-soft);}
+.variant{margin-top:14px;background:rgba(110,142,90,0.10);border:1px solid #dbe2cd;border-radius:12px;padding:12px 14px;}
+.variant-h{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5f7d4f;margin-bottom:8px;}
+.variant ul{list-style:none;margin:0;}
+.variant li{font-size:14px;padding:2px 0;color:#4a3a32;}
+.variant li::before{content:"\2022";color:#6c8e5a;font-weight:700;margin-right:8px;}
+.variant-m{margin-top:8px;font-size:13px;color:var(--cocoa-soft);}
 
   /* action bar */
   .actbar{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding-top:12px;border-top:1px dashed var(--warm3);}
@@ -162,21 +168,23 @@
   /* print sheet -> one clean recipe page */
   .print-sheet{display:none;}
   @media print{
-    @page{margin:18mm;}
+    @page{margin:16mm;}
     html,body{background:#fff!important;}
     body>*:not(#printSheet){display:none!important;}
     #printSheet{display:block!important;}
     .ps-inner{color:#2a1f18;max-width:640px;margin:0 auto;}
-    .ps-eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.22em;font-size:9pt;color:#9a7d5c;}
-    .ps-inner h1{font-family:var(--serif);font-weight:600;font-size:32pt;line-height:1;margin:7pt 0 4pt;}
-    .ps-stars{color:#c98a3a;font-size:13pt;letter-spacing:2px;}
-    .ps-story{font-family:var(--serif);font-style:italic;font-size:13pt;line-height:1.5;color:#5a4a3a;margin:9pt 0 4pt;}
-    .ps-inner h2{font-family:var(--sans);text-transform:uppercase;letter-spacing:.14em;font-size:9.5pt;color:#b08a5a;margin:18pt 0 6pt;border-bottom:1px solid #ecdcc8;padding-bottom:4pt;}
+    .ps-banner{display:block;width:175px;max-width:42%;height:auto;margin:0 0 12pt 0;}
+    .ps-eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.22em;font-size:8pt;color:#9a7d5c;text-align:left;}
+    .ps-inner h1{font-family:var(--serif);font-weight:600;font-size:25pt;line-height:1.04;margin:5pt 0 3pt;text-align:left;}
+    .ps-stars{color:#c98a3a;font-size:11pt;letter-spacing:2px;text-align:left;}
+    .ps-story{font-family:var(--serif);font-style:italic;font-size:11pt;line-height:1.5;color:#5a4a3a;margin:9pt 0 2pt;max-width:520px;text-align:left;}
+    .ps-inner h2{font-family:var(--sans);text-transform:uppercase;letter-spacing:.14em;font-size:8.5pt;color:#b08a5a;margin:15pt 0 5pt;border-bottom:1px solid #ecdcc8;padding-bottom:3pt;break-after:avoid;}
     .ps-inner ul{list-style:none;margin:0;padding:0;}
-    .ps-inner li{font-size:13pt;padding:3pt 0;border-bottom:1px dotted #f0e6d6;}
-    .ps-method{font-size:12.5pt;line-height:1.65;color:#2a1f18;}
-    .ps-metaline{font-size:10.5pt;color:#7a6450;margin-top:12pt;}
-    .ps-foot{margin-top:26pt;font-family:var(--sans);font-size:8.5pt;letter-spacing:.2em;text-transform:uppercase;color:#bfa888;border-top:1px solid #f0e6d6;padding-top:10pt;}
+    .ps-inner li{font-size:11pt;padding:2.5pt 0;border-bottom:1px dotted #f0e6d6;break-inside:avoid;}
+    .ps-method{font-size:10.5pt;line-height:1.6;color:#2a1f18;}
+    .ps-note{font-size:10pt;line-height:1.55;color:#5a4a3a;font-style:italic;}
+    .ps-metaline{font-size:9.5pt;color:#7a6450;margin-top:12pt;}
+    .ps-foot{margin-top:22pt;font-family:var(--sans);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:#bfa888;border-top:1px solid #f0e6d6;padding-top:9pt;text-align:center;}
   }
 </style>
 </head>
@@ -489,6 +497,16 @@
       <ul class="ing"><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> reposado tequila</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> Ancho Reyes chili liqueur</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> fresh lime juice</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> agave syrup</li></ul>
       <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
       <p class="method">Shake with plenty of ice, then double-strain into a rocks glass. Garnish with a lime peel or wedge.</p>
+      <div class="variant">
+        <div class="variant-h">🌿 Lighter Version · Verde</div>
+        <ul>
+          <li>1 oz blanco tequila</li>
+          <li>1 oz Ancho Reyes Verde (poblano) liqueur</li>
+          <li>0.75 oz fresh lime juice</li>
+          <li>0.5 oz agave syrup</li>
+        </ul>
+        <div class="variant-m">Built exactly the same way — shake hard with ice and double-strain over fresh rocks. Swapping blanco for the reposado and the green poblano Verde for the original ancho trades the roasted, smoky heat for something brighter and grassier, with more fresh-pepper lift. Same chile-lime rim.</div>
+      </div>
       <p class="note">A half salt rim is a nice touch — salted sips on one side, clean on the other.</p>
     </div>
     <div class="actbar">
@@ -733,14 +751,36 @@
       var bs = card.querySelectorAll(".meta b");
       var glass = bs[0] ? bs[0].textContent : "";
       var garn = bs[1] ? bs[1].textContent : "";
+      var note = card.querySelector(".note");
+      var noteHTML = note ? '<h2>Notes</h2><p class="ps-note">' + esc(note.textContent.trim()) + '</p>' : '';
+      var single = card.querySelector(".single");
+      var singleHTML = '';
+      if(single){
+        var sIngs = Array.prototype.map.call(single.querySelectorAll("li"), function(li){ return "<li>" + esc(li.textContent.trim()) + "</li>"; }).join("");
+        var sMethod = (single.querySelector(".single-m")||{}).textContent || "";
+        singleHTML = '<h2>Single Serving</h2><ul>' + sIngs + '</ul>' + (sMethod ? '<p class="ps-method">' + esc(sMethod) + '</p>' : '');
+      }
+      var BANNER = '<svg class=\"ps-banner\" viewBox=\"0 0 1200 630\" xmlns=\"http://www.w3.org/2000/svg\"><defs><radialGradient id=\"psbg\" cx=\"29%\" cy=\"48%\" r=\"76%\"><stop offset=\"0%\" stop-color=\"#d98f4f\"/><stop offset=\"55%\" stop-color=\"#bf5f3c\"/><stop offset=\"100%\" stop-color=\"#a8472a\"/></radialGradient></defs><rect width=\"1200\" height=\"630\" rx=\"28\" fill=\"url(#psbg)\"/><g transform=\"translate(70 40) scale(5.7)\"><path d=\"M28 35 Q50 61 72 35 A22 4.4 0 0 1 28 35 Z\" fill=\"#fbf3e8\"/><path d=\"M31.5 35.6 Q50 57 68.5 35.6 A18.5 3.4 0 0 1 31.5 35.6 Z\" fill=\"#c98a3a\"/><path d=\"M31.5 35.6 A18.5 3.4 0 0 0 68.5 35.6\" stroke=\"#f0c074\" stroke-width=\"1\" fill=\"none\" opacity=\".9\"/><rect x=\"48.5\" y=\"52\" width=\"3\" height=\"16.5\" rx=\"1.5\" fill=\"#fbf3e8\"/><ellipse cx=\"50\" cy=\"70\" rx=\"10.5\" ry=\"2.7\" fill=\"#fbf3e8\"/><path d=\"M60 25 C67 26 67 33 60 34.5 C55.5 35.5 54 31 58 29.5\" stroke=\"#f0c074\" stroke-width=\"2.1\" fill=\"none\" stroke-linecap=\"round\"/></g><text x=\"535\" y=\"290\" font-family=\"Fraunces\" font-weight=\"600\" font-size=\"80\" fill=\"#fbf3e8\">The Home Bar</text><line x1=\"537\" y1=\"328\" x2=\"1095\" y2=\"328\" stroke=\"#fbf3e8\" stroke-width=\"2\" opacity=\"0.45\"/><text x=\"540\" y=\"394\" font-family=\"Caveat\" font-weight=\"600\" font-size=\"52\" fill=\"#f3cd86\">a personal cocktail collection</text></svg>';
+      var variant = card.querySelector(".variant");
+      var variantHTML = "";
+      if(variant){
+        var vH = ((variant.querySelector(".variant-h")||{}).textContent || "Variation").trim().replace(/^[^A-Za-z0-9]+/,"");
+        var vIngs = Array.prototype.map.call(variant.querySelectorAll("li"), function(li){ return "<li>" + esc(li.textContent.trim()) + "</li>"; }).join("");
+        var vM = (variant.querySelector(".variant-m")||{}).textContent || "";
+        variantHTML = "<h2>" + esc(vH) + "</h2><ul>" + vIngs + "</ul>" + (vM ? "<p class=\"ps-method\">" + esc(vM) + "</p>" : "");
+      }
       var ps = document.getElementById("printSheet");
       ps.innerHTML =
         '<div class="ps-inner">' +
-          '<div class="ps-eyebrow">The Home Bar &middot; ' + esc(spirit) + '</div>' +
+          BANNER +
+          '<div class="ps-eyebrow">' + esc(spirit) + '</div>' +
           '<h1>' + esc(name) + '</h1>' + stars +
           (blurb ? '<p class="ps-story">' + esc(blurb) + '</p>' : '') +
           '<h2>Ingredients</h2><ul>' + ings + '</ul>' +
           '<h2>Method</h2><p class="ps-method">' + esc(method) + '</p>' +
+          singleHTML +
+          variantHTML +
+          noteHTML +
           '<p class="ps-metaline">Glass: ' + esc(glass) + '&nbsp;&nbsp;&middot;&nbsp;&nbsp;Garnish: ' + esc(garn) + '</p>' +
           '<div class="ps-foot">The Home Bar &mdash; a personal collection</div>' +
         '</div>';
