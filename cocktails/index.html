@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Home Bar">
+<meta name="theme-color" content="#bf5f3c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Home Bar">
+<meta property="og:title" content="The Home Bar">
+<meta property="og:description" content="A cozy little collection of cocktail recipes.">
+<meta property="og:url" content="https://walt-disneyd23.github.io/Food-guide/cocktails/">
+<meta property="og:image" content="https://walt-disneyd23.github.io/Food-guide/cocktails/icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Home Bar">
+<meta name="twitter:description" content="A cozy little collection of cocktail recipes.">
+<meta name="twitter:image" content="https://walt-disneyd23.github.io/Food-guide/cocktails/icon-512.png">
+<title>The Home Bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Caveat:wght@600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --terra:#bf5f3c;--terra-deep:#a8472a;--amber:#c98a3a;--amber-deep:#b3742a;
+    --cocoa:#43302a;--cocoa-soft:#5a4a40;
+    --warm:#fbf3e8;--warm2:#f5e8d6;--warm3:#efe1d0;--card:#fffdf9;
+    --muted:#917a6c;--star:#c98a3a;--star-empty:#e6d7c5;--saved:#c0492f;
+    --tag-bg:rgba(191,95,60,0.10);--tag-ink:#8a4226;--sig-bg:rgba(201,138,58,0.18);--sig-ink:#8a5a1f;
+    --serif:"Fraunces",Georgia,serif;--sans:"DM Sans",system-ui,-apple-system,sans-serif;--script:"Caveat",cursive;
+  }
+  :root{color-scheme:light only;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--warm);color:var(--cocoa);line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom);}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+
+  /* nav */
+  .nav{position:sticky;top:0;z-index:40;background:var(--terra-deep);
+    padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));box-shadow:0 2px 14px rgba(60,30,15,0.22);}
+  .nav-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+  .nav-scroll::-webkit-scrollbar{display:none;}
+  .pill{flex:0 0 auto;border:1px solid rgba(255,245,236,0.4);background:transparent;color:#fff5ec;
+    font-family:var(--sans);font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;
+    transition:background .18s ease,color .18s ease,border-color .18s ease;}
+  .pill[aria-current="true"]{background:var(--warm);color:var(--terra-deep);border-color:var(--warm);}
+  .pill:focus-visible{outline:2px solid #fff5ec;outline-offset:2px;}
+
+  /* hero — warm & light */
+  .hero{background:var(--warm2);color:var(--cocoa);text-align:center;padding:48px 22px 52px;}
+  .hero .eyebrow{font-family:var(--script);font-size:24px;color:var(--terra);line-height:1;}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(46px,15vw,68px);line-height:1;margin-top:4px;}
+  .hero .sub{font-family:var(--serif);font-style:italic;font-size:clamp(17px,5vw,21px);color:var(--terra);margin-top:9px;}
+
+  /* section headers — terracotta band, scalloped into the cards */
+  .section-head{background:var(--terra);color:#fff5ec;text-align:center;padding:34px 22px 40px;scroll-margin-top:64px;}
+  .section-head .eyebrow{font-family:var(--script);font-size:21px;color:#ffe6cf;line-height:1;}
+  .section-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(34px,10vw,46px);color:#fff;line-height:1;margin-top:2px;}
+  .accent-rule{display:block;width:44px;height:3px;border-radius:3px;background:rgba(255,245,236,0.6);margin:11px auto 0;}
+  .section-head .ssub{font-family:var(--serif);font-style:italic;color:#ffe1cd;font-size:clamp(15px,4.5vw,18px);margin-top:10px;}
+  .wave{display:block;width:100%;height:34px;margin-top:-1px;}
+
+  /* cards */
+  .cards{padding:22px 14px 12px;display:flex;flex-direction:column;gap:16px;}
+  .card{background:var(--card);border:1px solid var(--warm3);border-radius:22px;padding:19px 17px 13px;box-shadow:0 7px 24px rgba(90,50,25,0.10);}
+  .card-hidden{opacity:0;transform:translateY(18px);}
+  .card-visible{opacity:1;transform:none;transition:opacity .5s ease,transform .5s ease;}
+  .card.flash{animation:flash 1.4s ease;}
+  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(201,138,58,0);}18%{box-shadow:0 0 0 4px rgba(201,138,58,.5);}100%{box-shadow:0 7px 24px rgba(90,50,25,0.10);}}
+  .card.featured{border-color:var(--amber);box-shadow:0 7px 26px rgba(201,138,58,0.22);}
+  .card-name{font-family:var(--serif);font-weight:600;font-size:28px;line-height:1.05;color:var(--cocoa);}
+  .stars{margin-top:6px;display:flex;align-items:center;gap:8px;}
+  .star-s{color:var(--star);font-size:15px;letter-spacing:1px;}
+  .star-s .star-empty,.star-empty{color:var(--star-empty);}
+  .rating-label{font-family:var(--script);font-size:17px;color:var(--terra);}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .tag{background:var(--tag-bg);color:var(--tag-ink);font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;white-space:nowrap;}
+  .tag.sig{background:var(--sig-bg);color:var(--sig-ink);font-style:italic;}
+  .blurb{margin-top:13px;font-size:14px;line-height:1.65;color:var(--cocoa-soft);}
+  .rule{display:flex;align-items:center;gap:8px;margin:14px 0 10px;}
+  .rule-dot{display:block;width:6px;height:6px;border-radius:50%;background:var(--amber);}
+  .rule-text{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+  .rule-line{display:block;flex:1;height:1px;background:linear-gradient(90deg,var(--amber),rgba(201,138,58,0));}
+  .meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:13px;color:var(--muted);}
+  .meta b{color:var(--cocoa);font-weight:600;}
+  .recipe{display:none;}
+  .recipe.open{display:block;}
+  .scale{display:flex;gap:5px;}
+  .scale button{font-family:var(--sans);font-size:11px;font-weight:700;border:1px solid var(--warm3);background:var(--warm);color:var(--muted);padding:4px 9px;border-radius:8px;cursor:pointer;}
+  .scale button[aria-pressed="true"]{background:var(--terra);color:#fff5ec;border-color:var(--terra);}
+  .scale button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  ul.ing{list-style:none;margin:8px 0 0;}
+  ul.ing li{display:flex;gap:8px;padding:3px 0;font-size:15px;}
+  ul.ing li::before{content:"";flex:0 0 auto;width:5px;height:5px;border-radius:50%;background:var(--terra);margin-top:9px;}
+  .ing-amt{font-weight:700;font-variant-numeric:tabular-nums;}
+  .method{margin-top:4px;font-size:15px;color:#4a3a32;}
+  .note{margin-top:10px;font-size:13.5px;font-style:italic;color:var(--muted);}
+  .single{margin-top:14px;background:rgba(201,138,58,0.08);border:1px solid var(--warm3);border-radius:12px;padding:12px 14px;}
+  .single-h{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+  .single ul{list-style:none;margin:0;}
+  .single li{font-size:14px;padding:2px 0;color:#4a3a32;}
+  .single li::before{content:"\2022";color:var(--amber);font-weight:700;margin-right:8px;}
+  .single-m{margin-top:8px;font-size:13px;color:var(--cocoa-soft);}
+
+  /* action bar */
+  .actbar{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding-top:12px;border-top:1px dashed var(--warm3);}
+  .act{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;cursor:pointer;
+    font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--cocoa);padding:5px 2px;}
+  .act svg{width:16px;height:16px;color:var(--amber);transition:transform .2s ease;}
+  .act.saved svg{color:var(--saved);fill:var(--saved);}
+  .act[data-toggle].open svg{transform:rotate(90deg);}
+  .act:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:8px;}
+  .vr{width:1px;align-self:stretch;background:var(--warm3);flex:0 0 auto;}
+
+  /* filter sheet */
+  .fab-row{position:fixed;left:0;right:0;bottom:0;z-index:45;display:flex;justify-content:center;padding:0 0 calc(14px + env(safe-area-inset-bottom));pointer-events:none;}
+  .fab{pointer-events:auto;display:inline-flex;align-items:center;gap:9px;background:var(--terra-deep);color:#fff5ec;border:none;cursor:pointer;
+    font-family:var(--sans);font-size:14px;font-weight:600;padding:13px 22px;border-radius:999px;box-shadow:0 8px 24px rgba(80,40,20,0.32);}
+  .fab .badge{background:var(--amber);color:#3a2118;font-size:12px;font-weight:700;min-width:20px;height:20px;border-radius:999px;display:none;align-items:center;justify-content:center;padding:0 5px;}
+  .fab .badge.on{display:inline-flex;}
+  .sheet-scrim{position:fixed;inset:0;background:rgba(40,22,14,0.5);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .sheet-scrim.open{opacity:1;pointer-events:auto;}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--warm);border-radius:22px 22px 0 0;transform:translateY(110%);
+    transition:transform .3s cubic-bezier(.2,.7,.2,1);max-height:82vh;display:flex;flex-direction:column;padding-bottom:calc(8px + env(safe-area-inset-bottom));}
+  .sheet.open{transform:none;}
+  .sheet-handle{width:42px;height:5px;border-radius:99px;background:#d8c6b2;margin:10px auto 4px;}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 10px;}
+  .sheet-head h3{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--cocoa);}
+  .sheet-clear{background:none;border:none;color:var(--terra);font-family:var(--sans);font-weight:600;font-size:14px;cursor:pointer;}
+  .sheet-body{overflow-y:auto;padding:4px 20px 8px;}
+  .fgroup{margin-bottom:18px;}
+  .fgroup h4{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+  .fopts{display:flex;flex-wrap:wrap;gap:7px;}
+  .fopt{background:var(--card);border:1px solid var(--warm3);color:var(--cocoa);font-family:var(--sans);font-size:13px;font-weight:500;padding:7px 12px;border-radius:999px;cursor:pointer;transition:all .14s ease;}
+  .fopt[aria-pressed="true"]{background:var(--terra);color:#fff5ec;border-color:var(--terra);}
+  .sheet-foot{padding:12px 20px 4px;}
+  .apply{width:100%;background:var(--amber);color:#3a2118;border:none;border-radius:12px;font-family:var(--sans);font-weight:700;font-size:15px;padding:14px;cursor:pointer;}
+  .empty{display:none;text-align:center;padding:40px 24px;color:var(--muted);font-style:italic;font-family:var(--serif);font-size:20px;}
+  .empty.show{display:block;}
+  .totop{position:fixed;right:16px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:44;width:46px;height:46px;border-radius:50%;background:var(--terra-deep);border:none;cursor:pointer;color:#fff5ec;box-shadow:0 6px 18px rgba(80,40,20,0.3);opacity:0;pointer-events:none;transition:opacity .25s ease;display:grid;place-items:center;}
+  .totop.show{opacity:1;pointer-events:auto;}
+  .totop svg{width:20px;height:20px;}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:26px 20px 96px;}
+  footer .mk{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--cocoa);}
+
+  /* empty collection state */
+  .empty-coll{display:none;text-align:center;padding:72px 30px;color:var(--muted);}
+  .empty-coll .t{font-family:var(--serif);font-style:italic;font-size:25px;color:var(--cocoa);}
+  .empty-coll .s{font-size:14px;margin-top:8px;line-height:1.6;}
+
+  /* print sheet -> one clean recipe page */
+  .print-sheet{display:none;}
+  @media print{
+    @page{margin:18mm;}
+    html,body{background:#fff!important;}
+    body>*:not(#printSheet){display:none!important;}
+    #printSheet{display:block!important;}
+    .ps-inner{color:#2a1f18;max-width:640px;margin:0 auto;}
+    .ps-eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.22em;font-size:9pt;color:#9a7d5c;}
+    .ps-inner h1{font-family:var(--serif);font-weight:600;font-size:32pt;line-height:1;margin:7pt 0 4pt;}
+    .ps-stars{color:#c98a3a;font-size:13pt;letter-spacing:2px;}
+    .ps-story{font-family:var(--serif);font-style:italic;font-size:13pt;line-height:1.5;color:#5a4a3a;margin:9pt 0 4pt;}
+    .ps-inner h2{font-family:var(--sans);text-transform:uppercase;letter-spacing:.14em;font-size:9.5pt;color:#b08a5a;margin:18pt 0 6pt;border-bottom:1px solid #ecdcc8;padding-bottom:4pt;}
+    .ps-inner ul{list-style:none;margin:0;padding:0;}
+    .ps-inner li{font-size:13pt;padding:3pt 0;border-bottom:1px dotted #f0e6d6;}
+    .ps-method{font-size:12.5pt;line-height:1.65;color:#2a1f18;}
+    .ps-metaline{font-size:10.5pt;color:#7a6450;margin-top:12pt;}
+    .ps-foot{margin-top:26pt;font-family:var(--sans);font-size:8.5pt;letter-spacing:.2em;text-transform:uppercase;color:#bfa888;border-top:1px solid #f0e6d6;padding-top:10pt;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Jump to spirit">
+  <div class="nav-scroll" id="navScroll">
+    <button class="pill" data-jump="top" aria-current="true">All</button>
+    <button class="pill" data-jump="gin">🍸 Gin</button>
+    <button class="pill" data-jump="whiskey">🥃 Whiskey</button>
+    <button class="pill" data-jump="rum">🍹 Rum</button>
+    <button class="pill" data-jump="tequila">🌵 Tequila</button>
+    <button class="pill" data-jump="vodka">🧊 Vodka</button>
+    <button class="pill" data-jump="brandy">🍇 Brandy</button>
+    <button class="pill" data-jump="spritz">🥂 Spritz &amp; Aperitivo</button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="eyebrow">a personal cocktail collection</div>
+  <h1>The Home Bar</h1>
+  <div class="sub">recipes worth keeping</div>
+</header>
+
+<main>
+
+<!-- GIN -->
+<section class="section-head" id="gin">
+  <div class="eyebrow">base spirit</div><h2>Gin</h2><span class="accent-rule"></span><div class="ssub">botanical, bright &amp; bitter</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="gin" data-flavor="citrusy herbal" data-style="shaken up" data-occasion="summer" data-difficulty="easy" data-name="Cucumber Elderflower Gimlet" data-id="cucumber-elderflower-gimlet">
+    <h3 class="card-name">Cucumber Elderflower Gimlet</h3>
+    <div class="tags"><span class="tag">🍸 Gin</span><span class="tag">🌿 Herbal</span><span class="tag">🍋 Citrusy</span><span class="tag">🌋 Shaken</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">A garden-fresh riff on the Gimlet — gin and lime get a floral lift from elderflower and a cool, savory crunch from muddled cucumber, shaken hard and served up. Hendrick's, with its cucumber-and-rose botanicals, is the natural pour here.</p>
+    <div class="meta"><span>🍸 <b>Martini</b></span><span>🥒 <b>Cucumber round</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> gin</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> elderflower liqueur (St-Germain)</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> fresh lime juice</li><li data-amount="1" data-unit="(2-inch) piece"><span class="ing-amt">1 (2-inch) piece</span> peeled cucumber, cut into ¼-inch pieces</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Fill a shaker with ice. Add the gin, elderflower liqueur, lime juice, and cucumber pieces, seal tightly, and shake hard for about 30 seconds. Strain into a martini glass and garnish with a cucumber round.</p>
+      <p class="note">Hendrick's suits this best — its cucumber and rose-petal notes echo the drink. A classic dry gin only if you really love juniper, or sub vodka.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="cucumber-elderflower-gimlet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="gin" data-flavor="citrusy" data-style="shaken bubbly" data-occasion="summer" data-difficulty="easy" data-name="Tom Collins / Gin Fizz" data-id="tom-collins-gin-fizz">
+    <h3 class="card-name">Tom Collins / Gin Fizz</h3>
+    <div class="tags"><span class="tag">🍸 Gin</span><span class="tag">🍋 Citrusy</span><span class="tag">🥂 Bubbly</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">Two riffs on the same fizzy lemonade-for-grown-ups: gin, lemon, and sugar shaken and lengthened with soda. A Tom Collins goes tall over ice; a Gin Fizz goes into a chilled glass with no ice, for a softer, frothier pour.</p>
+    <div class="meta"><span>🥤 <b>Collins / Highball</b></span><span>🍋 <b>Lemon slice</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> gin</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> fresh lemon juice</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> simple syrup</li><li data-amount="" data-unit=""><span class="ing-amt"></span>Soda water, to top</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Shake the gin, lemon juice, and simple syrup with ice. For a Tom Collins, strain into an ice-filled Collins glass and top with soda. For a Gin Fizz, strain into a chilled highball with no ice and top with soda. Either way, garnish with a lemon slice.</p>
+      <p class="note">The only real difference is ice and volume. For an egg-rich fizz, dry-shake first: add a whole egg (Royal), egg white (Silver), or yolk (Golden).</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="tom-collins-gin-fizz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="gin" data-flavor="citrusy sweet" data-style="shaken up" data-occasion="" data-difficulty="easy" data-name="Bee's Knees" data-id="bees-knees">
+    <h3 class="card-name">Bee's Knees</h3>
+    <div class="tags"><span class="tag">🍸 Gin</span><span class="tag">🍯 Sweet</span><span class="tag">🍋 Citrusy</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">A Prohibition-era classic built on honey — gin, lemon, and honey syrup shaken and served up. Elegant in its simplicity; the honey rounds the lemon into something golden and easy.</p>
+    <div class="meta"><span>🍸 <b>Coupe</b></span><span>🍋 <b>Lemon twist</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> gin</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> rich honey syrup</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> fresh lemon juice</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Shake the gin, honey syrup, and lemon juice with ice. Strain into a chilled coupe and garnish with a lemon twist.</p>
+      <p class="note">Rich honey syrup is just honey stirred with a little warm water (about 3:1). Swap the gin for white rum (Honeysuckle) or dark rum (Honeybee).</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="bees-knees"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<!-- WHISKEY -->
+<section class="section-head" id="whiskey">
+  <div class="eyebrow">base spirit</div><h2>Whiskey</h2><span class="accent-rule"></span><div class="ssub">brown, stirred &amp; spirit-forward</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="whiskey" data-flavor="fruity sweet" data-style="stirred on-the-rocks" data-occasion="winter" data-difficulty="intermediate" data-name="Toasted Apple Cider Bourbon Smash" data-id="toasted-apple-cider-bourbon-smash">
+    <h3 class="card-name">Toasted Apple Cider Bourbon Smash</h3>
+    <div class="stars" aria-label="My rating: 4 of 5"><span class="star-s">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9733;</span></span><span class="rating-label">my rating</span></div>
+    <div class="tags"><span class="tag">🥃 Whiskey</span><span class="tag">🍒 Fruity</span><span class="tag">🍯 Sweet</span><span class="tag">❄️ Winter</span><span class="tag">🟡 Intermediate</span></div>
+    <p class="blurb">A cozy holiday smash — toasted bourbon and orange liqueur stirred into caramel-apple cider, sweetened with maple and dusted with cinnamon sugar. Finished with a toasted cinnamon stick, rosemary, and apple slices, it's autumn in a glass.</p>
+    <div class="meta"><span>🥃 <b>Rocks</b></span><span>🍎 <b>Cinnamon-sugar rim · cinnamon stick · rosemary · apple</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> toasted bourbon</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> orange liqueur</li><li data-amount="1" data-unit="tbsp"><span class="ing-amt">1 tbsp</span> pure maple syrup</li><li data-amount="0.75" data-unit="cup"><span class="ing-amt">0.75 cup</span> caramel apple cider</li><li data-amount="1" data-unit="dash"><span class="ing-amt">1 dash</span> cinnamon sugar</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Stir the bourbon, orange liqueur, maple syrup, cinnamon sugar, and caramel apple cider with ice. Strain into a cinnamon-sugar-rimmed rocks glass over fresh ice. Add apple slices, then a lightly toasted cinnamon stick and a rosemary sprig.</p>
+      <p class="note">Calls for "toasted bourbon" — Basil Hayden Toast is the recommended bottle. Toasting the cinnamon stick and rosemary over a flame brings out the aromatics.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="toasted-apple-cider-bourbon-smash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="whiskey" data-flavor="citrusy" data-style="shaken on-the-rocks" data-occasion="" data-difficulty="easy" data-name="Whiskey Sour" data-id="whiskey-sour">
+    <h3 class="card-name">Whiskey Sour</h3>
+    <div class="tags"><span class="tag">🥃 Whiskey</span><span class="tag">🍋 Citrusy</span><span class="tag">🌋 Shaken</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">The benchmark sour — whiskey, lemon, and a little sweetness held in perfect tension. A touch of egg white makes it silky with a cloud-white cap, and a few dashes of bitters add depth. Rocks or coupe, your call.</p>
+    <div class="meta"><span>🥃 <b>Rocks or coupe</b></span><span>🍊 <b>Orange slice + cherry</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> bourbon or rye whiskey</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> fresh lemon juice</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> simple syrup</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> egg white (optional)</li><li data-amount="2" data-unit="dashes"><span class="ing-amt">2 dashes</span> Angostura bitters (optional)</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">In an ice-filled shaker, combine the whiskey, lemon juice, simple syrup, and — if using — the egg white and bitters. Shake well, then strain into a rocks glass over fresh ice (or a coupe). Garnish with an orange slice and a cherry on a pick.</p>
+      <p class="note">Variations: float ¾ oz red wine for a New York Sour; swap the whiskey for amaretto (and skip the simple syrup) for an Amaretto Sour; use rich honey syrup for a Gold Rush.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="whiskey-sour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="whiskey" data-flavor="herbal citrusy" data-style="shaken on-the-rocks" data-occasion="summer" data-difficulty="easy" data-name="Whiskey Smash" data-id="whiskey-smash">
+    <h3 class="card-name">Whiskey Smash</h3>
+    <div class="tags"><span class="tag">🥃 Whiskey</span><span class="tag">🌿 Herbal</span><span class="tag">🍋 Citrusy</span><span class="tag">🌋 Shaken</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">The Sour's leafy cousin — muddled mint and bourbon brightened with lemon and a little sweetness. Herbal, refreshing, and dead simple once you've coaxed the oils out of the mint.</p>
+    <div class="meta"><span>🥃 <b>Rocks</b></span><span>🌿 <b>Mint sprig</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="6" data-unit="large"><span class="ing-amt">6 large</span> mint leaves</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> simple syrup</li><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> bourbon</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> fresh lemon juice</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Muddle the mint leaves with the simple syrup in a shaker to release the oils. Add ice, the bourbon, and lemon juice, and shake until well chilled. Strain into a rocks glass over fresh ice and garnish with a mint sprig.</p>
+      <p class="note">Drop the lemon and build it in a julep cup over crushed ice and you've got a Mint Julep. Rye, other whiskey, brandy, or dark rum all work in place of the bourbon.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="whiskey-smash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<!-- RUM -->
+<section class="section-head" id="rum">
+  <div class="eyebrow">base spirit</div><h2>Rum</h2><span class="accent-rule"></span><div class="ssub">sugarcane, sun &amp; sour</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="rum" data-flavor="citrusy" data-style="shaken tiki on-the-rocks" data-occasion="summer" data-difficulty="intermediate" data-name="Original Mai Tai" data-id="mai-tai-original">
+    <h3 class="card-name">Original Mai Tai</h3>
+    <div class="tags"><span class="tag">🍹 Rum</span><span class="tag">🥥 Tiki</span><span class="tag">🍋 Citrusy</span><span class="tag">🌋 Shaken</span><span class="tag">🟡 Intermediate</span></div>
+    <p class="blurb">Trader Vic's 1944 original — the purist's Mai Tai, with no pineapple or orange juice in sight. It leans entirely on good aged rum, fresh lime, orange curaçao, and almondy orgeat over crushed ice. As the story goes, a Tahitian friend took one sip and called it "maita'i" — out of this world.</p>
+    <div class="meta"><span>🥃 <b>Rocks (crushed ice)</b></span><span>🌿 <b>Lime shell + mint</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> aged rum</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> fresh lime juice</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> orange curaçao</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> orgeat syrup</li><li data-amount="0.25" data-unit="oz"><span class="ing-amt">0.25 oz</span> rich simple syrup</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Shake the rum, lime, curaçao, orgeat, and simple syrup with crushed ice, then pour unstrained into a rocks glass. Garnish with a spent lime shell and a mint sprig.</p>
+      <p class="note">For the rum, a blend of 1 oz amber Martinique + 1 oz dark Jamaican is classic. No orgeat? Amaretto stands in, a touch sweeter. Fresh lime only.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="mai-tai-original"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card featured" data-spirit="rum" data-flavor="fruity citrusy" data-style="shaken tiki" data-occasion="summer party" data-difficulty="easy" data-name="Hawaiian Mai Tai" data-id="mai-tai-hawaiian">
+    <h3 class="card-name">Hawaiian Mai Tai</h3>
+    <div class="stars" aria-label="My rating: 5 of 5"><span class="star-s">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="rating-label">my rating</span></div>
+    <div class="tags"><span class="tag sig">⭐ House favorite</span><span class="tag">🍹 Rum</span><span class="tag">🥥 Tiki</span><span class="tag">🍒 Fruity</span><span class="tag">🍋 Citrusy</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">The island-resort take on the Mai Tai — sweeter, fruitier, and built for the beach. Pineapple and orange juice join the rum, orgeat, and orange liqueur, with a float of dark rum crowning the glass. Less austere than the 1944 original; more of a sunset-on-the-lanai pour.</p>
+    <div class="meta"><span>🥤 <b>Tall glass</b></span><span>🍒 <b>Cherry + pineapple spear</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> light rum</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> dark rum (floated)</li><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> pineapple juice</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> orange juice</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> orange liqueur</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> orgeat syrup</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Shake the light rum, pineapple juice, orange juice, orange liqueur, and orgeat with ice, then pour over crushed ice in a tall glass. Float the dark rum on top, and garnish with a maraschino cherry and a pineapple spear.</p>
+      <p class="note">Orange juice is to taste — anywhere from ½ to 1 oz. Float the dark rum last for the dramatic dark cap.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="mai-tai-hawaiian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="rum" data-flavor="citrusy fruity" data-style="shaken tiki" data-occasion="party" data-difficulty="intermediate" data-name="Fog Cutter" data-id="fog-cutter">
+    <h3 class="card-name">Fog Cutter</h3>
+    <div class="stars" aria-label="My rating: 5 of 5"><span class="star-s">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="rating-label">my rating</span></div>
+    <div class="tags"><span class="tag">🍹 Rum</span><span class="tag">🥥 Tiki</span><span class="tag">🍋 Citrusy</span><span class="tag">🍒 Fruity</span><span class="tag">🟡 Intermediate</span></div>
+    <p class="blurb">An over-the-top tiki monster that hides its strength behind the fruit — white rum, brandy, and gin all pile in with orange, lemon, and almondy orgeat, finished with a float of nutty amontillado sherry. Strong as anything; sip slowly.</p>
+    <div class="meta"><span>🥥 <b>Tiki mug / Collins</b></span><span>🌿 <b>Mint sprig + straw</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> white rum or rhum agricole</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> brandy</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> gin</li><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> fresh orange juice</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> fresh lemon juice</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> orgeat</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> amontillado sherry (float)</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Shake the rum, brandy, gin, orange juice, lemon juice, and orgeat with ice. Pour into a tiki mug with crushed ice (or an ice-filled Collins glass) and float the sherry on top. Garnish with a mint sprig and serve with a straw.</p>
+      <p class="note">For more punch and less juice, replace the orange juice with ½ oz orange curaçao.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="fog-cutter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="rum" data-flavor="herbal citrusy" data-style="shaken bubbly" data-occasion="summer" data-difficulty="easy" data-name="Mojito" data-id="mojito">
+    <h3 class="card-name">Mojito</h3>
+    <div class="stars" aria-label="My rating: 5 of 5"><span class="star-s">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="rating-label">my rating</span></div>
+    <div class="tags"><span class="tag">🍹 Rum</span><span class="tag">🌿 Herbal</span><span class="tag">🍋 Citrusy</span><span class="tag">🥂 Bubbly</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">The easygoing benchmark cooler — muddled mint, white rum, and lime, lengthened with soda over crushed ice. Smooth, minty, and endlessly drinkable on a warm afternoon.</p>
+    <div class="meta"><span>🥤 <b>Highball</b></span><span>🌿 <b>Mint sprig + straw</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="6" data-unit="large"><span class="ing-amt">6 large</span> mint leaves</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> simple syrup</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> fresh lime juice</li><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> white rum</li><li data-amount="" data-unit=""><span class="ing-amt"></span>Soda water, to top</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Muddle the mint leaves in the bottom of a shaker. Add the simple syrup, lime juice, and rum, and shake. Strain into a highball glass with crushed ice and top with soda. Garnish with a mint sprig and serve with a straw.</p>
+      <p class="note">A dash or two of Angostura is a popular addition; ginger, passion fruit, or pineapple are all nice in the muddle. Top with dry sparkling wine instead of soda if you're feeling fancy.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="mojito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<!-- TEQUILA -->
+<section class="section-head" id="tequila">
+  <div class="eyebrow">base spirit</div><h2>Tequila</h2><span class="accent-rule"></span><div class="ssub">agave &amp; citrus</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="tequila" data-flavor="citrusy spicy" data-style="shaken on-the-rocks" data-occasion="summer party" data-difficulty="easy" data-name="El Pepino" data-id="el-pepino">
+    <h3 class="card-name">El Pepino</h3>
+    <div class="tags"><span class="tag">🌵 Tequila</span><span class="tag">🍋 Citrusy</span><span class="tag">🔥 Spicy</span><span class="tag">🌋 Shaken</span><span class="tag">☀️ Summer</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">"El pepino" is Spanish for cucumber, and this cool-but-fiery Margarita riff earns the name. Muddled cucumber and fresh jalapeño give it a garden-fresh body and a slow, creeping heat, with lime, agave, and a chili-salt rim keeping it bright and balanced.</p>
+    <div class="meta"><span>🥃 <b>Rocks</b></span><span>🌶️ <b>Chili-salt rim + cucumber</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="2" data-unit="¼-inch wheels"><span class="ing-amt">2 ¼-inch wheels</span> cucumber</li><li data-amount="2" data-unit="¼-inch wheels"><span class="ing-amt">2 ¼-inch wheels</span> fresh jalapeño</li><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> blanco tequila</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> agave syrup</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> fresh lime juice</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Muddle the cucumber, jalapeño, and tequila in a shaker for about 10 seconds, until fully pulverized. Add the agave and lime, fill with ice, and shake 15–20 seconds until well-chilled. Double-strain through a fine-mesh strainer into a Tajín-rimmed rocks glass over fresh ice, and garnish with a cucumber slice.</p>
+      <p class="note">The heat scales with the jalapeño — seed the wheels for a milder version.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="el-pepino"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="tequila" data-flavor="spicy citrusy" data-style="shaken" data-occasion="summer" data-difficulty="easy" data-name="Spicy Margarita" data-id="spicy-margarita">
+    <h3 class="card-name">Spicy Margarita</h3>
+    <div class="tags"><span class="tag">🌵 Tequila</span><span class="tag">🔥 Spicy</span><span class="tag">🍋 Citrusy</span><span class="tag">🌋 Shaken</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">A Margarita with a kick — Ancho Reyes chili liqueur brings a smoky, ancho-pepper heat to the usual reposado-and-lime backbone. Agave keeps it rounded, and a chile-lime salt rim doubles down on the warmth.</p>
+    <div class="meta"><span>🥃 <b>Rocks</b></span><span>🌶️ <b>Chile-lime salt rim + lime peel</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> reposado tequila</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> Ancho Reyes chili liqueur</li><li data-amount="0.75" data-unit="oz"><span class="ing-amt">0.75 oz</span> fresh lime juice</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> agave syrup</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Shake with plenty of ice, then double-strain into a rocks glass. Garnish with a lime peel or wedge.</p>
+      <p class="note">A half salt rim is a nice touch — salted sips on one side, clean on the other.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="spicy-margarita"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<!-- VODKA -->
+<section class="section-head" id="vodka">
+  <div class="eyebrow">base spirit</div><h2>Vodka</h2><span class="accent-rule"></span><div class="ssub">clean &amp; easy-drinking</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="vodka" data-flavor="fruity citrusy" data-style="on-the-rocks" data-occasion="brunch summer" data-difficulty="easy" data-name="Madras" data-id="madras">
+    <h3 class="card-name">Madras</h3>
+    <div class="stars" aria-label="My rating: 4 of 5"><span class="star-s">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9733;</span></span><span class="rating-label">my rating</span></div>
+    <div class="tags"><span class="tag">🧊 Vodka</span><span class="tag">🍒 Fruity</span><span class="tag">🍋 Citrusy</span><span class="tag">🍳 Brunch</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">Named for the brightly checked madras cloth of southern India — in the glass, the cranberry and orange streak together much the same way. It's an easygoing, brunch-friendly cooler: tart, citrusy, and barely-there boozy.</p>
+    <div class="meta"><span>🥤 <b>Highball</b></span><span>🍋 <b>Lime wedge</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1.5" data-unit="oz"><span class="ing-amt">1.5 oz</span> vodka</li><li data-amount="3" data-unit="oz"><span class="ing-amt">3 oz</span> cranberry juice</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> orange juice</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Fill a highball glass with ice. Add the vodka, cranberry juice, and orange juice, give it a quick stir, and garnish with a lime wedge.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="madras"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+  <article class="card" data-spirit="vodka" data-flavor="fruity herbal citrusy" data-style="bubbly on-the-rocks" data-occasion="party summer" data-difficulty="intermediate" data-name="Blueberry Lavender Vodka Spritzer" data-id="blueberry-lavender-spritzer">
+    <h3 class="card-name">Blueberry Lavender Vodka Spritzer</h3>
+    <div class="stars" aria-label="My rating: 5 of 5"><span class="star-s">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="rating-label">my rating</span></div>
+    <div class="tags"><span class="tag">🧊 Vodka</span><span class="tag">🍒 Fruity</span><span class="tag">🌿 Herbal</span><span class="tag">🥂 Bubbly</span><span class="tag">🎉 Party</span><span class="tag">🟡 Intermediate</span></div>
+    <p class="blurb">A pitcher-made summer cooler built on a homemade blueberry-lavender syrup — vodka, fresh lime, and club soda do the rest. Floral and berry-bright without being sweet, it's the kind of thing you batch ahead and pour all afternoon.</p>
+    <div class="meta"><span>🍶 <b>Pitcher · serves 8</b></span><span>🫐 <b>Blueberries + lavender</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="2" data-unit="cups"><span class="ing-amt">2 cups</span> vodka</li><li data-amount="0.75" data-unit="cup"><span class="ing-amt">0.75 cup</span> blueberry-lavender syrup</li><li data-amount="4" data-unit="oz"><span class="ing-amt">4 oz</span> fresh lime juice</li><li data-amount="1" data-unit="liter"><span class="ing-amt">1 liter</span> club soda</li><li data-amount="1" data-unit="cup"><span class="ing-amt">1 cup</span> blueberries</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">In a glass pitcher, stir together the vodka, blueberry-lavender syrup, lime juice, and club soda. Add ice and a handful of blueberries. Pour into glasses and garnish each with a few blueberries and a lavender sprig.</p>
+      <div class="single">
+        <div class="single-h">Just one? Single serving</div>
+        <ul>
+          <li>2 oz vodka</li>
+          <li>1 tbsp + 2 tsp lavender syrup</li>
+          <li>½ oz lime juice</li>
+          <li>2 tbsp blueberries</li>
+          <li>~4.5 oz club soda</li>
+        </ul>
+        <div class="single-m">Build over ice in a tall glass — vodka, syrup, and lime — then top with club soda. Add the blueberries and a lavender sprig.</div>
+      </div>
+      <p class="note">Blueberry-lavender syrup (make ahead): simmer 1 cup water, 1 cup sugar, and 1 cup blueberries with 4 fresh lavender sprigs (or 1 tbsp dried) for ~10 minutes, then strain, mashing the berries. It makes more than one batch needs — keep the extra on hand. Using dried lavender? Use 1½ tsp food-grade buds in place of the sprigs.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="blueberry-lavender-spritzer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<!-- BRANDY -->
+<section class="section-head" id="brandy">
+  <div class="eyebrow">base spirit</div><h2>Brandy</h2><span class="accent-rule"></span><div class="ssub">grape spirit, classic &amp; warming</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="brandy" data-flavor="citrusy rich-boozy" data-style="shaken on-the-rocks" data-occasion="party" data-difficulty="easy" data-name="Mississippi Punch" data-id="mississippi-punch">
+    <h3 class="card-name">Mississippi Punch</h3>
+    <div class="tags"><span class="tag">🍇 Brandy</span><span class="tag">🍋 Citrusy</span><span class="tag">🍫 Rich/Boozy</span><span class="tag">🎉 Party</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">A deceptively strong sipper from the 1860s — brandy out front, with bourbon and dark rum stacked behind it over lemon and a little sugar. It drinks easy and hits hard; a proper party-starter.</p>
+    <div class="meta"><span>🥤 <b>Collins</b></span><span>🍋 <b>Citrus slice + seasonal berries</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="1" data-unit="tsp"><span class="ing-amt">1 tsp</span> superfine sugar</li><li data-amount="0.5" data-unit="oz"><span class="ing-amt">0.5 oz</span> fresh lemon juice</li><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> brandy</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> bourbon</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> dark rum</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Stir the sugar and lemon juice in a shaker until the sugar dissolves. Add the brandy, bourbon, and dark rum with ice and shake. Strain into an ice-filled Collins glass and garnish with a citrus slice and a few seasonal berries.</p>
+      <p class="note">Traditionally made with cognac, but any decent brandy does the job beautifully.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="mississippi-punch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<!-- SPRITZ & APERITIVO -->
+<section class="section-head" id="spritz">
+  <div class="eyebrow">aperitivo</div><h2>Spritz &amp; Aperitivo</h2><span class="accent-rule"></span><div class="ssub">wine-based, light &amp; bubbly</div>
+</section>
+<svg class="wave" viewBox="0 0 1440 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0,28 C240,8 480,8 720,18 C960,28 1200,28 1440,8 L1440,0 L0,0 Z" fill="#bf5f3c"/></svg>
+<div class="cards">
+  <article class="card" data-spirit="spritz" data-flavor="bitter citrusy" data-style="bubbly stirred" data-occasion="summer" data-difficulty="easy" data-name="Aperol Spritz" data-id="aperol-spritz">
+    <h3 class="card-name">Aperol Spritz</h3>
+    <div class="tags"><span class="tag">🥂 Spritz</span><span class="tag">☕ Bitter</span><span class="tag">🍋 Citrusy</span><span class="tag">☀️ Summer</span><span class="tag">🟢 Easy</span></div>
+    <p class="blurb">Italy's golden hour in a glass — bittersweet Aperol lengthened with dry sparkling wine and a splash of soda over ice. Light, fizzy, and just bitter enough; the quintessential warm-weather aperitivo.</p>
+    <div class="meta"><span>🍷 <b>Wine glass</b></span><span>🍊 <b>Orange slice</b></span></div>
+    <div class="recipe">
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Ingredients</span><span class="rule-line">&#160;</span><div class="scale" role="group" aria-label="Scale recipe"><button data-mult="1" aria-pressed="true">1×</button><button data-mult="2" aria-pressed="false">2×</button><button data-mult="3" aria-pressed="false">3×</button></div></div>
+      <ul class="ing"><li data-amount="3" data-unit="oz"><span class="ing-amt">3 oz</span> dry sparkling wine</li><li data-amount="2" data-unit="oz"><span class="ing-amt">2 oz</span> Aperol</li><li data-amount="1" data-unit="oz"><span class="ing-amt">1 oz</span> soda water</li></ul>
+      <div class="rule"><span class="rule-dot">&#160;</span><span class="rule-text">Method</span><span class="rule-line">&#160;</span></div>
+      <p class="method">Fill a wine glass with ice. Add the sparkling wine, Aperol, and soda, and stir gently to combine. Garnish with an orange slice.</p>
+      <p class="note">Swap the Aperol for another Italian amaro — Cappelletti, Montenegro, even Pimm's — for a different spritz. Or replace the sparkling wine with ginger ale, rhubarb soda, or bitter lemon.</p>
+    </div>
+    <div class="actbar">
+      <button class="act" data-fav="aperol-spritz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1l1.7 1.7L12 22l7.1-6.6 1.7-1.7a5 5 0 0 0 0-7.1z"/></svg><span class="act-l">Save</span></button>
+      <span class="vr"></span>
+      <button class="act" data-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg><span class="act-l">Recipe</span></button>
+      <span class="vr"></span>
+      <button class="act" data-print><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span class="act-l">Print</span></button>
+      <span class="vr"></span>
+      <button class="act" data-share><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span class="act-l">Share</span></button>
+    </div>
+  </article>
+</div>
+
+<div id="emptyCollection" class="empty-coll"><div class="t">Your bar is just getting started</div><div class="s">Recipes you add will appear here, sorted by spirit.</div></div>
+
+<p class="empty" id="empty">Nothing matches those filters yet. Try clearing a few.</p>
+
+<footer><div class="mk">The Home Bar</div><div>A personal collection · made with care</div></footer>
+
+</main>
+
+<button class="totop" id="totop" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M12 5l-6 6M12 5l6 6"/></svg></button>
+
+<div class="fab-row">
+  <button class="fab" id="surprise" aria-label="Surprise me">🎲 Surprise me</button>
+  <button class="fab" id="openFilter" style="margin-left:10px;">Filter <span class="badge" id="fbadge">0</span></button>
+</div>
+
+<div class="sheet-scrim" id="scrim"></div>
+<section class="sheet" id="sheet" aria-label="Filter cocktails" role="dialog" aria-modal="true">
+  <div class="sheet-handle"></div>
+  <div class="sheet-head"><h3>Filter</h3><button class="sheet-clear" id="clearFilter">Clear all</button></div>
+  <div class="sheet-body" id="filterBody"></div>
+  <div class="sheet-foot"><button class="apply" id="applyFilter">Show <span id="liveCount">6</span> cocktails</button></div>
+</section>
+
+<div id="printSheet" class="print-sheet"></div>
+
+<script>
+(function(){
+  "use strict";
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+
+  var FAV_KEY = "homebar.favs.v1";
+  function loadFavs(){ try{ return JSON.parse(localStorage.getItem(FAV_KEY)||"[]"); }catch(e){ return []; } }
+  function saveFavs(a){ try{ localStorage.setItem(FAV_KEY, JSON.stringify(a)); }catch(e){} }
+  var favs = loadFavs();
+  document.querySelectorAll("[data-fav]").forEach(function(btn){
+    var id = btn.getAttribute("data-fav");
+    var lab = btn.querySelector(".act-l");
+    function render(on){ btn.classList.toggle("saved", on); if(lab) lab.textContent = on ? "Saved" : "Save"; }
+    render(favs.indexOf(id) > -1);
+    btn.addEventListener("click", function(){
+      var i = favs.indexOf(id);
+      if(i > -1){ favs.splice(i,1); render(false); } else { favs.push(id); render(true); }
+      saveFavs(favs);
+    });
+  });
+
+  function openCard(card, open){
+    var rec = card.querySelector(".recipe"); var t = card.querySelector("[data-toggle]");
+    if(!rec || !t) return;
+    rec.classList.toggle("open", open);
+    t.classList.toggle("open", open);
+    var lab = t.querySelector(".act-l"); if(lab) lab.textContent = open ? "Hide" : "Recipe";
+  }
+  document.querySelectorAll("[data-toggle]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var card = btn.closest(".card");
+      openCard(card, !card.querySelector(".recipe").classList.contains("open"));
+    });
+  });
+
+  function fmt(n){ n = Math.round(n*100)/100; if(Number.isInteger(n)) return String(n); return String(n).replace(/0+$/,"").replace(/\.$/,""); }
+  document.querySelectorAll(".scale").forEach(function(group){
+    var card = group.closest(".card");
+    group.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click", function(){
+        var mult = parseFloat(b.getAttribute("data-mult"));
+        group.querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", x===b ? "true":"false"); });
+        card.querySelectorAll("ul.ing li").forEach(function(li){
+          var amt = parseFloat(li.getAttribute("data-amount"));
+          if (isNaN(amt)) return;
+          var unit = li.getAttribute("data-unit") || "";
+          li.querySelector(".ing-amt").textContent = fmt(amt*mult) + (unit ? " "+unit : "");
+        });
+      });
+    });
+  });
+
+  document.querySelectorAll("[data-share]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var card = btn.closest(".card");
+      var name = card.getAttribute("data-name");
+      var id = card.getAttribute("data-id");
+      var url = location.href.split("#")[0] + "#" + id;
+      var text = "Check out the " + name + " from The Home Bar \uD83C\uDF78";
+      if(navigator.share){ navigator.share({title:"The Home Bar", text:text, url:url}).catch(function(){}); }
+      else if(navigator.clipboard){ navigator.clipboard.writeText(text + " " + url); var l=btn.querySelector(".act-l"); if(l){ l.textContent="Copied"; setTimeout(function(){ l.textContent="Share"; },1400);} }
+    });
+  });
+
+  function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+  document.querySelectorAll("[data-print]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var card = btn.closest(".card");
+      var name = card.getAttribute("data-name");
+      var spirit = cap(card.getAttribute("data-spirit") || "");
+      var rating = 0;
+      var sl = card.querySelector(".stars");
+      if(sl){ var m = (sl.getAttribute("aria-label")||"").match(/(\d+)\s*of\s*5/); if(m) rating = parseInt(m[1],10); }
+      var stars = rating ? '<div class="ps-stars">' + Array(rating+1).join("\u2605") + Array(6-rating).join("\u2606") + '</div>' : "";
+      var ings = Array.prototype.map.call(card.querySelectorAll("ul.ing li"), function(li){ return "<li>" + esc(li.textContent.trim()) + "</li>"; }).join("");
+      var method = (card.querySelector(".method")||{}).textContent || "";
+      var blurb = (card.querySelector(".blurb")||{}).textContent || "";
+      var bs = card.querySelectorAll(".meta b");
+      var glass = bs[0] ? bs[0].textContent : "";
+      var garn = bs[1] ? bs[1].textContent : "";
+      var ps = document.getElementById("printSheet");
+      ps.innerHTML =
+        '<div class="ps-inner">' +
+          '<div class="ps-eyebrow">The Home Bar &middot; ' + esc(spirit) + '</div>' +
+          '<h1>' + esc(name) + '</h1>' + stars +
+          (blurb ? '<p class="ps-story">' + esc(blurb) + '</p>' : '') +
+          '<h2>Ingredients</h2><ul>' + ings + '</ul>' +
+          '<h2>Method</h2><p class="ps-method">' + esc(method) + '</p>' +
+          '<p class="ps-metaline">Glass: ' + esc(glass) + '&nbsp;&nbsp;&middot;&nbsp;&nbsp;Garnish: ' + esc(garn) + '</p>' +
+          '<div class="ps-foot">The Home Bar &mdash; a personal collection</div>' +
+        '</div>';
+      window.print();
+    });
+  });
+
+  document.querySelectorAll(".pill").forEach(function(p){
+    p.addEventListener("click", function(){
+      var t = p.getAttribute("data-jump");
+      var el = t === "top" ? document.getElementById("top") : document.getElementById(t);
+      if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  });
+  var sections = ["gin","whiskey","rum","tequila","vodka","brandy","spritz"].map(function(id){ return document.getElementById(id); });
+  if("IntersectionObserver" in window){
+    var so = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          var id = en.target.id;
+          document.querySelectorAll(".pill").forEach(function(p){ p.setAttribute("aria-current", p.getAttribute("data-jump")===id ? "true":"false"); });
+        }
+      });
+    }, {rootMargin:"-45% 0px -50% 0px"});
+    sections.forEach(function(s){ if(s) so.observe(s); });
+  }
+
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(!reduce && "IntersectionObserver" in window){
+    cards.forEach(function(c){ c.classList.add("card-hidden"); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("card-visible"); io.unobserve(en.target); } });
+    }, {rootMargin:"0px 0px -8% 0px", threshold:0.05});
+    cards.forEach(function(c){ io.observe(c); });
+  }
+
+  var totop = document.getElementById("totop");
+  window.addEventListener("scroll", function(){ if(window.scrollY > 300) totop.classList.add("show"); else totop.classList.remove("show"); }, {passive:true});
+  totop.addEventListener("click", function(){ window.scrollTo({top:0, behavior:"smooth"}); });
+
+  document.getElementById("surprise").addEventListener("click", function(){
+    var pool = cards.filter(function(c){ return c.style.display !== "none"; });
+    if(!pool.length) return;
+    var pick = pool[Math.floor(Math.random()*pool.length)];
+    openCard(pick, true);
+    pick.scrollIntoView({behavior:"smooth", block:"center"});
+    pick.classList.remove("flash"); void pick.offsetWidth; pick.classList.add("flash");
+  });
+
+  var GROUPS = [
+    {key:"spirit", label:"Base spirit", opts:[["gin","🍸 Gin"],["whiskey","🥃 Whiskey"],["rum","🍹 Rum"],["tequila","🌵 Tequila"],["vodka","🧊 Vodka"],["brandy","🍇 Brandy"],["spritz","🥂 Spritz & Aperitivo"]]},
+    {key:"flavor", label:"Flavor", opts:[["citrusy","🍋 Citrusy"],["spicy","🔥 Spicy"],["bitter","☕ Bitter"],["rich-boozy","🍫 Rich/Boozy"],["spirit-forward","🥃 Spirit-forward"],["herbal","🌿 Herbal"],["fruity","🍒 Fruity"],["sweet","🍯 Sweet"]]},
+    {key:"style", label:"Style", opts:[["shaken","🌋 Shaken"],["stirred","🌀 Stirred"],["on-the-rocks","🧊 On the Rocks"],["up","🍸 Up"],["bubbly","🥂 Bubbly"],["tiki","🥥 Tropical/Tiki"]]},
+    {key:"occasion", label:"Occasion", opts:[["summer","☀️ Summer"],["winter","❄️ Winter"],["nightcap","🌙 Nightcap"],["party","🎉 Party/Batch"],["brunch","🍳 Brunch"]]},
+    {key:"difficulty", label:"Difficulty", opts:[["easy","🟢 Easy"],["intermediate","🟡 Intermediate"],["advanced","🔴 Advanced"]]}
+  ];
+  var active = {};
+  var body = document.getElementById("filterBody");
+  GROUPS.forEach(function(g){
+    active[g.key] = {};
+    var wrap = document.createElement("div"); wrap.className = "fgroup";
+    var h = document.createElement("h4"); h.textContent = g.label; wrap.appendChild(h);
+    var opts = document.createElement("div"); opts.className = "fopts";
+    g.opts.forEach(function(o){
+      var b = document.createElement("button");
+      b.className = "fopt"; b.type="button"; b.textContent = o[1]; b.setAttribute("aria-pressed","false");
+      b.addEventListener("click", function(){
+        var on = b.getAttribute("aria-pressed")==="true";
+        b.setAttribute("aria-pressed", on ? "false":"true");
+        if(on) delete active[g.key][o[0]]; else active[g.key][o[0]] = true;
+        recount();
+      });
+      opts.appendChild(b);
+    });
+    wrap.appendChild(opts); body.appendChild(wrap);
+  });
+  function selectedValues(){ var all = []; Object.keys(active).forEach(function(k){ Object.keys(active[k]).forEach(function(v){ all.push(k+":"+v); }); }); return all; }
+  function cardMatches(card, sel){
+    if(!sel.length) return true;
+    for(var i=0;i<sel.length;i++){
+      var parts = sel[i].split(":"), key = parts[0], val = parts[1];
+      var attr = (card.getAttribute("data-"+key) || "").split(/\s+/);
+      if(attr.indexOf(val) > -1) return true;
+    }
+    return false;
+  }
+  function countMatches(){ var sel = selectedValues(), n = 0; cards.forEach(function(c){ if(cardMatches(c, sel)) n++; }); return n; }
+  function recount(){
+    document.getElementById("liveCount").textContent = countMatches();
+    var total = selectedValues().length;
+    var badge = document.getElementById("fbadge");
+    badge.textContent = total; badge.classList.toggle("on", total > 0);
+  }
+  function applyFilter(){
+    var sel = selectedValues(), shown = 0;
+    cards.forEach(function(c){ var ok = cardMatches(c, sel); c.style.display = ok ? "" : "none"; if(ok) shown++; });
+    document.querySelectorAll(".section-head").forEach(function(head){
+      var grid = head.nextElementSibling;
+      while(grid && !grid.classList.contains("cards")) grid = grid.nextElementSibling;
+      var anyVisible = grid && Array.prototype.some.call(grid.querySelectorAll(".card"), function(c){ return c.style.display !== "none"; });
+      var wave = head.nextElementSibling;
+      head.style.display = anyVisible ? "" : "none";
+      if(wave && wave.classList.contains("wave")) wave.style.display = anyVisible ? "" : "none";
+      if(grid) grid.style.display = anyVisible ? "" : "none";
+    });
+    document.getElementById("empty").classList.toggle("show", shown === 0);
+    closeSheet();
+  }
+  var scrim = document.getElementById("scrim"), sheet = document.getElementById("sheet");
+  function openSheet(){ recount(); scrim.classList.add("open"); sheet.classList.add("open"); }
+  function closeSheet(){ scrim.classList.remove("open"); sheet.classList.remove("open"); }
+  document.getElementById("openFilter").addEventListener("click", openSheet);
+  scrim.addEventListener("click", closeSheet);
+  document.getElementById("applyFilter").addEventListener("click", applyFilter);
+  document.getElementById("clearFilter").addEventListener("click", function(){
+    Object.keys(active).forEach(function(k){ active[k] = {}; });
+    body.querySelectorAll(".fopt").forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+    recount();
+  });
+
+  function hideEmptySections(){
+    var any = false;
+    document.querySelectorAll(".section-head").forEach(function(head){
+      var grid = head.nextElementSibling;
+      while(grid && !grid.classList.contains("cards")) grid = grid.nextElementSibling;
+      var n = grid ? grid.querySelectorAll(".card").length : 0;
+      var wave = head.nextElementSibling, show = n > 0;
+      head.style.display = show ? "" : "none";
+      if(wave && wave.classList.contains("wave")) wave.style.display = show ? "" : "none";
+      if(grid) grid.style.display = show ? "" : "none";
+      var pill = document.querySelector('.pill[data-jump="' + head.id + '"]');
+      if(pill) pill.style.display = show ? "" : "none";
+      if(n > 0) any = true;
+    });
+    var es = document.getElementById("emptyCollection");
+    if(es) es.style.display = any ? "none" : "";
+  }
+  function openHashCard(){
+    var h = decodeURIComponent((location.hash||"").slice(1));
+    if(!h) return;
+    var card = document.querySelector('.card[data-id="' + h + '"]');
+    if(card){ openCard(card, true); card.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+  window.addEventListener("hashchange", openHashCard);
+  setTimeout(openHashCard, 350);
+  hideEmptySections();
+})();
+</script>
+</body>
+</html>
