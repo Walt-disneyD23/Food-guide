@@ -1250,22 +1250,35 @@
     });
   });
 
+  function setActivePill(id){
+    document.querySelectorAll(".pill").forEach(function(p){ p.setAttribute("aria-current", p.getAttribute("data-jump")===id ? "true":"false"); });
+  }
+  // While a pill is tapped we lock the observer so the programmatic scroll
+  // can't steal the highlight (short sections never reach the mid-screen band).
+  var navLock = false, navIdle = null, navFallback = null;
+  function releaseNav(){ navLock = false; }
   document.querySelectorAll(".pill").forEach(function(p){
     p.addEventListener("click", function(){
       var t = p.getAttribute("data-jump");
       var el = t === "top" ? document.getElementById("top") : document.getElementById(t);
+      setActivePill(t);
+      navLock = true;
+      clearTimeout(navIdle); clearTimeout(navFallback);
+      navFallback = setTimeout(releaseNav, 1200); // safety net if the tap causes no scroll
       if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
     });
   });
+  // Release the lock once scrolling actually stops (true scroll-end).
+  window.addEventListener("scroll", function(){
+    if(!navLock) return;
+    clearTimeout(navFallback); clearTimeout(navIdle);
+    navIdle = setTimeout(releaseNav, 160);
+  }, {passive:true});
   var sections = ["gin","whiskey","rum","tequila","vodka","brandy","spritz"].map(function(id){ return document.getElementById(id); });
   if("IntersectionObserver" in window){
     var so = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if(en.isIntersecting){
-          var id = en.target.id;
-          document.querySelectorAll(".pill").forEach(function(p){ p.setAttribute("aria-current", p.getAttribute("data-jump")===id ? "true":"false"); });
-        }
-      });
+      if(navLock) return;
+      entries.forEach(function(en){ if(en.isIntersecting){ setActivePill(en.target.id); } });
     }, {rootMargin:"-45% 0px -50% 0px"});
     sections.forEach(function(s){ if(s) so.observe(s); });
   }
