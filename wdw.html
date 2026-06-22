@@ -311,7 +311,7 @@
   .al-edit-off{font-size:12.5px;color:var(--muted);margin-top:5px}
   .al-edit-on{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:7px}
   .al-mini{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 7px;font-size:12.5px}
-  .al-num{width:60px;font-variant-numeric:tabular-nums}
+  .al-num{min-width:62px;font-variant-numeric:tabular-nums}
   .al-link{background:none;border:none;color:var(--accent);font-size:12.5px;font-weight:600;cursor:pointer;padding:0}
   .al-link:hover{text-decoration:underline}
   .al-x{flex:none;width:27px;height:27px;border-radius:8px;border:1px solid var(--line);background:var(--card);
@@ -360,7 +360,7 @@
         <div class="fld">
           <span>notify when wait is</span>
           <select id="dir"><option value="below">below</option><option value="above">above</option></select>
-          <input type="number" id="thresh" value="30" min="0" max="300" step="5" />
+          <select id="thresh" class="thr-sel"></select>
           <span class="u">min</span>
         </div>
       </div>
@@ -486,24 +486,28 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var parks=[],roster={},liveById={},parkInfo={},usingFallback=true;
   var watch={};(store.get("watch",[])||[]).forEach(function(id){watch[id]=true;});
   var overrides=store.get("overrides",{})||{};
+  Object.keys(overrides).forEach(function(id){if(overrides[id]&&typeof overrides[id].thresh==="number")overrides[id].thresh=snap5(overrides[id].thresh);});
   var alertState={};
   var expanded=store.get("expanded","all");
   var f={type:store.get("f_type","all"),cat:store.get("f_cat","all"),status:store.get("f_status","all"),
     band:store.get("f_band","all"),ll:store.get("f_ll",false),sr:store.get("f_sr",false),
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
   var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false)};
+  settings.thresh=snap5(settings.thresh);
   var lastUpdated=null,nextRefreshAt=0,timer=null;
 
   var $=function(id){return document.getElementById(id);};
   var elBanners=$("banners"),elPill=$("statusPill"),elStatusText=$("statusText");
   var liveState="ok";
 
-  $("dir").value=settings.dir;$("thresh").value=settings.thresh;
+  $("dir").value=settings.dir;$("thresh").innerHTML=threshOptions(settings.thresh);
   $("type").value=f.type;$("cat").value=f.cat;$("status").value=f.status;$("band").value=f.band;$("sort").value=f.sort;
   setOn($("scopeToggle"),settings.all);setOn($("notifToggle"),settings.notif&&notifGranted());
   setOn($("llChip"),f.ll);setOn($("srChip"),f.sr);setOn($("watchChip"),f.watched);
   function notifGranted(){return typeof Notification!=="undefined"&&Notification.permission==="granted";}
   function setOn(el,on){el.classList[on?"add":"remove"]("on");}
+  function snap5(v){v=Math.round((+v||0)/5)*5;return Math.max(5,Math.min(120,v));}
+  function threshOptions(sel){var s=snap5(sel),o="";for(var v=5;v<=120;v+=5){o+='<option value="'+v+'"'+(v===s?" selected":"")+'>'+v+'</option>';}return o;}
 
   /* ---- filter collapse ---- */
   $("filtersToggle").addEventListener("click",function(){
@@ -678,7 +682,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         rule='<div class="al-edit-on">'+
           '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>below</option>'+
             '<option value="above"'+(o.dir==="above"?" selected":"")+'>above</option></select>'+
-          '<input class="al-mini al-num" type="number" min="0" max="300" step="5" value="'+o.thresh+'" data-thresh="'+esc(id)+'" />'+
+          '<select class="al-mini al-num" data-thresh="'+esc(id)+'">'+threshOptions(o.thresh)+'</select>'+
           '<span class="u">min</span><button class="al-link" data-default="'+esc(id)+'">Use default</button></div>';
       }else{
         rule='<div class="al-edit-off">Using default ('+esc(settings.dir)+' '+settings.thresh+'m) · '+
