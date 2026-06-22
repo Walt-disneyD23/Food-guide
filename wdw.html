@@ -488,7 +488,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var overrides=store.get("overrides",{})||{};
   Object.keys(overrides).forEach(function(id){if(overrides[id]&&typeof overrides[id].thresh==="number")overrides[id].thresh=snap5(overrides[id].thresh);});
   var alertState={};
-  var expanded=store.get("expanded","all");
+  var expanded=null;
   var f={type:store.get("f_type","all"),cat:store.get("f_cat","all"),status:store.get("f_status","all"),
     band:store.get("f_band","all"),ll:store.get("f_ll",false),sr:store.get("f_sr",false),
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
