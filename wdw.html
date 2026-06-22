@@ -284,7 +284,9 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .topbar-actions{display:flex;align-items:center;gap:8px;flex:none}
   .status-pill{position:relative;width:40px;height:40px;border-radius:13px;border:1px solid var(--line);
-    background:var(--card);box-shadow:var(--shadow-sm);display:grid;place-items:center;flex:none}
+    background:var(--card);box-shadow:var(--shadow-sm);display:grid;place-items:center;flex:none;cursor:pointer;transition:.15s}
+  .status-pill:hover{border-color:var(--accent)}
+  .status-pill.active{border-color:var(--accent);background:var(--accent-soft)}
   .status-pill span{display:none}
   .status-pill .dot{position:relative;width:11px;height:11px;border-radius:50%;background:var(--short)}
   .status-pill .dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit;
@@ -292,6 +294,17 @@
   @keyframes livepulse{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.8);opacity:0}}
   .status-pill.error .dot{background:var(--packed)} .status-pill.error .dot::after{animation:none}
   .status-pill.stale .dot{background:var(--medium)}
+
+  /* status dropdown panel */
+  .sp-head{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink)}
+  .sp-dot{width:11px;height:11px;border-radius:50%;background:var(--short);flex:none}
+  .sp-dot.stale{background:var(--medium)} .sp-dot.error{background:var(--packed)}
+  .sp-desc{font-size:13px;color:var(--muted);margin:8px 0 14px;line-height:1.45}
+  .sp-grid{display:flex;gap:26px;flex-wrap:wrap}
+  .sp-k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600}
+  .sp-v{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:3px}
+  .sp-foot{font-size:11.5px;color:var(--muted-2);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);line-height:1.5}
+  .sp-foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
   .icon-btn{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:var(--card);
     color:var(--ink);font-size:17px;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:.15s}
   .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -378,6 +391,17 @@
     <div id="alertList"></div>
     <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride alerts once when it
       crosses the threshold and resets when it crosses back — keep this page open to keep checking.</div>
+  </div>
+
+  <div class="alerts-pop" id="statusPop" hidden>
+    <div class="sp-head"><span class="sp-dot" id="spDot"></span><span id="spWord">Live</span></div>
+    <div class="sp-desc" id="spDesc"></div>
+    <div class="sp-grid">
+      <div><div class="sp-k">Updated</div><div class="sp-v" id="spUpdated">—</div></div>
+      <div><div class="sp-k">Next refresh</div><div class="sp-v" id="spNext">—</div></div>
+    </div>
+    <div class="sp-foot">Live waits refresh every 5 minutes · data from
+      <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a></div>
   </div>
 </div>
 
@@ -527,9 +551,39 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   /* ---- alerts popover ---- */
   $("alertsBtn").addEventListener("click",function(){
     var p=$("alertsPop"),open=p.hasAttribute("hidden");
+    $("statusPop").setAttribute("hidden","");$("statusPill").classList.remove("active");
     if(open){p.removeAttribute("hidden");renderAlertList();}else p.setAttribute("hidden","");
     this.classList.toggle("active",open);
   });
+
+  /* ---- status popover ---- */
+  $("statusPill").addEventListener("click",function(){
+    var p=$("statusPop"),open=p.hasAttribute("hidden");
+    $("alertsPop").setAttribute("hidden","");$("alertsBtn").classList.remove("active");
+    if(open){p.removeAttribute("hidden");renderStatus();}else p.setAttribute("hidden","");
+    this.classList.toggle("active",open);
+  });
+  function renderStatus(){
+    var dot=$("spDot"),word=$("spWord"),desc=$("spDesc"),up=$("spUpdated"),nx=$("spNext");
+    if(!dot)return;
+    dot.className="sp-dot"+(liveState==="ok"?"":" "+liveState);
+    if(liveState==="error"){
+      word.textContent=usingFallback?"Offline":"Stale data";
+      desc.textContent=usingFallback
+        ? "Couldn't reach the live feed, so the board is showing the standard lineup without wait times. It keeps retrying."
+        : "The last refresh didn't go through. Showing the most recent waits and retrying.";
+    } else if(liveState==="stale"){
+      word.textContent="Catching up";
+      desc.textContent="It's been a few minutes since the last successful update — a refresh is on the way.";
+    } else {
+      word.textContent="Live";
+      desc.textContent="Wait times are connected and refreshing automatically.";
+    }
+    up.textContent=lastUpdated?agoText(lastUpdated):"not yet";
+    nx.textContent=nextRefreshAt?countdownText(nextRefreshAt):"—";
+  }
+  function agoText(ts){var s=Math.round((Date.now()-ts)/1000);return s<60?"just now":Math.floor(s/60)+" min ago";}
+  function countdownText(ts){var r=Math.max(0,ts-Date.now()),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);return m+":"+(s<10?"0":"")+s;}
 
   /* ---- events ---- */
   $("refreshBtn").addEventListener("click",function(){load(true);});
@@ -925,6 +979,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     if(nextRefreshAt){var r=Math.max(0,nextRefreshAt-Date.now()),m=Math.floor(r/60000),sc=Math.floor((r%60000)/1000);
       elPill.title=(elStatusText.textContent||"Live")+" · next refresh "+m+":"+(sc<10?"0":"")+sc;}
+    if(!$("statusPop").hasAttribute("hidden"))renderStatus();
   }
   setInterval(tick,1000);
 
