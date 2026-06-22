@@ -248,6 +248,11 @@
   .pstat .v small{font-size:11px;color:var(--muted);font-weight:500}
   .presult{font-size:12px;color:var(--muted);margin:0 2px 10px}
   .presult .src{color:var(--medium)}
+  .grp-head{display:flex;align-items:center;gap:8px;margin:16px 2px 8px;font-size:11px;font-weight:700;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
+  .grp-head span{background:var(--card-2);border:1px solid var(--line);border-radius:99px;padding:1px 8px;
+    font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+  .grid+.grp-head{margin-top:18px}
   @media (max-width:540px){
     .banner-tag{display:none}
     .banner-art{min-height:112px;padding:16px}
@@ -732,6 +737,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   function bandOf(lv){var t=tierOf(lv);return t==="packed"?"long":t;}
   function statusBucket(lv){if(!lv)return "closed";if(lv.status==="OPERATING")return "open";if(lv.status==="DOWN")return "down";return "closed";}
   function statusLabel(lv){if(!lv||lv.status==="CLOSED")return "Closed";if(lv.status==="DOWN")return "Down";if(lv.status==="REFURBISHMENT")return "Refurb";return "Open";}
+  function groupOf(o){var lv=o.lv;
+    if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return "waits"; /* posting a standby number now */
+    if(lv&&lv.nextShow)return "shows";                            /* showtime-based */
+    if(o.r.kind==="show")return "shows";                          /* tagged show, no wait/showtime */
+    if(lv&&lv.status==="OPERATING")return "waits";                /* open, no number -> keep up top as "Open" */
+    return "down";                                                /* ride down / closed / refurb */
+  }
   function activeFilterCount(){return (f.type!=="all")+(f.cat!=="all")+(f.status!=="all")+(f.band!=="all")+(f.ll?1:0)+(f.sr?1:0)+(f.watched?1:0);}
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
 
@@ -844,8 +856,19 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       '<div class="pstat"><div class="k">Crowd · est.</div>'+crowdHTML+'</div>'+hoursHTML;
     var list=rows(key);
     var body;
-    if(!list.length)body='<div class="state"><h3>Nothing matches those filters</h3><p>Try widening the type, status, or wait filters.</p></div>';
-    else{body='<div class="grid">';list.forEach(function(o){body+=cardHTML(o);});body+='</div>';}
+    if(!list.length){
+      body='<div class="state"><h3>Nothing matches those filters</h3><p>Try widening the type, status, or wait filters.</p></div>';
+    } else if(usingFallback){
+      body='<div class="grid">'+list.map(cardHTML).join("")+'</div>';
+    } else {
+      var groups={waits:[],down:[],shows:[]};
+      list.forEach(function(o){groups[groupOf(o)].push(o);});
+      body=[{k:"waits",l:"Wait Times"},{k:"down",l:"Down or Closed"},{k:"shows",l:"Shows &amp; Entertainment"}]
+        .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
+          return '<div class="grp-head">'+sec.l+' <span>'+g.length+'</span></div>'+
+                 '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
+        .join("");
+    }
     el.innerHTML='<div class="pstats">'+stats+'</div>'+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
