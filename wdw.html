@@ -306,6 +306,16 @@
   .sp-foot{font-size:11.5px;color:var(--muted-2);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);line-height:1.5}
   .sp-cover{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.45}
   .sp-cover b{color:var(--ink);font-weight:600} .sp-cover .dn{color:var(--packed);font-weight:600}
+  .dn-trigger{cursor:pointer;color:var(--packed);font-weight:600;display:inline-flex;align-items:center;gap:5px;
+    -webkit-tap-highlight-color:transparent}
+  .dn-trigger .chev{font-size:10px;transition:transform .18s;display:inline-block}
+  .dn-trigger.open .chev{transform:rotate(180deg)}
+  .dn-list{margin-top:6px;overflow:hidden;max-height:0;transition:max-height .24s ease}
+  .dn-list.open{max-height:320px;overflow-y:auto}
+  .dn-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--line)}
+  .dn-row .rdot{width:7px;height:7px;border-radius:50%;background:var(--packed);flex:none}
+  .dn-row .nm{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .dn-row .pk{font-size:12px;color:var(--muted-2);margin-left:auto;white-space:nowrap}
   .sp-foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
   .icon-btn{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:var(--card);
     color:var(--ink);font-size:17px;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:.15s}
@@ -566,7 +576,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     if(open){p.removeAttribute("hidden");renderStatus();}else p.setAttribute("hidden","");
     this.classList.toggle("active",open);
   });
-  function renderStatus(){
+  function renderStatus(){renderStatusMeta();renderStatusCover();}
+  function renderStatusMeta(){
     var dot=$("spDot"),word=$("spWord"),desc=$("spDesc"),up=$("spUpdated"),nx=$("spNext");
     if(!dot)return;
     dot.className="sp-dot"+(liveState==="ok"?"":" "+liveState);
@@ -584,18 +595,27 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     up.textContent=lastUpdated?agoText(lastUpdated):"not yet";
     nx.textContent=nextRefreshAt?countdownText(nextRefreshAt):"—";
-    var cov=$("spCover");
-    if(cov){
-      var ids=Object.keys(roster),total=ids.length,down=0;
-      ids.forEach(function(id){var r=roster[id],lv=liveById[id];
-        if(r.kind==="ride"&&lv&&lv.status==="DOWN")down++;});
-      if(usingFallback||!total){
-        cov.innerHTML="";
-      } else {
-        cov.innerHTML='Tracking <b>'+total+'</b> attractions across '+PARK_DEF.length+' parks · '+
-          (down?'<span class="dn">'+down+' ride'+(down===1?"":"s")+' down right now</span>':'<b>all rides running</b>');
-      }
-    }
+  }
+  /* Cover (down-ride list) is rebuilt only on panel open, not every tick,
+     so the tap-to-expand state survives the per-second clock updates. */
+  function renderStatusCover(){
+    var cov=$("spCover");if(!cov)return;
+    var ids=Object.keys(roster),total=ids.length,down=[];
+    ids.forEach(function(id){var r=roster[id],lv=liveById[id];
+      if(r.kind==="ride"&&lv&&lv.status==="DOWN")down.push(r);});
+    if(usingFallback||!total){cov.innerHTML="";return;}
+    var head='Tracking <b>'+total+'</b> attractions across '+PARK_DEF.length+' parks · ';
+    if(!down.length){cov.innerHTML=head+'<b>all rides running</b>';return;}
+    var n=down.length;
+    down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
+    var rows=down.map(function(r){
+      return '<div class="dn-row"><span class="rdot"></span><span class="nm">'+esc(r.name)+
+        '</span><span class="pk">'+esc(r.park)+'</span></div>';}).join("");
+    cov.innerHTML=head+'<span class="dn-trigger" id="dnTrigger">'+n+' ride'+(n===1?"":"s")+
+      ' down right now <span class="chev">▾</span></span><div class="dn-list" id="dnList">'+rows+'</div>';
+    var t=$("dnTrigger");
+    if(t)t.addEventListener("click",function(){
+      var open=$("dnList").classList.toggle("open");t.classList.toggle("open",open);});
   }
   function agoText(ts){var s=Math.round((Date.now()-ts)/1000);return s<60?"just now":Math.floor(s/60)+" min ago";}
   function countdownText(ts){var r=Math.max(0,ts-Date.now()),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);return m+":"+(s<10?"0":"")+s;}
@@ -1017,7 +1037,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     if(nextRefreshAt){var r=Math.max(0,nextRefreshAt-Date.now()),m=Math.floor(r/60000),sc=Math.floor((r%60000)/1000);
       elPill.title=(elStatusText.textContent||"Live")+" · next refresh "+m+":"+(sc<10?"0":"")+sc;}
-    if(!$("statusPop").hasAttribute("hidden"))renderStatus();
+    if(!$("statusPop").hasAttribute("hidden"))renderStatusMeta();
   }
   setInterval(tick,1000);
 
