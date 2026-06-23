@@ -879,9 +879,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     return {label:"Packed",level:4,color:"#ff6b6b"};
   }
   function isOpenNow(info){
-    if(!info||!info.open||!info.close)return null;
-    var now=Date.now(),o=new Date(info.open).getTime(),c=new Date(info.close).getTime();
-    return now>=o&&now<=c;
+    if(!info)return null;
+    var now=Date.now();
+    function within(o,c){return o&&c&&now>=new Date(o).getTime()&&now<=new Date(c).getTime();}
+    if(within(info.open,info.close))return true;
+    /* also open during Early Entry / Extended Evening / Ticketed Event windows */
+    if(info.extras&&info.extras.some(function(e){return within(e.open,e.close);}))return true;
+    if((info.open&&info.close)||(info.extras&&info.extras.length))return false;
+    return null;
   }
 
   /* ---- shared display helpers ---- */
