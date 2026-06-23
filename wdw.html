@@ -312,10 +312,15 @@
   .dn-trigger.open .chev{transform:rotate(180deg)}
   .dn-list{margin-top:6px;overflow:hidden;max-height:0;transition:max-height .24s ease}
   .dn-list.open{max-height:320px;overflow-y:auto}
-  .dn-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--line)}
+  .dn-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
   .dn-row .rdot{width:7px;height:7px;border-radius:50%;background:var(--packed);flex:none}
-  .dn-row .nm{font-weight:600;font-size:13.5px;color:var(--ink)}
-  .dn-row .pk{font-size:12px;color:var(--muted-2);margin-left:auto;white-space:nowrap}
+  .dn-info{flex:1;min-width:0}
+  .dn-info .nm{font-weight:600;font-size:13.5px;color:var(--ink);line-height:1.25}
+  .dn-info .pk{font-size:12px;color:var(--muted-2);margin-top:1px}
+  .dn-watch{flex:none;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--muted);
+    border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;white-space:nowrap;
+    font-family:var(--font-body);-webkit-tap-highlight-color:transparent;transition:.15s}
+  .dn-watch.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
   .sp-foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
   .icon-btn{width:40px;height:40px;border-radius:13px;border:1px solid var(--line);background:var(--card);
     color:var(--ink);font-size:17px;cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:.15s}
@@ -620,13 +625,27 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var n=down.length;
     down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
     var rows=down.map(function(r){
-      return '<div class="dn-row"><span class="rdot"></span><span class="nm">'+esc(r.name)+
-        '</span><span class="pk">'+esc(r.park)+'</span></div>';}).join("");
+      var on=!!reopen[r.id];
+      return '<div class="dn-row"><span class="rdot"></span>'+
+        '<div class="dn-info"><div class="nm">'+esc(r.name)+'</div><div class="pk">'+esc(r.park)+'</div></div>'+
+        '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Watching":"Notify me")+'</button>'+
+      '</div>';}).join("");
     cov.innerHTML=head+'<span class="dn-trigger" id="dnTrigger">'+n+' ride'+(n===1?"":"s")+
       ' down right now <span class="chev">▾</span></span><div class="dn-list" id="dnList">'+rows+'</div>';
     var t=$("dnTrigger");
     if(t)t.addEventListener("click",function(){
       var open=$("dnList").classList.toggle("open");t.classList.toggle("open",open);});
+    Array.prototype.forEach.call(cov.querySelectorAll("[data-watch]"),function(btn){
+      btn.addEventListener("click",function(){
+        var id=btn.getAttribute("data-watch"),on=!reopen[id];
+        if(on){watch[id]=true;reopen[id]=true;
+          prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
+        else{delete reopen[id];}
+        store.set("watch",Object.keys(watch));saveReopen();
+        btn.classList.toggle("on",on);btn.textContent=on?"✓ Watching":"Notify me";
+        updateAlertBadge();render();
+      });
+    });
   }
   function agoText(ts){var s=Math.round((Date.now()-ts)/1000);return s<60?"just now":Math.floor(s/60)+" min ago";}
   function countdownText(ts){var r=Math.max(0,ts-Date.now()),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);return m+":"+(s<10?"0":"")+s;}
