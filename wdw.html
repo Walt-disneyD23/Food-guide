@@ -783,8 +783,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     Object.keys(roster).forEach(function(id){
       var r=roster[id];if(r.kind!=="ride")return;var lv=liveById[id];if(!lv)return;
       var cur=lv.status;
-      /* reopen alert: fire once when a watched, reopen-flagged ride flips from not-operating to operating */
-      if(watch[id]&&reopen[id]&&prevStatus[id]&&prevStatus[id]!=="OPERATING"&&cur==="OPERATING"){
+      /* reopen alert: fire once when a watched, reopen-flagged ride flips from broken (DOWN) back to operating */
+      if(watch[id]&&reopen[id]&&prevStatus[id]==="DOWN"&&cur==="OPERATING"){
         fireReopen(r);delete reopen[id];saveReopen();delete alertState[id];
       }
       prevStatus[id]=cur;
@@ -827,8 +827,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var r=roster[id],lv=liveById[id],tier=tierOf(lv);
       var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
       var o=overrides[id],rule;
-      var operating=lv&&lv.status==="OPERATING";
-      if(!operating){
+      var down=lv&&lv.status==="DOWN";
+      if(down){
         var on=!!reopen[id];
         rule='<div class="al-edit-off"><button class="al-reopen'+(on?" on":"")+'" data-reopen="'+esc(id)+'">'+
           '<span class="al-sw"></span>Notify when it reopens</button></div>';
@@ -857,7 +857,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];}});
     each("[data-reopen]","click",function(el){var id=el.getAttribute("data-reopen");
       if(reopen[id])delete reopen[id];
-      else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"CLOSED";}
+      else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
       saveReopen();renderAlertList();});
     each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete alertState[id];
       store.set("watch",Object.keys(watch));saveOverrides();saveReopen();updateAlertBadge();renderAlertList();render();});
