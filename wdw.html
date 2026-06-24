@@ -678,8 +678,22 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   $("scopeToggle").addEventListener("click",function(){settings.all=!settings.all;store.set("all",settings.all);setOn(this,settings.all);resetAlerts();render();});
   $("notifToggle").addEventListener("click",function(){
     var self=this;
-    if(self.classList.contains("on")){settings.notif=false;store.set("notif",false);setOn(self,false);return;}
+    /* turn OFF */
+    if(self.classList.contains("on")){
+      settings.notif=false;store.set("notif",false);setOn(self,false);
+      disablePush();pushSub=null;return;
+    }
+    /* turn ON */
     if(typeof Notification==="undefined"){pushToast("Not supported","This browser can't show notifications.");return;}
+    if(pushSupported()){
+      enablePush().then(function(ok){
+        if(ok){settings.notif=true;store.set("notif",true);setOn(self,true);
+          pushToast("Alerts on","You'll get alerts even when the app is closed.");}
+        else{pushToast("Notifications blocked","Allow them in your device's settings to get alerts.");}
+      });
+      return;
+    }
+    /* fallback: page-open notifications only (browser has no background push) */
     if(Notification.permission==="granted"){settings.notif=true;store.set("notif",true);setOn(self,true);}
     else{Notification.requestPermission().then(function(p){
       if(p==="granted"){settings.notif=true;store.set("notif",true);setOn(self,true);}
@@ -1109,8 +1123,92 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
   setInterval(tick,1000);
 
+  /* ===========================================================
+     PHASE 2 — BACKGROUND PUSH (Cloudflare Worker backend)
+     Delivers alerts with the app CLOSED. The existing page-open
+     toasts + Notifications stay as a fallback; this is the upgrade.
+     =========================================================== */
+  var PUSH={
+    WORKER_URL:"https://parkpulse-push.walt-disneyd23.workers.dev",
+    VAPID_PUBLIC_KEY:"BD67rEs6O15fNG9ieafnzD-yqzmYT5WPdFwxbGJDr_YB72xNDAezLTlmSsP9LoTOOePAdIoHCFk5ESjz6Dp1q_g"
+  };
+  var pushSub=null,syncTimer=null;
+
+  function pushSupported(){return ("serviceWorker" in navigator)&&("PushManager" in window)&&typeof Notification!=="undefined";}
+
+  /* Snapshot the app's real state objects into the exact rules shape the
+     deployed Worker's /save expects. overrides may be empty -> send {}. */
+  function collectRules(){
+    return {
+      watch:watch,
+      overrides:overrides||{},
+      reopen:reopen,
+      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
+    };
+  }
+
+  function urlB64ToUint8Array(base64){
+    var pad="=".repeat((4-(base64.length%4))%4);
+    var b64=(base64+pad).replace(/-/g,"+").replace(/_/g,"/");
+    var raw=atob(b64),arr=new Uint8Array(raw.length);
+    for(var i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);
+    return arr;
+  }
+
+  function enablePush(){
+    if(!pushSupported())return Promise.resolve(false);
+    return navigator.serviceWorker.register("sw.js").then(function(reg){
+      return Notification.requestPermission().then(function(perm){
+        if(perm!=="granted")return false;
+        return reg.pushManager.getSubscription().then(function(existing){
+          if(existing)return existing;
+          return reg.pushManager.subscribe({
+            userVisibleOnly:true,
+            applicationServerKey:urlB64ToUint8Array(PUSH.VAPID_PUBLIC_KEY)
+          });
+        }).then(function(sub){pushSub=sub;return syncPush().then(function(){return true;});});
+      });
+    }).catch(function(e){console.error("enablePush failed",e);return false;});
+  }
+
+  function syncPush(){
+    if(!pushSub)return Promise.resolve();
+    return fetch(PUSH.WORKER_URL+"/save",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({subscription:pushSub.toJSON(),rules:collectRules()})
+    }).then(function(){}).catch(function(e){console.error("syncPush failed",e);});
+  }
+
+  function disablePush(){
+    if(!pushSub)return Promise.resolve();
+    var endpoint=pushSub.endpoint;
+    return fetch(PUSH.WORKER_URL+"/unsubscribe",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({endpoint:endpoint})
+    }).then(function(){}).catch(function(e){console.error("disablePush failed",e);});
+  }
+
+  /* Single chokepoint: every rules change persists through store.set with one of
+     these keys, so wrapping it catches every star / reopen / override / threshold
+     / apply-all edit without touching the individual handlers. Debounced so a
+     burst of edits collapses into one /save. Only fires once subscribed. */
+  (function(){
+    var RULE_KEYS={watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1};
+    var origSet=store.set;
+    store.set=function(k,v){
+      origSet.call(store,k,v);
+      if(pushSub&&RULE_KEYS[k]){
+        if(syncTimer)clearTimeout(syncTimer);
+        syncTimer=setTimeout(function(){syncPush();},500);
+      }
+    };
+  })();
+
   /* ---- boot ---- */
   buildFallbackRoster();buildBanners();render();updateAlertBadge();load(false);
+  if(settings.notif&&pushSupported())enablePush();
 
 })();
 </script>
