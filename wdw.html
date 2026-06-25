@@ -265,8 +265,8 @@
   .pstats .crowd-dots i:not(.on),.hours-row .crowd-dots i:not(.on){background:#cdd1e3}
   .spread{padding:2px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
   .spread .k{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
-  .spread-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;cursor:pointer}
-  .spread-bar i{display:block;height:100%;transition:opacity .15s}
+  .spread-bar{display:flex;height:16px;border-radius:8px;overflow:hidden;gap:2px;cursor:pointer}
+  .spread-bar i{display:block;height:100%;min-width:34px;transition:opacity .15s}
   .spread-bar i.s{background:var(--short)}.spread-bar i.m{background:var(--medium)}.spread-bar i.l{background:var(--long)}
   .spread-bar.sel i{opacity:.28}
   .spread-bar.sel i.active{opacity:1}
@@ -277,6 +277,7 @@
   .spread-legend{display:flex;gap:15px;margin-top:10px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
   .spread-legend b{color:var(--ink);font-weight:700}
   .spread-legend .d{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .spread-legend .lg{cursor:pointer}
   .grp-head{display:flex;align-items:center;gap:8px;margin:16px 2px 8px;font-size:11px;font-weight:700;
     letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .grp-head span{background:var(--card-2);border:1px solid var(--line);border-radius:99px;padding:1px 8px;
@@ -1120,21 +1121,21 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var bnd={short:0,medium:0,long:0};
       ws.forEach(function(w){if(w<=20)bnd.short++;else if(w<=45)bnd.medium++;else bnd.long++;});
       var sel=f.band;
-      var segs='<i class="s'+(sel==="short"?" active":"")+'" data-band="short" style="flex:'+bnd.short+'"></i>'+
-               '<i class="m'+(sel==="medium"?" active":"")+'" data-band="medium" style="flex:'+bnd.medium+'"></i>'+
-               '<i class="l'+(sel==="long"?" active":"")+'" data-band="long" style="flex:'+bnd.long+'"></i>';
+      var BANDS=[{k:"short",c:"s",lbl:"≤20 min"},{k:"medium",c:"m",lbl:"21–45"},{k:"long",c:"l",lbl:"45+"}];
+      var segs=BANDS.filter(function(x){return bnd[x.k]>0;}).map(function(x){
+        return '<i class="'+x.c+(sel===x.k?" active":"")+'" data-band="'+x.k+'" style="flex:'+bnd[x.k]+'"></i>';
+      }).join("");
       spreadHTML='<div class="spread"><div class="k">'+(sel==="all"?"Wait spread · tap a band to filter":"Wait spread")+'</div>'+
         '<div class="spread-bar'+(sel!=="all"?" sel":"")+'">'+segs+'</div>';
       if(sel!=="all"){
         var lbl=sel==="short"?"≤20 min":sel==="medium"?"21–45 min":"45+ min",
-            cnt=sel==="short"?bnd.short:sel==="medium"?bnd.medium:bnd.long,
-            col=sel==="short"?"var(--short)":sel==="medium"?"var(--medium)":"var(--long)";
+            cnt=bnd[sel],col="var(--"+sel+")";
         spreadHTML+='<div class="spread-active"><span class="pill"><span class="d" style="background:'+col+'"></span>Showing '+lbl+' · '+cnt+'</span><span class="clear" data-band="all">✕ Clear</span></div>';
       }else{
-        spreadHTML+='<div class="spread-legend">'+
-          '<span><span class="d" style="background:var(--short)"></span><b>'+bnd.short+'</b> ≤20 min</span>'+
-          '<span><span class="d" style="background:var(--medium)"></span><b>'+bnd.medium+'</b> 21–45</span>'+
-          '<span><span class="d" style="background:var(--long)"></span><b>'+bnd.long+'</b> 45+</span></div>';
+        spreadHTML+='<div class="spread-legend">'+BANDS.map(function(x){
+          var on=bnd[x.k]>0;
+          return '<span'+(on?' class="lg" data-band="'+x.k+'"':'')+'><span class="d" style="background:var(--'+x.k+')"></span><b>'+bnd[x.k]+'</b> '+x.lbl+'</span>';
+        }).join("")+'</div>';
       }
       spreadHTML+='</div>';
     }
@@ -1157,7 +1158,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
     bindStars(el);
-    Array.prototype.forEach.call(el.querySelectorAll(".spread-bar i[data-band],.spread .clear[data-band]"),function(seg){
+    Array.prototype.forEach.call(el.querySelectorAll(".spread [data-band]"),function(seg){
       seg.addEventListener("click",function(){
         var band=seg.getAttribute("data-band");
         f.band=(band===f.band)?"all":band;
