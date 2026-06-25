@@ -143,7 +143,16 @@
   .filterbar.open .filters-btn .chev{transform:rotate(180deg)}
   .grow{flex:1}
   .search-box input{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:var(--pill);
-    padding:9px 15px;font-size:13px;width:170px;font-family:var(--font-body);box-shadow:var(--shadow-sm)}
+    padding:9px 15px;font-size:16px;width:170px;font-family:var(--font-body);box-shadow:var(--shadow-sm)}
+  .search-box{position:relative;display:flex;align-items:center}
+  .search-box input{padding-right:30px}
+  .search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:19px;height:19px;border-radius:50%;
+    background:var(--bg-2);color:var(--muted);border:none;font-size:11px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+  .results-head{display:flex;align-items:center;gap:9px;margin:4px 2px 8px;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink)}
+  .results-head .q{color:var(--accent)}
+  .results-head .c{background:var(--accent-soft);color:var(--accent);border-radius:999px;font-size:12px;padding:2px 9px;font-weight:700}
+  .results-head .results-clear{margin-left:auto;background:none;border:none;color:var(--accent);font-weight:600;font-size:13px;cursor:pointer;padding:4px 2px}
+  .results-hint{font-size:12px;color:var(--muted-2);margin:0 2px 12px}
   .filter-panel[hidden]{display:none}
   .filter-panel{display:flex;flex-wrap:wrap;gap:9px 14px;align-items:center;margin-top:12px;padding:14px 16px;
     background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)}
@@ -450,7 +459,7 @@
       <div class="grow"></div>
       <div class="fld" style="font-size:13px"><label for="sort">Sort</label>
         <select id="sort"><option value="wait">Shortest</option><option value="waitDesc">Longest</option><option value="name">Name</option></select></div>
-      <div class="search-box"><input type="text" id="search" placeholder="Search…" /></div>
+      <div class="search-box"><input type="text" id="search" placeholder="Search…" /><button class="search-clear" id="searchClear" hidden aria-label="Clear search">✕</button></div>
     </div>
     <div class="filter-panel" id="filterPanel" hidden>
       <div class="fld"><label for="type">Type</label>
@@ -471,6 +480,7 @@
 
 <div class="wrap">
   <div id="banners"></div>
+  <div id="searchResults" hidden></div>
   <footer>
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
@@ -671,6 +681,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   bindSel("band","f_band",function(v){f.band=v;});
   bindSel("sort","sort",function(v){f.sort=v;});
   $("search").addEventListener("input",function(){f.search=this.value;render();});
+  $("searchClear").addEventListener("click",clearSearch);
+  function clearSearch(){var i=$("search");i.value="";f.search="";render();i.blur();}
   bindChip("llChip","f_ll",function(v){f.ll=v;});
   bindChip("srChip","f_sr",function(v){f.sr=v;});
   bindChip("watchChip","f_watched",function(v){f.watched=v;});
@@ -1005,6 +1017,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   function render(){
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
+    var q=f.search.trim();
+    $("searchClear").hidden=!q;
+    if(q){$("banners").hidden=true;$("searchResults").hidden=false;renderSearch(q);return;}
+    $("banners").hidden=false;var sr=$("searchResults");sr.hidden=true;sr.innerHTML="";
     BANNERS.forEach(function(def){
       var key=def.key,el=bannerEls[key];if(!el)return;
       var s=bannerStats(key);
@@ -1017,6 +1033,32 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(isExp){el.panel.hidden=false;renderPanel(key,el.panel);}
       else{el.panel.hidden=true;el.panel.innerHTML="";}
     });
+  }
+
+  /* Global search: one flat, grouped results list across all four parks,
+     filtered by the query and ordered by the current Sort. */
+  function renderSearch(q){
+    var list=rows("all");
+    var head='<div class="results-head">Results for &ldquo;<span class="q">'+esc(q)+'</span>&rdquo; '+
+      '<span class="c">'+list.length+'</span>'+
+      '<button class="results-clear" id="resClear">Clear</button></div>'+
+      '<div class="results-hint">Across all four parks · tap &#9733; to set an alert</div>';
+    var body;
+    if(!list.length){
+      body='<div class="state"><h3>No matches for &ldquo;'+esc(q)+'&rdquo;</h3><p>Try a shorter word or check the spelling.</p></div>';
+    } else {
+      var groups={waits:[],down:[],other:[]};
+      list.forEach(function(o){groups[groupOf(o)].push(o);});
+      body=[{k:"waits",l:"Wait Times"},{k:"other",l:"Shows &amp; Experiences"},{k:"down",l:"Down or Closed"}]
+        .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
+          return '<div class="grp-head">'+sec.l+' <span>'+g.length+'</span></div>'+
+                 '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
+        .join("");
+    }
+    var sr=$("searchResults");
+    sr.innerHTML=head+body;
+    var rc=$("resClear");if(rc)rc.addEventListener("click",clearSearch);
+    bindStars(sr);
   }
 
   function renderPanel(key,el){
