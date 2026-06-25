@@ -259,6 +259,24 @@
   .pstat .v small{font-size:11px;color:var(--muted);font-weight:500}
   .presult{font-size:12px;color:var(--muted);margin:0 2px 10px}
   .presult .src{color:var(--medium)}
+  .hours-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:0 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+  .hours-row .crowd-cell{text-align:right;flex:none}
+  .hours-row .crowd-cell .crowd-meter{justify-content:flex-end}
+  .pstats .crowd-dots i:not(.on),.hours-row .crowd-dots i:not(.on){background:#cdd1e3}
+  .spread{padding:2px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
+  .spread .k{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+  .spread-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;cursor:pointer}
+  .spread-bar i{display:block;height:100%;transition:opacity .15s}
+  .spread-bar i.s{background:var(--short)}.spread-bar i.m{background:var(--medium)}.spread-bar i.l{background:var(--long)}
+  .spread-bar.sel i{opacity:.28}
+  .spread-bar.sel i.active{opacity:1}
+  .spread-active{display:flex;align-items:center;gap:10px;margin-top:11px;font-size:12.5px}
+  .spread-active .pill{display:inline-flex;align-items:center;gap:7px;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:5px 11px;font-weight:700}
+  .spread-active .pill .d{width:8px;height:8px;border-radius:2px;display:inline-block}
+  .spread-active .clear{color:var(--accent);font-weight:700;cursor:pointer}
+  .spread-legend{display:flex;gap:15px;margin-top:10px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+  .spread-legend b{color:var(--ink);font-weight:700}
+  .spread-legend .d{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
   .grp-head{display:flex;align-items:center;gap:8px;margin:16px 2px 8px;font-size:11px;font-weight:700;
     letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .grp-head span{background:var(--card-2);border:1px solid var(--line);border-radius:99px;padding:1px 8px;
@@ -763,7 +781,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         (d.children||[]).forEach(function(c){
           if(c.entityType!=="ATTRACTION"&&c.entityType!=="SHOW")return;
           var kind=c.entityType==="SHOW"?"show":"ride";
-          fresh[c.id]={id:c.id,name:c.name,park:p.short,kind:kind,category:categoryFor(c.name,kind)};
+          fresh[c.id]={id:c.id,name:c.name,park:p.short,kind:kind,category:categoryFor(c.name,kind),atype:c.attractionType||null};
         });
       }).catch(function(){});
     })).then(function(){if(Object.keys(fresh).length)roster=fresh;});
@@ -903,7 +921,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   /* ---- stats helpers ---- */
   function scopeWaits(parkKey){
     var arr=[];Object.keys(roster).forEach(function(id){
-      var r=roster[id],lv=liveById[id];if(r.kind!=="ride")return;
+      var r=roster[id],lv=liveById[id];
       if(parkKey!=="all"&&r.park!==parkKey)return;
       if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push(lv.wait);});
     return arr;
@@ -1080,17 +1098,46 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       hoursHTML='<div class="pstat"><div class="k">Hours</div><div class="v" style="font-size:15px">'+esc(line)+
         '<small style="display:block;font-size:11px">'+extra+'</small></div></div>';
     }
-    var longHTML="",busyHTML="";
+    var longHTML='<div class="pstat"><div class="k">Longest</div><div class="v">'+(s.max===null?"–":s.max+'<small> min</small>')+'</div></div>';
+    var busyHTML="";
     if(key==="all"){
-      longHTML='<div class="pstat"><div class="k">Longest</div><div class="v">'+(s.max===null?"–":s.max+'<small> min</small>')+'</div></div>';
       busyHTML='<div class="pstat"><div class="k">Busiest park</div><div class="v" style="font-size:15px">'+(s.busiest?esc(s.busiest):"–")+'</div></div>';
     }
+    var crowdCell='<div class="pstat"><div class="k">Crowd · est.</div>'+crowdHTML+'</div>';
     var stats=
-      '<div class="pstat"><div class="k">Rides open</div><div class="v">'+s.open+'</div></div>'+
+      '<div class="pstat"><div class="k">Attractions open</div><div class="v">'+s.open+'</div></div>'+
       '<div class="pstat"><div class="k">Avg wait</div><div class="v">'+(s.avg===null?"–":s.avg+'<small> min</small>')+'</div></div>'+
       '<div class="pstat"><div class="k">Shortest</div><div class="v">'+(s.min===null?"–":s.min+'<small> min</small>')+'</div></div>'+
       longHTML+
-      '<div class="pstat"><div class="k">Crowd · est.</div>'+crowdHTML+'</div>'+busyHTML+hoursHTML;
+      (key==="all"?(crowdCell+busyHTML):"");
+    /* Single park: Hours and Crowd share their own line. "all" keeps Crowd up in the stat row. */
+    var hoursRow=(key!=="all")
+      ? '<div class="hours-row">'+hoursHTML+'<div class="pstat crowd-cell"><div class="k">Crowd · est.</div>'+crowdHTML+'</div></div>'
+      : "";
+    /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
+    var ws=scopeWaits(key),spreadHTML="";
+    if(!usingFallback&&ws.length){
+      var bnd={short:0,medium:0,long:0};
+      ws.forEach(function(w){if(w<=20)bnd.short++;else if(w<=45)bnd.medium++;else bnd.long++;});
+      var sel=f.band;
+      var segs='<i class="s'+(sel==="short"?" active":"")+'" data-band="short" style="flex:'+bnd.short+'"></i>'+
+               '<i class="m'+(sel==="medium"?" active":"")+'" data-band="medium" style="flex:'+bnd.medium+'"></i>'+
+               '<i class="l'+(sel==="long"?" active":"")+'" data-band="long" style="flex:'+bnd.long+'"></i>';
+      spreadHTML='<div class="spread"><div class="k">'+(sel==="all"?"Wait spread · tap a band to filter":"Wait spread")+'</div>'+
+        '<div class="spread-bar'+(sel!=="all"?" sel":"")+'">'+segs+'</div>';
+      if(sel!=="all"){
+        var lbl=sel==="short"?"≤20 min":sel==="medium"?"21–45 min":"45+ min",
+            cnt=sel==="short"?bnd.short:sel==="medium"?bnd.medium:bnd.long,
+            col=sel==="short"?"var(--short)":sel==="medium"?"var(--medium)":"var(--long)";
+        spreadHTML+='<div class="spread-active"><span class="pill"><span class="d" style="background:'+col+'"></span>Showing '+lbl+' · '+cnt+'</span><span class="clear" data-band="all">✕ Clear</span></div>';
+      }else{
+        spreadHTML+='<div class="spread-legend">'+
+          '<span><span class="d" style="background:var(--short)"></span><b>'+bnd.short+'</b> ≤20 min</span>'+
+          '<span><span class="d" style="background:var(--medium)"></span><b>'+bnd.medium+'</b> 21–45</span>'+
+          '<span><span class="d" style="background:var(--long)"></span><b>'+bnd.long+'</b> 45+</span></div>';
+      }
+      spreadHTML+='</div>';
+    }
     var list=rows(key);
     var body;
     if(!list.length){
@@ -1106,14 +1153,32 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
-    el.innerHTML='<div class="pstats">'+stats+'</div>'+
+    el.innerHTML='<div class="pstats">'+stats+'</div>'+hoursRow+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
     bindStars(el);
+    Array.prototype.forEach.call(el.querySelectorAll(".spread-bar i[data-band],.spread .clear[data-band]"),function(seg){
+      seg.addEventListener("click",function(){
+        var band=seg.getAttribute("data-band");
+        f.band=(band===f.band)?"all":band;
+        store.set("f_band",f.band);
+        var bs=$("band");if(bs)bs.value=f.band;
+        render();
+      });
+    });
+  }
+
+  /* A character meet/greet: prefer the feed's own type, fall back to the name.
+     Detection is best-effort — the feed files meets under the generic SHOW type
+     and not every meet has "meet" in its name, so some may stay tagged "Show". */
+  function isMeet(r){
+    if(!r)return false;
+    if(r.atype&&/meet/i.test(r.atype))return true;
+    return /\bmeet\b/i.test(r.name)||/character (experience|greeting|meet)/i.test(r.name);
   }
 
   function cardHTML(o){
-    var r=o.r,lv=o.lv,tier=tierOf(lv),watched=!!watch[r.id],show=r.kind==="show";
+    var r=o.r,lv=o.lv,tier=tierOf(lv),watched=!!watch[r.id],show=r.kind==="show",meet=isMeet(r);
     var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null;
     var num,unit;
     if(hasWait){num=lv.wait;unit='<small>min</small>';}
@@ -1122,8 +1187,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     else{num='<span style="font-size:18px">—</span>';unit='<small>'+statusLabel(lv)+'</small>';}
     var cls=(show&&!hasWait)?"closed":tier;
     var sub='<span class="park">'+esc(r.park)+'</span>';
-    if(!show&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
-    if(show)sub+='<span class="show">Show</span>';
+    if(!show&&!meet&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
+    if(meet)sub+='<span class="show">Character Experience</span>';
+    else if(show)sub+='<span class="show">Show</span>';
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
     if(lv&&lv.ll)sub+='<span class="ll">Next LL '+esc(lv.ll)+'</span>';
     return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
