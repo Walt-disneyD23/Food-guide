@@ -1114,18 +1114,20 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
   function cardHTML(o){
     var r=o.r,lv=o.lv,tier=tierOf(lv),watched=!!watch[r.id],show=r.kind==="show";
+    var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null;
     var num,unit;
-    if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':'<span style="font-size:18px">—</span>';
+    if(hasWait){num=lv.wait;unit='<small>min</small>';}
+    else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':'<span style="font-size:18px">—</span>';
       unit='<small>'+(lv&&lv.nextShow?"next show":statusLabel(lv))+'</small>';}
-    else if(lv&&lv.status==="OPERATING"&&lv.wait!==null){num=lv.wait;unit='<small>min</small>';}
     else{num='<span style="font-size:18px">—</span>';unit='<small>'+statusLabel(lv)+'</small>';}
+    var cls=(show&&!hasWait)?"closed":tier;
     var sub='<span class="park">'+esc(r.park)+'</span>';
     if(!show&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
     if(show)sub+='<span class="show">Show</span>';
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
     if(lv&&lv.ll)sub+='<span class="ll">Next LL '+esc(lv.ll)+'</span>';
-    return '<div class="ride s-'+(show?"closed":tier)+(watched?' watched':'')+'">'+
-      '<div class="wt '+(show?"closed":tier)+'">'+num+unit+'</div>'+
+    return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
+      '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div></div>'+
       '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Watch for alerts">'+(watched?'★':'☆')+'</button></div>';
   }
