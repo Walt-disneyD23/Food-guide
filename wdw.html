@@ -1123,6 +1123,15 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
   setInterval(tick,1000);
 
+  /* iOS freezes a backgrounded PWA's refresh timer, so on return the board can
+     sit on stale data ("Catching up") until the limping timer fires. When the
+     app comes back to the foreground, refresh immediately if data has gone
+     stale. Covers both a normal refocus (visibilitychange) and a bfcache
+     restore (pageshow persisted). Alerts are unaffected — the worker owns those. */
+  function refreshIfStale(){ if(!lastUpdated||(Date.now()-lastUpdated)>30000)load(false); }
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible")refreshIfStale(); });
+  window.addEventListener("pageshow",function(e){ if(e&&e.persisted)refreshIfStale(); });
+
   /* ===========================================================
      PHASE 2 — BACKGROUND PUSH (Cloudflare Worker backend)
      Delivers alerts with the app CLOSED. The existing page-open
