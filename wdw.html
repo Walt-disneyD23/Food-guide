@@ -1155,29 +1155,47 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     return arr;
   }
 
+  /* Bind to the push subscription WITHOUT prompting — no user gesture is needed
+     once permission is already granted. Registers the SW, reuses the existing
+     subscription or creates one, and caches it. Returns the sub or null. This is
+     what makes syncing self-healing across app launches. */
+  function ensureSub(){
+    if(pushSub)return Promise.resolve(pushSub);
+    if(!pushSupported()||Notification.permission!=="granted")return Promise.resolve(null);
+    return navigator.serviceWorker.register("sw.js").then(function(reg){
+      return reg.pushManager.getSubscription().then(function(existing){
+        if(existing)return existing;
+        return reg.pushManager.subscribe({
+          userVisibleOnly:true,
+          applicationServerKey:urlB64ToUint8Array(PUSH.VAPID_PUBLIC_KEY)
+        });
+      });
+    }).then(function(sub){pushSub=sub;return sub;}).catch(function(e){console.error("ensureSub failed",e);return null;});
+  }
+
+  /* Turn-ON path — called from a user tap, so prompting for permission is OK. */
   function enablePush(){
     if(!pushSupported())return Promise.resolve(false);
-    return navigator.serviceWorker.register("sw.js").then(function(reg){
-      return Notification.requestPermission().then(function(perm){
-        if(perm!=="granted")return false;
-        return reg.pushManager.getSubscription().then(function(existing){
-          if(existing)return existing;
-          return reg.pushManager.subscribe({
-            userVisibleOnly:true,
-            applicationServerKey:urlB64ToUint8Array(PUSH.VAPID_PUBLIC_KEY)
-          });
-        }).then(function(sub){pushSub=sub;return syncPush().then(function(){return true;});});
+    return Notification.requestPermission().then(function(perm){
+      if(perm!=="granted")return false;
+      return ensureSub().then(function(sub){
+        if(!sub)return false;
+        return syncPush().then(function(){return true;});
       });
     }).catch(function(e){console.error("enablePush failed",e);return false;});
   }
 
+  /* Push the current rules to the backend, acquiring the subscription first if
+     needed. Safe to call on any rules change or on launch. */
   function syncPush(){
-    if(!pushSub)return Promise.resolve();
-    return fetch(PUSH.WORKER_URL+"/save",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({subscription:pushSub.toJSON(),rules:collectRules()})
-    }).then(function(){}).catch(function(e){console.error("syncPush failed",e);});
+    return ensureSub().then(function(sub){
+      if(!sub)return;
+      return fetch(PUSH.WORKER_URL+"/save",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({subscription:sub.toJSON(),rules:collectRules()})
+      }).then(function(){}).catch(function(e){console.error("syncPush failed",e);});
+    });
   }
 
   function disablePush(){
@@ -1199,7 +1217,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var origSet=store.set;
     store.set=function(k,v){
       origSet.call(store,k,v);
-      if(pushSub&&RULE_KEYS[k]){
+      if(settings.notif&&RULE_KEYS[k]){
         if(syncTimer)clearTimeout(syncTimer);
         syncTimer=setTimeout(function(){syncPush();},500);
       }
@@ -1208,7 +1226,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
   /* ---- boot ---- */
   buildFallbackRoster();buildBanners();render();updateAlertBadge();load(false);
-  if(settings.notif&&pushSupported())enablePush();
+  if(settings.notif&&pushSupported()&&Notification.permission==="granted")syncPush();
 
 })();
 </script>
