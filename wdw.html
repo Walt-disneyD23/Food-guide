@@ -927,12 +927,27 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push(lv.wait);});
     return arr;
   }
-  function crowdFromAvg(avg){
+  var CROWD_TIERS=[null,
+    {label:"Light",   level:1,color:"#3dd68c"},
+    {label:"Moderate",level:2,color:"#f5b544"},
+    {label:"Busy",    level:3,color:"#ff7a59"},
+    {label:"Packed",  level:4,color:"#ff6b6b"}];
+  /* Per-park baseline: Animal Kingdom and EPCOT run structurally calmer than Magic
+     Kingdom and Hollywood Studios, so their avg-wait scale is shifted up by this many
+     minutes (a headliner-level wait there is normal, not a crowd). Parks not listed use 0. */
+  var CROWD_BASELINE={ "Animal Kingdom":5, "EPCOT":5 };
+  /* Spread-aware crowd estimate: the average wait sets the base label (on a per-park
+     scale), the 45+ wait spread (same band the Wait Spread bar uses) adds guardrails.
+     Caps can only soften an overstatement; the floor only catches a genuine crush. */
+  function crowdLevel(avg, open, longCount, parkKey){
     if(avg===null)return null;
-    if(avg<15)return {label:"Light",level:1,color:"#3dd68c"};
-    if(avg<25)return {label:"Moderate",level:2,color:"#f5b544"};
-    if(avg<40)return {label:"Busy",level:3,color:"#ff7a59"};
-    return {label:"Packed",level:4,color:"#ff6b6b"};
+    var b = CROWD_BASELINE[parkKey] || 0;                 /* shift the scale for calmer parks */
+    var lvl = avg<15+b ? 1 : avg<25+b ? 2 : avg<40+b ? 3 : 4;   /* base from average (per-park) */
+    var share = open>0 ? longCount/open : 0;              /* share of open rides waiting 45+ min */
+    if(longCount<=0){ if(lvl>2) lvl=2; }                  /* no long lines        -> cap at Moderate */
+    else if(share<0.15){ if(lvl>3) lvl=3; }               /* long lines rare      -> cap at Busy */
+    if(share>=0.30){ if(lvl<3) lvl=3; }                   /* long lines widespread -> floor at Busy */
+    return CROWD_TIERS[lvl];
   }
   function isOpenNow(info){
     if(!info)return null;
@@ -1028,9 +1043,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var a=w.reduce(function(x,y){return x+y;},0)/w.length;
         if(a>best){best=a;busiest=p.key;}});
     }
+    var longCount=waits.filter(function(w){return w>45;}).length; /* 45+ band, matches Wait Spread bar */
     return {avg:avg,open:waits.length,min:waits.length?Math.min.apply(null,waits):null,
       max:waits.length?Math.max.apply(null,waits):null,
-      isOpen:isOpen,crowd:crowdFromAvg(avg),busiest:busiest};
+      isOpen:isOpen,crowd:crowdLevel(avg,waits.length,longCount,key),busiest:busiest};
   }
 
   function render(){
