@@ -924,6 +924,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var arr=[];Object.keys(roster).forEach(function(id){
       var r=roster[id],lv=liveById[id];
       if(parkKey!=="all"&&r.park!==parkKey)return;
+      if(isOpenNow(parkInfo[r.park])===false)return; /* park closed per schedule -> ignore stale waits */
       if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push(lv.wait);});
     return arr;
   }
@@ -967,6 +968,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   function statusBucket(lv){if(!lv)return "closed";if(lv.status==="OPERATING")return "open";if(lv.status==="DOWN")return "down";return "closed";}
   function statusLabel(lv){if(!lv||lv.status==="CLOSED")return "Closed";if(lv.status==="DOWN")return "Down";if(lv.status==="REFURBISHMENT")return "Refurb";return "Open";}
   function groupOf(o){var lv=o.lv,op=lv&&lv.status==="OPERATING";
+    if(op&&isOpenNow(parkInfo[o.r.park])===false)op=false; /* park closed per schedule -> treat as not operating */
     if(op&&lv.wait!==null)return "waits";     /* posting a numeric standby wait — matches Disney's list */
     if(o.r.kind==="ride"&&!op)return "down";  /* a ride that normally posts a wait but is down/closed now */
     return "other";                            /* shows, character experiences, walk-through trails & exhibits (open, no number) */
