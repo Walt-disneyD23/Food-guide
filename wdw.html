@@ -1227,7 +1227,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     longs.sort(function(a,b){return b[1]-a[1];});longs=longs.slice(0,3);
 
     var d={park:key,hours:hours,time:time,crowd:{label:crowdLabel,level:crowdLvl,color:tier},
-      avg:s.avg,open:s.open,down:down.slice(0,3),downCount:down.length,longest:longs,link:"parkpulse.app"};
+      avg:s.avg,open:s.open,down:down.slice(0,3),downCount:down.length,longest:longs,link:"parkpulse.live"};
 
     var cv=document.createElement("canvas");cv.width=1080;cv.height=1080;
     var ctx=cv.getContext("2d");
@@ -1356,7 +1356,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     if(hasEarly)events.unshift({tag:"EARLY",text:"All parks \u00b7 30 min before open"});
     if(!events.length)events.push({tag:"",text:"No extra hours or ticketed events today"});
 
-    var d={time:time,calmest:calmest||"\u2014",parks:parks4,events:events,link:"parkpulse.app"};
+    var d={time:time,calmest:calmest||"\u2014",parks:parks4,events:events,link:"parkpulse.live"};
     var W=1080,L=94,R=986,CW=R-L;
     var EVENTS_TOP=1000,EV_HEAD=70,EV_ROW=52,EV_PAD=24,FOOT_GAP=50,FOOT_H=90,INSET=36;
     var H=EVENTS_TOP+EV_HEAD+d.events.length*EV_ROW+EV_PAD+FOOT_GAP+FOOT_H+INSET;
@@ -1483,7 +1483,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     groups.sort(function(a,b){return (b.rides.length-a.rides.length)||a.park.localeCompare(b.park);});
     var count=groups.reduce(function(a,g){return a+g.rides.length;},0);
     if(!count){if(typeof pushToast==="function")pushToast("Nothing's down","All attractions are running right now");return;}
-    var d={time:time,count:count,parksAffected:groups.length,groups:groups,link:"parkpulse.app"};
+    var d={time:time,count:count,parksAffected:groups.length,groups:groups,link:"parkpulse.live"};
 
     var W=1080,L=94,R=986,CW=R-L,INSET=36;
     var sectionsH=groups.reduce(function(a,g){return a+62+g.rides.length*56+26;},0);
