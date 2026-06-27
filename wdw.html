@@ -464,10 +464,11 @@
         </div>
       </div>
       <div class="toggle" id="scopeToggle"><span class="switch"></span><span>Apply to all rides</span></div>
+      <div class="toggle" id="keepWatchToggle"><span class="switch"></span><span>Keep watching after a back-up</span></div>
     </div>
     <div id="alertList"></div>
-    <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride alerts once when it
-      crosses the threshold and resets when it crosses back — keep this page open to keep checking.</div>
+    <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride pings once when it
+      first drops past your threshold and won't ping again until you change its rule — keep this page open to keep checking.</div>
   </div>
 
   <div class="alerts-pop" id="statusPop" hidden>
@@ -608,7 +609,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var f={type:store.get("f_type","all"),cat:store.get("f_cat","all"),status:store.get("f_status","all"),
     band:store.get("f_band","all"),ll:store.get("f_ll",false),sr:store.get("f_sr",false),
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
-  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false)};
+  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false),keepWatching:store.get("keepWatching",false)};
   settings.thresh=snap5(settings.thresh);
   var lastUpdated=null,nextRefreshAt=0,timer=null;
 
@@ -618,7 +619,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
   $("dir").value=settings.dir;$("thresh").innerHTML=threshOptions(settings.thresh);
   $("type").value=f.type;$("cat").value=f.cat;$("status").value=f.status;$("band").value=f.band;$("sort").value=f.sort;
-  setOn($("scopeToggle"),settings.all);setOn($("notifToggle"),settings.notif&&notifGranted());
+  setOn($("scopeToggle"),settings.all);setOn($("notifToggle"),settings.notif&&notifGranted());setOn($("keepWatchToggle"),settings.keepWatching);
   setOn($("llChip"),f.ll);setOn($("srChip"),f.sr);setOn($("watchChip"),f.watched);
   function notifGranted(){return typeof Notification!=="undefined"&&Notification.permission==="granted";}
   function setOn(el,on){el.classList[on?"add":"remove"]("on");}
@@ -734,6 +735,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   bindChip("watchChip","f_watched",function(v){f.watched=v;});
   $("clearF").addEventListener("click",clearFilters);
   $("scopeToggle").addEventListener("click",function(){settings.all=!settings.all;store.set("all",settings.all);setOn(this,settings.all);resetAlerts();render();});
+  $("keepWatchToggle").addEventListener("click",function(){settings.keepWatching=!settings.keepWatching;store.set("keepWatching",settings.keepWatching);setOn(this,settings.keepWatching);});
   $("notifToggle").addEventListener("click",function(){
     var self=this;
     /* turn OFF */
@@ -870,17 +872,21 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(resolved[id]&&cur==="DOWN"){
         delete resolved[id];delete watch[id];store.set("watch",Object.keys(watch));saveResolved();updateAlertBadge();
       }
+      /* a watched ride that just went down auto-arms its back-up alert (so you're told when it returns) */
+      if(watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;saveReopen();}
       /* reopen alert: fire once when a watched, reopen-flagged ride flips from broken (DOWN) back to operating */
       if(watch[id]&&reopen[id]&&prevStatus[id]==="DOWN"&&cur==="OPERATING"){
         fireReopen(r);delete reopen[id];delete alertState[id];
-        /* the back-up ping was the point: park & silence it unless the user gave it a custom threshold rule */
-        if(!overrides[id]){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();saveReopenOnly();updateAlertBadge();}
+        /* after the back-up ping, park & silence unless: it has a custom rule, or "keep watching" is on (and it wasn't a pure one-shot) */
+        var park=!overrides[id]&&(reopenOnly[id]||!settings.keepWatching);
+        if(park){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();saveReopenOnly();updateAlertBadge();}
         saveReopen();
       }
       prevStatus[id]=cur;
       var eligible=(settings.all||watch[id])&&!resolved[id];var meets=ruleMet(id,lv);
       if(eligible&&meets){if(!alertState[id]){alertState[id]=true;fireAlert(r,lv);}}
-      else if(alertState[id])delete alertState[id];
+      /* one-shot: once a ride has pinged for its threshold, it won't ping again (latch stays set);
+         changing its rule, removing/re-adding it, or a back-up event re-arms it */
     });
     if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
   }
