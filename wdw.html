@@ -368,7 +368,7 @@
     display:flex;flex-direction:column;gap:11px}
   .ap-lead{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin-bottom:7px}
   .ap-default .fld{font-size:13.5px;color:var(--ink);flex-wrap:wrap;gap:8px}
-  .ap-list-head{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin:16px 2px 2px}
+  .ap-list-head{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin:16px 2px 2px;display:flex;align-items:center;gap:7px}
   .ap-list-head span{color:var(--muted)}
   .al-row{display:flex;align-items:flex-start;gap:12px;padding:16px 2px;border-top:1px solid var(--line)}
   .al-wait{flex:none;min-width:46px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:18px;
@@ -397,6 +397,19 @@
     color:var(--muted-2);cursor:pointer;font-size:13px;line-height:1;transition:.15s}
   .al-x:hover{border-color:var(--packed);color:var(--packed)}
   .al-empty{font-size:13px;color:var(--muted);padding:13px 2px}
+  .ap-list-head .ct{color:var(--muted)}
+  .ap-list-head .hd-dot{width:7px;height:7px;border-radius:50%;background:var(--muted-2);flex:none}
+  .ap-list-head.up{color:var(--short)} .ap-list-head.up .hd-dot{background:var(--short)}
+  .ap-list-head.down .hd-dot{background:var(--closed)}
+  .ap-list-head .al-clearup{margin-left:auto;font-size:11px;letter-spacing:0;text-transform:none;color:var(--muted-2);background:none;border:none;font-weight:600;cursor:pointer;font-family:var(--font-body)}
+  .ap-list-head .al-clearup:hover{color:var(--ink)}
+  .al-row.up{background:linear-gradient(90deg,rgba(21,163,107,.08),rgba(21,163,107,0));border-top-color:transparent;border-radius:11px;margin-top:4px;padding-left:12px;position:relative}
+  .al-row.up::before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--short)}
+  .up-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--short);background:rgba(21,163,107,.1);border:1px solid rgba(21,163,107,.25);padding:2px 9px;border-radius:99px;margin-left:7px;vertical-align:1px}
+  .al-sub{font-size:12px;color:var(--muted);margin-top:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .al-sub b{color:var(--ink);font-weight:600} .al-sub .mut{color:var(--muted-2)}
+  .gotit{flex:none;align-self:flex-start;background:var(--short);border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:99px;font-family:var(--font-body)}
+  .gotit:active{transform:translateY(1px)}
   .u{color:var(--muted);font-size:12.5px}
   .icon-btn{position:relative}
   .icon-btn .badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:99px;
@@ -452,7 +465,6 @@
       </div>
       <div class="toggle" id="scopeToggle"><span class="switch"></span><span>Apply to all rides</span></div>
     </div>
-    <div class="ap-list-head">Watched rides <span id="watchCount"></span></div>
     <div id="alertList"></div>
     <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride alerts once when it
       crosses the threshold and resets when it crosses back — keep this page open to keep checking.</div>
@@ -588,6 +600,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   Object.keys(overrides).forEach(function(id){if(overrides[id]&&typeof overrides[id].thresh==="number")overrides[id].thresh=snap5(overrides[id].thresh);});
   var reopen=store.get("reopen",{})||{};   /* ride ids flagged "tell me when it's back up" */
   var reopenOnly=store.get("reopenOnly",{})||{}; /* watches created solely by "Notify me" -> auto-remove after the back-up alert */
+  var resolved=store.get("resolved",{})||{};     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
+  var BACKUP_FADE_MS=3*60*60*1000;               /* (parked) auto-fade window for back-up rows — currently off; re-add to the clear check to enable */
   var prevStatus={};                        /* last-seen status per ride (in-memory, for transition detection) */
   var alertState={};
   var expanded=null;
@@ -852,14 +866,18 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     Object.keys(roster).forEach(function(id){
       var r=roster[id];if(r.kind!=="ride")return;var lv=liveById[id];if(!lv)return;
       var cur=lv.status;
+      /* a parked "Back up" row clears only if the ride breaks again; otherwise it waits for you to clear it */
+      if(resolved[id]&&cur==="DOWN"){
+        delete resolved[id];delete watch[id];store.set("watch",Object.keys(watch));saveResolved();updateAlertBadge();
+      }
       /* reopen alert: fire once when a watched, reopen-flagged ride flips from broken (DOWN) back to operating */
       if(watch[id]&&reopen[id]&&prevStatus[id]==="DOWN"&&cur==="OPERATING"){
         fireReopen(r);delete reopen[id];delete alertState[id];
-        if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];store.set("watch",Object.keys(watch));updateAlertBadge();}
+        if(reopenOnly[id]){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();updateAlertBadge();}
         saveReopen();saveReopenOnly();
       }
       prevStatus[id]=cur;
-      var eligible=settings.all||watch[id];var meets=ruleMet(id,lv);
+      var eligible=(settings.all||watch[id])&&!resolved[id];var meets=ruleMet(id,lv);
       if(eligible&&meets){if(!alertState[id]){alertState[id]=true;fireAlert(r,lv);}}
       else if(alertState[id])delete alertState[id];
     });
@@ -888,38 +906,72 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   function saveOverrides(){store.set("overrides",overrides);}
   function saveReopen(){store.set("reopen",reopen);}
   function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
+  function saveResolved(){store.set("resolved",resolved);}
   function updateAlertBadge(){var b=$("alertBadge");if(!b)return;var n=Object.keys(watch).length;b.textContent=n;b.classList.toggle("show",n>0);}
   function renderAlertList(){
     var box=$("alertList");if(!box)return;
     var ids=Object.keys(watch).filter(function(id){return roster[id];});
-    $("watchCount").textContent=ids.length?"("+ids.length+")":"";
     if(!ids.length){box.innerHTML='<div class="al-empty">No rides starred yet. Tap ☆ on any ride to watch it here.</div>';return;}
-    ids.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);});
-    box.innerHTML=ids.map(function(id){
-      var r=roster[id],lv=liveById[id],tier=tierOf(lv);
-      var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
-      var o=overrides[id],rule;
-      var down=lv&&lv.status==="DOWN";
-      if(down){
-        var on=!!reopen[id];
-        rule='<div class="al-edit-off"><button class="al-reopen'+(on?" on":"")+'" data-reopen="'+esc(id)+'">'+
-          '<span class="al-sw"></span>Notify when it reopens</button></div>';
-      }else if(o){
-        rule='<div class="al-edit-on">'+
-          '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>below</option>'+
-            '<option value="above"'+(o.dir==="above"?" selected":"")+'>above</option></select>'+
-          '<select class="al-mini al-num" data-thresh="'+esc(id)+'">'+threshOptions(o.thresh)+'</select>'+
-          '<span class="u">min</span><button class="al-link" data-default="'+esc(id)+'">Use default</button></div>';
-      }else{
-        rule='<div class="al-edit-off">Using default ('+esc(settings.dir)+' '+settings.thresh+'m) · '+
-          '<button class="al-link" data-custom="'+esc(id)+'">Customize</button></div>';
-      }
-      return '<div class="al-row">'+
-        '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
-        '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+rule+'</div>'+
-        '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
-    }).join("");
+    var backUp=[],down=[],watched=[];
+    ids.forEach(function(id){
+      var lv=liveById[id];
+      if(resolved[id])backUp.push(id);
+      else if(lv&&lv.status==="DOWN")down.push(id);
+      else watched.push(id);
+    });
+    var byName=function(a,b){return roster[a].name.localeCompare(roster[b].name);};
+    backUp.sort(function(a,b){return (resolved[b]||0)-(resolved[a]||0);}); /* most recent first */
+    down.sort(byName);watched.sort(byName);
+    var html="";
+    if(backUp.length){
+      html+='<div class="ap-list-head up"><span class="hd-dot"></span>Back up <span class="ct">('+backUp.length+')</span>'+
+        '<button class="al-clearup" data-clearup="1">Clear</button></div>'+backUp.map(rowBackUp).join("");
+    }
+    if(down.length){
+      html+='<div class="ap-list-head down"><span class="hd-dot"></span>Down <span class="ct">('+down.length+')</span></div>'+down.map(rowDown).join("");
+    }
+    if(watched.length){
+      html+='<div class="ap-list-head">Watched rides <span class="ct">('+watched.length+')</span></div>'+watched.map(rowWatched).join("");
+    }
+    box.innerHTML=html;
     bindAlertList(box);
+  }
+  function rowBackUp(id){
+    var r=roster[id],lv=liveById[id],tier=tierOf(lv);
+    var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
+    var t=fmtClock(resolved[id]);
+    return '<div class="al-row up">'+
+      '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
+      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span><span class="up-pill">✓ Back up</span></div>'+
+        '<div class="al-sub">'+(t?'Came back <b>'+t+'</b><span class="mut">·</span>':'')+'<span class="mut">no more alerts</span></div></div>'+
+      '<button class="gotit" data-gotit="'+esc(id)+'">Got it</button></div>';
+  }
+  function rowDown(id){
+    var r=roster[id];
+    return '<div class="al-row">'+
+      '<div class="al-wait closed"><small>Down</small></div>'+
+      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+
+        '<div class="al-edit-off"><button class="al-reopen'+(reopen[id]?" on":"")+'" data-reopen="'+esc(id)+'"><span class="al-sw"></span>Notify when it reopens</button></div></div>'+
+      '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
+  }
+  function rowWatched(id){
+    var r=roster[id],lv=liveById[id],tier=tierOf(lv);
+    var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
+    var o=overrides[id],rule;
+    if(o){
+      rule='<div class="al-edit-on">'+
+        '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>below</option>'+
+          '<option value="above"'+(o.dir==="above"?" selected":"")+'>above</option></select>'+
+        '<select class="al-mini al-num" data-thresh="'+esc(id)+'">'+threshOptions(o.thresh)+'</select>'+
+        '<span class="u">min</span><button class="al-link" data-default="'+esc(id)+'">Use default</button></div>';
+    }else{
+      rule='<div class="al-edit-off">Using default ('+esc(settings.dir)+' '+settings.thresh+'m) · '+
+        '<button class="al-link" data-custom="'+esc(id)+'">Customize</button></div>';
+    }
+    return '<div class="al-row">'+
+      '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
+      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+rule+'</div>'+
+      '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
   }
   function bindAlertList(box){
     function each(sel,ev,fn){Array.prototype.forEach.call(box.querySelectorAll(sel),function(el){el.addEventListener(ev,function(){fn(el);});});}
@@ -928,11 +980,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     each("[data-dir]","change",function(el){var id=el.getAttribute("data-dir");if(overrides[id]){overrides[id].dir=el.value;saveOverrides();delete alertState[id];}});
     each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];}});
     each("[data-reopen]","click",function(el){var id=el.getAttribute("data-reopen");
-      if(reopen[id])delete reopen[id];
+      if(reopen[id]){delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];store.set("watch",Object.keys(watch));saveReopenOnly();updateAlertBadge();}}
       else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
       saveReopen();renderAlertList();});
-    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete alertState[id];
-      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();updateAlertBadge();renderAlertList();render();});
+    each("[data-gotit]","click",function(el){var id=el.getAttribute("data-gotit");
+      delete watch[id];delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];
+      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();updateAlertBadge();renderAlertList();render();});
+    each("[data-clearup]","click",function(){Object.keys(resolved).forEach(function(id){
+        delete watch[id];delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];});
+      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();updateAlertBadge();renderAlertList();render();});
+    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete resolved[id];delete alertState[id];
+      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();saveResolved();updateAlertBadge();renderAlertList();render();});
   }
 
   /* ---- stats helpers ---- */
