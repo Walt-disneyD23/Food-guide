@@ -1421,8 +1421,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var bl=na?14:Math.max(14,(p.avg/maxAvg)*trackW);
         rr(barX0,cyb-barH-2,bl,barH,11);ctx.fillStyle=na?"rgba(255,255,255,0.14)":p.tier;ctx.fill();
         if(na)Tx("\u2014",R,cyb,SG("600",30),C.muted,"right");
-        else{ctx.font=SG("600",30);ctx.fillStyle=C.ink;ctx.textAlign="right";ctx.textBaseline="alphabetic";ctx.fillText(String(p.avg),R,cyb);
-          var vw=ctx.measureText(String(p.avg)).width;Tx("m",R-vw,cyb,IN("500",20),C.muted,"left");}
+        else{var ns=String(p.avg);ctx.font=SG("600",30);var nW=ctx.measureText(ns).width;ctx.font=IN("500",20);var mW=ctx.measureText("m").width;var sx=R-nW-4-mW;
+          Tx(ns,sx,cyb,SG("600",30),C.ink,"left");Tx("m",sx+nW+4,cyb,IN("500",20),C.muted,"left");}
       }
 
       Tx("PARK HOURS TODAY",L,752,IN("600",24),C.muted2);
