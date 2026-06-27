@@ -671,10 +671,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Watching":"Notify me")+'</button>'+
       '</div>';}).join("");
     cov.innerHTML=head+'<span class="dn-trigger" id="dnTrigger">'+n+' ride'+(n===1?"":"s")+
-      ' down right now <span class="chev">▾</span></span><div class="dn-list" id="dnList">'+rows+'</div>';
+      ' down right now <span class="chev">▾</span></span><div class="dn-list" id="dnList">'+rows+'</div>'+
+      '<button type="button" id="dnShare" style="display:none;width:100%;margin-top:10px;font:600 13px/1 Inter,system-ui,sans-serif;color:#06140e;background:#3dd68c;border:none;border-radius:12px;padding:11px;cursor:pointer">Share what\'s down</button>';
     var t=$("dnTrigger");
     if(t)t.addEventListener("click",function(){
-      var open=$("dnList").classList.toggle("open");t.classList.toggle("open",open);});
+      var open=$("dnList").classList.toggle("open");t.classList.toggle("open",open);
+      var sh=$("dnShare");if(sh)sh.style.display=open?"block":"none";});
+    var dsh=$("dnShare");
+    if(dsh)dsh.addEventListener("click",function(){shareDownNow();});
     Array.prototype.forEach.call(cov.querySelectorAll("[data-watch]"),function(btn){
       btn.addEventListener("click",function(){
         var id=btn.getAttribute("data-watch"),on=!reopen[id];
@@ -1168,9 +1172,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       list.forEach(function(o){groups[groupOf(o)].push(o);});
       body=[{k:"waits",l:"Wait Times"},{k:"down",l:"Down or Closed"},{k:"other",l:"Shows &amp; Experiences"}]
         .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
-          var dshare=(sec.k==="down"&&!usingFallback&&g.some(function(o){return o.lv&&o.lv.status==="DOWN";}))
-            ?'<button type="button" class="downsharebtn" style="float:right;font:600 11px/1 Inter,system-ui,sans-serif;color:#e23b54;background:rgba(226,59,84,0.10);border:1px solid rgba(226,59,84,0.28);border-radius:999px;padding:6px 12px;cursor:pointer">Share what\'s down</button>':"";
-          return '<div class="grp-head">'+sec.l+' <span>'+g.length+'</span>'+dshare+'</div>'+
+          return '<div class="grp-head">'+sec.l+' <span>'+g.length+'</span></div>'+
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
@@ -1181,8 +1183,6 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     bindStars(el);
     var _sb=el.querySelector(".sharebtn");
     if(_sb)_sb.addEventListener("click",function(){shareCardSnapshot(key);});
-    var _db=el.querySelector(".downsharebtn");
-    if(_db)_db.addEventListener("click",function(){shareDownNow(key);});
     Array.prototype.forEach.call(el.querySelectorAll(".spread [data-band]"),function(seg){
       seg.addEventListener("click",function(){
         var band=seg.getAttribute("data-band");
@@ -1460,50 +1460,53 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
   }
 
-  /* ---- Shareable "Down Now" card: lists every attraction currently DOWN,
-     shared from the Down or Closed group. Self-sizing height. ---- */
-  function shareDownNow(key){
+  /* ---- Shareable "Down Now" card: resort-wide, grouped by park (worst first).
+     Shared from the Live status card's down list. Self-sizing height. ---- */
+  function shareDownNow(){
     var time=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});
-    var all=(key==="all"),list=[];
+    var byPark={};
     Object.keys(roster).forEach(function(id){
       var r=roster[id],lv=liveById[id];
-      if(!r||!lv||r.kind!=="ride")return;
-      if(!all&&r.park!==key)return;
-      if(lv.status==="DOWN")list.push({name:r.name,park:r.park});
+      if(!r||!lv||r.kind!=="ride"||lv.status!=="DOWN")return;
+      (byPark[r.park]=byPark[r.park]||[]).push(r.name);
     });
-    list.sort(function(a,b){return (all&&a.park!==b.park)?a.park.localeCompare(b.park):a.name.localeCompare(b.name);});
-    var d={time:time,title:all?"All Parks":key,all:all,down:list,link:"parkpulse.app"};
+    var groups=Object.keys(byPark).map(function(pk){
+      return {park:pk,rides:byPark[pk].sort(function(a,b){return a.localeCompare(b);})};
+    });
+    groups.sort(function(a,b){return (b.rides.length-a.rides.length)||a.park.localeCompare(b.park);});
+    var count=groups.reduce(function(a,g){return a+g.rides.length;},0);
+    if(!count){if(typeof pushToast==="function")pushToast("Nothing's down","All attractions are running right now");return;}
+    var d={time:time,count:count,parksAffected:groups.length,groups:groups,link:"parkpulse.app"};
 
-    var W=1080,L=94,R=986,CW=R-L,INSET=36,ROW=64,FIRST=372,FOOT_GAP=40,FOOT_H=90;
-    var n=d.down.length;
-    var H=n>0?(FIRST+(n-1)*ROW+26+FOOT_GAP+FOOT_H+INSET):560;
+    var W=1080,L=94,R=986,CW=R-L,INSET=36;
+    var sectionsH=groups.reduce(function(a,g){return a+62+g.rides.length*56+26;},0);
+    var H=362+sectionsH+148;
 
     var cv=document.createElement("canvas");cv.width=W;cv.height=H;
     var ctx=cv.getContext("2d");
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
-      drawDown(ctx,d);
+      drawDownGrouped(ctx,d);
       cv.toBlob(function(blob){
         if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var fname="parkpulse-down-"+(all?"all":key.toLowerCase().replace(/[^a-z0-9]+/g,"-"))+".png";
-        var file=new File([blob],fname,{type:"image/png"});
+        var file=new File([blob],"parkpulse-down.png",{type:"image/png"});
         if(navigator.canShare&&navigator.canShare({files:[file]})){
           navigator.share({files:[file],title:"ParkPulse \u2014 Down right now"}).catch(function(){});
         }else{
-          var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;
+          var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="parkpulse-down.png";
           document.body.appendChild(a);a.click();a.remove();
           if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");
         }
       },"image/png");
     });
 
-    function drawDown(ctx,d){
+    function drawDownGrouped(ctx,d){
       var C={ink:"#eaf3f2",muted:"#7d97a1",muted2:"#5f7882",green:"#3dd68c",red:"#ff6b6b",line:"rgba(255,255,255,0.09)"};
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
       function Tx(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
-      function SG(w,sz){return w+" "+sz+'px "Space Grotesk",sans-serif';}
-      function IN(w,sz){return w+" "+sz+'px "Inter",sans-serif';}
-      function hexA(hex,al){var n=parseInt(hex.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+al+")";}
+      function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
+      function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+      function hexA(h,a){var n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
       function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
 
       ctx.clearRect(0,0,W,H);
@@ -1522,47 +1525,33 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       ctx.fillStyle=C.green;ctx.fillText("Pulse",L+pw,120);
       ctx.font=IN("500",27);ctx.textAlign="right";ctx.fillStyle=C.muted;ctx.fillText("Live \u00b7 "+d.time,R,116);
       var lw=ctx.measureText("Live \u00b7 "+d.time).width;ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(R-lw-18,107,8,0,7);ctx.fill();
-      Tx(ell(d.title,CW,SG("600",62)),L,202,SG("600",62),C.ink);
+      Tx("Down Right Now",L,200,SG("600",58),C.ink);
 
-      var n=d.down.length,i;
-      if(n>0){
-        var chY=242,chH=58;ctx.font=IN("600",28);
-        var ct=n+(n===1?" attraction down right now":" attractions down right now"),ctw=ctx.measureText(ct).width;
-        rr(L,chY,ctw+78,chH,29);ctx.fillStyle=hexA(C.red,.13);ctx.fill();
-        ctx.beginPath();ctx.arc(L+34,chY+chH/2,9,0,7);ctx.fillStyle=C.red;ctx.fill();
-        Tx(ct,L+56,chY+chH/2+1,IN("600",28),C.red,"left","middle");
+      var chY=236,chH=56;var ct=d.count+(d.count===1?" attraction":" attractions")+" down \u00b7 "+d.parksAffected+(d.parksAffected===1?" park":" parks");
+      ctx.font=IN("600",27);var ctw=ctx.measureText(ct).width;
+      rr(L,chY,ctw+78,chH,28);ctx.fillStyle=hexA(C.red,.13);ctx.fill();
+      ctx.beginPath();ctx.arc(L+34,chY+chH/2,9,0,7);ctx.fillStyle=C.red;ctx.fill();
+      Tx(ct,L+56,chY+chH/2+1,IN("600",27),C.red,"left","middle");
 
-        for(i=0;i<n;i++){
-          var it=d.down[i],ry=FIRST+i*ROW;
-          ctx.beginPath();ctx.arc(L+9,ry-9,9,0,7);ctx.fillStyle=C.red;ctx.fill();
-          ctx.font=IN("700",18);var pwd=ctx.measureText("DOWN").width,pwid=pwd+24,px=R-pwid,py=ry-30,ph=34;
-          rr(px,py,pwid,ph,17);ctx.fillStyle=hexA(C.red,.14);ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle=hexA(C.red,.34);ctx.stroke();
-          Tx("DOWN",px+pwid/2,py+ph/2,IN("700",18),C.red,"center","middle");
-          var nameX=L+34,maxW=px-18-nameX;
-          if(d.all){
-            var ps=" \u00b7 "+it.park;ctx.font=IN("500",24);var psw=ctx.measureText(ps).width;
-            var nm=ell(it.name,maxW-psw,IN("600",30));
-            Tx(nm,nameX,ry,IN("600",30),C.ink,"left");
-            ctx.font=IN("600",30);var nmw=ctx.measureText(nm).width;
-            Tx(ps,nameX+nmw,ry,IN("500",24),C.muted,"left");
-          }else Tx(ell(it.name,maxW,IN("600",30)),nameX,ry,IN("600",30),C.ink,"left");
-        }
-        var fy=FIRST+(n-1)*ROW+26+FOOT_GAP;
-        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-        Tx("Down = temporarily unavailable",L,fy+42,IN("500",21),C.muted2);
-        Tx(d.link,R,fy+34,IN("600",25),C.green,"right");
-        Tx("Data: ThemeParks.wiki",R,fy+62,IN("500",20),C.muted2,"right");
-      }else{
-        var ay=300;
-        ctx.beginPath();ctx.arc(L+16,ay-12,16,0,7);ctx.fillStyle=C.green;ctx.fill();
-        Tx("All clear",L+46,ay,SG("700",54),C.green);
-        Tx("Every attraction is up and running right now.",L,ay+56,IN("500",29),C.muted);
-        var fy2=ay+150;
-        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy2);ctx.lineTo(R,fy2);ctx.stroke();
-        Tx("Live ride status",L,fy2+42,IN("500",21),C.muted2);
-        Tx(d.link,R,fy2+34,IN("600",25),C.green,"right");
-        Tx("Data: ThemeParks.wiki",R,fy2+62,IN("500",20),C.muted2,"right");
-      }
+      var y=362;
+      d.groups.forEach(function(grp){
+        Tx(grp.park,L,y,SG("600",38),C.ink);
+        Tx(grp.rides.length+" down",R,y-4,IN("600",24),C.muted,"right");
+        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+20);ctx.lineTo(R,y+20);ctx.stroke();
+        y+=62;
+        grp.rides.forEach(function(nm){
+          ctx.beginPath();ctx.arc(L+9,y-9,8,0,7);ctx.fillStyle=C.red;ctx.fill();
+          Tx(ell(nm,R-(L+34),IN("500",30)),L+34,y,IN("500",30),C.ink);
+          y+=56;
+        });
+        y+=26;
+      });
+
+      var fy=y+10;
+      ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
+      Tx("Down = temporarily unavailable",L,fy+42,IN("500",21),C.muted2);
+      Tx(d.link,R,fy+34,IN("600",25),C.green,"right");
+      Tx("Data: ThemeParks.wiki",R,fy+62,IN("500",20),C.muted2,"right");
       ctx.restore();
     }
   }
