@@ -805,7 +805,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           return s!==op && s.type!=="OPERATING" && s.openingTime && s.closingTime;});
         parkInfo[p.short]={
           open:op?op.openingTime:null, close:op?op.closingTime:null,
-          extras:extras.map(function(e){return {desc:shortExtra(e),open:e.openingTime,close:e.closingTime};})
+          extras:extras.map(function(e){return {desc:shortExtra(e),name:((e&&e.description)||"").toString(),open:e.openingTime,close:e.closingTime};})
         };
       }).catch(function(){});
     }));
@@ -1172,7 +1172,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
-    var shareHTML=(!usingFallback&&key!=="all")?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 13px/1 Inter,system-ui,sans-serif;color:#06140e;background:#3dd68c;border:none;border-radius:999px;padding:10px 16px;cursor:pointer">Share this card</button></div>':"";
+    var shareHTML=(!usingFallback)?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 13px/1 Inter,system-ui,sans-serif;color:#06140e;background:#3dd68c;border:none;border-radius:999px;padding:10px 16px;cursor:pointer">Share this card</button></div>':"";
     el.innerHTML='<div class="pstats">'+stats+'</div>'+hoursRow+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
@@ -1194,7 +1194,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
      data onto a 1080x1080 PNG and hands it to the share sheet (download fallback).
      Self-contained so it can't collide with other helpers. ---- */
   function shareCardSnapshot(key){
-    if(key==="all")return; /* all-parks hub card is a separate, later build */
+    if(key==="all"){shareCardAllParks();return;}
     var s=bannerStats(key);
     var info=parkInfo[key];
     var tier=s.crowd?s.crowd.color:"#7d97a1";
@@ -1316,6 +1316,142 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       T("Crowd is an estimate from live wait times",L,fy+42,IN("500",21),C.muted2);
       T(d.link,R,fy+34,IN("600",25),C.green,"right");
       T("Data: ThemeParks.wiki",R,fy+62,IN("500",20),C.muted2,"right");
+      ctx.restore();
+    }
+  }
+
+  /* ---- Shareable All-Parks hub card (portrait, self-sizing height). Same canvas
+     pipeline as the square snapshot; pulls live data for all four parks. ---- */
+  function shareCardAllParks(){
+    var time=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});
+    var parks4=PARK_DEF.map(function(p){
+      var st=bannerStats(p.key),info=parkInfo[p.key],openNow=isOpenNow(info)===true;
+      return {name:p.key,avg:st.avg,tier:st.crowd?st.crowd.color:"#7d97a1",
+        hours:(info&&info.open&&info.close)?(fmtClock(info.open)+" \u2013 "+fmtClock(info.close)):(openNow?"Open":"Closed"),
+        extras:(info&&info.extras)?info.extras:[]};
+    });
+    var withData=parks4.filter(function(p){return p.avg!=null;});
+    var calmest=withData.length?withData.reduce(function(a,b){return b.avg<a.avg?b:a;}).name:null;
+    var events=[],hasEarly=false;
+    parks4.forEach(function(p){
+      p.extras.forEach(function(e){
+        if(/early entry/i.test(e.desc)){hasEarly=true;return;}
+        if(/extended evening|extra magic/i.test(e.desc))
+          events.push({tag:"EVENING",text:p.name+" \u00b7 "+fmtClock(e.open)+" \u2013 "+fmtClock(e.close)});
+        else{var nm=(e.name&&e.name.trim())?e.name.trim():e.desc;
+          events.push({tag:"EVENT",text:nm+" \u00b7 "+p.name+" \u00b7 "+fmtClock(e.open)});}
+      });
+    });
+    if(hasEarly)events.unshift({tag:"EARLY",text:"All parks \u00b7 30 min before open"});
+    if(!events.length)events.push({tag:"",text:"No extra hours or ticketed events today"});
+
+    var d={time:time,calmest:calmest||"\u2014",parks:parks4,events:events,link:"parkpulse.app"};
+    var W=1080,L=94,R=986,CW=R-L;
+    var EVENTS_TOP=1000,EV_HEAD=70,EV_ROW=52,EV_PAD=24,FOOT_GAP=50,FOOT_H=90,INSET=36;
+    var H=EVENTS_TOP+EV_HEAD+d.events.length*EV_ROW+EV_PAD+FOOT_GAP+FOOT_H+INSET;
+
+    var cv=document.createElement("canvas");cv.width=W;cv.height=H;
+    var ctx=cv.getContext("2d");
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      drawHub(ctx,d);
+      cv.toBlob(function(blob){
+        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+        var file=new File([blob],"parkpulse-all-parks.png",{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          navigator.share({files:[file],title:"ParkPulse \u2014 All Parks"}).catch(function(){});
+        }else{
+          var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="parkpulse-all-parks.png";
+          document.body.appendChild(a);a.click();a.remove();
+          if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");
+        }
+      },"image/png");
+    });
+
+    function drawHub(ctx,d){
+      var C={ink:"#eaf3f2",muted:"#7d97a1",muted2:"#5f7882",green:"#3dd68c",violet:"#b69cff",line:"rgba(255,255,255,0.09)"};
+      function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+      function Tx(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
+      function SG(w,sz){return w+" "+sz+'px "Space Grotesk",sans-serif';}
+      function IN(w,sz){return w+" "+sz+'px "Inter",sans-serif';}
+      function hexA(hex,al){var n=parseInt(hex.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+al+")";}
+      function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+
+      ctx.clearRect(0,0,W,H);
+      var cx=INSET,cy=INSET,cw=W-INSET*2,ch=H-INSET*2;
+      rr(cx,cy,cw,ch,72);ctx.save();ctx.clip();
+      var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#0f2933");g.addColorStop(.58,"#0a1820");g.addColorStop(1,"#081219");
+      ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+      var gl=ctx.createRadialGradient(W/2,cy-40,40,W/2,cy-40,cw*0.8);gl.addColorStop(0,"rgba(15,174,115,0.12)");gl.addColorStop(1,"rgba(15,174,115,0)");
+      ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
+      ctx.strokeStyle="rgba(255,255,255,0.028)";ctx.lineWidth=1;var gx,gy;
+      for(gx=cx;gx<=cx+cw;gx+=94){ctx.beginPath();ctx.moveTo(gx,cy);ctx.lineTo(gx,cy+ch);ctx.stroke();}
+      for(gy=cy;gy<=cy+ch;gy+=94){ctx.beginPath();ctx.moveTo(cx,gy);ctx.lineTo(cx+cw,gy);ctx.stroke();}
+
+      ctx.font=SG("700",46);ctx.textAlign="left";ctx.textBaseline="alphabetic";
+      ctx.fillStyle=C.ink;ctx.fillText("Park",L,120);var pw=ctx.measureText("Park").width;
+      ctx.fillStyle=C.green;ctx.fillText("Pulse",L+pw,120);
+      ctx.font=IN("500",27);ctx.textAlign="right";ctx.fillStyle=C.muted;ctx.fillText("Live \u00b7 "+d.time,R,116);
+      var lw=ctx.measureText("Live \u00b7 "+d.time).width;ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(R-lw-18,107,8,0,7);ctx.fill();
+      Tx("All Parks",L,202,SG("600",62),C.ink);
+
+      var pts=[[0,52],[150,52],[168,52],[180,26],[196,78],[212,8],[228,78],[244,52],[380,52],[398,52],[410,26],[426,78],[442,8],[458,78],[474,52],[600,52]];
+      var pY=236,pH=72,i;function mx(x){return L+(x/600)*CW;}function my(y){return pY+(y/90)*pH;}
+      var pg=ctx.createLinearGradient(L,0,R,0);pg.addColorStop(0,"#3dd68c");pg.addColorStop(.5,"#f5b544");pg.addColorStop(1,"#ff6b6b");
+      ctx.save();ctx.shadowColor="rgba(245,181,68,0.5)";ctx.shadowBlur=12;
+      ctx.beginPath();ctx.moveTo(mx(pts[0][0]),my(pts[0][1]));for(i=0;i<pts.length;i++)ctx.lineTo(mx(pts[i][0]),my(pts[i][1]));
+      ctx.strokeStyle=pg;ctx.lineWidth=7;ctx.lineJoin="round";ctx.lineCap="round";ctx.stroke();ctx.restore();
+
+      var chY=320,chH=56;ctx.font=IN("600",27);
+      var ctxt="Calmest now \u00b7 "+d.calmest,ctw=ctx.measureText(ctxt).width;
+      rr(L,chY,ctw+78,chH,28);ctx.fillStyle=hexA(C.green,.13);ctx.fill();
+      ctx.beginPath();ctx.arc(L+34,chY+chH/2,9,0,7);ctx.fillStyle=C.green;ctx.fill();
+      Tx(ctxt,L+56,chY+chH/2+1,IN("600",27),C.green,"left","middle");
+
+      Tx("AVG WAIT BY PARK",L,446,IN("600",24),C.muted2);
+      var sorted=d.parks.slice().sort(function(a,b){var av=(a.avg==null?1e9:a.avg),bv=(b.avg==null?1e9:b.avg);return av-bv;});
+      var avgs=d.parks.map(function(p){return p.avg;}).filter(function(v){return v!=null;});
+      var maxAvg=avgs.length?Math.max.apply(null,avgs):1;
+      var nameX=L+26,barX0=L+312,barX1=R-86,trackW=barX1-barX0,barH=22;
+      for(i=0;i<sorted.length;i++){
+        var p=sorted[i],cyb=486+i*60,calm=(p.name===d.calmest),na=(p.avg==null);
+        if(calm){ctx.beginPath();ctx.arc(L+9,cyb-9,9,0,7);ctx.fillStyle=C.green;ctx.fill();}
+        Tx(ell(p.name,barX0-nameX-16,IN("600",28)),nameX,cyb,IN("600",28),calm?C.green:C.ink,"left","alphabetic");
+        rr(barX0,cyb-barH-2,trackW,barH,11);ctx.fillStyle="rgba(255,255,255,0.06)";ctx.fill();
+        var bl=na?14:Math.max(14,(p.avg/maxAvg)*trackW);
+        rr(barX0,cyb-barH-2,bl,barH,11);ctx.fillStyle=na?"rgba(255,255,255,0.14)":p.tier;ctx.fill();
+        if(na)Tx("\u2014",R,cyb,SG("600",30),C.muted,"right");
+        else{ctx.font=SG("600",30);ctx.fillStyle=C.ink;ctx.textAlign="right";ctx.textBaseline="alphabetic";ctx.fillText(String(p.avg),R,cyb);
+          var vw=ctx.measureText(String(p.avg)).width;Tx("m",R-vw,cyb,IN("500",20),C.muted,"left");}
+      }
+
+      Tx("PARK HOURS TODAY",L,752,IN("600",24),C.muted2);
+      var colW=(CW-44)/2,col2=L+colW+44;
+      for(i=0;i<d.parks.length;i++){
+        var hp=d.parks[i],col=(i%2===0)?L:col2,rowY=(i<2)?790:888;
+        Tx(ell(hp.name,colW,IN("600",25)),col,rowY,IN("600",25),C.muted,"left");
+        Tx(hp.hours,col,rowY+38,SG("600",30),C.ink,"left");
+      }
+
+      var boxY=EVENTS_TOP,boxH=EV_HEAD+d.events.length*EV_ROW+EV_PAD;
+      rr(L,boxY,CW,boxH,26);ctx.fillStyle=hexA(C.violet,.08);ctx.fill();
+      ctx.lineWidth=1.5;ctx.strokeStyle=hexA(C.violet,.22);ctx.stroke();
+      Tx("Extra hours & events",L+34,boxY+46,SG("600",30),C.violet);
+      var pillW=108,pillH=34,rowY0=boxY+EV_HEAD+18,textX=L+34+pillW+22;
+      for(i=0;i<d.events.length;i++){
+        var ev=d.events[i],ry=rowY0+i*EV_ROW;
+        if(ev.tag){
+          rr(L+34,ry-pillH+4,pillW,pillH,17);ctx.fillStyle=hexA(C.violet,.16);ctx.fill();
+          Tx(ev.tag,L+34+pillW/2,ry-pillH/2+5,IN("700",17),C.violet,"center","middle");
+          Tx(ell(ev.text,R-34-textX,IN("500",28)),textX,ry,IN("500",28),C.ink,"left");
+        }else Tx(ell(ev.text,R-34-(L+34),IN("500",28)),L+34,ry,IN("500",28),C.muted,"left");
+      }
+
+      var fy=boxY+boxH+FOOT_GAP;
+      ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
+      Tx("Crowd is an estimate from live wait times",L,fy+42,IN("500",21),C.muted2);
+      Tx(d.link,R,fy+34,IN("600",25),C.green,"right");
+      Tx("Data: ThemeParks.wiki",R,fy+62,IN("500",20),C.muted2,"right");
       ctx.restore();
     }
   }
