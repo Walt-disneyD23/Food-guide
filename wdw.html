@@ -1248,7 +1248,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       function ell(str,mw,f){ctx.font=f;if(ctx.measureText(str).width<=mw)return str;while(str.length>1&&ctx.measureText(str+"\u2026").width>mw)str=str.slice(0,-1);return str+"\u2026";}
       function num(x,y,n,unit){if(n===null||n===undefined){T("\u2014",x,y,SG("600",48),C.ink);return;}ctx.font=SG("600",48);ctx.fillStyle=C.ink;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(String(n),x,y);var nw=ctx.measureText(String(n)).width;T(unit,x+nw+8,y,IN("500",24),C.muted);}
 
-      ctx.fillStyle="#07121a";ctx.fillRect(0,0,W,H);
+      ctx.clearRect(0,0,W,H); /* transparent margin: the rounded card floats, no square box behind it on any background */
       var cx=36,cy=36,cw=W-72,ch=H-72;
       rr(cx,cy,cw,ch,72);ctx.save();ctx.clip();
       var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#0f2933");g.addColorStop(.58,"#0a1820");g.addColorStop(1,"#081219");
