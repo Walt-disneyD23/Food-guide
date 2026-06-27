@@ -363,7 +363,7 @@
 
   /* ===== alerts hub ===== */
   .ap-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
-  .ap-title{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink);letter-spacing:-.01em}
+  .ap-title{font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--ink);letter-spacing:-.01em;display:flex;align-items:center}
   .ap-default{background:var(--card-2);border:1px solid var(--line);border-radius:13px;padding:12px 13px;
     display:flex;flex-direction:column;gap:11px}
   .ap-lead{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin-bottom:7px}
@@ -410,6 +410,38 @@
   .al-sub b{color:var(--ink);font-weight:600} .al-sub .mut{color:var(--muted-2)}
   .gotit{flex:none;align-self:flex-start;background:var(--short);border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:99px;font-family:var(--font-body)}
   .gotit:active{transform:translateY(1px)}
+  /* alerts help — info trigger + bottom sheet */
+  .ap-info{margin-left:7px;width:19px;height:19px;border-radius:50%;border:1.5px solid var(--accent);background:var(--accent-soft);color:var(--accent);display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none}
+  .ap-info svg{width:11px;height:11px}
+  .ap-info:active{transform:translateY(1px)}
+  .help-scrim{position:fixed;inset:0;background:rgba(18,20,45,.42);z-index:90;opacity:0;transition:opacity .24s ease;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+  .help-scrim.show{opacity:1}
+  .help-scrim[hidden]{display:none}
+  body.help-open{overflow:hidden}
+  .help-sheet{position:fixed;left:0;right:0;bottom:0;z-index:91;background:var(--card);border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -14px 44px rgba(20,22,50,.26);max-height:88vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
+  .help-sheet.show{transform:translateY(0)}
+  .help-sheet[hidden]{display:none}
+  .help-grab{width:38px;height:5px;border-radius:99px;background:#d7dae8;margin:4px auto 12px}
+  .help-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+  .help-title{font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--ink)}
+  .help-x{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--muted);display:grid;place-items:center;font-size:15px;cursor:pointer;flex:none}
+  .help-sec{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:18px 0 2px}
+  .help-row{padding:11px 0;border-top:1px solid var(--line)}
+  .help-sec + .help-row{border-top:none}
+  .help-rowtop{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .help-lbl{font-weight:600;font-size:14px;color:var(--ink)}
+  .help-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:5px}
+  .help-on{color:var(--ink);font-weight:600}
+  .hc-sw{width:30px;height:18px;border-radius:99px;background:var(--accent);border:1px solid var(--accent);position:relative;flex:none}
+  .hc-sw::after{content:"";position:absolute;top:2px;left:14px;width:12px;height:12px;border-radius:50%;background:#fff}
+  .hc-sw.off{background:#dfe1ee;border-color:var(--line)} .hc-sw.off::after{left:2px}
+  .hc-pill{background:var(--card);border:1px solid var(--line);border-radius:7px;padding:2px 7px;font-size:11.5px;color:var(--ink);font-weight:500}
+  .hc-min{color:var(--muted);font-size:12px}
+  .hc-link{color:var(--accent);font-weight:600;font-size:12.5px}
+  .hc-star{color:var(--accent);font-size:16px;line-height:1}
+  .hc-notify{border:1px solid var(--accent);color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:600}
+  .help-gotit{margin-top:18px;width:100%;background:var(--accent);color:#fff;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:600;font-family:var(--font-body);cursor:pointer}
+  .help-gotit:active{transform:translateY(1px)}
   .u{color:var(--muted);font-size:12.5px}
   .icon-btn{position:relative}
   .icon-btn .badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:99px;
@@ -450,7 +482,7 @@
 
   <div class="alerts-pop" id="alertsPop" hidden>
     <div class="ap-head">
-      <div class="ap-title">⚑ Alerts</div>
+      <div class="ap-title">⚑ Alerts<button class="ap-info" id="alertsInfoBtn" type="button" aria-label="How alerts work" title="How alerts work"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="1.5" fill="currentColor"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
       <div class="toggle" id="notifToggle"><span class="switch"></span><span>Notifications</span></div>
     </div>
     <div class="ap-default">
@@ -469,6 +501,32 @@
     <div id="alertList"></div>
     <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride pings once when it
       first drops past your threshold and won't ping again until you change its rule — keep this page open to keep checking.</div>
+  </div>
+
+  <div class="help-scrim" id="helpScrim" hidden></div>
+  <div class="help-sheet" id="helpSheet" role="dialog" aria-label="How alerts work" hidden>
+    <div class="help-grab"></div>
+    <div class="help-h"><div class="help-title">How alerts work</div><button class="help-x" type="button" data-help-close aria-label="Close">✕</button></div>
+
+    <div class="help-sec">The switches</div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Notifications</span><span class="hc-sw"></span></div>
+      <div class="help-desc">Master on/off for phone alerts. Off means total silence.</div></div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Apply to all rides</span><span class="hc-sw off"></span></div>
+      <div class="help-desc">Uses your default rule for every ride in the parks, not just the ones you've starred. Can get chatty.</div></div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Keep watching after a back-up</span><span class="hc-sw off"></span></div>
+      <div class="help-desc">When a ride you're watching unexpectedly goes down, you always get one “it's back up” ping when it returns. This sets what happens next — <span class="help-on">off:</span> it goes quiet; <span class="help-on">on:</span> it keeps watching and can ping again if the wait drops under your threshold.</div></div>
+
+    <div class="help-sec">Setting your alerts</div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Default rule</span><span class="hc-pill">below</span><span class="hc-pill">30</span><span class="hc-min">min</span></div>
+      <div class="help-desc">Your baseline — ping me when a wait drops below (or rises above) the minutes you choose. Every starred ride uses this unless you give it its own.</div></div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Custom rule</span><span class="hc-link">Customize</span></div>
+      <div class="help-desc">Tap Customize on any ride to give just that ride its own number.</div></div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Star a ride</span><span class="hc-star">★</span></div>
+      <div class="help-desc">Tap the star on any ride to watch it. It pings once when the wait first crosses your rule, then stays quiet.</div></div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Notify me</span><span class="hc-notify">Notify me</span></div>
+      <div class="help-desc">On a ride that's down, get a single ping the moment it reopens — then it's done.</div></div>
+
+    <button class="help-gotit" type="button" data-help-close>Got it</button>
   </div>
 
   <div class="alerts-pop" id="statusPop" hidden>
@@ -736,6 +794,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   $("clearF").addEventListener("click",clearFilters);
   $("scopeToggle").addEventListener("click",function(){settings.all=!settings.all;store.set("all",settings.all);setOn(this,settings.all);resetAlerts();render();});
   $("keepWatchToggle").addEventListener("click",function(){settings.keepWatching=!settings.keepWatching;store.set("keepWatching",settings.keepWatching);setOn(this,settings.keepWatching);});
+  (function(){var ib=$("alertsInfoBtn"),sc=$("helpScrim"),sh=$("helpSheet");if(!ib||!sc||!sh)return;
+    function openHelp(){sc.removeAttribute("hidden");sh.removeAttribute("hidden");document.body.classList.add("help-open");requestAnimationFrame(function(){sc.classList.add("show");sh.classList.add("show");});}
+    function closeHelp(){sc.classList.remove("show");sh.classList.remove("show");document.body.classList.remove("help-open");setTimeout(function(){sc.setAttribute("hidden","");sh.setAttribute("hidden","");},300);}
+    ib.addEventListener("click",openHelp);sc.addEventListener("click",closeHelp);
+    Array.prototype.forEach.call(sh.querySelectorAll("[data-help-close]"),function(b){b.addEventListener("click",closeHelp);});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!sh.hasAttribute("hidden"))closeHelp();});
+  })();
   $("notifToggle").addEventListener("click",function(){
     var self=this;
     /* turn OFF */
@@ -1728,7 +1793,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       watch:watch,
       overrides:overrides||{},
       reopen:reopen,
-      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
+      reopenOnly:reopenOnly||{},
+      resolved:resolved||{},
+      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all,keepWatching:settings.keepWatching}
     };
   }
 
@@ -1798,7 +1865,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
      / apply-all edit without touching the individual handlers. Debounced so a
      burst of edits collapses into one /save. Only fires once subscribed. */
   (function(){
-    var RULE_KEYS={watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1};
+    var RULE_KEYS={watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,keepWatching:1,reopenOnly:1,resolved:1};
     var origSet=store.set;
     store.set=function(k,v){
       origSet.call(store,k,v);
