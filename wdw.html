@@ -873,8 +873,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       /* reopen alert: fire once when a watched, reopen-flagged ride flips from broken (DOWN) back to operating */
       if(watch[id]&&reopen[id]&&prevStatus[id]==="DOWN"&&cur==="OPERATING"){
         fireReopen(r);delete reopen[id];delete alertState[id];
-        if(reopenOnly[id]){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();updateAlertBadge();}
-        saveReopen();saveReopenOnly();
+        /* the back-up ping was the point: park & silence it unless the user gave it a custom threshold rule */
+        if(!overrides[id]){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();saveReopenOnly();updateAlertBadge();}
+        saveReopen();
       }
       prevStatus[id]=cur;
       var eligible=(settings.all||watch[id])&&!resolved[id];var meets=ruleMet(id,lv);
