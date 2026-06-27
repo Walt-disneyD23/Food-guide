@@ -660,8 +660,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     ids.forEach(function(id){var r=roster[id],lv=liveById[id];
       if(r.kind==="ride"&&lv&&lv.status==="DOWN")down.push(r);});
     if(usingFallback||!total){cov.innerHTML="";return;}
-    var head='Tracking <b>'+total+'</b> attractions across '+PARK_DEF.length+' parks · ';
-    if(!down.length){cov.innerHTML=head+'<b>all rides running</b>';return;}
+    var head='Tracking <b>'+total+'</b> attractions across '+PARK_DEF.length+' parks';
+    if(!down.length){cov.innerHTML=head+' · <b>all rides running</b>';return;}
     var n=down.length;
     down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
     var rows=down.map(function(r){
@@ -670,12 +670,19 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         '<div class="dn-info"><div class="nm">'+esc(r.name)+'</div><div class="pk">'+esc(r.park)+'</div></div>'+
         '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Watching":"Notify me")+'</button>'+
       '</div>';}).join("");
-    cov.innerHTML=head+'<span class="dn-trigger" id="dnTrigger">'+n+' ride'+(n===1?"":"s")+
-      ' down right now <span class="chev">▾</span></span><div class="dn-list" id="dnList">'+rows+'</div>'+
+    cov.innerHTML=head+
+      '<div id="dnTrigger" class="dn-bar" style="display:flex;align-items:center;gap:11px;margin-top:12px;background:rgba(226,59,84,0.07);border:1px solid rgba(226,59,84,0.20);border-radius:14px;padding:14px 16px;cursor:pointer">'+
+        '<span style="width:9px;height:9px;border-radius:50%;background:var(--packed);flex:none"></span>'+
+        '<span style="flex:1;color:var(--packed);font-weight:700;font-size:16px">'+n+' ride'+(n===1?"":"s")+' down right now</span>'+
+        '<span class="dn-cc" style="width:30px;height:30px;border-radius:50%;background:rgba(226,59,84,0.12);display:flex;align-items:center;justify-content:center;color:var(--packed);font-size:15px;flex:none;transition:transform .2s">\u2304</span>'+
+      '</div>'+
+      '<div class="dn-list" id="dnList">'+rows+'</div>'+
       '<button type="button" id="dnShare" style="display:none;width:100%;margin-top:10px;font:600 13px/1 Inter,system-ui,sans-serif;color:#06140e;background:#3dd68c;border:none;border-radius:12px;padding:11px;cursor:pointer">Share what\'s down</button>';
     var t=$("dnTrigger");
     if(t)t.addEventListener("click",function(){
-      var open=$("dnList").classList.toggle("open");t.classList.toggle("open",open);
+      var open=$("dnList").classList.toggle("open");
+      t.style.background=open?"rgba(226,59,84,0.11)":"rgba(226,59,84,0.07)";
+      var cc=t.querySelector(".dn-cc");if(cc)cc.style.transform=open?"rotate(180deg)":"rotate(0deg)";
       var sh=$("dnShare");if(sh)sh.style.display=open?"block":"none";});
     var dsh=$("dnShare");
     if(dsh)dsh.addEventListener("click",function(){shareDownNow();});
