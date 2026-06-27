@@ -587,6 +587,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var overrides=store.get("overrides",{})||{};
   Object.keys(overrides).forEach(function(id){if(overrides[id]&&typeof overrides[id].thresh==="number")overrides[id].thresh=snap5(overrides[id].thresh);});
   var reopen=store.get("reopen",{})||{};   /* ride ids flagged "tell me when it's back up" */
+  var reopenOnly=store.get("reopenOnly",{})||{}; /* watches created solely by "Notify me" -> auto-remove after the back-up alert */
   var prevStatus={};                        /* last-seen status per ride (in-memory, for transition detection) */
   var alertState={};
   var expanded=null;
@@ -689,10 +690,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     Array.prototype.forEach.call(cov.querySelectorAll("[data-watch]"),function(btn){
       btn.addEventListener("click",function(){
         var id=btn.getAttribute("data-watch"),on=!reopen[id];
-        if(on){watch[id]=true;reopen[id]=true;
+        if(on){var wasWatched=!!watch[id];watch[id]=true;reopen[id]=true;
+          if(!wasWatched)reopenOnly[id]=true;   /* added only for the back-up ping */
           prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
-        else{delete reopen[id];}
-        store.set("watch",Object.keys(watch));saveReopen();
+        else{delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];}}
+        store.set("watch",Object.keys(watch));saveReopen();saveReopenOnly();
         btn.classList.toggle("on",on);btn.textContent=on?"✓ Watching":"Notify me";
         updateAlertBadge();render();
       });
@@ -852,7 +854,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var cur=lv.status;
       /* reopen alert: fire once when a watched, reopen-flagged ride flips from broken (DOWN) back to operating */
       if(watch[id]&&reopen[id]&&prevStatus[id]==="DOWN"&&cur==="OPERATING"){
-        fireReopen(r);delete reopen[id];saveReopen();delete alertState[id];
+        fireReopen(r);delete reopen[id];delete alertState[id];
+        if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];store.set("watch",Object.keys(watch));updateAlertBadge();}
+        saveReopen();saveReopenOnly();
       }
       prevStatus[id]=cur;
       var eligible=settings.all||watch[id];var meets=ruleMet(id,lv);
@@ -883,6 +887,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
   function saveOverrides(){store.set("overrides",overrides);}
   function saveReopen(){store.set("reopen",reopen);}
+  function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
   function updateAlertBadge(){var b=$("alertBadge");if(!b)return;var n=Object.keys(watch).length;b.textContent=n;b.classList.toggle("show",n>0);}
   function renderAlertList(){
     var box=$("alertList");if(!box)return;
@@ -918,7 +923,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
   function bindAlertList(box){
     function each(sel,ev,fn){Array.prototype.forEach.call(box.querySelectorAll(sel),function(el){el.addEventListener(ev,function(){fn(el);});});}
-    each("[data-custom]","click",function(el){var id=el.getAttribute("data-custom");overrides[id]={dir:settings.dir,thresh:settings.thresh};saveOverrides();delete alertState[id];renderAlertList();});
+    each("[data-custom]","click",function(el){var id=el.getAttribute("data-custom");overrides[id]={dir:settings.dir,thresh:settings.thresh};delete reopenOnly[id];saveOverrides();saveReopenOnly();delete alertState[id];renderAlertList();});
     each("[data-default]","click",function(el){var id=el.getAttribute("data-default");delete overrides[id];saveOverrides();delete alertState[id];renderAlertList();});
     each("[data-dir]","change",function(el){var id=el.getAttribute("data-dir");if(overrides[id]){overrides[id].dir=el.value;saveOverrides();delete alertState[id];}});
     each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];}});
@@ -926,8 +931,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(reopen[id])delete reopen[id];
       else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
       saveReopen();renderAlertList();});
-    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete alertState[id];
-      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();updateAlertBadge();renderAlertList();render();});
+    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete alertState[id];
+      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();updateAlertBadge();renderAlertList();render();});
   }
 
   /* ---- stats helpers ---- */
@@ -1597,7 +1602,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
         var adding=!watch[id];
         if(adding)watch[id]=true;else{delete watch[id];delete overrides[id];delete reopen[id];}
-        store.set("watch",Object.keys(watch));saveOverrides();saveReopen();delete alertState[id];
+        delete reopenOnly[id];   /* a deliberate star (or un-star) is no longer a reopen-only watch */
+        store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();delete alertState[id];
         updateAlertBadge();
         if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
         if(adding){var r=roster[id];pushToast("Added to alerts",(r?r.name:"Ride")+" — set its rule under ⚑");}
