@@ -952,7 +952,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
            (one-shot). A starred ride is a standing order — it keeps watching, so it
            never parks; its threshold one-shot just re-armed above (delete alertState). */
         var park=!!reopenOnly[id];
-        if(park){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();saveReopenOnly();updateAlertBadge();}
+        if(park){delete reopenOnly[id];resolved[id]=Math.min(resolved[id]||Date.now(),Date.now());saveResolved();saveReopenOnly();updateAlertBadge();}
         saveReopen();
       }
       prevStatus[id]=cur;
@@ -1875,6 +1875,21 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     if(changed){saveAlertState();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();}
   }
 
+  /* Same idea for the "Came back · TIME" reopen pill: adopt the Worker's real
+     reopen times (earliest known wins) so a ride that came back while the app
+     was closed shows when it ACTUALLY reopened, not when you opened the app.
+     Boolean flags from older Workers aren't real ms timestamps, so they're
+     skipped. pruneState on the Worker means only still-watched rides come back,
+     so adopting is always safe. */
+  function mergeWorkerReopens(wr){
+    var changed=false;
+    Object.keys(wr||{}).forEach(function(id){
+      var wt=+wr[id];if(!wt||wt<1e12)return;   /* skip legacy boolean flags / non-timestamps */
+      if(!resolved[id]||wt<resolved[id]){resolved[id]=wt;changed=true;}
+    });
+    if(changed){saveResolved();updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();}
+  }
+
   /* Push the current rules to the backend, acquiring the subscription first if
      needed. Safe to call on any rules change or on launch. Reads back the
      Worker's exact fire times for the "✓ Hit" pill. */
@@ -1887,6 +1902,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         body:JSON.stringify({subscription:sub.toJSON(),rules:collectRules()})
       }).then(function(r){return r.json();}).then(function(d){
         if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
+        if(d&&d.reopens)mergeWorkerReopens(d.reopens);
       }).catch(function(e){console.error("syncPush failed",e);});
     });
   }
