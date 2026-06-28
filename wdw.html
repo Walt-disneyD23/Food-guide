@@ -496,7 +496,6 @@
         </div>
       </div>
       <div class="toggle" id="scopeToggle"><span class="switch"></span><span>Apply to all rides</span></div>
-      <div class="toggle" id="keepWatchToggle"><span class="switch"></span><span>Keep watching after a back-up</span></div>
     </div>
     <div id="alertList"></div>
     <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride pings once when it
@@ -513,8 +512,6 @@
       <div class="help-desc">Master on/off for phone alerts. Off means total silence.</div></div>
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Apply to all rides</span><span class="hc-sw off"></span></div>
       <div class="help-desc">Uses your default rule for every ride in the parks, not just the ones you've starred. Can get chatty.</div></div>
-    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Keep watching after a back-up</span><span class="hc-sw off"></span></div>
-      <div class="help-desc">When a ride you're watching unexpectedly goes down, you always get one “it's back up” ping when it returns. This sets what happens next — <span class="help-on">off:</span> it goes quiet; <span class="help-on">on:</span> it keeps watching and can ping again if the wait drops under your threshold.</div></div>
 
     <div class="help-sec">Setting your alerts</div>
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Default rule</span><span class="hc-pill">below</span><span class="hc-pill">30</span><span class="hc-min">min</span></div>
@@ -522,9 +519,9 @@
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Custom rule</span><span class="hc-link">Customize</span></div>
       <div class="help-desc">Tap Customize on any ride to give just that ride its own number.</div></div>
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Star a ride</span><span class="hc-star">★</span></div>
-      <div class="help-desc">Tap the star on any ride to watch it. It pings once when the wait first crosses your rule, then stays quiet.</div></div>
+      <div class="help-desc">Tap the star on any ride to watch it. It pings once when the wait first crosses your rule, then sits quietly with a <span class="help-on">✓ Hit</span> mark and the time. It keeps watching: if the ride goes down and comes back, it re-arms and can alert you again. Stays on your list until you remove it.</div></div>
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Notify me</span><span class="hc-notify">Notify me</span></div>
-      <div class="help-desc">On a ride that's down, get a single ping the moment it reopens — then it's done.</div></div>
+      <div class="help-desc">On a ride that's down, get a single ping the moment it reopens — then it clears itself. (A starred ride, by contrast, keeps watching after it's back.)</div></div>
 
     <button class="help-gotit" type="button" data-help-close>Got it</button>
   </div>
@@ -662,12 +659,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var resolved=store.get("resolved",{})||{};     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
   var BACKUP_FADE_MS=3*60*60*1000;               /* (parked) auto-fade window for back-up rows — currently off; re-add to the clear check to enable */
   var prevStatus={};                        /* last-seen status per ride (in-memory, for transition detection) */
-  var alertState={};
+  var alertState=store.get("alerts",{})||{};   /* id -> fire timestamp; persisted so one-shot survives reload */
+  function saveAlertState(){store.set("alerts",alertState);}
   var expanded=null;
   var f={type:store.get("f_type","all"),cat:store.get("f_cat","all"),status:store.get("f_status","all"),
     band:store.get("f_band","all"),ll:store.get("f_ll",false),sr:store.get("f_sr",false),
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
-  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false),keepWatching:store.get("keepWatching",false)};
+  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false)};
   settings.thresh=snap5(settings.thresh);
   var lastUpdated=null,nextRefreshAt=0,timer=null;
 
@@ -677,7 +675,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
   $("dir").value=settings.dir;$("thresh").innerHTML=threshOptions(settings.thresh);
   $("type").value=f.type;$("cat").value=f.cat;$("status").value=f.status;$("band").value=f.band;$("sort").value=f.sort;
-  setOn($("scopeToggle"),settings.all);setOn($("notifToggle"),settings.notif&&notifGranted());setOn($("keepWatchToggle"),settings.keepWatching);
+  setOn($("scopeToggle"),settings.all);setOn($("notifToggle"),settings.notif&&notifGranted());
   setOn($("llChip"),f.ll);setOn($("srChip"),f.sr);setOn($("watchChip"),f.watched);
   function notifGranted(){return typeof Notification!=="undefined"&&Notification.permission==="granted";}
   function setOn(el,on){el.classList[on?"add":"remove"]("on");}
@@ -793,7 +791,6 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   bindChip("watchChip","f_watched",function(v){f.watched=v;});
   $("clearF").addEventListener("click",clearFilters);
   $("scopeToggle").addEventListener("click",function(){settings.all=!settings.all;store.set("all",settings.all);setOn(this,settings.all);resetAlerts();render();});
-  $("keepWatchToggle").addEventListener("click",function(){settings.keepWatching=!settings.keepWatching;store.set("keepWatching",settings.keepWatching);setOn(this,settings.keepWatching);});
   (function(){var ib=$("alertsInfoBtn"),sc=$("helpScrim"),sh=$("helpSheet");if(!ib||!sc||!sh)return;
     function openHelp(){sc.removeAttribute("hidden");sh.removeAttribute("hidden");document.body.classList.add("help-open");requestAnimationFrame(function(){sc.classList.add("show");sh.classList.add("show");});}
     function closeHelp(){sc.classList.remove("show");sh.classList.remove("show");document.body.classList.remove("help-open");setTimeout(function(){sc.setAttribute("hidden","");sh.setAttribute("hidden","");},300);}
@@ -826,7 +823,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   });
   function bindSel(id,key,fn){$(id).addEventListener("change",function(){fn(this.value);store.set(key,this.value);render();});}
   function bindChip(id,key,fn){$(id).addEventListener("click",function(){var on=!this.classList.contains("on");setOn(this,on);fn(on);store.set(key,on);render();});}
-  function resetAlerts(){alertState={};}
+  function resetAlerts(){alertState={};saveAlertState();}
 
   /* ---- fallback roster ---- */
   function buildFallbackRoster(){
@@ -933,6 +930,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     Object.keys(roster).forEach(function(id){
       var r=roster[id];if(r.kind!=="ride")return;var lv=liveById[id];if(!lv)return;
       var cur=lv.status;
+      var firstSeen=(prevStatus[id]===undefined);   /* first poll after launch: catch up state, don't re-ping */
       /* a parked "Back up" row clears only if the ride breaks again; otherwise it waits for you to clear it */
       if(resolved[id]&&cur==="DOWN"){
         delete resolved[id];delete watch[id];store.set("watch",Object.keys(watch));saveResolved();updateAlertBadge();
@@ -946,17 +944,24 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
          Worker already pushed it in the background. */
       if(watch[id]&&reopen[id]&&cur==="OPERATING"){
         if(prevStatus[id]==="DOWN")fireReopen(r);
-        delete reopen[id];delete alertState[id];
-        var park=!overrides[id]&&(reopenOnly[id]||!settings.keepWatching);
+        delete reopen[id];delete alertState[id];saveAlertState();
+        /* intent-based parking: only a pure "notify me when it reopens" ride parks
+           (one-shot). A starred ride is a standing order — it keeps watching, so it
+           never parks; its threshold one-shot just re-armed above (delete alertState). */
+        var park=!!reopenOnly[id];
         if(park){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();saveReopenOnly();updateAlertBadge();}
         saveReopen();
       }
       prevStatus[id]=cur;
       var eligible=(settings.all||watch[id])&&!resolved[id]&&!reopenOnly[id];var meets=ruleMet(id,lv);
-      if(eligible&&meets){if(!alertState[id]){alertState[id]=true;fireAlert(r,lv);}}
-      /* one-shot: once a ride has pinged for its threshold, it won't ping again (latch stays set);
-         changing its rule, removing/re-adding it, or a back-up event re-arms it */
+      if(eligible&&meets&&!alertState[id]){
+        alertState[id]=Date.now();          /* timestamp doubles as the one-shot latch and the "✓ Hit" time */
+        if(!firstSeen)fireAlert(r,lv);      /* on the first poll after launch, mark it but don't re-ping you */
+      }
+      /* one-shot: once a ride has pinged for its threshold, it won't ping again (latch stays set, persisted);
+         changing its rule, removing/re-adding it, or a back-up (down->up) event re-arms it */
     });
+    saveAlertState();
     if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
   }
   function ruleMet(id,lv){if(!lv||lv.status!=="OPERATING"||lv.wait===null)return false;
@@ -1034,6 +1039,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var r=roster[id],lv=liveById[id],tier=tierOf(lv);
     var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
     var o=overrides[id],rule;
+    var ht=alertState[id]?fmtClock(alertState[id]):null;
+    var hit=ht?'<span class="up-pill">✓ Hit · '+ht+'</span>':'';   /* fired its threshold; one-shot, stays put */
     if(o){
       rule='<div class="al-edit-on">'+
         '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>below</option>'+
@@ -1046,27 +1053,28 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     return '<div class="al-row">'+
       '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
-      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+rule+'</div>'+
+      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span>'+hit+'</div>'+rule+'</div>'+
       '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
   }
+
   function bindAlertList(box){
     function each(sel,ev,fn){Array.prototype.forEach.call(box.querySelectorAll(sel),function(el){el.addEventListener(ev,function(){fn(el);});});}
-    each("[data-custom]","click",function(el){var id=el.getAttribute("data-custom");overrides[id]={dir:settings.dir,thresh:settings.thresh};delete reopenOnly[id];saveOverrides();saveReopenOnly();delete alertState[id];renderAlertList();});
-    each("[data-default]","click",function(el){var id=el.getAttribute("data-default");delete overrides[id];saveOverrides();delete alertState[id];renderAlertList();});
-    each("[data-dir]","change",function(el){var id=el.getAttribute("data-dir");if(overrides[id]){overrides[id].dir=el.value;saveOverrides();delete alertState[id];}});
-    each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];}});
+    each("[data-custom]","click",function(el){var id=el.getAttribute("data-custom");overrides[id]={dir:settings.dir,thresh:settings.thresh};delete reopenOnly[id];saveOverrides();saveReopenOnly();delete alertState[id];saveAlertState();renderAlertList();});
+    each("[data-default]","click",function(el){var id=el.getAttribute("data-default");delete overrides[id];saveOverrides();delete alertState[id];saveAlertState();renderAlertList();});
+    each("[data-dir]","change",function(el){var id=el.getAttribute("data-dir");if(overrides[id]){overrides[id].dir=el.value;saveOverrides();delete alertState[id];saveAlertState();}});
+    each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];saveAlertState();}});
     each("[data-reopen]","click",function(el){var id=el.getAttribute("data-reopen");
       if(reopen[id]){delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];store.set("watch",Object.keys(watch));saveReopenOnly();updateAlertBadge();}}
       else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
       saveReopen();renderAlertList();});
     each("[data-gotit]","click",function(el){var id=el.getAttribute("data-gotit");
       delete watch[id];delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];
-      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();updateAlertBadge();renderAlertList();render();});
+      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
     each("[data-clearup]","click",function(){Object.keys(resolved).forEach(function(id){
         delete watch[id];delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];});
-      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();updateAlertBadge();renderAlertList();render();});
+      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
     each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete resolved[id];delete alertState[id];
-      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();saveResolved();updateAlertBadge();renderAlertList();render();});
+      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();saveResolved();saveAlertState();updateAlertBadge();renderAlertList();render();});
   }
 
   /* ---- stats helpers ---- */
@@ -1737,7 +1745,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var adding=!watch[id];
         if(adding)watch[id]=true;else{delete watch[id];delete overrides[id];delete reopen[id];}
         delete reopenOnly[id];   /* a deliberate star (or un-star) is no longer a reopen-only watch */
-        store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();delete alertState[id];
+        store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();delete alertState[id];saveAlertState();
         updateAlertBadge();
         if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
         if(adding){var r=roster[id];pushToast("Added to alerts",(r?r.name:"Ride")+" — set its rule under ⚑");}
@@ -1799,7 +1807,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       reopen:reopen,
       reopenOnly:reopenOnly||{},
       resolved:resolved||{},
-      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all,keepWatching:settings.keepWatching}
+      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
   }
 
@@ -1869,7 +1877,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
      / apply-all edit without touching the individual handlers. Debounced so a
      burst of edits collapses into one /save. Only fires once subscribed. */
   (function(){
-    var RULE_KEYS={watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,keepWatching:1,reopenOnly:1,resolved:1};
+    var RULE_KEYS={watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1};
     var origSet=store.set;
     store.set=function(k,v){
       origSet.call(store,k,v);
