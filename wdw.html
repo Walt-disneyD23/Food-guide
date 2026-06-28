@@ -370,7 +370,7 @@
   .ap-default .fld{font-size:13.5px;color:var(--ink);flex-wrap:wrap;gap:8px}
   .ap-list-head{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin:16px 2px 2px;display:flex;align-items:center;gap:7px}
   .ap-list-head span{color:var(--muted)}
-  .al-row{display:flex;align-items:flex-start;gap:12px;padding:16px 2px;border-top:1px solid var(--line)}
+  .al-row{display:flex;align-items:flex-start;gap:12px;padding:16px 2px;border-top:1px solid var(--line);min-height:78px}
   .al-wait{flex:none;min-width:46px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:18px;
     font-variant-numeric:tabular-nums;color:var(--closed);line-height:1.1}
   .al-wait small{display:block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:3px}
@@ -400,11 +400,12 @@
   .ap-list-head .ct{color:var(--muted)}
   .ap-list-head .hd-dot{width:7px;height:7px;border-radius:50%;background:var(--muted-2);flex:none}
   .ap-list-head.up{color:var(--short)} .ap-list-head.up .hd-dot{background:var(--short)}
-  .ap-list-head.down .hd-dot{background:var(--closed)}
+  .ap-list-head.down{color:var(--packed)} .ap-list-head.down .hd-dot{background:var(--packed)}
   .ap-list-head .al-clearup{margin-left:auto;font-size:11px;letter-spacing:0;text-transform:none;color:var(--muted-2);background:none;border:none;font-weight:600;cursor:pointer;font-family:var(--font-body)}
   .ap-list-head .al-clearup:hover{color:var(--ink)}
-  .al-row.up{background:linear-gradient(90deg,rgba(21,163,107,.08),rgba(21,163,107,0));border-top-color:transparent;border-radius:11px;margin-top:4px;padding-left:12px;position:relative}
-  .al-row.up::before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:3px;background:var(--short)}
+  .al-row.up,.al-row.down{border-top-color:transparent;border-radius:11px;margin-top:4px;padding-left:12px;position:relative}
+  .al-row.up{background:linear-gradient(90deg,rgba(21,163,107,.08),rgba(21,163,107,0));box-shadow:inset 3px 0 0 0 var(--short)}
+  .al-row.down{background:linear-gradient(90deg,rgba(226,59,84,.08),rgba(226,59,84,0));box-shadow:inset 3px 0 0 0 var(--packed)}
   .up-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--short);background:rgba(21,163,107,.1);border:1px solid rgba(21,163,107,.25);padding:2px 9px;border-radius:99px;margin-left:7px;vertical-align:1px}
   .al-sub{font-size:12px;color:var(--muted);margin-top:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .al-sub b{color:var(--ink);font-weight:600} .al-sub .mut{color:var(--muted-2)}
@@ -1038,7 +1039,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
   function rowDown(id){
     var r=roster[id];
-    return '<div class="al-row">'+
+    return '<div class="al-row down">'+
       '<div class="al-wait closed"><small>Down</small></div>'+
       '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+
         '<div class="al-edit-off"><button class="al-reopen'+(reopen[id]?" on":"")+'" data-reopen="'+esc(id)+'"><span class="al-sw"></span>Notify when it reopens</button></div></div>'+
