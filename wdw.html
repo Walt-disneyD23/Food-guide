@@ -1780,10 +1780,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
      sit on stale data ("Catching up") until the limping timer fires. When the
      app comes back to the foreground, refresh immediately if data has gone
      stale. Covers both a normal refocus (visibilitychange) and a bfcache
-     restore (pageshow persisted). Alerts are unaffected — the worker owns those. */
+     restore (pageshow persisted). On return we also re-sync push so the "✓ Hit"
+     pill picks up the exact time of any push the worker sent while we were away. */
   function refreshIfStale(){ if(!lastUpdated||(Date.now()-lastUpdated)>30000)load(false); }
-  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible")refreshIfStale(); });
-  window.addEventListener("pageshow",function(e){ if(e&&e.persisted)refreshIfStale(); });
+  function syncOnReturn(){ if(settings.notif&&pushSupported()&&Notification.permission==="granted")syncPush(); }
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"){refreshIfStale();syncOnReturn();} });
+  window.addEventListener("pageshow",function(e){ if(e&&e.persisted){refreshIfStale();syncOnReturn();} });
 
   /* ===========================================================
      PHASE 2 — BACKGROUND PUSH (Cloudflare Worker backend)
@@ -1849,8 +1851,24 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }).catch(function(e){console.error("enablePush failed",e);return false;});
   }
 
+  /* Adopt the Worker's threshold fire times so the "✓ Hit · TIME" pill shows the
+     exact moment a push was sent — even for pushes that went out while the app
+     was closed. Take the EARLIEST known time per ride (that's when you were first
+     notified). The Worker's response is post-rearm, so a rule you just changed
+     won't be resurrected here. pruneState on the Worker means only still-watched
+     rides come back, so adopting is always safe. */
+  function mergeWorkerAlerts(wa){
+    var changed=false;
+    Object.keys(wa||{}).forEach(function(id){
+      var wt=+wa[id];if(!wt||wt<1e12)return;   /* must be a real ms timestamp, not a stray flag */
+      if(!alertState[id]||wt<alertState[id]){alertState[id]=wt;changed=true;}
+    });
+    if(changed){saveAlertState();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();}
+  }
+
   /* Push the current rules to the backend, acquiring the subscription first if
-     needed. Safe to call on any rules change or on launch. */
+     needed. Safe to call on any rules change or on launch. Reads back the
+     Worker's exact fire times for the "✓ Hit" pill. */
   function syncPush(){
     return ensureSub().then(function(sub){
       if(!sub)return;
@@ -1858,7 +1876,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({subscription:sub.toJSON(),rules:collectRules()})
-      }).then(function(){}).catch(function(e){console.error("syncPush failed",e);});
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
+      }).catch(function(e){console.error("syncPush failed",e);});
     });
   }
 
