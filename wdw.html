@@ -939,16 +939,20 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       }
       /* a watched ride that just went down auto-arms its back-up alert (so you're told when it returns) */
       if(watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;saveReopen();}
-      /* reopen alert: fire once when a watched, reopen-flagged ride flips from broken (DOWN) back to operating */
-      if(watch[id]&&reopen[id]&&prevStatus[id]==="DOWN"&&cur==="OPERATING"){
-        fireReopen(r);delete reopen[id];delete alertState[id];
-        /* after the back-up ping, park & silence unless: it has a custom rule, or "keep watching" is on (and it wasn't a pure one-shot) */
+      /* reopen: a watched, reopen-flagged ride that is now operating has come back.
+         Park it either way (so it lands in Back up, not Watched) — even if the flip
+         happened while the app was closed. Only re-fire the in-app ping if we
+         witnessed the live DOWN->OPERATING flip, so we don't double-ping when the
+         Worker already pushed it in the background. */
+      if(watch[id]&&reopen[id]&&cur==="OPERATING"){
+        if(prevStatus[id]==="DOWN")fireReopen(r);
+        delete reopen[id];delete alertState[id];
         var park=!overrides[id]&&(reopenOnly[id]||!settings.keepWatching);
         if(park){delete reopenOnly[id];resolved[id]=Date.now();saveResolved();saveReopenOnly();updateAlertBadge();}
         saveReopen();
       }
       prevStatus[id]=cur;
-      var eligible=(settings.all||watch[id])&&!resolved[id];var meets=ruleMet(id,lv);
+      var eligible=(settings.all||watch[id])&&!resolved[id]&&!reopenOnly[id];var meets=ruleMet(id,lv);
       if(eligible&&meets){if(!alertState[id]){alertState[id]=true;fireAlert(r,lv);}}
       /* one-shot: once a ride has pinged for its threshold, it won't ping again (latch stays set);
          changing its rule, removing/re-adding it, or a back-up event re-arms it */
