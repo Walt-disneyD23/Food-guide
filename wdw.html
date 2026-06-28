@@ -498,8 +498,8 @@
       <div class="toggle" id="scopeToggle"><span class="switch"></span><span>Apply to all rides</span></div>
     </div>
     <div id="alertList"></div>
-    <div class="alert-note">Each starred ride uses the default rule unless you give it its own. A ride pings once when it
-      first drops past your threshold and won't ping again until you change its rule — keep this page open to keep checking.</div>
+    <div class="alert-note">Each starred ride uses the default rule unless you give it its own. It pings once when the wait
+      first drops past your threshold, then stays quiet — re-arming only if you change its rule or the ride goes down and comes back. With notifications on, alerts reach you even when the app is closed.</div>
   </div>
 
   <div class="help-scrim" id="helpScrim" hidden></div>
@@ -733,7 +733,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(r.kind==="ride"&&lv&&lv.status==="DOWN")down.push(r);});
     if(usingFallback||!total){cov.innerHTML="";return;}
     var head='Tracking <b>'+total+'</b> attractions across '+PARK_DEF.length+' parks';
-    if(!down.length){cov.innerHTML=head+' · <b>all rides running</b>';return;}
+    /* every park closed right now (uses the same schedule truth as the park cards,
+       which already accounts for Early Entry / Extended Evening / Ticketed Event windows) */
+    var allClosed=PARK_DEF.length>0&&PARK_DEF.every(function(p){return isOpenNow(parkInfo[p.key])===false;});
+    if(!down.length){cov.innerHTML=head+' · <b>'+(allClosed?'all parks closed':'all rides running')+'</b>';return;}
     var n=down.length;
     down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
     var rows=down.map(function(r){
