@@ -966,16 +966,22 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
   function ruleMet(id,lv){if(!lv||lv.status!=="OPERATING"||lv.wait===null)return false;
     var ru=ruleFor(id);return ru.dir==="below"?lv.wait<ru.thresh:lv.wait>ru.thresh;}
+  /* True when the Worker is actively delivering lock-screen pushes for this
+     device. When it is, the app skips its OWN system notification to avoid a
+     duplicate banner — the instant in-app toast still fires. If push isn't
+     actually subscribed (pushSub null), this is false and the app falls back to
+     its own notification, so you never miss an alert. */
+  function pushActive(){return pushSupported()&&Notification.permission==="granted"&&!!pushSub;}
   function fireAlert(r,lv){
     var ru=ruleFor(r.id);
     var body=(ru.dir==="below"?"dropped to":"climbed to")+" "+lv.wait+" min · "+r.park;
     pushToast(r.name,body);
-    if(settings.notif&&notifGranted()){try{new Notification("⚑ "+r.name,{body:body,tag:r.id});}catch(e){}}
+    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("⚑ "+r.name,{body:body,tag:r.id});}catch(e){}}
   }
   function fireReopen(r){
     var body="is back up · "+r.park;
     pushToast(r.name,body);
-    if(settings.notif&&notifGranted()){try{new Notification("⚑ "+r.name,{body:body,tag:r.id+":reopen"});}catch(e){}}
+    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("⚑ "+r.name,{body:body,tag:r.id+":reopen"});}catch(e){}}
   }
   function pushToast(t,b){
     var box=$("toasts"),el=document.createElement("div");el.className="toast";
