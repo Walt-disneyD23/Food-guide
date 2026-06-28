@@ -1012,7 +1012,16 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     });
     var byName=function(a,b){return roster[a].name.localeCompare(roster[b].name);};
     backUp.sort(function(a,b){return (resolved[b]||0)-(resolved[a]||0);}); /* most recent first */
-    down.sort(byName);watched.sort(byName);
+    var waitVal=function(id){var lv=liveById[id];return lv&&typeof lv.wait==="number"?lv.wait:null;};
+    var byWait=function(a,b){var wa=waitVal(a),wb=waitVal(b);
+      if(wa===null&&wb===null)return byName(a,b);
+      if(wa===null)return 1;if(wb===null)return -1;   /* no live wait sinks to the bottom */
+      if(wa!==wb)return wa-wb;return byName(a,b);};    /* shortest first, alpha tiebreak */
+    down.sort(byName);
+    /* Watched rides split: armed (no trigger yet) on top, then alerted (already
+       hit). Each sorted by current wait, shortest first so what's rideable now floats up. */
+    var armed=watched.filter(function(id){return !alertState[id];}).sort(byWait);
+    var alerted=watched.filter(function(id){return !!alertState[id];}).sort(byWait);
     var html="";
     if(backUp.length){
       html+='<div class="ap-list-head up"><span class="hd-dot"></span>Back up <span class="ct">('+backUp.length+')</span>'+
@@ -1021,8 +1030,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     if(down.length){
       html+='<div class="ap-list-head down"><span class="hd-dot"></span>Down <span class="ct">('+down.length+')</span></div>'+down.map(rowDown).join("");
     }
-    if(watched.length){
-      html+='<div class="ap-list-head">Watched rides <span class="ct">('+watched.length+')</span></div>'+watched.map(rowWatched).join("");
+    if(armed.length){
+      html+='<div class="ap-list-head">Still watching <span class="ct">('+armed.length+')</span></div>'+armed.map(rowWatched).join("");
+    }
+    if(alerted.length){
+      html+='<div class="ap-list-head">Alerted <span class="ct">('+alerted.length+')</span></div>'+alerted.map(rowWatched).join("");
     }
     box.innerHTML=html;
     bindAlertList(box);
