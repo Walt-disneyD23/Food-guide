@@ -407,6 +407,7 @@
   .al-row.up{background:linear-gradient(90deg,rgba(21,163,107,.08),rgba(21,163,107,0));box-shadow:inset 3px 0 0 0 var(--short)}
   .al-row.down{background:linear-gradient(90deg,rgba(226,59,84,.08),rgba(226,59,84,0));box-shadow:inset 3px 0 0 0 var(--packed)}
   .up-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--short);background:rgba(21,163,107,.1);border:1px solid rgba(21,163,107,.25);padding:2px 9px;border-radius:99px;margin-left:7px;vertical-align:1px}
+  .al-hit{margin-top:7px} .al-hit .up-pill{margin-left:0;vertical-align:0}
   .al-sub{font-size:12px;color:var(--muted);margin-top:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .al-sub b{color:var(--ink);font-weight:600} .al-sub .mut{color:var(--muted-2)}
   .gotit{flex:none;align-self:flex-start;background:var(--short);border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:99px;font-family:var(--font-body)}
@@ -1062,7 +1063,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
     var o=overrides[id],rule;
     var ht=alertState[id]?fmtClock(alertState[id]):null;
-    var hit=ht?'<span class="up-pill">✓ Hit · '+ht+'</span>':'';   /* fired its threshold; one-shot, stays put */
+    var hit=ht?'<div class="al-hit"><span class="up-pill">✓ Hit · '+ht+'</span></div>':'';   /* fired its threshold; one-shot, stays put */
     if(o){
       rule='<div class="al-edit-on">'+
         '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>below</option>'+
@@ -1075,7 +1076,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     return '<div class="al-row">'+
       '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
-      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span>'+hit+'</div>'+rule+'</div>'+
+      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+hit+rule+'</div>'+
       '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
   }
 
