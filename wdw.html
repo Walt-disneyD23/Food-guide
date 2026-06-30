@@ -507,7 +507,9 @@
   .pw-share svg{width:17px;height:17px}
   .pw-crumb{font-size:11px;color:var(--muted-2);margin:0 2px 10px}
   .pw-crumb b{color:var(--muted);font-weight:600}
-  .pw-rrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin-bottom:7px;box-shadow:var(--shadow-sm)}
+  .pw-rrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin-bottom:7px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .08s ease}
+  .pw-rrow:active{transform:scale(.99)}
+  .pw-rrow .chev{color:var(--muted-2);flex:none;font-size:18px;font-weight:700;line-height:1;margin-left:2px}
   .pw-rrow .a{flex:none;width:44px;text-align:center}
   .pw-rrow .a b{font-family:var(--font-display);font-size:18px;font-weight:700;display:block;line-height:1}
   .pw-rrow .a small{font-size:8.5px;color:var(--muted-2);text-transform:uppercase}
@@ -2049,6 +2051,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(a.getMonth()===b.getMonth())return mo(a)+" "+a.getDate()+" – "+b.getDate();
       return mo(a)+" "+a.getDate()+" – "+mo(b)+" "+b.getDate();
     }
+    function fmtTime(ms){try{return new Date(ms).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});}catch(e){return "";}}
     function isFinal(d){return !d||!d.dates?true:(d.dates.indexOf(etDate(0))<0);} /* final when window has no in-progress (today) day */
 
     /* ---- view switching ---- */
@@ -2248,9 +2251,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         wv.innerHTML=html;topw();var bk0=$id("pwBack");if(bk0)bk0.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});return;
       }
 
-      var line="Headliners averaged "+pk.headAvg+" min";
-      if(pk.busiest)line+=" — "+shortName(pk.busiest.name)+" led at "+pk.busiest.avgWait+".";
-      else line+=".";
+      var line="Headliners averaged "+pk.headAvg+" min"+(isWeek?" this week.":" today.");
       var sub2=pk.leastRel?(shortName(pk.leastRel.name)+" had the roughest run, down "+pk.leastRel.downMinutes+" min."):"Every ride held up well.";
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
       html+='<div class="pw-meta"><div>Headliner avg<b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
@@ -2265,7 +2266,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-sec">Every ride · sorted by avg wait</div>';
       pk.rides.forEach(function(r){
         var ctx="peak "+(r.maxWait!=null?r.maxWait:"–")+(r.downMinutes>0?(" · down "+r.downMinutes+" min"):"");
-        html+='<div class="pw-rrow"><div class="a"><b class="'+tier(r.avgWait)+'">'+r.avgWait+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'</div>';
+        html+='<div class="pw-rrow" data-rid="'+esc(r.id)+'" role="button" tabindex="0"><div class="a"><b class="'+tier(r.avgWait)+'">'+r.avgWait+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'<span class="chev">›</span></div>';
       });
       html+='<button class="pw-share" id="pwShareP" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share '+esc(park)+'</button>';
       html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. broken down)</div>';
@@ -2273,6 +2274,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       wv.innerHTML=html;topw();
       var bk=$id("pwBack");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var sp=$id("pwShareP");if(sp)sp.addEventListener("click",function(){shareParkCard(park);});
+      var rrows=wv.querySelectorAll(".pw-rrow[data-rid]");
+      for(var ri=0;ri<rrows.length;ri++){(function(row){var rid=row.getAttribute("data-rid");row.addEventListener("click",function(){showRide(rid,park);});row.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showRide(rid,park);}});})(rrows[ri]);}
     }
 
     /* ---- Share cards: one shared dark-card renderer for Wrap / park / ride ---- */
@@ -2359,7 +2362,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var tab=lastTab,isWeek=(tab==="week"),d=lastData;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
       var pk=computePark(d,park);if(!pk.headAvg)return;
-      var line="Headliners averaged "+pk.headAvg+" min"+(pk.busiest?(" — "+shortName(pk.busiest.name)+" led at "+pk.busiest.avgWait+"."):".");
+      var line="Headliners averaged "+pk.headAvg+" min"+(isWeek?" this week.":" today.");
       var sub=pk.leastRel?(shortName(pk.leastRel.name)+" had the roughest run, down "+pk.leastRel.downMinutes+" min."):"Every ride held up well all day.";
       var tiles=[];
       if(pk.busiest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(pk.busiest.avgWait),post:"m",cls:tier(pk.busiest.avgWait),name:pk.busiest.name,ctx:pk.busiest.maxWait?("peak "+pk.busiest.maxWait):""});
@@ -2367,6 +2370,51 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(pk.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:pk.mostOut.downEvents+"×",post:"",cls:"pw-l",name:pk.mostOut.name,ctx:pk.mostOut.downMinutes+" min total"});
       if(pk.drop)tiles.push({label:"BEST VALUE",pre:"low",big:String(pk.drop.minWait),post:"m",cls:"pw-s",name:pk.drop.name,ctx:"off a "+pk.drop.maxWait+" peak"});
       emitCard({W:1080,H:1132,title:park,kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-"+park.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+dateStr+".png",shareTitle:"ParkPulse — "+park});
+    }
+
+    /* ---- ride detail view (Wrap › Park › Ride) ---- */
+    function rideSub(r){
+      if(r.downEvents>0)return "Ran "+(r.uptimePct!=null?r.uptimePct+"% of the day":"with some downtime")+" — down "+r.downMinutes+" min across "+r.downEvents+(r.downEvents===1?" outage.":" outages.");
+      return "Ran all day with no downtime.";
+    }
+    function relCls(r){return (r.uptimePct==null||r.uptimePct>=98)?"pw-s":(r.uptimePct>=85?"pw-m":"pw-p");}
+    function findRide(park,rid){var pk=computePark(lastData,park);for(var i=0;i<pk.rides.length;i++){if(pk.rides[i].id===rid)return pk.rides[i];}return null;}
+
+    function showRide(rid,park){
+      var wv=$id("wrapView");if(!wv||!lastData)return;
+      var isWeek=(lastTab==="week");
+      var r=findRide(park,rid);
+      if(!r){showDetail(park);return;}
+      var line="Averaged "+r.avgWait+" min"+(isWeek?" this week.":" today.");
+      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
+      html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r))+'</div>';
+      html+='<div class="pw-meta"><div>Avg wait<b>'+r.avgWait+'m</b></div><div>Peak<b>'+(r.maxWait!=null?r.maxWait+'m':'—')+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div></div>';
+      html+='<div class="pw-grid">';
+      html+=tileV("Peak wait",'<span class="u">peak</span> '+(r.maxWait!=null?r.maxWait:'–')+'m',tier(r.maxWait||0),"Highest of the day",(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch"));
+      html+=tileV("Lowest",'<span class="u">low</span> '+(r.minWait!=null?r.minWait:'–')+'m',"pw-s",(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"));
+      html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
+      html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),(r.downEvents>0?"Breakdowns":"No breakdowns"),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
+      html+='</div>';
+      html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
+      html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. broken down)</div>';
+      wv.innerHTML=html;topw();
+      var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
+      var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
+    }
+
+    function shareRideCard(rid,park){
+      if(!lastData)return;
+      var isWeek=(lastTab==="week"),d=lastData;
+      var dateStr=(d.dates&&d.dates[0])||etDate(lastTab==="yesterday"?1:0);
+      var r=findRide(park,rid);if(!r)return;
+      var line="Averaged "+r.avgWait+" min"+(isWeek?" this week.":" today.");
+      var tiles=[];
+      tiles.push({label:"PEAK WAIT",pre:"peak",big:(r.maxWait!=null?String(r.maxWait):"–"),post:"m",cls:tier(r.maxWait||0),name:"Highest of the day",ctx:(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")});
+      tiles.push({label:"LOWEST",pre:"low",big:(r.minWait!=null?String(r.minWait):"–"),post:"m",cls:"pw-s",name:(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),ctx:(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")});
+      tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
+      tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:(r.downEvents>0?"Breakdowns":"No breakdowns"),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
+      emitCard({W:1080,H:1132,title:shortName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
     /* ---- init ---- */
