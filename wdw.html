@@ -2172,6 +2172,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       n=n.replace(/ – .*/,"").replace(/: .*/,"").replace(/ Starring .*/,"");
       return n.length>22?n.slice(0,21)+"…":n;
     }
+    function titleName(n){
+      n=String(n);
+      if(/Walt Disney World Railroad/.test(n))return "WDW Railroad";
+      return n.replace(/ – .*/,"").replace(/: .*/,"").replace(/ Starring .*/,"");
+    }
     function tileV(lbl,vHTML,tierCls,nm,ctx){
       return '<div class="pw-tile"><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div><div class="ctx">'+esc(ctx)+'</div></div>';
     }
@@ -2414,7 +2419,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       tiles.push({label:"LOWEST",pre:"low",big:(r.minWait!=null?String(r.minWait):"–"),post:"m",cls:"pw-s",name:(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),ctx:(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:(r.downEvents>0?"Breakdowns":"No breakdowns"),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      emitCard({W:1080,H:1132,title:shortName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
+      emitCard({W:1080,H:1132,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
     /* ---- init ---- */
