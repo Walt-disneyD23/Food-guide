@@ -2253,7 +2253,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       else line+=".";
       var sub2=pk.leastRel?(shortName(pk.leastRel.name)+" had the roughest run, down "+pk.leastRel.downMinutes+" min."):"Every ride held up well.";
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
-      html+='<div class="pw-meta"><div>Headliner avg<b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
+      html+='<div class="pw-meta"><div>Headliner avg<b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
 
       html+='<div class="pw-grid">';
       if(pk.busiest)html+=tileV("Toughest line",'<span class="u">avg</span> '+pk.busiest.avgWait+'m',tier(pk.busiest.avgWait),pk.busiest.name,pk.busiest.maxWait?("peak "+pk.busiest.maxWait):"");
@@ -2267,90 +2267,106 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var ctx="peak "+(r.maxWait!=null?r.maxWait:"–")+(r.downMinutes>0?(" · down "+r.downMinutes+" min"):"");
         html+='<div class="pw-rrow"><div class="a"><b class="'+tier(r.avgWait)+'">'+r.avgWait+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'</div>';
       });
+      html+='<button class="pw-share" id="pwShareP" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share '+esc(park)+'</button>';
       html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. broken down)</div>';
 
       wv.innerHTML=html;topw();
       var bk=$id("pwBack");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
+      var sp=$id("pwShareP");if(sp)sp.addEventListener("click",function(){shareParkCard(park);});
     }
 
-    /* ---- Wrap share card (portrait 1080x1350, dark card matching the live snapshots) ---- */
+    /* ---- Share cards: one shared dark-card renderer for Wrap / park / ride ---- */
+    function emitCard(D){
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;var ctx=cv.getContext("2d");
+      var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+      fr.then(function(){
+        drawCard(ctx,D);
+        cv.toBlob(function(blob){
+          if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+          var file=new File([blob],D.fname,{type:"image/png"});
+          if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:D.shareTitle})["catch"](function(){});}
+          else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+        },"image/png");
+      });
+    }
+    function drawCard(ctx,D){
+      var W=D.W,H=D.H;
+      var C={ink:"#eaf3f2",muted:"#9aa6c4",muted2:"#6b7da0",green:"#3dd68c",line:"rgba(255,255,255,0.09)"};
+      function tcol(cl){return cl==="pw-p"?"#ff6b6b":cl==="pw-l"?"#ff9f6b":cl==="pw-m"?"#ffce5c":"#3dd68c";}
+      function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+      function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
+      function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+      function T(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
+      function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
+      function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
+
+      ctx.clearRect(0,0,W,H);
+      var cx=36,cy=36,cw=W-72,ch=H-72;
+      rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
+      var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#10243a");g.addColorStop(.6,"#0c1a2c");g.addColorStop(1,"#0a1422");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+      var gl=ctx.createRadialGradient(W/2,cy,40,W/2,cy,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
+      var L=cx+58,R=cx+cw-58;
+      ctx.font=SG("700",44);ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle=C.ink;ctx.fillText("Park",L,128);var pw=ctx.measureText("Park").width;ctx.fillStyle=C.green;ctx.fillText("Pulse",L+pw,128);
+      if(D.kicker)T(D.kicker,R,124,IN("600",23),"#9bf7c9","right");
+      T(ell(D.title,R-L-140,SG("700",58)),L,206,SG("700",58),C.ink,"left");
+      ctx.font=IN("700",22);var bw=ctx.measureText(D.badge).width;var bx=R-bw-30,by=176,bh=40;
+      rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
+      T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
+      var hy=288,hl=wrap2(D.line,R-L,SG("700",54));
+      for(var i=0;i<hl.length;i++)T(hl[i],L,hy+i*62,SG("700",54),C.ink,"left");
+      var ah=hy+hl.length*62;
+      if(D.sub)T(ell(D.sub,R-L,IN("500",27)),L,ah+12,IN("500",27),C.muted,"left");
+      var gt=ah+(D.sub?56:30),gap=22,tw=(R-L-gap)/2,th=226;
+      for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
+      var fy=cy+ch-86;
+      ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
+      T(D.foot||"Reliability logged every 2 min",L,fy+44,IN("500",22),C.muted2,"left");
+      T(D.link,R,fy+36,IN("700",26),C.green,"right");
+      T("Data: ThemeParks.wiki",R,fy+66,IN("500",20),C.muted2,"right");
+      ctx.restore();
+
+      function tile(tx,ty,tw,th,t){
+        rr(tx,ty,tw,th,20);ctx.fillStyle="rgba(255,255,255,0.045)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.07)";ctx.stroke();
+        var pad=26;
+        T(t.label,tx+pad,ty+42,IN("600",21),C.muted2,"left");
+        var vy=ty+100,vx=tx+pad,col=tcol(t.cls);
+        if(t.pre){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(t.pre,vx,vy);vx+=ctx.measureText(t.pre).width+10;}
+        ctx.font=SG("700",54);ctx.fillStyle=col;ctx.textBaseline="alphabetic";ctx.fillText(t.big,vx,vy);vx+=ctx.measureText(t.big).width+8;
+        if(t.post){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.fillText(t.post,vx,vy);}
+        var nl=wrap2(t.name,tw-pad*2,IN("600",26));
+        for(var j=0;j<nl.length;j++)T(nl[j],tx+pad,ty+142+j*30,IN("600",26),C.ink,"left");
+        T(ell(t.ctx,tw-pad*2,IN("500",22)),tx+pad,ty+142+nl.length*30+4,IN("500",22),C.muted,"left");
+      }
+    }
+
     function shareWrapCard(){
       if(!lastData)return;
       var tab=lastTab,isWeek=(tab==="week"),d=lastData,c=compute(d);
       if(!c.busiestPark)return;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
-      var title=isWeek?fmtRange(d.dates):fmtDate(dateStr);
-      var badge=isFinal(d)?"FINAL":"SO FAR TODAY";
-      var h=hero(c,dateStr,isWeek);
-      var tiles=[];
+      var h=hero(c,dateStr,isWeek),tiles=[];
       if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:"")});
       if(c.longestPeak)tiles.push({label:"LONGEST PEAK",pre:"peak",big:String(c.longestPeak.maxWait),post:"m",cls:tier(c.longestPeak.maxWait),name:c.longestPeak.name,ctx:c.longestPeak.park});
       if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down"});
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park});
       if(c.drop)tiles.push({label:"BIGGEST DROP",pre:"low",big:String(c.drop.minWait),post:"m",cls:"pw-s",name:c.drop.name,ctx:"off a "+c.drop.maxWait+" peak"});
       if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park});
+      emitCard({W:1080,H:1380,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
+    }
 
-      var cv=document.createElement("canvas");cv.width=1080;cv.height=1380;var ctx=cv.getContext("2d");
-      var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
-      fr.then(function(){
-        draw(ctx,{title:title,badge:badge,kicker:h.k,line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live"});
-        cv.toBlob(function(blob){
-          if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-          var fname="parkpulse-wrap-"+dateStr+".png";
-          var file=new File([blob],fname,{type:"image/png"});
-          if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:"ParkPulse — Wrap"})["catch"](function(){});}
-          else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-        },"image/png");
-      });
-
-      function draw(ctx,D){
-        var W=1080,H=1380;
-        var C={ink:"#eaf3f2",muted:"#9aa6c4",muted2:"#6b7da0",green:"#3dd68c",line:"rgba(255,255,255,0.09)"};
-        function tcol(cl){return cl==="pw-p"?"#ff6b6b":cl==="pw-l"?"#ff9f6b":cl==="pw-m"?"#ffce5c":"#3dd68c";}
-        function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-        function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
-        function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
-        function T(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
-        function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
-        function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
-
-        ctx.clearRect(0,0,W,H);
-        var cx=36,cy=36,cw=W-72,ch=H-72;
-        rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
-        var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#10243a");g.addColorStop(.6,"#0c1a2c");g.addColorStop(1,"#0a1422");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
-        var gl=ctx.createRadialGradient(W/2,cy,40,W/2,cy,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
-        var L=cx+58,R=cx+cw-58;
-        ctx.font=SG("700",44);ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle=C.ink;ctx.fillText("Park",L,128);var pw=ctx.measureText("Park").width;ctx.fillStyle=C.green;ctx.fillText("Pulse",L+pw,128);
-        T(D.title,L,206,SG("700",58),C.ink,"left");
-        ctx.font=IN("700",22);var bw=ctx.measureText(D.badge).width;var bx=R-bw-30,by=176,bh=40;
-        rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
-        T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
-        var hy=288,hl=wrap2(D.line,R-L,SG("700",54));
-        for(var i=0;i<hl.length;i++)T(hl[i],L,hy+i*62,SG("700",54),C.ink,"left");
-        var ah=hy+hl.length*62;
-        if(D.sub)T(ell(D.sub,R-L,IN("500",27)),L,ah+12,IN("500",27),C.muted,"left");
-        var gt=ah+(D.sub?56:30),gap=22,tw=(R-L-gap)/2,th=226;
-        for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
-        var fy=cy+ch-86;
-        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-        T("Reliability logged every 2 min",L,fy+44,IN("500",22),C.muted2,"left");
-        T(D.link,R,fy+36,IN("700",26),C.green,"right");
-        T("Data: ThemeParks.wiki",R,fy+66,IN("500",20),C.muted2,"right");
-        ctx.restore();
-
-        function tile(tx,ty,tw,th,t){
-          rr(tx,ty,tw,th,20);ctx.fillStyle="rgba(255,255,255,0.045)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.07)";ctx.stroke();
-          var pad=26;
-          T(t.label,tx+pad,ty+42,IN("600",21),C.muted2,"left");
-          var vy=ty+100,vx=tx+pad,col=tcol(t.cls);
-          if(t.pre){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(t.pre,vx,vy);vx+=ctx.measureText(t.pre).width+10;}
-          ctx.font=SG("700",54);ctx.fillStyle=col;ctx.textBaseline="alphabetic";ctx.fillText(t.big,vx,vy);vx+=ctx.measureText(t.big).width+8;
-          if(t.post){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.fillText(t.post,vx,vy);}
-          var nl=wrap2(t.name,tw-pad*2,IN("600",26));
-          for(var j=0;j<nl.length;j++)T(nl[j],tx+pad,ty+142+j*30,IN("600",26),C.ink,"left");
-          T(ell(t.ctx,tw-pad*2,IN("500",22)),tx+pad,ty+142+nl.length*30+4,IN("500",22),C.muted,"left");
-        }
-      }
+    function shareParkCard(park){
+      if(!lastData)return;
+      var tab=lastTab,isWeek=(tab==="week"),d=lastData;
+      var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
+      var pk=computePark(d,park);if(!pk.headAvg)return;
+      var line="Headliners averaged "+pk.headAvg+" min"+(pk.busiest?(" — "+shortName(pk.busiest.name)+" led at "+pk.busiest.avgWait+"."):".");
+      var sub=pk.leastRel?(shortName(pk.leastRel.name)+" had the roughest run, down "+pk.leastRel.downMinutes+" min."):"Every ride held up well all day.";
+      var tiles=[];
+      if(pk.busiest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(pk.busiest.avgWait),post:"m",cls:tier(pk.busiest.avgWait),name:pk.busiest.name,ctx:pk.busiest.maxWait?("peak "+pk.busiest.maxWait):""});
+      if(pk.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:pk.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:pk.leastRel.name,ctx:pk.leastRel.downMinutes+" min down"});
+      if(pk.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:pk.mostOut.downEvents+"×",post:"",cls:"pw-l",name:pk.mostOut.name,ctx:pk.mostOut.downMinutes+" min total"});
+      if(pk.drop)tiles.push({label:"BEST VALUE",pre:"low",big:String(pk.drop.minWait),post:"m",cls:"pw-s",name:pk.drop.name,ctx:"off a "+pk.drop.maxWait+" peak"});
+      emitCard({W:1080,H:1132,title:park,kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-"+park.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+dateStr+".png",shareTitle:"ParkPulse — "+park});
     }
 
     /* ---- init ---- */
