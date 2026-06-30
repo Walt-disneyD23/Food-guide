@@ -2108,6 +2108,25 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var bs=wv.querySelectorAll(".pw-tabs button");
       for(var i=0;i<bs.length;i++){(function(btn){btn.addEventListener("click",function(){loadTab(btn.getAttribute("data-tab"));});})(bs[i]);}
     }
+    /* ---- data cleanup: fix mojibake ride names + drop non-ride entities ---- */
+    var PW_CP={"\u20AC":0x80,"\u201A":0x82,"\u0192":0x83,"\u201E":0x84,"\u2026":0x85,"\u2020":0x86,"\u2021":0x87,"\u02C6":0x88,"\u2030":0x89,"\u0160":0x8A,"\u2039":0x8B,"\u0152":0x8C,"\u017D":0x8E,"\u2018":0x91,"\u2019":0x92,"\u201C":0x93,"\u201D":0x94,"\u2022":0x95,"\u2013":0x96,"\u2014":0x97,"\u02DC":0x98,"\u2122":0x99,"\u0161":0x9A,"\u203A":0x9B,"\u0153":0x9C,"\u017E":0x9E,"\u0178":0x9F};
+    function demoji(s){
+      if(typeof s!=="string"||!/[\u00c2\u00c3\u00e2]/.test(s))return s;
+      var bytes=[];
+      for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);
+        if(c<=0xFF)bytes.push(c);
+        else if(PW_CP[s[i]]!=null)bytes.push(PW_CP[s[i]]);
+        else return s;}
+      try{return new TextDecoder("utf-8",{fatal:true}).decode(new Uint8Array(bytes));}catch(e){return s;}
+    }
+    var WRAP_EXCLUDE=["vacation fun"]; /* non-ride entities (animated shorts etc.) that log as always-down */
+    function pwExcluded(r){if(!r||r.name==null)return false;var n=(typeof normName==="function")?normName(r.name):String(r.name).toLowerCase();for(var i=0;i<WRAP_EXCLUDE.length;i++){if(n.indexOf(WRAP_EXCLUDE[i])>=0)return true;}return false;}
+    function pwCleanData(d){
+      if(!d||!d.rides||!d.rides.length)return d;
+      var out=[];
+      for(var i=0;i<d.rides.length;i++){var r=d.rides[i];if(r&&r.name!=null)r.name=demoji(r.name);if(!pwExcluded(r))out.push(r);}
+      d.rides=out;return d;
+    }
     function loadTab(tab){
       curTab=tab;var wv=$id("wrapView");if(!wv)return;
       if(cache[tab]){renderWrap(cache[tab],tab);return;}
@@ -2117,6 +2136,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       else if(tab==="yesterday")url+="?date="+etDate(1);
       else url+="?date="+etDate(0);
       fetch(url).then(function(r){return r.json();}).then(function(d){
+        pwCleanData(d);
         cache[tab]=d;if(active&&curTab===tab)renderWrap(d,tab);
       })["catch"](function(){
         if(active&&curTab===tab){wv.innerHTML=tabsHTML(tab)+'<div class="pw-msg">Couldn’t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
@@ -2326,7 +2346,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         html+='<div class="pw-rrow" data-rid="'+esc(r.id)+'" role="button" tabindex="0"><div class="a"><b class="'+tier(r.avgWait)+'">'+r.avgWait+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'<span class="chev">›</span></div>';
       });
       html+='<button class="pw-share" id="pwShareP" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share '+esc(park)+'</button>';
-      html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. broken down)</div>';
+      html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. down)</div>';
 
       wv.innerHTML=html;topw();
       var bk=$id("pwBack");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
@@ -2655,7 +2675,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
-      html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. broken down)</div>';
+      html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. down)</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
