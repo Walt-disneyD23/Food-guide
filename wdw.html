@@ -2379,18 +2379,18 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(stormFrom!==null)svg+='<rect x="'+tx(stormFrom)+'" y="'+pY0+'" width="'+(tx(T1)-tx(stormFrom)).toFixed(1)+'" height="'+pH+'" fill="#6366f1" fill-opacity="0.05"/>';
       if(coreFrom!==null)svg+='<rect x="'+tx(coreFrom)+'" y="'+pY0+'" width="'+(tx(T1)-tx(coreFrom)).toFixed(1)+'" height="'+pH+'" fill="#3b82f6" fill-opacity="0.08"/>';
       var step=DMAX<=20?5:10;
-      for(var g=0;g<=DMAX;g+=step){svg+='<line x1="'+pX0+'" y1="'+dy(g)+'" x2="'+pX1+'" y2="'+dy(g)+'" stroke="#eef0f6" stroke-width="1"/>';svg+='<text x="'+(pX0-7)+'" y="'+(parseFloat(dy(g))+4)+'" text-anchor="end" font-family="Inter" font-size="13" font-weight="600" fill="#9aa0b8">'+g+'</text>';}
-      for(var t=T0;t<=T1;t+=60){svg+='<text x="'+tx(t)+'" y="'+(pY1+20)+'" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="#9aa0b8">'+pwClkS(t)+'</text>';}
+      for(var g=0;g<=DMAX;g+=step){svg+='<line x1="'+pX0+'" y1="'+dy(g)+'" x2="'+pX1+'" y2="'+dy(g)+'" stroke="#eef0f6" stroke-width="1"/>';svg+='<text x="'+(pX0-7)+'" y="'+(parseFloat(dy(g))+4)+'" text-anchor="end" font-family="Inter" font-size="16" font-weight="600" fill="#9aa0b8">'+g+'</text>';}
+      for(var t=T0;t<=T1;t+=60){svg+='<text x="'+tx(t)+'" y="'+(pY1+20)+'" text-anchor="middle" font-family="Inter" font-size="16" font-weight="600" fill="#9aa0b8">'+pwClkS(t)+'</text>';}
       var area="M "+tx(series[0][0])+" "+dy(0),line="";
       for(var i=0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
       area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
       svg+='<path d="'+area+'" fill="url(#pwAg)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
-      if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))+7)+'" y="'+(parseFloat(dy(x.onset.tot))-6)+'" font-family="Space Grotesk" font-size="12.5" font-weight="700" fill="#4f46e5">'+pwClkS(x.onset.t)+' · '+esc(pwPA(x.onset.park))+' held</text>';}
-      if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="13" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClkS(x.peakPt.t)+'</text>';}
+      if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))-9)+'" y="'+(parseFloat(dy(x.onset.tot))-10)+'" text-anchor="end" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#4f46e5">'+pwClkS(x.onset.t)+' \u00b7 '+esc(pwPA(x.onset.park))+' held</text>';}
+      if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClkS(x.peakPt.t)+'</text>';}
       var ry=pY1+30,rh=15,cols={cloud:"#cbd5e1",storm:"#818cf8",rain:"#60a5fa",core:"#3b82f6"},labs={cloud:"clouds",storm:"⚡ lightning in the area",rain:"🌧 rain",core:"🌧 core"},labcol={cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
       var segs=[],sm0=x.samples;
       for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]),a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
-      for(var sg=0;sg<segs.length;sg++){var S=segs[sg];svg+='<rect x="'+tx(S.a)+'" y="'+ry+'" width="'+(tx(S.b)-tx(S.a)).toFixed(1)+'" height="'+rh+'" rx="3" fill="'+cols[S.cl]+'"/>';if((parseFloat(tx(S.b))-parseFloat(tx(S.a)))>70){var cx=(parseFloat(tx(S.a))+parseFloat(tx(S.b)))/2;svg+='<text x="'+cx.toFixed(1)+'" y="'+(ry+rh+15)+'" text-anchor="middle" font-family="Inter" font-size="11.5" font-weight="600" fill="'+labcol[S.cl]+'">'+labs[S.cl]+'</text>';}}
+      for(var sg=0;sg<segs.length;sg++){var S=segs[sg];svg+='<rect x="'+tx(S.a)+'" y="'+ry+'" width="'+(tx(S.b)-tx(S.a)).toFixed(1)+'" height="'+rh+'" rx="3" fill="'+cols[S.cl]+'"/>';if((parseFloat(tx(S.b))-parseFloat(tx(S.a)))>70){var cx=(parseFloat(tx(S.a))+parseFloat(tx(S.b)))/2;svg+='<text x="'+cx.toFixed(1)+'" y="'+(ry+rh+15)+'" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="'+labcol[S.cl]+'">'+labs[S.cl]+'</text>';}}
       svg+='</svg>';return svg;
     }
     function pwCall(color,h,b){return '<div class="pw-st-call"><span class="dot" style="background:'+color+'"></span><div><div class="h">'+esc(h)+'</div><div class="b">'+esc(b)+'</div></div></div>';}
@@ -2422,9 +2422,97 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           for(var pp=0;pp<parks.length;pp++){var v=x.parkPeaks[parks[pp]];html+='<div class="pb"><div class="nm">'+esc(parks[pp])+'</div><div class="track"><div class="fill" style="width:'+Math.round(v/maxpk*100)+'%"></div></div><div class="v">'+v+'</div></div>';}
           html+='</div>';}
       }
+      if(x.series.length)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>';
       html+='<div class="pw-foot">Reliability this day reflects the weather, not the rides \u00b7 Weather by Open-Meteo</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
+      var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
+    }
+
+    function shareStormCard(){
+      if(!lastData)return;
+      var x=wxDerive(lastData);if(!x.series.length)return;
+      var fin=isFinal(lastData),live=(!fin);
+      var ch=wxChip(lastData,live)||{kind:"storm"};
+      var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
+      var D={x:x,kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"parkpulse-storm.png",shareTitle:"ParkPulse \u2014 Storm"};
+      var cv=document.createElement("canvas");cv.width=1080;cv.height=1280;var ctx=cv.getContext("2d");
+      var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+      fr.then(function(){
+        drawStormCard(ctx,D);
+        cv.toBlob(function(blob){
+          if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+          var file=new File([blob],D.fname,{type:"image/png"});
+          if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:D.shareTitle})["catch"](function(){});}
+          else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+        },"image/png");
+      });
+    }
+    function drawStormCard(ctx,D){
+      var W=1080,H=1280,x=D.x;
+      var C={ink:"#eaf3f2",muted:"#9aa6c4",muted2:"#6b7da0",green:"#3dd68c"};
+      function rr(X,Y,w,h,r){ctx.beginPath();ctx.moveTo(X+r,Y);ctx.arcTo(X+w,Y,X+w,Y+h,r);ctx.arcTo(X+w,Y+h,X,Y+h,r);ctx.arcTo(X,Y+h,X,Y,r);ctx.arcTo(X,Y,X+w,Y,r);ctx.closePath();}
+      function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
+      function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+      function T(s,X,Y,f,c,a,bl){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=bl||"alphabetic";ctx.fillText(s,X,Y);}
+      function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+      ctx.clearRect(0,0,W,H);
+      var cx=36,cy=36,cw=W-72,chh=H-72,L=cx+58,R=cx+cw-58;
+      rr(cx,cy,cw,chh,60);ctx.save();ctx.clip();
+      var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+chh);g.addColorStop(0,"#10243a");g.addColorStop(.6,"#0c1a2c");g.addColorStop(1,"#0a1422");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,chh);
+      var gl=ctx.createRadialGradient(W/2,cy,40,W/2,cy,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,chh);
+      ctx.font=SG("700",44);ctx.textBaseline="alphabetic";ctx.textAlign="left";ctx.fillStyle=C.ink;ctx.fillText("Park",L,126);var pw=ctx.measureText("Park").width;ctx.fillStyle=C.green;ctx.fillText("Pulse",L+pw,126);
+      ctx.font=IN("700",22);var bw=ctx.measureText(D.badge).width,bx=R-bw-30,by=104,bh=40;
+      rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
+      T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
+      if(D.badge!=="FINAL"){var asofT="as of "+new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"})+" ET";ctx.font=IN("500",19);var aw=ctx.measureText(asofT).width;T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+22,IN("500",19),C.muted2,"center");}
+      var TT={storm:"When the storm hit",wind:"When the wind picked up",rain:"When the rain came"};
+      T(ell(TT[D.kind]||"When the weather hit",R-L,SG("700",62)),L,224,SG("700",62),C.ink,"left");
+      var leadW={storm:"Thunderstorms swept over Walt Disney World",wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World"};
+      T(ell((leadW[D.kind]||"Weather swept over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",25)),L,270,IN("500",25),C.muted,"left");
+      T(x.downPeak+" attractions paused at the peak.",L,308,IN("600",26),"#ff9f6b","left");
+      var series=x.series,firstT=series[0][0],lastT=series[series.length-1][0];
+      if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
+      var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
+      var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
+      var plotL=L+46,plotR=R,plotT=372,plotB=686;
+      function TX(t){return plotL+(t-T0)/(T1-T0)*(plotR-plotL);}
+      function DY(v){return plotB-(v/DMAX)*(plotB-plotT);}
+      var stormFrom=null,coreFrom=null;
+      for(var b=0;b<x.samples.length;b++){var cc=wxClass(x.samples[b]);if((cc==="storm"||cc==="core")&&stormFrom===null)stormFrom=x.samples[b].t;if(cc==="core"&&coreFrom===null)coreFrom=x.samples[b].t;}
+      if(stormFrom!==null){ctx.fillStyle="rgba(99,102,241,0.10)";ctx.fillRect(TX(stormFrom),plotT,TX(T1)-TX(stormFrom),plotB-plotT);}
+      if(coreFrom!==null){ctx.fillStyle="rgba(59,130,246,0.13)";ctx.fillRect(TX(coreFrom),plotT,TX(T1)-TX(coreFrom),plotB-plotT);}
+      var step=DMAX<=20?5:10;
+      for(var gg=0;gg<=DMAX;gg+=step){var yy=DY(gg);ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(plotL,yy);ctx.lineTo(plotR,yy);ctx.stroke();T(gg,plotL-12,yy+8,IN("600",22),C.muted2,"right");}
+      for(var tt=T0;tt<=T1;tt+=60){T(pwClkS(tt),TX(tt),plotB+34,IN("600",22),C.muted2,"center");}
+      ctx.beginPath();ctx.moveTo(TX(series[0][0]),DY(0));
+      for(var i=0;i<series.length;i++)ctx.lineTo(TX(series[i][0]),DY(series[i][1]));
+      ctx.lineTo(TX(series[series.length-1][0]),DY(0));ctx.closePath();
+      var ag=ctx.createLinearGradient(0,plotT,0,plotB);ag.addColorStop(0,"rgba(226,59,84,0.80)");ag.addColorStop(1,"rgba(226,59,84,0.05)");ctx.fillStyle=ag;ctx.fill();
+      ctx.beginPath();for(i=0;i<series.length;i++){var lx=TX(series[i][0]),ly=DY(series[i][1]);if(i)ctx.lineTo(lx,ly);else ctx.moveTo(lx,ly);}ctx.strokeStyle="#ff5d73";ctx.lineWidth=4;ctx.lineJoin="round";ctx.stroke();
+      if(x.onset){var ox=TX(x.onset.t),oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();T(pwClkS(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held",ox-14,oy-12,SG("700",24),"#a9b0f7","right");}
+      if(x.peakPt){var qx=TX(x.peakPt.t),qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();T(x.peakPt.tot+" down \u00b7 "+pwClkS(x.peakPt.t),qx,qy-16,SG("700",26),"#ff8195","right");}
+      var ry=plotB+52,rh=24,cols={cloud:"#cbd5e1",storm:"#818cf8",rain:"#60a5fa",core:"#3b82f6"},labs={cloud:"clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27 rain",core:"\ud83c\udf27 core"},labcol={cloud:"#cbd5e1",storm:"#a9b0f7",rain:"#93b8fb",core:"#93b8fb"};
+      var segs=[],sm0=x.samples;
+      for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]),a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
+      for(var sg=0;sg<segs.length;sg++){var S=segs[sg],sx=TX(S.a),sw=TX(S.b)-TX(S.a);rr(sx,ry,Math.max(sw,2),rh,5);ctx.fillStyle=cols[S.cl];ctx.fill();if(sw>120)T(labs[S.cl],sx+sw/2,ry+rh+26,IN("600",21),labcol[S.cl],"center");}
+      var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
+      parks.sort(function(a,bb){return x.parkPeaks[bb]-x.parkPeaks[a];});
+      var barY=ry+rh+74;
+      T("HARDEST HIT, AT THE PEAK",L,barY,IN("700",22),C.muted2,"left");
+      barY+=22;var maxpk=parks.length?x.parkPeaks[parks[0]]:1;
+      for(var pp=0;pp<parks.length;pp++){var pkn=parks[pp],pv=x.parkPeaks[pkn],rowY=barY+pp*52;
+        T(pkn,L,rowY+30,SG("700",26),C.ink,"left");
+        var trkX=L+364,trkW=R-trkX-72,th2=18,trkY=rowY+14;
+        rr(trkX,trkY,trkW,th2,9);ctx.fillStyle="rgba(255,255,255,0.10)";ctx.fill();
+        var fw=Math.max(th2,trkW*(pv/maxpk));rr(trkX,trkY,fw,th2,9);var bg2=ctx.createLinearGradient(trkX,0,trkX+trkW,0);bg2.addColorStop(0,"#ff9f6b");bg2.addColorStop(1,"#e23b54");ctx.fillStyle=bg2;ctx.fill();
+        T(pv,R,rowY+30,SG("700",28),"#ff7a91","right");}
+      var fy=cy+chh-84;
+      ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
+      T("Reliability this day reflects the weather, not the rides",L,fy+40,IN("500",21),C.muted2,"left");
+      T("parkpulse.live",L,fy+72,IN("700",21),C.green,"left");
+      T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki",R,fy+72,IN("500",20),C.muted2,"right");
+      ctx.restore();
     }
 
     /* ---- Share cards: one shared dark-card renderer for Wrap / park / ride ---- */
