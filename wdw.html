@@ -528,6 +528,7 @@
   .pw-chip-rain{background:rgba(59,130,246,.16);border-color:rgba(96,165,250,.32)}
   .pw-chip-heat{background:rgba(239,108,59,.18);border-color:rgba(248,150,110,.34)}
   .pw-chip-cold{background:rgba(56,189,248,.16);border-color:rgba(125,211,252,.34)}
+  .pw-tile .ctx .pw-wx{color:var(--accent);font-weight:600}
   /* storm timeline screen */
   .pw-st-card{background:var(--card);border-radius:16px;box-shadow:var(--shadow-sm);padding:14px 12px 10px;margin-bottom:12px}
   .pw-st-svg{display:block;width:100%;height:auto;overflow:visible}
@@ -2220,8 +2221,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(/Walt Disney World Railroad/.test(n))return "WDW Railroad";
       return n.replace(/ – .*/,"").replace(/: .*/,"").replace(/ Starring .*/,"");
     }
-    function tileV(lbl,vHTML,tierCls,nm,ctx){
-      return '<div class="pw-tile"><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div><div class="ctx">'+esc(ctx)+'</div></div>';
+    function tileV(lbl,vHTML,tierCls,nm,ctx,note){
+      return '<div class="pw-tile"><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div><div class="ctx">'+esc(ctx)+(note||"")+'</div></div>';
     }
     /* 3-tier reliability flag for a ride */
     function flag(r){
@@ -2251,6 +2252,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       }
       var h=hero(c,dateStr,isWeek,fin);
       var chip=isWeek?null:wxChip(d,live);
+      var wxKind=(chip&&(chip.kind==="storm"||chip.kind==="wind"||chip.kind==="rain"))?chip.kind:null,wxX=wxKind?wxDerive(d):null;
       var chipH="";
       if(chip){var cls="pw-chip pw-chip-"+chip.kind+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
@@ -2259,8 +2261,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-grid">';
       if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:""));
       if(c.longestPeak)html+=tileV("Longest peak",'<span class="u">peak</span> '+c.longestPeak.maxWait+'m',tier(c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park);
-      if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down");
-      if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park);
+      if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"");
+      if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"");
       if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+c.drop.minWait+'m',"pw-s",c.drop.name,"off a "+c.drop.maxWait+" peak");
       if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park);
       html+='</div>';
@@ -2311,9 +2313,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-meta"><div>Headliner avg<b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
 
       html+='<div class="pw-grid">';
+      var dKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,dX=dKind?wxDerive(lastData):null;
       if(pk.busiest)html+=tileV("Toughest line",'<span class="u">avg</span> '+pk.busiest.avgWait+'m',tier(pk.busiest.avgWait),pk.busiest.name,pk.busiest.maxWait?("peak "+pk.busiest.maxWait):"");
-      if(pk.leastRel)html+=tileV("Least reliable",pk.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",pk.leastRel.name,pk.leastRel.downMinutes+" min down");
-      if(pk.mostOut)html+=tileV("Most outages",pk.mostOut.downEvents+"×","pw-l",pk.mostOut.name,pk.mostOut.downMinutes+" min total");
+      if(pk.leastRel)html+=tileV("Least reliable",pk.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",pk.leastRel.name,pk.leastRel.downMinutes+" min down",dKind?pwWxNote(pk.leastRel.id,dX,dKind):"");
+      if(pk.mostOut)html+=tileV("Most outages",pk.mostOut.downEvents+"×","pw-l",pk.mostOut.name,pk.mostOut.downMinutes+" min total",dKind?pwWxNote(pk.mostOut.id,dX,dKind):"");
       if(pk.drop)html+=tileV("Best value",'<span class="u">low</span> '+pk.drop.minWait+'m',"pw-s",pk.drop.name,"off a "+pk.drop.maxWait+" peak");
       html+='</div>';
 
@@ -2363,6 +2366,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       return null;
     }
     function wxClass(sm){if(sm.code>=95)return sm.pIn>0?"core":"storm";if(sm.code>=51)return "rain";return "cloud";}
+    /* Stage 2 — storm-overlap reframe: was the ride's downtime mostly during the weather? */
+    function pwStormWin(x){var s=null,e=null;for(var i=0;i<x.series.length;i++){if(x.series[i][1]>=8){if(s===null)s=x.series[i][0];e=x.series[i][0];}}return s===null?null:[s,e];}
+    function pwRideOverlap(rid,win){var snap=lastData&&lastData.snap;if(!snap||!snap.ids||!snap.rows||!win||rid==null)return null;var col=snap.ids.indexOf(rid);if(col<0)return null;var down=0,inW=0;for(var i=0;i<snap.rows.length;i++){var w=snap.rows[i].w;if(w&&col<w.length&&w[col]===-1){down++;var t=snap.rows[i].t;if(t>=win[0]&&t<=win[1])inW++;}}return down===0?null:{down:down,inW:inW,frac:inW/down};}
+    function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function stormSVG(x){
       var series=x.series;if(!series.length)return "";
       var firstT=series[0][0],lastT=series[series.length-1][0];
@@ -2385,8 +2392,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(var i=0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
       area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
       svg+='<path d="'+area+'" fill="url(#pwAg)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
-      if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))-9)+'" y="'+(parseFloat(dy(x.onset.tot))-10)+'" text-anchor="end" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#4f46e5">'+pwClkS(x.onset.t)+' \u00b7 '+esc(pwPA(x.onset.park))+' held</text>';}
-      if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClkS(x.peakPt.t)+'</text>';}
+      if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))-9)+'" y="'+(parseFloat(dy(x.onset.tot))-10)+'" text-anchor="end" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#4f46e5">'+pwClk(x.onset.t)+' \u00b7 '+esc(pwPA(x.onset.park))+' held</text>';}
+      if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClk(x.peakPt.t)+'</text>';}
       var ry=pY1+30,rh=15,cols={cloud:"#cbd5e1",storm:"#818cf8",rain:"#60a5fa",core:"#3b82f6"},labs={cloud:"clouds",storm:"⚡ lightning in the area",rain:"🌧 rain",core:"🌧 core"},labcol={cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
       var segs=[],sm0=x.samples;
       for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]),a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
@@ -2490,8 +2497,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       ctx.lineTo(TX(series[series.length-1][0]),DY(0));ctx.closePath();
       var ag=ctx.createLinearGradient(0,plotT,0,plotB);ag.addColorStop(0,"rgba(226,59,84,0.80)");ag.addColorStop(1,"rgba(226,59,84,0.05)");ctx.fillStyle=ag;ctx.fill();
       ctx.beginPath();for(i=0;i<series.length;i++){var lx=TX(series[i][0]),ly=DY(series[i][1]);if(i)ctx.lineTo(lx,ly);else ctx.moveTo(lx,ly);}ctx.strokeStyle="#ff5d73";ctx.lineWidth=4;ctx.lineJoin="round";ctx.stroke();
-      if(x.onset){var ox=TX(x.onset.t),oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();T(pwClkS(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held",ox-14,oy-12,SG("700",24),"#a9b0f7","right");}
-      if(x.peakPt){var qx=TX(x.peakPt.t),qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();T(x.peakPt.tot+" down \u00b7 "+pwClkS(x.peakPt.t),qx,qy-16,SG("700",26),"#ff8195","right");}
+      if(x.onset){var ox=TX(x.onset.t),oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();T(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held",ox-14,oy-12,SG("700",24),"#a9b0f7","right");}
+      if(x.peakPt){var qx=TX(x.peakPt.t),qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();T(x.peakPt.tot+" down \u00b7 "+pwClk(x.peakPt.t),qx,qy-16,SG("700",26),"#ff8195","right");}
       var ry=plotB+52,rh=24,cols={cloud:"#cbd5e1",storm:"#818cf8",rain:"#60a5fa",core:"#3b82f6"},labs={cloud:"clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27 rain",core:"\ud83c\udf27 core"},labcol={cloud:"#cbd5e1",storm:"#a9b0f7",rain:"#93b8fb",core:"#93b8fb"};
       var segs=[],sm0=x.samples;
       for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]),a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
