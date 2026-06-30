@@ -2371,6 +2371,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     function pwRideOverlap(rid,win){var snap=lastData&&lastData.snap;if(!snap||!snap.ids||!snap.rows||!win||rid==null)return null;var col=snap.ids.indexOf(rid);if(col<0)return null;var down=0,inW=0;for(var i=0;i<snap.rows.length;i++){var w=snap.rows[i].w;if(w&&col<w.length&&w[col]===-1){down++;var t=snap.rows[i].t;if(t>=win[0]&&t<=win[1])inW++;}}return down===0?null:{down:down,inW:inW,frac:inW/down};}
     function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function pwWxClause(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";return ov.frac>=0.6?("mostly "+word):ov.frac>=0.35?("partly "+word):"";}
+    function pwOutName(r,clause,kind){if(r.downEvents===0)return "No outages";if(clause){var w=kind==="wind"?"Wind":kind==="rain"?"Rain":"Storm";return w+(r.downEvents===1?" hold":" holds");}return r.downEvents===1?"Down period":"Down periods";}
     function stormSVG(x){
       var series=x.series;if(!series.length)return "";
       var firstT=series[0][0],lastT=series[series.length-1][0];
@@ -2651,7 +2652,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(r.maxWait!=null?r.maxWait:'–')+'m',tier(r.maxWait||0),"Highest of the day",(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch"));
       html+=tileV("Lowest",'<span class="u">low</span> '+(r.minWait!=null?r.minWait:'–')+'m',"pw-s",(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"));
       html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
-      html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),(r.downEvents>0?"Breakdowns":"No breakdowns"),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
+      html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
       html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. broken down)</div>';
@@ -2673,7 +2674,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       tiles.push({label:"PEAK WAIT",pre:"peak",big:(r.maxWait!=null?String(r.maxWait):"–"),post:"m",cls:tier(r.maxWait||0),name:"Highest of the day",ctx:(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")});
       tiles.push({label:"LOWEST",pre:"low",big:(r.minWait!=null?String(r.minWait):"–"),post:"m",cls:"pw-s",name:(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),ctx:(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
-      tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:(r.downEvents>0?"Breakdowns":"No breakdowns"),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
+      tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
       emitCard({W:1080,H:1132,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
