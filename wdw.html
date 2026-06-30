@@ -2250,6 +2250,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     function showDetail(park){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       var isWeek=(lastTab==="week");
+      var fin=isFinal(lastData),live=(!isWeek&&!fin); /* live = in-progress today → present voice */
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var ctxLabel=isWeek?("last 7 days"):(lastTab==="today"?"so far today":fmtDate(dateStr));
       var pk=computePark(lastData,park);
@@ -2261,8 +2262,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         wv.innerHTML=html;topw();var bk0=$id("pwBack");if(bk0)bk0.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});return;
       }
 
-      var line="Headliners averaged "+pk.headAvg+" min"+(isWeek?" this week.":" today.");
-      var sub2=pk.leastRel?(shortName(pk.leastRel.name)+" had the roughest run, down "+pk.leastRel.downMinutes+" min."):"Every ride held up well.";
+      var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":" today.");
+      var sub2=pk.leastRel?(shortName(pk.leastRel.name)+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
       html+='<div class="pw-meta"><div>Headliner avg<b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
 
@@ -2372,8 +2373,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var tab=lastTab,isWeek=(tab==="week"),d=lastData;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
       var pk=computePark(d,park);if(!pk.headAvg)return;
-      var line="Headliners averaged "+pk.headAvg+" min"+(isWeek?" this week.":" today.");
-      var sub=pk.leastRel?(shortName(pk.leastRel.name)+" had the roughest run, down "+pk.leastRel.downMinutes+" min."):"Every ride held up well all day.";
+      var live=(!isWeek&&!isFinal(d));
+      var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":" today.");
+      var sub=pk.leastRel?(shortName(pk.leastRel.name)+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well all day.");
       var tiles=[];
       if(pk.busiest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(pk.busiest.avgWait),post:"m",cls:tier(pk.busiest.avgWait),name:pk.busiest.name,ctx:pk.busiest.maxWait?("peak "+pk.busiest.maxWait):""});
       if(pk.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:pk.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:pk.leastRel.name,ctx:pk.leastRel.downMinutes+" min down"});
@@ -2383,9 +2385,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
 
     /* ---- ride detail view (Wrap › Park › Ride) ---- */
-    function rideSub(r){
-      if(r.downEvents>0)return "Ran "+(r.uptimePct!=null?r.uptimePct+"% of the day":"with some downtime")+" — down "+r.downMinutes+" min across "+r.downEvents+(r.downEvents===1?" outage.":" outages.");
-      return "Ran all day with no downtime.";
+    function rideSub(r,live){
+      if(r.downEvents>0)return (live?"Running ":"Ran ")+(r.uptimePct!=null?(r.uptimePct+(live?"% so far":"% of the day")):(live?"with some downtime so far":"with some downtime"))+" — down "+r.downMinutes+" min across "+r.downEvents+(r.downEvents===1?" outage.":" outages.");
+      return live?"Running clean so far — no breakdowns yet.":"Ran all day with no downtime.";
     }
     function relCls(r){return (r.uptimePct==null||r.uptimePct>=98)?"pw-s":(r.uptimePct>=85?"pw-m":"pw-p");}
     function findRide(park,rid){var pk=computePark(lastData,park);for(var i=0;i<pk.rides.length;i++){if(pk.rides[i].id===rid)return pk.rides[i];}return null;}
@@ -2393,12 +2395,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     function showRide(rid,park){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       var isWeek=(lastTab==="week");
+      var fin=isFinal(lastData),live=(!isWeek&&!fin);
       var r=findRide(park,rid);
       if(!r){showDetail(park);return;}
-      var line="Averaged "+r.avgWait+" min"+(isWeek?" this week.":" today.");
+      var line=(live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":" today.");
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r))+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r,live))+'</div>';
       html+='<div class="pw-meta"><div>Avg wait<b>'+r.avgWait+'m</b></div><div>Peak<b>'+(r.maxWait!=null?r.maxWait+'m':'—')+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div></div>';
       html+='<div class="pw-grid">';
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(r.maxWait!=null?r.maxWait:'–')+'m',tier(r.maxWait||0),"Highest of the day",(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch"));
@@ -2418,13 +2421,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var isWeek=(lastTab==="week"),d=lastData;
       var dateStr=(d.dates&&d.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var r=findRide(park,rid);if(!r)return;
-      var line="Averaged "+r.avgWait+" min"+(isWeek?" this week.":" today.");
+      var live=(!isWeek&&!isFinal(d));
+      var line=(live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":" today.");
       var tiles=[];
       tiles.push({label:"PEAK WAIT",pre:"peak",big:(r.maxWait!=null?String(r.maxWait):"–"),post:"m",cls:tier(r.maxWait||0),name:"Highest of the day",ctx:(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")});
       tiles.push({label:"LOWEST",pre:"low",big:(r.minWait!=null?String(r.minWait):"–"),post:"m",cls:"pw-s",name:(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),ctx:(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:(r.downEvents>0?"Breakdowns":"No breakdowns"),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      emitCard({W:1080,H:1132,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
+      emitCard({W:1080,H:1132,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
     /* ---- init ---- */
