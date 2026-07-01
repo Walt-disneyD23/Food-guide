@@ -2386,7 +2386,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     function wxChip(d,live){
       if(!d||!d.wx)return null;
       var x=wxDerive(d);
-      if(x.code>=95||x.downPeak>=12)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak")};
+      if(x.code>=95&&x.downPeak>=8)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak")};
       if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — tall rides and the Skyliner paused")};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
