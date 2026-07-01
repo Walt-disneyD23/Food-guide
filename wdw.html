@@ -513,6 +513,7 @@
   .pw-rrow .a{flex:none;width:44px;text-align:center}
   .pw-rrow .a b{font-family:var(--font-display);font-size:18px;font-weight:700;display:block;line-height:1}
   .pw-rrow .a small{font-size:8.5px;color:var(--muted-2);text-transform:uppercase}
+.pw-rrow .a b.pw-na{color:var(--muted)}
   .pw-rrow .m{flex:1;min-width:0}
   .pw-rrow .nm{font-weight:600;font-size:13px;line-height:1.2}
   .pw-rrow .ctx{font-size:10.5px;color:var(--muted);margin-top:2px}
@@ -2152,15 +2153,20 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
     /* ---- compute helpers ---- */
     function realRides(d){
-      return (d.rides||[]).filter(function(r){return MAIN.indexOf(r.park)>=0&&r.samples>0&&r.avgWait!=null;});
+      return (d.rides||[]).filter(function(r){
+        if(MAIN.indexOf(r.park)<0)return false;
+        if(r.samples>0&&r.avgWait!=null)return true;      /* posted real waits */
+        return r.downEvents>0&&r.downMinutes>0;            /* never posted a wait but had real unplanned downtime (e.g. down all day) */
+      });
     }
+    function hasAvg(r){return r.avgWait!=null;}
     function peakOK(r){return r.maxWait!=null&&(r.avgWait>=50||r.maxWait<=r.avgWait*3);} /* drops single-tick spikes */
     function headAvg(rs){
-      var s=rs.slice().sort(function(a,b){return b.avgWait-a.avgWait;}).slice(0,8);
+      var s=rs.filter(hasAvg).sort(function(a,b){return b.avgWait-a.avgWait;}).slice(0,8);
       if(!s.length)return null;var t=0;for(var i=0;i<s.length;i++)t+=s[i].avgWait;return Math.round(t/s.length);
     }
     function firstNot(arr,used){for(var i=0;i<arr.length;i++){if(!used[arr[i].id])return arr[i];}return arr[0]||null;}
-    function byAvgDesc(a,b){return b.avgWait-a.avgWait;}
+    function byAvgDesc(a,b){return (b.avgWait==null?-1:b.avgWait)-(a.avgWait==null?-1:a.avgWait);}
 
     function compute(d){
       var rides=realRides(d),used={};
@@ -2168,13 +2174,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       rides.forEach(function(r){if(byPark[r.park])byPark[r.park].push(r);});
       var parks=MAIN.map(function(p){
         var rs=byPark[p];
-        var busiest=rs.slice().sort(byAvgDesc)[0]||null;
+        var busiest=rs.filter(hasAvg).sort(byAvgDesc)[0]||null;
         var worst=rs.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;
         return {park:p,headAvg:headAvg(rs),busiest:busiest,worst:worst,n:rs.length};
       }).filter(function(p){return p.headAvg!=null;});
       parks.sort(function(a,b){return b.headAvg-a.headAvg;});
 
-      var byAvg=rides.slice().sort(byAvgDesc);
+      var byAvg=rides.filter(hasAvg).sort(byAvgDesc);
       var toughest=byAvg[0]||null;if(toughest)used[toughest.id]=1;
       var longestPeak=firstNot(rides.filter(peakOK).sort(function(a,b){return b.maxWait-a.maxWait;}),used);if(longestPeak)used[longestPeak.id]=1;
       var leastRel=rides.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;if(leastRel)used[leastRel.id]=1;
@@ -2189,7 +2195,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     function computePark(d,park){
       var rs=realRides(d).filter(function(r){return r.park===park;});
       var sorted=rs.slice().sort(byAvgDesc);
-      var busiest=sorted[0]||null;
+      var busiest=rs.filter(hasAvg).sort(byAvgDesc)[0]||null;
       var leastRel=rs.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;
       var mostOut=rs.filter(function(r){return r.downEvents>0;}).sort(function(a,b){return b.downEvents-a.downEvents||b.downMinutes-a.downMinutes;})[0]||null;
       var drop=rs.filter(function(r){return r.minWait!=null&&peakOK(r)&&(r.maxWait-r.minWait)>=15;}).sort(function(a,b){return (b.maxWait-b.minWait)-(a.maxWait-a.minWait);})[0]||null;
@@ -2349,8 +2355,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
       html+='<div class="pw-sec">Every ride · sorted by avg wait</div>';
       pk.rides.forEach(function(r){
-        var ctx="peak "+(r.maxWait!=null?r.maxWait:"–")+(r.downMinutes>0?(" · down "+r.downMinutes+" min"):"");
-        html+='<div class="pw-rrow" data-rid="'+esc(r.id)+'" role="button" tabindex="0"><div class="a"><b class="'+tier(r.avgWait)+'">'+r.avgWait+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'<span class="chev">›</span></div>';
+        var noAvg=(r.avgWait==null);
+        var allDown=noAvg&&r.operatingMinutes===0; /* never operated while tracked — earns the DOWN chip */
+        var ctx;
+        if(noAvg){
+          var lbl=allDown?(isWeek?"Down all week":live?"Down since open":"Down all day"):"No wait data";
+          ctx=lbl+" · "+r.downMinutes+" min";
+        }else{
+          ctx="peak "+(r.maxWait!=null?r.maxWait:"–")+(r.downMinutes>0?(" · down "+r.downMinutes+" min"):"");
+        }
+        var aCell='<b class="'+(noAvg?(allDown?"pw-p":"pw-na"):tier(r.avgWait))+'">'+(noAvg?"—":r.avgWait)+'</b><small>avg</small>';
+        html+='<div class="pw-rrow" data-rid="'+esc(r.id)+'" role="button" tabindex="0"><div class="a">'+aCell+'</div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'<span class="chev">›</span></div>';
       });
       html+='<button class="pw-share" id="pwShareP" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share '+esc(park)+'</button>';
       html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. down)</div>';
@@ -2660,6 +2675,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
     /* ---- ride detail view (Wrap › Park › Ride) ---- */
     function rideSub(r,live,clause){
+      if(r.avgWait==null&&r.downEvents>0){
+        var b0="No waits posted — down "+r.downMinutes+" min";
+        return clause?(b0+", "+clause+"."):(b0+" across "+r.downEvents+(r.downEvents===1?" outage.":" outages."));
+      }
       if(r.downEvents>0){
         var base=(live?"Running ":"Ran ")+(r.uptimePct!=null?(r.uptimePct+(live?"% so far":"% of the day")):(live?"with some downtime so far":"with some downtime"))+" — down "+r.downMinutes+" min";
         return clause?(base+", "+clause+"."):(base+" across "+r.downEvents+(r.downEvents===1?" outage.":" outages."));
@@ -2677,11 +2696,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(!r){showDetail(park);return;}
       var rKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null;
       var rClause=rKind?pwWxClause(r.id,wxDerive(lastData),rKind):"";
-      var line=(live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":live?" today.":" yesterday.");
+      var noAvg=(r.avgWait==null);
+      var line=noAvg
+        ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
+        :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":live?" today.":" yesterday."));
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r,live,rClause))+'</div>';
-      html+='<div class="pw-meta"><div>Avg wait<b>'+r.avgWait+'m</b></div><div>Peak<b>'+(r.maxWait!=null?r.maxWait+'m':'—')+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div></div>';
+      html+='<div class="pw-meta"><div>Avg wait<b>'+(noAvg?"—":r.avgWait+"m")+'</b></div><div>Peak<b>'+(r.maxWait!=null?r.maxWait+'m':'—')+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div></div>';
       html+='<div class="pw-grid">';
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(r.maxWait!=null?r.maxWait:'–')+'m',tier(r.maxWait||0),"Highest of the day",(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch"));
       html+=tileV("Lowest",'<span class="u">low</span> '+(r.minWait!=null?r.minWait:'–')+'m',"pw-s",(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"));
@@ -2703,7 +2725,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var live=(!isWeek&&!isFinal(d));
       var cKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null;
       var cClause=cKind?pwWxClause(r.id,wxDerive(d),cKind):"";
-      var line=(live?"Averaging ":"Averaged ")+r.avgWait+" min.";
+      var noAvg=(r.avgWait==null);
+      var line=noAvg
+        ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
+        :((live?"Averaging ":"Averaged ")+r.avgWait+" min.");
       var tiles=[];
       tiles.push({label:"PEAK WAIT",pre:"peak",big:(r.maxWait!=null?String(r.maxWait):"–"),post:"m",cls:tier(r.maxWait||0),name:"Highest of the day",ctx:(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")});
       tiles.push({label:"LOWEST",pre:"low",big:(r.minWait!=null?String(r.minWait):"–"),post:"m",cls:"pw-s",name:(r.minWait!=null&&r.minWait<=10?"Walk-on window":"Shortest line"),ctx:(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")});
