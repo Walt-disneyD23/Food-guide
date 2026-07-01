@@ -2599,7 +2599,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(var i=0;i<hl.length;i++)T(hl[i],L,hy+i*62,SG("700",54),C.ink,"left");
       var ah=hy+hl.length*62;
       if(D.sub)T(ell(D.sub,R-L,IN("500",27)),L,ah+12,IN("500",27),C.muted,"left");
-      var gt=ah+(D.sub?56:30),gap=22,tw=(R-L-gap)/2,th=226;
+      var gt=ah+(D.sub?56:30),gap=22,tw=(R-L-gap)/2,th=252;
       for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
       var fy=cy+ch-86;
       ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
@@ -2616,7 +2616,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         if(t.pre){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(t.pre,vx,vy);vx+=ctx.measureText(t.pre).width+10;}
         ctx.font=SG("700",54);ctx.fillStyle=col;ctx.textBaseline="alphabetic";ctx.fillText(t.big,vx,vy);vx+=ctx.measureText(t.big).width+8;
         if(t.post){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.fillText(t.post,vx,vy);}
-        var nl=t.note?[ell(t.name,tw-pad*2,IN("600",26))]:wrap2(t.name,tw-pad*2,IN("600",26));
+        var nl=wrap2(t.name,tw-pad*2,IN("600",26));
         for(var j=0;j<nl.length;j++)T(nl[j],tx+pad,ty+142+j*30,IN("600",26),C.ink,"left");
         var ctxY=ty+142+nl.length*30+4;
         T(ell(t.ctx,tw-pad*2,IN("500",22)),tx+pad,ctxY,IN("500",22),C.muted,"left");
@@ -2638,7 +2638,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
       if(c.drop)tiles.push({label:"BIGGEST DROP",pre:"low",big:String(c.drop.minWait),post:"m",cls:"pw-s",name:c.drop.name,ctx:"off a "+c.drop.maxWait+" peak"});
       if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park});
-      emitCard({W:1080,H:1380,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
+      emitCard({W:1080,H:1460,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
     }
 
     function shareParkCard(park){
