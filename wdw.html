@@ -1534,7 +1534,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     longs.sort(function(a,b){return b[1]-a[1];});longs=longs.slice(0,3);
 
     var d={park:key,hours:hours,time:time,crowd:{label:crowdLabel,level:crowdLvl,color:tier},
-      avg:s.avg,open:s.open,down:down.slice(0,3),downCount:down.length,longest:longs,link:"parkpulse.live"};
+      avg:s.headAvg,open:s.open,down:down.slice(0,3),downCount:down.length,longest:longs,link:"parkpulse.live"};
 
     var cv=document.createElement("canvas");cv.width=1080;cv.height=1080;
     var ctx=cv.getContext("2d");
@@ -1603,7 +1603,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       T(d.crowd.label,colL,sT+96,SG("700",66),tier);
       var dy=sT+128,dr=14,dg=34;
       for(i=0;i<4;i++){ctx.beginPath();ctx.arc(colL+dr+i*dg,dy,dr,0,7);ctx.fillStyle=(i<d.crowd.level)?tier:"rgba(255,255,255,0.14)";ctx.fill();}
-      T("AVG WAIT",colL,sT+196,IN("600",24),C.muted2);num(colL,sT+244,d.avg,"min");
+      T("HEADLINER AVG",colL,sT+196,IN("600",24),C.muted2);num(colL,sT+244,d.avg,"min");
       T("OPEN",colL,sT+316,IN("600",24),C.muted2);num(colL,sT+364,d.open,"rides");
 
       var ry=sT+14;
@@ -1644,7 +1644,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var time=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});
     var parks4=PARK_DEF.map(function(p){
       var st=bannerStats(p.key),info=parkInfo[p.key],openNow=isOpenNow(info)===true;
-      return {name:p.key,avg:st.avg,tier:st.crowd?st.crowd.color:"#7d97a1",
+      return {name:p.key,avg:st.headAvg,tier:st.crowd?st.crowd.color:"#7d97a1",
         hours:(info&&info.open&&info.close)?(fmtClock(info.open)+" \u2013 "+fmtClock(info.close)):(openNow?"Open":"Closed"),
         extras:(info&&info.extras)?info.extras:[]};
     });
@@ -1726,7 +1726,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       ctx.beginPath();ctx.arc(L+34,chY+chH/2,9,0,7);ctx.fillStyle=C.green;ctx.fill();
       Tx(ctxt,L+56,chY+chH/2+1,IN("600",27),C.green,"left","middle");
 
-      Tx("AVG WAIT BY PARK",L,446,IN("600",24),C.muted2);
+      Tx("HEADLINER AVG BY PARK",L,446,IN("600",24),C.muted2);
       var sorted=d.parks.slice().sort(function(a,b){var av=(a.avg==null?1e9:a.avg),bv=(b.avg==null?1e9:b.avg);return av-bv;});
       var avgs=d.parks.map(function(p){return p.avg;}).filter(function(v){return v!=null;});
       var maxAvg=avgs.length?Math.max.apply(null,avgs):1;
@@ -2375,7 +2375,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":live?" today.":" yesterday.");
       var sub2=pk.leastRel?(shortName(pk.leastRel.name)+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
-      html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
+      html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
       html+='<div class="pw-note" id="pwHeadInfo" hidden>Headliner avg — the average wait across this park\'s 8 busiest rides'+(isWeek?" this week.":live?" so far today.":" that day.")+' An estimate from wait times, not official attendance.</div>';
 
       html+='<div class="pw-grid">';
