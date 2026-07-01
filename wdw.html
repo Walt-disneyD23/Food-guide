@@ -254,6 +254,9 @@
   .pstats{display:flex;flex-wrap:wrap;gap:16px 18px;padding:2px 2px 14px;
     border-bottom:1px solid var(--line);margin-bottom:14px}
   .pstat .k{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.pstat .k .info-i{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:3px;border:1px solid var(--muted);border-radius:50%;background:none;color:var(--muted);font:700 9px/1 Inter,system-ui,sans-serif;text-transform:none;letter-spacing:0;padding:0;vertical-align:-3px;cursor:pointer}
+.info-note{margin:10px 2px 2px;padding:9px 12px;border-radius:10px;background:rgba(79,70,229,.08);color:#3c38a0;font-size:11.5px;line-height:1.45}
+.info-note[hidden]{display:none}
   .pstat .v{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--ink);
     font-variant-numeric:tabular-nums;line-height:1.15;margin-top:3px}
   .pstat .v small{font-size:11px;color:var(--muted);font-weight:500}
@@ -514,6 +517,9 @@
   .pw-rrow .a b{font-family:var(--font-display);font-size:18px;font-weight:700;display:block;line-height:1}
   .pw-rrow .a small{font-size:8.5px;color:var(--muted-2);text-transform:uppercase}
 .pw-rrow .a b.pw-na{color:var(--muted)}
+.pw-meta .pw-info-i{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;margin-left:2px;border:1px solid var(--muted);border-radius:50%;background:none;color:var(--muted);font:700 8.5px/1 Inter,system-ui,sans-serif;text-transform:none;letter-spacing:0;padding:0;vertical-align:-2px;cursor:pointer}
+.pw-note{margin:10px 0 12px;padding:9px 12px;border-radius:10px;background:rgba(79,70,229,.08);color:#3c38a0;font-size:11.5px;line-height:1.45}
+.pw-note[hidden]{display:none}
   .pw-rrow .m{flex:1;min-width:0}
   .pw-rrow .nm{font-weight:600;font-size:13px;line-height:1.2}
   .pw-rrow .ctx{font-size:10.5px;color:var(--muted);margin-top:2px}
@@ -1213,6 +1219,19 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push(lv.wait);});
     return arr;
   }
+  /* Crowd Pulse Stage 1: top-8 headliner average — the same "what counts" as the
+     Wrap's headAvg, ranked by CURRENT wait (Live is a now-snapshot, Wrap is day-so-far). */
+  function headlinerAvgFrom(waits){
+    if(!waits||!waits.length)return null;
+    var s=waits.slice().sort(function(a,b){return b-a;}).slice(0,8);
+    var t=0;for(var i=0;i<s.length;i++)t+=s[i];
+    return Math.round(t/s.length);
+  }
+  var INFO_COPY={
+    headAll:"Headliner avg — the average wait across each park's 8 busiest rides right now. Busiest right now = the park with the highest headliner average. An estimate from wait times, not official attendance.",
+    headPark:"Headliner avg — the average wait across this park's 8 busiest rides right now. An estimate from wait times, not official attendance.",
+    crowd:"Crowd — estimated from live wait times: the overall average plus how many lines are running 45+ minutes. Not official attendance."
+  };
   var CROWD_TIERS=[null,
     {label:"Light",   level:1,color:"#3dd68c"},
     {label:"Moderate",level:2,color:"#f5b544"},
@@ -1323,15 +1342,19 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var avg=waits.length?Math.round(waits.reduce(function(a,b){return a+b;},0)/waits.length):null;
     var isOpen=key==="all"?PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])===true;})
                           :isOpenNow(parkInfo[key]);
-    var busiest=null;
+    var busiest=null,headAvg=null;
     if(key==="all"){
-      var best=-1;PARK_DEF.forEach(function(p){
-        var w=scopeWaits(p.key);if(!w.length)return;
-        var a=w.reduce(function(x,y){return x+y;},0)/w.length;
-        if(a>best){best=a;busiest=p.key;}});
+      var best=-1,hsum=0,hn=0;
+      PARK_DEF.forEach(function(p){
+        var h=headlinerAvgFrom(scopeWaits(p.key));if(h==null)return;
+        hsum+=h;hn++;
+        if(h>best){best=h;busiest=p.key;}});
+      if(hn)headAvg=Math.round(hsum/hn);
+    }else{
+      headAvg=headlinerAvgFrom(waits);
     }
     var longCount=waits.filter(function(w){return w>45;}).length; /* 45+ band, matches Wait Spread bar */
-    return {avg:avg,open:waits.length,min:waits.length?Math.min.apply(null,waits):null,
+    return {avg:avg,headAvg:headAvg,open:waits.length,min:waits.length?Math.min.apply(null,waits):null,
       max:waits.length?Math.max.apply(null,waits):null,
       isOpen:isOpen,crowd:crowdLevel(avg,waits.length,longCount,key),busiest:busiest};
   }
@@ -1349,7 +1372,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var s=bannerStats(key);
       var bits=['<span><i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?"Open":s.isOpen===false?"Closed":"Live")+'</span>'];
       if(s.open)bits.push('<span>'+s.open+' open</span>');
-      if(s.avg!==null)bits.push('<span>'+s.avg+'m avg</span>');
+      if(s.headAvg!==null)bits.push('<span>'+s.headAvg+'m headliners</span>');
       el.quick.innerHTML=bits.join('<span class="sep">·</span>');
       var isExp=expanded===key;
       el.root.classList.toggle("expanded",isExp);
@@ -1406,18 +1429,18 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var longHTML='<div class="pstat"><div class="k">Longest</div><div class="v">'+(s.max===null?"–":s.max+'<small> min</small>')+'</div></div>';
     var busyHTML="";
     if(key==="all"){
-      busyHTML='<div class="pstat"><div class="k">Busiest park</div><div class="v" style="font-size:15px">'+(s.busiest?esc(s.busiest):"–")+'</div></div>';
+      busyHTML='<div class="pstat"><div class="k">Busiest right now</div><div class="v" style="font-size:15px">'+(s.busiest?esc(s.busiest):"–")+'</div></div>';
     }
-    var crowdCell='<div class="pstat"><div class="k">Crowd · est.</div>'+crowdHTML+'</div>';
+    var crowdCell='<div class="pstat"><div class="k">Crowd · est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></div>'+crowdHTML+'</div>';
     var stats=
       '<div class="pstat"><div class="k">Attractions open</div><div class="v">'+s.open+'</div></div>'+
-      '<div class="pstat"><div class="k">Avg wait</div><div class="v">'+(s.avg===null?"–":s.avg+'<small> min</small>')+'</div></div>'+
+      '<div class="pstat"><div class="k">Headliner avg <button type="button" class="info-i" data-info="'+(key==="all"?"headAll":"headPark")+'" aria-label="How this is calculated">i</button></div><div class="v">'+(s.headAvg===null?"–":s.headAvg+'<small> min</small>')+'</div></div>'+
       '<div class="pstat"><div class="k">Shortest</div><div class="v">'+(s.min===null?"–":s.min+'<small> min</small>')+'</div></div>'+
       longHTML+
       (key==="all"?(crowdCell+busyHTML):"");
     /* Single park: Hours and Crowd share their own line. "all" keeps Crowd up in the stat row. */
     var hoursRow=(key!=="all")
-      ? '<div class="hours-row">'+hoursHTML+'<div class="pstat crowd-cell"><div class="k">Crowd · est.</div>'+crowdHTML+'</div></div>'
+      ? '<div class="hours-row">'+hoursHTML+'<div class="pstat crowd-cell"><div class="k">Crowd · est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></div>'+crowdHTML+'</div></div>'
       : "";
     /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
     var ws=scopeWaits(key),spreadHTML="";
@@ -1459,10 +1482,19 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         .join("");
     }
     var shareHTML=(!usingFallback)?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 13px/1 Inter,system-ui,sans-serif;color:#06140e;background:#3dd68c;border:none;border-radius:999px;padding:10px 16px;cursor:pointer">Share this card</button></div>':"";
-    el.innerHTML='<div class="pstats">'+stats+'</div>'+hoursRow+shareHTML+spreadHTML+
+    el.innerHTML='<div class="pstats">'+stats+'</div>'+hoursRow+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
     bindStars(el);
+    var _note=el.querySelector(".info-note");
+    Array.prototype.forEach.call(el.querySelectorAll(".info-i"),function(btn){
+      btn.addEventListener("click",function(ev){
+        ev.stopPropagation();
+        var k=btn.getAttribute("data-info");
+        if(_note&&!_note.hidden&&_note.getAttribute("data-k")===k){_note.hidden=true;return;}
+        if(_note){_note.textContent=INFO_COPY[k]||"";_note.setAttribute("data-k",k);_note.hidden=false;}
+      });
+    });
     var _sb=el.querySelector(".sharebtn");
     if(_sb)_sb.addEventListener("click",function(){shareCardSnapshot(key);});
     Array.prototype.forEach.call(el.querySelectorAll(".spread [data-band]"),function(seg){
@@ -2343,7 +2375,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":live?" today.":" yesterday.");
       var sub2=pk.leastRel?(shortName(pk.leastRel.name)+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
-      html+='<div class="pw-meta"><div>Headliner avg<b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
+      html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc((function(n){return n.length>14?n.slice(0,13)+"…":n;})(shortName(pk.busiest.name)))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
+      html+='<div class="pw-note" id="pwHeadInfo" hidden>Headliner avg — the average wait across this park\'s 8 busiest rides'+(isWeek?" this week.":live?" so far today.":" that day.")+' An estimate from wait times, not official attendance.</div>';
 
       html+='<div class="pw-grid">';
       var dKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,dX=dKind?wxDerive(lastData):null;
@@ -2372,6 +2405,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
       wv.innerHTML=html;topw();
       var bk=$id("pwBack");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
+      var ii=wv.querySelector(".pw-info-i"),inote=$id("pwHeadInfo");
+      if(ii&&inote)ii.addEventListener("click",function(){inote.hidden=!inote.hidden;});
       var sp=$id("pwShareP");if(sp)sp.addEventListener("click",function(){shareParkCard(park);});
       var rrows=wv.querySelectorAll(".pw-rrow[data-rid]");
       for(var ri=0;ri<rrows.length;ri++){(function(row){var rid=row.getAttribute("data-rid");row.addEventListener("click",function(){showRide(rid,park);});row.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showRide(rid,park);}});})(rrows[ri]);}
