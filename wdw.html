@@ -2569,7 +2569,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     function drawCard(ctx,D){
       var W=D.W,H=D.H;
-      var C={ink:"#eaf3f2",muted:"#9aa6c4",muted2:"#6b7da0",green:"#3dd68c",line:"rgba(255,255,255,0.09)"};
+      var C={ink:"#eaf3f2",muted:"#9aa6c4",muted2:"#6b7da0",green:"#3dd68c",accent:"#96a1f2",line:"rgba(255,255,255,0.09)"};
       function tcol(cl){return cl==="pw-p"?"#ff6b6b":cl==="pw-l"?"#ff9f6b":cl==="pw-m"?"#ffce5c":"#3dd68c";}
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
       function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
@@ -2616,9 +2616,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         if(t.pre){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(t.pre,vx,vy);vx+=ctx.measureText(t.pre).width+10;}
         ctx.font=SG("700",54);ctx.fillStyle=col;ctx.textBaseline="alphabetic";ctx.fillText(t.big,vx,vy);vx+=ctx.measureText(t.big).width+8;
         if(t.post){ctx.font=IN("600",26);ctx.fillStyle=C.muted2;ctx.fillText(t.post,vx,vy);}
-        var nl=wrap2(t.name,tw-pad*2,IN("600",26));
+        var nl=t.note?[ell(t.name,tw-pad*2,IN("600",26))]:wrap2(t.name,tw-pad*2,IN("600",26));
         for(var j=0;j<nl.length;j++)T(nl[j],tx+pad,ty+142+j*30,IN("600",26),C.ink,"left");
-        T(ell(t.ctx,tw-pad*2,IN("500",22)),tx+pad,ty+142+nl.length*30+4,IN("500",22),C.muted,"left");
+        var ctxY=ty+142+nl.length*30+4;
+        T(ell(t.ctx,tw-pad*2,IN("500",22)),tx+pad,ctxY,IN("500",22),C.muted,"left");
+        if(t.note)T(ell(t.note,tw-pad*2,IN("600",22)),tx+pad,ctxY+30,IN("600",22),C.accent,"left");
       }
     }
 
@@ -2628,10 +2630,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(!c.busiestPark)return;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
       var h=hero(c,dateStr,isWeek,isFinal(d),true),tiles=[];
+      var live=!isFinal(d);
+      var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
       if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:"")});
       if(c.longestPeak)tiles.push({label:"LONGEST PEAK",pre:"peak",big:String(c.longestPeak.maxWait),post:"m",cls:tier(c.longestPeak.maxWait),name:c.longestPeak.name,ctx:c.longestPeak.park});
-      if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down"});
-      if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park});
+      if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(c.leastRel.id,wxX,wxKind):""});
+      if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
       if(c.drop)tiles.push({label:"BIGGEST DROP",pre:"low",big:String(c.drop.minWait),post:"m",cls:"pw-s",name:c.drop.name,ctx:"off a "+c.drop.maxWait+" peak"});
       if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park});
       emitCard({W:1080,H:1380,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
@@ -2643,12 +2647,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
       var pk=computePark(d,park);if(!pk.headAvg)return;
       var live=(!isWeek&&!isFinal(d));
+      var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min.";
       var sub=pk.leastRel?(shortName(pk.leastRel.name)+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well all day.");
       var tiles=[];
       if(pk.busiest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(pk.busiest.avgWait),post:"m",cls:tier(pk.busiest.avgWait),name:pk.busiest.name,ctx:pk.busiest.maxWait?("peak "+pk.busiest.maxWait):""});
-      if(pk.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:pk.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:pk.leastRel.name,ctx:pk.leastRel.downMinutes+" min down"});
-      if(pk.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:pk.mostOut.downEvents+"×",post:"",cls:"pw-l",name:pk.mostOut.name,ctx:pk.mostOut.downMinutes+" min total"});
+      if(pk.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:pk.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:pk.leastRel.name,ctx:pk.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(pk.leastRel.id,wxX,wxKind):""});
+      if(pk.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:pk.mostOut.downEvents+"×",post:"",cls:"pw-l",name:pk.mostOut.name,ctx:pk.mostOut.downMinutes+" min total",note:wxKind?pwWxClause(pk.mostOut.id,wxX,wxKind):""});
       if(pk.drop)tiles.push({label:"BEST VALUE",pre:"low",big:String(pk.drop.minWait),post:"m",cls:"pw-s",name:pk.drop.name,ctx:"off a "+pk.drop.maxWait+" peak"});
       emitCard({W:1080,H:1132,title:park,kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-"+park.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+dateStr+".png",shareTitle:"ParkPulse — "+park});
     }
