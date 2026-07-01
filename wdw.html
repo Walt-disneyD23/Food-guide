@@ -737,6 +737,12 @@ var CATEGORY_TAGS={
   function normName(n){return String(n).toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]/g,"")
     .replace(/\bthe\b/g," ").replace(/\bdisneys?\b/g," ").replace(/\s+/g," ").trim();}
   function categoryFor(name,kind){return kind==="show"?"Show":(CATEGORY_TAGS[normName(name)]||"Untagged");}
+  /* Curated layer: entities the feed files as ATTRACTION but are really shows/
+     films — no real queue, so the API marks them DOWN all day and they'd
+     otherwise sit in the ride list as a permanent phantom outage. Matched by
+     normalized-name fragment, same hand-edited approach as CATEGORY_TAGS. */
+  var SHOW_OVERRIDE=["vacation fun"];
+  function mislabeledShow(name){var n=normName(name);for(var i=0;i<SHOW_OVERRIDE.length;i++){if(n.indexOf(SHOW_OVERRIDE[i])>=0)return true;}return false;}
 
 function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.key===k;})||ALL_DEF);}
 
@@ -974,6 +980,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         (d.children||[]).forEach(function(c){
           if(c.entityType!=="ATTRACTION"&&c.entityType!=="SHOW")return;
           var kind=c.entityType==="SHOW"?"show":"ride";
+          if(kind==="ride"&&mislabeledShow(c.name))kind="show";
           fresh[c.id]={id:c.id,name:c.name,park:p.short,kind:kind,category:categoryFor(c.name,kind),atype:c.attractionType||null};
         });
       }).catch(function(){});
