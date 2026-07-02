@@ -506,6 +506,8 @@
   .pw-pulse::after{animation-delay:.28s;animation-duration:1.15s}
   @keyframes pwPulse{from{transform:scale(1);opacity:.8}to{transform:scale(3.4);opacity:0}}
   .pw-tile-tap{cursor:pointer}
+  .pw-oflash{position:absolute;top:0;bottom:0;background:rgba(122,132,170,.30);pointer-events:none;z-index:3;animation:pwOFlash 1.8s ease-in-out forwards}
+  @keyframes pwOFlash{0%{opacity:0}18%{opacity:1}70%{opacity:1}100%{opacity:0}}
   .pw-ticks i{position:absolute;top:0;width:1px;height:3px;background:rgba(154,166,196,.4)}
   .pw-ticks span{position:absolute;top:4px;transform:translateX(-50%);font-size:9px;color:#9aa6c4}
   .pw-times{display:flex;justify-content:space-between;font-size:9.5px;color:#9aa6c4;margin-top:4px}
@@ -2767,6 +2769,36 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       sc.scrollIntoView({block:"nearest",behavior:"smooth"});
       pwScrubTimer=setTimeout(function(){sc.classList.remove("pw-sc-on");},2200);
     }
+    /* Outages/Reliability tap → every down window flashes as a slate wash over
+       the plot. Spans are the ribbon's own slate runs (identical end logic to
+       the emitter), so the highlight and the ribbon can never disagree. */
+    function pwDownSpans(m){
+      var out=[],i;
+      for(i=0;i<m.runs.length;i++){
+        if(m.runs[i].c!=="#4d5578")continue;
+        var a=m.runs[i].t0;
+        var b=(m.runs[i].end!=null)?Math.min(m.runs[i].end,m.t1):((i<m.runs.length-1)?m.runs[i+1].t0:m.t1);
+        if(b>a)out.push([a,b]);
+      }
+      return out;
+    }
+    function pwScrubFlashDowns(rid){
+      var sc=document.querySelector('.pw-scrub[data-pwsc="'+rid+'"]'),reg=pwScrubReg[rid];
+      if(!sc||!reg)return;
+      var spans=pwDownSpans(reg.m);if(!spans.length)return;
+      var old=sc.querySelectorAll(".pw-oflash"),i;
+      for(i=0;i<old.length;i++)old[i].parentNode.removeChild(old[i]);
+      var T=reg.m.t1-reg.m.t0;
+      for(i=0;i<spans.length;i++){
+        var f=document.createElement("i");f.className="pw-oflash";
+        f.style.left=((spans[i][0]-reg.m.t0)/T*100).toFixed(2)+"%";
+        f.style.width=Math.max((spans[i][1]-spans[i][0])/T*100,0.5).toFixed(2)+"%";
+        sc.appendChild(f);
+      }
+      var made=sc.querySelectorAll(".pw-oflash");
+      setTimeout(function(){for(var q=0;q<made.length;q++)if(made[q].parentNode)made[q].parentNode.removeChild(made[q]);},1900);
+      sc.scrollIntoView({block:"nearest",behavior:"smooth"});
+    }
     function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function pwWxClause(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";return ov.frac>=0.6?("mostly "+word):ov.frac>=0.35?("partly "+word):"";}
     function pwOutName(r,clause,kind){if(r.downEvents===0)return "No outages";if(clause){var w=kind==="wind"?"Wind":kind==="rain"?"Rain":"Storm";return w+(r.downEvents===1?" hold":" holds");}return r.downEvents===1?"Down period":"Down periods";}
@@ -3147,6 +3179,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var gt=wv.querySelectorAll(".pw-grid .pw-tile");
         if(gt[0]){gt[0].classList.add("pw-tile-tap");gt[0].addEventListener("click",function(){pwScrubJump(r.id,su.peakAt,"#e23b54");});}
         if(gt[1]){gt[1].classList.add("pw-tile-tap");gt[1].addEventListener("click",function(){pwScrubJump(r.id,su.lowAt,"#15a36b");});}
+      }
+      /* Reliability / Outages tiles flash every down window on the band */
+      if(band&&r.downEvents>0){
+        var gt2=wv.querySelectorAll(".pw-grid .pw-tile");
+        for(var g2=2;g2<=3;g2++)if(gt2[g2]){
+          gt2[g2].classList.add("pw-tile-tap");
+          gt2[g2].addEventListener("click",function(){pwScrubFlashDowns(r.id);});
+        }
       }
     }
 
