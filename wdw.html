@@ -723,7 +723,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702m</span>
+    <span style="opacity:.55">· build 0702n</span>
   </footer>
 </div>
 
@@ -930,10 +930,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }else p.setAttribute("hidden","");
     this.classList.toggle("active",open);
   });
+  /* Tap-out runs in the CAPTURE phase so the dismissing tap is swallowed —
+     closing the popover is that tap's whole job; whatever sat underneath
+     (a park banner, a filter) must not also fire. Taps inside the popover
+     or on the pill pass through untouched. */
   document.addEventListener("click",function(e){
     var p=$("statusPop");if(p.hasAttribute("hidden"))return;
-    if(!p.contains(e.target)&&!$("statusPill").contains(e.target))closeStatusPop();
-  });
+    if(!p.contains(e.target)&&!$("statusPill").contains(e.target)){
+      e.stopPropagation();e.preventDefault();
+      closeStatusPop();
+    }
+  },true);
   window.addEventListener("scroll",closeStatusPop,{passive:true});
   function renderStatus(){renderStatusMeta();renderStatusCover();}
   function renderStatusMeta(){
