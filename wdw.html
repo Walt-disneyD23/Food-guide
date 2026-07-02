@@ -481,6 +481,10 @@
   .pw-meta{display:flex;gap:16px;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)}
   .pw-meta div{font-size:11px;color:#9aa6c4}
   .pw-meta b{display:block;font-family:var(--font-display);font-size:16px;color:#fff;font-weight:700;margin-top:2px}
+  .pw-band{position:relative;margin-top:14px}
+  .pw-band svg{display:block;width:100%;height:56px}
+  .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #152a47;transform:translate(-50%,-50%);box-sizing:content-box}
+  .pw-band .pw-times{display:flex;justify-content:space-between;font-size:9.5px;color:#9aa6c4;margin-top:4px}
   .pw-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
   .pw-tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--shadow-sm);min-height:94px;display:flex;flex-direction:column}
   .pw-tile .lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
@@ -2474,6 +2478,29 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(i=1;i<n;i++){if(med[i]>med[pi])pi=i;if(med[i]<med[li])li=i;}
       return{peak:Math.round(med[pi]),peakAt:s.ts[pi],low:Math.round(med[li]),lowAt:s.ts[li]};
     }
+    /* ---- full-width wait-curve band for the ride-detail hero (below the meta
+       strip). x = time in 0-100 viewBox units stretched to the card width
+       (vector-effect keeps the stroke crisp at any device width); gaps stay
+       gaps — the pen lifts when a 5-min bucket is missed, so outages read as
+       holes, never bridged. y = 0..day max (honest scale — flat means a
+       genuinely steady day). Dots mark the sustained peak/low moments (the
+       same figures the tiles report); edge labels give the curve's span.
+       Empty under an hour of snap data — one rule with pwSustained. */
+    function pwSparkBand(rid,su){
+      var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return"";
+      var ts=s.ts,vs=s.vs,n=vs.length,t0=ts[0],t1=ts[n-1];if(t1<=t0)return"";
+      var vMax=1,i;for(i=0;i<n;i++)if(vs[i]>vMax)vMax=vs[i];
+      var H=56,pad=3,ih=H-pad*2,d="",prev=null;
+      function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
+      function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
+      for(i=0;i<n;i++){d+=((prev===null||ts[i]-prev>7.5)?"M":"L")+X(ts[i])+" "+Y(vs[i]);prev=ts[i];}
+      var dots="";
+      if(su){for(i=0;i<n;i++){
+        if(ts[i]===su.peakAt)dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:#e23b54"></span>';
+        if(ts[i]===su.lowAt)dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:#15a36b"></span>';
+      }}
+      return '<div class="pw-band"><svg viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+d+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'+dots+'<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div></div>';
+    }
     function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function pwWxClause(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";return ov.frac>=0.6?("mostly "+word):ov.frac>=0.35?("partly "+word):"";}
     function pwOutName(r,clause,kind){if(r.downEvents===0)return "No outages";if(clause){var w=kind==="wind"?"Wind":kind==="rain"?"Rain":"Storm";return w+(r.downEvents===1?" hold":" holds");}return r.downEvents===1?"Down period":"Down periods";}
@@ -2765,7 +2792,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r,live,rClause))+'</div>';
-      html+='<div class="pw-meta"><div>Avg wait<b>'+(noAvg?"—":r.avgWait+"m")+'</b></div><div>Peak<b>'+(su?su.peak+'m':(r.maxWait!=null?r.maxWait+'m':'—'))+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div></div>';
+      var band=(!isWeek)?pwSparkBand(r.id,su):"";
+      html+='<div class="pw-meta"><div>Avg wait<b>'+(noAvg?"—":r.avgWait+"m")+'</b></div><div>Peak<b>'+(su?su.peak+'m':(r.maxWait!=null?r.maxWait+'m':'—'))+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div>'+band+'</div>';
       html+='<div class="pw-grid">';
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
