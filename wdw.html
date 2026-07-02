@@ -485,7 +485,7 @@
   .pw-plot{position:relative}
   .pw-band .pw-line{display:block;width:100%;height:76px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #152a47;transform:translate(-50%,-50%);box-sizing:content-box}
-  .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:11px;font-weight:700}
+  .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:11px;font-weight:700;text-shadow:0 0 3px #10243a,0 0 3px #10243a,0 0 3px #10243a}
   .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
   .pw-ribbon{border-radius:3px;overflow:hidden;margin-top:3px}
   .pw-ribbon svg{display:block;width:100%;height:8px}
@@ -2507,10 +2507,24 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var H=76,pad=3,ih=H-pad*2;
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
-      /* line + glow, segment by segment (gaps stay holes) */
+      /* one raw pass inside [t0,t1]: numeric ticks feed the ribbon; down-tick
+         times classify gaps. Three states per tick: operating (v>=0), down
+         (v<0), and NO DATA (null cell / missed snapshot row). */
+      var col=lastData.snap.ids.indexOf(rid),rws=lastData.snap.rows,raw=[],negT=[];
+      for(i=0;i<rws.length;i++){
+        var rt=rws[i].t;if(rt<t0||rt>t1)continue;
+        var w=rws[i].w;if(col>=w.length)continue;
+        var v0=w[col];if(typeof v0!=="number")continue;
+        raw.push([rt,v0]);if(v0<0)negT.push(rt);
+      }
+      function gapDown(a,b){for(var q=0;q<negT.length;q++)if(negT[q]>a&&negT[q]<b)return true;return false;}
+      /* line + glow, segment by segment. A gap breaks the pen only when it's
+         real: any down tick inside it, or 2+ missing ticks (a no-data void).
+         A lone missing tick between two operating samples is a reporting blip
+         and is bridged — a hole would imply an event that never happened. */
       var segs=[],seg=[],prev=null,j,k;
       for(i=0;i<n;i++){
-        if(prev!==null&&ts[i]-prev>7.5){segs.push(seg);seg=[];}
+        if(prev!==null&&ts[i]-prev>7.5&&(gapDown(prev,ts[i])||ts[i]-prev>12.5)){segs.push(seg);seg=[];}
         seg.push([X(ts[i]),Y(vs[i])]);prev=ts[i];
       }
       segs.push(seg);
@@ -2535,19 +2549,22 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:'+c+'"></span>';
         dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+X(ts[i])+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+c+'">'+val+'</span>';
       }}
-      /* tier ribbon from the RAW snap ticks (negatives = down = slate), run-merged */
-      var col=lastData.snap.ids.indexOf(rid),rws=lastData.snap.rows,runs=[],cur=null;
-      for(i=0;i<rws.length;i++){
-        var rt=rws[i].t;if(rt<t0||rt>t1)continue;
-        var w=rws[i].w;if(col>=w.length)continue;
-        var v0=w[col];if(typeof v0!=="number")continue;
-        var cc=v0<0?"#4d5578":(v0>=45?"#e23b54":v0>=30?"#ef6c3b":v0>=15?"#dc8a06":"#15a36b");
-        if(cur&&cur.c===cc)cur.t1=rt;else{if(cur)runs.push(cur);cur={c:cc,t0:rt,t1:rt};}
+      /* tier ribbon from the raw ticks (negatives = down = slate), run-merged.
+         A jump >12.5 min between numeric ticks is a no-data void: the run is
+         capped at its own last bucket and the strip goes blank until data
+         resumes — the ribbon never paints over time it can't vouch for. */
+      var runs=[],cur=null,prevT=null;
+      for(i=0;i<raw.length;i++){
+        var rt2=raw[i][0],v2=raw[i][1];
+        var cc=v2<0?"#4d5578":(v2>=45?"#e23b54":v2>=30?"#ef6c3b":v2>=15?"#dc8a06":"#15a36b");
+        if(cur&&rt2-prevT>12.5){cur.end=prevT+5;runs.push(cur);cur=null;}
+        if(!(cur&&cur.c===cc)){if(cur)runs.push(cur);cur={c:cc,t0:rt2};}
+        prevT=rt2;
       }
       if(cur)runs.push(cur);
       var rib="";
       for(i=0;i<runs.length;i++){
-        var xa=parseFloat(X(runs[i].t0)),xb=(i<runs.length-1)?parseFloat(X(runs[i+1].t0)):100;
+        var xa=parseFloat(X(runs[i].t0)),xb=(runs[i].end!=null)?parseFloat(X(Math.min(runs[i].end,t1))):((i<runs.length-1)?parseFloat(X(runs[i+1].t0)):100);
         if(xb-xa<0.01)continue;
         rib+='<rect x="'+xa.toFixed(2)+'" y="0" width="'+(xb-xa).toFixed(2)+'" height="8" fill="'+runs[i].c+'"/>';
       }
