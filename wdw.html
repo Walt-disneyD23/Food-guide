@@ -481,8 +481,9 @@
   .pw-meta{display:flex;gap:16px;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)}
   .pw-meta div{font-size:11px;color:#9aa6c4}
   .pw-meta b{display:block;font-family:var(--font-display);font-size:16px;color:#fff;font-weight:700;margin-top:2px}
-  .pw-band{position:relative;margin-top:14px}
-  .pw-band .pw-line{display:block;width:100%;height:48px}
+  .pw-band{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)}
+  .pw-plot{position:relative}
+  .pw-band .pw-line{display:block;width:100%;height:76px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #152a47;transform:translate(-50%,-50%);box-sizing:content-box}
   .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:11px;font-weight:700}
   .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
@@ -2503,7 +2504,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return"";
       var ts=s.ts,vs=s.vs,n=vs.length,t0=ts[0],t1=ts[n-1];if(t1<=t0)return"";
       var vMax=1,i;for(i=0;i<n;i++)if(vs[i]>vMax)vMax=vs[i];
-      var H=48,pad=3,ih=H-pad*2;
+      var H=76,pad=3,ih=H-pad*2;
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
       /* line + glow, segment by segment (gaps stay holes) */
@@ -2559,11 +2560,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
         :('<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div>');
       var leg='<div class="pw-legend"><span><i style="background:#15a36b"></i>&lt;15m</span><span><i style="background:#dc8a06"></i>15-29</span><span><i style="background:#ef6c3b"></i>30-44</span><span><i style="background:#e23b54"></i>45m+</span><span><i style="background:#4d5578"></i>down</span></div>';
-      return '<div class="pw-band">'
+      return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
         +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
         +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
-        +'</svg>'+dots
+        +'</svg>'+dots+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
         +tickRow+leg+'</div>';
     }
@@ -2859,7 +2860,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r,live,rClause))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su):"";
-      html+='<div class="pw-meta"><div>Avg wait<b>'+(noAvg?"—":r.avgWait+"m")+'</b></div><div>Peak<b>'+(su?su.peak+'m':(r.maxWait!=null?r.maxWait+'m':'—'))+'</b></div><div>Reliability<b>'+(r.uptimePct!=null?r.uptimePct+'%':'—')+'</b></div></div>'+band+'</div>';
+      html+=band+'</div>';
       html+='<div class="pw-grid">';
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
