@@ -2565,9 +2565,15 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         prevT=rt2;
       }
       if(cur)runs.push(cur);
-      /* 3-hourly ticks; emitters fall back to edge times when none fit */
-      var ticks=[],h=Math.floor(t0/60)+1;
-      for(;h*60<t1;h++){if(h%3===0)ticks.push({t:h*60,label:((h+11)%12+1)+(h<12?"a":"p")});}
+      /* 3-hourly ticks. A short span (e.g. a live "so far today" morning card)
+         can fit fewer than two 3-hour marks, leaving one orphan label —
+         densify to hourly; and if even the hourly grid can't place two marks,
+         clear the set so the emitters' edge-time fallback labels both ends
+         instead. Full-day bands always fit 4+ marks and are untouched. */
+      var tkBuild=function(step){var a=[],q;for(q=Math.floor(t0/60)+1;q*60<t1;q++){if(q%step===0)a.push({t:q*60,label:((q+11)%12+1)+(q<12?"a":"p")});}return a;};
+      var ticks=tkBuild(3);
+      if(ticks.length<2)ticks=tkBuild(1);
+      if(ticks.length<2)ticks=[];
       /* classify voids via the day's schedule (parksByDate): if ≥60% of the
          void lies outside every open window (regular hours + extras), the
          park was provably CLOSED there (event nights: close → later ticketed
