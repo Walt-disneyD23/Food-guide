@@ -2515,26 +2515,32 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       function gapDown(a,b){for(var q=0;q<negT.length;q++)if(negT[q]>a&&negT[q]<b)return true;return false;}
       /* segments in [time,value] space; clean voids (no down inside) recorded
          for labeling — a down gap is self-explained by its slate, a void isn't.
-         Boundary tolerance: rides often bank one DOWN/CLOSED tick right as the
-         park shuts, so a LONG gap still counts as a void when its negatives
-         are only edge noise (≤2 ticks, all within 7.5 min of an edge); any
-         negative deeper inside keeps it a down gap. Short gaps are unchanged
-         (a lone mid-day down tick still breaks + slates). */
-      function gapVoid(a,b){
-        var cnt=0,q5;
-        for(q5=0;q5<negT.length;q5++){
-          var tq=negT[q5];if(tq<=a||tq>=b)continue;
-          cnt++;
-          if(tq-a>7.5&&b-tq>7.5)return false;
-        }
-        return cnt<=2;
+         Edge-trim: contiguous down ticks hugging a gap edge are the ride's own
+         observed down run (the slate ribbon already tells that story), so walk
+         them inward (each ≤7.5 min from the last) and judge only the quiet
+         core. The core must be clean (no deeper negatives left) and still
+         long (>17.5 min) to count as a void; otherwise the gap stays a plain
+         down gap. Generalizes the old ≤2-edge-tick tolerance — Test Track
+         Jul 1: a 40-min down run, a 2-hour schedule-proven closure, one
+         re-arm tick → slate and "park closed" sit side by side, honestly.
+         Short gaps are unchanged (a lone mid-day down tick still breaks +
+         slates). */
+      function gapTrim(a,b){
+        var ins=[],q5;
+        for(q5=0;q5<negT.length;q5++){var tq=negT[q5];if(tq>a&&tq<b)ins.push(tq);}
+        var a2=a,b2=b,lo=0,hi=ins.length-1;
+        while(lo<=hi&&ins[lo]-a2<=7.5){a2=ins[lo];lo++;}
+        while(hi>=lo&&b2-ins[hi]<=7.5){b2=ins[hi];hi--;}
+        if(lo<=hi)return null;
+        if(b2-a2<=17.5)return null;
+        return [a2,b2];
       }
       var segs=[],seg=[],prev=null,voids=[];
       for(i=0;i<n;i++){
         if(prev!==null&&ts[i]-prev>7.5){
           if(ts[i]-prev>17.5){
             segs.push(seg);seg=[];
-            if(gapVoid(prev,ts[i]))voids.push([prev,ts[i]]);
+            var tv=gapTrim(prev,ts[i]);if(tv)voids.push(tv);
           }else if(gapDown(prev,ts[i])){segs.push(seg);seg=[];}
         }
         seg.push([ts[i],vs[i]]);prev=ts[i];
