@@ -709,6 +709,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
+    <span style="opacity:.55">· build 0702e</span>
   </footer>
 </div>
 
@@ -2519,15 +2520,45 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return null;
       var ts=s.ts,vs=s.vs,n=vs.length,t0=ts[0],t1=ts[n-1];if(t1<=t0)return null;
       var vMax=1,i;for(i=0;i<n;i++)if(vs[i]>vMax)vMax=vs[i];
-      /* one raw pass inside [t0,t1]: numeric ticks feed the ribbon; down-tick
+      /* full-day scan of the column: numeric ticks feed the ribbon; down-tick
          times classify gaps. Three states per tick: operating (v>=0), down
          (v<0), and NO DATA (null cell / missed snapshot row). */
-      var col=lastData.snap.ids.indexOf(rid),rws=lastData.snap.rows,raw=[],negT=[];
+      var col=lastData.snap.ids.indexOf(rid),rws=lastData.snap.rows,dayRaw=[];
       for(i=0;i<rws.length;i++){
-        var rt=rws[i].t;if(rt<t0||rt>t1)continue;
-        var w=rws[i].w;if(col>=w.length)continue;
+        var w=rws[i].w;if(!w||col>=w.length)continue;
         var v0=w[col];if(typeof v0!=="number")continue;
-        raw.push([rt,v0]);if(v0<0)negT.push(rt);
+        dayRaw.push([rws[i].t,v0]);
+      }
+      /* Domain extension: an outage that starts before the ride's first
+         operating tick (or is still running at its last) used to fall off the
+         band entirely — sentence said "down 86 min", chart showed a clean day
+         (Tower of Terror, Jul 2). Walk outward from the operating span over
+         CONTIGUOUS negatives (≤7.5 min apart) and extend to the outermost
+         DOWN (-1) tick, but only when -1 is the MAJORITY of that stretch —
+         so a scheduled late opening (a wall of CLOSED ticks, e.g. Belle)
+         never masquerades as slate. Symmetric on the right, so a ride that
+         is down right now shows its live outage at the today-view's edge. */
+      function extend(fromT,dir){
+        var run=[],cur=fromT,j2;
+        for(j2=(dir<0?dayRaw.length-1:0);j2>=0&&j2<dayRaw.length;j2+=(dir<0?-1:1)){
+          var e=dayRaw[j2],et=e[0];
+          if(dir<0?(et>=fromT):(et<=fromT))continue;
+          if(e[1]>=0)break;
+          if(Math.abs(et-cur)>7.5)break;
+          run.push(e);cur=et;
+        }
+        var edge=null,dn=0,tot=0;
+        for(j2=0;j2<run.length;j2++){if(run[j2][1]===-1)edge=run[j2][0];}
+        if(edge===null)return fromT;
+        for(j2=0;j2<run.length;j2++){var rt3=run[j2][0];
+          if(dir<0?(rt3>=edge):(rt3<=edge)){tot++;if(run[j2][1]===-1)dn++;}}
+        return (dn*2>tot)?edge:fromT;
+      }
+      t0=extend(t0,-1);t1=extend(t1,1);
+      var raw=[],negT=[];
+      for(i=0;i<dayRaw.length;i++){
+        var rt=dayRaw[i][0];if(rt<t0||rt>t1)continue;
+        raw.push(dayRaw[i]);if(dayRaw[i][1]<0)negT.push(rt);
       }
       function gapDown(a,b){for(var q=0;q<negT.length;q++)if(negT[q]>a&&negT[q]<b)return true;return false;}
       /* segments in [time,value] space; clean voids (no down inside) recorded
@@ -2781,10 +2812,18 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var downT=[];for(i=0;i<m.samples.length;i++)if(m.samples[i][1]<0)downT.push(m.samples[i][0]);
       if(!downT.length)return out;
       function hasDown(a,b){for(var q=0;q<downT.length;q++)if(downT[q]>=a&&downT[q]<=b)return true;return false;}
-      /* line gaps between segments, sliced around any labeled void core */
+      /* line gaps: leading (band start → first segment), between segments,
+         and trailing (last segment → band end) — sliced around labeled voids */
+      var gapsL=[];
+      if(m.segs.length&&m.segs[0].length&&m.segs[0][0][0]-m.t0>1)gapsL.push([m.t0,m.segs[0][0][0]]);
       for(i=1;i<m.segs.length;i++){
         var pa=m.segs[i-1],pb=m.segs[i];if(!pa.length||!pb.length)continue;
-        var a=pa[pa.length-1][0],b=pb[0][0];
+        gapsL.push([pa[pa.length-1][0],pb[0][0]]);
+      }
+      var lastSeg=m.segs.length?m.segs[m.segs.length-1]:null;
+      if(lastSeg&&lastSeg.length&&m.t1-lastSeg[lastSeg.length-1][0]>1)gapsL.push([lastSeg[lastSeg.length-1][0],m.t1]);
+      for(i=0;i<gapsL.length;i++){
+        var a=gapsL[i][0],b=gapsL[i][1];
         var slices=[[a,b]];
         for(j=0;j<m.voids.length;j++){var v=m.voids[j];
           if(v.t0>=a&&v.t1<=b){slices=[[a,v.t0],[v.t1,b]];break;}}
