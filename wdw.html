@@ -482,9 +482,18 @@
   .pw-meta div{font-size:11px;color:#9aa6c4}
   .pw-meta b{display:block;font-family:var(--font-display);font-size:16px;color:#fff;font-weight:700;margin-top:2px}
   .pw-band{position:relative;margin-top:14px}
-  .pw-band svg{display:block;width:100%;height:56px}
+  .pw-band .pw-line{display:block;width:100%;height:48px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #152a47;transform:translate(-50%,-50%);box-sizing:content-box}
-  .pw-band .pw-times{display:flex;justify-content:space-between;font-size:9.5px;color:#9aa6c4;margin-top:4px}
+  .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:11px;font-weight:700}
+  .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
+  .pw-ribbon{border-radius:3px;overflow:hidden;margin-top:3px}
+  .pw-ribbon svg{display:block;width:100%;height:8px}
+  .pw-ticks{position:relative;height:15px;margin-top:2px}
+  .pw-ticks i{position:absolute;top:0;width:1px;height:3px;background:rgba(154,166,196,.4)}
+  .pw-ticks span{position:absolute;top:4px;transform:translateX(-50%);font-size:9px;color:#9aa6c4}
+  .pw-times{display:flex;justify-content:space-between;font-size:9.5px;color:#9aa6c4;margin-top:4px}
+  .pw-legend{display:flex;gap:10px;margin-top:7px;font-size:8.5px;color:#9aa6c4;flex-wrap:wrap}
+  .pw-legend i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:4px}
   .pw-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
   .pw-tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--shadow-sm);min-height:94px;display:flex;flex-direction:column}
   .pw-tile .lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
@@ -2479,27 +2488,84 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       return{peak:Math.round(med[pi]),peakAt:s.ts[pi],low:Math.round(med[li]),lowAt:s.ts[li]};
     }
     /* ---- full-width wait-curve band for the ride-detail hero (below the meta
-       strip). x = time in 0-100 viewBox units stretched to the card width
-       (vector-effect keeps the stroke crisp at any device width); gaps stay
-       gaps — the pen lifts when a 5-min bucket is missed, so outages read as
-       holes, never bridged. y = 0..day max (honest scale — flat means a
-       genuinely steady day). Dots mark the sustained peak/low moments (the
-       same figures the tiles report); edge labels give the curve's span.
-       Empty under an hour of snap data — one rule with pwSustained. */
+       strip). Anatomy, top to bottom: (1) the line — x = time in 0-100 viewBox
+       units stretched to the card width (vector-effect keeps the stroke crisp),
+       y = 0..day max, soft area glow beneath, pen lifts at missed 5-min buckets
+       so outages read as holes, never bridged; (2) sustained peak/low dots with
+       their values beside them (the same figures the tiles report), labels
+       flipping sides near edges; (3) an 8px tier ribbon built from the RAW snap
+       ticks — tier colors for operating waits, slate for down/negative codes,
+       so every hole in the line sits above a slate block that explains it;
+       (4) 3-hourly time ticks (edge times as fallback on short spans);
+       (5) a numeric tier legend. Empty under an hour of snap data — one rule
+       with pwSustained. */
     function pwSparkBand(rid,su){
       var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return"";
       var ts=s.ts,vs=s.vs,n=vs.length,t0=ts[0],t1=ts[n-1];if(t1<=t0)return"";
       var vMax=1,i;for(i=0;i<n;i++)if(vs[i]>vMax)vMax=vs[i];
-      var H=56,pad=3,ih=H-pad*2,d="",prev=null;
+      var H=48,pad=3,ih=H-pad*2;
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
-      for(i=0;i<n;i++){d+=((prev===null||ts[i]-prev>7.5)?"M":"L")+X(ts[i])+" "+Y(vs[i]);prev=ts[i];}
+      /* line + glow, segment by segment (gaps stay holes) */
+      var segs=[],seg=[],prev=null,j,k;
+      for(i=0;i<n;i++){
+        if(prev!==null&&ts[i]-prev>7.5){segs.push(seg);seg=[];}
+        seg.push([X(ts[i]),Y(vs[i])]);prev=ts[i];
+      }
+      segs.push(seg);
+      var lineD="",glowD="";
+      for(j=0;j<segs.length;j++){
+        var p=segs[j];if(!p.length)continue;
+        for(k=0;k<p.length;k++)lineD+=(k?"L":"M")+p[k][0]+" "+p[k][1];
+        if(p.length>1){
+          for(k=0;k<p.length;k++)glowD+=(k?"L":"M")+p[k][0]+" "+p[k][1];
+          glowD+="L"+p[p.length-1][0]+" "+H+"L"+p[0][0]+" "+H+"Z";
+        }
+      }
+      /* sustained peak/low dots + value labels (labels flip near edges);
+         suppressed on flat days — marking peak/low on a flat line is noise */
       var dots="";
-      if(su){for(i=0;i<n;i++){
-        if(ts[i]===su.peakAt)dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:#e23b54"></span>';
-        if(ts[i]===su.lowAt)dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:#15a36b"></span>';
+      if(su&&su.peak!==su.low){for(i=0;i<n;i++){
+        var isP=ts[i]===su.peakAt,isL=ts[i]===su.lowAt;
+        if(!isP&&!isL)continue;
+        var xN=parseFloat(X(ts[i])),yN=parseFloat(Y(vs[i]));
+        var c=isP?"#e23b54":"#15a36b",val=isP?su.peak:su.low;
+        var above=isP?(yN>=16):(yN>H-18);
+        dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:'+c+'"></span>';
+        dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+X(ts[i])+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+c+'">'+val+'</span>';
       }}
-      return '<div class="pw-band"><svg viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+d+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'+dots+'<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div></div>';
+      /* tier ribbon from the RAW snap ticks (negatives = down = slate), run-merged */
+      var col=lastData.snap.ids.indexOf(rid),rws=lastData.snap.rows,runs=[],cur=null;
+      for(i=0;i<rws.length;i++){
+        var rt=rws[i].t;if(rt<t0||rt>t1)continue;
+        var w=rws[i].w;if(col>=w.length)continue;
+        var v0=w[col];if(typeof v0!=="number")continue;
+        var cc=v0<0?"#4d5578":(v0>=45?"#e23b54":v0>=30?"#ef6c3b":v0>=15?"#dc8a06":"#15a36b");
+        if(cur&&cur.c===cc)cur.t1=rt;else{if(cur)runs.push(cur);cur={c:cc,t0:rt,t1:rt};}
+      }
+      if(cur)runs.push(cur);
+      var rib="";
+      for(i=0;i<runs.length;i++){
+        var xa=parseFloat(X(runs[i].t0)),xb=(i<runs.length-1)?parseFloat(X(runs[i+1].t0)):100;
+        if(xb-xa<0.01)continue;
+        rib+='<rect x="'+xa.toFixed(2)+'" y="0" width="'+(xb-xa).toFixed(2)+'" height="8" fill="'+runs[i].c+'"/>';
+      }
+      /* 3-hourly ticks; edge times as fallback when the span holds none */
+      var ticks="",h=Math.floor(t0/60)+1;
+      for(;h*60<t1;h++){if(h%3===0){
+        var hx=X(h*60),hl=((h+11)%12+1)+(h<12?"a":"p");
+        ticks+='<i style="left:'+hx+'%"></i><span style="left:'+hx+'%">'+hl+'</span>';
+      }}
+      var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
+        :('<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div>');
+      var leg='<div class="pw-legend"><span><i style="background:#15a36b"></i>&lt;15m</span><span><i style="background:#dc8a06"></i>15-29</span><span><i style="background:#ef6c3b"></i>30-44</span><span><i style="background:#e23b54"></i>45m+</span><span><i style="background:#4d5578"></i>down</span></div>';
+      return '<div class="pw-band">'
+        +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
+        +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
+        +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
+        +'</svg>'+dots
+        +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
+        +tickRow+leg+'</div>';
     }
     function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function pwWxClause(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";return ov.frac>=0.6?("mostly "+word):ov.frac>=0.35?("partly "+word):"";}
