@@ -2488,25 +2488,19 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(i=1;i<n;i++){if(med[i]>med[pi])pi=i;if(med[i]<med[li])li=i;}
       return{peak:Math.round(med[pi]),peakAt:s.ts[pi],low:Math.round(med[li]),lowAt:s.ts[li]};
     }
-    /* ---- full-width wait-curve band for the ride-detail hero (below the meta
-       strip). Anatomy, top to bottom: (1) the line — x = time in 0-100 viewBox
-       units stretched to the card width (vector-effect keeps the stroke crisp),
-       y = 0..day max, soft area glow beneath, pen lifts at missed 5-min buckets
-       so outages read as holes, never bridged; (2) sustained peak/low dots with
-       their values beside them (the same figures the tiles report), labels
-       flipping sides near edges; (3) an 8px tier ribbon built from the RAW snap
-       ticks — tier colors for operating waits, slate for down/negative codes,
-       so every hole in the line sits above a slate block that explains it;
-       (4) 3-hourly time ticks (edge times as fallback on short spans);
-       (5) a numeric tier legend. Empty under an hour of snap data — one rule
-       with pwSustained. */
-    function pwSparkBand(rid,su){
-      var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return"";
-      var ts=s.ts,vs=s.vs,n=vs.length,t0=ts[0],t1=ts[n-1];if(t1<=t0)return"";
+    /* ---- shared band model: everything the wait-curve band KNOWS, in one
+       place — the operating series, the three-state gap classifier (down tick
+       inside = break; one-two missing polls bridge; 3+ missing = no-data
+       void; tuned against July 1's real missed-cycle windows), tier-ribbon
+       runs from the raw ticks, sustained peak/low dots (suppressed on flat
+       days), and 3-hourly ticks. Consumed by pwSparkBand (the SVG band in the
+       ride-detail hero) AND by the share card's canvas band, so the two
+       renderings can never drift. Null when under an hour of snap data —
+       one rule with pwSustained. */
+    function pwBandModel(rid,su){
+      var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return null;
+      var ts=s.ts,vs=s.vs,n=vs.length,t0=ts[0],t1=ts[n-1];if(t1<=t0)return null;
       var vMax=1,i;for(i=0;i<n;i++)if(vs[i]>vMax)vMax=vs[i];
-      var H=76,pad=3,ih=H-pad*2;
-      function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
-      function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
       /* one raw pass inside [t0,t1]: numeric ticks feed the ribbon; down-tick
          times classify gaps. Three states per tick: operating (v>=0), down
          (v<0), and NO DATA (null cell / missed snapshot row). */
@@ -2518,44 +2512,23 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         raw.push([rt,v0]);if(v0<0)negT.push(rt);
       }
       function gapDown(a,b){for(var q=0;q<negT.length;q++)if(negT[q]>a&&negT[q]<b)return true;return false;}
-      /* line + glow, segment by segment. A gap breaks the pen only when it's
-         real: any down tick inside it, or 3+ missing ticks (a no-data void).
-         One or two consecutive missed polls (~15 min) between two operating
-         samples is a reporting blip and is bridged — a hole would imply an
-         event that never happened. Tuned against July 1's real missed-cycle
-         windows (8-14 min, resort-wide, zero down ticks inside). */
-      var segs=[],seg=[],prev=null,j,k;
+      /* segments in [time,value] space */
+      var segs=[],seg=[],prev=null;
       for(i=0;i<n;i++){
         if(prev!==null&&ts[i]-prev>7.5&&(gapDown(prev,ts[i])||ts[i]-prev>17.5)){segs.push(seg);seg=[];}
-        seg.push([X(ts[i]),Y(vs[i])]);prev=ts[i];
+        seg.push([ts[i],vs[i]]);prev=ts[i];
       }
       segs.push(seg);
-      var lineD="",glowD="";
-      for(j=0;j<segs.length;j++){
-        var p=segs[j];if(!p.length)continue;
-        for(k=0;k<p.length;k++)lineD+=(k?"L":"M")+p[k][0]+" "+p[k][1];
-        if(p.length>1){
-          for(k=0;k<p.length;k++)glowD+=(k?"L":"M")+p[k][0]+" "+p[k][1];
-          glowD+="L"+p[p.length-1][0]+" "+H+"L"+p[0][0]+" "+H+"Z";
-        }
-      }
-      /* sustained peak/low dots + value labels (labels flip near edges);
-         suppressed on flat days — marking peak/low on a flat line is noise */
-      var dots="";
+      /* sustained peak/low dots; none on flat days (a "peak 0" marker on a
+         flat line is noise — the tiles already carry it) */
+      var dots=[];
       if(su&&su.peak!==su.low){for(i=0;i<n;i++){
-        var isP=ts[i]===su.peakAt,isL=ts[i]===su.lowAt;
-        if(!isP&&!isL)continue;
-        var xN=parseFloat(X(ts[i])),yN=parseFloat(Y(vs[i]));
-        var c=isP?"#e23b54":"#15a36b",val=isP?su.peak:su.low;
-        var above=isP?(yN>=16):(yN>H-18);
-        dots+='<span class="pw-dot" style="left:'+X(ts[i])+'%;top:'+Y(vs[i])+'px;background:'+c+'"></span>';
-        dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+X(ts[i])+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+c+'">'+val+'</span>';
+        if(ts[i]===su.peakAt)dots.push({t:ts[i],v:vs[i],val:su.peak,c:"#e23b54",peak:true});
+        if(ts[i]===su.lowAt)dots.push({t:ts[i],v:vs[i],val:su.low,c:"#15a36b",peak:false});
       }}
-      /* tier ribbon from the raw ticks (negatives = down = slate), run-merged.
-         A jump >17.5 min between numeric ticks (3+ missing polls) is a no-data
-         void: the run is capped at its own last bucket and the strip goes
-         blank until data resumes — the ribbon never paints over time it can't
-         vouch for. Shorter silences bridge, matching the line. */
+      /* tier-ribbon runs (negatives = down = slate), run-merged; a jump
+         >17.5 min between numeric ticks caps the run at its own last bucket
+         so the ribbon never paints over time it can't vouch for */
       var runs=[],cur=null,prevT=null;
       for(i=0;i<raw.length;i++){
         var rt2=raw[i][0],v2=raw[i][1];
@@ -2565,18 +2538,45 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         prevT=rt2;
       }
       if(cur)runs.push(cur);
-      var rib="";
-      for(i=0;i<runs.length;i++){
-        var xa=parseFloat(X(runs[i].t0)),xb=(runs[i].end!=null)?parseFloat(X(Math.min(runs[i].end,t1))):((i<runs.length-1)?parseFloat(X(runs[i+1].t0)):100);
-        if(xb-xa<0.01)continue;
-        rib+='<rect x="'+xa.toFixed(2)+'" y="0" width="'+(xb-xa).toFixed(2)+'" height="8" fill="'+runs[i].c+'"/>';
+      /* 3-hourly ticks; emitters fall back to edge times when none fit */
+      var ticks=[],h=Math.floor(t0/60)+1;
+      for(;h*60<t1;h++){if(h%3===0)ticks.push({t:h*60,label:((h+11)%12+1)+(h<12?"a":"p")});}
+      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks};
+    }
+    /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
+       x = time in 0-100 viewBox units stretched to the card width
+       (vector-effect keeps the stroke crisp); y = 0..day max. */
+    function pwSparkBand(rid,su){
+      var m=pwBandModel(rid,su);if(!m)return"";
+      var t0=m.t0,t1=m.t1,vMax=m.vMax,H=76,pad=3,ih=H-pad*2,i,j,k;
+      function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
+      function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
+      var lineD="",glowD="";
+      for(j=0;j<m.segs.length;j++){
+        var p=m.segs[j];if(!p.length)continue;
+        for(k=0;k<p.length;k++)lineD+=(k?"L":"M")+X(p[k][0])+" "+Y(p[k][1]);
+        if(p.length>1){
+          for(k=0;k<p.length;k++)glowD+=(k?"L":"M")+X(p[k][0])+" "+Y(p[k][1]);
+          glowD+="L"+X(p[p.length-1][0])+" "+H+"L"+X(p[0][0])+" "+H+"Z";
+        }
       }
-      /* 3-hourly ticks; edge times as fallback when the span holds none */
-      var ticks="",h=Math.floor(t0/60)+1;
-      for(;h*60<t1;h++){if(h%3===0){
-        var hx=X(h*60),hl=((h+11)%12+1)+(h<12?"a":"p");
-        ticks+='<i style="left:'+hx+'%"></i><span style="left:'+hx+'%">'+hl+'</span>';
-      }}
+      var dots="";
+      for(i=0;i<m.dots.length;i++){
+        var dt=m.dots[i],xS=X(dt.t),yS=Y(dt.v),xN=parseFloat(xS),yN=parseFloat(yS);
+        var above=dt.peak?(yN>=16):(yN>H-18);
+        dots+='<span class="pw-dot" style="left:'+xS+'%;top:'+yS+'px;background:'+dt.c+'"></span>';
+        dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+xS+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+dt.c+'">'+dt.val+'</span>';
+      }
+      var rib="";
+      for(i=0;i<m.runs.length;i++){
+        var xa=parseFloat(X(m.runs[i].t0)),xb=(m.runs[i].end!=null)?parseFloat(X(Math.min(m.runs[i].end,t1))):((i<m.runs.length-1)?parseFloat(X(m.runs[i+1].t0)):100);
+        if(xb-xa<0.01)continue;
+        rib+='<rect x="'+xa.toFixed(2)+'" y="0" width="'+(xb-xa).toFixed(2)+'" height="8" fill="'+m.runs[i].c+'"/>';
+      }
+      var ticks="";
+      for(i=0;i<m.ticks.length;i++){
+        ticks+='<i style="left:'+X(m.ticks[i].t)+'%"></i><span style="left:'+X(m.ticks[i].t)+'%">'+m.ticks[i].label+'</span>';
+      }
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
         :('<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div>');
       var leg='<div class="pw-legend"><span><i style="background:#15a36b"></i>&lt;15m</span><span><i style="background:#dc8a06"></i>15-29</span><span><i style="background:#ef6c3b"></i>30-44</span><span><i style="background:#e23b54"></i>45m+</span><span><i style="background:#4d5578"></i>down</span></div>';
@@ -2790,6 +2790,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var ah=hy+hl.length*62;
       if(D.sub)T(ell(D.sub,R-L,IN("500",27)),L,ah+12,IN("500",27),C.muted,"left");
       var gt=ah+(D.sub?56:30),gap=22,tw=(R-L-gap)/2,th=252;
+      if(D.band){var bTop=ah+(D.sub?52:26);gt=bTop+bandBlock(L,bTop,R-L,D.band);}
       for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
       var fy=cy+ch-86;
       ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
@@ -2811,6 +2812,64 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var ctxY=ty+142+nl.length*30+4;
         T(ell(t.ctx,tw-pad*2,IN("500",22)),tx+pad,ctxY,IN("500",22),C.muted,"left");
         if(t.note)T(ell(t.note,tw-pad*2,IN("600",22)),tx+pad,ctxY+30,IN("600",22),C.accent,"left");
+      }
+
+      /* Canvas twin of the ride hero's wait-curve band, drawn from the same
+         pwBandModel so app and card can never disagree. Returns block height. */
+      function bandBlock(bx,by,bw,m){
+        var BH=340,i,j;
+        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx+bw,by);ctx.stroke();
+        var pT=by+26,pH=190,pB=pT+pH,vpad=8;
+        function BX(t){return bx+(t-m.t0)/(m.t1-m.t0)*bw;}
+        function BY(v){return pT+vpad+(pH-2*vpad)*(1-v/m.vMax);}
+        for(i=0;i<m.segs.length;i++){
+          var p=m.segs[i];if(p.length<2)continue;
+          ctx.beginPath();ctx.moveTo(BX(p[0][0]),BY(p[0][1]));
+          for(j=1;j<p.length;j++)ctx.lineTo(BX(p[j][0]),BY(p[j][1]));
+          ctx.lineTo(BX(p[p.length-1][0]),pB);ctx.lineTo(BX(p[0][0]),pB);ctx.closePath();
+          ctx.fillStyle="rgba(150,161,242,0.13)";ctx.fill();
+          ctx.beginPath();ctx.moveTo(BX(p[0][0]),BY(p[0][1]));
+          for(j=1;j<p.length;j++)ctx.lineTo(BX(p[j][0]),BY(p[j][1]));
+          ctx.strokeStyle=C.accent;ctx.lineWidth=4.5;ctx.lineJoin="round";ctx.lineCap="round";ctx.stroke();
+        }
+        var ry=pB+8,rh=20;
+        ctx.save();rr(bx,ry,bw,rh,6);ctx.clip();
+        for(i=0;i<m.runs.length;i++){
+          var xa=BX(m.runs[i].t0),xb=(m.runs[i].end!=null)?BX(Math.min(m.runs[i].end,m.t1)):((i<m.runs.length-1)?BX(m.runs[i+1].t0):bx+bw);
+          if(xb-xa<0.5)continue;
+          ctx.fillStyle=m.runs[i].c;ctx.fillRect(xa,ry,xb-xa,rh);
+        }
+        ctx.restore();
+        for(i=0;i<m.dots.length;i++){
+          var dt=m.dots[i],dx=BX(dt.t),dy=BY(dt.v);
+          ctx.beginPath();ctx.arc(dx,dy,9,0,Math.PI*2);ctx.fillStyle=dt.c;ctx.fill();
+          ctx.lineWidth=4;ctx.strokeStyle="#0e1e31";ctx.stroke();
+          var above=dt.peak?((dy-pT)>=40):((dy-pT)>(pH-46));
+          var rightSide=((dx-bx)/bw>0.86),lx=dx+(rightSide?-20:20),ly=dy+(above?-32:32);
+          ctx.save();ctx.shadowColor="#0c1a2c";ctx.shadowBlur=10;
+          ctx.font=SG("700",30);ctx.fillStyle=dt.c;ctx.textAlign=rightSide?"right":"left";ctx.textBaseline="middle";
+          ctx.fillText(String(dt.val),lx,ly);ctx.fillText(String(dt.val),lx,ly);
+          ctx.restore();ctx.textBaseline="alphabetic";
+        }
+        var ty=ry+rh+10;
+        ctx.strokeStyle="rgba(154,166,196,0.4)";ctx.lineWidth=2;
+        ctx.font=IN("500",22);ctx.fillStyle=C.muted;ctx.textAlign="center";ctx.textBaseline="alphabetic";
+        if(m.ticks.length){
+          for(i=0;i<m.ticks.length;i++){var tx2=BX(m.ticks[i].t);
+            ctx.beginPath();ctx.moveTo(tx2,ty);ctx.lineTo(tx2,ty+8);ctx.stroke();
+            ctx.fillText(m.ticks[i].label,tx2,ty+36);}
+        }else{
+          ctx.textAlign="left";ctx.fillText(pwClkS(m.t0),bx,ty+36);
+          ctx.textAlign="right";ctx.fillText(pwClkS(m.t1),bx+bw,ty+36);
+        }
+        var lyg=ty+58,lx2=bx,IT=[["#15a36b","<15m"],["#dc8a06","15-29"],["#ef6c3b","30-44"],["#e23b54","45m+"],["#4d5578","down"]];
+        ctx.font=IN("500",20);ctx.textAlign="left";
+        for(i=0;i<IT.length;i++){
+          rr(lx2,lyg,16,16,5);ctx.fillStyle=IT[i][0];ctx.fill();
+          lx2+=24;ctx.fillStyle=C.muted;ctx.fillText(IT[i][1],lx2,lyg+15);
+          lx2+=ctx.measureText(IT[i][1]).width+30;
+        }
+        return BH;
       }
     }
 
@@ -2904,6 +2963,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var cKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null;
       var cClause=cKind?pwWxClause(r.id,wxDerive(d),cKind):"";
       var su=(!isWeek)?pwSustained(r.id):null;
+      var bm=(!isWeek)?pwBandModel(r.id,su):null;
       var noAvg=(r.avgWait==null);
       var line=noAvg
         ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
@@ -2914,7 +2974,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=10?"Walk-on window":"Shortest line"),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      emitCard({W:1080,H:1132,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
+      emitCard({W:1080,H:(bm?1472:1132),title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
     /* ---- init ---- */
