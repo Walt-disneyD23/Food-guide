@@ -363,6 +363,17 @@
   .alerts-pop{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);
     padding:16px 17px;margin-bottom:14px;box-shadow:var(--shadow)}
   .alerts-pop[hidden]{display:none}
+  /* ---- de-clutter: status = floating glance popover; alerts = bottom sheet.
+     The page belongs to content — nothing in-flow expands anymore. */
+  #statusPop{position:fixed;right:16px;width:min(330px,calc(100vw - 32px));z-index:70;margin-bottom:0;
+    border-radius:18px;box-shadow:0 18px 44px rgba(20,22,50,.22);animation:spopIn .18s ease}
+  @keyframes spopIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  #alertsPop{position:fixed;left:0;right:0;bottom:0;z-index:81;margin:0;border:none;border-radius:24px 24px 0 0;
+    padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -14px 44px rgba(20,22,50,.26);
+    max-height:86vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
+  #alertsPop.show{transform:translateY(0)}
+  .alerts-scrim{z-index:80}
+  body.alerts-open{overflow:hidden}
 
   /* ===== alerts hub ===== */
   .ap-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
@@ -616,7 +627,9 @@
     </div>
   </div>
 
+  <div class="help-scrim alerts-scrim" id="alertsScrim" hidden></div>
   <div class="alerts-pop" id="alertsPop" hidden>
+    <div class="help-grab"></div>
     <div class="ap-head">
       <div class="ap-title">⚑ Alerts<button class="ap-info" id="alertsInfoBtn" type="button" aria-label="How alerts work" title="How alerts work"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="1.5" fill="currentColor"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
       <div class="toggle" id="notifToggle"><span class="switch"></span><span>Notifications</span></div>
@@ -702,6 +715,7 @@
 </div>
 
 <div class="wrap">
+  <div id="dnFlow" hidden></div>
   <div id="banners"></div>
   <div id="searchResults" hidden></div>
   <div id="wrapView" class="pw-view" hidden></div>
@@ -709,7 +723,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702f</span>
+    <span style="opacity:.55">· build 0702g</span>
   </footer>
 </div>
 
@@ -834,20 +848,42 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   });
 
   /* ---- alerts popover ---- */
-  $("alertsBtn").addEventListener("click",function(){
-    var p=$("alertsPop"),open=p.hasAttribute("hidden");
-    $("statusPop").setAttribute("hidden","");$("statusPill").classList.remove("active");
-    if(open){p.removeAttribute("hidden");renderAlertList();}else p.setAttribute("hidden","");
-    this.classList.toggle("active",open);
-  });
+  /* ---- alerts bottom sheet + status glance popover ----
+     One thing open at a time; tap-out / scrim / tab-switch closes; the page
+     itself never gets pushed around. Sheet reuses the proven help-sheet
+     skeleton (help stacks above it at z-90 when opened from inside). */
+  function alertsOpenNow(){return !$("alertsPop").hasAttribute("hidden");}
+  function closeStatusPop(){var p=$("statusPop");if(p.hasAttribute("hidden"))return;
+    p.setAttribute("hidden","");$("statusPill").classList.remove("active");}
+  function closeAlertsSheet(){var p=$("alertsPop"),sc=$("alertsScrim");if(p.hasAttribute("hidden"))return;
+    p.classList.remove("show");sc.classList.remove("show");
+    setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
+    document.body.classList.remove("alerts-open");$("alertsBtn").classList.remove("active");}
+  function openAlertsSheet(){closeStatusPop();
+    var p=$("alertsPop"),sc=$("alertsScrim");
+    p.removeAttribute("hidden");sc.removeAttribute("hidden");
+    requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
+    document.body.classList.add("alerts-open");renderAlertList();$("alertsBtn").classList.add("active");}
+  $("alertsBtn").addEventListener("click",function(){alertsOpenNow()?closeAlertsSheet():openAlertsSheet();});
+  $("alertsScrim").addEventListener("click",closeAlertsSheet);
 
   /* ---- status popover ---- */
-  $("statusPill").addEventListener("click",function(){
+  $("statusPill").addEventListener("click",function(e){
+    e.stopPropagation();
     var p=$("statusPop"),open=p.hasAttribute("hidden");
-    $("alertsPop").setAttribute("hidden","");$("alertsBtn").classList.remove("active");
-    if(open){p.removeAttribute("hidden");renderStatus();}else p.setAttribute("hidden","");
+    closeAlertsSheet();
+    if(open){
+      var r=this.getBoundingClientRect();
+      p.style.top=Math.round(r.bottom+8)+"px";
+      p.removeAttribute("hidden");renderStatus();
+    }else p.setAttribute("hidden","");
     this.classList.toggle("active",open);
   });
+  document.addEventListener("click",function(e){
+    var p=$("statusPop");if(p.hasAttribute("hidden"))return;
+    if(!p.contains(e.target)&&!$("statusPill").contains(e.target))closeStatusPop();
+  });
+  window.addEventListener("scroll",closeStatusPop,{passive:true});
   function renderStatus(){renderStatusMeta();renderStatusCover();}
   function renderStatusMeta(){
     var dot=$("spDot"),word=$("spWord"),desc=$("spDesc"),up=$("spUpdated"),nx=$("spNext");
@@ -868,44 +904,64 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     up.textContent=lastUpdated?agoText(lastUpdated):"not yet";
     nx.textContent=nextRefreshAt?countdownText(nextRefreshAt):"—";
   }
-  /* Cover (down-ride list) is rebuilt only on panel open, not every tick,
-     so the tap-to-expand state survives the per-second clock updates. */
-  function renderStatusCover(){
-    var cov=$("spCover");if(!cov)return;
-    var ids=Object.keys(roster),total=ids.length,down=[];
+  /* Status cover is now a pure glance line; the down banner + Notify-me list
+     live in the Live feed (#dnFlow) as ambient in-flow content — rebuilt by
+     render(), preserving its tap-to-expand state across refreshes. */
+  function downRidesNow(){
+    var ids=Object.keys(roster),down=[];
     ids.forEach(function(id){var r=roster[id],lv=liveById[id];
       if(r.kind==="ride"&&lv&&lv.status==="DOWN")down.push(r);});
-    if(usingFallback||!total){cov.innerHTML="";return;}
-    var head='Tracking <b>'+total+'</b> attractions across '+PARK_DEF.length+' parks';
+    return {total:ids.length,down:down};
+  }
+  function renderStatusCover(){
+    var cov=$("spCover");if(!cov)return;
+    var s=downRidesNow();
+    if(usingFallback||!s.total){cov.innerHTML="";return;}
+    var head='Tracking <b>'+s.total+'</b> attractions across '+PARK_DEF.length+' parks';
     /* every park closed right now (uses the same schedule truth as the park cards,
        which already accounts for Early Entry / Extended Evening / Ticketed Event windows) */
     var allClosed=PARK_DEF.length>0&&PARK_DEF.every(function(p){return isOpenNow(parkInfo[p.key])===false;});
-    if(!down.length){cov.innerHTML=head+' · <b>'+(allClosed?'all parks closed':'all rides running')+'</b>';return;}
-    var n=down.length;
-    down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
-    var rows=down.map(function(r){
+    cov.innerHTML=head+' · <b>'+(s.down.length
+      ? s.down.length+' ride'+(s.down.length===1?'':'s')+' down right now'
+      : (allClosed?'all parks closed':'all rides running'))+'</b>';
+  }
+  function renderDownFlow(){
+    var dn=$("dnFlow");if(!dn)return;
+    var s=downRidesNow(),n=s.down.length;
+    var hide=!!window.__pwActive||usingFallback||!s.total||!n||!!f.search.trim();
+    dn.hidden=hide;
+    if(hide){dn.innerHTML="";dn.style.marginBottom="0";return;}
+    var prevList=dn.querySelector("#dnList");
+    var wasOpen=!!(prevList&&prevList.classList.contains("open"));
+    dn.style.marginBottom="14px";
+    s.down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
+    var rows=s.down.map(function(r){
       var on=!!reopen[r.id];
       return '<div class="dn-row"><span class="rdot"></span>'+
         '<div class="dn-info"><div class="nm">'+esc(r.name)+'</div><div class="pk">'+esc(r.park)+'</div></div>'+
         '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Watching":"Notify me")+'</button>'+
       '</div>';}).join("");
-    cov.innerHTML=head+
-      '<div id="dnTrigger" class="dn-bar" style="display:flex;align-items:center;gap:11px;margin-top:12px;background:rgba(226,59,84,0.07);border:1px solid rgba(226,59,84,0.20);border-radius:14px;padding:14px 16px;cursor:pointer">'+
+    dn.innerHTML=
+      '<div id="dnTrigger" class="dn-bar" style="display:flex;align-items:center;gap:11px;background:rgba(226,59,84,0.07);border:1px solid rgba(226,59,84,0.20);border-radius:14px;padding:14px 16px;cursor:pointer">'+
         '<span style="width:9px;height:9px;border-radius:50%;background:var(--packed);flex:none"></span>'+
         '<span style="flex:1;color:var(--packed);font-weight:700;font-size:16px">'+n+' ride'+(n===1?"":"s")+' down right now</span>'+
         '<span class="dn-cc" style="width:30px;height:30px;border-radius:50%;background:rgba(226,59,84,0.12);display:flex;align-items:center;justify-content:center;color:var(--packed);font-size:15px;flex:none;transition:transform .2s">\u2304</span>'+
       '</div>'+
       '<div class="dn-list" id="dnList">'+rows+'</div>'+
       '<button type="button" id="dnShare" style="display:none;width:100%;margin-top:10px;font:600 13px/1 Inter,system-ui,sans-serif;color:#06140e;background:#3dd68c;border:none;border-radius:12px;padding:11px;cursor:pointer">Share what\'s down</button>';
-    var t=$("dnTrigger");
-    if(t)t.addEventListener("click",function(){
-      var open=$("dnList").classList.toggle("open");
+    var t=dn.querySelector("#dnTrigger");
+    function applyOpen(open){
+      dn.querySelector("#dnList").classList.toggle("open",open);
       t.style.background=open?"rgba(226,59,84,0.11)":"rgba(226,59,84,0.07)";
       var cc=t.querySelector(".dn-cc");if(cc)cc.style.transform=open?"rotate(180deg)":"rotate(0deg)";
-      var sh=$("dnShare");if(sh)sh.style.display=open?"block":"none";});
-    var dsh=$("dnShare");
+      var sh=dn.querySelector("#dnShare");if(sh)sh.style.display=open?"block":"none";
+    }
+    if(t)t.addEventListener("click",function(){
+      applyOpen(!dn.querySelector("#dnList").classList.contains("open"));});
+    if(wasOpen)applyOpen(true);
+    var dsh=dn.querySelector("#dnShare");
     if(dsh)dsh.addEventListener("click",function(){shareDownNow();});
-    Array.prototype.forEach.call(cov.querySelectorAll("[data-watch]"),function(btn){
+    Array.prototype.forEach.call(dn.querySelectorAll("[data-watch]"),function(btn){
       btn.addEventListener("click",function(){
         var id=btn.getAttribute("data-watch"),on=!reopen[id];
         if(on){var wasWatched=!!watch[id];watch[id]=true;reopen[id]=true;
@@ -1393,6 +1449,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   }
 
   function render(){
+    renderDownFlow();
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
@@ -2155,12 +2212,16 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     /* ---- view switching ---- */
     function setMode(toWrap){
       active=toWrap;window.__pwActive=toWrap;
+      if(typeof closeStatusPop==="function")closeStatusPop();
+      if(typeof closeAlertsSheet==="function")closeAlertsSheet();
       var banners=$id("banners"),sr=$id("searchResults"),wv=$id("wrapView"),cw=document.querySelector(".controls-wrap");
+      var dnf=$id("dnFlow");
       var sL=$id("pwSegLive"),sW=$id("pwSegWrap");
       if(sL)sL.classList.toggle("on",!toWrap);
       if(sW)sW.classList.toggle("on",toWrap);
       if(toWrap){
         if(banners)banners.hidden=true;
+        if(dnf)dnf.hidden=true;
         if(sr)sr.hidden=true;
         if(cw)cw.style.display="none";
         if(wv)wv.hidden=false;
