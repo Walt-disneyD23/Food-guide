@@ -723,7 +723,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702j</span>
+    <span style="opacity:.55">· build 0702k</span>
   </footer>
 </div>
 
@@ -866,12 +866,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     document.body.classList.add("alerts-open");renderAlertList();$("alertsBtn").classList.add("active");}
   $("alertsBtn").addEventListener("click",function(){alertsOpenNow()?closeAlertsSheet():openAlertsSheet();});
   $("alertsScrim").addEventListener("click",closeAlertsSheet);
-  /* Swipe-down-to-dismiss: the grab handle promises the native gesture, so
-     honor it. Drag engages only when the sheet is scrolled to its top and the
-     finger moves downward; inner scrolling wins otherwise. Follows 1:1, fades
-     the scrim with travel, springs back under the threshold. */
-  (function(){
-    var sh=$("alertsPop"),sc=$("alertsScrim");if(!sh)return;
+  /* Swipe-down-to-dismiss for bottom sheets: the grab handle promises the
+     native gesture, so honor it everywhere it appears. Drag engages only when
+     the sheet is scrolled to its top and the finger moves downward; inner
+     scrolling wins otherwise. Follows 1:1, fades the scrim with travel,
+     springs back under the threshold. One implementation, every sheet. */
+  function sheetDragDismiss(sh,sc,after){
     var sy=0,dy=0,drag=false,engaged=false;
     sh.addEventListener("touchstart",function(e){
       sy=e.touches[0].clientY;dy=0;engaged=false;drag=true;
@@ -902,8 +902,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           sh.classList.remove("show");sh.setAttribute("hidden","");
           if(sc)sc.setAttribute("hidden","");
           sh.style.transform="";
-          document.body.classList.remove("alerts-open");
-          $("alertsBtn").classList.remove("active");
+          if(after)after();
         },300);
       }else{
         sh.style.transform="";
@@ -911,7 +910,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     sh.addEventListener("touchend",endDrag,{passive:true});
     sh.addEventListener("touchcancel",endDrag,{passive:true});
-  })();
+  }
+  sheetDragDismiss($("alertsPop"),$("alertsScrim"),function(){
+    document.body.classList.remove("alerts-open");$("alertsBtn").classList.remove("active");
+  });
+  sheetDragDismiss($("helpSheet"),$("helpScrim"),function(){
+    document.body.classList.remove("help-open");
+  });
 
   /* ---- status popover ---- */
   $("statusPill").addEventListener("click",function(e){
