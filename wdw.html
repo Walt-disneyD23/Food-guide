@@ -2519,12 +2519,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       }
       function gapDown(a,b){for(var q=0;q<negT.length;q++)if(negT[q]>a&&negT[q]<b)return true;return false;}
       /* line + glow, segment by segment. A gap breaks the pen only when it's
-         real: any down tick inside it, or 2+ missing ticks (a no-data void).
-         A lone missing tick between two operating samples is a reporting blip
-         and is bridged — a hole would imply an event that never happened. */
+         real: any down tick inside it, or 3+ missing ticks (a no-data void).
+         One or two consecutive missed polls (~15 min) between two operating
+         samples is a reporting blip and is bridged — a hole would imply an
+         event that never happened. Tuned against July 1's real missed-cycle
+         windows (8-14 min, resort-wide, zero down ticks inside). */
       var segs=[],seg=[],prev=null,j,k;
       for(i=0;i<n;i++){
-        if(prev!==null&&ts[i]-prev>7.5&&(gapDown(prev,ts[i])||ts[i]-prev>12.5)){segs.push(seg);seg=[];}
+        if(prev!==null&&ts[i]-prev>7.5&&(gapDown(prev,ts[i])||ts[i]-prev>17.5)){segs.push(seg);seg=[];}
         seg.push([X(ts[i]),Y(vs[i])]);prev=ts[i];
       }
       segs.push(seg);
@@ -2550,14 +2552,15 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+X(ts[i])+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+c+'">'+val+'</span>';
       }}
       /* tier ribbon from the raw ticks (negatives = down = slate), run-merged.
-         A jump >12.5 min between numeric ticks is a no-data void: the run is
-         capped at its own last bucket and the strip goes blank until data
-         resumes — the ribbon never paints over time it can't vouch for. */
+         A jump >17.5 min between numeric ticks (3+ missing polls) is a no-data
+         void: the run is capped at its own last bucket and the strip goes
+         blank until data resumes — the ribbon never paints over time it can't
+         vouch for. Shorter silences bridge, matching the line. */
       var runs=[],cur=null,prevT=null;
       for(i=0;i<raw.length;i++){
         var rt2=raw[i][0],v2=raw[i][1];
         var cc=v2<0?"#4d5578":(v2>=45?"#e23b54":v2>=30?"#ef6c3b":v2>=15?"#dc8a06":"#15a36b");
-        if(cur&&rt2-prevT>12.5){cur.end=prevT+5;runs.push(cur);cur=null;}
+        if(cur&&rt2-prevT>17.5){cur.end=prevT+5;runs.push(cur);cur=null;}
         if(!(cur&&cur.c===cc)){if(cur)runs.push(cur);cur={c:cc,t0:rt2};}
         prevT=rt2;
       }
