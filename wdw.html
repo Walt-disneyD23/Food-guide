@@ -709,7 +709,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702e</span>
+    <span style="opacity:.55">· build 0702f</span>
   </footer>
 </div>
 
@@ -3048,15 +3048,21 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var L=cx+58,R=cx+cw-58;
       ctx.font=SG("700",44);ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillStyle=C.ink;ctx.fillText("Park",L,128);var pw=ctx.measureText("Park").width;ctx.fillStyle=C.green;ctx.fillText("Pulse",L+pw,128);
       if(D.kicker)T(D.kicker,R,124,IN("600",23),"#9bf7c9","right");
-      T(ell(D.title,R-L-140,SG("700",58)),L,206,SG("700",58),C.ink,"left");
+      /* Right column (badge pill + "as of" stamp) is measured FIRST so a long
+         ride title ellipsizes before it can run underneath them (Tower of
+         Terror, Jul 2). Title clears whichever is wider, plus breathing room;
+         FINAL cards (narrow pill, no stamp) actually gain title width. */
       ctx.font=IN("700",22);var bw=ctx.measureText(D.badge).width;var bx=R-bw-30,by=(D.badge==="FINAL"?176:148),bh=40;
+      var asofT=null,aw=0;
+      if(D.badge!=="FINAL"){ /* in-progress snapshot: stamp the moment (park time) centered under the pill */
+        asofT="as of "+new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"})+" ET";
+        ctx.font=IN("500",20);aw=ctx.measureText(asofT).width;
+      }
+      var rcol=Math.max(bw+30,aw)+28;
+      T(ell(D.title,R-L-rcol,SG("700",58)),L,206,SG("700",58),C.ink,"left");
       rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
       T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
-      if(D.badge!=="FINAL"){ /* in-progress snapshot: stamp the moment (park time) centered under the pill */
-        var asofT="as of "+new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"})+" ET";
-        ctx.font=IN("500",20);var aw=ctx.measureText(asofT).width;
-        T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+24,IN("500",20),C.muted2,"center");
-      }
+      if(asofT)T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+24,IN("500",20),C.muted2,"center");
       var hy=288,hl=wrap2(D.line,R-L,SG("700",54));
       for(var i=0;i<hl.length;i++)T(hl[i],L,hy+i*62,SG("700",54),C.ink,"left");
       var ah=hy+hl.length*62;
