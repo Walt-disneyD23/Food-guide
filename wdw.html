@@ -491,6 +491,21 @@
   .pw-ribbon{border-radius:3px;overflow:hidden;margin-top:3px}
   .pw-ribbon svg{display:block;width:100%;height:8px}
   .pw-ticks{position:relative;height:15px;margin-top:2px}
+  /* ---- scrub lens (ride-detail band): hairline + vertex dot + readout pill.
+     touch-action:none — a gesture that starts on the band belongs to the band;
+     the page scrolls from everywhere else. */
+  .pw-scrub{position:absolute;left:0;top:0;right:0;bottom:-14px;touch-action:none;z-index:5}
+  .pw-scl{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.30);opacity:0;transition:opacity .16s;pointer-events:none}
+  .pw-scd{position:absolute;width:7px;height:7px;border-radius:50%;background:#96a1f2;border:2px solid #fff;transform:translate(-50%,-50%);opacity:0;transition:opacity .16s;pointer-events:none;box-sizing:content-box}
+  .pw-scp{position:absolute;top:2px;transform:translateX(-50%);background:rgba(10,14,26,.94);border:1px solid rgba(150,161,242,.32);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:600;color:#9aa6c4;white-space:nowrap;opacity:0;transition:opacity .16s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:6}
+  .pw-scp b{font-family:var(--font-display);font-weight:700;margin-left:5px}
+  .pw-scp em{font-style:normal;margin-left:4px}
+  .pw-sc-on .pw-scl,.pw-sc-on .pw-scd,.pw-sc-on .pw-scp{opacity:1}
+  .pw-pulse{position:absolute;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4}
+  .pw-pulse::before,.pw-pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.6px solid currentColor;animation:pwPulse 1s ease-out forwards}
+  .pw-pulse::after{animation-delay:.28s;animation-duration:1.15s}
+  @keyframes pwPulse{from{transform:scale(1);opacity:.8}to{transform:scale(3.4);opacity:0}}
+  .pw-tile-tap{cursor:pointer}
   .pw-ticks i{position:absolute;top:0;width:1px;height:3px;background:rgba(154,166,196,.4)}
   .pw-ticks span{position:absolute;top:4px;transform:translateX(-50%);font-size:9px;color:#9aa6c4}
   .pw-times{display:flex;justify-content:space-between;font-size:9.5px;color:#9aa6c4;margin-top:4px}
@@ -2598,7 +2613,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           voidsOut.push({t0:va,t1:vb,kind:(wins.length&&(1-cov/(vb-va))>=0.6)?"closed":"nodata",pct:(vb-va)/(t1-t0)*100});
         }
       }
-      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut};
+      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut,samples:raw};
     }
     /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
        x = time in 0-100 viewBox units stretched to the card width
@@ -2643,13 +2658,114 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
         :('<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div>');
       var leg='<div class="pw-legend"><span><i style="background:#15a36b"></i>&lt;15m</span><span><i style="background:#dc8a06"></i>15-29</span><span><i style="background:#ef6c3b"></i>30-44</span><span><i style="background:#e23b54"></i>45m+</span><span><i style="background:#4d5578"></i>down</span></div>';
+      pwScrubReg[rid]={m:m,su:su};pwScrubInit();
+      var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-scd"></b><span class="pw-scp"></span></div>';
       return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
         +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
         +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
-        +'</svg>'+dots+vl+'</div>'
+        +'</svg>'+dots+vl+scrub+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
         +tickRow+leg+'</div>';
+    }
+    /* ---- scrub lens engine. One delegated set of listeners; per-band model
+       data lives in pwScrubReg (written by pwSparkBand each render). Honesty:
+       the lens SNAPS to real 5-min samples (never interpolates), reads "Down"
+       exactly where the ribbon is slate (any negative — same rule the ribbon
+       paints by), and shows only the void's own label inside voids. The
+       weather glyph is descriptive of the nearest observed 15-min sample
+       (±7.5 min), one glyph max, acute before ambient: ⛈ code≥95 → 🌧 code≥51
+       → 💨 gust≥35 → 🥵 feels-like≥105 (same thresholds as wxClass + chips;
+       pre-v3.4 days have no per-sample feels-like → no heat flag, gracefully). */
+    var pwScrubReg={},pwScrubEl=null,pwScrubTimer=null;
+    function pwClkM(mn){var h=Math.floor(mn/60),m2=mn%60,ap=h<12?"a":"p",h12=((h+11)%12)+1;return h12+":"+(m2<10?"0":"")+m2+ap;}
+    function pwScrubRes(m,t){
+      for(var i=0;i<m.voids.length;i++){var v=m.voids[i];if(t>=v.t0&&t<=v.t1)return {kind:v.kind};}
+      var best=null,bd=1e9;
+      for(i=0;i<m.samples.length;i++){var d=Math.abs(m.samples[i][0]-t);if(d<bd){bd=d;best=m.samples[i];}}
+      if(!best||bd>17.5)return {kind:"nodata"};
+      if(best[1]<0)return {t:best[0],down:true};
+      return {t:best[0],v:best[1]};
+    }
+    function pwScrubWx(t){
+      var wx=lastData&&lastData.wx&&lastData.wx.samples;if(!wx||!wx.length)return "";
+      var best=null,bd=1e9;
+      for(var i=0;i<wx.length;i++){var d=Math.abs(wx[i].t-t);if(d<bd){bd=d;best=wx[i];}}
+      if(!best||bd>7.5)return "";
+      if(best.code>=95)return "⛈";
+      if(best.code>=51)return "🌧";
+      if((best.gust||0)>=35)return "💨";
+      if(best.fF!=null&&best.fF>=105)return "🥵";
+      return "";
+    }
+    function pwScrubPlace(sc,t,fromX){
+      var rid=sc.getAttribute("data-pwsc"),reg=pwScrubReg[rid];if(!reg)return;
+      var m=reg.m,rect=sc.getBoundingClientRect();if(rect.width<10)return;
+      var res=pwScrubRes(m,t);
+      var lx=(res.t!=null?res.t:t);
+      var xPx=((lx-m.t0)/(m.t1-m.t0))*rect.width;
+      var line=sc.querySelector(".pw-scl"),dot=sc.querySelector(".pw-scd"),pill=sc.querySelector(".pw-scp");
+      line.style.left=xPx.toFixed(1)+"px";
+      if(res.v!=null){
+        var pad=3,ih=76-pad*2,y=pad+ih-(res.v/m.vMax)*ih;
+        dot.style.left=xPx.toFixed(1)+"px";dot.style.top=y.toFixed(1)+"px";dot.style.display="";
+        var c=res.v>=45?"#e23b54":res.v>=30?"#ef6c3b":res.v>=15?"#dc8a06":"#15a36b";
+        var g=pwScrubWx(res.t);
+        pill.innerHTML=pwClkM(res.t)+'<b style="color:'+c+'">'+res.v+'m</b>'+(g?'<em>'+g+'</em>':'');
+      }else{
+        dot.style.display="none";
+        pill.innerHTML=res.down?(pwClkM(res.t)+'<b style="color:#8c96b9">Down</b>')
+          :('<b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":"No data")+'</b>');
+      }
+      var pw2=pill.offsetWidth||60,half=pw2/2+2;
+      pill.style.left=Math.min(Math.max(xPx,half),rect.width-half).toFixed(1)+"px";
+    }
+    function pwScrubShow(sc,clientX){
+      var rid=sc.getAttribute("data-pwsc"),reg=pwScrubReg[rid];if(!reg)return;
+      var m=reg.m,rect=sc.getBoundingClientRect();if(rect.width<10)return;
+      var fx=Math.min(Math.max((clientX-rect.left)/rect.width,0),1);
+      pwScrubPlace(sc,m.t0+fx*(m.t1-m.t0),clientX);
+    }
+    function pwScrubEnd(){
+      if(!pwScrubEl)return;var sc=pwScrubEl;pwScrubEl=null;
+      pwScrubTimer=setTimeout(function(){sc.classList.remove("pw-sc-on");},1500);
+    }
+    function pwScrubInit(){
+      if(pwScrubInit.done)return;pwScrubInit.done=true;
+      function grab(e,cx){
+        var tg=e.target,sc=tg&&tg.closest?tg.closest(".pw-scrub"):null;if(!sc)return null;
+        clearTimeout(pwScrubTimer);
+        if(pwScrubEl&&pwScrubEl!==sc)pwScrubEl.classList.remove("pw-sc-on");
+        pwScrubEl=sc;sc.classList.add("pw-sc-on");pwScrubShow(sc,cx);return sc;
+      }
+      document.addEventListener("touchstart",function(e){grab(e,e.touches[0].clientX);},{passive:true});
+      document.addEventListener("touchmove",function(e){if(pwScrubEl){e.preventDefault();pwScrubShow(pwScrubEl,e.touches[0].clientX);}},{passive:false});
+      document.addEventListener("touchend",pwScrubEnd,{passive:true});
+      document.addEventListener("touchcancel",pwScrubEnd,{passive:true});
+      document.addEventListener("mousedown",function(e){grab(e,e.clientX);});
+      document.addEventListener("mousemove",function(e){if(pwScrubEl&&e.buttons)pwScrubShow(pwScrubEl,e.clientX);});
+      document.addEventListener("mouseup",pwScrubEnd);
+    }
+    /* tile tap → lens jumps to the sustained moment + the dot pulses */
+    function pwScrubJump(rid,t,pulseColor){
+      var sc=document.querySelector('.pw-scrub[data-pwsc="'+rid+'"]');if(!sc)return;
+      var reg=pwScrubReg[rid];if(!reg)return;
+      clearTimeout(pwScrubTimer);
+      if(pwScrubEl&&pwScrubEl!==sc)pwScrubEl.classList.remove("pw-sc-on");
+      pwScrubEl=null;
+      sc.classList.add("pw-sc-on");
+      pwScrubPlace(sc,t);
+      var res=pwScrubRes(reg.m,t);
+      if(res.v!=null&&pulseColor){
+        var rect=sc.getBoundingClientRect(),pad=3,ih=76-pad*2;
+        var xPx=((res.t-reg.m.t0)/(reg.m.t1-reg.m.t0))*rect.width;
+        var y=pad+ih-(res.v/reg.m.vMax)*ih;
+        var pu=document.createElement("span");pu.className="pw-pulse";
+        pu.style.left=xPx.toFixed(1)+"px";pu.style.top=y.toFixed(1)+"px";pu.style.color=pulseColor;
+        sc.appendChild(pu);setTimeout(function(){if(pu.parentNode)pu.parentNode.removeChild(pu);},1300);
+      }
+      sc.scrollIntoView({block:"nearest",behavior:"smooth"});
+      pwScrubTimer=setTimeout(function(){sc.classList.remove("pw-sc-on");},2200);
     }
     function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function pwWxClause(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";return ov.frac>=0.6?("mostly "+word):ov.frac>=0.35?("partly "+word):"";}
@@ -3026,6 +3142,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
+      /* Peak / Lowest tiles jump the scrub lens to their sustained moment */
+      if(band&&su){
+        var gt=wv.querySelectorAll(".pw-grid .pw-tile");
+        if(gt[0]){gt[0].classList.add("pw-tile-tap");gt[0].addEventListener("click",function(){pwScrubJump(r.id,su.peakAt,"#e23b54");});}
+        if(gt[1]){gt[1].classList.add("pw-tile-tap");gt[1].addEventListener("click",function(){pwScrubJump(r.id,su.lowAt,"#15a36b");});}
+      }
     }
 
     function shareRideCard(rid,park){
