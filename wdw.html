@@ -487,6 +487,7 @@
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #152a47;transform:translate(-50%,-50%);box-sizing:content-box}
   .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:11px;font-weight:700;text-shadow:0 0 3px #10243a,0 0 3px #10243a,0 0 3px #10243a}
   .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
+  .pw-band .pw-voidlbl{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:9.5px;font-weight:600;color:#7a88aa;text-align:center;line-height:1.4;white-space:nowrap;pointer-events:none}
   .pw-ribbon{border-radius:3px;overflow:hidden;margin-top:3px}
   .pw-ribbon svg{display:block;width:100%;height:8px}
   .pw-ticks{position:relative;height:15px;margin-top:2px}
@@ -2512,10 +2513,30 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         raw.push([rt,v0]);if(v0<0)negT.push(rt);
       }
       function gapDown(a,b){for(var q=0;q<negT.length;q++)if(negT[q]>a&&negT[q]<b)return true;return false;}
-      /* segments in [time,value] space */
-      var segs=[],seg=[],prev=null;
+      /* segments in [time,value] space; clean voids (no down inside) recorded
+         for labeling — a down gap is self-explained by its slate, a void isn't.
+         Boundary tolerance: rides often bank one DOWN/CLOSED tick right as the
+         park shuts, so a LONG gap still counts as a void when its negatives
+         are only edge noise (≤2 ticks, all within 7.5 min of an edge); any
+         negative deeper inside keeps it a down gap. Short gaps are unchanged
+         (a lone mid-day down tick still breaks + slates). */
+      function gapVoid(a,b){
+        var cnt=0,q5;
+        for(q5=0;q5<negT.length;q5++){
+          var tq=negT[q5];if(tq<=a||tq>=b)continue;
+          cnt++;
+          if(tq-a>7.5&&b-tq>7.5)return false;
+        }
+        return cnt<=2;
+      }
+      var segs=[],seg=[],prev=null,voids=[];
       for(i=0;i<n;i++){
-        if(prev!==null&&ts[i]-prev>7.5&&(gapDown(prev,ts[i])||ts[i]-prev>17.5)){segs.push(seg);seg=[];}
+        if(prev!==null&&ts[i]-prev>7.5){
+          if(ts[i]-prev>17.5){
+            segs.push(seg);seg=[];
+            if(gapVoid(prev,ts[i]))voids.push([prev,ts[i]]);
+          }else if(gapDown(prev,ts[i])){segs.push(seg);seg=[];}
+        }
         seg.push([ts[i],vs[i]]);prev=ts[i];
       }
       segs.push(seg);
@@ -2541,7 +2562,31 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       /* 3-hourly ticks; emitters fall back to edge times when none fit */
       var ticks=[],h=Math.floor(t0/60)+1;
       for(;h*60<t1;h++){if(h%3===0)ticks.push({t:h*60,label:((h+11)%12+1)+(h<12?"a":"p")});}
-      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks};
+      /* classify voids via the day's schedule (parksByDate): if ≥60% of the
+         void lies outside every open window (regular hours + extras), the
+         park was provably CLOSED there (event nights: close → later ticketed
+         window); otherwise it's a genuine feed gap → "no data". With no
+         parsable schedule we never claim "closed". pct = share of the chart's
+         span, used by both emitters to gate labels (≥10 fits the stack). */
+      var voidsOut=[],pk=null,wins=[];
+      if(voids.length){
+        for(i=0;i<lastData.rides.length;i++){if(lastData.rides[i].id===rid){pk=lastData.rides[i].park;break;}}
+        (function(){
+          var dk=lastData.dates&&lastData.dates[0];
+          var ph=pk&&dk&&lastData.parksByDate&&lastData.parksByDate[dk]&&lastData.parksByDate[dk][pk];
+          if(!ph)return;
+          function mm(sv){if(!sv||typeof sv!=="string")return null;var m2=sv.match(/T(\d\d):(\d\d)/);return m2?(+m2[1])*60+(+m2[2]):null;}
+          function add(o,c2){var a2=mm(o),b2=mm(c2);if(a2==null||b2==null)return;if(b2<=a2)b2=1440;wins.push([a2,b2]);}
+          add(ph.open,ph.close);
+          var ex=ph.extras||[];for(var q3=0;q3<ex.length;q3++)add(ex[q3].open,ex[q3].close);
+        })();
+        for(i=0;i<voids.length;i++){
+          var va=voids[i][0],vb=voids[i][1],cov=0,q4;
+          for(q4=0;q4<wins.length;q4++){var s4=Math.max(va,wins[q4][0]),e4=Math.min(vb,wins[q4][1]);if(e4>s4)cov+=e4-s4;}
+          voidsOut.push({t0:va,t1:vb,kind:(wins.length&&(1-cov/(vb-va))>=0.6)?"closed":"nodata",pct:(vb-va)/(t1-t0)*100});
+        }
+      }
+      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut};
     }
     /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
        x = time in 0-100 viewBox units stretched to the card width
@@ -2567,6 +2612,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         dots+='<span class="pw-dot" style="left:'+xS+'%;top:'+yS+'px;background:'+dt.c+'"></span>';
         dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+xS+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+dt.c+'">'+dt.val+'</span>';
       }
+      var vl="";
+      for(i=0;i<m.voids.length;i++){
+        var vv=m.voids[i];if(vv.pct<10)continue;
+        var vcx=(((vv.t0+vv.t1)/2-t0)/(t1-t0)*100).toFixed(2);
+        vl+='<span class="pw-voidlbl" style="left:'+vcx+'%">'+(vv.kind==="closed"?"park<br>closed":"no data")+'</span>';
+      }
       var rib="";
       for(i=0;i<m.runs.length;i++){
         var xa=parseFloat(X(m.runs[i].t0)),xb=(m.runs[i].end!=null)?parseFloat(X(Math.min(m.runs[i].end,t1))):((i<m.runs.length-1)?parseFloat(X(m.runs[i+1].t0)):100);
@@ -2584,7 +2635,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
         +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
         +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
-        +'</svg>'+dots+'</div>'
+        +'</svg>'+dots+vl+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
         +tickRow+leg+'</div>';
     }
@@ -2850,6 +2901,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           ctx.font=SG("700",30);ctx.fillStyle=dt.c;ctx.textAlign=rightSide?"right":"left";ctx.textBaseline="middle";
           ctx.fillText(String(dt.val),lx,ly);ctx.fillText(String(dt.val),lx,ly);
           ctx.restore();ctx.textBaseline="alphabetic";
+        }
+        for(i=0;i<m.voids.length;i++){
+          var vv=m.voids[i];if(vv.pct<10)continue;
+          var vx=(BX(vv.t0)+BX(vv.t1))/2,vroom=BX(vv.t1)-BX(vv.t0)-12,vmid=pT+pH/2;
+          ctx.font=IN("600",22);
+          var vwide=Math.max(ctx.measureText("closed").width,ctx.measureText("no data").width);
+          if(vwide>vroom)continue;
+          ctx.fillStyle="#7a88aa";ctx.textAlign="center";ctx.textBaseline="middle";
+          if(vv.kind==="closed"){ctx.fillText("park",vx,vmid-15);ctx.fillText("closed",vx,vmid+15);}
+          else ctx.fillText("no data",vx,vmid);
+          ctx.textAlign="left";ctx.textBaseline="alphabetic";
         }
         var ty=ry+rh+10;
         ctx.strokeStyle="rgba(154,166,196,0.4)";ctx.lineWidth=2;
