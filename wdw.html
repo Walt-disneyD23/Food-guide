@@ -2769,18 +2769,40 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       sc.scrollIntoView({block:"nearest",behavior:"smooth"});
       pwScrubTimer=setTimeout(function(){sc.classList.remove("pw-sc-on");},2200);
     }
-    /* Outages/Reliability tap → every down window flashes as a slate wash over
-       the plot. Spans are the ribbon's own slate runs (identical end logic to
-       the emitter), so the highlight and the ribbon can never disagree. */
+    /* Outages/Reliability tap → each down window flashes as a slate wash over
+       the plot. A window = the LINE's own gap (last good reading → next good
+       reading), which is what the eye reads as the outage — not just the
+       narrower slate-tick run. Honesty carve-out: where a gap contains a
+       labeled void (park closed / no data), only the down-adjacent slices
+       flash and the void core stays unpainted, so the wash never claims an
+       outage over time the park was provably shut. */
     function pwDownSpans(m){
-      var out=[],i;
-      for(i=0;i<m.runs.length;i++){
-        if(m.runs[i].c!=="#4d5578")continue;
-        var a=m.runs[i].t0;
-        var b=(m.runs[i].end!=null)?Math.min(m.runs[i].end,m.t1):((i<m.runs.length-1)?m.runs[i+1].t0:m.t1);
-        if(b>a)out.push([a,b]);
+      var out=[],i,j;
+      var downT=[];for(i=0;i<m.samples.length;i++)if(m.samples[i][1]<0)downT.push(m.samples[i][0]);
+      if(!downT.length)return out;
+      function hasDown(a,b){for(var q=0;q<downT.length;q++)if(downT[q]>=a&&downT[q]<=b)return true;return false;}
+      /* line gaps between segments, sliced around any labeled void core */
+      for(i=1;i<m.segs.length;i++){
+        var pa=m.segs[i-1],pb=m.segs[i];if(!pa.length||!pb.length)continue;
+        var a=pa[pa.length-1][0],b=pb[0][0];
+        var slices=[[a,b]];
+        for(j=0;j<m.voids.length;j++){var v=m.voids[j];
+          if(v.t0>=a&&v.t1<=b){slices=[[a,v.t0],[v.t1,b]];break;}}
+        for(j=0;j<slices.length;j++)
+          if(slices[j][1]-slices[j][0]>1&&hasDown(slices[j][0],slices[j][1]))out.push([slices[j][0],slices[j][1]]);
       }
-      return out;
+      /* safety net: down ticks that never broke the line (tight 2-min cadence) */
+      for(i=0;i<downT.length;i++){
+        var t=downT[i],cov=false;
+        for(j=0;j<out.length;j++)if(t>=out[j][0]&&t<=out[j][1]){cov=true;break;}
+        if(!cov)out.push([Math.max(t-2.5,m.t0),Math.min(t+2.5,m.t1)]);
+      }
+      out.sort(function(x,y){return x[0]-y[0];});
+      var mg=[];
+      for(i=0;i<out.length;i++){var s=out[i];
+        if(mg.length&&s[0]<=mg[mg.length-1][1]+0.01)mg[mg.length-1][1]=Math.max(mg[mg.length-1][1],s[1]);
+        else mg.push([s[0],s[1]]);}
+      return mg;
     }
     function pwScrubFlashDowns(rid){
       var sc=document.querySelector('.pw-scrub[data-pwsc="'+rid+'"]'),reg=pwScrubReg[rid];
