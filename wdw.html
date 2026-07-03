@@ -726,7 +726,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702p</span>
+    <span style="opacity:.55">· build 0702r</span>
   </footer>
 </div>
 
@@ -2268,7 +2268,38 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       return mo(a)+" "+a.getDate()+" – "+mo(b)+" "+b.getDate();
     }
     function fmtTime(ms){try{return new Date(ms).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});}catch(e){return "";}}
-    function isFinal(d){return !d||!d.dates?true:(d.dates.indexOf(etDate(0))<0);} /* final when window has no in-progress (today) day */
+    /* Final when the window has no in-progress (today) day — OR when today's
+       record is already complete: every park's last window (regular close AND
+       every Early Entry / Extended Evening / ticketed-event extra, real ISO
+       timestamps so past-midnight ends count) has ended. "So far" after the
+       last close would promise data that isn't coming (owner catch, Jul 2
+       ~11:30 PM). Honesty guards: requires KNOWN hours for all four parks —
+       anything unknown → stay live, never overclaim FINAL. */
+    function pwNightFinal(d){
+      try{
+        var date=d.dates&&d.dates[0];if(!date||d.dates.length!==1)return false;
+        var pb=d.parksByDate&&d.parksByDate[date];if(!pb)return false;
+        /* the Wrap's tense answers to the FOUR theme parks only — water-park
+           hours (also banked) have no vote in when the recap goes final */
+        var FOUR=["Magic Kingdom","EPCOT","Hollywood Studios","Animal Kingdom"];
+        var latest=0;
+        for(var i=0;i<FOUR.length;i++){
+          var h=pb[FOUR[i]];if(!h||!h.close)return false;
+          var end=Date.parse(h.close);if(isNaN(end))return false;
+          var ex=h.extras||[];
+          for(var j=0;j<ex.length;j++){
+            var e2=Date.parse(ex[j].close||"");if(!isNaN(e2)&&e2>end)end=e2;
+          }
+          if(end>latest)latest=end;
+        }
+        return latest>0&&Date.now()>latest;
+      }catch(_){return false;}
+    }
+    function isFinal(d){
+      if(!d||!d.dates)return true;
+      if(d.dates.indexOf(etDate(0))<0)return true; /* no in-progress day in the window */
+      return pwNightFinal(d);
+    }
 
     /* ---- view switching ---- */
     function setMode(toWrap){
@@ -2791,6 +2822,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(i=0;i<segs.length;i++){
         var sg2=segs[i];if(!sg2.length)continue;
         var aT=sg2[0][0],bT=sg2[sg2.length-1][0];
+        if(bT-aT<capMin)continue; /* a stub this small is itself a blip — a cap on it reads as a dumbbell (Test Track's 3-tick 16:36 fragment) */
         var leftGap=(i===0)?(aT-t0):(aT-segs[i-1][segs[i-1].length-1][0]);
         var rightGap=(i===segs.length-1)?(t1-bT):(segs[i+1][0][0]-bT);
         if(leftGap>=capMin&&!pwDotAt(aT))caps.push({t:aT,v:sg2[0][1]});
