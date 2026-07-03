@@ -526,6 +526,8 @@
   .pw-legend i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:4px}
   .pw-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
   .pw-tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--shadow-sm);min-height:94px;display:flex;flex-direction:column}
+  .pw-tile-go{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s ease,box-shadow .12s ease}
+  .pw-tile-go:active{transform:scale(.977);box-shadow:none}
   .pw-tile .lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
   .pw-tile .v{font-family:var(--font-display);font-weight:700;font-size:22px;line-height:1.05;margin-top:auto}
   .pw-tile .v .u{font-size:.58em;color:var(--muted-2);font-weight:600}
@@ -723,7 +725,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702n</span>
+    <span style="opacity:.55">· build 0702o</span>
   </footer>
 </div>
 
@@ -2438,8 +2440,20 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(/Walt Disney World Railroad/.test(n))return "WDW Railroad";
       return n.replace(/ – .*/,"").replace(/: .*/,"").replace(/ Starring .*/,"");
     }
-    function tileV(lbl,vHTML,tierCls,nm,ctx,note){
-      return '<div class="pw-tile"><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div><div class="ctx">'+esc(ctx)+(note||"")+'</div></div>';
+    function tileV(lbl,vHTML,tierCls,nm,ctx,note,rid,rpark){
+      var attrs=rid?' data-rid="'+esc(rid)+'" data-rpark="'+esc(rpark||"")+'" role="button" tabindex="0"':"";
+      return '<div class="pw-tile'+(rid?' pw-tile-go':'')+'"'+attrs+'><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div><div class="ctx">'+esc(ctx)+(note||"")+'</div></div>';
+    }
+    /* Hero/park stat tiles that name a ride navigate straight to it — same
+       grammar as the "tap for the full breakdown" rows and the ride-detail
+       remote-control tiles. Landing deep keeps the ladder: Back walks up. */
+    function wireGoTiles(){
+      var wv=$id("wrapView");if(!wv)return;
+      Array.prototype.forEach.call(wv.querySelectorAll(".pw-tile-go"),function(t){
+        function go(){showRide(t.getAttribute("data-rid"),t.getAttribute("data-rpark"));}
+        t.addEventListener("click",go);
+        t.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+      });
     }
     /* 3-tier reliability flag for a ride */
     function flag(r){
@@ -2476,12 +2490,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+'</div>';
 
       html+='<div class="pw-grid">';
-      if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:""));
-      if(c.longestPeak)html+=tileV("Longest peak",'<span class="u">peak</span> '+c.longestPeak.maxWait+'m',tier(c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park);
-      if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"");
-      if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"");
-      if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+c.drop.minWait+'m',"pw-s",c.drop.name,"off a "+c.drop.maxWait+" peak");
-      if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park);
+      if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:""),null,c.toughest.id,c.toughest.park);
+      if(c.longestPeak)html+=tileV("Longest peak",'<span class="u">peak</span> '+c.longestPeak.maxWait+'m',tier(c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park,null,c.longestPeak.id,c.longestPeak.park);
+      if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"",c.leastRel.id,c.leastRel.park);
+      if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"",c.mostOut.id,c.mostOut.park);
+      if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+c.drop.minWait+'m',"pw-s",c.drop.name,"off a "+c.drop.maxWait+" peak",null,c.drop.id,c.drop.park);
+      if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park,null,c.walk.id,c.walk.park);
       html+='</div>';
 
       html+='<div class="pw-sec">By park · tap for the full breakdown</div>';
@@ -2493,7 +2507,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
       html+='<button class="pw-share" id="pwShare" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(tab==="week"?"Share this week":"Share this Wrap")+'</button>';
       html+='<div class="pw-foot">Numbers are real, logged every 2 min · live data from ThemeParks.wiki</div>';
-      wv.innerHTML=html;wireTabs();wireRows();
+      wv.innerHTML=html;wireTabs();wireRows();wireGoTiles();
       var shb=$id("pwShare");if(shb)shb.addEventListener("click",function(){shareWrapCard();});
       var chb=$id("pwChip");if(chb){chb.addEventListener("click",function(){showStorm();});chb.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showStorm();}});}
     }
@@ -2532,10 +2546,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
       html+='<div class="pw-grid">';
       var dKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,dX=dKind?wxDerive(lastData):null;
-      if(pk.busiest)html+=tileV("Toughest line",'<span class="u">avg</span> '+pk.busiest.avgWait+'m',tier(pk.busiest.avgWait),pk.busiest.name,pk.busiest.maxWait?("peak "+pk.busiest.maxWait):"");
-      if(pk.leastRel)html+=tileV("Least reliable",pk.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",pk.leastRel.name,pk.leastRel.downMinutes+" min down",dKind?pwWxNote(pk.leastRel.id,dX,dKind):"");
-      if(pk.mostOut)html+=tileV("Most outages",pk.mostOut.downEvents+"×","pw-l",pk.mostOut.name,pk.mostOut.downMinutes+" min total",dKind?pwWxNote(pk.mostOut.id,dX,dKind):"");
-      if(pk.drop)html+=tileV("Best value",'<span class="u">low</span> '+pk.drop.minWait+'m',"pw-s",pk.drop.name,"off a "+pk.drop.maxWait+" peak");
+      if(pk.busiest)html+=tileV("Toughest line",'<span class="u">avg</span> '+pk.busiest.avgWait+'m',tier(pk.busiest.avgWait),pk.busiest.name,pk.busiest.maxWait?("peak "+pk.busiest.maxWait):"",null,pk.busiest.id,park);
+      if(pk.leastRel)html+=tileV("Least reliable",pk.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",pk.leastRel.name,pk.leastRel.downMinutes+" min down",dKind?pwWxNote(pk.leastRel.id,dX,dKind):"",pk.leastRel.id,park);
+      if(pk.mostOut)html+=tileV("Most outages",pk.mostOut.downEvents+"×","pw-l",pk.mostOut.name,pk.mostOut.downMinutes+" min total",dKind?pwWxNote(pk.mostOut.id,dX,dKind):"",pk.mostOut.id,park);
+      if(pk.drop)html+=tileV("Best value",'<span class="u">low</span> '+pk.drop.minWait+'m',"pw-s",pk.drop.name,"off a "+pk.drop.maxWait+" peak",null,pk.drop.id,park);
       html+='</div>';
 
       html+='<div class="pw-sec">Every ride · sorted by avg wait</div>';
@@ -2555,7 +2569,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<button class="pw-share" id="pwShareP" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share '+esc(park)+'</button>';
       html+='<div class="pw-foot">Reliability = % of open time the ride was running (vs. down)</div>';
 
-      wv.innerHTML=html;topw();
+      wv.innerHTML=html;topw();wireGoTiles();
       var bk=$id("pwBack");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ii=wv.querySelector(".pw-info-i"),inote=$id("pwHeadInfo");
       if(ii&&inote)ii.addEventListener("click",function(){inote.hidden=!inote.hidden;});
