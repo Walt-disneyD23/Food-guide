@@ -496,6 +496,7 @@
   .pw-plot{position:relative}
   .pw-band .pw-line{display:block;width:100%;height:76px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid #152a47;transform:translate(-50%,-50%);box-sizing:content-box}
+  .pw-band .pw-cap{position:absolute;width:5px;height:5px;border-radius:50%;background:#152a47;border:1.5px solid #96a1f2;transform:translate(-50%,-50%);box-sizing:content-box}
   .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:11px;font-weight:700;text-shadow:0 0 3px #10243a,0 0 3px #10243a,0 0 3px #10243a}
   .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
   .pw-band .pw-voidlbl{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:9.5px;font-weight:600;color:#7a88aa;text-align:center;line-height:1.4;white-space:nowrap;pointer-events:none}
@@ -725,7 +726,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702o</span>
+    <span style="opacity:.55">· build 0702p</span>
   </footer>
 </div>
 
@@ -2779,7 +2780,23 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           voidsOut.push({t0:va,t1:vb,kind:(wins.length&&(1-cov/(vb-va))>=0.6)?"closed":"nodata",pct:(vb-va)/(t1-t0)*100});
         }
       }
-      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut,samples:raw};
+      /* End caps (Option A): punctuate line ends that face an interruption
+         wide enough to read as one (≥2.5% of the span ≈ 20 min on a full
+         day). Tighter blips keep their crisp notch — caps across a narrow
+         gap would eat it. A sustained dot already on the endpoint outranks
+         the cap; the day's outer ends stay bare unless the domain extension
+         put slate beyond them. */
+      var caps=[],capMin=(t1-t0)*0.025;
+      function pwDotAt(tq){for(var q6=0;q6<dots.length;q6++)if(Math.abs(dots[q6].t-tq)<0.01)return true;return false;}
+      for(i=0;i<segs.length;i++){
+        var sg2=segs[i];if(!sg2.length)continue;
+        var aT=sg2[0][0],bT=sg2[sg2.length-1][0];
+        var leftGap=(i===0)?(aT-t0):(aT-segs[i-1][segs[i-1].length-1][0]);
+        var rightGap=(i===segs.length-1)?(t1-bT):(segs[i+1][0][0]-bT);
+        if(leftGap>=capMin&&!pwDotAt(aT))caps.push({t:aT,v:sg2[0][1]});
+        if(rightGap>=capMin&&!pwDotAt(bT))caps.push({t:bT,v:sg2[sg2.length-1][1]});
+      }
+      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut,samples:raw,caps:caps};
     }
     /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
        x = time in 0-100 viewBox units stretched to the card width
@@ -2804,6 +2821,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var above=dt.peak?(yN>=16):(yN>H-18);
         dots+='<span class="pw-dot" style="left:'+xS+'%;top:'+yS+'px;background:'+dt.c+'"></span>';
         dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+xS+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+dt.c+'">'+dt.val+'</span>';
+      }
+      for(i=0;i<m.caps.length;i++){
+        var cp=m.caps[i];
+        dots+='<span class="pw-cap" style="left:'+X(cp.t)+'%;top:'+Y(cp.v)+'px"></span>';
       }
       var vl="";
       for(i=0;i<m.voids.length;i++){
@@ -3261,6 +3282,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           ctx.font=SG("700",30);ctx.fillStyle=dt.c;ctx.textAlign=rightSide?"right":"left";ctx.textBaseline="middle";
           ctx.fillText(String(dt.val),lx,ly);ctx.fillText(String(dt.val),lx,ly);
           ctx.restore();ctx.textBaseline="alphabetic";
+        }
+        for(i=0;i<m.caps.length;i++){
+          var cp2=m.caps[i];
+          ctx.beginPath();ctx.arc(BX(cp2.t),BY(cp2.v),5.5,0,Math.PI*2);
+          ctx.fillStyle="#0e1e31";ctx.fill();
+          ctx.lineWidth=3;ctx.strokeStyle="#96a1f2";ctx.stroke();
         }
         for(i=0;i<m.voids.length;i++){
           var vv=m.voids[i];if(vv.pct<10)continue;
