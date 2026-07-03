@@ -726,7 +726,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702r</span>
+    <span style="opacity:.55">· build 0702s</span>
   </footer>
 </div>
 
@@ -2428,6 +2428,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(!pk)return {k:"Daily Wrap",l:"A quiet day at Walt Disney World.",sub:""};
       var rnd=seeded((seed||"x")+(isWeek?"w":""));
       var live=(!isWeek&&!fin); /* in-progress "today" view → present/ongoing voice (day isn't final yet) */
+      /* Tense listens to fin; DAY-WORDS listen to the date. A night-final day
+         is finished but still TODAY until midnight (owner catch, 11:56 PM):
+         "ran hottest today", not "yesterday". */
+      var isToday=(seed===etDate(0)),dw=isToday?"today":"yesterday";
       /* in-app uses relative day words (today/yesterday/this week); share cards are frozen
          images, so they drop the day word — the date + badge carry the "when" instead. */
       var opts=forCard?(isWeek?[
@@ -2451,14 +2455,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         "Busiest park so far today: "+pk.park+".",
         pk.park+" is drawing the biggest crowds today."
       ]:[
-        pk.park+" ran hottest yesterday.",
-        "Busiest park yesterday: "+pk.park+".",
-        pk.park+" drew the biggest crowds yesterday."
+        pk.park+" ran hottest "+dw+".",
+        "Busiest park "+dw+": "+pk.park+".",
+        pk.park+" drew the biggest crowds "+dw+"."
       ]);
       var line=opts[Math.floor(rnd()*opts.length)];
       var sub="Headliners "+(live?"averaging ":"averaged ")+pk.headAvg+" min";
       sub+=pk.worst?".":(isWeek?" — and stayed remarkably reliable.":live?" — and running clean so far.":" — and it stayed rock-solid, no breakdowns all day.");
-      return {k:isWeek?"The week in one line":(live?"Today in one line":"Yesterday in one line"),l:line,sub:sub};
+      return {k:isWeek?"The week in one line":((live||isToday)?"Today in one line":"Yesterday in one line"),l:line,sub:sub};
     }
 
     function shortName(n){
@@ -2570,7 +2574,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         wv.innerHTML=html;topw();var bk0=$id("pwBack");if(bk0)bk0.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});return;
       }
 
-      var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":live?" today.":" yesterday.");
+      var isTod=(lastData&&lastData.dates&&lastData.dates[0]===etDate(0));
+      var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":(live||isTod)?" today.":" yesterday.");
       var sub2=pk.leastRel?(shortName(pk.leastRel.name)+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
       html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
@@ -3415,7 +3420,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var noAvg=(r.avgWait==null);
       var line=noAvg
         ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
-        :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":live?" today.":" yesterday."));
+        :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":(live||(lastData&&lastData.dates&&lastData.dates[0]===etDate(0)))?" today.":" yesterday."));
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r,live,rClause))+'</div>';
