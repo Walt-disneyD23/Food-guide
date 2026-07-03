@@ -300,6 +300,45 @@
     --radius:22px; --radius-sm:16px;
     --shadow:0 16px 40px -18px rgba(40,40,90,.22); --shadow-sm:0 6px 18px -8px rgba(40,40,90,.14);
   }
+
+  /* ===== Harbor dark theme (D2) — driven by Settings ▸ Appearance.
+     Vars do the heavy lifting; the rules below are the audited
+     hardcoded-surface stragglers, given night versions. ===== */
+  html.dark{
+    --bg:#0a141d; --bg-2:#0d1826; --card:#12202c; --card-2:#17293a; --line:#20374a;
+    --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
+    --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18);
+    --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45);
+  }
+  html.dark body{background:
+    radial-gradient(920px 540px at 90% -8%, #10283c, transparent 60%),
+    radial-gradient(720px 470px at -6% 2%, #0d2433, transparent 58%),
+    var(--bg);}
+  html.dark .switch,html.dark .al-sw,html.dark .hc-sw.off{background:#263c50}
+  html.dark .help-grab{background:#2e4256}
+  html.dark .dn-watch{background:var(--card)}
+  html.dark .info-note,html.dark .pw-note{color:#b9b6ff}
+  html.dark .pstats .crowd-dots i:not(.on),html.dark .hours-row .crowd-dots i:not(.on){background:#2c4155}
+  html.dark .pw-st-bars .pb .track{background:#21374a}
+  html.dark .pw-hero{border:1px solid #24425c}
+  html.dark .park-card .pc-icon{background:#dfe7ee}
+
+  /* ===== settings sheet ===== */
+  #setPop{position:fixed;left:0;right:0;bottom:0;margin:0;border:none;border-radius:24px 24px 0 0;
+    padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -14px 44px rgba(20,22,50,.26);
+    max-height:86vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
+  #setPop.show{transform:translateY(0)}
+  body.set-open{overflow:hidden}
+  .set-lab{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:4px 2px 9px}
+  .pw-seg.set-seg{max-width:none;margin:0 0 10px}
+  .set-cap{font-size:11.5px;color:var(--muted-2);margin:0 2px 18px}
+  .set-rows{background:var(--card-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}
+  .set-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;text-decoration:none}
+  .set-row+.set-row{border-top:1px solid var(--line)}
+  .set-row span{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .set-row b{font-size:13.5px;font-weight:600;color:var(--muted)}
+  .set-row b.lnk{color:var(--accent)}
+  .set-disc{font-size:11px;line-height:1.55;color:var(--muted-2);margin:0 2px}
   body{background:
     radial-gradient(920px 540px at 90% -8%, #e7e4fc, transparent 60%),
     radial-gradient(720px 470px at -6% 2%, #e4ecfb, transparent 58%),
@@ -597,6 +636,14 @@
   .pw-st-bars .pb .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--long),var(--packed))}
   .pw-st-bars .pb .v{flex:none;width:24px;text-align:right;font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--packed)}
 </style>
+<meta name="theme-color" content="#e9ebf4" id="metaTheme">
+<script>
+/* Dark first-paint guard: runs before <body> renders so night users never
+   see a white flash. Reads the same JSON-encoded key the store shim writes. */
+try{var t=localStorage.getItem("ppTheme");if(t)t=JSON.parse(t);
+if(t==="dark"||(t==="auto"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches))
+document.documentElement.classList.add("dark");}catch(e){}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -620,6 +667,7 @@
       <div class="status-pill ok" id="statusPill"><i class="dot"></i><span id="statusText">Connecting…</span></div>
       <button class="icon-btn" id="alertsBtn" title="Alerts" aria-label="Alerts">⚑<span class="badge" id="alertBadge"></span></button>
       <button class="icon-btn" id="refreshBtn" title="Refresh" aria-label="Refresh">↻</button>
+      <button class="icon-btn" id="setBtn" title="Settings" aria-label="Settings">&#9881;&#xFE0E;</button>
     </div>
   </header>
 
@@ -652,6 +700,26 @@
     <div id="alertList"></div>
     <div class="alert-note">Each starred ride uses the default rule unless you give it its own. It pings once when the wait
       first drops past your threshold, then stays quiet — re-arming only if you change its rule or the ride goes down and comes back. With notifications on, alerts reach you even when the app is closed.</div>
+  </div>
+
+  <div class="help-scrim alerts-scrim" id="setScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
+  <div class="alerts-pop" id="setPop" hidden style="z-index:91">
+    <div class="help-grab"></div>
+    <div class="ap-head"><div class="ap-title">&#9881;&#xFE0E; Settings</div></div>
+    <div class="set-lab">Appearance</div>
+    <div class="pw-seg set-seg" id="themeSeg">
+      <button type="button" data-t="light" class="on">Light</button>
+      <button type="button" data-t="dark">Dark</button>
+      <button type="button" data-t="auto">Auto</button>
+    </div>
+    <div class="set-cap">Auto follows your iPhone.</div>
+    <div class="set-lab">About</div>
+    <div class="set-rows">
+      <div class="set-row"><span>Version</span><b id="setBuild"></b></div>
+      <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
+      <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
+    </div>
+    <div class="set-disc">Unofficial — not affiliated with or endorsed by The Walt Disney Company. Crowd level is an estimate from live wait times.</div>
   </div>
 
   <div class="help-scrim" id="helpScrim" hidden></div>
@@ -726,7 +794,7 @@
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55">· build 0702s</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703a</span>
   </footer>
 </div>
 
@@ -920,6 +988,47 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   sheetDragDismiss($("helpSheet"),$("helpScrim"),function(){
     document.body.classList.remove("help-open");
   });
+
+  /* ===== settings sheet + theme engine (Harbor dark) =====
+     Preference is three-state (light|dark|auto); "auto" resolves live via
+     prefers-color-scheme and re-resolves on system flips. The <head> guard
+     handles first paint; this owns everything after. */
+  var THEME_KEY="ppTheme";
+  var mqDark=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null;
+  function themePref(){return store.get(THEME_KEY,"light");}
+  function applyTheme(){
+    var p=themePref(),dark=(p==="dark")||(p==="auto"&&mqDark&&mqDark.matches);
+    document.documentElement.classList.toggle("dark",dark);
+    var m=document.getElementById("metaTheme");
+    if(m)m.setAttribute("content",dark?"#0a141d":"#e9ebf4");
+    var seg=$("themeSeg");
+    if(seg){var bs=seg.querySelectorAll("button");
+      for(var i=0;i<bs.length;i++)bs[i].classList.toggle("on",bs[i].getAttribute("data-t")===p);}
+  }
+  if(mqDark){var mqFn=function(){if(themePref()==="auto")applyTheme();};
+    if(mqDark.addEventListener)mqDark.addEventListener("change",mqFn);
+    else if(mqDark.addListener)mqDark.addListener(mqFn);}
+  $("themeSeg").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    store.set(THEME_KEY,b.getAttribute("data-t"));applyTheme();
+  });
+  function closeSetSheet(){var p=$("setPop"),sc=$("setScrim");if(p.hasAttribute("hidden"))return;
+    p.classList.remove("show");sc.classList.remove("show");
+    setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
+    document.body.classList.remove("set-open");$("setBtn").classList.remove("active");}
+  function openSetSheet(){closeStatusPop();closeAlertsSheet();
+    var p=$("setPop"),sc=$("setScrim");
+    p.removeAttribute("hidden");sc.removeAttribute("hidden");
+    requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
+    document.body.classList.add("set-open");$("setBtn").classList.add("active");}
+  $("setBtn").addEventListener("click",function(){
+    $("setPop").hasAttribute("hidden")?openSetSheet():closeSetSheet();});
+  $("setScrim").addEventListener("click",closeSetSheet);
+  sheetDragDismiss($("setPop"),$("setScrim"),function(){
+    document.body.classList.remove("set-open");$("setBtn").classList.remove("active");});
+  var bst=$("buildStamp");
+  if(bst&&$("setBuild"))$("setBuild").textContent=bst.textContent.replace(/^\s*·\s*/,"");
+  applyTheme();
 
   /* ---- status popover ---- */
   $("statusPill").addEventListener("click",function(e){
