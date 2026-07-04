@@ -809,7 +809,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703e</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703f</span>
   </footer>
 </div>
 
@@ -3636,12 +3636,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-grid">';
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
-      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":"Shortest line"),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")));
+      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")));
       html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
       html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
-      html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
+      html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min (quick blips still show in the chart) · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
@@ -3678,7 +3678,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var tiles=[];
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       tiles.push({label:"PEAK WAIT",pre:"peak",big:(puV!=null?String(puV):"–"),post:"m",cls:tier(puV||0),name:(su?"Highest sustained":"Highest of the day"),ctx:(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch"))});
-      tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=10?"Walk-on window":"Shortest line"),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
+      tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
       emitCard({W:1080,H:(bm?1472:1132),title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
