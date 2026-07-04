@@ -399,7 +399,7 @@
   .dn-trigger .chev{font-size:10px;transition:transform .18s;display:inline-block}
   .dn-trigger.open .chev{transform:rotate(180deg)}
   .dn-list{margin-top:6px;overflow:hidden;max-height:0;transition:max-height .24s ease}
-  .dn-list.open{max-height:320px;overflow-y:auto}
+  .dn-list.open{max-height:320px;overflow-y:auto;overscroll-behavior-y:contain}
   .dn-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
   .dn-row .rdot{width:7px;height:7px;border-radius:50%;background:var(--packed);flex:none}
   .dn-info{flex:1;min-width:0}
@@ -825,7 +825,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0704f</span>
+    <span style="opacity:.55" id="buildStamp">· build 0704g</span>
   </footer>
 </div>
 
@@ -1083,7 +1083,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
       return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open");}
-    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop"));}
+    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open"));}
     function setPull(px){
       ptr.classList.add("pull");
       ptr.style.opacity=Math.min(px/40,1);
