@@ -825,7 +825,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0704e</span>
+    <span style="opacity:.55" id="buildStamp">· build 0704f</span>
   </footer>
 </div>
 
@@ -2638,7 +2638,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
 
     function compute(d){
-      var rides=realRides(d),used={};
+      var rides=realRides(d); /* dedup retired Jul 4: superlative labels show TRUE winners; duplicates allowed (park-level precedent) */
       var byPark={};for(var i=0;i<MAIN.length;i++)byPark[MAIN[i]]=[];
       rides.forEach(function(r){if(byPark[r.park])byPark[r.park].push(r);});
       var parks=MAIN.map(function(p){
@@ -2650,17 +2650,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       parks.sort(function(a,b){return b.headAvg-a.headAvg;});
 
       var byAvg=rides.filter(hasAvg).sort(byAvgDesc);
-      var toughest=byAvg[0]||null;if(toughest)used[toughest.id]=1;
+      var toughest=byAvg[0]||null;
       /* Highest peak — sustained (25-min median) when the day has a snap
          timeline, raw maxWait via peakOK otherwise: one number family with
          the ride detail's "Highest sustained". */
       rides.forEach(function(r){var su2=pwSustained(r.id,d);r.suPk=(su2&&su2.peak!=null)?su2.peak:null;});
-      var longestPeak=firstNot(rides.filter(function(r){return r.suPk!=null||(peakOK(r)&&r.maxWait!=null);}).sort(function(a,b){return (b.suPk!=null?b.suPk:b.maxWait)-(a.suPk!=null?a.suPk:a.maxWait);}),used);if(longestPeak)used[longestPeak.id]=1;
-      var leastRel=rides.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;if(leastRel)used[leastRel.id]=1;
-      var mostOut=firstNot(rides.filter(function(r){return r.downEvents>0;}).sort(function(a,b){return b.downEvents-a.downEvents||b.downMinutes-a.downMinutes;}),used);
-      if(mostOut&&mostOut.downEvents<1)mostOut=null;if(mostOut)used[mostOut.id]=1;
+      var longestPeak=rides.filter(function(r){return r.suPk!=null||(peakOK(r)&&r.maxWait!=null);}).sort(function(a,b){return (b.suPk!=null?b.suPk:b.maxWait)-(a.suPk!=null?a.suPk:a.maxWait);})[0]||null;
+      var leastRel=rides.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;
+      var mostOut=rides.filter(function(r){return r.downEvents>0;}).sort(function(a,b){return b.downEvents-a.downEvents||b.downMinutes-a.downMinutes;})[0]||null;
+      if(mostOut&&mostOut.downEvents<1)mostOut=null;
       var swings=pwSwingMap(d),hasSnap=!!(d&&d.snap&&d.snap.rows&&d.snap.rows.length);
-      var walk=firstNot(rides.filter(function(r){return r.minWait!=null&&r.minWait<=5;}).sort(byAvgDesc),used);if(walk)used[walk.id]=1;
+      var walk=rides.filter(function(r){return r.minWait!=null&&r.minWait<=5;}).sort(byAvgDesc)[0]||null;
       /* when did the walk-on actually happen? First ≤5 operating tick;
          "rope drop" = inside the ride's first operating hour. Pre-snap
          days can't know → ctx falls back to the plain order clause. */
@@ -2680,12 +2680,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
          that ran clean (avg >= 25 so a static transport guess can't win;
          uptime >= 98); raw-spread fallback when the day has no snap
          timeline. Ties go to the bigger line. */
-      var steady=firstNot(rides.filter(function(r){
+      var steady=rides.filter(function(r){
         if(!hasAvg(r)||r.avgWait<25||(r.uptimePct!=null&&r.uptimePct<98))return false;
         if(hasSnap){r.stSw=(swings[r.id]?swings[r.id].drop:0);return true;}
         if(r.maxWait!=null&&r.minWait!=null){r.stSw=r.maxWait-r.minWait;return true;}
         return false;
-      }).sort(function(a,b){return a.stSw-b.stSw||b.avgWait-a.avgWait;}),used);if(steady)used[steady.id]=1;
+      }).sort(function(a,b){return a.stSw-b.stSw||b.avgWait-a.avgWait;})[0]||null;
 
       var story=null;
       if(hasSnap){rides.forEach(function(r){var sw=swings[r.id];if(sw&&sw.drop>=30&&(!story||sw.drop>story.sw.drop))story={id:r.id,name:r.name,park:r.park,sw:sw};});}
