@@ -825,7 +825,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703l</span>
+    <span style="opacity:.55" id="buildStamp">· build 0704a</span>
   </footer>
 </div>
 
@@ -3564,6 +3564,36 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var gt=ah+(D.sub?56:30),gap=22,tw=(R-L-gap)/2,th=252;
       if(D.band){var bTop=ah+(D.sub?52:26);gt=bTop+bandBlock(L,bTop,R-L,D.band);}
       for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
+      /* Swing of the Day — full-width story block (Wrap card only). Mirrors
+         the in-app Layout A: identity left, arc right, hold chip when the
+         swing is a reopen story. Card height is grown by the caller. */
+      if(D.story){
+        var s=D.story,sy=gt+Math.ceil(D.tiles.length/2)*(th+gap)+4,sbh=s.chip?250:196;
+        rr(L,sy,R-L,sbh,20);ctx.fillStyle="rgba(255,255,255,0.045)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.07)";ctx.stroke();
+        T("SWING OF THE DAY",L+26,sy+42,IN("600",21),C.muted2,"left");
+        /* arc measured first so the name knows its lane */
+        ctx.font=SG("700",54);var hiW=ctx.measureText(String(s.hi)).width,loW=ctx.measureText(String(s.lo)).width;
+        ctx.font=IN("600",26);var mW=ctx.measureText("m").width;
+        ctx.font=SG("700",40);var arW=ctx.measureText("\u2192").width;
+        var arcW=hiW+6+mW+20+arW+20+loW+6+mW,ax=R-26-arcW,vy=sy+120;
+        T(String(s.hi),ax,vy,SG("700",54),C.ink,"left");T("m",ax+hiW+6,vy,IN("600",26),C.muted2,"left");
+        T(s.hiT,ax,vy+34,IN("600",20),C.muted2,"left");
+        var axa=ax+hiW+6+mW+20;
+        T("\u2192",axa,vy-6,SG("700",40),C.accent,"left");
+        var axl=axa+arW+20;
+        T(String(s.lo),axl,vy,SG("700",54),C.ink,"left");T("m",axl+loW+6,vy,IN("600",26),C.muted2,"left");
+        T(s.loT,R-26,vy+34,IN("600",20),C.muted2,"right");
+        var nmW=(R-L)-52-arcW-28;
+        var snl=wrap2(s.name,nmW,SG("700",34));
+        for(var sq=0;sq<snl.length;sq++)T(snl[sq],L+26,sy+96+sq*40,SG("700",34),C.ink,"left");
+        T(ell(s.park,nmW,IN("500",22)),L+26,sy+96+(snl.length-1)*40+30,IN("500",22),C.muted2,"left");
+        if(s.chip){
+          var scy=sy+sbh-70,sch=44;ctx.font=IN("600",20);var scw=36+ctx.measureText(s.chip).width+20;
+          rr(L+26,scy,scw,sch,22);ctx.fillStyle="rgba(255,255,255,0.05)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.07)";ctx.stroke();
+          ctx.beginPath();ctx.arc(L+26+20,scy+sch/2,6,0,Math.PI*2);ctx.fillStyle="#aab0c6";ctx.fill();
+          T(s.chip,L+26+36,scy+sch/2,IN("600",20),C.muted,"left","middle");
+        }
+      }
       var fy=cy+ch-86;
       ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
       if(D.foot2){ /* two-line left stack mirrors the link/credit stack on the right */
@@ -3681,7 +3711,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
       if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later")):c.walk.park});
       if(c.steady)tiles.push({label:"STEADIEST LINE",pre:"swing",big:String(c.steady.stSw),post:"m",cls:"pw-s",name:c.steady.name,ctx:"held near "+c.steady.avgWait+(isWeek?" this week":(isFinal(d)?" all day":" so far"))});
-      emitCard({W:1080,H:1460,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
+      var sb=null;
+      if(c.story){var ssw=c.story.sw;
+        sb={name:c.story.name,park:c.story.park,hi:ssw.hi,lo:ssw.lo,hiT:pwClk(ssw.hiT),loT:pwClk(ssw.loT),
+            chip:(ssw.near&&ssw.downMin?(ssw.downN>1?(ssw.downMin+" min of holds \u2014 last ended "+pwClk(ssw.downEnd)):(ssw.downMin+"-min hold ended "+pwClk(ssw.downEnd))):null)};}
+      emitCard({W:1080,H:1460+(sb?((sb.chip?250:196)+26):0),title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,story:sb,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
     }
 
     function shareParkCard(park){
