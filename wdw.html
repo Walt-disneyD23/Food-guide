@@ -809,7 +809,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703g</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703h</span>
   </footer>
 </div>
 
@@ -2577,6 +2577,50 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     function firstNot(arr,used){for(var i=0;i<arr.length;i++){if(!used[arr[i].id])return arr[i];}return arr[0]||null;}
     function byAvgDesc(a,b){return (b.avgWait==null?-1:b.avgWait)-(a.avgWait==null?-1:a.avgWait);}
 
+    /* ---- Swing engine: per-ride largest ORDERED high→low move from the 5-min
+       snap timeline. Both endpoints need 2-tick confirmation (pair-min for the
+       high, pair-max for the low) — admits genuine post-reopen walk-ons (they
+       run 2+ ticks; that sharpness is signal, not noise) while rejecting pure
+       single-tick feed glitches. NOT segmented: crossing an outage is the
+       story. Outage windows rebuilt from contiguous -1 runs; downMin/downEnd
+       cover holds that START between the high and the low, and `near` is true
+       only when the low lands within 45 min of the reopen — the only case
+       where copy may say "after a hold" (temporal sequence, never cause).
+       Returns {} when the day has no snap timeline (pre-v3.3 / week). */
+    function pwSwingMap(d){
+      var snap=d&&d.snap,out={};
+      if(!snap||!snap.ids||!snap.rows||!snap.rows.length)return out;
+      var ids=snap.ids,rows=snap.rows,cad=d.snapCadenceMin||5,col;
+      for(col=0;col<ids.length;col++){
+        var ts=[],vs=[],downs=[],cur=null,i;
+        for(i=0;i<rows.length;i++){
+          var w=rows[i].w;if(!w||col>=w.length)continue;
+          var v=w[col],t=rows[i].t;
+          if(typeof v==="number"&&v>=0){ts.push(t);vs.push(v);}
+          if(v===-1){if(cur)cur[1]=t;else cur=[t,t];}
+          else if(cur){downs.push(cur);cur=null;}
+        }
+        if(cur)downs.push(cur);
+        var n=vs.length;if(n<4)continue;
+        var runHi=null,runHiT=null,best=null;
+        for(i=0;i<n-1;i++){
+          var cv=Math.min(vs[i],vs[i+1]);
+          if(runHi===null||cv>runHi){runHi=cv;runHiT=ts[i];}
+          var cl=Math.max(vs[i],vs[i+1]),dr=runHi-cl;
+          if(dr>0&&(best===null||dr>best.drop))best={drop:dr,hi:runHi,hiT:runHiT,lo:cl,loT:ts[i]};
+        }
+        if(!best)continue;
+        var dm=0,de=null;
+        for(i=0;i<downs.length;i++){
+          if(downs[i][0]>=best.hiT&&downs[i][0]<=best.loT){dm+=(downs[i][1]-downs[i][0])+cad;de=downs[i][1];}
+        }
+        best.downMin=dm;best.downEnd=de;
+        best.near=(de!=null&&(best.loT-de)<=45);
+        out[ids[col]]=best;
+      }
+      return out;
+    }
+
     function compute(d){
       var rides=realRides(d),used={};
       var byPark={};for(var i=0;i<MAIN.length;i++)byPark[MAIN[i]]=[];
@@ -2595,7 +2639,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var leastRel=rides.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;if(leastRel)used[leastRel.id]=1;
       var mostOut=firstNot(rides.filter(function(r){return r.downEvents>0;}).sort(function(a,b){return b.downEvents-a.downEvents||b.downMinutes-a.downMinutes;}),used);
       if(mostOut&&mostOut.downEvents<1)mostOut=null;if(mostOut)used[mostOut.id]=1;
-      var drop=firstNot(rides.filter(function(r){return r.avgWait>=25&&r.minWait!=null&&peakOK(r)&&(r.maxWait-r.minWait)>=20;}).sort(function(a,b){return (b.maxWait-b.minWait)-(a.maxWait-a.minWait);}),used);if(drop)used[drop.id]=1;
+      var swings=pwSwingMap(d),hasSnap=!!(d&&d.snap&&d.snap.rows&&d.snap.rows.length);
+      var drop=firstNot(rides.filter(function(r){
+        var sw=hasSnap?swings[r.id]:null;
+        r.sw=(sw&&sw.drop>=20)?sw:null;
+        if(hasSnap)return r.avgWait>=25&&!!r.sw;
+        return r.avgWait>=25&&r.minWait!=null&&peakOK(r)&&r.minAt!=null&&r.peakAt!=null&&r.minAt>r.peakAt&&(r.maxWait-r.minWait)>=20;
+      }).sort(function(a,b){return (b.sw?b.sw.drop:(b.maxWait-b.minWait))-(a.sw?a.sw.drop:(a.maxWait-a.minWait));}),used);if(drop)used[drop.id]=1;
       var walk=firstNot(rides.filter(function(r){return r.minWait!=null&&r.minWait<=5;}).sort(byAvgDesc),used);if(walk)used[walk.id]=1;
 
       return {parks:parks,busiestPark:parks[0]||null,toughest:toughest,longestPeak:longestPeak,leastRel:leastRel,mostOut:mostOut,drop:drop,walk:walk};
@@ -2607,7 +2657,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var busiest=rs.filter(hasAvg).sort(byAvgDesc)[0]||null;
       var leastRel=rs.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;
       var mostOut=rs.filter(function(r){return r.downEvents>0;}).sort(function(a,b){return b.downEvents-a.downEvents||b.downMinutes-a.downMinutes;})[0]||null;
-      var drop=rs.filter(function(r){return r.minWait!=null&&peakOK(r)&&(r.maxWait-r.minWait)>=15;}).sort(function(a,b){return (b.maxWait-b.minWait)-(a.maxWait-a.minWait);})[0]||null;
+      var pkSwings=pwSwingMap(d),pkSnap=!!(d&&d.snap&&d.snap.rows&&d.snap.rows.length);
+      var drop=rs.filter(function(r){
+        var sw=pkSnap?pkSwings[r.id]:null;
+        r.sw=(sw&&sw.drop>=15)?sw:null;
+        if(pkSnap)return !!r.sw;
+        return r.minWait!=null&&peakOK(r)&&r.minAt!=null&&r.peakAt!=null&&r.minAt>r.peakAt&&(r.maxWait-r.minWait)>=15;
+      }).sort(function(a,b){return (b.sw?b.sw.drop:(b.maxWait-b.minWait))-(a.sw?a.sw.drop:(a.maxWait-a.minWait));})[0]||null;
       return {rides:sorted,headAvg:headAvg(rs),busiest:busiest,leastRel:leastRel,mostOut:mostOut,drop:drop,n:rs.length};
     }
 
@@ -2721,8 +2777,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(c.longestPeak)html+=tileV("Longest peak",'<span class="u">peak</span> '+c.longestPeak.maxWait+'m',tier(c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park,null,c.longestPeak.id,c.longestPeak.park);
       if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"",c.leastRel.id,c.leastRel.park);
       if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"",c.mostOut.id,c.mostOut.park);
-      if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+c.drop.minWait+'m',"pw-s",c.drop.name,"off a "+c.drop.maxWait+" peak",null,c.drop.id,c.drop.park);
-      if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park,null,c.walk.id,c.walk.park);
+      if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+(c.drop.sw?c.drop.sw.lo:c.drop.minWait)+'m',"pw-s",c.drop.name,"off a "+(c.drop.sw?c.drop.sw.hi:c.drop.maxWait)+" peak",null,c.drop.id,c.drop.park);
+      if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later")):c.walk.park,null,c.walk.id,c.walk.park);
       html+='</div>';
 
       html+='<div class="pw-sec">By park · tap for the full breakdown</div>';
@@ -2777,7 +2833,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(pk.busiest)html+=tileV("Toughest line",'<span class="u">avg</span> '+pk.busiest.avgWait+'m',tier(pk.busiest.avgWait),pk.busiest.name,pk.busiest.maxWait?("peak "+pk.busiest.maxWait):"",null,pk.busiest.id,park);
       if(pk.leastRel)html+=tileV("Least reliable",pk.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",pk.leastRel.name,pk.leastRel.downMinutes+" min down",dKind?pwWxNote(pk.leastRel.id,dX,dKind):"",pk.leastRel.id,park);
       if(pk.mostOut)html+=tileV("Most outages",pk.mostOut.downEvents+"×","pw-l",pk.mostOut.name,pk.mostOut.downMinutes+" min total",dKind?pwWxNote(pk.mostOut.id,dX,dKind):"",pk.mostOut.id,park);
-      if(pk.drop)html+=tileV("Best value",'<span class="u">low</span> '+pk.drop.minWait+'m',"pw-s",pk.drop.name,"off a "+pk.drop.maxWait+" peak",null,pk.drop.id,park);
+      if(pk.drop)html+=tileV("Best value",'<span class="u">low</span> '+(pk.drop.sw?pk.drop.sw.lo:pk.drop.minWait)+'m',"pw-s",pk.drop.name,"off a "+(pk.drop.sw?pk.drop.sw.hi:pk.drop.maxWait)+" peak",null,pk.drop.id,park);
       html+='</div>';
 
       html+='<div class="pw-sec">Every ride · sorted by avg wait</div>';
@@ -3583,8 +3639,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(c.longestPeak)tiles.push({label:"LONGEST PEAK",pre:"peak",big:String(c.longestPeak.maxWait),post:"m",cls:tier(c.longestPeak.maxWait),name:c.longestPeak.name,ctx:c.longestPeak.park});
       if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(c.leastRel.id,wxX,wxKind):""});
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
-      if(c.drop)tiles.push({label:"BIGGEST DROP",pre:"low",big:String(c.drop.minWait),post:"m",cls:"pw-s",name:c.drop.name,ctx:"off a "+c.drop.maxWait+" peak"});
-      if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?("dipped from "+c.walk.maxWait):c.walk.park});
+      if(c.drop)tiles.push({label:"BIGGEST DROP",pre:"low",big:String(c.drop.sw?c.drop.sw.lo:c.drop.minWait),post:"m",cls:"pw-s",name:c.drop.name,ctx:"off a "+(c.drop.sw?c.drop.sw.hi:c.drop.maxWait)+" peak"});
+      if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later")):c.walk.park});
       emitCard({W:1080,H:1460,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
     }
 
@@ -3601,7 +3657,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(pk.busiest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(pk.busiest.avgWait),post:"m",cls:tier(pk.busiest.avgWait),name:pk.busiest.name,ctx:pk.busiest.maxWait?("peak "+pk.busiest.maxWait):""});
       if(pk.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:pk.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:pk.leastRel.name,ctx:pk.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(pk.leastRel.id,wxX,wxKind):""});
       if(pk.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:pk.mostOut.downEvents+"×",post:"",cls:"pw-l",name:pk.mostOut.name,ctx:pk.mostOut.downMinutes+" min total",note:wxKind?pwWxClause(pk.mostOut.id,wxX,wxKind):""});
-      if(pk.drop)tiles.push({label:"BEST VALUE",pre:"low",big:String(pk.drop.minWait),post:"m",cls:"pw-s",name:pk.drop.name,ctx:"off a "+pk.drop.maxWait+" peak"});
+      if(pk.drop)tiles.push({label:"BEST VALUE",pre:"low",big:String(pk.drop.sw?pk.drop.sw.lo:pk.drop.minWait),post:"m",cls:"pw-s",name:pk.drop.name,ctx:"off a "+(pk.drop.sw?pk.drop.sw.hi:pk.drop.maxWait)+" peak"});
       emitCard({W:1080,H:1132,title:park,kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-"+park.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+dateStr+".png",shareTitle:"ParkPulse — "+park});
     }
 
