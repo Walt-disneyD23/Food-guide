@@ -809,7 +809,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703f</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703g</span>
   </footer>
 </div>
 
@@ -3470,7 +3470,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
       var fy=cy+ch-86;
       ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-      T(D.foot||"Reliability logged every 2 min",L,fy+44,IN("500",22),C.muted2,"left");
+      if(D.foot2){ /* two-line left stack mirrors the link/credit stack on the right */
+        T(D.foot||"Reliability logged every 2 min",L,fy+36,IN("500",22),C.muted2,"left");
+        T(D.foot2,L,fy+66,IN("500",20),C.muted2,"left");
+      }else{
+        T(D.foot||"Reliability logged every 2 min",L,fy+44,IN("500",22),C.muted2,"left");
+      }
       T(D.link,R,fy+36,IN("700",26),C.green,"right");
       T("Data: ThemeParks.wiki",R,fy+66,IN("500",20),C.muted2,"right");
       ctx.restore();
@@ -3681,7 +3686,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      emitCard({W:1080,H:(bm?1472:1132),title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
+      emitCard({W:1080,H:(bm?1472:1132),title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
     /* ---- init ---- */
