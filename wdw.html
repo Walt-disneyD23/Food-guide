@@ -594,6 +594,10 @@
   .pw-story .nm{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--ink);margin-top:5px;line-height:1.15}
   .pw-story .pk{font-size:10.5px;color:var(--muted-2);font-weight:600;margin-top:1px}
   .pw-story .arc{display:flex;align-items:baseline;gap:10px;margin-top:9px}
+  .pw-story .srow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:6px}
+  .pw-story .srow .sid{flex:1;min-width:0}
+  .pw-story .srow .arc{margin-top:2px;flex:none}
+  .pw-story .srow .arc .col{align-items:flex-end}
   .pw-story .arc .v{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--ink)}
   .pw-story .arc .v .u{font-size:.55em;color:var(--muted-2);font-weight:600}
   .pw-story .arc .t{font-size:10px;color:var(--muted-2);font-weight:600;display:block;margin-top:1px}
@@ -821,7 +825,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703i</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703k</span>
   </footer>
 </div>
 
@@ -2647,23 +2651,31 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
       var byAvg=rides.filter(hasAvg).sort(byAvgDesc);
       var toughest=byAvg[0]||null;if(toughest)used[toughest.id]=1;
-      var longestPeak=firstNot(rides.filter(peakOK).sort(function(a,b){return b.maxWait-a.maxWait;}),used);if(longestPeak)used[longestPeak.id]=1;
+      /* Highest peak — sustained (25-min median) when the day has a snap
+         timeline, raw maxWait via peakOK otherwise: one number family with
+         the ride detail's "Highest sustained". */
+      rides.forEach(function(r){var su2=pwSustained(r.id,d);r.suPk=(su2&&su2.peak!=null)?su2.peak:null;});
+      var longestPeak=firstNot(rides.filter(function(r){return r.suPk!=null||(peakOK(r)&&r.maxWait!=null);}).sort(function(a,b){return (b.suPk!=null?b.suPk:b.maxWait)-(a.suPk!=null?a.suPk:a.maxWait);}),used);if(longestPeak)used[longestPeak.id]=1;
       var leastRel=rides.filter(function(r){return r.downEvents>0&&r.uptimePct!=null;}).sort(function(a,b){return a.uptimePct-b.uptimePct||b.downMinutes-a.downMinutes;})[0]||null;if(leastRel)used[leastRel.id]=1;
       var mostOut=firstNot(rides.filter(function(r){return r.downEvents>0;}).sort(function(a,b){return b.downEvents-a.downEvents||b.downMinutes-a.downMinutes;}),used);
       if(mostOut&&mostOut.downEvents<1)mostOut=null;if(mostOut)used[mostOut.id]=1;
       var swings=pwSwingMap(d),hasSnap=!!(d&&d.snap&&d.snap.rows&&d.snap.rows.length);
-      var drop=firstNot(rides.filter(function(r){
-        var sw=hasSnap?swings[r.id]:null;
-        r.sw=(sw&&sw.drop>=20)?sw:null;
-        if(hasSnap)return r.avgWait>=25&&!!r.sw;
-        return r.avgWait>=25&&r.minWait!=null&&peakOK(r)&&r.minAt!=null&&r.peakAt!=null&&r.minAt>r.peakAt&&(r.maxWait-r.minWait)>=20;
-      }).sort(function(a,b){return (b.sw?b.sw.drop:(b.maxWait-b.minWait))-(a.sw?a.sw.drop:(a.maxWait-a.minWait));}),used);if(drop)used[drop.id]=1;
       var walk=firstNot(rides.filter(function(r){return r.minWait!=null&&r.minWait<=5;}).sort(byAvgDesc),used);if(walk)used[walk.id]=1;
+      /* Steadiest line — smallest 2-tick-confirmed swing among real lines
+         that ran clean (avg >= 25 so a static transport guess can't win;
+         uptime >= 98); raw-spread fallback when the day has no snap
+         timeline. Ties go to the bigger line. */
+      var steady=firstNot(rides.filter(function(r){
+        if(!hasAvg(r)||r.avgWait<25||(r.uptimePct!=null&&r.uptimePct<98))return false;
+        if(hasSnap){r.stSw=(swings[r.id]?swings[r.id].drop:0);return true;}
+        if(r.maxWait!=null&&r.minWait!=null){r.stSw=r.maxWait-r.minWait;return true;}
+        return false;
+      }).sort(function(a,b){return a.stSw-b.stSw||b.avgWait-a.avgWait;}),used);if(steady)used[steady.id]=1;
 
       var story=null;
-      if(hasSnap){rides.forEach(function(r){var sw=swings[r.id];if(sw&&sw.near&&sw.drop>=30&&(!story||sw.drop>story.sw.drop))story={id:r.id,name:r.name,park:r.park,sw:sw};});}
+      if(hasSnap){rides.forEach(function(r){var sw=swings[r.id];if(sw&&sw.drop>=30&&(!story||sw.drop>story.sw.drop))story={id:r.id,name:r.name,park:r.park,sw:sw};});}
 
-      return {parks:parks,busiestPark:parks[0]||null,toughest:toughest,longestPeak:longestPeak,leastRel:leastRel,mostOut:mostOut,drop:drop,walk:walk,story:story};
+      return {parks:parks,busiestPark:parks[0]||null,toughest:toughest,longestPeak:longestPeak,leastRel:leastRel,mostOut:mostOut,steady:steady,walk:walk,story:story};
     }
 
     function computePark(d,park){
@@ -2788,23 +2800,24 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+'</div>';
 
       html+='<div class="pw-grid">';
-      if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:""),null,c.toughest.id,c.toughest.park);
-      if(c.longestPeak)html+=tileV("Longest peak",'<span class="u">peak</span> '+c.longestPeak.maxWait+'m',tier(c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park,null,c.longestPeak.id,c.longestPeak.park);
+      if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park,null,c.toughest.id,c.toughest.park);
+      if(c.longestPeak)html+=tileV("Highest peak",'<span class="u">peak</span> '+(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait)+'m',tier(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park,null,c.longestPeak.id,c.longestPeak.park);
       if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"",c.leastRel.id,c.leastRel.park);
       if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"",c.mostOut.id,c.mostOut.park);
-      if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+(c.drop.sw?c.drop.sw.lo:c.drop.minWait)+'m',"pw-s",c.drop.name,"off a "+(c.drop.sw?c.drop.sw.hi:c.drop.maxWait)+" peak",null,c.drop.id,c.drop.park);
       if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later")):c.walk.park,null,c.walk.id,c.walk.park);
+      if(c.steady)html+=tileV("Steadiest line",'<span class="u">swing</span> '+c.steady.stSw+'m',"pw-s",c.steady.name,"held near "+c.steady.avgWait+(isWeek?" this week":(live?" so far":" all day")),null,c.steady.id,c.steady.park);
       html+='</div>';
 
       if(c.story){var st=c.story,sw=st.sw;
         html+='<div class="pw-story pw-tile-go" tabindex="0" role="button" data-rid="'+st.id+'" data-rpark="'+esc(st.park)+'">'
           +'<div class="lbl">Swing of the day</div>'
-          +'<div class="nm">'+esc(shortName(st.name))+'</div>'
-          +'<div class="pk">'+esc(st.park)+'</div>'
-          +'<div class="arc"><span class="col"><span class="v">'+sw.hi+'<span class="u">m</span></span><span class="t">'+pwClk(sw.hiT)+'</span></span>'
-          +'<span class="a">\u2192</span>'
-          +'<span class="col"><span class="v">'+sw.lo+'<span class="u">m</span></span><span class="t">'+pwClk(sw.loT)+'</span></span></div>'
-          +'<span class="hold"><span class="dot"></span>'+(sw.downN>1?(sw.downMin+" min of holds \u2014 last ended "+pwClk(sw.downEnd)):(sw.downMin+"-min hold ended "+pwClk(sw.downEnd)))+'</span>'
+          +'<div class="srow">'
+            +'<div class="sid"><div class="nm">'+esc(shortName(st.name))+'</div><div class="pk">'+esc(st.park)+'</div></div>'
+            +'<div class="arc"><span class="col"><span class="v">'+sw.hi+'<span class="u">m</span></span><span class="t">'+pwClk(sw.hiT)+'</span></span>'
+            +'<span class="a">\u2192</span>'
+            +'<span class="col"><span class="v">'+sw.lo+'<span class="u">m</span></span><span class="t">'+pwClk(sw.loT)+'</span></span></div>'
+          +'</div>'
+          +(sw.near&&sw.downMin?('<span class="hold"><span class="dot"></span>'+(sw.downN>1?(sw.downMin+" min of holds \u2014 last ended "+pwClk(sw.downEnd)):(sw.downMin+"-min hold ended "+pwClk(sw.downEnd)))+'</span>'):'')
         +'</div>';
       }
 
@@ -2930,8 +2943,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
        Keeps only real waits (finite number >= 0); skips DOWN/CLOSED/REFURB/no-wait
        codes, null cells (post-close), and early rows where w is shorter than the
        roster (ride not yet tracked that tick). Shared by sustained tiles + sparkline. */
-    function pwWaitSeries(rid){
-      var snap=lastData&&lastData.snap;if(!snap||!snap.ids||!snap.rows||rid==null)return null;
+    function pwWaitSeries(rid,dd){
+      var src=dd||lastData,snap=src&&src.snap;if(!snap||!snap.ids||!snap.rows||rid==null)return null;
       var col=snap.ids.indexOf(rid);if(col<0)return null;
       var ts=[],vs=[];
       for(var i=0;i<snap.rows.length;i++){var w=snap.rows[i].w;if(!w||col>=w.length)continue;var v=w[col];
@@ -2949,8 +2962,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
        all run exactly 2 ticks, which a 5-tick median rejects and a 3-tick
        median keeps. Returns null (caller falls back to raw min/max) when no
        snap data, under an hour of operation, or no segment ran 25 min. */
-    function pwSustained(rid){
-      var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return null;
+    function pwSustained(rid,dd){
+      var s=pwWaitSeries(rid,dd);if(!s||s.vs.length<12)return null;
       var ts=s.ts,vs=s.vs,n=vs.length,i,j;
       function md5(a,b,c,d,e){var q=[a,b,c,d,e].sort(function(x,y){return x-y;});return q[2];}
       var pk=null,pi=-1,lo=null,li=-1,st=0;
@@ -3662,13 +3675,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var h=hero(c,dateStr,isWeek,isFinal(d),true),tiles=[];
       var live=!isFinal(d);
       var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
-      if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park+(c.toughest.maxWait?" · peak "+c.toughest.maxWait:"")});
-      if(c.longestPeak)tiles.push({label:"LONGEST PEAK",pre:"peak",big:String(c.longestPeak.maxWait),post:"m",cls:tier(c.longestPeak.maxWait),name:c.longestPeak.name,ctx:c.longestPeak.park});
+      if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park});
+      if(c.longestPeak)tiles.push({label:"HIGHEST PEAK",pre:"peak",big:String(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait),post:"m",cls:tier(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait),name:c.longestPeak.name,ctx:c.longestPeak.park});
       if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(c.leastRel.id,wxX,wxKind):""});
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
-      if(c.drop)tiles.push({label:"BIGGEST DROP",pre:"low",big:String(c.drop.sw?c.drop.sw.lo:c.drop.minWait),post:"m",cls:"pw-s",name:c.drop.name,ctx:"off a "+(c.drop.sw?c.drop.sw.hi:c.drop.maxWait)+" peak"});
       if(c.walk)tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later")):c.walk.park});
-      emitCard({W:1080,H:1460,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
+      if(c.steady)tiles.push({label:"STEADIEST LINE",pre:"swing",big:String(c.steady.stSw),post:"m",cls:"pw-s",name:c.steady.name,ctx:"held near "+c.steady.avgWait+(isWeek?" this week":(isFinal(d)?" all day":" so far"))});
+      emitCard({W:1080,H:1460,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-wrap-"+dateStr+".png",shareTitle:"ParkPulse — Wrap"});
     }
 
     function shareParkCard(park){
