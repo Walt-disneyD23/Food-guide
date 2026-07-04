@@ -589,6 +589,18 @@
   .pw-tile .v .u{font-size:.58em;color:var(--muted-2);font-weight:600}
   .pw-tile .nm{font-size:11.5px;color:var(--ink);font-weight:600;margin-top:3px;line-height:1.2}
   .pw-tile .ctx{font-size:10.5px;color:var(--muted)}
+  .pw-story{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-sm);margin-top:9px;cursor:pointer}
+  .pw-story .lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+  .pw-story .nm{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--ink);margin-top:5px;line-height:1.15}
+  .pw-story .pk{font-size:10.5px;color:var(--muted-2);font-weight:600;margin-top:1px}
+  .pw-story .arc{display:flex;align-items:baseline;gap:10px;margin-top:9px}
+  .pw-story .arc .v{font-family:var(--font-display);font-weight:700;font-size:26px;color:var(--ink)}
+  .pw-story .arc .v .u{font-size:.55em;color:var(--muted-2);font-weight:600}
+  .pw-story .arc .t{font-size:10px;color:var(--muted-2);font-weight:600;display:block;margin-top:1px}
+  .pw-story .arc .a{color:var(--accent);font-size:19px;transform:translateY(-2px);font-weight:700}
+  .pw-story .col{display:flex;flex-direction:column}
+  .pw-story .hold{display:inline-flex;align-items:center;gap:6px;margin-top:9px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:10.5px;color:var(--muted);font-weight:600}
+  .pw-story .hold .dot{width:7px;height:7px;border-radius:50%;background:var(--closed)}
   .pw-s{color:var(--short)}.pw-m{color:var(--medium)}.pw-l{color:var(--long)}.pw-p{color:var(--packed)}
   .pw-sec{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:18px 2px 8px}
   .pw-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 14px;margin-bottom:8px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .08s ease}
@@ -809,7 +821,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703h</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703i</span>
   </footer>
 </div>
 
@@ -2610,11 +2622,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           if(dr>0&&(best===null||dr>best.drop))best={drop:dr,hi:runHi,hiT:runHiT,lo:cl,loT:ts[i]};
         }
         if(!best)continue;
-        var dm=0,de=null;
+        var dm=0,de=null,dc=0;
         for(i=0;i<downs.length;i++){
-          if(downs[i][0]>=best.hiT&&downs[i][0]<=best.loT){dm+=(downs[i][1]-downs[i][0])+cad;de=downs[i][1];}
+          if(downs[i][0]>=best.hiT&&downs[i][0]<=best.loT){dm+=(downs[i][1]-downs[i][0])+cad;de=downs[i][1];dc++;}
         }
-        best.downMin=dm;best.downEnd=de;
+        best.downMin=dm;best.downEnd=de;best.downN=dc;
         best.near=(de!=null&&(best.loT-de)<=45);
         out[ids[col]]=best;
       }
@@ -2648,7 +2660,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       }).sort(function(a,b){return (b.sw?b.sw.drop:(b.maxWait-b.minWait))-(a.sw?a.sw.drop:(a.maxWait-a.minWait));}),used);if(drop)used[drop.id]=1;
       var walk=firstNot(rides.filter(function(r){return r.minWait!=null&&r.minWait<=5;}).sort(byAvgDesc),used);if(walk)used[walk.id]=1;
 
-      return {parks:parks,busiestPark:parks[0]||null,toughest:toughest,longestPeak:longestPeak,leastRel:leastRel,mostOut:mostOut,drop:drop,walk:walk};
+      var story=null;
+      if(hasSnap){rides.forEach(function(r){var sw=swings[r.id];if(sw&&sw.near&&sw.drop>=30&&(!story||sw.drop>story.sw.drop))story={id:r.id,name:r.name,park:r.park,sw:sw};});}
+
+      return {parks:parks,busiestPark:parks[0]||null,toughest:toughest,longestPeak:longestPeak,leastRel:leastRel,mostOut:mostOut,drop:drop,walk:walk,story:story};
     }
 
     function computePark(d,park){
@@ -2780,6 +2795,18 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(c.drop)html+=tileV("Biggest drop",'<span class="u">low</span> '+(c.drop.sw?c.drop.sw.lo:c.drop.minWait)+'m',"pw-s",c.drop.name,"off a "+(c.drop.sw?c.drop.sw.hi:c.drop.maxWait)+" peak",null,c.drop.id,c.drop.park);
       if(c.walk)html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later")):c.walk.park,null,c.walk.id,c.walk.park);
       html+='</div>';
+
+      if(c.story){var st=c.story,sw=st.sw;
+        html+='<div class="pw-story pw-tile-go" tabindex="0" role="button" data-rid="'+st.id+'" data-rpark="'+esc(st.park)+'">'
+          +'<div class="lbl">Swing of the day</div>'
+          +'<div class="nm">'+esc(shortName(st.name))+'</div>'
+          +'<div class="pk">'+esc(st.park)+'</div>'
+          +'<div class="arc"><span class="col"><span class="v">'+sw.hi+'<span class="u">m</span></span><span class="t">'+pwClk(sw.hiT)+'</span></span>'
+          +'<span class="a">\u2192</span>'
+          +'<span class="col"><span class="v">'+sw.lo+'<span class="u">m</span></span><span class="t">'+pwClk(sw.loT)+'</span></span></div>'
+          +'<span class="hold"><span class="dot"></span>'+(sw.downN>1?(sw.downMin+" min of holds \u2014 last ended "+pwClk(sw.downEnd)):(sw.downMin+"-min hold ended "+pwClk(sw.downEnd)))+'</span>'
+        +'</div>';
+      }
 
       html+='<div class="pw-sec">By park · tap for the full breakdown</div>';
       c.parks.forEach(function(p){
