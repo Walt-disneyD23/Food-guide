@@ -809,7 +809,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0703d</span>
+    <span style="opacity:.55" id="buildStamp">· build 0703e</span>
   </footer>
 </div>
 
@@ -2855,18 +2855,34 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         if(typeof v==="number"&&v>=0){ts.push(snap.rows[i].t);vs.push(v);}}
       return vs.length?{ts:ts,vs:vs}:null;
     }
-    /* ---- sustained peak/low: centered 15-min (3-tick) rolling median over the
-       operating series. Kills single-tick blips; preserves anything held ~10+ min.
-       Returns null (caller falls back to raw min/max) when no snap data or under
-       an hour of operation. Same spirit as the Wrap superlatives' peakOK guard. */
+    /* ---- sustained peak/low: centered 25-min (5-tick) rolling median over the
+       operating series, computed INSIDE contiguous operating segments (a gap
+       over 17.5 min — outage, closure, or 3+ missed polls — breaks the run;
+       one rule with the band's bridge ceiling). Full 5-tick windows only, so
+       segment edges (post-reopen walk-ons, close-of-night taper, reopen
+       overshoots) can never take the crown — a value must genuinely hold ~25
+       min. Tuned in the Jun 30 / Jul 1 / Jul 2 bake-off: the feed's artifact
+       species (walk-ons, pre-outage flares, opening guesses, defensive bumps)
+       all run exactly 2 ticks, which a 5-tick median rejects and a 3-tick
+       median keeps. Returns null (caller falls back to raw min/max) when no
+       snap data, under an hour of operation, or no segment ran 25 min. */
     function pwSustained(rid){
       var s=pwWaitSeries(rid);if(!s||s.vs.length<12)return null;
-      var vs=s.vs,n=vs.length,med=[],i;
-      function md(a){var b=a.slice().sort(function(x,y){return x-y;});var m=b.length>>1;return b.length%2?b[m]:(b[m-1]+b[m])/2;}
-      for(i=0;i<n;i++)med.push(md(vs.slice(Math.max(0,i-1),Math.min(n,i+2))));
-      var pi=0,li=0;
-      for(i=1;i<n;i++){if(med[i]>med[pi])pi=i;if(med[i]<med[li])li=i;}
-      return{peak:Math.round(med[pi]),peakAt:s.ts[pi],low:Math.round(med[li]),lowAt:s.ts[li]};
+      var ts=s.ts,vs=s.vs,n=vs.length,i,j;
+      function md5(a,b,c,d,e){var q=[a,b,c,d,e].sort(function(x,y){return x-y;});return q[2];}
+      var pk=null,pi=-1,lo=null,li=-1,st=0;
+      for(i=1;i<=n;i++){
+        if(i===n||ts[i]-ts[i-1]>17.5){
+          for(j=st+2;j<=i-3;j++){
+            var m=md5(vs[j-2],vs[j-1],vs[j],vs[j+1],vs[j+2]);
+            if(pk===null||m>pk){pk=m;pi=j;}
+            if(lo===null||m<lo){lo=m;li=j;}
+          }
+          st=i;
+        }
+      }
+      if(pk===null)return null;
+      return{peak:Math.round(pk),peakAt:ts[pi],low:Math.round(lo),lowAt:ts[li]};
     }
     /* ---- shared band model: everything the wait-curve band KNOWS, in one
        place — the operating series, the three-state gap classifier (down tick
@@ -3625,7 +3641,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
-      html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 15+ min · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
+      html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
