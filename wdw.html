@@ -130,24 +130,30 @@
   .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,rgba(238,240,248,0));
     padding:8px 0 12px;margin:0}
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 18px}
-  .filterbar{display:flex;align-items:center;gap:10px}
-  .filters-btn{font-family:var(--font-display);font-weight:600;font-size:13px;cursor:pointer;
-    background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:var(--pill);
-    padding:9px 15px;display:inline-flex;align-items:center;gap:8px;transition:.15s;box-shadow:var(--shadow-sm)}
+  .filterbar{display:flex;align-items:center;gap:8px}
+  /* one control grammar: three matched pills, same height, same surface (front-door mock, Jul 5) */
+  .ctl{height:40px;background:var(--card);border:1px solid var(--line);border-radius:999px;
+    display:flex;align-items:center;gap:7px;padding:0 14px;font-size:12.5px;font-weight:600;color:var(--ink);
+    font-family:var(--font-body);box-shadow:var(--shadow-sm);transition:border-color .15s}
+  .ctl:focus-within{border-color:var(--accent)}
+  .ctl .mut{color:var(--muted-2);font-weight:500}
+  .ctl .car{font-size:9px;color:var(--muted-2)}
+  .grow{flex:1}
+  .search-box{flex:1;min-width:0;position:relative;padding:0 12px}
+  .search-box .s-ic{flex:none;color:var(--muted-2);display:grid;place-items:center}
+  .search-box input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--ink);
+    font-size:16px;font-family:var(--font-body);padding:0 18px 0 0}
+  .search-box input::placeholder{color:var(--muted-2)}
+  .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:19px;height:19px;border-radius:50%;
+    background:var(--bg-2);color:var(--muted);border:none;font-size:11px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+  .ctl-sort{position:relative;cursor:pointer;flex:none}
+  .ctl-sort select{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;
+    -webkit-appearance:none;appearance:none;border:none;font-size:16px}
+  .filters-btn{cursor:pointer;flex:none}
   .filters-btn:hover{border-color:var(--accent)}
   .filters-btn.has{border-color:var(--accent);color:var(--accent)}
-  .filters-btn.has .fcount{background:var(--accent-fill);color:#fff}
-  .filters-btn .fcount{min-width:18px;height:18px;border-radius:99px;background:var(--card-2);color:var(--muted);
-    font-size:11px;display:inline-grid;place-items:center;padding:0 5px;font-variant-numeric:tabular-nums}
-  .filters-btn .chev{transition:transform .18s}
-  .filterbar.open .filters-btn .chev{transform:rotate(180deg)}
-  .grow{flex:1}
-  .search-box input{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:var(--pill);
-    padding:9px 15px;font-size:16px;width:170px;font-family:var(--font-body);box-shadow:var(--shadow-sm)}
-  .search-box{position:relative;display:flex;align-items:center}
-  .search-box input{padding-right:30px}
-  .search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:19px;height:19px;border-radius:50%;
-    background:var(--bg-2);color:var(--muted);border:none;font-size:11px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+  .fcount{min-width:17px;height:17px;border-radius:999px;background:var(--accent-fill);color:#fff;
+    font-size:10.5px;font-weight:700;display:inline-grid;place-items:center;padding:0 5px;font-variant-numeric:tabular-nums}
   .results-head{display:flex;align-items:center;gap:9px;margin:4px 2px 8px;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink)}
   .results-head .q{color:var(--accent)}
   .results-head .c{background:var(--accent-soft);color:var(--accent);border-radius:999px;font-size:12px;padding:2px 9px;font-weight:700}
@@ -208,7 +214,6 @@
   footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
 
   @media (max-width:680px){
-    .search-box input{width:120px}
     .park-card{width:110px;padding:13px 9px}
     .hero{padding:20px}
     .hero .h-status{text-align:left;min-width:0}
@@ -397,8 +402,19 @@
     -webkit-tap-highlight-color:transparent}
   .dn-trigger .chev{font-size:10px;transition:transform .18s;display:inline-block}
   .dn-trigger.open .chev{transform:rotate(180deg)}
-  .dn-list{margin-top:6px;overflow:hidden;max-height:0;transition:max-height .24s ease}
-  .dn-list.open{max-height:320px;overflow-y:auto;overscroll-behavior-y:contain}
+  /* calmed down-banner: a status card, not an alarm slab (front-door mock, Jul 5) */
+  .dn-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;box-shadow:var(--shadow-sm);padding:12px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .dn-bar .dn-dot{width:8px;height:8px;border-radius:50%;background:var(--packed);flex:none}
+  .dn-bar .dn-tx{flex:1;font-size:13px;font-weight:700;color:var(--ink)}
+  .dn-bar .dn-tx .n{color:var(--packed)}
+  .dn-bar .dn-cc{color:var(--muted-2);font-size:11px;flex:none;transition:transform .2s}
+  #dnFlow.open .dn-bar{border-radius:14px 14px 0 0;border-bottom-color:transparent}
+  #dnFlow.open .dn-cc{transform:rotate(180deg)}
+  .dn-list{overflow:hidden;max-height:0;transition:max-height .24s ease;background:var(--card);
+    border-radius:0 0 14px 14px;padding:0 14px}
+  .dn-list.open{max-height:320px;overflow-y:auto;overscroll-behavior-y:contain;
+    border:1px solid var(--line);border-top:none;box-shadow:var(--shadow-sm)}
   .dn-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
   .dn-row .rdot{width:7px;height:7px;border-radius:50%;background:var(--packed);flex:none}
   .dn-info{flex:1;min-width:0}
@@ -792,11 +808,10 @@ document.documentElement.classList.add("dark");}catch(e){}
 <div class="controls-wrap">
   <div class="controls-inner">
     <div class="filterbar" id="filterbar">
-      <button class="filters-btn" id="filtersToggle">Filters <span class="fcount" id="fcount">0</span> <span class="chev">▾</span></button>
-      <div class="grow"></div>
-      <div class="fld" style="font-size:13px"><label for="sort">Sort</label>
-        <select id="sort"><option value="wait">Shortest</option><option value="waitDesc">Longest</option><option value="name">Name</option></select></div>
-      <div class="search-box"><input type="text" id="search" placeholder="Search…" /><button class="search-clear" id="searchClear" hidden aria-label="Clear search">✕</button></div>
+      <div class="ctl search-box"><span class="s-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M20.2 20.2l-3.4-3.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><input type="text" id="search" placeholder="Search rides…" /><button class="search-clear" id="searchClear" hidden aria-label="Clear search">✕</button></div>
+      <div class="ctl ctl-sort"><span class="mut">Sort</span><span id="sortVal">Shortest</span><span class="car">▼</span>
+        <select id="sort" aria-label="Sort"><option value="wait">Shortest</option><option value="waitDesc">Longest</option><option value="name">Name</option></select></div>
+      <button class="ctl filters-btn" id="filtersToggle">Filters <span class="fcount" id="fcount">0</span></button>
     </div>
     <div class="filter-panel" id="filterPanel" hidden>
       <div class="fld"><label for="type">Type</label>
@@ -824,7 +839,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705a</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705b</span>
   </footer>
 </div>
 
@@ -1198,7 +1213,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var s=downRidesNow(),n=s.down.length;
     var hide=!!window.__pwActive||usingFallback||!s.total||!n||!!f.search.trim();
     dn.hidden=hide;
-    if(hide){dn.innerHTML="";dn.style.marginBottom="0";return;}
+    if(hide){dn.innerHTML="";dn.classList.remove("open");dn.style.marginBottom="0";return;}
     var prevList=dn.querySelector("#dnList");
     var wasOpen=!!(prevList&&prevList.classList.contains("open"));
     dn.style.marginBottom="14px";
@@ -1210,18 +1225,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Watching":"Notify me")+'</button>'+
       '</div>';}).join("");
     dn.innerHTML=
-      '<div id="dnTrigger" class="dn-bar" style="display:flex;align-items:center;gap:11px;background:rgba(226,59,84,0.07);border:1px solid rgba(226,59,84,0.20);border-radius:14px;padding:14px 16px;cursor:pointer">'+
-        '<span style="width:9px;height:9px;border-radius:50%;background:var(--packed);flex:none"></span>'+
-        '<span style="flex:1;color:var(--packed);font-weight:700;font-size:16px">'+n+' ride'+(n===1?"":"s")+' down right now</span>'+
-        '<span class="dn-cc" style="width:30px;height:30px;border-radius:50%;background:rgba(226,59,84,0.12);display:flex;align-items:center;justify-content:center;color:var(--packed);font-size:15px;flex:none;transition:transform .2s">\u2304</span>'+
+      '<div id="dnTrigger" class="dn-bar">'+
+        '<span class="dn-dot"></span>'+
+        '<span class="dn-tx"><span class="n">'+n+'</span> ride'+(n===1?"":"s")+' down right now</span>'+
+        '<span class="dn-cc">\u25be</span>'+
       '</div>'+
       '<div class="dn-list" id="dnList">'+rows+'</div>'+
       '<button type="button" id="dnShare" style="display:none;width:100%;margin-top:10px;font:600 13px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:12px;padding:11px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share what\'s down</button>';
     var t=dn.querySelector("#dnTrigger");
     function applyOpen(open){
+      dn.classList.toggle("open",open);
       dn.querySelector("#dnList").classList.toggle("open",open);
-      t.style.background=open?"rgba(226,59,84,0.11)":"rgba(226,59,84,0.07)";
-      var cc=t.querySelector(".dn-cc");if(cc)cc.style.transform=open?"rotate(180deg)":"rotate(0deg)";
       var sh=dn.querySelector("#dnShare");if(sh)sh.style.display=open?"block":"none";
     }
     if(t)t.addEventListener("click",function(){
@@ -1253,6 +1267,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   bindSel("status","f_status",function(v){f.status=v;});
   bindSel("band","f_band",function(v){f.band=v;});
   bindSel("sort","sort",function(v){f.sort=v;});
+  function syncSortVal(){var s=$("sort"),sv=$("sortVal");if(s&&sv&&s.selectedIndex>=0)sv.textContent=s.options[s.selectedIndex].text;}
+  $("sort").addEventListener("change",syncSortVal);syncSortVal();
   $("search").addEventListener("input",function(){f.search=this.value;render();});
   $("searchClear").addEventListener("click",clearSearch);
   function clearSearch(){var i=$("search");i.value="";f.search="";render();i.blur();}
