@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705d</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705e</span>
   </footer>
 </div>
 
@@ -1220,6 +1220,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     if(hide){dn.innerHTML="";dn.classList.remove("open");dn.style.marginBottom="0";return;}
     var prevList=dn.querySelector("#dnList");
     var wasOpen=!!(prevList&&prevList.classList.contains("open"));
+    var prevScroll=wasOpen?prevList.scrollTop:0;   /* survive the innerHTML rebuild (0705e) */
     dn.style.marginBottom="14px";
     s.down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
     var rows=s.down.map(function(r){
@@ -1244,7 +1245,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     }
     if(t)t.addEventListener("click",function(){
       applyOpen(!dn.querySelector("#dnList").classList.contains("open"));});
-    if(wasOpen)applyOpen(true);
+    if(wasOpen){applyOpen(true);var nl=dn.querySelector("#dnList");if(nl&&prevScroll)nl.scrollTop=prevScroll;}
     var dsh=dn.querySelector("#dnShare");
     if(dsh)dsh.addEventListener("click",function(){shareDownNow();});
     Array.prototype.forEach.call(dn.querySelectorAll("[data-watch]"),function(btn){
