@@ -146,6 +146,7 @@
   .search-box input::placeholder{color:var(--muted-2)}
   .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:19px;height:19px;border-radius:50%;
     background:var(--bg-2);color:var(--muted);border:none;font-size:11px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+  .search-clear[hidden]{display:none}
   .ctl-sort{position:relative;cursor:pointer;flex:none}
   .ctl-sort select{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;cursor:pointer;
     -webkit-appearance:none;appearance:none;border:none;font-size:16px}
@@ -408,7 +409,8 @@
   .dn-bar .dn-dot{width:8px;height:8px;border-radius:50%;background:var(--packed);flex:none}
   .dn-bar .dn-tx{flex:1;font-size:13px;font-weight:700;color:var(--ink)}
   .dn-bar .dn-tx .n{color:var(--packed)}
-  .dn-bar .dn-cc{color:var(--muted-2);font-size:11px;flex:none;transition:transform .2s}
+  .dn-bar .dn-cc{width:26px;height:26px;border-radius:50%;background:var(--bg-2);display:grid;place-items:center;
+    color:var(--muted);flex:none;transition:transform .2s}
   #dnFlow.open .dn-bar{border-radius:14px 14px 0 0;border-bottom-color:transparent}
   #dnFlow.open .dn-cc{transform:rotate(180deg)}
   .dn-list{overflow:hidden;max-height:0;transition:max-height .24s ease;background:var(--card);
@@ -839,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705b</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705c</span>
   </footer>
 </div>
 
@@ -1228,7 +1230,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       '<div id="dnTrigger" class="dn-bar">'+
         '<span class="dn-dot"></span>'+
         '<span class="dn-tx"><span class="n">'+n+'</span> ride'+(n===1?"":"s")+' down right now</span>'+
-        '<span class="dn-cc">\u25be</span>'+
+        '<span class="dn-cc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
       '</div>'+
       '<div class="dn-list" id="dnList">'+rows+'</div>'+
       '<button type="button" id="dnShare" style="display:none;width:100%;margin-top:10px;font:600 13px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:12px;padding:11px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share what\'s down</button>';
