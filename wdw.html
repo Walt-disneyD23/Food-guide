@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705i</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705k</span>
   </footer>
 </div>
 
@@ -1541,7 +1541,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     var t=fmtClock(resolved[id]);
     return '<div class="al-row up">'+
       '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
-      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span><span class="up-pill">✓ Back up</span></div>'+
+      '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+
+      '<div class="al-hit"><span class="up-pill">✓ Back up</span></div>'+
         '<div class="al-sub">'+(t?'Came back <b>'+t+'</b><span class="mut">·</span>':'')+'<span class="mut">no more alerts</span></div></div>'+
       '<button class="gotit" data-gotit="'+esc(id)+'">Got it</button></div>';
   }
@@ -3439,12 +3440,18 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
        dry = the wettest sample of the day would PRINT 0.0" (labels move with the
        rendered value, not the raw float); the fall clause only appears when the
        prior sample proves a real drop, and the minutes are the true elapsed gap. */
+    function pwAn(n){return /^(8|11|18|8\d)$/.test(""+n)?"an":"a";}
     function pwCoreBeat(x){
       var c=x.core;if(!c)return null;
       var dry=(c.pIn.toFixed(1)==="0.0");
       var fall=(c.prevTF!=null&&c.prevTF>c.tF)?("Temperature fell "+c.prevTF+"\u00b0 \u2192 "+c.tF+"\u00b0 in "+c.mins+" minutes"):null;
-      if(dry)return {h:pwClk(c.t)+" — the gust front hit",b:(fall?fall+" on a ":"A ")+c.gust+" mph gust — the storm's dry leading edge."};
-      return {h:pwClk(c.t)+" — the rain core arrived",b:(fall?fall+", a ":"A ")+c.gust+" mph gust"+(fall?", and ":" and ")+c.pIn.toFixed(1)+"\" of rain."};
+      /* significance gate (0705j): the beat renders only when it EARNS a clause —
+         a proven temperature fall, a gust of 25+ mph, or rain that prints.
+         A 9 mph breeze with nothing else is a non-event and stays off the timeline. */
+      if(!fall&&c.gust<25&&dry)return null;
+      var art=pwAn(c.gust),Art=art==="an"?"An":"A";
+      if(dry)return {h:pwClk(c.t)+" — the gust front hit",b:(fall?fall+" on "+art+" ":Art+" ")+c.gust+" mph gust — the storm's dry leading edge."};
+      return {h:pwClk(c.t)+" — the rain core arrived",b:(fall?fall+", "+art+" ":Art+" ")+c.gust+" mph gust"+(fall?", and ":" and ")+c.pIn.toFixed(1)+"\" of rain."};
     }
     function pwCall(color,h,b){return '<div class="pw-st-call"><span class="dot" style="background:'+color+'"></span><div><div class="h">'+esc(h)+'</div><div class="b">'+esc(b)+'</div></div></div>';}
     function showStorm(){
@@ -3467,7 +3474,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       else{
         html+='<div class="pw-st-card">'+stormSVG(x)+'</div>';
         if(x.onset)html+=pwCall("#6366f1",pwClk(x.onset.t)+" — "+x.onset.park+" went first",x.onset.n+" rides held at once across "+x.onset.park+". "+x.downPeak+" paused across the resort at the peak.");
-        if(x.core){var cb=pwCoreBeat(x);html+=pwCall("#3b82f6",cb.h,cb.b);}
+        if(x.core){var cb=pwCoreBeat(x);if(cb)html+=pwCall("#3b82f6",cb.h,cb.b);}
         var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
         parks.sort(function(a,b){return x.parkPeaks[b]-x.parkPeaks[a];});
         if(parks.length){var maxpk=x.parkPeaks[parks[0]]||1;
@@ -3477,7 +3484,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       }
       if(x.series.length)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>';
       var wxW={storm:"the storm",wind:"the wind",rain:"the rain"}[ch.kind]||"the weather";
-      html+='<div class="pw-foot">Reliability today carries '+wxW+' \u00b7 Weather by Open-Meteo</div>';
+      html+='<div class="pw-foot">Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 Weather by Open-Meteo</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
@@ -3564,7 +3571,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var fy=cy+chh-84;
       ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
       /* footer aligned to the emitCard family: link top-right at 26, credits under it (0705i) */
-      T("Reliability today carries "+({storm:"the storm",wind:"the wind",rain:"the rain"}[D.kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
+      T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain"}[D.kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
       T("parkpulse.live",R,fy+36,IN("700",26),C.green,"right");
       T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki",R,fy+66,IN("500",20),C.muted2,"right");
       ctx.restore();
