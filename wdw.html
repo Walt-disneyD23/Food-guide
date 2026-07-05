@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705l</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705m</span>
   </footer>
 </div>
 
@@ -3488,7 +3488,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
         parks.sort(function(a,b){return x.parkPeaks[b]-x.parkPeaks[a];});
         if(parks.length){var maxpk=x.parkPeaks[parks[0]]||1;
-          html+='<div class="pw-st-bars"><div class="lab">Hardest hit, at the peak</div>';
+          html+='<div class="pw-st-bars"><div class="lab">Hardest hit, at each park\'s peak</div>';
           for(var pp=0;pp<parks.length;pp++){var v=x.parkPeaks[parks[pp]];html+='<div class="pb"><div class="nm">'+esc(parks[pp])+'</div><div class="track"><div class="fill" style="width:'+Math.round(v/maxpk*100)+'%"></div></div><div class="v">'+v+'</div></div>';}
           html+='</div>';}
       }
@@ -3570,7 +3570,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
       parks.sort(function(a,bb){return x.parkPeaks[bb]-x.parkPeaks[a];});
       var barY=ry+rh+74;
-      T("HARDEST HIT, AT THE PEAK",L,barY,IN("700",22),C.muted2,"left");
+      T("HARDEST HIT, AT EACH PARK'S PEAK",L,barY,IN("700",22),C.muted2,"left");
       barY+=22;var maxpk=parks.length?x.parkPeaks[parks[0]]:1;
       for(var pp=0;pp<parks.length;pp++){var pkn=parks[pp],pv=x.parkPeaks[pkn],rowY=barY+pp*52;
         T(pkn,L,rowY+30,SG("700",26),C.ink,"left");
