@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705e</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705g</span>
   </footer>
 </div>
 
@@ -2967,14 +2967,15 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         if(m.code>maxCode)maxCode=m.code;if(m.gust>maxGust)maxGust=m.gust;
         if(m.tF>maxTF)maxTF=m.tF;if(m.tF<minTF)minTF=m.tF;
         if(m.fF!=null&&(maxFF==null||m.fF>maxFF))maxFF=m.fF;
-        if(m.pIn>maxP){maxP=m.pIn;if(m.pIn>0)core={t:m.t,tF:m.tF,gust:m.gust,pIn:m.pIn};}}
+        if(m.pIn>maxP){maxP=m.pIn;if(m.pIn>0){var pv=(s>0?samples[s-1]:null);
+          core={t:m.t,tF:m.tF,gust:m.gust,pIn:m.pIn,prevTF:(pv?pv.tF:null),mins:(pv?(m.t-pv.t):null)};}}}
       return {code:maxCode,gust:maxGust,dayHigh:maxTF,dayLow:minTF,feelsHigh:maxFF,precip:(roll.precipIn||0),downPeak:downPeak,series:series,parkPeaks:parkPeaks,samples:samples,onset:onset,peakPt:peakPt,core:core};
     }
     function wxChip(d,live){
       if(!d||!d.wx)return null;
       var x=wxDerive(d);
       if(x.code>=95&&x.downPeak>=8)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak")};
-      if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — tall rides and the Skyliner paused")};
+      if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner")};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
       if(x.feelsHigh!=null?x.feelsHigh>=105:x.dayHigh>=95)return {kind:"heat",icon:"🥵",tappable:false,text:(live?(heatF?"Extreme heat today — feels like "+heatHi+"° and climbing":"Extreme heat today — "+heatHi+"° and climbing"):(heatF?"Extreme heat — feels like "+heatHi+"°":"Extreme heat — a high of "+heatHi+"°"))};
@@ -3434,6 +3435,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(var sg=0;sg<segs.length;sg++){var S=segs[sg];svg+='<rect x="'+tx(S.a)+'" y="'+ry+'" width="'+(tx(S.b)-tx(S.a)).toFixed(1)+'" height="'+rh+'" rx="3" fill="'+cols[S.cl]+'"/>';if((parseFloat(tx(S.b))-parseFloat(tx(S.a)))>70){var cx=(parseFloat(tx(S.a))+parseFloat(tx(S.b)))/2;svg+='<text x="'+cx.toFixed(1)+'" y="'+(ry+rh+15)+'" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="'+labcol[S.cl]+'">'+labs[S.cl]+'</text>';}}
       svg+='</svg>';return svg;
     }
+    /* Core beat copy — pure so the harness can assert exact sentences (0705f).
+       dry = the wettest sample of the day would PRINT 0.0" (labels move with the
+       rendered value, not the raw float); the fall clause only appears when the
+       prior sample proves a real drop, and the minutes are the true elapsed gap. */
+    function pwCoreBeat(x){
+      var c=x.core;if(!c)return null;
+      var dry=(c.pIn.toFixed(1)==="0.0");
+      var fall=(c.prevTF!=null&&c.prevTF>c.tF)?("Temperature fell "+c.prevTF+"\u00b0 \u2192 "+c.tF+"\u00b0 in "+c.mins+" minutes"):null;
+      if(dry)return {h:pwClk(c.t)+" — the gust front hit",b:(fall?fall+" on a ":"A ")+c.gust+" mph gust — the storm's dry leading edge."};
+      return {h:pwClk(c.t)+" — the rain core arrived",b:(fall?fall+", a ":"A ")+c.gust+" mph gust"+(fall?", and ":" and ")+c.pIn.toFixed(1)+"\" of rain."};
+    }
     function pwCall(color,h,b){return '<div class="pw-st-call"><span class="dot" style="background:'+color+'"></span><div><div class="h">'+esc(h)+'</div><div class="b">'+esc(b)+'</div></div></div>';}
     function showStorm(){
       var wv=$id("wrapView");if(!wv||!lastData)return;
@@ -3455,7 +3467,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       else{
         html+='<div class="pw-st-card">'+stormSVG(x)+'</div>';
         if(x.onset)html+=pwCall("#6366f1",pwClk(x.onset.t)+" — "+x.onset.park+" went first",x.onset.n+" rides held at once across "+x.onset.park+". "+x.downPeak+" paused across the resort at the peak.");
-        if(x.core)html+=pwCall("#3b82f6",pwClk(x.core.t)+" — the rain core arrived","Temperature fell "+x.dayHigh+"\u00b0 \u2192 "+x.core.tF+"\u00b0 in 15 minutes, a "+x.core.gust+" mph gust, and "+x.core.pIn.toFixed(1)+"\" of rain.");
+        if(x.core){var cb=pwCoreBeat(x);html+=pwCall("#3b82f6",cb.h,cb.b);}
         var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
         parks.sort(function(a,b){return x.parkPeaks[b]-x.parkPeaks[a];});
         if(parks.length){var maxpk=x.parkPeaks[parks[0]]||1;
