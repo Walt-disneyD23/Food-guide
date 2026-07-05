@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705k</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705l</span>
   </footer>
 </div>
 
@@ -3445,13 +3445,23 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var c=x.core;if(!c)return null;
       var dry=(c.pIn.toFixed(1)==="0.0");
       var fall=(c.prevTF!=null&&c.prevTF>c.tF)?("Temperature fell "+c.prevTF+"\u00b0 \u2192 "+c.tF+"\u00b0 in "+c.mins+" minutes"):null;
-      /* significance gate (0705j): the beat renders only when it EARNS a clause —
-         a proven temperature fall, a gust of 25+ mph, or rain that prints.
-         A 9 mph breeze with nothing else is a non-event and stays off the timeline. */
-      if(!fall&&c.gust<25&&dry)return null;
+      /* clause-level gate (0705l): every clause EARNS its slot — the fall must be
+         proven, the gust must clear the same 25 mph floor as the beat gate, the
+         rain must print. Sub-floor gusts never narrate (and a rendered gust can
+         no longer be misread as a clock time — clock hours stop at 12). */
+      var g=(c.gust>=25);
+      if(!fall&&!g&&dry)return null;
       var art=pwAn(c.gust),Art=art==="an"?"An":"A";
-      if(dry)return {h:pwClk(c.t)+" — the gust front hit",b:(fall?fall+" on "+art+" ":Art+" ")+c.gust+" mph gust — the storm's dry leading edge."};
-      return {h:pwClk(c.t)+" — the rain core arrived",b:(fall?fall+", "+art+" ":Art+" ")+c.gust+" mph gust"+(fall?", and ":" and ")+c.pIn.toFixed(1)+"\" of rain."};
+      var gustC=g?(art+" "+c.gust+" mph gust"):null,GustC=g?(Art+" "+c.gust+" mph gust"):null;
+      if(dry){
+        if(g)return {h:pwClk(c.t)+" — the gust front hit",b:(fall?fall+" on "+gustC:GustC)+" — the storm's dry leading edge."};
+        return {h:pwClk(c.t)+" — the cool crash swept through",b:fall+" — the storm's dry leading edge."};
+      }
+      var rain=c.pIn.toFixed(1)+"\" of rain";
+      if(fall&&g)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", "+gustC+", and "+rain+"."};
+      if(fall)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", with "+rain+"."};
+      if(g)return {h:pwClk(c.t)+" — the rain core arrived",b:GustC+" and "+rain+"."};
+      return {h:pwClk(c.t)+" — the rain core arrived",b:rain+"."};
     }
     function pwCall(color,h,b){return '<div class="pw-st-call"><span class="dot" style="background:'+color+'"></span><div><div class="h">'+esc(h)+'</div><div class="b">'+esc(b)+'</div></div></div>';}
     function showStorm(){
