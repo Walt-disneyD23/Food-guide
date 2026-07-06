@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705m</span>
+    <span style="opacity:.55" id="buildStamp">· build 0705n</span>
   </footer>
 </div>
 
@@ -3290,8 +3290,14 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         pill.innerHTML=pwClkM(res.t)+'<b style="color:'+c+'">'+res.v+'m</b>'+(g?'<em>'+g+'</em>':'');
       }else{
         dot.style.display="none";
-        pill.innerHTML=res.down?(pwClkM(res.t)+'<b style="color:#8c96b9">Down</b>')
-          :('<b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":"No data")+'</b>');
+        if(res.down){
+          /* the sky keeps talking during outages (0705n): same descriptive
+             nearest-sample glyph the wait branch wears — context, never cause */
+          var gd=pwScrubWx(res.t);
+          pill.innerHTML=pwClkM(res.t)+'<b style="color:#8c96b9">Down</b>'+(gd?'<em>'+gd+'</em>':'');
+        }else{
+          pill.innerHTML='<b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":"No data")+'</b>';
+        }
       }
       var pw2=pill.offsetWidth||60,half=pw2/2+2;
       pill.style.left=Math.min(Math.max(xPx,half),rect.width-half).toFixed(1)+"px";
