@@ -103,11 +103,6 @@
   .hero .h-stat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat-lg);font-variant-numeric:tabular-nums;
     line-height:1.15;margin-top:3px;color:#fff}
   .hero .h-stat .v small{font-size:var(--fs-small);font-weight:500;color:rgba(255,255,255,.85)}
-  .crowd-meter{display:flex;align-items:center;gap:8px;margin-top:5px}
-  .crowd-dots{display:flex;gap:3px}
-  .crowd-dots i{width:8px;height:8px;border-radius:var(--r-dot);background:rgba(255,255,255,.3)}
-  .crowd-dots i.on{background:var(--cl,#fff)}
-  .crowd-label{font-family:var(--font-display);font-weight:600;font-size:var(--fs-title)}
 
   .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);
     margin-bottom:14px;box-shadow:var(--shadow-sm)}
@@ -249,7 +244,7 @@
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .banner-sub b{color:#fff;font-weight:600}
   .banner-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
-  .banner-sub .dot.open{background:var(--open);box-shadow:0 0 0 3px rgba(55,224,160,.32)}
+  .banner-sub .dot.open{background:var(--open)}
   .banner-sub .sep{opacity:.45;margin:0 4px}
   .banner-stat{margin-left:auto;text-align:right;flex:none}
   .banner-stat .bs-v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1;
@@ -279,21 +274,23 @@
   .banner.expanded .banner-chev{transform:rotate(180deg)}
   .banner-panel{padding:16px 18px 18px;background:var(--card)}
   .banner-panel[hidden]{display:none}
-  .pstats{display:flex;flex-wrap:wrap;gap:16px 18px;padding:2px 2px 14px;
-    border-bottom:1px solid var(--line);margin-bottom:14px}
-  .pstat .k{font-size:var(--fs-caps);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-.pstat .k .info-i{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:3px;border:1px solid var(--muted);border-radius:50%;background:none;color:var(--muted);font:700 var(--fs-micro)/1 Inter,system-ui,sans-serif;text-transform:none;letter-spacing:0;padding:0;vertical-align:-3px;cursor:pointer}
 .info-note{margin:10px 2px 2px;padding:9px 12px;border-radius:var(--r-el);background:rgba(79,70,229,.08);color:var(--accent-deep);font-size:var(--fs-meta);line-height:1.45}
 .info-note[hidden]{display:none}
-  .pstat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-head);color:var(--ink);
-    font-variant-numeric:tabular-nums;line-height:1.15;margin-top:3px}
-  .pstat .v small{font-size:var(--fs-meta);color:var(--muted);font-weight:500}
   .presult{font-size:var(--fs-small);color:var(--muted);margin:0 2px 10px}
   .presult .src{color:var(--medium)}
-  .hours-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:0 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
-  .hours-row .crowd-cell{text-align:right;flex:none}
-  .hours-row .crowd-cell .crowd-meter{justify-content:flex-end}
-  .pstats .crowd-dots i:not(.on),.hours-row .crowd-dots i:not(.on){background:var(--dot-idle)}
+  /* Live board face (0709b) — tile grammar on the shared tokens, both themes automatic */
+  .lstat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:2px}
+  .lstat{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:13px;box-shadow:var(--shadow-sm);min-height:88px;display:flex;flex-direction:column}
+  .lstat.wide{grid-column:1/-1;min-height:0;flex-direction:row;align-items:baseline;gap:10px}
+  .lstat .lbl{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+  .lstat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1.05;margin-top:auto;font-variant-numeric:tabular-nums}
+  .lstat .v .u{font-size:.58em;color:var(--muted);font-weight:600}
+  .lstat .v.txt{font-size:var(--fs-title)}
+  .lstat.wide .v{margin:0}
+  .lstat .ctx{font-size:var(--fs-caps);color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lstat.wide .ctx{margin:0 0 0 auto;text-align:right}
+  .lfine{display:flex;gap:14px;flex-wrap:wrap;font-size:var(--fs-meta);color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+  .lfine b{color:var(--ink);font-weight:600}
   .spread{padding:2px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
   .spread .k{font-size:var(--fs-caps);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
   .spread-bar{display:flex;height:16px;border-radius:var(--r-el-sm);overflow:hidden;gap:2px;cursor:pointer}
@@ -852,7 +849,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709a</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709c</span>
   </footer>
 </div>
 
@@ -1622,6 +1619,20 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push(lv.wait);});
     return arr;
   }
+  /* 0709b: min/max RIDE NAMES for the board face — the filter mirrors scopeWaits exactly,
+     so the names always belong to the same collection the numbers come from. */
+  function scopeMinMax(parkKey){
+    var mn=null,mx=null;
+    Object.keys(roster).forEach(function(id){
+      var r=roster[id],lv=liveById[id];
+      if(parkKey!=="all"&&r.park!==parkKey)return;
+      if(isOpenNow(parkInfo[r.park])===false)return;
+      if(lv&&lv.status==="OPERATING"&&lv.wait!==null){
+        if(!mn||lv.wait<mn.w)mn={w:lv.wait,n:r.name};
+        if(!mx||lv.wait>mx.w)mx={w:lv.wait,n:r.name};
+      }});
+    return {min:mn,max:mx};
+  }
   /* Crowd Pulse Stage 1: top-8 headliner average — the same "what counts" as the
      Wrap's headAvg, ranked by CURRENT wait (Live is a now-snapshot, Wrap is day-so-far). */
   function headlinerAvgFrom(waits){
@@ -1711,7 +1722,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
      BANNER ACCORDION  (the new layout)
      =========================================================== */
   var BANNERS=[ALL_DEF].concat(PARK_DEF);
-  var BANNER_MONO={"Magic Kingdom":"MK","EPCOT":"EP","Hollywood Studios":"HS","Animal Kingdom":"AK",all:"ALL"};
+  var BANNER_MONO={"Magic Kingdom":"MK","EPCOT":"EP","Hollywood Studios":"HS","Animal Kingdom":"AK"};
   var bannerEls={};
 
   function buildBanners(){
@@ -1723,7 +1734,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var bg=def.img?"background-image:url('"+def.img+"')":"";
       root.innerHTML=
         '<div class="banner-art'+(def.img?'':' bnr-ed')+'" style="'+bg+'">'+
-          (def.img?'<div class="banner-scrim"></div>':'<div class="banner-mono">'+esc(BANNER_MONO[key]||"")+'</div>')+
+          (def.img?'<div class="banner-scrim"></div>':(BANNER_MONO[key]?'<div class="banner-mono">'+esc(BANNER_MONO[key])+'</div>':''))+
           '<div class="banner-head">'+iconHTML+
             '<div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
             '<div class="banner-sub"></div></div>'+
@@ -1818,39 +1829,30 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
   function renderPanel(key,el){
     var s=bannerStats(key);
-    var crowdHTML;
-    if(s.crowd){var dots="";for(var i=1;i<=4;i++)dots+='<i class="'+(i<=s.crowd.level?'on':'')+'"></i>';
-      crowdHTML='<div class="crowd-meter" style="--cl:'+s.crowd.color+'"><div class="crowd-dots">'+dots+'</div>'+
-        '<span class="crowd-label" style="color:'+s.crowd.color+'">'+s.crowd.label+'</span></div>';
-    }else crowdHTML='<div class="v">–</div>';
-    var hoursHTML="";
+    /* A-r board face (0709b): Shortest/Longest tiles with ride names, a wide Hours tile
+       (parks) or Busiest-park tile (All), and avg+crowd demoted to a labeled fine-print row
+       that keeps both ⓘ explainers. Tiles are inert by design — Live glances, Wrap investigates. */
+    var mm=scopeMinMax(key);
+    var tiles=
+      '<div class="lstat"><div class="lbl">Shortest</div><div class="v">'+(s.min===null?'\u2013':s.min+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.min?esc(mm.min.n):'')+'</div></div>'+
+      '<div class="lstat"><div class="lbl">Longest</div><div class="v">'+(s.max===null?'\u2013':s.max+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.max?esc(mm.max.n):'')+'</div></div>';
     if(key!=="all"){
       var info=parkInfo[key],line;
-      if(info&&info.open&&info.close)line=fmtClock(info.open)+" – "+fmtClock(info.close);
+      if(info&&info.open&&info.close)line=fmtClock(info.open)+" \u2013 "+fmtClock(info.close);
       else if(usingFallback)line="Hours load with live feed";
       else line="Hours unavailable";
       var extra="";
       if(info&&info.extras&&info.extras.length)
-        extra=info.extras.map(function(e){return esc(e.desc)+' '+fmtClock(e.open)+'–'+fmtClock(e.close);}).join("<br>");
-      hoursHTML='<div class="pstat"><div class="k">Hours</div><div class="v" style="font-size:15px">'+esc(line)+
-        '<small style="display:block;font-size:11px">'+extra+'</small></div></div>';
+        extra=info.extras.map(function(e){return esc(e.desc)+' '+fmtClock(e.open)+'\u2013'+fmtClock(e.close);}).join(" \u00b7 ");
+      tiles+='<div class="lstat wide"><div class="lbl">Hours</div><div class="v txt">'+esc(line)+'</div><div class="ctx">'+extra+'</div></div>';
+    }else{
+      tiles+='<div class="lstat wide"><div class="lbl">Busiest park</div><div class="v txt">'+(s.busiest?esc(s.busiest):'\u2013')+'</div><div class="ctx">highest headliner avg</div></div>';
     }
-    var longHTML='<div class="pstat"><div class="k">Longest</div><div class="v">'+(s.max===null?"–":s.max+'<small> min</small>')+'</div></div>';
-    var busyHTML="";
-    if(key==="all"){
-      busyHTML='<div class="pstat"><div class="k">Busiest right now</div><div class="v" style="font-size:15px">'+(s.busiest?esc(s.busiest):"–")+'</div></div>';
-    }
-    var crowdCell='<div class="pstat"><div class="k">Crowd · est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></div>'+crowdHTML+'</div>';
-    var stats=
-      '<div class="pstat"><div class="k">Attractions open</div><div class="v">'+s.open+'</div></div>'+
-      '<div class="pstat"><div class="k">Headliner avg <button type="button" class="info-i" data-info="'+(key==="all"?"headAll":"headPark")+'" aria-label="How this is calculated">i</button></div><div class="v">'+(s.headAvg===null?"–":s.headAvg+'<small> min</small>')+'</div></div>'+
-      '<div class="pstat"><div class="k">Shortest</div><div class="v">'+(s.min===null?"–":s.min+'<small> min</small>')+'</div></div>'+
-      longHTML+
-      (key==="all"?(crowdCell+busyHTML):"");
-    /* Single park: Hours and Crowd share their own line. "all" keeps Crowd up in the stat row. */
-    var hoursRow=(key!=="all")
-      ? '<div class="hours-row">'+hoursHTML+'<div class="pstat crowd-cell"><div class="k">Crowd · est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></div>'+crowdHTML+'</div></div>'
-      : "";
+    var face='<div class="lstat-grid">'+tiles+'</div>';
+    var fine='<div class="lfine">'+
+      '<span>Headliner avg <b>'+(s.headAvg===null?'\u2013':s.headAvg+'m')+'</b> <button type="button" class="info-i" data-info="'+(key==="all"?"headAll":"headPark")+'" aria-label="How this is calculated">i</button></span>'+
+      (s.crowd?'<span>Crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></span>':'')+
+      '</div>';
     /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
     var ws=scopeWaits(key),spreadHTML="";
     if(!usingFallback&&ws.length){
@@ -1890,8 +1892,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
-    var shareHTML=(!usingFallback)?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 13px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:999px;padding:10px 16px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share this card</button></div>':"";
-    el.innerHTML='<div class="pstats">'+stats+'</div>'+hoursRow+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
+    var shareHTML=(!usingFallback)?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 var(--fs-body)/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:var(--r-pill);padding:10px 16px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share this card</button></div>':"";
+    el.innerHTML=face+fine+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
     bindStars(el);
