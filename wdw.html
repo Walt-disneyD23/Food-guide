@@ -636,6 +636,7 @@
   .pw-flag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;flex:none;white-space:nowrap}
   .pw-flag.ok{color:var(--short);background:rgba(21,163,107,.1)}
   .pw-flag.mild{color:var(--medium);background:rgba(220,138,6,.12)}
+  .pw-flag.refb{color:var(--muted);background:rgba(122,136,170,.16)}
   .pw-flag.warn{color:var(--packed);background:rgba(226,59,84,.1)}
   .pw-nav{display:flex;align-items:center;padding:2px 0 6px}
   .pw-back{display:inline-flex;align-items:center;gap:7px;background:rgba(79,70,229,.12);color:var(--accent);font-family:var(--font-body);font-weight:600;font-size:14px;border:0;border-radius:999px;padding:10px 18px 10px 13px;cursor:pointer}
@@ -841,7 +842,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0707b</span>
+    <span style="opacity:.55" id="buildStamp">· build 0707c</span>
   </footer>
 </div>
 
@@ -2722,6 +2723,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       return {parks:parks,busiestPark:parks[0]||null,toughest:toughest,longestPeak:longestPeak,leastRel:leastRel,mostOut:mostOut,steady:steady,walk:walk,story:story};
     }
 
+    /* refurb tail rows (0707c): a ride qualifies when its day is ALL planned
+       absence — no waits, no unplanned downtime, refurb minutes on the ledger.
+       Pure so the harness can grade it on real fixtures. */
+    function pwRefurbRow(rr,park){return rr.park===park&&rr.avgWait==null&&(rr.downEvents||0)===0&&(rr.refurbMinutes||0)>0&&(rr.operatingMinutes||0)===0;}
     function computePark(d,park){
       var rs=realRides(d).filter(function(r){return r.park===park;});
       /* sustained peaks (25-min median) for the park's rides — one number
@@ -2937,6 +2942,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         }
         var aCell='<b class="'+(noAvg?(allDown?"pw-p":"pw-na"):tier(r.avgWait))+'">'+(noAvg?"—":r.avgWait)+'</b><small>avg</small>';
         html+='<div class="pw-rrow" data-rid="'+esc(r.id)+'" role="button" tabindex="0"><div class="a">'+aCell+'</div><div class="m"><div class="nm">'+esc(r.name)+'</div><div class="ctx">'+esc(ctx)+'</div></div>'+flag(r)+'<span class="chev">›</span></div>';
+      });
+      /* refurb tail rows (0707c): visible, labeled, tappable — and excluded
+         from every metric upstream (realRides filters them before computePark),
+         so "Every ride" is true again with zero stat drift. */
+      (lastData.rides||[]).filter(function(rr){return pwRefurbRow(rr,park);}).sort(function(a,b){return a.name<b.name?-1:1;}).forEach(function(rr){
+        html+='<div class="pw-rrow" data-rid="'+esc(rr.id)+'" role="button" tabindex="0"><div class="a"><b class="pw-na">—</b><small>avg</small></div><div class="m"><div class="nm">'+esc(rr.name)+'</div><div class="ctx">In refurbishment</div></div><span class="pw-flag refb">REFURB</span><span class="chev">›</span></div>';
       });
       html+='<button class="pw-share" id="pwShareP" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share '+esc(park)+'</button>';
       html+='<div class="pw-foot">'+(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min \u00b7 ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
@@ -3876,7 +3887,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var isWeek=(lastTab==="week");
       var fin=isFinal(lastData),live=(!isWeek&&!fin);
       var r=findRide(park,rid);
-      if(!r){showDetail(park);return;}
+      if(!r){
+        /* refurb tail rows aren't in computePark's set — resolve from the raw
+           day record and render the refurb-day detail (0707c) */
+        var rz=null,zi;for(zi=0;zi<((lastData.rides)||[]).length;zi++){var cz=lastData.rides[zi];if(cz.id===rid&&cz.park===park){rz=cz;break;}}
+        if(rz&&pwRefurbRow(rz,park)){r=rz;r._refurb=true;}
+        else{showDetail(park);return;}
+      }
       var rKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null;
       var rClause=rKind?pwWxClause(r.id,wxDerive(lastData),rKind):"";
       var su=(!isWeek)?pwSustained(r.id):null;
@@ -3884,11 +3901,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var line=noAvg
         ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
         :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":(live||(lastData&&lastData.dates&&lastData.dates[0]===etDate(0)))?" today.":" yesterday."));
+      if(r._refurb)line=(isWeek?"In refurbishment this week.":live?"In refurbishment today.":"In refurbishment.");
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+'</div>';
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+rideSub(r,live,rClause))+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause)))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su):"";
       html+=band+'</div>';
+      if(!r._refurb){
       html+='<div class="pw-grid">';
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
@@ -3898,6 +3917,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       html+='</div>';
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
       html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min (quick blips still show in the chart) · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
+      }
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
