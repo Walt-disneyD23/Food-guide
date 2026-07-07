@@ -202,6 +202,11 @@
     background:transparent;border:1px solid transparent;color:var(--muted-2);transition:.15s;font-size:var(--fs-lead)}
   .star:hover{background:var(--card-2);color:var(--muted)}
   .star.on{color:var(--accent)}
+  .flagbtn{flex:none;cursor:pointer;width:32px;height:32px;border-radius:var(--r-el-sm);display:grid;place-items:center;
+    background:transparent;border:1px solid transparent;color:var(--muted-2);transition:.15s;font-size:var(--fs-title)}
+  .flagbtn:hover{background:var(--card-2);color:var(--muted)}
+  .flagbtn.on{color:var(--accent);border-color:var(--accent-tint)}
+  .al-hint{font-size:var(--fs-meta);color:var(--muted-2);text-align:center;padding:10px 0 2px;border-top:1px solid var(--line);margin-top:10px}
 
   .state{text-align:center;padding:54px 20px;color:var(--muted)}
   .state h3{font-family:var(--font-display);color:var(--ink);font-size:var(--fs-head);margin-bottom:8px}
@@ -840,7 +845,7 @@ document.documentElement.classList.add("dark");}catch(e){}
         <select id="band"><option value="all">Any</option><option value="short">&le;20</option><option value="medium">21–45</option><option value="long">&gt;45</option></select></div>
       <div class="chip-toggle" id="llChip">Lightning Lane</div>
       <div class="chip-toggle" id="srChip">Single Rider</div>
-      <div class="chip-toggle" id="watchChip">★ Watched</div>
+      <div class="chip-toggle" id="watchChip">★ Favorites</div>
       <span class="clear" id="clearF">Clear all</span>
     </div>
   </div>
@@ -855,7 +860,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709d</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709e</span>
   </footer>
 </div>
 
@@ -954,6 +959,10 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var reopen=store.get("reopen",{})||{};   /* ride ids flagged "tell me when it's back up" */
   var reopenOnly=store.get("reopenOnly",{})||{}; /* watches created solely by "Notify me" -> auto-remove after the back-up alert */
   var resolved=store.get("resolved",{})||{};     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
+var armed=store.get("armed",{})||{};           /* id -> standing threshold alert (the ⚑). Favorites (watch) are quiet and never alert. */
+function saveArmed(){store.set("armed",armed);}
+/* every ride the ⚑ sheet + badge care about: armed thresholds, reopen flags, transients, parked back-ups */
+function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function(m){Object.keys(m).forEach(function(id){if(roster[id])s[id]=1;});});return Object.keys(s);}
   var rebreak={};                                 /* in-memory only: parked rides seen DOWN once, awaiting 2nd-poll confirmation */
   function logAlertEv(id,ev){try{var L=store.get("alertLog",[])||[];L.push({t:Date.now(),id:id,ev:ev});if(L.length>40)L=L.slice(-40);store.set("alertLog",L);}catch(e){}}
   var BACKUP_FADE_MS=3*60*60*1000;               /* (parked) auto-fade window for back-up rows — currently off; re-add to the clear check to enable */
@@ -1247,7 +1256,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       var on=!!reopen[r.id];
       return '<div class="dn-row"><span class="rdot"></span>'+
         '<div class="dn-info"><div class="nm">'+esc(r.name)+'</div><div class="pk">'+esc(r.park)+'</div></div>'+
-        '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Watching":"Notify me")+'</button>'+
+        '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Alert set":"Notify me")+'</button>'+
       '</div>';}).join("");
     dn.innerHTML=
       '<div id="dnTrigger" class="dn-bar">'+
@@ -1271,12 +1280,12 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     Array.prototype.forEach.call(dn.querySelectorAll("[data-watch]"),function(btn){
       btn.addEventListener("click",function(){
         var id=btn.getAttribute("data-watch"),on=!reopen[id];
-        if(on){var wasWatched=!!watch[id];watch[id]=true;reopen[id]=true;
-          if(!wasWatched)reopenOnly[id]=true;   /* added only for the back-up ping */
-          prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
-        else{delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];}}
-        store.set("watch",Object.keys(watch));saveReopen();saveReopenOnly();
-        btn.classList.toggle("on",on);btn.textContent=on?"✓ Watching":"Notify me";
+        if(on){reopen[id]=true;
+if(!armed[id])reopenOnly[id]=true;   /* transient unless a standing threshold alert exists */
+prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
+else{delete reopen[id];delete reopenOnly[id];}
+saveReopen();saveReopenOnly();
+btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         updateAlertBadge();render();
       });
     });
@@ -1456,13 +1465,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         }else{rebreak[id]=Date.now();logAlertEv(id,"rebreak-pending");}
       }else if(rebreak[id]){delete rebreak[id];logAlertEv(id,"rebreak-cleared");}
       /* a watched ride that just went down auto-arms its back-up alert (so you're told when it returns) */
-      if(watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;saveReopen();}
+      if(armed[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;saveReopen();}
       /* reopen: a watched, reopen-flagged ride that is now operating has come back.
          Park it either way (so it lands in Back up, not Watched) — even if the flip
          happened while the app was closed. Only re-fire the in-app ping if we
          witnessed the live DOWN->OPERATING flip, so we don't double-ping when the
          Worker already pushed it in the background. */
-      if(watch[id]&&reopen[id]&&cur==="OPERATING"){
+      if(reopen[id]&&cur==="OPERATING"){   /* matches the worker: reopen stands on its own, no favorite required */
         if(prevStatus[id]==="DOWN")fireReopen(r);
         delete reopen[id];delete alertState[id];saveAlertState();
         /* intent-based parking: only a pure "notify me when it reopens" ride parks
@@ -1473,7 +1482,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         saveReopen();
       }
       prevStatus[id]=cur;
-      var eligible=(settings.all||watch[id])&&!resolved[id]&&!reopenOnly[id];var meets=ruleMet(id,lv);
+      var eligible=(settings.all||armed[id])&&!resolved[id]&&!reopenOnly[id];var meets=ruleMet(id,lv);
       if(eligible&&meets&&!alertState[id]){
         alertState[id]=Date.now();          /* timestamp doubles as the one-shot latch and the "✓ Hit" time */
         if(!firstSeen)fireAlert(r,lv);      /* on the first poll after launch, mark it but don't re-ping you */
@@ -1514,11 +1523,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   function saveReopen(){store.set("reopen",reopen);}
   function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
   function saveResolved(){store.set("resolved",resolved);}
-  function updateAlertBadge(){var b=$("alertBadge");if(!b)return;var n=Object.keys(watch).length;b.textContent=n;b.classList.toggle("show",n>0);}
+  function updateAlertBadge(){var b=$("alertBadge");if(!b)return;var n=alertIds().length;b.textContent=n;b.classList.toggle("show",n>0);}
   function renderAlertList(){
     var box=$("alertList");if(!box)return;
-    var ids=Object.keys(watch).filter(function(id){return roster[id];});
-    if(!ids.length){box.innerHTML='<div class="al-empty">No rides starred yet. Tap ☆ on any ride to watch it here.</div>';return;}
+    var ids=alertIds();
+    if(!ids.length){box.innerHTML='<div class="al-empty">No alerts yet. Tap ⚑ on any ride for a heads-up.</div>';return;}
     var backUp=[],down=[],watched=[];
     ids.forEach(function(id){
       var lv=liveById[id];
@@ -1536,7 +1545,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     down.sort(byName);
     /* Watched rides split: armed (no trigger yet) on top, then alerted (already
        hit). Each sorted by current wait, shortest first so what's rideable now floats up. */
-    var armed=watched.filter(function(id){return !alertState[id];}).sort(byWait);
+    var pending=watched.filter(function(id){return !alertState[id];}).sort(byWait);
     var alerted=watched.filter(function(id){return !!alertState[id];}).sort(byWait);
     var html="";
     if(backUp.length){
@@ -1546,13 +1555,13 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     if(down.length){
       html+='<div class="ap-list-head down"><span class="hd-dot"></span>Down <span class="ct">('+down.length+')</span></div>'+down.map(rowDown).join("");
     }
-    if(armed.length){
-      html+='<div class="ap-list-head">Still watching <span class="ct">('+armed.length+')</span></div>'+armed.map(rowWatched).join("");
+    if(pending.length){
+      html+='<div class="ap-list-head">Still watching <span class="ct">('+pending.length+')</span></div>'+pending.map(rowWatched).join("");
     }
     if(alerted.length){
       html+='<div class="ap-list-head">Alerted <span class="ct">('+alerted.length+')</span></div>'+alerted.map(rowWatched).join("");
     }
-    box.innerHTML=html;
+    box.innerHTML=html+'<div class="al-hint">Add alerts by tapping ⚑ on any ride.</div>';
     bindAlertList(box);
   }
   function rowBackUp(id){
@@ -1572,7 +1581,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       '<div class="al-wait closed"><small>Down</small></div>'+
       '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+
         '<div class="al-edit-off"><button class="al-reopen'+(reopen[id]?" on":"")+'" data-reopen="'+esc(id)+'"><span class="al-sw"></span>Notify when it reopens</button></div></div>'+
-      '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
+      '<button class="al-x" data-x="'+esc(id)+'" title="Remove alert">✕</button></div>';
   }
   function rowWatched(id){
     var r=roster[id],lv=liveById[id],tier=tierOf(lv);
@@ -1593,7 +1602,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     return '<div class="al-row">'+
       '<div class="al-wait '+(tier==="closed"?"":tier)+'">'+waitHTML+'</div>'+
       '<div class="al-main"><div class="al-nm">'+esc(r.name)+' <span class="al-park">· '+esc(r.park)+'</span></div>'+hit+rule+'</div>'+
-      '<button class="al-x" data-x="'+esc(id)+'" title="Remove">✕</button></div>';
+      '<button class="al-x" data-x="'+esc(id)+'" title="Remove alert">✕</button></div>';
   }
 
   function bindAlertList(box){
@@ -1603,17 +1612,17 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     each("[data-dir]","change",function(el){var id=el.getAttribute("data-dir");if(overrides[id]){overrides[id].dir=el.value;saveOverrides();delete alertState[id];saveAlertState();}});
     each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];saveAlertState();}});
     each("[data-reopen]","click",function(el){var id=el.getAttribute("data-reopen");
-      if(reopen[id]){delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];delete watch[id];store.set("watch",Object.keys(watch));saveReopenOnly();updateAlertBadge();}}
+      if(reopen[id]){delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];saveReopenOnly();}updateAlertBadge();}
       else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
       saveReopen();renderAlertList();});
     each("[data-gotit]","click",function(el){var id=el.getAttribute("data-gotit");
-      delete watch[id];delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];
-      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
+      delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];
+      saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
     each("[data-clearup]","click",function(){Object.keys(resolved).forEach(function(id){
-        delete watch[id];delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];});
-      store.set("watch",Object.keys(watch));saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
-    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete watch[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete resolved[id];delete alertState[id];
-      store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();saveResolved();saveAlertState();updateAlertBadge();renderAlertList();render();});
+        delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];});
+      saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
+    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete armed[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete resolved[id];delete alertState[id];
+      saveArmed();saveOverrides();saveReopen();saveReopenOnly();saveResolved();saveAlertState();updateAlertBadge();renderAlertList();render();});
   }
 
   /* ---- stats helpers ---- */
@@ -2314,20 +2323,40 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
     return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div></div>'+
-      '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Watch for alerts">'+(watched?'★':'☆')+'</button></div>';
+      '<button class="flagbtn'+((armed[r.id]||reopen[r.id])?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">⚑</button>'+
+'<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
   function bindStars(scope){
-    Array.prototype.forEach.call(scope.querySelectorAll(".star"),function(btn){
-      btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
-        var adding=!watch[id];
-        if(adding)watch[id]=true;else{delete watch[id];delete overrides[id];delete reopen[id];}
-        delete reopenOnly[id];   /* a deliberate star (or un-star) is no longer a reopen-only watch */
-        store.set("watch",Object.keys(watch));saveOverrides();saveReopen();saveReopenOnly();delete alertState[id];saveAlertState();
-        updateAlertBadge();
-        if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
-        if(adding){var r=roster[id];pushToast("Added to alerts",(r?r.name:"Ride")+" — set its rule under ⚑");}
-        render();});});
-  }
+/* ★ collects (quiet favorite) · ⚑ interrupts (context-aware alert). Fully orthogonal (0709e). */
+Array.prototype.forEach.call(scope.querySelectorAll(".star"),function(btn){
+btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
+var adding=!watch[id];var r=roster[id],nm=r?r.name:"Ride";
+if(adding)watch[id]=true;else delete watch[id];
+store.set("watch",Object.keys(watch));
+/* favorites are quiet: alert state (armed/reopen/rules) is untouched either way */
+if(adding)pushToast("★ Added to Favorites",nm+" — tap ⚑ for alerts");
+else pushToast("Removed from Favorites",nm+((armed[id]||reopen[id])?" — alert kept, manage under ⚑":""));
+render();});});
+Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
+btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
+var r=roster[id],nm=r?r.name:"Ride",lv=liveById[id];
+if(lv&&lv.status==="DOWN"){
+var on=!reopen[id];
+if(on){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;
+prevStatus[id]=(lv&&lv.status)||prevStatus[id]||"DOWN";
+pushToast("⚑ Alert set",nm+" — we'll ping when it reopens");}
+else{delete reopen[id];delete reopenOnly[id];pushToast("Alert removed",nm);}
+saveReopen();saveReopenOnly();
+}else{
+var on=!armed[id];
+if(on){armed[id]=true;delete alertState[id];saveAlertState();
+var o=overrides[id],rl=o?(o.dir+" "+o.thresh+"m"):(settings.dir+" "+settings.thresh+"m (default)");
+pushToast("⚑ Alert set",nm+" — "+rl+" · customize under ⚑");}
+else{delete armed[id];delete alertState[id];saveAlertState();pushToast("Alert removed",nm);}
+saveArmed();
+}
+updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();render();});});
+}
 
   function clearFilters(){
     f.type="all";f.cat="all";f.status="all";f.band="all";f.ll=false;f.sr=false;f.watched=false;
@@ -2381,7 +2410,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
      deployed Worker's /save expects. overrides may be empty -> send {}. */
   function collectRules(){
     return {
-      watch:watch,
+      watch:armed,   /* worker's alert subjects = the armed set; quiet favorites never leave the phone */
       overrides:overrides||{},
       reopen:reopen,
       reopenOnly:reopenOnly||{},
