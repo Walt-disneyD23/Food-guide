@@ -841,7 +841,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0705n</span>
+    <span style="opacity:.55" id="buildStamp">· build 0707b</span>
   </footer>
 </div>
 
@@ -2970,7 +2970,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
         if(m.fF!=null&&(maxFF==null||m.fF>maxFF))maxFF=m.fF;
         if(m.pIn>maxP){maxP=m.pIn;if(m.pIn>0){var pv=(s>0?samples[s-1]:null);
           core={t:m.t,tF:m.tF,gust:m.gust,pIn:m.pIn,prevTF:(pv?pv.tF:null),mins:(pv?(m.t-pv.t):null)};}}}
-      return {code:maxCode,gust:maxGust,dayHigh:maxTF,dayLow:minTF,feelsHigh:maxFF,precip:(roll.precipIn||0),downPeak:downPeak,series:series,parkPeaks:parkPeaks,samples:samples,onset:onset,peakPt:peakPt,core:core};
+      return {code:maxCode,gust:maxGust,dayHigh:maxTF,dayLow:minTF,feelsHigh:maxFF,feelsFcast:(roll.feelsHiF!=null?roll.feelsHiF:null),precip:(roll.precipIn||0),downPeak:downPeak,series:series,parkPeaks:parkPeaks,samples:samples,onset:onset,peakPt:peakPt,core:core};
     }
     function wxChip(d,live){
       if(!d||!d.wx)return null;
@@ -2979,7 +2979,29 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner")};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
-      if(x.feelsHigh!=null?x.feelsHigh>=105:x.dayHigh>=95)return {kind:"heat",icon:"🥵",tappable:false,text:(live?(heatF?"Extreme heat today — feels like "+heatHi+"° and climbing":"Extreme heat today — "+heatHi+"° and climbing"):(heatF?"Extreme heat — feels like "+heatHi+"°":"Extreme heat — a high of "+heatHi+"°"))};
+      if(x.feelsHigh!=null?x.feelsHigh>=105:x.dayHigh>=95){
+        /* Heat states earn their tense (0707a): forecast numbers speak future
+           ("heading for"), observed numbers speak present/past. "and climbing"
+           renders only when the latest sample is BOTH rising and already at
+           100°+ observed — below that floor the sentence undersells an
+           extreme-heat warning, so the forecast framing carries the morning.
+           The floor is tunable, same spirit as the 25 mph gust floor. */
+        var hT;
+        if(heatF){
+          var hs=x.samples||[],hf=[],hz;
+          for(hz=0;hz<hs.length;hz++)if(hs[hz]&&hs[hz].fF!=null)hf.push(hs[hz].fF);
+          var hCur=hf.length?hf[hf.length-1]:null,hPrev=hf.length>1?hf[hf.length-2]:null,hMax=null;
+          for(hz=0;hz<hf.length;hz++)if(hMax==null||hf[hz]>hMax)hMax=hf[hz];
+          var hFc=(x.feelsFcast!=null?x.feelsFcast:heatHi);
+          if(!live)hT=(hMax!=null?"Extreme heat — feels-like peaked at "+hMax+"°":"Extreme heat — a forecast feels-like of "+hFc+"°");
+          else if(hMax!=null&&hCur!=null&&hCur<=hMax-5)hT="Extreme heat today — feels-like peaked at "+hMax+"°";
+          else if(hCur!=null&&hPrev!=null&&hCur>hPrev&&hCur>=100)hT="Extreme heat today — feels like "+hCur+"° and climbing";
+          else hT="Extreme heat today — heading for a feels-like of "+hFc+"°";
+        }else{
+          hT=(live?"Extreme heat today — heading for a high of "+heatHi+"°":"Extreme heat — a high of "+heatHi+"°");
+        }
+        return {kind:"heat",icon:"🥵",tappable:false,text:hT};
+      }
       if(x.dayLow<=40)return {kind:"cold",icon:"🥶",tappable:false,text:(live?"Cold out there — "+x.dayLow+"° this morning":"Cold start — down to "+x.dayLow+"° this morning")};
       return null;
     }
@@ -3162,10 +3184,23 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           add(ph.open,ph.close);
           var ex=ph.extras||[];for(var q3=0;q3<ex.length;q3++)add(ex[q3].open,ex[q3].close);
         })();
+        /* refurb void species (0707b): if the banked snap cells inside the
+           void are mostly -3, the ride is in REFURBISHMENT — say so instead of
+           "no data". Pure params so the harness can run it on real fixtures. */
+        function pwVoidRefurb(sp,rid5,a5,b5){
+          if(!sp||!sp.ids||!sp.rows)return false;
+          var c5=sp.ids.indexOf(rid5);if(c5<0)return false;
+          var n5=0,r5=0,q5,row5,w5,v5,t5;
+          for(q5=0;q5<sp.rows.length;q5++){row5=sp.rows[q5];t5=row5.t;
+            if(t5<a5||t5>b5)continue;w5=row5.w;v5=(w5&&c5<w5.length)?w5[c5]:null;
+            if(v5==null)continue;n5++;if(v5===-3)r5++;}
+          return n5>0&&(r5/n5)>=0.5;
+        }
         for(i=0;i<voids.length;i++){
           var va=voids[i][0],vb=voids[i][1],cov=0,q4;
           for(q4=0;q4<wins.length;q4++){var s4=Math.max(va,wins[q4][0]),e4=Math.min(vb,wins[q4][1]);if(e4>s4)cov+=e4-s4;}
-          voidsOut.push({t0:va,t1:vb,kind:(wins.length&&(1-cov/(vb-va))>=0.6)?"closed":"nodata",pct:(vb-va)/(t1-t0)*100});
+          var vkind=pwVoidRefurb(lastData&&lastData.snap,rid,va,vb)?"refurb":((wins.length&&(1-cov/(vb-va))>=0.6)?"closed":"nodata");
+          voidsOut.push({t0:va,t1:vb,kind:vkind,pct:(vb-va)/(t1-t0)*100});
         }
       }
       /* End caps (Option A): punctuate line ends that face an interruption
@@ -3219,7 +3254,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
       for(i=0;i<m.voids.length;i++){
         var vv=m.voids[i];if(vv.pct<10)continue;
         var vcx=(((vv.t0+vv.t1)/2-t0)/(t1-t0)*100).toFixed(2);
-        vl+='<span class="pw-voidlbl" style="left:'+vcx+'%">'+(vv.kind==="closed"?"park<br>closed":"no data")+'</span>';
+        vl+='<span class="pw-voidlbl" style="left:'+vcx+'%">'+(vv.kind==="closed"?"park<br>closed":vv.kind==="refurb"?"refurb":"no data")+'</span>';
       }
       var rib="";
       for(i=0;i<m.runs.length;i++){
@@ -3296,7 +3331,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           var gd=pwScrubWx(res.t);
           pill.innerHTML=pwClkM(res.t)+'<b style="color:#8c96b9">Down</b>'+(gd?'<em>'+gd+'</em>':'');
         }else{
-          pill.innerHTML='<b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":"No data")+'</b>';
+          pill.innerHTML='<b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":res.kind==="refurb"?"Refurb":"No data")+'</b>';
         }
       }
       var pw2=pill.offsetWidth||60,half=pw2/2+2;
@@ -3752,10 +3787,11 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
           var vv=m.voids[i];if(vv.pct<10)continue;
           var vx=(BX(vv.t0)+BX(vv.t1))/2,vroom=BX(vv.t1)-BX(vv.t0)-12,vmid=pT+pH/2;
           ctx.font=IN("600",22);
-          var vwide=Math.max(ctx.measureText("closed").width,ctx.measureText("no data").width);
+          var vwide=Math.max(ctx.measureText("closed").width,ctx.measureText("no data").width,ctx.measureText("refurb").width);
           if(vwide>vroom)continue;
           ctx.fillStyle="#7a88aa";ctx.textAlign="center";ctx.textBaseline="middle";
           if(vv.kind==="closed"){ctx.fillText("park",vx,vmid-15);ctx.fillText("closed",vx,vmid+15);}
+          else if(vv.kind==="refurb")ctx.fillText("refurb",vx,vmid);
           else ctx.fillText("no data",vx,vmid);
           ctx.textAlign="left";ctx.textBaseline="alphabetic";
         }
