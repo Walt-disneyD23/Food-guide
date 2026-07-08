@@ -473,26 +473,28 @@
     -webkit-tap-highlight-color:transparent}
   .dn-trigger .chev{font-size:var(--fs-caps);transition:transform .18s;display:inline-block}
   .dn-trigger.open .chev{transform:rotate(180deg)}
-  /* calmed down-banner: a status card, not an alarm slab (front-door mock, Jul 5) */
-  .dn-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
-    border-radius:var(--r-tile);box-shadow:var(--shadow-sm);padding:12px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .dn-bar .dn-dot{width:8px;height:8px;border-radius:50%;background:var(--packed);flex:none}
-  .dn-bar .dn-tx{flex:1;font-size:var(--fs-body);font-weight:700;color:var(--ink)}
-  .dn-bar .dn-tx .n{color:var(--packed)}
-  .dn-bar .dn-cc{width:26px;height:26px;border-radius:50%;background:var(--bg-2);display:grid;place-items:center;
-    color:var(--muted);flex:none;transition:transform .2s}
-  #dnFlow.open .dn-bar{border-radius:var(--r-tile) var(--r-tile) 0 0;border-bottom-color:transparent}
+  /* down banner (0709o): V1 tier-rim costume — count-led face, rim spine, wash band when open.
+     T3 went-down-at column chosen for the FUTURE, gated on Worker downSince: session-witnessed
+     times can't cover app-closed flips, and a column that's blank for exactly those rides
+     would shrug where the board should speak. */
+  #dnFlow{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r-hero);box-shadow:var(--shadow-sm);overflow:hidden}
+  #dnFlow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--packed);z-index:2;pointer-events:none}
+  #dnFlow.open{box-shadow:var(--shadow)}
+  .dn-bar{display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .dn-bar .dn-tx{flex:1;font-family:var(--font-display);font-weight:700;font-size:var(--fs-head);color:var(--ink);letter-spacing:-.02em}
+  .dn-bar .dn-cc{flex:none;font-size:var(--fs-stat);color:var(--muted-2);transition:transform .2s}
+  #dnFlow.open .dn-bar{background:var(--card-2);border-bottom:1px solid var(--line)} /* wash band — same chrome as expanded park headers (0709i) */
   #dnFlow.open .dn-cc{transform:rotate(180deg)}
-  .dn-list{overflow:hidden;max-height:0;transition:max-height .24s ease;background:var(--card);
-    border-radius:0 0 var(--r-tile) var(--r-tile);padding:0 14px}
-  .dn-list.open{max-height:320px;overflow-y:auto;overscroll-behavior-y:contain;
-    border:1px solid var(--line);border-top:none;box-shadow:var(--shadow-sm)}
-  .dn-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+  .dn-list{overflow:hidden;max-height:0;transition:max-height .24s ease;padding:0 16px}
+  .dn-list.open{max-height:320px;overflow-y:auto;overscroll-behavior-y:contain}
+  .dnshare{display:block;width:calc(100% - 32px);margin:10px 16px 14px;font:600 13px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:12px;padding:11px;text-align:center;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)}
+  .dn-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+  .dn-list .dn-row:first-child{border-top:none}
   .dn-row .rdot{width:7px;height:7px;border-radius:50%;background:var(--packed);flex:none}
   .dn-info{flex:1;min-width:0}
   .dn-info .nm{font-weight:600;font-size:var(--fs-body);color:var(--ink);line-height:1.25}
   .dn-info .pk{font-size:var(--fs-small);color:var(--muted-2);margin-top:1px}
-  .dn-watch{flex:none;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--muted);
+  .dn-watch{flex:none;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--muted);
     border-radius:var(--r-pill);padding:5px 11px;font-size:var(--fs-small);font-weight:600;white-space:nowrap;
     font-family:var(--font-body);-webkit-tap-highlight-color:transparent;transition:.15s}
   .dn-watch.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
@@ -912,7 +914,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709n</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709o</span>
   </footer>
 </div>
 
@@ -1312,12 +1314,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '</div>';}).join("");
     dn.innerHTML=
       '<div id="dnTrigger" class="dn-bar">'+
-        '<span class="dn-dot"></span>'+
-        '<span class="dn-tx"><span class="n">'+n+'</span> ride'+(n===1?"":"s")+' down right now</span>'+
-        '<span class="dn-cc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
+        '<span class="dn-tx">'+n+' ride'+(n===1?"":"s")+' down</span>'+
+        '<span class="dn-cc">\u25be</span>'+
       '</div>'+
       '<div class="dn-list" id="dnList">'+rows+'</div>'+
-      '<button type="button" id="dnShare" style="display:none;width:100%;margin-top:10px;font:600 13px/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:12px;padding:11px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share what\'s down</button>';
+      '<button type="button" id="dnShare" class="dnshare" style="display:none">Share what\'s down</button>';
     var t=dn.querySelector("#dnTrigger");
     function applyOpen(open){
       dn.classList.toggle("open",open);
