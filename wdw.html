@@ -228,6 +228,20 @@
   .fc-empty{padding:12px 2px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:var(--fs-body)}
   .t-undo{background:none;border:0;padding:6px 0 0;font-family:var(--font-body);font-size:var(--fs-small);font-weight:800;letter-spacing:.06em;color:var(--accent);cursor:pointer}
   .al-hint{font-size:var(--fs-meta);color:var(--muted-2);text-align:center;padding:10px 0 2px;border-top:1px solid var(--line);margin-top:10px}
+  /* ===== Hot-lines board (C2, 0709k): Longest/Shortest lens x park scope; rows inert, fc-row anatomy ===== */
+  #hlCard{margin-top:-6px} /* favcard bottoms carry 14px; net 8px seam, same rhythm as the Favorites seam */
+  .hl-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 2px;flex-wrap:wrap}
+  .hl-tabs{display:flex;gap:14px}
+  .hl-tab{font-family:var(--font-body);font-size:var(--fs-caps);letter-spacing:.12em;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--muted-2);padding:0 0 2px;border:0;background:none;border-bottom:2px solid transparent}
+  .hl-tab.on{color:var(--ink);border-bottom-color:var(--accent-fill)}
+  .hl-tabs.dim .hl-tab{color:var(--muted-2)}
+  .hl-tabs.dim .hl-tab.on{color:var(--muted-2);border-bottom-color:var(--line)} /* lens is moot with no rows: quiet, still tappable */
+  .hl-scope{display:flex;gap:5px}
+  .hl-chip{font-family:var(--font-body);font-size:var(--fs-micro);letter-spacing:.06em;font-weight:800;cursor:pointer;padding:4px 9px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--card-2);color:var(--muted-2)}
+  .hl-chip.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
+  .hl-chip.dim{opacity:.45} /* park closed per schedule: dims at a glance, stays tappable */
+  .hl-empty{padding:12px 2px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:var(--fs-body)}
+  .hl-empty b{color:var(--ink);font-weight:600}
 
   .state{text-align:center;padding:54px 20px;color:var(--muted)}
   .state h3{font-family:var(--font-display);color:var(--ink);font-size:var(--fs-head);margin-bottom:8px}
@@ -898,7 +912,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709j</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709k</span>
   </footer>
 </div>
 
@@ -1447,14 +1461,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function fetchSchedule(){
     var today=new Date().toLocaleDateString("en-CA",{timeZone:TZ});
+    var tomorrow=new Date(Date.now()+864e5).toLocaleDateString("en-CA",{timeZone:TZ}); /* 0709k: for the after-close "reopens at" line */
     return Promise.all(parks.map(function(p){
       return fetch(API+"/entity/"+p.id+"/schedule").then(function(r){return r.json();}).then(function(d){
         var todays=(d.schedule||[]).filter(function(s){return s.date===today;});
         var op=todays.find(function(s){return s.type==="OPERATING";});
+        var op2=(d.schedule||[]).find(function(s){return s.date===tomorrow&&s.type==="OPERATING";});
         var extras=todays.filter(function(s){
           return s!==op && s.type!=="OPERATING" && s.openingTime && s.closingTime;});
         parkInfo[p.short]={
           open:op?op.openingTime:null, close:op?op.closingTime:null,
+          nextOpen:op2?op2.openingTime:null, /* tomorrow’s published open (0709k) — powers "reopens at" */
           extras:extras.map(function(e){return {desc:shortExtra(e),name:((e&&e.description)||"").toString(),open:e.openingTime,close:e.closingTime};})
         };
       }).catch(function(){});
@@ -1816,6 +1833,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v")};
     });
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
+    var hlc=document.createElement("div");hlc.id="hlCard";elBanners.appendChild(hlc); /* Hot-lines board (0709k): sibling below Favorites, hides with #banners for free */
   }
 
   function bannerStats(key){
@@ -1897,6 +1915,77 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     bindStars(el); /* card rows speak the exact ride-row pair: same classes, same handlers, rows otherwise inert */
   }
 
+  /* ===== Hot-lines board (C2, 0709k). Lens: session-only, Longest default. Scope: persisted. Rows inert. ===== */
+  var hlLens="long";
+  var hlScope=store.get("hlScope","all");
+  if(hlScope!=="all"&&!BANNER_MONO[hlScope])hlScope="all"; /* stale persisted scope falls back safely */
+  /* HL-START (harness slices this block verbatim) */
+  function hlModel(scope,lens){
+    var items=[];
+    Object.keys(roster).forEach(function(id){
+      var r=roster[id];if(scope!=="all"&&r.park!==scope)return;
+      var lv=liveById[id];if(!lv||lv.status!=="OPERATING"||lv.wait===null||lv.wait===undefined)return;
+      if(isOpenNow(parkInfo[r.park])===false)return; /* park closed per schedule: stale OPERATING never posts here, same rule as groupOf */
+      items.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",wait:lv.wait,tier:tierOf(lv)});
+    });
+    items.sort(function(a,b){
+      if(a.wait!==b.wait)return lens==="short"?a.wait-b.wait:b.wait-a.wait;
+      return a.nm.localeCompare(b.nm);
+    });
+    return items.slice(0,3);
+  }
+  function hlNextOpen(info){ /* soonest future published open we can prove: today's if still ahead, else tomorrow's */
+    if(!info)return null;var now=Date.now();
+    if(info.open){var t=new Date(info.open).getTime();if(t>now)return {t:t,iso:info.open};}
+    if(info.nextOpen){var t2=new Date(info.nextOpen).getTime();if(t2>now)return {t:t2,iso:info.nextOpen};}
+    return null;
+  }
+  function hlEmptyLine(scope){
+    /* Time-aware, plain (locked Jul 8): the board says when it comes back to life.
+       Every time claim is the park's PUBLISHED schedule via fmtClock; "closed" only when the schedule proves it. */
+    function nm(p){return '<b>'+esc(p)+'</b>';}
+    if(scope==="all"){
+      var anyOpen=PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])!==false;});
+      if(anyOpen)return "No posted waits yet.";
+      var opens=[];
+      PARK_DEF.forEach(function(p){var o=hlNextOpen(parkInfo[p.key]);if(o)opens.push({park:p.key,t:o.t,iso:o.iso});});
+      if(opens.length){opens.sort(function(a,b){return a.t-b.t;});
+        return "Parks are closed \u00b7 "+nm(opens[0].park)+" opens first, "+fmtClock(opens[0].iso)+".";}
+      return "Parks are closed.";
+    }
+    var info=parkInfo[scope];
+    if(isOpenNow(info)===false){
+      var now=Date.now();
+      if(info.open&&now<new Date(info.open).getTime())
+        return nm(scope)+" opens at "+fmtClock(info.open)+".";
+      if(info.nextOpen&&new Date(info.nextOpen).getTime()>now)
+        return nm(scope)+" is closed \u00b7 reopens at "+fmtClock(info.nextOpen)+".";
+      return nm(scope)+" is closed for the day.";
+    }
+    return "No posted waits yet.";
+  }
+  /* HL-END */
+  function renderHotBox(){
+    var el=$("hlCard");if(!el)return;
+    var items=hlModel(hlScope,hlLens);
+    var tabs='<span class="hl-tabs'+(items.length?'':' dim')+'">'+
+      '<button class="hl-tab'+(hlLens!=="short"?' on':'')+'" data-lens="long" type="button">\u25b2 Longest</button>'+
+      '<button class="hl-tab'+(hlLens==="short"?' on':'')+'" data-lens="short" type="button">\u25bd Shortest</button></span>';
+    var chips='<span class="hl-scope">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
+      var closed=k!=="all"&&isOpenNow(parkInfo[k])===false;
+      return '<button class="hl-chip'+(hlScope===k?' on':'')+(closed?' dim':'')+'" data-scope="'+esc(k)+'" type="button">'+
+        (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</span>';
+    var body=items.length?items.map(function(it){
+      return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
+        '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
+    }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
+    el.innerHTML='<div class="favcard"><div class="hl-head">'+tabs+chips+'</div>'+body+'</div>';
+    el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
+      hlLens=b.getAttribute("data-lens");renderHotBox();});});
+    el.querySelectorAll(".hl-chip").forEach(function(b){b.addEventListener("click",function(){
+      hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderHotBox();});});
+  }
+
   function render(){
     renderDownFlow();
     if(window.__pwActive){return;}
@@ -1923,6 +2012,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       else{el.panel.hidden=true;el.panel.innerHTML="";}
     });
     renderFavCard();
+    renderHotBox(); /* Hot-lines board (0709k) */
   }
 
   /* Global search: one flat, grouped results list across all four parks,
