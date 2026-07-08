@@ -300,6 +300,7 @@
   .banner-mono{position:absolute;right:-6px;bottom:-22px;font-family:var(--font-display);font-weight:700;
     font-size:96px;letter-spacing:-.04em;color:rgba(255,255,255,.06);line-height:1;pointer-events:none;user-select:none}
   .banner-sub{font-size:var(--fs-small);color:var(--pwh-muted);margin-top:3px;line-height:1.4} /* 0709j: wrap, never truncate — "est." is an honesty label */
+  .cwu{white-space:nowrap} /* crowd+est. honesty unit (0709r) — no-op wherever the subline fits one line */
   .banner-sub b{color:#fff;font-weight:600}
   .banner-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
   .banner-sub .dot.open{background:var(--open)}
@@ -915,7 +916,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709q</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709r</span>
   </footer>
 </div>
 
@@ -2022,7 +2023,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         /* A+ banner (0709a): live subline + labeled stat; aura color = s.crowd.color (one source), tier class = ramp depth only */
         var sub=['<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?"Open":s.isOpen===false?"Closed":"Live")];
         if(s.open)sub.push(s.open+' open');
-        if(s.crowd)sub.push('crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est.');
+        if(s.crowd)sub.push('<span class="cwu">crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est.</span>'); /* 0709r: est. never separates from the value it qualifies \u2014 narrow viewports wrap BEFORE the clause, never inside */
         el.sub.innerHTML=sub.join('<span class="sep">\u00b7</span>');
         el.statV.innerHTML=(s.headAvg!==null?s.headAvg+'<span class="u">m</span>':'\u2013');
         el.root.classList.remove("tier-1","tier-2","tier-3","tier-4");
