@@ -912,7 +912,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709k</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709l</span>
   </footer>
 </div>
 
@@ -1467,11 +1467,15 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         var todays=(d.schedule||[]).filter(function(s){return s.date===today;});
         var op=todays.find(function(s){return s.type==="OPERATING";});
         var op2=(d.schedule||[]).find(function(s){return s.date===tomorrow&&s.type==="OPERATING";});
+        var ex2=(d.schedule||[]).filter(function(s){return s.date===tomorrow&&s.type!=="OPERATING"&&s.openingTime&&s.closingTime;})
+          .sort(function(a,b){return new Date(a.openingTime)-new Date(b.openingTime);})[0]||null;
+        if(ex2&&op2&&new Date(ex2.openingTime).getTime()>=new Date(op2.openingTime).getTime())ex2=null; /* only earlier admission counts as "when it comes back" (0709l) */
         var extras=todays.filter(function(s){
           return s!==op && s.type!=="OPERATING" && s.openingTime && s.closingTime;});
         parkInfo[p.short]={
           open:op?op.openingTime:null, close:op?op.closingTime:null,
           nextOpen:op2?op2.openingTime:null, /* tomorrow’s published open (0709k) — powers "reopens at" */
+          nextExtraOpen:ex2?ex2.openingTime:null, nextExtraKind:ex2?shortExtra(ex2):null, /* tomorrow’s earlier admission, stamped (0709l) */
           extras:extras.map(function(e){return {desc:shortExtra(e),name:((e&&e.description)||"").toString(),open:e.openingTime,close:e.closingTime};})
         };
       }).catch(function(){});
@@ -1934,32 +1938,47 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     });
     return items.slice(0,3);
   }
-  function hlNextOpen(info){ /* soonest future published open we can prove: today's if still ahead, else tomorrow's */
-    if(!info)return null;var now=Date.now();
-    if(info.open){var t=new Date(info.open).getTime();if(t>now)return {t:t,iso:info.open};}
-    if(info.nextOpen){var t2=new Date(info.nextOpen).getTime();if(t2>now)return {t:t2,iso:info.nextOpen};}
-    return null;
+  function hlNextOpen(info){ /* soonest future admission the schedule proves, stamped with its kind (""=regular open) (0709l) */
+    if(!info)return null;var now=Date.now(),best=null;
+    function cand(iso,kind){if(!iso)return;var t=new Date(iso).getTime();if(t>now&&(!best||t<best.t))best={t:t,iso:iso,kind:kind||""};}
+    cand(info.open,"");
+    if(info.extras)info.extras.forEach(function(e){cand(e.open,e.desc);});
+    if(!best){cand(info.nextOpen,"");cand(info.nextExtraOpen,info.nextExtraKind);}
+    return best;
   }
   function hlEmptyLine(scope){
-    /* Time-aware, plain (locked Jul 8): the board says when it comes back to life.
-       Every time claim is the park's PUBLISHED schedule via fmtClock; "closed" only when the schedule proves it. */
+    /* Time-aware, plain (locked Jul 8; extras-aware 0709l): the board says when it comes back to life.
+       Every time claim is the park's PUBLISHED schedule via fmtClock; extras carry their kind stamp;
+       "closed" only when the schedule proves it. */
     function nm(p){return '<b>'+esc(p)+'</b>';}
     if(scope==="all"){
       var anyOpen=PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])!==false;});
       if(anyOpen)return "No posted waits yet.";
       var opens=[];
-      PARK_DEF.forEach(function(p){var o=hlNextOpen(parkInfo[p.key]);if(o)opens.push({park:p.key,t:o.t,iso:o.iso});});
-      if(opens.length){opens.sort(function(a,b){return a.t-b.t;});
-        return "Parks are closed \u00b7 "+nm(opens[0].park)+" opens first, "+fmtClock(opens[0].iso)+".";}
+      PARK_DEF.forEach(function(p){var o=hlNextOpen(parkInfo[p.key]);if(o)opens.push({park:p.key,t:o.t,iso:o.iso,kind:o.kind});});
+      if(opens.length){opens.sort(function(a,b){return a.t-b.t;});var f=opens[0];
+        return "Parks are closed \u00b7 "+nm(f.park)+" opens first, "+fmtClock(f.iso)+(f.kind?" \u00b7 "+f.kind:"")+".";}
       return "Parks are closed.";
     }
     var info=parkInfo[scope];
     if(isOpenNow(info)===false){
-      var now=Date.now();
-      if(info.open&&now<new Date(info.open).getTime())
-        return nm(scope)+" opens at "+fmtClock(info.open)+".";
-      if(info.nextOpen&&new Date(info.nextOpen).getTime()>now)
-        return nm(scope)+" is closed \u00b7 reopens at "+fmtClock(info.nextOpen)+".";
+      var now=Date.now(),eext=null;
+      if(info.extras)info.extras.forEach(function(e){if(!e.open)return;var t=new Date(e.open).getTime();
+        if(t>now&&(!eext||t<eext.t))eext={t:t,iso:e.open,kind:e.desc};});
+      if(info.open&&now<new Date(info.open).getTime()){
+        var line=nm(scope)+" opens at "+fmtClock(info.open);
+        if(eext&&eext.t<new Date(info.open).getTime())line+=" \u00b7 "+eext.kind+" "+fmtClock(eext.iso);
+        return line+".";
+      }
+      if(eext)return nm(scope)+" is closed \u00b7 "+eext.kind+" at "+fmtClock(eext.iso)+"."; /* gap before a later window today (e.g. ticketed night) */
+      if(info.nextOpen&&new Date(info.nextOpen).getTime()>now){
+        var l2=nm(scope)+" is closed \u00b7 reopens at "+fmtClock(info.nextOpen);
+        if(info.nextExtraOpen&&info.nextExtraKind&&new Date(info.nextExtraOpen).getTime()>now)
+          l2+=" \u00b7 "+info.nextExtraKind+" "+fmtClock(info.nextExtraOpen);
+        return l2+".";
+      }
+      if(info.nextExtraOpen&&info.nextExtraKind&&new Date(info.nextExtraOpen).getTime()>now)
+        return nm(scope)+" is closed \u00b7 "+info.nextExtraKind+" at "+fmtClock(info.nextExtraOpen)+"."; /* extras-only tomorrow */
       return nm(scope)+" is closed for the day.";
     }
     return "No posted waits yet.";
