@@ -207,6 +207,7 @@
   .flagbtn:hover{background:var(--line);color:var(--muted)}
   .flagbtn.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff;box-shadow:0 3px 10px -3px rgba(79,70,229,.55)}
   /* ===== Favorites card (Cut 2, 0709g) ===== */
+  #favCard{margin-top:8px} /* 22px seam below the last park card (0709h) */
   .favcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:6px 14px 4px;margin-bottom:14px}
   .fc-head{display:flex;justify-content:space-between;align-items:center;padding:10px 2px}
   .fc-head .t{font-size:var(--fs-caps);letter-spacing:.12em;font-weight:700;color:var(--muted);text-transform:uppercase}
@@ -262,7 +263,24 @@
   .banner.expanded{box-shadow:var(--shadow)}
   .banner-art{position:relative;cursor:pointer;min-height:128px;padding:18px 20px;display:flex;align-items:flex-end;
     background-size:cover;background-position:center;background-color:var(--accent)}
-  .banner-art.bnr-ed{background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg))}
+  .banner-art.bnr-ed{background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg));min-height:150px}
+  /* ===== L1 (0709h): one dark hero, light park cards. Engines, faces, expand untouched. ===== */
+  .banner-eb{position:absolute;top:16px;left:20px;z-index:1;font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--accent-tint)}
+  .bnr-ed .banner-name{font-size:clamp(22px,5vw,30px)}
+  .bnr-ed .bs-v{font-size:var(--fs-wait)}
+  .banner-art.bnr-lt{background:var(--card)}
+  .banner.lt .banner-art{min-height:0;padding:15px 16px}
+  .banner.lt .banner-head{color:var(--ink);text-shadow:none}
+  .banner.lt .banner-name{color:var(--ink);font-size:var(--fs-head)}
+  .banner.lt .banner-sub{color:var(--muted)}
+  .banner.lt .banner-sub b{color:var(--ink)}
+  .banner.lt .bs-v{color:var(--ink)}
+  .banner.lt .bs-v .u{color:var(--muted-2)}
+  .banner.lt .bs-k{color:var(--muted-2)}
+  .banner.lt .banner-chev{color:var(--muted-2)}
+  .banner.lt .banner-mono{color:var(--accent-tint);opacity:.12;font-size:82px;right:-4px;bottom:-18px}
+  .banner.lt.tier-1::after,.banner.lt.tier-2::after,.banner.lt.tier-3::after,.banner.lt.tier-4::after{box-shadow:none}
+  .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   .banner-mono{position:absolute;right:-6px;bottom:-22px;font-family:var(--font-display);font-weight:700;
     font-size:96px;letter-spacing:-.04em;color:rgba(255,255,255,.06);line-height:1;pointer-events:none;user-select:none}
   .banner-sub{font-size:var(--fs-small);color:var(--pwh-muted);margin-top:3px;
@@ -880,7 +898,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709g</span>
+    <span style="opacity:.55" id="buildStamp">· build 0709h</span>
   </footer>
 </div>
 
@@ -1775,11 +1793,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     elBanners.innerHTML="";bannerEls={};
     BANNERS.forEach(function(def){
       var key=def.key;
-      var root=document.createElement("div");root.className="banner";root.setAttribute("data-key",key);
+      var root=document.createElement("div");root.className=(key==="all")?"banner":"banner lt";root.setAttribute("data-key",key); /* L1 (0709h): parks go light */
       var iconHTML=""; /* park icons hidden on banners for now — restore the def.icon/def.emblem line to bring them back */
       var bg=def.img?"background-image:url('"+def.img+"')":"";
       root.innerHTML=
-        '<div class="banner-art'+(def.img?'':' bnr-ed')+'" style="'+bg+'">'+
+        '<div class="banner-art'+(def.img?'':(key==="all"?' bnr-ed':' bnr-lt'))+'" style="'+bg+'">'+
+          (key==="all"?'<div class="banner-eb">Walt Disney World \u00b7 Live</div>':'')+
           (def.img?'<div class="banner-scrim"></div>':(BANNER_MONO[key]?'<div class="banner-mono">'+esc(BANNER_MONO[key])+'</div>':''))+
           '<div class="banner-head">'+iconHTML+
             '<div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
