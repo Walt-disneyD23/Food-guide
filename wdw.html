@@ -210,6 +210,10 @@
   #favCard{margin-top:8px} /* 22px seam below the last park card (0709h) */
   .favcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:6px 14px 4px;margin-bottom:14px}
   .fc-head{display:flex;justify-content:space-between;align-items:center;padding:10px 2px}
+  /* A (0710f): park-scope chips as a second header row — the wrapped hl-head rhyme. Chips REUSE .hl-chip: the pill skin is shared, so a restyle ships to both cards by construction. No closed-park dim here (closed rides still list; dim would imply empty). */
+  .fc-head.stk{display:block;padding:10px 2px 12px}
+  .fc-hrow{display:flex;justify-content:space-between;align-items:center}
+  .fc-scope{display:flex;gap:5px;margin-top:10px}
   .fc-head .t{font-size:var(--fs-caps);letter-spacing:.12em;font-weight:700;color:var(--muted);text-transform:uppercase}
   .fc-x{background:none;border:0;padding:0;font-family:var(--font-body);font-size:var(--fs-small);font-weight:700;color:var(--accent);cursor:pointer}
   .fc-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
@@ -975,7 +979,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710e</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710f</span>
   </footer>
 </div>
 
@@ -1933,6 +1937,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   /* ===== Favorites card (Cut 2, 0709g). ★ collects; this is where the collection lives.
      Ordering: Back up first, open by wait asc, Down, Closed/Refurb last. Cap 5 + expandable "+N more" (session-only). */
   var favExpanded=false;
+  var favScope="all"; /* A (0710f): park scope — SESSION-ONLY by spec, never persisted; every launch opens on ALL so the glance is always the whole list */
   /* FAVC-START (harness slices this block verbatim) */
   function favModel(){
     var ids=Object.keys(watch).filter(function(id){return !!roster[id];});
@@ -1971,19 +1976,32 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function renderFavCard(){
     var el=$("favCard");if(!el)return;
     var items=favModel();
-    var head='<div class="fc-head"><span class="t">\u2605 Favorites</span><button class="fc-x" id="favRules" type="button">Rules \u2691</button></div>';
-    var body;
+    var head,body;
     if(!items.length){
+      head='<div class="fc-head"><span class="t">\u2605 Favorites</span><button class="fc-x" id="favRules" type="button">Rules \u2691</button></div>';
       body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride to pin it here.</div>';
     }else{
-      var show=(favExpanded||items.length<=5)?items:items.slice(0,5);
-      body=show.map(fcRowHTML).join("");
-      if(items.length>5)body+='<button class="fc-more" id="favMore" type="button">'+
-        (favExpanded?'Show less':'+'+(items.length-5)+' more')+'</button>';
+      /* A (0710f): scope chips render only when favorites exist; reuse .hl-chip so the pill skin stays one source of truth */
+      var chips='<div class="fc-scope">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
+        return '<button class="hl-chip'+(favScope===k?' on':'')+'" data-scope="'+esc(k)+'" type="button">'+
+          (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
+      head='<div class="fc-head stk"><div class="fc-hrow"><span class="t">\u2605 Favorites</span><button class="fc-x" id="favRules" type="button">Rules \u2691</button></div>'+chips+'</div>';
+      var mono=BANNER_MONO[favScope]||favScope;
+      var scoped=favScope==="all"?items:items.filter(function(it){return it.pk===mono;});
+      if(!scoped.length){
+        body='<div class="fc-empty">No favorites at '+esc(favScope)+' yet. Tap \u2606 on any '+esc(mono)+' ride to pin it here.</div>';
+      }else{
+        var show=(favExpanded||scoped.length<=5)?scoped:scoped.slice(0,5);
+        body=show.map(fcRowHTML).join("");
+        if(scoped.length>5)body+='<button class="fc-more" id="favMore" type="button">'+
+          (favExpanded?'Show less':'+'+(scoped.length-5)+' more')+'</button>';
+      }
     }
     el.innerHTML='<div class="favcard">'+head+body+'</div>';
     var rb=$("favRules");if(rb)rb.addEventListener("click",openAlertsSheet);
     var mb=$("favMore");if(mb)mb.addEventListener("click",function(){favExpanded=!favExpanded;renderFavCard();});
+    el.querySelectorAll(".fc-scope .hl-chip").forEach(function(b){b.addEventListener("click",function(){
+      favScope=b.getAttribute("data-scope");favExpanded=false;renderFavCard();});}); /* scope switch collapses +N expansion: a new list starts folded */
     bindStars(el); /* card rows speak the exact ride-row pair: same classes, same handlers, rows otherwise inert */
   }
 
