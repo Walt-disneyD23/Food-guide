@@ -228,6 +228,41 @@
   .fc-empty{padding:12px 2px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:var(--fs-body)}
   .t-undo{background:none;border:0;padding:6px 0 0;font-family:var(--font-body);font-size:var(--fs-small);font-weight:800;letter-spacing:.06em;color:var(--accent);cursor:pointer}
   .al-hint{font-size:var(--fs-meta);color:var(--muted-2);text-align:center;padding:10px 0 2px;border-top:1px solid var(--line);margin-top:10px}
+  /* ===== Walk-Up Dining (D1, 0710b): quiet per-park disclosure -> party-size lens.
+     A board renders ONLY with a fresh diningAvailability (lastUpdated <= 15 min) — the feed's
+     restaurant `status` is never trusted alone (month-old OPERATING zombies measured Jul 8).
+     Numbers are Disney's estimate to be SEATED after joining the walk-up list. Not reservations. ===== */
+  .dine-disc{width:100%;display:flex;align-items:center;gap:10px;background:var(--card-2);border:1px solid var(--line);
+    border-radius:var(--r-card);padding:12px 14px;cursor:pointer;text-align:left;font-family:var(--font-body);margin-top:16px}
+  .dine-disc .ic{flex:none;width:30px;height:30px;border-radius:var(--r-el-sm);background:var(--card);
+    border:1px solid var(--line);display:grid;place-items:center;font-size:14px}
+  .dine-disc .tx{flex:1;min-width:0}
+  .dine-disc .tx b{display:block;font-size:var(--fs-body);font-weight:700;color:var(--ink)}
+  .dine-disc .tx span{font-size:var(--fs-meta);color:var(--muted)}
+  .dine-disc .ch{flex:none;color:var(--muted-2);font-size:var(--fs-title);transition:transform .2s}
+  .dine-disc.open .ch{transform:rotate(90deg)}
+  .dine-body{display:none;margin-top:9px}
+  .dine-body.show{display:block}
+  .dine-sub{font-size:var(--fs-meta);color:var(--muted-2);margin:0 2px 9px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .dine-i{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;
+    border:1px solid var(--muted-2);color:var(--muted);background:none;padding:0;cursor:pointer;
+    position:relative;font:700 var(--fs-caps)/1 Inter,system-ui,sans-serif}
+  .dine-i::after{content:"";position:absolute;inset:-8px}
+  .dine-pty{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 10px}
+  .dine-pty .lab{flex:none;align-self:center;font-size:var(--fs-caps);font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted-2);margin-right:3px}
+  .dine-pty button{width:32px;height:30px;border-radius:var(--r-el-sm);border:1px solid var(--line);background:var(--card-2);
+    color:var(--muted);font-family:var(--font-body);font-weight:800;font-size:var(--fs-small);cursor:pointer}
+  .dine-pty button.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
+  .dine-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:4px 14px}
+  .dine-row{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--line)}
+  .dine-row:first-child{border-top:0}
+  .dine-w{flex:none;width:46px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .dine-w small{display:block;font-size:var(--fs-micro);letter-spacing:.1em;color:var(--muted-2);font-family:var(--font-body);font-weight:700}
+  .dine-w.short{color:var(--short)}.dine-w.medium{color:var(--medium)}.dine-w.long{color:var(--long)}.dine-w.packed{color:var(--packed)}
+  .dine-w.dash{color:var(--muted-2)}
+  .dine-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);color:var(--ink)}
+  .dine-note{flex:none;font-size:var(--fs-meta);color:var(--muted-2)}
+
   /* ===== Hot-lines board (C2, 0709k): Longest/Shortest lens x park scope; rows inert, fc-row anatomy ===== */
   #hlCard{margin-top:0} /* 0709n: #banners is BLOCK flow, so adjacent margins COLLAPSE \u2014 the favcard\u2019s 14px bottom margin IS the seam; 0 here yields the same 14px as park\u2192Favorites. (The old -6 was flex arithmetic that squeezed this seam to 8px.) */
   .hl-head{display:flex;justify-content:space-between;align-items:center;gap:14px 8px;padding:10px 2px;flex-wrap:wrap} /* 0709m: 14px row gap — phones always wrap tabs/chips into two rows; give the thumb air */
@@ -916,7 +951,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0709t</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710b</span>
   </footer>
 </div>
 
@@ -1009,6 +1044,7 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
 
   /* ---- state ---- */
   var parks=[],roster={},liveById={},parkInfo={},usingFallback=true;
+  var dineById={},dineOpen={}; /* D1 0710b: live RESTAURANT walk-up boards + per-park disclosure state (in-memory; survives re-renders, resets on relaunch) */
   var watch={};(store.get("watch",[])||[]).forEach(function(id){watch[id]=true;});
   var overrides=store.get("overrides",{})||{};
   Object.keys(overrides).forEach(function(id){if(overrides[id]&&typeof overrides[id].thresh==="number")overrides[id].thresh=snap5(overrides[id].thresh);});
@@ -1501,6 +1537,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
             if(!nextShow&&times.length)nextShow=fmtClock(times[0]);
           }
           liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow};
+          if(e.entityType==="RESTAURANT")dineCapture(e,p.short); /* D1 0710b: dining rides the same poll — no new fetches */
         });
       }).catch(function(){});
     }));
@@ -1732,7 +1769,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   var INFO_COPY={
     headAll:"Headliner avg — the average wait across each park's 8 busiest rides right now. Busiest right now = the park with the highest headliner average. An estimate from wait times, not official attendance.",
     headPark:"Headliner avg — the average wait across this park's 8 busiest rides right now. An estimate from wait times, not official attendance.",
-    crowd:"Crowd — estimated from live wait times: the overall average plus how many lines are running 45+ minutes. Not official attendance."
+    crowd:"Crowd — estimated from live wait times: the overall average plus how many lines are running 45+ minutes. Not official attendance.",
+    dine:"Walk-up dining — the estimated wait to be seated if you join the restaurant's walk-up list right now, posted per party size. Join in the Disney app or at the podium — ParkPulse can't hold a spot. Not reservations."
   };
   var CROWD_TIERS=[null,
     {label:"Light",   level:1,color:"#3dd68c"},
@@ -2063,6 +2101,98 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     bindStars(sr);
   }
 
+  /* ===== DINE-START (D1, 0710b): Walk-Up Dining — live walk-up lists, freshness-gated =====
+     The feed's restaurant `status` is never trusted alone (month-old OPERATING zombies are real,
+     measured Jul 8); a board renders only when diningAvailability is non-empty AND lastUpdated is
+     within DINE_FRESH_MS of now. Numbers = Disney's estimate to be SEATED after joining the
+     walk-up list — not reservations; ParkPulse can't hold a spot. Rides the existing 5-min poll. */
+  var DINE_FRESH_MS=15*60*1000;
+  function dineCapture(e,park){ /* called from fetchLive for RESTAURANT entities */
+    dineById[e.id]={n:e.name||"",park:park,
+      da:(e.diningAvailability&&e.diningAvailability.length)?e.diningAvailability:null,
+      upd:e.lastUpdated?Date.parse(e.lastUpdated):null};
+  }
+  function dineFresh(rec,now){
+    return !!(rec&&rec.da&&rec.da.length&&typeof rec.upd==="number"&&!isNaN(rec.upd)&&(now-rec.upd)<=DINE_FRESH_MS);
+  }
+  function dineBoards(park,now){ /* fresh boards in one park, best quote first */
+    var out=[];
+    Object.keys(dineById).forEach(function(id){
+      var r=dineById[id];
+      if(r.park!==park||!dineFresh(r,now))return;
+      var m={},min=null;
+      r.da.forEach(function(x){
+        if(x&&typeof x.partySize==="number"&&typeof x.waitTime==="number"){
+          m[x.partySize]=x.waitTime;
+          if(min===null||x.waitTime<min)min=x.waitTime;
+        }
+      });
+      if(min===null)return;
+      out.push({id:id,n:r.n,map:m,min:min});
+    });
+    out.sort(function(a,b){return a.min-b.min||(a.n<b.n?-1:a.n>b.n?1:0);});
+    return out;
+  }
+  function dineTier(m){return m>=45?"packed":m>=30?"long":m>=15?"medium":"short";}
+  function dineParty(){var p=store.get("ppParty",2);return (typeof p==="number"&&p>=1&&p<=8)?p:2;}
+  function dineRowsHTML(boards,size){
+    var quoted=[],un=[];
+    boards.forEach(function(b){if(size in b.map)quoted.push(b);else un.push(b);});
+    quoted.sort(function(a,b){return a.map[size]-b.map[size]||(a.n<b.n?-1:a.n>b.n?1:0);});
+    return quoted.map(function(b){
+      var w=b.map[size];
+      return '<div class="dine-row"><div class="dine-w '+dineTier(w)+'">'+w+'<small>MIN</small></div>'+
+        '<div class="dine-nm">'+esc(b.n)+'</div></div>';
+    }).concat(un.map(function(b){
+      return '<div class="dine-row"><div class="dine-w dash">\u2013</div>'+
+        '<div class="dine-nm">'+esc(b.n)+'</div><div class="dine-note">no quote for '+size+'</div></div>';
+    })).join("");
+  }
+  function dineSectionHTML(key,now){
+    var boards=dineBoards(key,now);
+    if(!boards.length)return ""; /* zero fresh boards -> zero chrome; nobody taps into a dead end */
+    var size=dineParty(),open=!!dineOpen[key];
+    var chips="";for(var i=1;i<=8;i++)chips+='<button type="button" data-pty="'+i+'"'+(i===size?' class="on"':'')+'>'+i+'</button>';
+    return '<button type="button" class="dine-disc'+(open?' open':'')+'" data-dine-t>'+
+        '<span class="ic">\ud83c\udf74</span>'+
+        '<span class="tx"><b>Walk-Up Dining</b><span>'+boards.length+' board'+(boards.length===1?'':'s')+' open \u00b7 shortest '+boards[0].min+' min</span></span>'+
+        '<span class="ch">\u203a</span></button>'+
+      '<div class="dine-body'+(open?' show':'')+'">'+
+        '<div class="dine-sub">Live walk-up lists posted right now \u00b7 not reservations '+
+          '<button type="button" class="dine-i" aria-label="What these numbers mean">i</button></div>'+
+        '<div class="info-note" hidden data-dine-note></div>'+
+        '<div class="dine-pty"><span class="lab">Party of</span>'+chips+'</div>'+
+        '<div class="dine-card">'+dineRowsHTML(boards,size)+'</div></div>';
+  }
+  function bindDine(el,key){
+    var t=el.querySelector("[data-dine-t]");
+    if(!t)return;
+    var body=el.querySelector(".dine-body");
+    t.addEventListener("click",function(){
+      dineOpen[key]=!dineOpen[key];
+      t.classList.toggle("open",!!dineOpen[key]);
+      if(body)body.classList.toggle("show",!!dineOpen[key]);
+    });
+    var note=el.querySelector("[data-dine-note]");
+    var inf=el.querySelector(".dine-i");
+    if(inf)inf.addEventListener("click",function(ev){
+      ev.stopPropagation();
+      if(!note)return;
+      if(!note.hidden){note.hidden=true;return;}
+      note.textContent=INFO_COPY.dine||"";note.hidden=false;
+    });
+    Array.prototype.forEach.call(el.querySelectorAll(".dine-pty [data-pty]"),function(b){
+      b.addEventListener("click",function(){
+        var p=+b.getAttribute("data-pty");
+        store.set("ppParty",p);
+        Array.prototype.forEach.call(el.querySelectorAll(".dine-pty [data-pty]"),function(x){
+          x.classList.toggle("on",+x.getAttribute("data-pty")===p);});
+        var card=el.querySelector(".dine-card");
+        if(card)card.innerHTML=dineRowsHTML(dineBoards(key,Date.now()),p);
+      });
+    });
+  }
+  /* ===== DINE-END ===== */
   function renderPanel(key,el){
     var s=bannerStats(key);
     /* A-r board face (0709b): Shortest/Longest tiles with ride names, a wide Hours tile
@@ -2128,11 +2258,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
+    var dineHTML=(key!=="all"&&!usingFallback)?dineSectionHTML(key,Date.now()):""; /* D1 0710b: per-park only; needs live data */
     var shareHTML=(!usingFallback)?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 var(--fs-body)/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:var(--r-pill);padding:10px 16px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share this card</button></div>':"";
     el.innerHTML=face+fine+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
-      (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body;
+      (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body+dineHTML;
     bindStars(el);
+    bindDine(el,key); /* D1 0710b */
     var _note=el.querySelector(".info-note");
     Array.prototype.forEach.call(el.querySelectorAll(".info-i"),function(btn){
       btn.addEventListener("click",function(ev){
