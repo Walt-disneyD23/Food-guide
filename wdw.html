@@ -24,7 +24,7 @@
     --track:#dfe1ee; --dot-idle:#c9cde0; --accent-deep:#3c38a0; --emblem-plate:#fff; --accent-tint:#96a1f2; --open:#37e0a0;
     --down:var(--packed); --heat:var(--medium); --fav:#dfa000;
     --pwh-bg:#10243a; --pwh-bg2:#1b2d4d; --pwh-deep:#152a47; --pwh-ink:#e6e9fb; --pwh-sub:#c7cde0; --pwh-muted:#9aa6c4; --pwh-dim:#7a88aa; --pwh-key:#9bf7c9; --pwh-line:#24425c;
-    --shadow:0 16px 40px -18px rgba(40,40,90,.22); --shadow-sm:0 6px 18px -8px rgba(40,40,90,.14);
+    --shadow:0 16px 40px -18px rgba(40,40,90,.22); --shadow-sm:0 6px 18px -8px rgba(40,40,90,.14); --shadow-tk:drop-shadow(0 6px 14px rgba(40,40,90,.16));
     --font-display:'Space Grotesk',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
     --hero-text:#ffffff;
   }
@@ -332,6 +332,30 @@
   .banner.lt.tier-1::after,.banner.lt.tier-2::after,.banner.lt.tier-3::after,.banner.lt.tier-4::after{box-shadow:none}
   .banner.lt.expanded .banner-art{background:var(--card-2);border-bottom:1px solid var(--line)} /* wash band (0709i): expanded header reads as chrome above the white panel */
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
+  /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
+     Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
+     AND the mask cut both read it; the card's 1px border and the dash half-width cancel, so
+     `at right var(--stubw)` lands dead on the perforation center. Notches are TRUE mask cutouts
+     (the page backdrop shows through, both themes). The shadow rides .bnr-wrap's drop-shadow so
+     it traces the die-cut — a mask on the card itself would clip its own box-shadow away. */
+  .bnr-wrap{filter:var(--shadow-tk);margin-bottom:14px}
+  .bnr-wrap>.banner{margin-bottom:0}
+  .banner.lt{--stubw:96px;--notch:9px;box-shadow:none;
+    -webkit-mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000),radial-gradient(circle var(--notch) at right var(--stubw) bottom 0,#0000 98%,#000);
+    -webkit-mask-composite:source-in;
+    mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000),radial-gradient(circle var(--notch) at right var(--stubw) bottom 0,#0000 98%,#000);
+    mask-composite:intersect}
+  .banner.lt.expanded{box-shadow:none;
+    -webkit-mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000);
+    mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000)} /* open state: a bottom punch would land mid-card — top punch keeps the ticket, the dash runs into the wash-band hairline */
+  .banner.lt .banner-art{display:flex;align-items:stretch;padding:0}
+  .banner.lt .banner-head{flex:1;min-width:0;width:auto;padding:15px 16px}
+  .tk-stub{flex:0 0 var(--stubw);background:var(--accent-soft);border-left:2px dashed var(--muted-2);display:flex;align-items:stretch}
+  .tk-admit{flex:none;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:10px 1px 10px 4px}
+  .banner.lt .banner-stat{flex:1;margin-left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px 8px 10px 2px;text-align:center}
+  .banner.lt .banner-stat .bs-k{font-size:8.5px;line-height:1.3;margin-top:0}
+  .banner.lt .banner-chev{margin-left:0;margin-top:1px}
+  .banner.lt .banner-mono{font-size:64px;right:calc(var(--stubw) + 6px);bottom:-14px}
   .banner-mono{position:absolute;right:-6px;bottom:-22px;font-family:var(--font-display);font-weight:700;
     font-size:96px;letter-spacing:-.04em;color:rgba(255,255,255,.06);line-height:1;pointer-events:none;user-select:none}
   .banner-sub{font-size:var(--fs-small);color:var(--pwh-muted);margin-top:3px;line-height:1.4} /* 0709j: wrap, never truncate — "est." is an honesty label */
@@ -426,7 +450,7 @@
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5;
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
-    --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45);
+    --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45); --shadow-tk:drop-shadow(0 6px 14px rgba(0,0,0,.5));
   }
   html.dark body{background:
     radial-gradient(920px 540px at 90% -8%, #10283c, transparent 60%),
@@ -951,7 +975,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710b</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710c</span>
   </footer>
 </div>
 
@@ -1858,6 +1882,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var root=document.createElement("div");root.className=(key==="all")?"banner":"banner lt";root.setAttribute("data-key",key); /* L1 (0709h): parks go light */
       var iconHTML=""; /* park icons hidden on banners for now — restore the def.icon/def.emblem line to bring them back */
       var bg=def.img?"background-image:url('"+def.img+"')":"";
+      var statHTML='<div class="banner-stat"><div class="bs-v">\u2013</div><div class="bs-k">Headliner avg</div>'; /* T1 (0710c): shared stat open — hero closes it plain in the head; parks tuck the chevron inside it, out in the stub */
       root.innerHTML=
         '<div class="banner-art'+(def.img?'':(key==="all"?' bnr-ed':' bnr-lt'))+'" style="'+bg+'">'+
           (key==="all"?'<div class="banner-eb">Walt Disney World \u00b7 Live</div>':'')+
@@ -1865,16 +1890,18 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
           '<div class="banner-head">'+iconHTML+
             '<div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
             '<div class="banner-sub"></div></div>'+
-            '<div class="banner-stat"><div class="bs-v">\u2013</div><div class="bs-k">Headliner avg</div></div>'+
-            '<div class="banner-chev">\u25be</div>'+
-          '</div>'+
+            (key==="all"
+              ?statHTML+'</div>'+'<div class="banner-chev">\u25be</div>'+'</div>'
+              :'</div>'+'<div class="tk-stub"><div class="tk-admit">ParkPulse \u00b7 Live</div>'+statHTML+'<div class="banner-chev">\u25be</div></div></div>')+
         '</div>'+
         '<div class="banner-panel" hidden></div>';
       root.querySelector(".banner-art").addEventListener("click",function(){
         expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
         if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
       });
-      elBanners.appendChild(root);
+      var mnt=root;
+      if(key!=="all"){mnt=document.createElement("div");mnt.className="bnr-wrap";mnt.appendChild(root);} /* T1: the die-cut shadow lives on this wrapper — drop-shadow traces the mask; box-shadow on the masked card would be clipped away */
+      elBanners.appendChild(mnt);
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v")};
     });
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
