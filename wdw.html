@@ -979,7 +979,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710g</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710h</span>
   </footer>
 </div>
 
@@ -2357,10 +2357,25 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     });
     longs.sort(function(a,b){return b[1]-a[1];});longs=longs.slice(0,3);
 
-    var d={park:key,hours:hours,time:time,crowd:{label:crowdLabel,level:crowdLvl,color:tier},
-      avg:s.headAvg,open:s.open,down:down.slice(0,3),downCount:down.length,longest:longs,link:"parkpulse.live"};
+    /* 0710h: extras box — reads the same parkInfo.extras the Hours tile and hub card consume;
+       disclosure follows the data: no extras today, no box, and the card keeps its square 1080.
+       Sizing here and drawing in drawSnapshot share the 952/70/52/24/50 constants — keep them in step. */
+    var extras=(info&&info.extras)?info.extras:[],events=[];
+    extras.forEach(function(e){
+      if(!e.open)return;
+      var w=e.close?(fmtClock(e.open)+" \u2013 "+fmtClock(e.close)):fmtClock(e.open);
+      if(/early entry/i.test(e.desc))events.push({tag:"EARLY",text:"Early Entry \u00b7 "+w});
+      else if(/extended evening|extra magic/i.test(e.desc))events.push({tag:"EVENING",text:"Extended Evening \u00b7 "+w});
+      else{var enm=(e.name&&e.name.trim())?e.name.trim():e.desc;events.push({tag:"EVENT",text:enm+" \u00b7 "+w});}
+    });
+    events.sort(function(a,b){return (a.tag==="EARLY"?0:1)-(b.tag==="EARLY"?0:1);}); /* EARLY leads — hub precedent */
+    var cardH=events.length?(952+(70+events.length*52+24)+50+92+36):1080;
 
-    var cv=document.createElement("canvas");cv.width=1080;cv.height=1080;
+    var d={park:key,hours:hours,time:time,crowd:{label:crowdLabel,level:crowdLvl,color:tier},
+      avg:s.headAvg,open:s.open,down:down.slice(0,3),downCount:down.length,longest:longs,
+      events:events,H:cardH,link:"parkpulse.live"};
+
+    var cv=document.createElement("canvas");cv.width=1080;cv.height=cardH;
     var ctx=cv.getContext("2d");
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
@@ -2380,7 +2395,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     });
 
     function drawSnapshot(ctx,d){
-      var W=1080,H=1080,tier=d.crowd.color;
+      var W=1080,H=d.H||1080,tier=d.crowd.color;
       var C=PW_CARD;
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
       function T(str,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(str,x,y);}
@@ -2453,6 +2468,19 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         T(ell(name,(xr-22-mw-30)-(x+28),IN("500",31)),x+28,y,IN("500",31),C.ink,"left");
       }
 
+      if(d.events&&d.events.length){ /* 0710h: the hub's box, verbatim grammar — violet tint, tag pills; geometry mirrors the sizing math in shareCardSnapshot */
+        var bY=952,bH=70+d.events.length*52+24;
+        rr(L,bY,R-L,bH,26);ctx.fillStyle=hexA(C.violet,.08);ctx.fill();
+        ctx.lineWidth=1.5;ctx.strokeStyle=hexA(C.violet,.22);ctx.stroke();
+        T("Extra hours & events",L+34,bY+46,SG("600",30),C.violet);
+        var pW2=108,pH2=34,rY0=bY+70+18,tX=L+34+pW2+22,ei;
+        for(ei=0;ei<d.events.length;ei++){
+          var ev=d.events[ei],ery=rY0+ei*52;
+          rr(L+34,ery-pH2+4,pW2,pH2,17);ctx.fillStyle=hexA(C.violet,.16);ctx.fill();
+          T(ev.tag,L+34+pW2/2,ery-pH2/2+5,IN("700",17),C.violet,"center","middle");
+          T(ell(ev.text,R-34-tX,IN("500",28)),tX,ery,IN("500",28),C.ink,"left");
+        }
+      }
       var fy=cy+ch-92;
       ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
       T("Crowd is an estimate from live wait times",L,fy+42,IN("500",21),C.muted2);
