@@ -996,7 +996,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710l</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710m</span>
   </footer>
 </div>
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
@@ -3118,7 +3118,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         else return s;}
       try{return new TextDecoder("utf-8",{fatal:true}).decode(new Uint8Array(bytes));}catch(e){return s;}
     }
-    var WRAP_EXCLUDE=["vacation fun"]; /* non-ride entities (animated shorts etc.) that log as always-down */
+    var WRAP_EXCLUDE=["vacation fun", /* non-ride entities (animated shorts etc.) that log as always-down */
+      "bluey","adventurers outpost"]; /* X2 (0710m): ride-like SHOW meets — banked by Worker v3.8 for future stats, but held out of the Wrap while their status behavior is observed (character-break DOWN noise would pollute reliability boards). This is a READ-TIME filter: remove a fragment and the entity’s full banked history surfaces instantly, past and future. */
     function pwExcluded(r){if(!r||r.name==null)return false;var n=(typeof normName==="function")?normName(r.name):String(r.name).toLowerCase();for(var i=0;i<WRAP_EXCLUDE.length;i++){if(n.indexOf(WRAP_EXCLUDE[i])>=0)return true;}return false;}
     function pwCleanData(d){
       if(!d||!d.rides||!d.rides.length)return d;
