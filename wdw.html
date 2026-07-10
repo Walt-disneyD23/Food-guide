@@ -979,7 +979,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710h</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710j</span>
   </footer>
 </div>
 
@@ -2344,7 +2344,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var crowdLvl=s.crowd?s.crowd.level:0;
     var hours="";
     if(info&&info.open&&info.close)
-      hours=(s.isOpen===true)?("Open until "+fmtClock(info.close)):(fmtClock(info.open)+" \u2013 "+fmtClock(info.close));
+      hours=fmtClock(info.open)+" \u2013 "+fmtClock(info.close); /* 0710j: static hours always — header states the schedule, extras box states the exceptions; live-tense "Open until" went stale on frozen shares and read false in event-only hours. Hub grid precedent. */
     var time=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});
 
     var down=[],longs=[];
