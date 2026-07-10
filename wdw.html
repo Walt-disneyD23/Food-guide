@@ -31,7 +31,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5;
-    min-height:100vh;padding:0 0 80px;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+    min-height:100vh;padding:0 0 calc(110px + env(safe-area-inset-bottom));letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
 
   header.board-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:26px 0 16px}
@@ -285,14 +285,13 @@
   .state{text-align:center;padding:54px 20px;color:var(--muted)}
   .state h3{font-family:var(--font-display);color:var(--ink);font-size:var(--fs-head);margin-bottom:8px}
 
-  .toasts{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:50;max-width:320px}
+  .toasts{position:fixed;right:18px;bottom:calc(96px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;z-index:50;max-width:320px}
   .toast{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
     border-radius:var(--r-card);padding:13px 15px;box-shadow:var(--shadow);animation:slidein .25s ease}
   @keyframes slidein{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
   .toast .t-t{font-family:var(--font-display);font-weight:600;font-size:var(--fs-body);color:var(--ink)}
   .toast .t-b{font-size:var(--fs-small);color:var(--muted);margin-top:2px}
 
-  footer{margin-top:30px;text-align:center;font-size:var(--fs-small);color:var(--muted-2);line-height:1.7}
   footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
 
   @media (max-width:680px){
@@ -341,8 +340,8 @@
   .banner.lt.expanded .banner-sub{color:var(--pwh-muted)}
   .banner.lt.expanded .banner-sub b{color:#fff}
   .banner.lt.expanded .banner-mono{color:#fff;opacity:.07}
-  /* P1 (0710l): return pill — the expanded header’s runaway chip. Appears only while an expanded park’s navy header is scrolled off; the tap rides the same scrollIntoView landing as the expand tap (scroll-margin-top 74). Hidden whenever #banners is (search, Wrap) via the offsetParent gate in bk2Sync, and under any sheet via the body classes below. */
-  .bk2top{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:58;
+  /* P1 (0710l): return pill — the expanded header’s runaway chip. Appears only while an expanded park’s navy header is scrolled off; the tap rides the same scrollIntoView landing as the expand tap (scroll-margin-top 74). Hidden whenever #banners is (search, or any non-Live tab) via the offsetParent gate in bk2Sync, and under any sheet via the body classes below. */
+  .bk2top{position:fixed;left:50%;bottom:calc(94px + env(safe-area-inset-bottom));z-index:58;
     display:flex;align-items:center;gap:7px;padding:11px 16px;border-radius:var(--r-pill);
     color:#fff;background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg));
     border:1px solid var(--pwh-line);box-shadow:0 8px 22px -8px rgba(10,20,40,.5);
@@ -352,6 +351,21 @@
   .bk2top.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
   .bk2top .up{font-size:13px;line-height:1}
   body.alerts-open .bk2top,body.set-open .bk2top,body.help-open .bk2top{opacity:0;pointer-events:none}
+  /* ===== NAV (0710n): four-tab floating dock — skin B from the approved IA mock, verbatim geometry.
+     Phase 1 of the bottom-nav arc: Live/Wrap route through setMode; Favorites/Pulse are shell panes
+     until their phases land. Always visible; sheets (z88+) slide over it and their scrims dim it;
+     content clearance lives in the body padding; .bk2top and .toasts are lifted above it. ===== */
+  .appnav{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:25;
+    display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
+    padding:7px;box-shadow:var(--shadow)}
+  .appnav .it{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+    border:0;background:none;color:var(--muted-2);padding:8px 15px;border-radius:var(--r-pill);font-family:var(--font-body)}
+  .appnav .it svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .appnav .it span{font:700 8.5px var(--font-body);letter-spacing:.05em}
+  .appnav .it.on{background:var(--accent-soft);color:var(--accent)}
+  .nav-pg{margin:8px 0 0;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);
+    padding:22px 20px;color:var(--muted);font-size:var(--fs-body);line-height:1.55}
+  .nav-pg b{display:block;color:var(--ink);font-family:var(--font-display);font-size:var(--fs-lead);font-weight:600;margin-bottom:4px}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
      Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
@@ -697,7 +711,6 @@
 
 
   /* ===================== DAILY WRAP (pw-) ===================== */
-  .pw-segwrap{max-width:1180px;margin:0 auto;padding:8px 18px 0}
   .pw-seg{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px;max-width:360px;margin:0 auto}
   .pw-seg button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:600;font-size:var(--fs-body);color:var(--muted);padding:9px 0;border-radius:var(--r-pill);cursor:pointer}
   .pw-seg button.on{background:rgba(79,70,229,.13);color:var(--accent)}
@@ -874,12 +887,6 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
   </header>
 
-  <div class="pw-segwrap">
-    <div class="pw-seg">
-      <button id="pwSegLive" class="on" type="button">Live</button>
-      <button id="pwSegWrap" type="button">Wrap</button>
-    </div>
-  </div>
 
   <div class="help-scrim alerts-scrim" id="alertsScrim" hidden style="z-index:88;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="alertsPop" hidden style="z-index:89">
@@ -918,11 +925,12 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild"></b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
+      <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
     </div>
-    <div class="set-disc">Unofficial — not affiliated with or endorsed by The Walt Disney Company. Crowd level is an estimate from live wait times.</div>
+    <div class="set-disc">Unofficial — not affiliated with or endorsed by The Walt Disney Company. Crowd level is an estimate from live wait times, not official attendance.</div>
   </div>
 
   <div class="help-scrim" id="helpScrim" hidden></div>
@@ -992,14 +1000,16 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="banners"></div>
   <div id="searchResults" hidden></div>
   <div id="wrapView" class="pw-view" hidden></div>
-  <footer>
-    Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
-    Crowd level is an estimate derived from live wait times, not official attendance.<br>
-    Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710m</span>
-  </footer>
+  <div id="pgFav" class="nav-pg" hidden><b>Favorites</b>Your starred rides get their own page here — landing in the next build. Until then, the Favorites card still lives on Live.</div>
+  <div id="pgPulse" class="nav-pg" hidden><b>Pulse</b>The numbers page. Hot-lines moves in first, then sparklines and vs-typical as the data matures.</div>
 </div>
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
+<nav id="appNav" class="appnav" aria-label="Sections">
+  <button class="it on" data-pg="live" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg><span>LIVE</span></button>
+  <button class="it" data-pg="fav" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>FAVORITES</span></button>
+  <button class="it" data-pg="pulse" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg><span>PULSE</span></button>
+  <button class="it" data-pg="wrap" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="17" y2="7"/><line x1="7" y1="17" x2="5.3" y2="18.7"/></svg><span>WRAP</span></button>
+</nav>
 
 <div class="toasts" id="toasts"></div>
 <div id="ptr" aria-hidden="true"><span class="gl">↓</span></div>
@@ -1253,8 +1263,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   $("setScrim").addEventListener("click",closeSetSheet);
   sheetDragDismiss($("setPop"),$("setScrim"),function(){
     document.body.classList.remove("set-open");$("setBtn").classList.remove("active");});
-  var bst=$("buildStamp");
-  if(bst&&$("setBuild"))$("setBuild").textContent=bst.textContent.replace(/^\s*·\s*/,"");
   applyTheme();
 
   /* ===== pull-to-refresh (ships alongside ↻; the button retires only
@@ -4497,10 +4505,46 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       emitCard({W:1080,H:(bm?1472:1132),title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
-    /* ---- init ---- */
-    var sL=$id("pwSegLive"),sW=$id("pwSegWrap");
-    if(sL)sL.addEventListener("click",function(){setMode(false);});
-    if(sW)sW.addEventListener("click",function(){setMode(true);});
+    /* ---- init: four-tab nav (0710n) — Phase 1 of the bottom-nav arc ----
+       navGo owns the shell. Live/Wrap route through the proven setMode
+       (byte-identical this build); Favorites/Pulse are placeholder panes
+       until their phases land. Both shell panes set window.__pwActive —
+       the existing away-from-Live flag — because render() unhides
+       #banners and renderDownFlow re-shows #dnFlow whenever it is false.
+       Re-tapping the current tab scrolls to top; per-tab scroll memory
+       is Phase 4. The retired Live/Wrap seg's null-guarded lines inside
+       setMode stay by design (keeps the function byte-identical). */
+    var navTab="live";
+    function navSync(k){
+      var its=document.querySelectorAll("#appNav .it");
+      for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
+    }
+    function navGo(k){
+      if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
+      navTab=k;
+      var pf=$id("pgFav"),pp=$id("pgPulse");
+      if(pf)pf.hidden=(k!=="fav");
+      if(pp)pp.hidden=(k!=="pulse");
+      if(k==="live"||k==="wrap"){
+        setMode(k==="wrap");
+      }else{
+        window.__pwActive=true;
+        if(typeof closeStatusPop==="function")closeStatusPop();
+        if(typeof closeAlertsSheet==="function")closeAlertsSheet();
+        var banners=$id("banners"),sr=$id("searchResults"),wv=$id("wrapView"),cw=document.querySelector(".controls-wrap"),dnf=$id("dnFlow");
+        if(banners)banners.hidden=true;
+        if(dnf)dnf.hidden=true;
+        if(sr)sr.hidden=true;
+        if(cw)cw.style.display="none";
+        if(wv)wv.hidden=true;
+      }
+      navSync(k);
+      window.scrollTo(0,0);
+    }
+    (function(){
+      var its=document.querySelectorAll("#appNav .it");
+      for(var i=0;i<its.length;i++){(function(b){b.addEventListener("click",function(){navGo(b.getAttribute("data-pg"));});})(its[i]);}
+    })();
   })();
 
 
