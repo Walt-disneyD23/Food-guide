@@ -341,6 +341,17 @@
   .banner.lt.expanded .banner-sub{color:var(--pwh-muted)}
   .banner.lt.expanded .banner-sub b{color:#fff}
   .banner.lt.expanded .banner-mono{color:#fff;opacity:.07}
+  /* P1 (0710l): return pill — the expanded header’s runaway chip. Appears only while an expanded park’s navy header is scrolled off; the tap rides the same scrollIntoView landing as the expand tap (scroll-margin-top 74). Hidden whenever #banners is (search, Wrap) via the offsetParent gate in bk2Sync, and under any sheet via the body classes below. */
+  .bk2top{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:58;
+    display:flex;align-items:center;gap:7px;padding:11px 16px;border-radius:var(--r-pill);
+    color:#fff;background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg));
+    border:1px solid var(--pwh-line);box-shadow:0 8px 22px -8px rgba(10,20,40,.5);
+    font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.02em;line-height:1;
+    cursor:pointer;opacity:0;transform:translate(-50%,10px);pointer-events:none;
+    transition:opacity .22s ease,transform .22s ease}
+  .bk2top.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .bk2top .up{font-size:13px;line-height:1}
+  body.alerts-open .bk2top,body.set-open .bk2top,body.help-open .bk2top{opacity:0;pointer-events:none}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
      Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
@@ -554,7 +565,7 @@
   .dn-bar{display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .dn-bar .dn-tx{flex:1;font-family:var(--font-display);font-weight:600;font-size:var(--fs-lead);color:var(--ink);letter-spacing:-.02em} /* 0709p: two quiet steps below the park names (19/700) — utility, not destination */
   .dn-bar .dn-cc{flex:none;font-size:var(--fs-stat);color:var(--muted-2);transition:transform .2s}
-  #dnFlow.open .dn-bar{background:var(--card-2);border-bottom:1px solid var(--line)} /* wash band — same chrome as expanded park headers (0709i) */
+  #dnFlow.open .dn-bar{background:var(--card-2);border-bottom:1px solid var(--line)} /* wash band (0709i) — stays quiet by design; park headers moved to hero-navy in 0710k. This is an alert surface, not a “you are here” anchor. */
   #dnFlow.open .dn-cc{transform:rotate(180deg)}
   .dn-list{overflow:hidden;max-height:0;transition:max-height .24s ease;padding:0 16px}
   .dn-list.open{max-height:320px;overflow-y:auto;overscroll-behavior-y:contain}
@@ -985,9 +996,10 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710k</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710l</span>
   </footer>
 </div>
+<button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
 
 <div class="toasts" id="toasts"></div>
 <div id="ptr" aria-hidden="true"><span class="gl">↓</span></div>
@@ -2124,7 +2136,36 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     });
     renderFavCard();
     renderHotBox(); /* Hot-lines board (0709k) */
+    bk2Sync(); /* P1 (0710l): return pill tracks the expanded header */
   }
+
+  /* P1 (0710l): return pill. One observer, re-targeted only when the expanded park changes;
+     the art node is stable across renders (bannerEls cache), so the observer survives the 5-min
+     refresh. offsetParent gates out hidden #banners (search, Wrap tab) so display:none never
+     reads as "scrolled away". No IntersectionObserver, no pill — the feature is purely additive. */
+  var bk2Key=null,bk2IO=null;
+  function bk2Set(show){var p=$("bk2top");if(p)p.classList.toggle("show",!!show);}
+  function bk2Sync(){
+    var p=$("bk2top");if(!p)return;
+    if(expanded===bk2Key)return; /* same target: observer already live */
+    bk2Key=expanded;
+    if(bk2IO){bk2IO.disconnect();bk2IO=null;}
+    bk2Set(false);
+    if(!expanded)return;
+    var el=bannerEls[expanded];if(!el||!el.root)return;
+    var art=el.root.querySelector(".banner-art");if(!art)return;
+    p.querySelector(".mo").textContent=BANNER_MONO[expanded]||"";
+    if(!("IntersectionObserver" in window))return;
+    bk2IO=new IntersectionObserver(function(es){
+      var e=es[es.length-1];
+      bk2Set(!e.isIntersecting && art.offsetParent!==null);
+    },{rootMargin:"-64px 0px 0px 0px"}); /* header counts as gone once it’s under the 60px sticky toolbar (+4 buffer); the 74px scroll-margin landing then reads cleanly as "back" */
+    bk2IO.observe(art);
+  }
+  (function(){var p=$("bk2top");if(!p)return;p.addEventListener("click",function(){
+    var el=expanded&&bannerEls[expanded];
+    if(el&&el.root)el.root.scrollIntoView({behavior:"smooth",block:"start"}); /* lands on the solved 0709q scroll-margin-top */
+  });})();
 
   /* Global search: one flat, grouped results list across all four parks,
      filtered by the query and ordered by the current Sort. */
