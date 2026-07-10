@@ -334,7 +334,13 @@
   .banner.lt .banner-chev{color:var(--muted-2)}
   .banner.lt .banner-mono{color:var(--accent-tint);opacity:.12;font-size:82px;right:-4px;bottom:-18px}
   .banner.lt.tier-1::after,.banner.lt.tier-2::after,.banner.lt.tier-3::after,.banner.lt.tier-4::after{box-shadow:none}
-  .banner.lt.expanded .banner-art{background:var(--card-2);border-bottom:1px solid var(--line)} /* wash band (0709i): expanded header reads as chrome above the white panel */
+  /* T5 (0710k): expanded head adopts the All-Parks hero gradient — the family already reads dark = "the headline card"; the 0709i card-2 wash was too quiet to find mid-scroll. Stub stays light accent-soft so the die-cut perforation carries the ticket read. Pure CSS on .expanded — engines untouched. */
+  .banner.lt.expanded .banner-art{background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg));border-bottom:1px solid var(--pwh-line)}
+  .banner.lt.expanded{border-color:var(--pwh-line)}
+  .banner.lt.expanded .banner-name{color:#fff}
+  .banner.lt.expanded .banner-sub{color:var(--pwh-muted)}
+  .banner.lt.expanded .banner-sub b{color:#fff}
+  .banner.lt.expanded .banner-mono{color:#fff;opacity:.07}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
      Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
@@ -979,7 +985,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     Live data from <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a>.
     Crowd level is an estimate derived from live wait times, not official attendance.<br>
     Not affiliated with or endorsed by The Walt Disney Company. Live waits refresh every 5 minutes.
-    <span style="opacity:.55" id="buildStamp">· build 0710j</span>
+    <span style="opacity:.55" id="buildStamp">· build 0710k</span>
   </footer>
 </div>
 
