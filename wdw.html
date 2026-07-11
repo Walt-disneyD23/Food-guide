@@ -226,6 +226,26 @@
   .fc-mid{flex:1;min-width:0} /* 0710t: fired rows — name + Hit pill stack */
   /* 0710u: .fc-mid .fc-nm{display:block} retired — -webkit-box is already block-level; a display:block override would kill the clamp. D1: the clamp carries into the fired stack (a long name may take two lines above the Hit pill). */
   .fc-mid .hitline{display:block;margin-top:4px}
+  /* ===== Pulse callout feed (pf-) — 0711b: G1 stat cards (owner picked A) ===== */
+  .pf-kick{font-size:var(--fs-caps);letter-spacing:.12em;font-weight:800;text-transform:uppercase}
+  .pf-kick.go{color:var(--short)}.pf-kick.rough{color:var(--long)}.pf-kick.re{color:var(--accent)}
+  .pf-card{border-top:1px solid var(--line);padding:11px 0}
+  .fc-head+.pf-card{border-top:0}
+  .pf-top{display:flex;justify-content:space-between;align-items:baseline}
+  .pf-mid{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .pf-l{flex:1;min-width:0}
+  .pf-nm{font-weight:600;font-size:var(--fs-title);line-height:1.25;color:var(--ink);margin-top:3px;
+    overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .pf-meta{font-size:var(--fs-meta);color:var(--muted);margin-top:4px}
+  .pf-meta b{color:var(--ink);font-weight:700}
+  .pf-now{flex:none;font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1}
+  .pf-now.short{color:var(--short)}.pf-now.medium{color:var(--medium)}.pf-now.long{color:var(--long)}.pf-now.packed{color:var(--packed)}
+  .pf-now small{font-size:var(--fs-micro);letter-spacing:.1em;color:var(--muted-2);font-family:var(--font-body);font-weight:700}
+  .pf-pk{font-size:var(--fs-small);font-weight:600;color:var(--muted-2)}
+  .pf-clock{color:var(--muted-2)}
+  .pf-basis{font-size:var(--fs-meta);color:var(--muted-2);padding:8px 2px 4px;border-top:1px solid var(--line);margin-top:2px}
+  .pf-more{font-size:var(--fs-meta);font-weight:600;color:var(--muted);padding:9px 2px 2px;border-top:1px solid var(--line)}
+  .pf-quiet{font-size:var(--fs-body);color:var(--muted);padding:14px 2px;text-align:center}
   .fc-mid .up-pill{margin-left:0;vertical-align:0}
   .fc-st{flex:none;border-radius:var(--r-pill);padding:2px 9px;font-size:var(--fs-meta);font-weight:700}
   .fc-st.dn{background:rgba(226,59,84,.13);color:var(--packed)}
@@ -952,7 +972,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -1534,7 +1554,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     setPulse("ok");
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
-      usingFallback=false;lastUpdated=new Date();scheduleNext();render();checkAlerts();
+      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();render();checkAlerts();
       if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
     }).catch(function(err){
       setPulse("error");
@@ -2082,6 +2102,98 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   var hlScope=store.get("hlScope","all");
   if(hlScope!=="all"&&!BANNER_MONO[hlScope])hlScope="all"; /* stale persisted scope falls back safely */
   /* HL-START (harness slices this block verbatim) */
+  /* ===== Pulse callout feed (pf-) — v1 (0711b): three baseline-only callouts =====
+     Model/renderer split by design: pfCallouts() is the model (gates, rank, cap),
+     pfFeedHTML() is the G1 renderer — swapping the grammar later never touches the
+     math. Gates (variant D, proven on the Jul 11 12:30 pull): a card must be OUTSIDE
+     the band (p25–p75 of day-medians, this half-hour), MEANINGFULLY far (≤0.65× /
+     ≥1.4× typical), and WORTH MINUTES (5 past the band edge; GO needs typical ≥20,
+     ROUGH needs now ≥25). Rank by minutes-vs-typical, cap 3+3, tail line states the
+     cap. Quiet is a mathematical property: a synthetic median day earns 0 cards.
+     Typicals display as integers; delta chips derive from DISPLAYED numbers so the
+     on-screen math always checks. Reopens: own 2-poll-confirmed tracker (pfTick),
+     own writer, own state — never reads the alerts engine’s prevStatus/rebreak. */
+  var pfBase=null,pfBaseAt=0,pfRuns={},pfReopens=[];
+  function pfEtMin(){ /* ET minutes since midnight — mirrors the Worker’s etMinutes() so bucket keys align */
+    try{var p=new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).formatToParts(new Date()),o={};
+      p.forEach(function(x){o[x.type]=x.value;});return (parseInt(o.hour,10)%24)*60+parseInt(o.minute,10);}
+    catch(e){var d=new Date();return d.getHours()*60+d.getMinutes();}
+  }
+  function pfQuartiles(a){ /* inclusive linear interpolation — fixture-proven parity with the analysis pipeline */
+    var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;
+    function q(p){var hh=(n-1)*p,lo=Math.floor(hh),f=hh-lo;return lo+1<n?s[lo]+(s[lo+1]-s[lo])*f:s[lo];}
+    return {p25:q(.25),med:q(.5),p75:q(.75)};
+  }
+  function pfEnsureBase(){ /* one fetch per session; a failed fetch may retry after 10 min; no base → no card, never a fake one */
+    if(pfBase||(pfBaseAt&&Date.now()-pfBaseAt<10*60*1000))return;
+    pfBaseAt=Date.now();
+    fetch(PUSH.WORKER_URL+"/baseline").then(function(r){return r.json();}).then(function(j){
+      if(j&&j.ok&&j.rides){pfBase={days:j.days,rides:j.rides};renderPulsePage();}
+    }).catch(function(){});
+  }
+  function pfTick(){ /* once per poll, beside checkAlerts(): park-wide down→up, 2-poll-confirmed runs */
+    Object.keys(roster).forEach(function(id){
+      if(roster[id].kind!=="ride")return;
+      var lv=liveById[id];if(!lv)return;
+      if(lv.status==="DOWN"){var run=pfRuns[id]||(pfRuns[id]={ticks:0,since:Date.now()});run.ticks++;}
+      else{
+        var r=pfRuns[id];
+        if(r&&r.ticks>=2&&lv.status==="OPERATING"){pfReopens.push({id:id,at:Date.now(),since:r.since});if(pfReopens.length>10)pfReopens=pfReopens.slice(-10);}
+        if(r)delete pfRuns[id];
+      }
+    });
+  }
+  function pfCallouts(scope){
+    if(!pfBase)return {state:"nobase"};
+    var bkey=String(Math.floor(pfEtMin()/30)),eligible=0,go=[],rough=[];
+    Object.keys(pfBase.rides).forEach(function(id){
+      var r=roster[id];if(!r)return;
+      if(scope!=="all"&&r.park!==scope)return;
+      if(isOpenNow(parkInfo[r.park])===false)return;
+      var lv=liveById[id];if(!lv||lv.status!=="OPERATING"||typeof lv.wait!=="number")return;
+      var arr=(pfBase.rides[id].b||{})[bkey];if(!arr||arr.length<5)return;
+      eligible++;
+      var q=pfQuartiles(arr),w=lv.wait,typ=Math.round(q.med);
+      if(w<=q.p25-5&&q.med>=20&&w<=0.65*q.med)go.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:typ-w,tier:tierOf(lv),kind:"go"});
+      else if(w>=q.p75+5&&w>=25&&w>=1.4*q.med)rough.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:w-typ,tier:tierOf(lv),kind:"rough"});
+    });
+    var res=[],now=Date.now();
+    for(var i=pfReopens.length-1;i>=0&&res.length<2;i--){var e=pfReopens[i];
+      if(now-e.at>20*60*1000)continue;
+      var r2=roster[e.id];if(!r2)continue;
+      if(scope!=="all"&&r2.park!==scope)continue;
+      if(isOpenNow(parkInfo[r2.park])===false)continue;
+      var lv2=liveById[e.id];if(!lv2||lv2.status!=="OPERATING")continue;
+      res.push({id:e.id,nm:r2.name,pk:BANNER_MONO[r2.park]||"",w:(typeof lv2.wait==="number"?lv2.wait:null),at:e.at,since:e.since,tier:tierOf(lv2),kind:"re"});
+    }
+    go.sort(function(a,b){return b.delta-a.delta;});rough.sort(function(a,b){return b.delta-a.delta;});
+    var earned=go.length+rough.length;
+    var shown=go.slice(0,3).concat(rough.slice(0,3)).sort(function(a,b){return b.delta-a.delta;});
+    return {state:((res.length+shown.length)?"cards":(eligible===0?"thin":"quiet")), /* cards outrank thin: a reopen is observation, not baseline math */
+      cards:res.concat(shown),moreN:earned-shown.length,days:pfBase.days};
+  }
+  function pfFeedHTML(scope){
+    var m=pfCallouts(scope);
+    if(m.state==="nobase")return "";
+    var clock=fmtClock(new Date().toISOString())||"";
+    var head='<div class="fc-head"><span class="sec-lab">Right now</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
+    var basis=m.moreN>0
+      ?'<div class="pf-basis">Showing the biggest departures from typical · last '+m.days+' days</div>'
+      :'<div class="pf-basis">Typical = this half-hour over the last '+m.days+' days'+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>';
+    if(m.state==="thin")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
+    if(m.state==="quiet")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
+    var body=m.cards.map(function(c){
+      var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':'<span class="pf-kick re">Just reopened</span>';
+      var meta=c.kind==="re"
+        ?('back up at <b>'+esc(fmtClock(new Date(c.at).toISOString())||"")+'</b> after a down period since '+esc(fmtClock(new Date(c.since).toISOString())||""))
+        :('typically <b>'+c.typ+'</b> this half-hour · <b>'+c.delta+' '+(c.kind==="go"?"under":"over")+'</b>');
+      var num=(typeof c.w==="number")?'<span class="pf-now '+c.tier+'">'+c.w+'<small> MIN</small></span>':'';
+      return '<div class="pf-card"><div class="pf-top">'+kick+'<span class="pf-pk">'+esc(c.pk)+'</span></div>'+
+        '<div class="pf-mid"><div class="pf-l"><div class="pf-nm">'+esc(c.nm)+'</div><div class="pf-meta">'+meta+'</div></div>'+num+'</div></div>';
+    }).join("");
+    var more=m.moreN>0?'<div class="pf-more">+ '+m.moreN+' more running unusual right now</div>':"";
+    return '<div class="favcard pg-list">'+head+body+more+basis+'</div>';
+  }
   function hlModel(scope,lens){
     var items=[];
     Object.keys(roster).forEach(function(id){
@@ -2150,6 +2262,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
        session-only is a two-line change if a parked scope reads wrong on a fuller page.
        Lens stays board furniture: hl-tabs beside the HOT LINES label (owner picked keep). */
     var el=$("pgPulse");if(!el)return;
+    pfEnsureBase(); /* 0711b: non-blocking; re-renders this page on arrival */
     var items=hlModel(hlScope,hlLens);
     var head='<div class="pg-h"><h3><span class="ps"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg></span> Pulse</h3></div>';
     var seg='<div class="pg-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
@@ -2164,6 +2277,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
     el.innerHTML='<div class="pg-stick">'+head+seg+'</div>'+
+      pfFeedHTML(hlScope)+ /* 0711b: callout feed — owner picked feed-above-board (D1), G1 grammar */
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
     el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
       hlLens=b.getAttribute("data-lens");renderPulsePage();});});
