@@ -223,6 +223,10 @@
   .fc-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .fc-row.cl .fc-nm{color:var(--muted)}
   .fc-pk{flex:none;font-size:var(--fs-small);font-weight:600;color:var(--muted-2)}
+  .fc-mid{flex:1;min-width:0} /* 0710t: fired rows — name + Hit pill stack */
+  .fc-mid .fc-nm{display:block}
+  .fc-mid .hitline{display:block;margin-top:4px}
+  .fc-mid .up-pill{margin-left:0;vertical-align:0}
   .fc-st{flex:none;border-radius:var(--r-pill);padding:2px 9px;font-size:var(--fs-meta);font-weight:700}
   .fc-st.dn{background:rgba(226,59,84,.13);color:var(--packed)}
   .fc-st.up{background:rgba(21,163,107,.13);color:var(--short)}
@@ -262,7 +266,6 @@
   .pg-h h3 .ps{color:var(--accent)}
   .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
   .sec-lab{font-family:var(--font-body);font-size:var(--fs-caps);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)} /* 0710s: the board keeps its name inside the page (owner picked keep) */
-  body.tab-fav #alertsBtn{display:none} /* 0710q: one door per screen — Rules is the alerts entry on this tab; ⚑ still serves Live/Wrap/Pulse */
   /* ===== Walk-Up Dining (D1, 0710b): quiet per-park disclosure -> party-size lens.
      A board renders ONLY with a fresh diningAvailability (lastUpdated <= 15 min) — the feed's
      restaurant `status` is never trusted alone (month-old OPERATING zombies measured Jul 8).
@@ -388,6 +391,9 @@
   .appnav .it svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   .appnav .it span{font:700 8.5px var(--font-body);letter-spacing:.05em}
   .appnav .it.on{background:var(--accent-soft);color:var(--accent)}
+  .appnav .it{position:relative} /* 0710t: badge anchor for the dock door */
+  .appnav .it .nbadge{position:absolute;top:2px;right:8px;min-width:16px;height:16px;border-radius:var(--r-pill);background:var(--packed);color:#fff;font:800 9.5px var(--font-body);display:none;place-items:center;padding:0 4px}
+  .appnav .it .nbadge.show{display:grid}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
      Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
@@ -904,7 +910,6 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
     <div class="topbar-actions">
       <div class="status-pill ok" id="statusPill"><i class="dot"></i><span id="statusText">Connecting…</span></div>
-      <button class="icon-btn" id="alertsBtn" title="Alerts" aria-label="Alerts">⚑<span class="badge" id="alertBadge"></span></button>
       <button class="icon-btn" id="setBtn" title="Settings" aria-label="Settings">&#9881;&#xFE0E;</button>
     </div>
   </header>
@@ -947,7 +952,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -1031,6 +1036,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   <button class="it" data-pg="fav" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>FAVORITES</span></button>
   <button class="it" data-pg="pulse" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg><span>PULSE</span></button>
   <button class="it" data-pg="wrap" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="17" y2="7"/><line x1="7" y1="17" x2="5.3" y2="18.7"/></svg><span>WRAP</span></button>
+  <button class="it" data-pg="alerts" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="21" x2="6" y2="3.5"/><path d="M6 4h11.5l-3 4 3 4H6"/></svg><span>ALERTS</span><span class="nbadge" id="navAlertBadge"></span></button>
 </nav>
 
 <div class="toasts" id="toasts"></div>
@@ -1178,13 +1184,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function closeAlertsSheet(){var p=$("alertsPop"),sc=$("alertsScrim");if(p.hasAttribute("hidden"))return;
     p.classList.remove("show");sc.classList.remove("show");
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
-    document.body.classList.remove("alerts-open");$("alertsBtn").classList.remove("active");}
+    document.body.classList.remove("alerts-open");} /* 0710t: header door retired — its active-state ref went with it */
   function openAlertsSheet(){closeStatusPop();
     var p=$("alertsPop"),sc=$("alertsScrim");
     p.removeAttribute("hidden");sc.removeAttribute("hidden");
     requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
-    document.body.classList.add("alerts-open");renderAlertList();$("alertsBtn").classList.add("active");}
-  $("alertsBtn").addEventListener("click",function(){alertsOpenNow()?closeAlertsSheet():openAlertsSheet();});
+    document.body.classList.add("alerts-open");renderAlertList();} /* 0710t: header door retired */
   $("alertsScrim").addEventListener("click",closeAlertsSheet);
   /* Swipe-down-to-dismiss for bottom sheets: the grab handle promises the
      native gesture, so honor it everywhere it appears. Drag engages only when
@@ -1242,7 +1247,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     sh.addEventListener("touchcancel",endDrag,{passive:true});
   }
   sheetDragDismiss($("alertsPop"),$("alertsScrim"),function(){
-    document.body.classList.remove("alerts-open");$("alertsBtn").classList.remove("active");
+    document.body.classList.remove("alerts-open");
   });
   sheetDragDismiss($("helpSheet"),$("helpScrim"),function(){
     document.body.classList.remove("help-open");
@@ -1709,7 +1714,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function saveReopen(){store.set("reopen",reopen);}
   function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
   function saveResolved(){store.set("resolved",resolved);}
-  function updateAlertBadge(){var n=alertIds().length;["alertBadge","favBadge"].forEach(function(id){var b=$(id);if(!b)return;b.textContent=n;b.classList.toggle("show",n>0);});} /* 0710r: header + Favorites-page badges, one writer */
+  function updateAlertBadge(){var n=alertIds().length;["navAlertBadge"].forEach(function(id){var b=$(id);if(!b)return;b.textContent=n;b.classList.toggle("show",n>0);});} /* 0710t: one writer, one badge — the dock is the sole door; new badges join this list, never a second writer */
   function renderAlertList(){
     var box=$("alertList");if(!box)return;
     var ids=alertIds();
@@ -2012,8 +2017,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var w=(it.wait===null)?'<span class="fc-w dash">\u2014</span>'
       :'<span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>';
     var st=it.st?'<span class="fc-st '+it.st+'">'+it.lbl+'</span>':'';
-    return '<div class="fc-row'+(it.st==="cl"?' cl':'')+'">'+w+
-      '<span class="fc-nm">'+esc(it.nm)+'</span>'+
+    var ht=alertState[it.id]?fmtClock(alertState[it.id]):null; /* 0710t: the sheet's exact Hit latch + clock, surfaced in the row. PAINT-ONLY by design — the dock is the door; a tappable pill would be a second door in the one-door experiment. */
+    var mid=ht?'<span class="fc-mid"><span class="fc-nm">'+esc(it.nm)+'</span><span class="hitline"><span class="up-pill">✓ Hit · '+ht+'</span></span></span>'
+      :'<span class="fc-nm">'+esc(it.nm)+'</span>';
+    return '<div class="fc-row'+(it.st==="cl"?' cl':'')+'">'+w+mid+
       '<span class="fc-pk">'+it.pk+'</span>'+st+
       '<button class="flagbtn'+((armed[it.id]||reopen[it.id])?' on':'')+'" data-id="'+esc(it.id)+'" title="Alerts">\u2691</button>'+
       '<button class="star on" data-id="'+esc(it.id)+'" title="Favorite">\u2605</button></div>';
@@ -2047,8 +2054,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function renderFavPage(){
     var el=$("pgFav");if(!el)return;
     var items=favModel();
-    var head='<div class="pg-h"><h3><span class="fs">\u2605</span> Favorites</h3>'+
-      '<button class="icon-btn" id="favRulesPg" type="button" title="Alerts" aria-label="Alerts">\u2691<span class="badge" id="favBadge"></span></button></div>';
+    var head='<div class="pg-h"><h3><span class="fs">\u2605</span> Favorites</h3></div>'; /* 0710t: page door retired — the dock \u2691 is the sole alerts entry */
     var chips="",body;
     if(!items.length){
       body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride on Live to pin it here.</div>';
@@ -2065,8 +2071,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       }
     }
     el.innerHTML='<div class="pg-stick">'+head+chips+'</div><div class="favcard pg-list">'+body+'</div>';
-    var rb=$("favRulesPg");if(rb)rb.addEventListener("click",openAlertsSheet);
-    updateAlertBadge(); /* 0710r: each paint recreates #favBadge — resync the count */
+    updateAlertBadge(); /* 0710t: keeps the dock badge honest on every page paint */
     el.querySelectorAll(".pg-seg button").forEach(function(b){b.addEventListener("click",function(){
       favScope=b.getAttribute("data-scope");renderFavPage();});});
     bindStars(el); /* page rows speak the exact ride-row pair: same classes, same handlers */
@@ -4568,9 +4573,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function navSync(k){
       var its=document.querySelectorAll("#appNav .it");
       for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
-      document.body.classList.toggle("tab-fav",k==="fav"); /* 0710q: header \u2691 yields to the page's Rules door here */
+      document.body.classList.toggle("tab-fav",k==="fav"); /* page-scoped body hook (0710t: the \u2691-yield rule retired with the header door) */
     }
     function navGo(k){
+      if(k==="alerts"){openAlertsSheet();return;} /* 0710t: an overlay door in dock clothes — never becomes navTab; documented grammar exception (four siblings navigate, this one opens the sheet). Revert = this line + the dock button + nbadge CSS + the badge id. */
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
       navTab=k;
       var pf=$id("pgFav"),pp=$id("pgPulse");
