@@ -243,13 +243,22 @@
   .fc-teaser .s b.dn{color:var(--packed)}
   .fc-teaser .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
   .pg-fav{margin-top:8px}
-  .pg-h{display:flex;justify-content:space-between;align-items:center;margin:2px 2px 12px}
+  .pg-h{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
   .pg-h h3{font-family:var(--font-display);font-size:var(--fs-head);color:var(--ink)}
   .pg-h h3 .fs{color:var(--fav)}
   .pg-h .fc-x{font-size:var(--fs-body)}
-  .pg-chips{margin:0 2px 12px}
   .pg-list .fc-row:first-child{border-top:0}
   .pg-list .fc-empty{border-top:0}
+  /* 0710q: title + park control pin while the list scrolls; constant soft seam
+     (an observer-gated stuck-only shadow lives on the polish list). z-5: above rows,
+     below every floating layer (dock 25, PTR 60, popovers 70, sheets 88+). */
+  .pg-stick{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 2px 10px;margin:0 -2px;
+    box-shadow:0 8px 14px -12px rgba(25,26,46,.28)}
+  /* 0710q: variant B — the theme-seg rhyme, page-scoped; Hot-lines keeps its small chips by construction */
+  .pg-seg{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px}
+  .pg-seg button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);cursor:pointer;text-align:center}
+  .pg-seg button.on{background:rgba(79,70,229,.13);color:var(--accent)}
+  body.tab-fav #alertsBtn{display:none} /* 0710q: one door per screen — Rules is the alerts entry on this tab; ⚑ still serves Live/Wrap/Pulse */
   /* ===== Walk-Up Dining (D1, 0710b): quiet per-park disclosure -> party-size lens.
      A board renders ONLY with a fresh diningAvailability (lastUpdated <= 15 min) — the feed's
      restaurant `status` is never trusted alone (month-old OPERATING zombies measured Jul 8).
@@ -943,7 +952,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2050,9 +2059,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!items.length){
       body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride on Live to pin it here.</div>';
     }else{
-      chips='<div class="pg-chips"><div class="fc-scope" style="margin-top:0">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
-        return '<button class="hl-chip'+(favScope===k?' on':'')+'" data-scope="'+esc(k)+'" type="button">'+
-          (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div></div>';
+      chips='<div class="pg-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
+        return '<button class="'+(favScope===k?'on':'')+'" data-scope="'+esc(k)+'" type="button">'+
+          (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
       var mono=BANNER_MONO[favScope]||favScope;
       var scoped=favScope==="all"?items:items.filter(function(it){return it.pk===mono;});
       if(!scoped.length){
@@ -2061,9 +2070,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         body=scoped.map(fcRowHTML).join("");
       }
     }
-    el.innerHTML=head+chips+'<div class="favcard pg-list">'+body+'</div>';
+    el.innerHTML='<div class="pg-stick">'+head+chips+'</div><div class="favcard pg-list">'+body+'</div>';
     var rb=$("favRulesPg");if(rb)rb.addEventListener("click",openAlertsSheet);
-    el.querySelectorAll(".fc-scope .hl-chip").forEach(function(b){b.addEventListener("click",function(){
+    el.querySelectorAll(".pg-seg button").forEach(function(b){b.addEventListener("click",function(){
       favScope=b.getAttribute("data-scope");renderFavPage();});});
     bindStars(el); /* page rows speak the exact ride-row pair: same classes, same handlers */
   }
@@ -4556,6 +4565,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function navSync(k){
       var its=document.querySelectorAll("#appNav .it");
       for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
+      document.body.classList.toggle("tab-fav",k==="fav"); /* 0710q: header \u2691 yields to the page's Rules door here */
     }
     function navGo(k){
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
