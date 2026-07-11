@@ -220,11 +220,11 @@
   .fc-w small{display:block;font-size:var(--fs-micro);letter-spacing:.1em;color:var(--muted-2);font-family:var(--font-body);font-weight:700}
   .fc-w.short{color:var(--short)}.fc-w.medium{color:var(--medium)}.fc-w.long{color:var(--long)}.fc-w.packed{color:var(--packed)}
   .fc-w.dash{color:var(--muted-2)}
-  .fc-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fc-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);line-height:1.25;color:var(--ink);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical} /* 0710u: the .ride .info .nm two-line rhyme — one rule covers Favorites rows + Pulse board rows */
   .fc-row.cl .fc-nm{color:var(--muted)}
   .fc-pk{flex:none;font-size:var(--fs-small);font-weight:600;color:var(--muted-2)}
   .fc-mid{flex:1;min-width:0} /* 0710t: fired rows — name + Hit pill stack */
-  .fc-mid .fc-nm{display:block}
+  /* 0710u: .fc-mid .fc-nm{display:block} retired — -webkit-box is already block-level; a display:block override would kill the clamp. D1: the clamp carries into the fired stack (a long name may take two lines above the Hit pill). */
   .fc-mid .hitline{display:block;margin-top:4px}
   .fc-mid .up-pill{margin-left:0;vertical-align:0}
   .fc-st{flex:none;border-radius:var(--r-pill);padding:2px 9px;font-size:var(--fs-meta);font-weight:700}
@@ -952,7 +952,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
