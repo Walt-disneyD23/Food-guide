@@ -972,7 +972,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -3180,7 +3180,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
      / apply-all edit without touching the individual handlers. Debounced so a
      burst of edits collapses into one /save. Only fires once subscribed. */
   (function(){
-    var RULE_KEYS={watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1};
+    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1};
+    /* 0711d: armed was missing since the ⚑/star split — saveArmed() writes a key this
+       chokepoint never watched, so a fresh threshold arm never scheduled its own sync and
+       only reached the Worker by hitchhiking on boot / return / listed-key edits. Both
+       testers' "sporadic threshold" days trace here; collectRules() has shipped the armed
+       map all along (the 0709t union), it just never got a ride of its own. */
     var origSet=store.set;
     store.set=function(k,v){
       origSet.call(store,k,v);
