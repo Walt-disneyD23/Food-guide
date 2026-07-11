@@ -246,7 +246,7 @@
   .pg-h{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
   .pg-h h3{font-family:var(--font-display);font-size:var(--fs-head);color:var(--ink)}
   .pg-h h3 .fs{color:var(--fav)}
-  .pg-h .fc-x{font-size:var(--fs-body)}
+  .pg-h .icon-btn{width:36px;height:36px;font-size:var(--fs-title)} /* 0710r: header anatomy, title-row scale */
   .pg-list .fc-row:first-child{border-top:0}
   .pg-list .fc-empty{border-top:0}
   /* 0710q: title + park control pin while the list scrolls; constant soft seam
@@ -952,7 +952,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -1714,7 +1714,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function saveReopen(){store.set("reopen",reopen);}
   function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
   function saveResolved(){store.set("resolved",resolved);}
-  function updateAlertBadge(){var b=$("alertBadge");if(!b)return;var n=alertIds().length;b.textContent=n;b.classList.toggle("show",n>0);}
+  function updateAlertBadge(){var n=alertIds().length;["alertBadge","favBadge"].forEach(function(id){var b=$(id);if(!b)return;b.textContent=n;b.classList.toggle("show",n>0);});} /* 0710r: header + Favorites-page badges, one writer */
   function renderAlertList(){
     var box=$("alertList");if(!box)return;
     var ids=alertIds();
@@ -2054,7 +2054,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var el=$("pgFav");if(!el)return;
     var items=favModel();
     var head='<div class="pg-h"><h3><span class="fs">\u2605</span> Favorites</h3>'+
-      '<button class="fc-x" id="favRulesPg" type="button">Rules \u2691</button></div>';
+      '<button class="icon-btn" id="favRulesPg" type="button" title="Alerts" aria-label="Alerts">\u2691<span class="badge" id="favBadge"></span></button></div>';
     var chips="",body;
     if(!items.length){
       body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride on Live to pin it here.</div>';
@@ -2072,6 +2072,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     el.innerHTML='<div class="pg-stick">'+head+chips+'</div><div class="favcard pg-list">'+body+'</div>';
     var rb=$("favRulesPg");if(rb)rb.addEventListener("click",openAlertsSheet);
+    updateAlertBadge(); /* 0710r: each paint recreates #favBadge — resync the count */
     el.querySelectorAll(".pg-seg button").forEach(function(b){b.addEventListener("click",function(){
       favScope=b.getAttribute("data-scope");renderFavPage();});});
     bindStars(el); /* page rows speak the exact ride-row pair: same classes, same handlers */
