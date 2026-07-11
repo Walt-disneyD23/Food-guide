@@ -232,6 +232,24 @@
   .fc-empty{padding:12px 2px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:var(--fs-body)}
   .t-undo{background:none;border:0;padding:6px 0 0;font-family:var(--font-body);font-size:var(--fs-small);font-weight:800;letter-spacing:.06em;color:var(--accent);cursor:pointer}
   .al-hint{font-size:var(--fs-meta);color:var(--muted-2);text-align:center;padding:10px 0 2px;border-top:1px solid var(--line);margin-top:10px}
+  /* ===== Favorites Phase 2 (0710p): the card is promoted to the Favorites page; Live keeps a
+     one-line teaser that routes there. The teaser is a stat + shortcut, never a second copy. ===== */
+  .fc-teaser{display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;font-family:var(--font-body);
+    background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:14px;margin-bottom:14px}
+  .fc-teaser .fs{flex:none;color:var(--fav);font-size:var(--fs-title);line-height:1}
+  .fc-teaser .t{flex:none;font-size:var(--fs-caps);letter-spacing:.12em;font-weight:700;color:var(--muted)}
+  .fc-teaser .s{flex:1;min-width:0;font-size:var(--fs-small);color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fc-teaser .s b{color:var(--ink);font-weight:700}
+  .fc-teaser .s b.dn{color:var(--packed)}
+  .fc-teaser .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
+  .pg-fav{margin-top:8px}
+  .pg-h{display:flex;justify-content:space-between;align-items:center;margin:2px 2px 12px}
+  .pg-h h3{font-family:var(--font-display);font-size:var(--fs-head);color:var(--ink)}
+  .pg-h h3 .fs{color:var(--fav)}
+  .pg-h .fc-x{font-size:var(--fs-body)}
+  .pg-chips{margin:0 2px 12px}
+  .pg-list .fc-row:first-child{border-top:0}
+  .pg-list .fc-empty{border-top:0}
   /* ===== Walk-Up Dining (D1, 0710b): quiet per-park disclosure -> party-size lens.
      A board renders ONLY with a fresh diningAvailability (lastUpdated <= 15 min) — the feed's
      restaurant `status` is never trusted alone (month-old OPERATING zombies measured Jul 8).
@@ -925,7 +943,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -1000,7 +1018,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="banners"></div>
   <div id="searchResults" hidden></div>
   <div id="wrapView" class="pw-view" hidden></div>
-  <div id="pgFav" class="nav-pg" hidden><b>Favorites</b>Your starred rides get their own page here — landing in the next build. Until then, the Favorites card still lives on Live.</div>
+  <div id="pgFav" class="pg-fav" hidden></div>
   <div id="pgPulse" class="nav-pg" hidden><b>Pulse</b>The numbers page. Hot-lines moves in first, then sparklines and vs-typical as the data matures.</div>
 </div>
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
@@ -1962,7 +1980,6 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
 
   /* ===== Favorites card (Cut 2, 0709g). ★ collects; this is where the collection lives.
      Ordering: Back up first, open by wait asc, Down, Closed/Refurb last. Cap 5 + expandable "+N more" (session-only). */
-  var favExpanded=false;
   var favScope="all"; /* A (0710f): park scope — SESSION-ONLY by spec, never persisted; every launch opens on ALL so the glance is always the whole list */
   /* FAVC-START (harness slices this block verbatim) */
   function favModel(){
@@ -1999,36 +2016,56 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<button class="star on" data-id="'+esc(it.id)+'" title="Favorite">\u2605</button></div>';
   }
   /* FAVC-END */
-  function renderFavCard(){
+  /* Phase 2 (0710p): the teaser — Live's one-line Favorites glance. Facts from the same
+     favModel the page uses: watched count, shortest open wait, downs. Routes via a
+     document-level delegated tap bound in the nav module (survives re-renders). */
+  function renderFavTeaser(){
     var el=$("favCard");if(!el)return;
-    var items=favModel();
-    var head,body;
+    var items=favModel(),s;
     if(!items.length){
-      head='<div class="fc-head"><span class="t">\u2605 Favorites</span><button class="fc-x" id="favRules" type="button">Rules \u2691</button></div>';
-      body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride to pin it here.</div>';
+      s='Tap \u2606 on any ride to start watching';
     }else{
-      /* A (0710f): scope chips render only when favorites exist; reuse .hl-chip so the pill skin stays one source of truth */
-      var chips='<div class="fc-scope">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
+      var open=items.filter(function(it){return it.wait!==null;});
+      var best=open.length?open.reduce(function(a,b){return b.wait<a.wait?b:a;}):null;
+      var down=items.filter(function(it){return it.st==="dn";}).length;
+      s='<b>'+items.length+'</b> watched';
+      if(best)s+=' \u00b7 shortest <b>'+best.wait+'m</b>';
+      if(down)s+=' \u00b7 <b class="dn">'+down+' down</b>';
+    }
+    el.innerHTML='<button class="fc-teaser" type="button"><span class="fs">\u2605</span>'+
+      '<span class="t">FAVORITES</span><span class="s">'+s+'</span><span class="chev">\u203a</span></button>';
+  }
+  /* Phase 2 (0710p): the Favorites PAGE — the card's anatomy promoted to a full surface.
+     Painted before render()'s away-guard, so polls refresh it on any tab; star/flag handlers
+     end in render(), so edits made on this page repaint this page. Shows ALL rows: the 5-row
+     fold was Live real estate; a dedicated page folds nothing (the fold state retired with
+     the card). Rules door: same sheet, second door — the header \u2691 stays for now; the loser
+     retires post-trip on usage evidence. Scope chips: session-only favScope, ported verbatim. */
+  function renderFavPage(){
+    var el=$("pgFav");if(!el)return;
+    var items=favModel();
+    var head='<div class="pg-h"><h3><span class="fs">\u2605</span> Favorites</h3>'+
+      '<button class="fc-x" id="favRulesPg" type="button">Rules \u2691</button></div>';
+    var chips="",body;
+    if(!items.length){
+      body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride on Live to pin it here.</div>';
+    }else{
+      chips='<div class="pg-chips"><div class="fc-scope" style="margin-top:0">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
         return '<button class="hl-chip'+(favScope===k?' on':'')+'" data-scope="'+esc(k)+'" type="button">'+
-          (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
-      head='<div class="fc-head stk"><div class="fc-hrow"><span class="t">\u2605 Favorites</span><button class="fc-x" id="favRules" type="button">Rules \u2691</button></div>'+chips+'</div>';
+          (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div></div>';
       var mono=BANNER_MONO[favScope]||favScope;
       var scoped=favScope==="all"?items:items.filter(function(it){return it.pk===mono;});
       if(!scoped.length){
         body='<div class="fc-empty">No favorites at '+esc(favScope)+' yet. Tap \u2606 on any '+esc(mono)+' ride to pin it here.</div>';
       }else{
-        var show=(favExpanded||scoped.length<=5)?scoped:scoped.slice(0,5);
-        body=show.map(fcRowHTML).join("");
-        if(scoped.length>5)body+='<button class="fc-more" id="favMore" type="button">'+
-          (favExpanded?'Show less':'+'+(scoped.length-5)+' more')+'</button>';
+        body=scoped.map(fcRowHTML).join("");
       }
     }
-    el.innerHTML='<div class="favcard">'+head+body+'</div>';
-    var rb=$("favRules");if(rb)rb.addEventListener("click",openAlertsSheet);
-    var mb=$("favMore");if(mb)mb.addEventListener("click",function(){favExpanded=!favExpanded;renderFavCard();});
+    el.innerHTML=head+chips+'<div class="favcard pg-list">'+body+'</div>';
+    var rb=$("favRulesPg");if(rb)rb.addEventListener("click",openAlertsSheet);
     el.querySelectorAll(".fc-scope .hl-chip").forEach(function(b){b.addEventListener("click",function(){
-      favScope=b.getAttribute("data-scope");favExpanded=false;renderFavCard();});}); /* scope switch collapses +N expansion: a new list starts folded */
-    bindStars(el); /* card rows speak the exact ride-row pair: same classes, same handlers, rows otherwise inert */
+      favScope=b.getAttribute("data-scope");renderFavPage();});});
+    bindStars(el); /* page rows speak the exact ride-row pair: same classes, same handlers */
   }
 
   /* ===== Hot-lines board (C2, 0709k). Lens: session-only, Longest default. Scope: persisted. Rows inert. ===== */
@@ -2119,6 +2156,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
 
   function render(){
     renderDownFlow();
+    renderFavPage(); /* Phase 2 (0710p): before the away-guard — polls refresh the Favorites page on any tab */
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
@@ -2142,7 +2180,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(isExp){el.panel.hidden=false;renderPanel(key,el.panel);}
       else{el.panel.hidden=true;el.panel.innerHTML="";}
     });
-    renderFavCard();
+    renderFavTeaser();
     renderHotBox(); /* Hot-lines board (0709k) */
     bk2Sync(); /* P1 (0710l): return pill tracks the expanded header */
   }
@@ -4537,6 +4575,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         if(sr)sr.hidden=true;
         if(cw)cw.style.display="none";
         if(wv)wv.hidden=true;
+        if(k==="fav"&&typeof renderFavPage==="function")renderFavPage(); /* 0710p: fresh paint on entry */
       }
       navSync(k);
       window.scrollTo(0,0);
@@ -4545,6 +4584,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var its=document.querySelectorAll("#appNav .it");
       for(var i=0;i<its.length;i++){(function(b){b.addEventListener("click",function(){navGo(b.getAttribute("data-pg"));});})(its[i]);}
     })();
+    document.addEventListener("click",function(e){ /* 0710p: teaser tap routes to the Favorites page; delegated so re-renders keep it */
+      var t=e.target&&e.target.closest?e.target.closest(".fc-teaser"):null;
+      if(t)navGo("fav");});
   })();
 
 
