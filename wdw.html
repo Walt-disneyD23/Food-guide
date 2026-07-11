@@ -952,7 +952,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -3037,6 +3037,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       return fetch(PUSH.WORKER_URL+"/save",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
+        keepalive:true, /* 0711a: a save mid-flight survives the page dying under it */
         body:JSON.stringify({subscription:sub.toJSON(),rules:collectRules()})
       }).then(function(r){return r.json();}).then(function(d){
         if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
@@ -3069,6 +3070,30 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         syncTimer=setTimeout(function(){syncPush();},500);
       }
     };
+
+    /* 0711a: the debounce dies with the page — iOS freezes timers the instant the
+       app leaves the foreground, so arm-then-pocket lost the rule before it ever
+       reached the Worker (both testers reproduced it, two devices). On hidden,
+       flush any pending sync via sendBeacon: synchronous enqueue, survives page
+       death; text/plain keeps it a simple request (no preflight — the Worker's
+       request.json() never reads the header). Beacon missing or refused →
+       keepalive fetch. The fire-time hand-back is skipped on this path by design;
+       syncOnReturn merges it on the next open. */
+    function flushPendingSync(){
+      if(!syncTimer)return;
+      clearTimeout(syncTimer);syncTimer=null;
+      var sent=false;
+      if(pushSub&&navigator.sendBeacon){
+        try{sent=navigator.sendBeacon(PUSH.WORKER_URL+"/save",
+          new Blob([JSON.stringify({subscription:pushSub.toJSON(),rules:collectRules()})],{type:"text/plain"}));}
+        catch(e){sent=false;}
+      }
+      if(!sent)syncPush();
+    }
+    document.addEventListener("visibilitychange",function(){
+      if(document.visibilityState==="hidden")flushPendingSync();
+    });
+    window.addEventListener("pagehide",flushPendingSync);
   })();
 
   /* ---- boot ---- */
