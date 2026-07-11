@@ -210,7 +210,6 @@
   #favCard{margin-top:8px} /* 22px seam below the last park card (0709h) */
   .favcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:6px 14px 4px;margin-bottom:14px}
   .fc-head{display:flex;justify-content:space-between;align-items:center;padding:10px 2px}
-  /* A (0710f): park-scope chips as a second header row — the wrapped hl-head rhyme. Chips REUSE .hl-chip: the pill skin is shared, so a restyle ships to both cards by construction. No closed-park dim here (closed rides still list; dim would imply empty). */
   .fc-head.stk{display:block;padding:10px 2px 12px}
   .fc-hrow{display:flex;justify-content:space-between;align-items:center}
   .fc-scope{display:flex;gap:5px;margin-top:10px}
@@ -246,7 +245,7 @@
   .pg-h{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
   .pg-h h3{font-family:var(--font-display);font-size:var(--fs-head);color:var(--ink)}
   .pg-h h3 .fs{color:var(--fav)}
-  .pg-h .icon-btn{width:36px;height:36px;font-size:var(--fs-title)} /* 0710r: header anatomy, title-row scale */
+  /* 0710s: page-flag knob resolved — 36px override retired; inherits the base 40px icon-btn (owner: “= header ⚑”) */
   .pg-list .fc-row:first-child{border-top:0}
   .pg-list .fc-empty{border-top:0}
   /* 0710q: title + park control pin while the list scrolls; constant soft seam
@@ -258,6 +257,11 @@
   .pg-seg{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px}
   .pg-seg button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);cursor:pointer;text-align:center}
   .pg-seg button.on{background:rgba(79,70,229,.13);color:var(--accent)}
+  .pg-seg button.dim{opacity:.45} /* 0710s: Pulse scope — park closed per schedule (the board empties there); Favorites never sets it (favorites still list at closed parks) */
+  .pg-pulse{margin-top:8px} /* 0710s: the pg-fav rhyme */
+  .pg-h h3 .ps{color:var(--accent)}
+  .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
+  .sec-lab{font-family:var(--font-body);font-size:var(--fs-caps);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)} /* 0710s: the board keeps its name inside the page (owner picked keep) */
   body.tab-fav #alertsBtn{display:none} /* 0710q: one door per screen — Rules is the alerts entry on this tab; ⚑ still serves Live/Wrap/Pulse */
   /* ===== Walk-Up Dining (D1, 0710b): quiet per-park disclosure -> party-size lens.
      A board renders ONLY with a fresh diningAvailability (lastUpdated <= 15 min) — the feed's
@@ -294,18 +298,12 @@
   .dine-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);color:var(--ink)}
   .dine-note{flex:none;font-size:var(--fs-meta);color:var(--muted-2)}
 
-  /* ===== Hot-lines board (C2, 0709k): Longest/Shortest lens x park scope; rows inert, fc-row anatomy ===== */
-  #hlCard{margin-top:0} /* 0709n: #banners is BLOCK flow, so adjacent margins COLLAPSE \u2014 the favcard\u2019s 14px bottom margin IS the seam; 0 here yields the same 14px as park\u2192Favorites. (The old -6 was flex arithmetic that squeezed this seam to 8px.) */
-  .hl-head{display:flex;justify-content:space-between;align-items:center;gap:14px 8px;padding:10px 2px;flex-wrap:wrap} /* 0709m: 14px row gap — phones always wrap tabs/chips into two rows; give the thumb air */
+  /* ===== Hot-lines board (C2, 0709k → Pulse page 0710s): lens tabs + empty line survive; chip scope retired for the page seg ===== */
   .hl-tabs{display:flex;gap:14px}
   .hl-tab{font-family:var(--font-body);font-size:var(--fs-caps);letter-spacing:.12em;font-weight:700;text-transform:uppercase;cursor:pointer;color:var(--muted-2);padding:6px 2px 2px;margin-top:-6px;border:0;background:none;border-bottom:2px solid transparent} /* 0709m: hit area grows upward only — text and underline stay put, gap to chips untouched */
   .hl-tab.on{color:var(--ink);border-bottom-color:var(--accent-fill)}
   .hl-tabs.dim .hl-tab{color:var(--muted-2)}
   .hl-tabs.dim .hl-tab.on{color:var(--muted-2);border-bottom-color:var(--line)} /* lens is moot with no rows: quiet, still tappable */
-  .hl-scope{display:flex;gap:5px}
-  .hl-chip{font-family:var(--font-body);font-size:var(--fs-micro);letter-spacing:.06em;font-weight:800;cursor:pointer;padding:6px 10px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--card-2);color:var(--muted-2)} /* 0709m: taller chip target */
-  .hl-chip.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
-  .hl-chip.dim{opacity:.45} /* park closed per schedule: dims at a glance, stays tappable */
   .hl-empty{padding:12px 2px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:var(--fs-body)}
   .hl-empty b{color:var(--ink);font-weight:600}
 
@@ -390,9 +388,6 @@
   .appnav .it svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   .appnav .it span{font:700 8.5px var(--font-body);letter-spacing:.05em}
   .appnav .it.on{background:var(--accent-soft);color:var(--accent)}
-  .nav-pg{margin:8px 0 0;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);
-    padding:22px 20px;color:var(--muted);font-size:var(--fs-body);line-height:1.55}
-  .nav-pg b{display:block;color:var(--ink);font-family:var(--font-display);font-size:var(--fs-lead);font-weight:600;margin-bottom:4px}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
      Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
@@ -952,7 +947,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0710r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0710s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -1028,7 +1023,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="searchResults" hidden></div>
   <div id="wrapView" class="pw-view" hidden></div>
   <div id="pgFav" class="pg-fav" hidden></div>
-  <div id="pgPulse" class="nav-pg" hidden><b>Pulse</b>The numbers page. Hot-lines moves in first, then sparklines and vs-typical as the data matures.</div>
+  <div id="pgPulse" class="pg-pulse" hidden></div>
 </div>
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
 <nav id="appNav" class="appnav" aria-label="Sections">
@@ -1962,7 +1957,6 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v")};
     });
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
-    var hlc=document.createElement("div");hlc.id="hlCard";elBanners.appendChild(hlc); /* Hot-lines board (0709k): sibling below Favorites, hides with #banners for free */
   }
 
   function bannerStats(key){
@@ -2078,7 +2072,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     bindStars(el); /* page rows speak the exact ride-row pair: same classes, same handlers */
   }
 
-  /* ===== Hot-lines board (C2, 0709k). Lens: session-only, Longest default. Scope: persisted. Rows inert. ===== */
+  /* ===== Hot-lines board (C2, 0709k → Pulse page 0710s). Lens: session-only, Longest default. Scope: PERSISTED, now page-level clothing — OWNER NOTE (Jul 10): re-evaluate once the callout feed shares the page; session-only is a two-line change. Rows inert. ===== */
   var hlLens="long";
   var hlScope=store.get("hlScope","all");
   if(hlScope!=="all"&&!BANNER_MONO[hlScope])hlScope="all"; /* stale persisted scope falls back safely */
@@ -2143,30 +2137,39 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return "No posted waits yet.";
   }
   /* HL-END */
-  function renderHotBox(){
-    var el=$("hlCard");if(!el)return;
+  function renderPulsePage(){
+    /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
+       away-guard so polls refresh it on any tab; navGo fresh-paints on entry. Page grammar
+       adopted (owner picked A): scope = the full-width pg-seg in the sticky — PERSISTED hlScope
+       in page-level clothing. OWNER NOTE (Jul 10): re-feel this once the callout feed moves in;
+       session-only is a two-line change if a parked scope reads wrong on a fuller page.
+       Lens stays board furniture: hl-tabs beside the HOT LINES label (owner picked keep). */
+    var el=$("pgPulse");if(!el)return;
     var items=hlModel(hlScope,hlLens);
+    var head='<div class="pg-h"><h3><span class="ps"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg></span> Pulse</h3></div>';
+    var seg='<div class="pg-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
+      var closed=k!=="all"&&isOpenNow(parkInfo[k])===false;
+      return '<button class="'+(hlScope===k?'on':'')+(closed?' dim':'')+'" data-scope="'+esc(k)+'" type="button">'+
+        (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
     var tabs='<span class="hl-tabs'+(items.length?'':' dim')+'">'+
       '<button class="hl-tab'+(hlLens!=="short"?' on':'')+'" data-lens="long" type="button">\u25b2 Longest</button>'+
       '<button class="hl-tab'+(hlLens==="short"?' on':'')+'" data-lens="short" type="button">\u25bd Shortest</button></span>';
-    var chips='<span class="hl-scope">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
-      var closed=k!=="all"&&isOpenNow(parkInfo[k])===false;
-      return '<button class="hl-chip'+(hlScope===k?' on':'')+(closed?' dim':'')+'" data-scope="'+esc(k)+'" type="button">'+
-        (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</span>';
     var body=items.length?items.map(function(it){
       return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
-    el.innerHTML='<div class="favcard"><div class="hl-head">'+tabs+chips+'</div>'+body+'</div>';
+    el.innerHTML='<div class="pg-stick">'+head+seg+'</div>'+
+      '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
     el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
-      hlLens=b.getAttribute("data-lens");renderHotBox();});});
-    el.querySelectorAll(".hl-chip").forEach(function(b){b.addEventListener("click",function(){
-      hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderHotBox();});});
+      hlLens=b.getAttribute("data-lens");renderPulsePage();});});
+    el.querySelectorAll(".pg-seg button").forEach(function(b){b.addEventListener("click",function(){
+      hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderPulsePage();});});
   }
 
   function render(){
     renderDownFlow();
     renderFavPage(); /* Phase 2 (0710p): before the away-guard — polls refresh the Favorites page on any tab */
+    renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
@@ -2191,7 +2194,6 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       else{el.panel.hidden=true;el.panel.innerHTML="";}
     });
     renderFavTeaser();
-    renderHotBox(); /* Hot-lines board (0709k) */
     bk2Sync(); /* P1 (0710l): return pill tracks the expanded header */
   }
 
@@ -4587,6 +4589,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         if(cw)cw.style.display="none";
         if(wv)wv.hidden=true;
         if(k==="fav"&&typeof renderFavPage==="function")renderFavPage(); /* 0710p: fresh paint on entry */
+        if(k==="pulse"&&typeof renderPulsePage==="function")renderPulsePage(); /* Phase 3a (0710s): fresh paint on entry */
       }
       navSync(k);
       window.scrollTo(0,0);
