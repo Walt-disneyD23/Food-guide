@@ -972,7 +972,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2144,6 +2144,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     });
   }
   function pfCallouts(scope){
+    var scopeParks=scope==="all"?PARK_DEF.map(function(p){return p.key;}):[scope];
+    var anyOpen=scopeParks.some(function(k){return isOpenNow(parkInfo[k])!==false;});
+    if(!anyOpen)return {state:"closed"}; /* 0711c: closed outranks nobase — observation beats missing math */
     if(!pfBase)return {state:"nobase"};
     var bkey=String(Math.floor(pfEtMin()/30)),eligible=0,go=[],rough=[];
     Object.keys(pfBase.rides).forEach(function(id){
@@ -2168,7 +2171,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     go.sort(function(a,b){return b.delta-a.delta;});rough.sort(function(a,b){return b.delta-a.delta;});
     var earned=go.length+rough.length;
-    var shown=go.slice(0,3).concat(rough.slice(0,3)).sort(function(a,b){return b.delta-a.delta;});
+    var capped=scope==="all"; /* 0711c: ALL is the edited overview (cap 3+3 + tail); a picked park is the complete drill-down — uncapped (per-park peak on the Jul 11 sweep: 4) */
+    var shown=(capped?go.slice(0,3).concat(rough.slice(0,3)):go.concat(rough)).sort(function(a,b){return b.delta-a.delta;});
     return {state:((res.length+shown.length)?"cards":(eligible===0?"thin":"quiet")), /* cards outrank thin: a reopen is observation, not baseline math */
       cards:res.concat(shown),moreN:earned-shown.length,days:pfBase.days};
   }
@@ -2177,6 +2181,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(m.state==="nobase")return "";
     var clock=fmtClock(new Date().toISOString())||"";
     var head='<div class="fc-head"><span class="sec-lab">Right now</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
+    if(m.state==="closed")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.</div></div>';
     var basis=m.moreN>0
       ?'<div class="pf-basis">Showing the biggest departures from typical · last '+m.days+' days</div>'
       :'<div class="pf-basis">Typical = this half-hour over the last '+m.days+' days'+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>';
