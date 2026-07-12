@@ -246,6 +246,14 @@
   .pf-basis{font-size:var(--fs-meta);color:var(--muted-2);padding:8px 2px 4px;border-top:1px solid var(--line);margin-top:2px}
   .pf-more{font-size:var(--fs-meta);font-weight:600;color:var(--muted);padding:9px 2px 2px;border-top:1px solid var(--line)}
   .pf-quiet{font-size:var(--fs-body);color:var(--muted);padding:14px 2px;text-align:center}
+  /* 0711f: story door — G2 soft circle. Paint stays 15px so the feed stays calm; padding
+     grows the target to ~44pt and the negative margin keeps row geometry untouched. */
+  .pf-topr{display:inline-flex;align-items:center;gap:12px}
+  .pf-shr{position:relative;background:none;border:0;cursor:pointer;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:14px;margin:-14px;color:var(--muted)}
+  .pf-shr::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--card-2)}
+  .pf-shr svg{position:relative;z-index:1;display:block}
+  .pf-shr:active{color:#fff}
+  .pf-shr:active::before{background:var(--accent-fill)}
   .fc-mid .up-pill{margin-left:0;vertical-align:0}
   .fc-st{flex:none;border-radius:var(--r-pill);padding:2px 9px;font-size:var(--fs-meta);font-weight:700}
   .fc-st.dn{background:rgba(226,59,84,.13);color:var(--packed)}
@@ -972,7 +980,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2114,6 +2122,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      on-screen math always checks. Reopens: own 2-poll-confirmed tracker (pfTick),
      own writer, own state — never reads the alerts engine’s prevStatus/rebreak. */
   var pfBase=null,pfBaseAt=0,pfRuns={},pfReopens=[];
+  var pfLastShare={cards:[],days:0}; /* 0711f: the story door's lookup — written only by pfFeedHTML, read only by the .pf-shr click */
   function pfEtMin(){ /* ET minutes since midnight — mirrors the Worker’s etMinutes() so bucket keys align */
     try{var p=new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit"}).formatToParts(new Date()),o={};
       p.forEach(function(x){o[x.type]=x.value;});return (parseInt(o.hour,10)%24)*60+parseInt(o.minute,10);}
@@ -2187,18 +2196,119 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       :'<div class="pf-basis">Typical = this half-hour over the last '+m.days+' days'+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>';
     if(m.state==="thin")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
     if(m.state==="quiet")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
-    var body=m.cards.map(function(c){
+    pfLastShare={cards:m.cards,days:m.days||0};
+    var body=m.cards.map(function(c,ci){
       var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':'<span class="pf-kick re">Just reopened</span>';
       var meta=c.kind==="re"
         ?('back up at <b>'+esc(fmtClock(new Date(c.at).toISOString())||"")+'</b> after a down period since '+esc(fmtClock(new Date(c.since).toISOString())||""))
         :('typically <b>'+c.typ+'</b> this half-hour · <b>'+c.delta+' '+(c.kind==="go"?"under":"over")+'</b>');
       var num=(typeof c.w==="number")?'<span class="pf-now '+c.tier+'">'+c.w+'<small> MIN</small></span>':'';
-      return '<div class="pf-card"><div class="pf-top">'+kick+'<span class="pf-pk">'+esc(c.pk)+'</span></div>'+
+      return '<div class="pf-card"><div class="pf-top">'+kick+'<span class="pf-topr"><span class="pf-pk">'+esc(c.pk)+'</span>'+
+        '<button class="pf-shr" type="button" data-ci="'+ci+'" aria-label="Share this callout">'+
+        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg></button></span></div>'+
         '<div class="pf-mid"><div class="pf-l"><div class="pf-nm">'+esc(c.nm)+'</div><div class="pf-meta">'+meta+'</div></div>'+num+'</div></div>';
     }).join("");
     var more=m.moreN>0?'<div class="pf-more">+ '+m.moreN+' more running unusual right now</div>':"";
     return '<div class="favcard pg-list">'+head+body+more+basis+'</div>';
   }
+  /* ===== 0711f: V1 share card pipeline — the story door's payload. emitCard-family plumbing
+     (fonts.ready → toBlob → canShare/download), PW_CARD_ALT jewel palette, model/paint/emit
+     split so the park card (0711g) becomes a second model+layout on this same emit path.
+     Honesty spine: the hero wait wears its tier color — one number family with the feed;
+     reopened duration derives from the DISPLAYED clocks, never raw ms; the basis line labels
+     every measure the card shows. */
+  function pfTcol(t){return t==="packed"?"#ff6b6b":t==="long"?"#ff9f6b":t==="medium"?"#ffce5c":"#3dd68c";}
+  function pfMinOf(ts){ /* ET minutes-of-day for a timestamp — clock-truth for duration math */
+    var p=new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour:"numeric",minute:"2-digit",hour12:false}).formatToParts(new Date(ts)),h=0,mi=0;
+    p.forEach(function(x){if(x.type==="hour")h=+x.value;if(x.type==="minute")mi=+x.value;});
+    return (h%24)*60+mi;
+  }
+  function pfStampNow(){
+    var d=new Date(),clock=fmtClock(d.toISOString())||"";
+    var p=new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"short",month:"short",day:"numeric"}).formatToParts(d),wd="",mo="",dy="";
+    p.forEach(function(x){if(x.type==="weekday")wd=x.value;if(x.type==="month")mo=x.value;if(x.type==="day")dy=x.value;});
+    return clock+" \u00b7 "+(wd+" "+mo+" "+dy).toUpperCase();
+  }
+  function pfCardModel(c,days,stamp,pkFull){
+    var D={W:1080,H:1080,stamp:stamp,nm:c.nm,park:pkFull+" \u00b7 Walt Disney World",
+      fname:"parkpulse-pulse-"+c.kind+".png",shareTitle:"ParkPulse \u2014 "+c.nm,tl:null,d1:null,d2:null};
+    if(c.kind==="re"){
+      D.kicker="JUST REOPENED";D.kc=PW_CARD_ALT.accent;
+      var dnT=fmtClock(new Date(c.since).toISOString())||"",upT=fmtClock(new Date(c.at).toISOString())||"";
+      var dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
+      D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT};
+      if(typeof c.w==="number"){D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);D.basis="Wait is live \u00b7 down period timed from live status samples";}
+      else{D.num="OPEN";D.sub="NO POSTED WAIT";D.numCol=pfTcol("short");D.basis="Down period timed from live status samples";}
+    }else{
+      var go=c.kind==="go";
+      D.kicker=go?"GO NOW":"ROUGH RIGHT NOW";D.kc=go?PW_CARD_ALT.green:"#ff9f6b";
+      D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);
+      D.d1=c.delta+(go?" under":" over");D.d2="typically "+c.typ+" this half-hour";
+      D.basis="Typical = this half-hour over the last "+days+" days of live waits";
+    }
+    return D;
+  }
+  function pfDrawCard(ctx,D){
+    var W=D.W,H=D.H,C=PW_CARD_ALT;
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
+    function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#1b2d4d");g.addColorStop(.55,"#10243a");g.addColorStop(1,"#0c1c30");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+64,R=cx+cw-64;
+    LS("4px");T(D.kicker,L,cy+96,IN("800",30),D.kc,"left");LS("0px");
+    T(D.stamp,R,cy+96,IN("700",28),C.ink,"right");
+    var nl=wrap2(D.nm,R-L,SG("700",66)),ny=cy+192,i;
+    for(i=0;i<nl.length;i++)T(nl[i],L,ny+i*76,SG("700",66),C.ink,"left");
+    var py=ny+(nl.length-1)*76+52;
+    T(ell(D.park,R-L,IN("500",30)),L,py,IN("500",30),C.muted,"left");
+    var fy=cy+ch-64;
+    T("Data: ThemeParks.wiki",R,fy,IN("500",25),C.muted2,"right");
+    T("parkpulse.live",R,fy-36,IN("700",31),C.green,"right");
+    ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy-96);ctx.lineTo(R,fy-96);ctx.stroke();
+    var by=fy-96-30;
+    T(ell(D.basis,R-L,IN("500",26)),L,by,IN("500",26),C.muted2,"left");
+    var hTop=py+30,hBot=by-60,hMid=(hTop+hBot)/2;
+    var numSize=(D.num==="OPEN")?150:210,numY=hMid+numSize*0.36;
+    T(D.num,L,numY,SG("700",numSize),D.numCol,"left");
+    LS("5px");T(D.sub,L+4,numY+48,IN("800",28),C.muted2,"left");LS("0px");
+    if(D.tl){
+      LS("4px");T(D.tl.cap,R,hMid-70,IN("800",25),C.accent,"right");LS("0px");
+      T(D.tl.dn,R-176,hMid-4,SG("700",40),C.ink,"right");
+      LS("2px");T("WENT DOWN",R,hMid-4,IN("800",22),C.muted2,"right");LS("0px");
+      T("\u2193",R-64,hMid+42,IN("700",30),C.muted2,"right");
+      T(D.tl.up,R-176,hMid+94,SG("700",40),C.ink,"right");
+      LS("2px");T("BACK UP",R,hMid+94,IN("800",22),C.muted2,"right");LS("0px");
+    }else{
+      T(D.d1,R,hMid+4,IN("800",42),C.ink,"right");
+      T(D.d2,R,hMid+48,IN("500",31),C.muted,"right");
+    }
+    ctx.restore();
+  }
+  function pfEmitCard(D){
+    var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;var ctx=cv.getContext("2d");
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      pfDrawCard(ctx,D);
+      cv.toBlob(function(blob){
+        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+        var file=new File([blob],D.fname,{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:D.shareTitle})["catch"](function(){});}
+        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+      },"image/png");
+    });
+  }
+  function pfShareCallout(c,days){
+    var full=(roster[c.id]||{}).park||"";
+    pfEmitCard(pfCardModel(c,days,pfStampNow(),full));
+  }
+
   function hlModel(scope,lens){
     var items=[];
     Object.keys(roster).forEach(function(id){
@@ -2288,6 +2398,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       hlLens=b.getAttribute("data-lens");renderPulsePage();});});
     el.querySelectorAll(".pg-seg button").forEach(function(b){b.addEventListener("click",function(){
       hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderPulsePage();});});
+    el.querySelectorAll(".pf-shr").forEach(function(b){b.addEventListener("click",function(){ /* 0711f: story door */
+      var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
   }
 
   function render(){
