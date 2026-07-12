@@ -980,7 +980,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2245,7 +2245,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var go=c.kind==="go";
       D.kicker=go?"GO NOW":"ROUGH RIGHT NOW";D.kc=go?PW_CARD_ALT.green:"#ff9f6b";
       D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);
-      D.d1=c.delta+(go?" under":" over");D.d2="typically "+c.typ+" this half-hour";
+      D.d1=c.delta+(go?" under":" over");D.d2="typically "+c.typ+" min this half-hour"; /* 0711j: one unit, worked hardest here \u2014 a shared card is first contact */
       D.basis="Typical = this half-hour over the last "+days+" days of live waits";
     }
     return D;
@@ -2326,7 +2326,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(re){
         var upT=fmtClock(new Date(c.at).toISOString())||"",dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
         dl="back up at "+upT+" \u00b7 down "+dur+" min";
-      }else dl="typically "+c.typ+" this half-hour \u00b7 "+c.delta+(c.kind==="go"?" under":" over");
+      }else dl="typically "+c.typ+" min \u00b7 "+c.delta+(c.kind==="go"?" under":" over"); /* 0711j: the label lives at card level (basis line); rows reference the defined term \u2014 not a cut, a move */
       return {num:(typeof c.w==="number"?String(c.w):"\u2014"),numCol:(typeof c.w==="number"?pfTcol(c.tier):PW_CARD_ALT.muted2),
         nm:c.nm,dl:dl,k:(c.kind==="go"?"GO NOW":c.kind==="rough"?"ROUGH":"REOPENED"),
         kc:(c.kind==="go"?PW_CARD_ALT.green:c.kind==="rough"?"#ff9f6b":PW_CARD_ALT.accent)};
@@ -2347,6 +2347,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
     function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
     function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
@@ -2369,21 +2370,31 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
        draw ROOMY so the card fills honestly instead of whispering into empty space; 4\u20135
        keep the REGULAR board density. Same grammar, same columns, bigger type. */
     var roomy=D.rows.length<=3;
-    var M=roomy?{rowH:150,num:78,min:26,nm:46,dl:33,k:26,numY:86,minY:118,nmY:62,dlY:112,kY:58,nx:200,kres:210}
-               :{rowH:106,num:56,min:20,nm:37,dl:28,k:23,numY:64,minY:90,nmY:50,dlY:88,kY:46,nx:150,kres:170};
-    var block=D.rows.length*M.rowH+(D.tailN>0?44:0);
-    var y0=top+Math.max(0,(bot-top-block)/2);
+    /* 0711j: N2 rows (owner pick) \u2014 the kicker leads the delta line and the name takes the
+       full column with a two-line wrap backstop (the app's own clamp rhyme). Clipped headliner
+       names were the worst failure a shareable card could have. If the wrapped block would
+       overflow the rows region, every row falls back to single-line ellipsis \u2014 wrap is a
+       luxury of space, never a collision. */
+    var M=roomy?{rowH:150,num:78,min:26,nm:46,nlh:54,dl:33,kf:25,kgap:20,numY:86,minY:118,nmY:62,dlY:112,nx:200}
+               :{rowH:106,num:56,min:20,nm:37,nlh:44,dl:28,kf:22,kgap:16,numY:64,minY:90,nmY:50,dlY:88,nx:150};
+    var nxA=L+M.nx,nwA=R-nxA,lines=[],block=0;
+    for(i=0;i<D.rows.length;i++){var ln=wrap2(D.rows[i].nm,nwA,IN("600",M.nm));lines.push(ln);block+=M.rowH+(ln.length>1?M.nlh:0);}
+    if(D.tailN>0)block+=44;
+    if(block>bot-top){lines=lines.map(function(ln,ix){return [ell(D.rows[ix].nm,nwA,IN("600",M.nm))];});block=D.rows.length*M.rowH+(D.tailN>0?44:0);}
+    var y0=top+Math.max(0,(bot-top-block)/2),ry=y0;
     for(i=0;i<D.rows.length;i++){
-      var r=D.rows[i],ry=y0+i*M.rowH;
+      var r=D.rows[i],ln=lines[i],wrapped=ln.length>1,j;
       if(i>0){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,ry);ctx.lineTo(R,ry);ctx.stroke();}
       T(r.num,L,ry+M.numY,SG("700",M.num),r.numCol,"left");
       LS("2px");T("MIN",L+2,ry+M.minY,IN("800",M.min),C.muted2,"left");LS("0px");
-      LS("2px");T(r.k,R,ry+M.kY,IN("800",M.k),r.kc,"right");LS("0px");
-      var nx=L+M.nx,nw=R-nx-M.kres;
-      T(ell(r.nm,nw,IN("600",M.nm)),nx,ry+M.nmY,IN("600",M.nm),C.ink,"left");
-      T(ell(r.dl,R-nx,IN("500",M.dl)),nx,ry+M.dlY,IN("500",M.dl),C.muted,"left");
+      for(j=0;j<ln.length;j++)T(ln[j],nxA,ry+M.nmY+j*M.nlh,IN("600",M.nm),C.ink,"left");
+      var dy=ry+M.dlY+(wrapped?M.nlh:0);
+      LS("2px");ctx.font=IN("800",M.kf);var kw=ctx.measureText(r.k).width;
+      T(r.k,nxA,dy,IN("800",M.kf),r.kc,"left");LS("0px");
+      T(ell(r.dl,R-(nxA+kw+M.kgap),IN("500",M.dl)),nxA+kw+M.kgap,dy,IN("500",M.dl),C.muted,"left");
+      ry+=M.rowH+(wrapped?M.nlh:0);
     }
-    if(D.tailN>0)T("+ "+D.tailN+" more running unusual right now",L,y0+D.rows.length*M.rowH+36,IN("600",28),C.muted,"left");
+    if(D.tailN>0)T("+ "+D.tailN+" more running unusual right now",L,ry+36,IN("600",28),C.muted,"left");
     ctx.restore();
   }
   function pfSharePark(){
