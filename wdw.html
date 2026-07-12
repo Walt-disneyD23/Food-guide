@@ -980,7 +980,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2196,7 +2196,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       :'<div class="pf-basis">Typical = this half-hour over the last '+m.days+' days'+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>';
     if(m.state==="thin")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
     if(m.state==="quiet")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
-    pfLastShare={cards:m.cards,days:m.days||0};
+    pfLastShare={cards:m.cards,days:m.days||0,moreN:m.moreN||0,scope:scope}; /* 0711g: the surface door reads scope+moreN too */
     var body=m.cards.map(function(c,ci){
       var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':'<span class="pf-kick re">Just reopened</span>';
       var meta=c.kind==="re"
@@ -2209,7 +2209,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         '<div class="pf-mid"><div class="pf-l"><div class="pf-nm">'+esc(c.nm)+'</div><div class="pf-meta">'+meta+'</div></div>'+num+'</div></div>';
     }).join("");
     var more=m.moreN>0?'<div class="pf-more">+ '+m.moreN+' more running unusual right now</div>':"";
-    return '<div class="favcard pg-list">'+head+body+more+basis+'</div>';
+    var shareBtn='<button class="pw-share pf-share-park" type="button">'+ /* 0711g: surface door — cards state only */
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this pulse</button>';
+    return '<div class="favcard pg-list">'+head+body+more+basis+shareBtn+'</div>';
   }
   /* ===== 0711f: V1 share card pipeline — the story door's payload. emitCard-family plumbing
      (fonts.ready → toBlob → canShare/download), PW_CARD_ALT jewel palette, model/paint/emit
@@ -2291,11 +2293,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     ctx.restore();
   }
-  function pfEmitCard(D){
+  function pfEmitCard(D,draw){ /* 0711g: second layout, same emit path */
     var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;var ctx=cv.getContext("2d");
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
-      pfDrawCard(ctx,D);
+      (draw||pfDrawCard)(ctx,D);
       cv.toBlob(function(blob){
         if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
         var file=new File([blob],D.fname,{type:"image/png"});
@@ -2307,6 +2309,81 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function pfShareCallout(c,days){
     var full=(roster[c.id]||{}).park||"";
     pfEmitCard(pfCardModel(c,days,pfStampNow(),full));
+  }
+
+  /* ===== 0711g: P1 park pulse card — the surface door's payload. Second model+layout on the
+     0711f emit path. Honesty: the count line counts ONLY band-crossers (reopens are rows that
+     label themselves); rows cap at 5 with the feed's own tail grammar carrying the overflow;
+     a mixed card stacks a second basis line so every measure shown is labeled. */
+  function pfParkModel(s,stamp){
+    var scope=s.scope,cards=s.cards,unusualN=s.moreN,i;
+    for(i=0;i<cards.length;i++)if(cards[i].kind!=="re")unusualN++;
+    var shown=cards.slice(0,5),tailN=s.moreN+Math.max(0,cards.length-5);
+    var hasRe=false;
+    var rows=shown.map(function(c){
+      var re=c.kind==="re";if(re)hasRe=true;
+      var dl;
+      if(re){
+        var upT=fmtClock(new Date(c.at).toISOString())||"",dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
+        dl="back up at "+upT+" \u00b7 down "+dur+" min";
+      }else dl="typically "+c.typ+" this half-hour \u00b7 "+c.delta+(c.kind==="go"?" under":" over");
+      return {num:(typeof c.w==="number"?String(c.w):"\u2014"),numCol:(typeof c.w==="number"?pfTcol(c.tier):PW_CARD_ALT.muted2),
+        nm:c.nm,dl:dl,k:(c.kind==="go"?"GO NOW":c.kind==="rough"?"ROUGH":"REOPENED"),
+        kc:(c.kind==="go"?PW_CARD_ALT.green:c.kind==="rough"?"#ff9f6b":PW_CARD_ALT.accent)};
+    });
+    var pk=scope==="all"?"Walt Disney World":scope;
+    return {W:1080,H:1080,stamp:stamp,kicker:(pk+" \u00b7 Pulse").toUpperCase(),
+      count:(unusualN>0?unusualN+" "+(unusualN===1?"ride":"rides")+" running unusual right now":"Nothing running unusual right now"),
+      rows:rows,tailN:tailN,
+      basis:"Typical = this half-hour over the last "+s.days+" days of live waits",
+      basis2:(hasRe?"Down periods timed from live status samples":null),
+      fname:"parkpulse-pulse-"+pk.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",
+      shareTitle:"ParkPulse \u2014 "+pk+" pulse"};
+  }
+  function pfDrawParkCard(ctx,D){
+    var W=D.W,H=D.H,C=PW_CARD_ALT;
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
+    function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#1b2d4d");g.addColorStop(.55,"#10243a");g.addColorStop(1,"#0c1c30");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+64,R=cx+cw-64;
+    ctx.font=IN("700",28);var stw=ctx.measureText(D.stamp).width; /* right column measured FIRST — the drawCard rule; a long park name ellipsizes before it can run under the stamp */
+    T(D.stamp,R,cy+96,IN("700",28),C.ink,"right");
+    LS("3px");T(ell(D.kicker,R-L-stw-28,IN("800",28)),L,cy+96,IN("800",28),C.accent,"left");LS("0px");
+    T(D.count,L,cy+150,IN("500",30),C.muted,"left");
+    var fy=cy+ch-64;
+    T("Data: ThemeParks.wiki",R,fy,IN("500",25),C.muted2,"right");
+    T("parkpulse.live",R,fy-36,IN("700",31),C.green,"right");
+    ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy-96);ctx.lineTo(R,fy-96);ctx.stroke();
+    var by=fy-96-30;
+    if(D.basis2){T(ell(D.basis2,R-L,IN("500",26)),L,by,IN("500",26),C.muted2,"left");by-=34;}
+    T(ell(D.basis,R-L,IN("500",26)),L,by,IN("500",26),C.muted2,"left");
+    var top=cy+186,bot=by-46,rowH=106,i;
+    var block=D.rows.length*rowH+(D.tailN>0?44:0);
+    var y0=top+Math.max(0,(bot-top-block)/2);
+    for(i=0;i<D.rows.length;i++){
+      var r=D.rows[i],ry=y0+i*rowH;
+      if(i>0){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,ry);ctx.lineTo(R,ry);ctx.stroke();}
+      T(r.num,L,ry+64,SG("700",56),r.numCol,"left");
+      LS("2px");T("MIN",L+2,ry+90,IN("800",20),C.muted2,"left");LS("0px");
+      LS("2px");T(r.k,R,ry+46,IN("800",23),r.kc,"right");LS("0px");
+      var nx=L+150,nw=R-nx-170;
+      T(ell(r.nm,nw,IN("600",37)),nx,ry+50,IN("600",37),C.ink,"left");
+      T(ell(r.dl,R-nx,IN("500",28)),nx,ry+88,IN("500",28),C.muted,"left");
+    }
+    if(D.tailN>0)T("+ "+D.tailN+" more running unusual right now",L,y0+D.rows.length*rowH+36,IN("600",28),C.muted,"left");
+    ctx.restore();
+  }
+  function pfSharePark(){
+    var s=pfLastShare;
+    if(!s.cards.length)return; /* the door only renders in the cards state; belt for the strap */
+    pfEmitCard(pfParkModel(s,pfStampNow()),pfDrawParkCard);
   }
 
   function hlModel(scope,lens){
@@ -2400,6 +2477,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderPulsePage();});});
     el.querySelectorAll(".pf-shr").forEach(function(b){b.addEventListener("click",function(){ /* 0711f: story door */
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
+    var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
   }
 
   function render(){
