@@ -980,7 +980,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2364,20 +2364,26 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var by=fy-96-30;
     if(D.basis2){T(ell(D.basis2,R-L,IN("500",26)),L,by,IN("500",26),C.muted2,"left");by-=34;}
     T(ell(D.basis,R-L,IN("500",26)),L,by,IN("500",26),C.muted2,"left");
-    var top=cy+186,bot=by-46,rowH=106,i;
-    var block=D.rows.length*rowH+(D.tailN>0?44:0);
+    var top=cy+186,bot=by-46,i;
+    /* 0711h: density-adaptive rows \u2014 two DESIGNED sizes, not a math scale. 1\u20133 callouts
+       draw ROOMY so the card fills honestly instead of whispering into empty space; 4\u20135
+       keep the REGULAR board density. Same grammar, same columns, bigger type. */
+    var roomy=D.rows.length<=3;
+    var M=roomy?{rowH:150,num:78,min:26,nm:46,dl:33,k:26,numY:86,minY:118,nmY:62,dlY:112,kY:58,nx:200,kres:210}
+               :{rowH:106,num:56,min:20,nm:37,dl:28,k:23,numY:64,minY:90,nmY:50,dlY:88,kY:46,nx:150,kres:170};
+    var block=D.rows.length*M.rowH+(D.tailN>0?44:0);
     var y0=top+Math.max(0,(bot-top-block)/2);
     for(i=0;i<D.rows.length;i++){
-      var r=D.rows[i],ry=y0+i*rowH;
+      var r=D.rows[i],ry=y0+i*M.rowH;
       if(i>0){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,ry);ctx.lineTo(R,ry);ctx.stroke();}
-      T(r.num,L,ry+64,SG("700",56),r.numCol,"left");
-      LS("2px");T("MIN",L+2,ry+90,IN("800",20),C.muted2,"left");LS("0px");
-      LS("2px");T(r.k,R,ry+46,IN("800",23),r.kc,"right");LS("0px");
-      var nx=L+150,nw=R-nx-170;
-      T(ell(r.nm,nw,IN("600",37)),nx,ry+50,IN("600",37),C.ink,"left");
-      T(ell(r.dl,R-nx,IN("500",28)),nx,ry+88,IN("500",28),C.muted,"left");
+      T(r.num,L,ry+M.numY,SG("700",M.num),r.numCol,"left");
+      LS("2px");T("MIN",L+2,ry+M.minY,IN("800",M.min),C.muted2,"left");LS("0px");
+      LS("2px");T(r.k,R,ry+M.kY,IN("800",M.k),r.kc,"right");LS("0px");
+      var nx=L+M.nx,nw=R-nx-M.kres;
+      T(ell(r.nm,nw,IN("600",M.nm)),nx,ry+M.nmY,IN("600",M.nm),C.ink,"left");
+      T(ell(r.dl,R-nx,IN("500",M.dl)),nx,ry+M.dlY,IN("500",M.dl),C.muted,"left");
     }
-    if(D.tailN>0)T("+ "+D.tailN+" more running unusual right now",L,y0+D.rows.length*rowH+36,IN("600",28),C.muted,"left");
+    if(D.tailN>0)T("+ "+D.tailN+" more running unusual right now",L,y0+D.rows.length*M.rowH+36,IN("600",28),C.muted,"left");
     ctx.restore();
   }
   function pfSharePark(){
