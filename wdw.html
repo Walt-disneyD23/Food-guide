@@ -980,7 +980,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -2180,7 +2180,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     go.sort(function(a,b){return b.delta-a.delta;});rough.sort(function(a,b){return b.delta-a.delta;});
     var earned=go.length+rough.length;
-    var capped=scope==="all"; /* 0711c: ALL is the edited overview (cap 3+3 + tail); a picked park is the complete drill-down — uncapped (per-park peak on the Jul 11 sweep: 4) */
+    var capped=false; /* 0711i: owner uncapped ALL after a week of real feeds — the dedicated page absorbs the scroll and rank keeps the headline on top. Rope-drop peak was 10 on Jul 11; observe the honest maximum during the trip, re-cap from evidence if it sprawls. REVERT: capped=scope==="all" (the 0711c overview cap; tail + capped-basis lines reawaken untouched). */
     var shown=(capped?go.slice(0,3).concat(rough.slice(0,3)):go.concat(rough)).sort(function(a,b){return b.delta-a.delta;});
     return {state:((res.length+shown.length)?"cards":(eligible===0?"thin":"quiet")), /* cards outrank thin: a reopen is observation, not baseline math */
       cards:res.concat(shown),moreN:earned-shown.length,days:pfBase.days};
@@ -2404,7 +2404,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(a.wait!==b.wait)return lens==="short"?a.wait-b.wait:b.wait-a.wait;
       return a.nm.localeCompare(b.nm);
     });
-    return items.slice(0,3);
+    return items.slice(0,6); /* 0711i: 3 -> 6 — the top of a resort board was the same three headliners every day; three more slots buy variety (or honestly prove there is none) */
   }
   function hlNextOpen(info){ /* soonest future admission the schedule proves, stamped with its kind (""=regular open) (0709l) */
     if(!info)return null;var now=Date.now(),best=null;
