@@ -980,7 +980,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
@@ -1142,7 +1142,7 @@ var CATEGORY_TAGS={
      films — no real queue, so the API marks them DOWN all day and they'd
      otherwise sit in the ride list as a permanent phantom outage. Matched by
      normalized-name fragment, same hand-edited approach as CATEGORY_TAGS. */
-  var SHOW_OVERRIDE=["vacation fun"];
+  var SHOW_OVERRIDE=["vacation fun","impressions de france"]; /* 0711l: film typed ATTRACTION upstream */
   function mislabeledShow(name){var n=normName(name);for(var i=0;i<SHOW_OVERRIDE.length;i++){if(n.indexOf(SHOW_OVERRIDE[i])>=0)return true;}return false;}
 
 function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.key===k;})||ALL_DEF);}
@@ -3562,7 +3562,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       try{return new TextDecoder("utf-8",{fatal:true}).decode(new Uint8Array(bytes));}catch(e){return s;}
     }
     var WRAP_EXCLUDE=["vacation fun", /* non-ride entities (animated shorts etc.) that log as always-down */
-      "bluey","adventurers outpost"]; /* X2 (0710m): ride-like SHOW meets — banked by Worker v3.8 for future stats, but held out of the Wrap while their status behavior is observed (character-break DOWN noise would pollute reliability boards). This is a READ-TIME filter: remove a fragment and the entity’s full banked history surfaces instantly, past and future. */
+      "bluey","adventurers outpost", /* X2 (0710m): ride-like SHOW meets — banked by Worker v3.8 for future stats, but held out of the Wrap while their status behavior is observed (character-break DOWN noise would pollute reliability boards). This is a READ-TIME filter: remove a fragment and the entity’s full banked history surfaces instantly, past and future. */
+      "impressions de france"]; /* 0711l: film typed ATTRACTION upstream; flat loop-interval wait (25m, zero variance) vacuously won Steadiest Line — a loop is not a line. Theater-show class round is post-trip (sweep banked Jul 12); trails and transport stay banked. */
     function pwExcluded(r){if(!r||r.name==null)return false;var n=(typeof normName==="function")?normName(r.name):String(r.name).toLowerCase();for(var i=0;i<WRAP_EXCLUDE.length;i++){if(n.indexOf(WRAP_EXCLUDE[i])>=0)return true;}return false;}
     function pwCleanData(d){
       if(!d||!d.rides||!d.rides.length)return d;
