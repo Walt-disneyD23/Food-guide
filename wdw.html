@@ -902,6 +902,10 @@
      Selection suppressed like .pw-band — a resting park thumb is not a text cursor. */
   .ltg-card{margin-top:12px;padding:11px 12px 9px;border-radius:var(--r-tile);background:rgba(99,102,241,.18);border:1px solid rgba(129,140,248,.32);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   .ltg-card.quiet{background:rgba(148,163,184,.08);border-color:rgba(203,213,225,.14)}
+  /* 0711p: an ACTIVE sky owns the hero weather block — the co-firing chip adopts the
+     card's indigo so chip+card read as one tone (owner call). On lightning-quiet days
+     chips keep their own semantic colors; the quiet card stays slate under any chip. */
+  .pw-chip.pw-chip-sky{background:rgba(99,102,241,.18);border-color:rgba(129,140,248,.32)}
   .ltg-card .row1{display:flex;align-items:baseline;gap:7px;font-size:var(--fs-small);color:var(--pwh-sub);flex-wrap:wrap}
   .ltg-card .row1 .bolt{color:#fbbf24}
   .ltg-card .chk{color:var(--pwh-dim);font-weight:400}
@@ -1005,7 +1009,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3918,9 +3922,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
       var h=hero(c,dateStr,isWeek,fin);
       var chip=isWeek?null:wxChip(d,live);
+      var ltgOn=!isWeek&&!!(d.ltg&&d.ltg.samples&&d.ltg.samples.some(function(s){return s.n>0;}));
       var wxKind=(chip&&(chip.kind==="storm"||chip.kind==="wind"||chip.kind==="rain"))?chip.kind:null,wxX=wxKind?wxDerive(d):null;
       var chipH="";
-      if(chip){var cls="pw-chip pw-chip-"+chip.kind+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
+      if(chip){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
       var ltgH=isWeek?"":pwLtgCard(d,live,tab);
       html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+ltgH+'</div>';
