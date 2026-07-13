@@ -903,7 +903,8 @@
   .ltg-card{margin-top:12px;padding:11px 12px 9px;border-radius:var(--r-tile);background:rgba(99,102,241,.18);border:1px solid rgba(129,140,248,.32);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   .ltg-card.quiet{background:rgba(148,163,184,.08);border-color:rgba(203,213,225,.14)}
   .ltg-card .row1{display:flex;align-items:baseline;gap:7px;font-size:var(--fs-small);color:var(--pwh-sub);flex-wrap:wrap}
-  .ltg-card .row1 .bolt{color:#fbbf24;flex:none}
+  .ltg-card .row1 .bolt{color:#fbbf24}
+  .ltg-card .chk{color:var(--pwh-dim);font-weight:400}
   .ltg-card.quiet .row1 .bolt{color:var(--pwh-dim)}
   .ltg-card .row1 b{color:var(--pwh-ink);font-weight:600}
   .ltg-asof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-left:auto;white-space:nowrap}
@@ -1004,7 +1005,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3856,22 +3857,24 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function pwLtgCard(d,live,tab){
       var L=d&&d.ltg,S=L&&L.samples;
       if(!S||!S.length)return "";
-      var i,max=null,latest=S[S.length-1],any=false;
-      for(i=0;i<S.length;i++){if(S[i].n>0){any=true;if(!max||S[i].n>max.n)max=S[i];}}
+      var i,max=null,latest=S[S.length-1],any=false,tot=0;
+      for(i=0;i<S.length;i++){if(S[i].n>0){any=true;tot+=S[i].n;if(!max||S[i].n>max.n)max=S[i];}}
       var full=S[0].t<=540;
       function hr(t){return pwClk(t).replace(":00","");}
-      var sent;
+      var sent,pl=function(n){return n===1?" strike":" strikes";};
       if(!any){
         sent=live?(full?"<b>none detected today</b>":"<b>quiet from "+pwClk(S[0].t)+"</b>")
-                 :(full?"<b>quiet all day</b>":"<b>quiet from "+pwClk(S[0].t)+" to close</b>");
+                 :(full?"<b>quiet all day</b> <span class=\"chk\">\u00b7 checked hourly, "+pwClk(S[0].t)+" \u2013 "+pwClk(latest.t)+"</span>":"<b>quiet from "+pwClk(S[0].t)+" to close</b>");
       }else if(live){
-        sent=(latest.n>0)?("<b>"+latest.n+" strike"+(latest.n===1?"":"s")+"</b> in the hour ending "+hr(latest.t))
+        sent=(latest.n>0)?((tot>latest.n?"<b>"+tot+pl(tot)+" so far</b> \u2014 "+latest.n+" in the hour ending "+hr(latest.t)
+                                        :"<b>"+latest.n+pl(latest.n)+"</b> in the hour ending "+hr(latest.t)))
                          :("none this hour \u2014 <b>peaked at "+max.n+"</b> in the "+hr(max.t)+" hour");
       }else{
-        sent="<b>peaked at "+max.n+" strike"+(max.n===1?"":"s")+"</b> in the "+hr(max.t)+" hour";
+        sent=(tot===max.n)?("<b>"+tot+pl(tot)+"</b>, all in the "+hr(max.t)+" hour")
+                          :("<b>"+tot+pl(tot)+"</b> across the day, peaked at "+max.n+" in the "+hr(max.t)+" hour");
       }
       var h='<div class="ltg-card'+(any?"":" quiet")+'">';
-      h+='<div class="row1"><span class="bolt">\u26a1</span><span>Lightning within 10 mi \u2014 '+sent+'</span>';
+      h+='<div class="row1"><span><span class="bolt">\u26a1</span> Lightning within 10 mi \u2014 '+sent+'</span>';
       if(live&&tab==="today"&&cacheAt.today){
         var at=new Date(cacheAt.today),ah=at.getHours(),am=at.getMinutes(),ap=ah<12?"AM":"PM",a12=((ah+11)%12)+1;
         h+='<span class="ltg-asof">as of '+a12+":"+(am<10?"0":"")+am+" "+ap+'<span class="upd" id="pwLtgUpd" role="button" tabindex="0">\u21bb update</span></span>';
