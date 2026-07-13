@@ -896,6 +896,27 @@
   .pw-chip-rain{background:rgba(59,130,246,.16);border-color:rgba(96,165,250,.32)}
   .pw-chip-heat{background:rgba(239,108,59,.18);border-color:rgba(248,150,110,.34)}
   .pw-chip-cold{background:rgba(56,189,248,.16);border-color:rgba(125,211,252,.34)}
+  /* ---- sky card (0711n): lightning ledger + live conditions, hero-bottom.
+     Active tint = the storm chip's exact indigo (one weather block, no tint war);
+     amber is reserved for the DATA (bolt, bars, tap-revealed counts). Quiet = slate.
+     Selection suppressed like .pw-band — a resting park thumb is not a text cursor. */
+  .ltg-card{margin-top:12px;padding:11px 12px 9px;border-radius:var(--r-tile);background:rgba(99,102,241,.18);border:1px solid rgba(129,140,248,.32);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .ltg-card.quiet{background:rgba(148,163,184,.08);border-color:rgba(203,213,225,.14)}
+  .ltg-card .row1{display:flex;align-items:baseline;gap:7px;font-size:var(--fs-small);color:var(--pwh-sub);flex-wrap:wrap}
+  .ltg-card .row1 .bolt{color:#fbbf24;flex:none}
+  .ltg-card.quiet .row1 .bolt{color:var(--pwh-dim)}
+  .ltg-card .row1 b{color:var(--pwh-ink);font-weight:600}
+  .ltg-asof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-left:auto;white-space:nowrap}
+  .ltg-asof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:6px;font-weight:600;cursor:pointer}
+  .ltg-cond{display:flex;align-items:baseline;gap:6px;margin-top:7px;font-size:var(--fs-small);color:var(--pwh-sub)}
+  .ltg-cond b{color:var(--pwh-ink);font-weight:600}
+  .ltg-strip{display:flex;align-items:flex-end;gap:3px;height:26px;margin-top:9px;cursor:pointer}
+  .ltg-strip.lbl{height:38px}
+  .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
+  .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
+  .ltg-strip.lbl i[data-n]:not(.z)::after{content:attr(data-n);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:2px;font-size:8.5px;font-weight:700;color:#fbbf24;font-family:var(--font-display)}
+  .ltg-hrs{display:flex;gap:3px;margin-top:3px}
+  .ltg-hrs s{flex:1;text-decoration:none;font-size:8.5px;color:var(--pwh-dim);text-align:center;font-weight:600}
   .pw-tile .ctx .pw-wx{color:var(--accent);font-weight:600}
   /* storm timeline screen */
   .pw-st-card{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:14px 12px 10px;margin-bottom:12px}
@@ -983,9 +1004,10 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
+      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
       <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
     </div>
     <div class="set-disc">Unofficial — not affiliated with or endorsed by The Walt Disney Company. Crowd level is an estimate from live wait times, not official attendance.</div>
@@ -3465,7 +3487,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
   (function(){
     var WRAP_URL=(typeof PUSH!=="undefined"&&PUSH.WORKER_URL)?PUSH.WORKER_URL:"https://parkpulse-push.walt-disneyd23.workers.dev";
     var MAIN=["Magic Kingdom","EPCOT","Hollywood Studios","Animal Kingdom"];
-    var cache={},curTab="yesterday",active=false,lastData=null,lastTab=null;
+    var cache={},cacheAt={},curTab="yesterday",active=false,lastData=null,lastTab=null;
     function $id(id){return document.getElementById(id);}
     function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
     function tier(m){return m>=45?"pw-p":m>=30?"pw-l":m>=15?"pw-m":"pw-s";}
@@ -3584,7 +3606,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       else url+="?date="+etDate(0);
       fetch(url).then(function(r){return r.json();}).then(function(d){
         pwCleanData(d);
-        cache[tab]=d;if(active&&curTab===tab)renderWrap(d,tab);
+        cache[tab]=d;cacheAt[tab]=Date.now();if(active&&curTab===tab)renderWrap(d,tab);
       })["catch"](function(){
         if(active&&curTab===tab){wv.innerHTML=tabsHTML(tab)+'<div class="pw-msg">Couldn’t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
       });
@@ -3809,6 +3831,70 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     }
 
     /* ---- recap (list) view ---- */
+    /* ---- sky card (0711n). Honesty states:
+       - d.ltg absent / no samples -> render NOTHING (absence is not quiet; the
+         sensor exists only from Jul 12 evening — old days must not claim calm).
+       - all zeros: "none detected today" only when coverage starts by park open
+         (first sample <= 9:00a); a late-start day says "quiet from H:MM" —
+         coverage-earned claims only.
+       - strikes, live: latest sample carries the sentence; a calm hour after an
+         active one says so and keeps the day's peak visible.
+       - FINAL: peak sentence; quiet FINAL days drop the strip (14 flat bars say
+         nothing 5 words don't). Conditions row is LIVE-ONLY — a finished day has
+         no "now"; its heat story belongs to the heat chip.
+       Glyph ladder mirrors pwScrubWx exactly (acute before ambient), plus the
+       ambient fallback the lens deliberately omits. Counts are banked CG strikes
+       in the trailing hour within 10 mi of the resort centroid (calibrated). */
+    function pwLtgGlyph(s){
+      if(!s)return "";
+      if(s.code>=95)return "\u26c8";
+      if(s.code>=51)return "\ud83c\udf27";
+      if((s.gust||0)>=35)return "\ud83d\udca8";
+      if(s.fF!=null&&s.fF>=105)return "\ud83e\udd75";
+      return s.code>=1?"\u26c5":"\u2600\ufe0f";
+    }
+    function pwLtgCard(d,live,tab){
+      var L=d&&d.ltg,S=L&&L.samples;
+      if(!S||!S.length)return "";
+      var i,max=null,latest=S[S.length-1],any=false;
+      for(i=0;i<S.length;i++){if(S[i].n>0){any=true;if(!max||S[i].n>max.n)max=S[i];}}
+      var full=S[0].t<=540;
+      function hr(t){return pwClk(t).replace(":00","");}
+      var sent;
+      if(!any){
+        sent=live?(full?"<b>none detected today</b>":"<b>quiet from "+pwClk(S[0].t)+"</b>")
+                 :(full?"<b>quiet all day</b>":"<b>quiet from "+pwClk(S[0].t)+" to close</b>");
+      }else if(live){
+        sent=(latest.n>0)?("<b>"+latest.n+" strike"+(latest.n===1?"":"s")+"</b> in the hour ending "+hr(latest.t))
+                         :("none this hour \u2014 <b>peaked at "+max.n+"</b> in the "+hr(max.t)+" hour");
+      }else{
+        sent="<b>peaked at "+max.n+" strike"+(max.n===1?"":"s")+"</b> in the "+hr(max.t)+" hour";
+      }
+      var h='<div class="ltg-card'+(any?"":" quiet")+'">';
+      h+='<div class="row1"><span class="bolt">\u26a1</span><span>Lightning within 10 mi \u2014 '+sent+'</span>';
+      if(live&&tab==="today"&&cacheAt.today){
+        var at=new Date(cacheAt.today),ah=at.getHours(),am=at.getMinutes(),ap=ah<12?"AM":"PM",a12=((ah+11)%12)+1;
+        h+='<span class="ltg-asof">as of '+a12+":"+(am<10?"0":"")+am+" "+ap+'<span class="upd" id="pwLtgUpd" role="button" tabindex="0">\u21bb update</span></span>';
+      }
+      h+='</div>';
+      if(live){
+        var wxS=d.wx&&d.wx.samples,cur=wxS&&wxS.length?wxS[wxS.length-1]:null;
+        if(cur&&cur.tF!=null){
+          h+='<div class="ltg-cond"><span>'+pwLtgGlyph(cur)+'</span><span>'+cur.tF+'\u00b0'+(cur.fF!=null?' \u00b7 feels like <b>'+cur.fF+'\u00b0</b>':'')+'</span></div>';
+        }
+      }
+      if(any||live){
+        var bars="",hrs="",top=any?max.n:1;
+        for(i=0;i<S.length;i++){
+          var s=S[i],t=s.t,m2=t%60,h12=((Math.floor(t/60)+11)%12)+1,lab=(m2===0?"":":"+(m2<10?"0":"")+m2),apc=Math.floor(t/60)<12?"a":"p";
+          if(s.n>0){var pct=Math.max(8,Math.round(s.n/top*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%"></i>';}
+          else bars+='<i class="z"></i>';
+          hrs+='<s>'+h12+lab+apc+'</s>';
+        }
+        h+='<div class="ltg-strip" id="pwLtgStrip">'+bars+'</div><div class="ltg-hrs">'+hrs+'</div>';
+      }
+      return h+'</div>';
+    }
     function renderWrap(d,tab){
       var wv=$id("wrapView");if(!wv)return;
       lastData=d;lastTab=tab;
@@ -3833,7 +3919,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chipH="";
       if(chip){var cls="pw-chip pw-chip-"+chip.kind+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
-      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+'</div>';
+      var ltgH=isWeek?"":pwLtgCard(d,live,tab);
+      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+ltgH+'</div>';
 
       html+='<div class="pw-grid">';
       if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park,null,c.toughest.id,c.toughest.park);
@@ -3870,6 +3957,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       wv.innerHTML=html;wireTabs();wireRows();wireGoTiles();
       var shb=$id("pwShare");if(shb)shb.addEventListener("click",function(){shareWrapCard();});
       var chb=$id("pwChip");if(chb){chb.addEventListener("click",function(){showStorm();});chb.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showStorm();}});}
+      var lup=$id("pwLtgUpd");if(lup)lup.addEventListener("click",function(){delete cache.today;delete cacheAt.today;loadTab("today");});
+      var lst=$id("pwLtgStrip");if(lst)lst.addEventListener("click",function(){lst.classList.toggle("lbl");});
     }
 
     function wireRows(){
@@ -4530,7 +4619,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
       if(x.series.length)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>';
       var wxW={storm:"the storm",wind:"the wind",rain:"the rain"}[ch.kind]||"the weather";
-      html+='<div class="pw-foot">Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 Weather by Open-Meteo</div>';
+      html+='<div class="pw-foot">Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
