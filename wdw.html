@@ -1009,7 +1009,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0711r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0711s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3893,10 +3893,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(any||live){
         var bars="",hrs="",top=any?max.n:1;
         for(i=0;i<S.length;i++){
-          var s=S[i],t=s.t,m2=t%60,h12=((Math.floor(t/60)+11)%12)+1,lab=(m2===0?"":":"+(m2<10?"0":"")+m2),apc=Math.floor(t/60)<12?"a":"p";
+          var s=S[i],t=s.t,h12=((Math.floor(t/60)+11)%12)+1,apc=Math.floor(t/60)<12?"a":"p"; /* 0711s: axis labels are hour-only — the axis anchors bars; the precise minute lives in the sentence. Cron phase drift (:01 ticks) ballooned fourteen labels out of the box. */
           if(s.n>0){var pct=Math.max(8,Math.round(s.n/top*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%"></i>';}
           else bars+='<i class="z"></i>';
-          hrs+='<s>'+h12+lab+apc+'</s>';
+          hrs+='<s>'+h12+apc+'</s>';
         }
         h+='<div class="ltg-strip" id="pwLtgStrip">'+bars+'</div><div class="ltg-hrs">'+hrs+'</div>';
       }
