@@ -932,6 +932,12 @@
   .ltg-hrs s.e:first-child{text-align:left}
   .ltg-hrs s.e:last-child{text-align:right}
   .pw-sky-fl{display:block;width:100%;height:56px}
+  .pw-lens-wrap{position:relative;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+  .pw-lens-line{position:absolute;top:7.9%;bottom:24.2%;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4}
+  .pw-lens-pill{position:absolute;top:-4px;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 11px;box-shadow:0 4px 14px rgba(20,24,44,.18);pointer-events:none;white-space:nowrap;z-index:5}
+  .pw-lens-pill .pt{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);margin-right:7px}
+  .pw-lens-pill .pv{font-size:11.5px;color:var(--muted)}
+  .pw-lens-pill .pv b{color:var(--ink);font-weight:700}
   .ltg-strip.lbl{height:38px}
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
   .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
@@ -1025,7 +1031,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4563,7 +4569,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function pwWxNote(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";var q=ov.frac>=0.6?"mostly ":ov.frac>=0.35?"partly ":null;return q?(' \u00b7 <span class="pw-wx">'+q+word+'</span>'):"";}
     function pwWxClause(rid,x,kind){if(!x)return "";var win=pwStormWin(x);if(!win)return "";var ov=pwRideOverlap(rid,win);if(!ov)return "";var word=kind==="wind"?"the wind":kind==="rain"?"the rain":"the storm";return ov.frac>=0.6?("mostly "+word):ov.frac>=0.35?("partly "+word):"";}
     function pwOutName(r,clause,kind){if(r.downEvents===0)return "No outages";if(clause){var w=kind==="wind"?"Wind":kind==="rain"?"Rain":"Storm";return w+(r.downEvents===1?" hold":" holds");}return r.downEvents===1?"Down period":"Down periods";}
-    function stormSVG(x){
+    function stormSVG(x,ltg){
       var series=x.series;if(!series.length)return "";
       var firstT=series[0][0],lastT=series[series.length-1][0];
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
@@ -4578,6 +4584,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(var b=0;b<x.samples.length;b++){var c=wxClass(x.samples[b]);if((c==="storm"||c==="core")&&stormFrom===null)stormFrom=x.samples[b].t;if(c==="core"&&coreFrom===null)coreFrom=x.samples[b].t;}
       if(stormFrom!==null)svg+='<rect x="'+tx(stormFrom)+'" y="'+pY0+'" width="'+(tx(T1)-tx(stormFrom)).toFixed(1)+'" height="'+pH+'" fill="#6366f1" fill-opacity="0.05"/>';
       if(coreFrom!==null)svg+='<rect x="'+tx(coreFrom)+'" y="'+pY0+'" width="'+(tx(T1)-tx(coreFrom)).toFixed(1)+'" height="'+pH+'" fill="#3b82f6" fill-opacity="0.08"/>';
+      /* 0712e: strike hours join the axis \u2014 each bar SPANS its trailing hour (t-60,t], honest window geometry */
+      if(ltg&&ltg.length){var LM=0,lz;for(lz=0;lz<ltg.length;lz++)if(ltg[lz].n>LM)LM=ltg[lz].n;
+        for(lz=0;lz<ltg.length;lz++){var ln=ltg[lz].n;if(ln>0){
+          var lx1=Math.max(parseFloat(tx(ltg[lz].t-60)),pX0),lx2=parseFloat(tx(ltg[lz].t)),lh=Math.max(6,(ln/LM)*pH*0.35);
+          svg+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(pY1-lh).toFixed(1)+'" width="'+(lx2-lx1-2).toFixed(1)+'" height="'+lh.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.5"/>';}}}
       var step=DMAX<=20?5:10;
       for(var g=0;g<=DMAX;g+=step){svg+='<line x1="'+pX0+'" y1="'+dy(g)+'" x2="'+pX1+'" y2="'+dy(g)+'" stroke="#eef0f6" stroke-width="1"/>';svg+='<text x="'+(pX0-7)+'" y="'+(parseFloat(dy(g))+4)+'" text-anchor="end" font-family="Inter" font-size="16" font-weight="600" fill="#9aa0b8">'+g+'</text>';}
       for(var t=T0;t<=T1;t+=60){svg+='<text x="'+tx(t)+'" y="'+(pY1+20)+'" text-anchor="middle" font-family="Inter" font-size="16" font-weight="600" fill="#9aa0b8">'+pwClkS(t)+'</text>';}
@@ -4585,6 +4596,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(var i=0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
       area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
       svg+='<path d="'+area+'" fill="url(#pwAg)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
+      /* 0712e: the feels-like trace, normalized to the plot \u2014 the day's third voice */
+      if(x.samples.length>1){var flo=1e9,fhi=-1e9,fz,fpts="";
+        for(fz=0;fz<x.samples.length;fz++){var ff=x.samples[fz].fF;if(ff<flo)flo=ff;if(ff>fhi)fhi=ff;}
+        if(fhi-flo<4)fhi=flo+4;
+        for(fz=0;fz<x.samples.length;fz++){fpts+=(fz?" ":"")+tx(x.samples[fz].t)+","+((pY0+6)+(1-(x.samples[fz].fF-flo)/(fhi-flo))*(pH-12)).toFixed(1);}
+        svg+='<polyline fill="none" stroke="#f97316" stroke-width="2" stroke-opacity="0.85" points="'+fpts+'"/>';}
       if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))-9)+'" y="'+(parseFloat(dy(x.onset.tot))-10)+'" text-anchor="end" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#4f46e5">'+pwClk(x.onset.t)+' \u00b7 '+esc(pwPA(x.onset.park))+' held</text>';}
       if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClk(x.peakPt.t)+'</text>';}
       var ry=pY1+30,rh=15,cols=PW_RIBBON,labs={clear:"clear",cloud:"clouds",storm:"⚡ lightning in the area",rain:"🌧 rain",core:"🌧 core"},labcol={clear:"#ca8a04",cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
@@ -4667,6 +4684,37 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       B.sort(function(a,b){return a.t-b.t;});
       return B;
     }
+    /* ===== 0712e: the Sky lens \u2014 one hairline, every ledger. Silent-when-zero;
+       hour-grain honesty ("this hr") until v3.8.2 sharpens it. Reader is pure. ===== */
+    function skyLensRead(tRaw,D){
+      var t=Math.round(tRaw/5)*5;if(t<D.T0)t=D.T0;if(t>D.T1)t=D.T1;
+      var v=0,i;for(i=0;i<D.series.length;i++){if(D.series[i][0]<=t)v=D.series[i][1];else break;}
+      var n=0;for(i=0;i<D.ltg.length;i++){if(D.ltg[i].t-60<t&&t<=D.ltg[i].t){n=D.ltg[i].n;break;}}
+      var w=null,bd=1e9;for(i=0;i<D.wx.length;i++){var dd=Math.abs(D.wx[i].t-t);if(dd<bd){bd=dd;w=D.wx[i];}}
+      var parts=[];
+      if(v>0)parts.push("<b>"+v+"</b> down");
+      if(n>0)parts.push("\u26a1<b>"+n+"</b> this hr");
+      if(w)parts.push("feels <b>"+w.fF+"\u00b0</b>");
+      if(w&&w.gust>=15)parts.push("gust "+w.gust);
+      return {t:t,clk:pwClk(t),parts:parts};
+    }
+    function pwSkyBind(D){
+      var wrap=$id("pwSkyWrap"),ln=$id("pwLensL"),pl=$id("pwLensP");if(!wrap||!ln||!pl)return;
+      var act=false;
+      function place(cx){
+        var r=wrap.getBoundingClientRect();if(!r.width)return;
+        var vx=(cx-r.left)/r.width*720,t=D.T0+(vx-34)/672*(D.T1-D.T0);
+        var rd=skyLensRead(t,D);
+        var lf=((34+(rd.t-D.T0)/(D.T1-D.T0)*672)/720*100).toFixed(2)+"%";
+        ln.style.left=lf;pl.style.left=lf;
+        pl.innerHTML='<span class="pt">'+rd.clk+'</span><span class="pv">'+(rd.parts.join(" \u00b7 ")||"quiet")+'</span>';
+        ln.hidden=false;pl.hidden=false;
+      }
+      function end(){act=false;ln.hidden=true;pl.hidden=true;}
+      wrap.addEventListener("pointerdown",function(e){act=true;place(e.clientX);});
+      wrap.addEventListener("pointermove",function(e){if(act)place(e.clientX);});
+      wrap.addEventListener("pointerup",end);wrap.addEventListener("pointercancel",end);wrap.addEventListener("pointerleave",end);
+    }
     function showStorm(){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       if(lastTab==="week")return;
@@ -4699,9 +4747,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var showDown=!!x.series.length&&x.downPeak>=8; /* flat down charts are noise on calm days */
       if(!x.series.length&&!stx&&!fl){html+='<div class="pw-msg">No timeline data for this day yet.</div>';}
       else{
-        if(showDown)html+='<div class="pw-st-card">'+stormSVG(x)+'</div>';
-        if(stx)html+='<div class="pw-st-card pw-sky">'+stx.html+'</div>';
-        if(fl)html+='<div class="pw-st-card pw-sky">'+fl.html+'</div>';
+        if(showDown)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+stormSVG(x,(lastData.ltg&&lastData.ltg.samples)||null)+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div></div>';
+        if(stx&&!showDown)html+='<div class="pw-st-card pw-sky">'+stx.html+'</div>';
+        if(fl&&!showDown)html+='<div class="pw-st-card pw-sky">'+fl.html+'</div>';
         var BB=skyBeats(lastData,x,live,op),bi;
         for(bi=0;bi<BB.length;bi++)html+=pwCall(BB[bi].c,BB[bi].h,BB[bi].b);
         if(showDown){var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
@@ -4716,6 +4764,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked hourly, "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):"";
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
+      if(showDown){var lf0=x.series[0][0],ll0=x.series[x.series.length-1][0];
+        if(x.samples.length){lf0=Math.min(lf0,x.samples[0].t);ll0=Math.max(ll0,x.samples[x.samples.length-1].t);}
+        pwSkyBind({T0:Math.floor(lf0/60)*60,T1:Math.ceil(ll0/60)*60,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples});}
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
     }
