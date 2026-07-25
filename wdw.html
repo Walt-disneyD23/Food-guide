@@ -894,6 +894,7 @@
   .pw-chip.tap{cursor:pointer}.pw-chip.tap:active{transform:scale(.99)}
   .pw-chip-wind{background:rgba(13,148,136,.18);border-color:rgba(45,212,191,.32)}
   .pw-chip-rain{background:rgba(59,130,246,.16);border-color:rgba(96,165,250,.32)}
+  .pw-chip-hold{background:rgba(100,116,139,.16);border-color:rgba(148,163,184,.34)} /* 0712d: slate \u2014 factual, not alarming */
   .pw-chip-heat{background:rgba(239,108,59,.18);border-color:rgba(248,150,110,.34)}
   .pw-chip-cold{background:rgba(56,189,248,.16);border-color:rgba(125,211,252,.34)}
   /* ---- sky card (0711n): lightning ledger + live conditions, hero-bottom.
@@ -926,6 +927,10 @@
   html.dark .pw-sky-bars i[data-n]::after{color:#fbbf24}
   .pw-sky-hrs{display:flex;gap:4px;margin-top:4px}
   .pw-sky-hrs s{flex:1;text-decoration:none;font-size:9.5px;color:var(--muted);text-align:center;font-weight:600}
+  .ltg-hrs s.q{visibility:hidden}
+  #pwLtgStrip.lbl+.ltg-hrs s.q{visibility:visible}
+  .ltg-hrs s.e:first-child{text-align:left}
+  .ltg-hrs s.e:last-child{text-align:right}
   .pw-sky-fl{display:block;width:100%;height:56px}
   .ltg-strip.lbl{height:38px}
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
@@ -1020,7 +1025,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3903,11 +3908,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
       if(any||live){
         var bars="",hrs="",top=any?max.n:1;
+        var midIdx=0,mdd=1e9; /* 0712d: quiet axis (owner pick B) \u2014 edges + midday breathe; the tap toggle now reveals count AND hour per bar */
+        for(i=0;i<S.length;i++){var dmm=Math.abs(S[i].t-720);if(dmm<mdd){mdd=dmm;midIdx=i;}}
         for(i=0;i<S.length;i++){
           var s=S[i],t=s.t,h12=((Math.floor(t/60)+11)%12)+1,apc=Math.floor(t/60)<12?"a":"p"; /* 0711s: axis labels are hour-only — the axis anchors bars; the precise minute lives in the sentence. Cron phase drift (:01 ticks) ballooned fourteen labels out of the box. */
           if(s.n>0){var pct=Math.max(8,Math.round(s.n/top*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%"></i>';}
           else bars+='<i class="z"></i>';
-          hrs+='<s>'+h12+apc+'</s>';
+          var edge=(S.length<=8)||(i===0||i===S.length-1||i===midIdx); /* short mornings keep full labels \u2014 same \u22648 exception as thinning */
+          hrs+='<s class="'+(edge?"e":"q")+'">'+h12+apc+'</s>';
         }
         h+='<div class="ltg-strip" id="pwLtgStrip">'+bars+'</div><div class="ltg-hrs">'+hrs+'</div>';
       }
@@ -4081,6 +4089,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(!d||!d.wx)return null;
       var x=wxDerive(d);
       if(x.code>=95&&x.downPeak>=8)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak")};
+      if(x.downPeak>=8){var hnp=0,hpk;for(hpk in x.parkPeaks){if(x.parkPeaks[hpk]>0)hnp++;}
+        /* 0712d: the hold chip \u2014 down-count is the truer storm signal than the point's code (6-for-6 on the trip week). Descriptive, never causal; "attractions", never "rides". Chevron opens the Sky page. */
+        return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses across "+(hnp>=4?"all four parks":hnp+" park"+(hnp===1?"":"s"))+" \u2014 "+x.downPeak+" attractions at once"+(live?" so far":" at the peak")};}
       if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner")};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
