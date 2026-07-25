@@ -1020,7 +1020,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4671,12 +4671,18 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var KK={storm:"Storm timeline",wind:"Wind timeline",rain:"Rain timeline"};
       ttl=TT[ch.kind]||"When the weather hit";kicker=KK[ch.kind]||"Weather timeline";
       var lead=(LD[ch.kind]||["Weather moving over Walt Disney World","Weather moved over Walt Disney World"])[live?0:1];
-      sub=lead+(live?" \u2014 "+x.downPeak+" attractions paused so far.":". "+x.downPeak+" attractions paused at the peak.");
-      if(!chReal){ /* 0712a: quiet-sky day — the page is always reachable; the watch is a story */
-        ttl="The day's sky";kicker="Sky timeline";
-        sub=(stx&&stx.tot>0)?(stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"+(live?" so far today.":" across the day.")):
-            ("No lightning within 10 mi \u2014 quiet "+(live?"so far today.":"all day."));
-        if(op&&op.fF>=100)sub+=" Feels-like peaked at "+op.fF+"\u00b0.";
+      sub=lead+(x.downPeak>=8?(live?" \u2014 "+x.downPeak+" attractions paused so far.":". "+x.downPeak+" attractions paused at the peak."):".");
+      if(!chReal||!TT[chReal.kind]){ /* 0712c: heat/cold aren't timeline chips \u2014 they take the sky vocabulary; heat leads (owner call) */
+        kicker="Sky timeline";
+        var ltgCl=(stx&&stx.tot>0)?(stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"):"no lightning within 10 mi";
+        if(chReal&&chReal.kind==="heat"&&op){
+          ttl="A scorcher, end to end";
+          sub="Feels-like "+(live?("has peaked at "+op.fF+"\u00b0 so far"):("peaked at "+op.fF+"\u00b0"))+" \u2014 "+ltgCl+((!live&&!(stx&&stx.tot>0))?" all day":"")+".";
+        }else{
+          ttl="The day's sky";
+          sub=(stx&&stx.tot>0)?(ltgCl+(live?" so far today.":" across the day.")):("No lightning within 10 mi \u2014 quiet "+(live?"so far today.":"all day."));
+          if(op&&op.fF>=100)sub+=" Feels-like peaked at "+op.fF+"\u00b0.";
+        }
       }
       html+='<div class="pw-hero"><div class="k">'+kicker+'</div><div class="ttl">'+esc(ttl)+'</div><div class="sub">'+esc(sub)+'</div></div>';
       var showDown=!!x.series.length&&x.downPeak>=8; /* flat down charts are noise on calm days */
@@ -4697,7 +4703,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(showDown)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>';
       var wxW={storm:"the storm",wind:"the wind",rain:"the rain"}[ch.kind]||"the weather";
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked hourly, "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):"";
-      html+='<div class="pw-foot">'+(chReal?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
+      html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
