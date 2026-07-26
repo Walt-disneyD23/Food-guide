@@ -948,6 +948,8 @@
   .pw-lh .st.q{font-family:Inter,sans-serif;font-weight:600;font-size:10.5px;color:var(--muted)}
   .pw-lrule{height:1px;background:var(--line);margin:0 0 3px}
   .pw-lane{display:block;width:100%;overflow:visible}
+  .pw-rlab.clear{fill:#a16207}.pw-rlab.cloud{fill:#5b6474}.pw-rlab.storm{fill:#4f46e5}.pw-rlab.rain{fill:#1d4ed8}.pw-rlab.core{fill:#1d4ed8} /* 0712s: R1+ ribbon label ink - classes so Harbor dark can retint */
+  html.dark .pw-rlab.clear{fill:#fbbf24}html.dark .pw-rlab.cloud{fill:#a8b6c6}html.dark .pw-rlab.storm{fill:#a5b4fc}html.dark .pw-rlab.rain{fill:#93c5fd}html.dark .pw-rlab.core{fill:#93c5fd}
   .pw-szone{position:absolute;top:28px;bottom:26px;background:linear-gradient(0deg,rgba(99,102,241,.16),rgba(99,102,241,.02));border-radius:3px 3px 0 0;pointer-events:none;z-index:3} /* 0712q: the glow ends AT the ribbon\u2019s top edge \u2014 rising from the segment, never washing its label */ /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */
   .ltg-strip.lbl{height:38px}
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
@@ -1042,7 +1044,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4781,7 +4783,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         h+='<div class="pw-lh"><span class="nm">Feels-like</span><span class="st">'+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
       }
       /* the floor \u2014 ribbon (sensor-upgraded) + hour axis */
-      var cols=PW_RIBBON,labs={clear:"clear",cloud:"clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27 rain",core:"\ud83c\udf27 core"},labcol={clear:"#ca8a04",cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
+      var cols=PW_RIBBON,tiers={clear:["clear","\u2600"],cloud:["clouds","\u2601"],storm:["\u26a1 lightning in the area","\u26a1 lightning","\u26a1"],rain:["\ud83c\udf27 rain","\ud83c\udf27"],core:["\ud83c\udf27 core","\ud83c\udf27"]}; /* 0712s: R1+ label tiers (owner pick) */
       function ltgAt2(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;}
       var segs=[],sm0=x.samples,s2;
       for(s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]);if(ltgAt2(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
@@ -4790,11 +4792,25 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var rb='<svg class="pw-lane" viewBox="0 0 720 56" preserveAspectRatio="none">';
       for(var sg=0;sg<segs.length;sg++){var Sg=segs[sg],w2=parseFloat(tx(Sg.b))-parseFloat(tx(Sg.a));
         rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>';
-        if(w2>70)rb+='<text x="'+((parseFloat(tx(Sg.a))+parseFloat(tx(Sg.b)))/2).toFixed(1)+'" y="30" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="'+labcol[Sg.cl]+'">'+labs[Sg.cl]+'</text>';}
+      }
+      /* 0712s: R1+ collision-aware labels (owner pick, mock-ratified) \u2014 the gate is "hits nothing",
+         not "fits inside". Labels stay centered on their segment; width may overhang toward a
+         neighbor's center minus that neighbor's minimal-glyph reserve (the lens pill's 0712i
+         pattern: content first, position second). Tiers degrade phrase \u2192 short \u2192 glyph;
+         hairline segments (<12u) stay quiet. Label ink lives in .pw-rlab so dark can retint. */
+      var mtx=document.createElement("canvas").getContext("2d");
+      function labW(s){mtx.font='600 20px Inter,sans-serif';return mtx.measureText(s).width;}
+      var segC=[],segMin=[],sc;
+      for(sc=0;sc<segs.length;sc++){segC.push((parseFloat(tx(segs[sc].a))+parseFloat(tx(segs[sc].b)))/2);var tt=tiers[segs[sc].cl];segMin.push(labW(tt[tt.length-1])/2);}
+      for(sg=0;sg<segs.length;sg++){var Sg2=segs[sg],w3=parseFloat(tx(Sg2.b))-parseFloat(tx(Sg2.a));if(w3<12)continue;
+        var lAv=(sg===0)?segC[sg]:(segC[sg]-segC[sg-1]-segMin[sg-1]-8),rAv=(sg===segs.length-1)?(720-segC[sg]):(segC[sg+1]-segC[sg]-segMin[sg+1]-8);
+        var allow=2*Math.max(0,Math.min(lAv,rAv)),tt2=tiers[Sg2.cl],pick=null,tk;
+        for(tk=0;tk<tt2.length;tk++){if(labW(tt2[tk])<=allow){pick=tt2[tk];break;}}
+        if(pick!==null)rb+='<text x="'+segC[sg].toFixed(1)+'" y="33" text-anchor="middle" font-family="Inter" font-size="20" font-weight="600" class="pw-rlab '+Sg2.cl+'">'+pick+'</text>';}
       /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
       var axLast=T0;
-      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
-      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
+      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="54" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
+      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="54" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
       /* 0712r: the glow marks the EVENT, not the sky (owner call) \u2014 windows = contiguous runs of
          concurrent downs >= 8, straight from the series the chart draws. Cause-neutral by construction:
