@@ -941,7 +941,7 @@
   .pw-lens-pill .pt{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);margin-right:7px}
   .pw-lens-pill .pv{font-size:11.5px;color:var(--muted)}
   .pw-lens-pill .pv b{color:var(--ink);font-weight:700}
-  .pw-lh{display:flex;align-items:baseline;gap:6px;margin:7px 2px 2px}
+  .pw-lh{display:flex;align-items:baseline;gap:6px;margin:13px 2px 3px} /* 0712r: breathing room between lanes */
   .pw-lh .nm{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;flex:1}
   .pw-lh .st{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);white-space:nowrap}
   .pw-lh .st i{font-style:normal;font-family:Inter,sans-serif;font-weight:600;font-size:10px;color:var(--muted)}
@@ -1042,7 +1042,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4743,11 +4743,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var h="";
       /* lane 1 \u2014 attractions down */
       var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
-      function dy(v){return (120-(v/DMAX)*112).toFixed(1);}
+      function dy(v){return (158-(v/DMAX)*150).toFixed(1);} /* 0712r: taller lanes (owner call) \u2014 the stack owns the page */
       var area="M "+tx(series[0][0])+" "+dy(0),line="",i;
       for(i=0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
       area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
-      var l1='<svg class="pw-lane" viewBox="0 0 720 128" preserveAspectRatio="none">';
+      var l1='<svg class="pw-lane" viewBox="0 0 720 168" preserveAspectRatio="none">';
       l1+='<line x1="0" y1="'+dy(DMAX/2)+'" x2="720" y2="'+dy(DMAX/2)+'" stroke="#eef0f6" stroke-width="1"/>';
       l1+='<path d="'+area+'" fill="rgba(226,59,84,.12)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
       if(x.onset)l1+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';
@@ -4758,10 +4758,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* lane 2 \u2014 strikes */
       var tot=0,mx=null,LM=0,lz;
       for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];}
-      var l2='<svg class="pw-lane" viewBox="0 0 720 68" preserveAspectRatio="none">';
+      var l2='<svg class="pw-lane" viewBox="0 0 720 92" preserveAspectRatio="none">';
       for(lz=0;lz<LT.length;lz++){var ln=LT[lz].n;if(ln>0){
-        var lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t)),lh2=Math.max(5,(ln/LM)*60);
-        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(64-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
+        var lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t)),lh2=Math.max(6,(ln/LM)*84);
+        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(88-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
       l2+='</svg>';
       var v2=(tot>0&&mx)?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):'none within 10 mi';
       h+='<div class="pw-lh"><span class="nm">\u26a1 Strikes \u00b7 10 mi</span><span class="st'+((tot>0&&mx)?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+l2;
@@ -4770,10 +4770,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(S3.length>1){var flo=1e9,fhi=-1e9,fz;
         for(fz=0;fz<S3.length;fz++){var ff=S3[fz].fF;if(ff<flo)flo=ff;if(ff>fhi)fhi=ff;}
         if(fhi-flo<4)fhi=flo+4;
-        var fy=function(f){return (6+(1-(f-flo)/(fhi-flo))*54).toFixed(1);};
+        var fy=function(f){return (8+(1-(f-flo)/(fhi-flo))*76).toFixed(1);};
         var fpts="",fpk=0;
         for(fz=0;fz<S3.length;fz++){if(S3[fz].fF>S3[fpk].fF)fpk=fz;fpts+=(fz?" ":"")+tx(S3[fz].t)+","+fy(S3[fz].fF);}
-        var l3='<svg class="pw-lane" viewBox="0 0 720 68" preserveAspectRatio="none">';
+        var l3='<svg class="pw-lane" viewBox="0 0 720 92" preserveAspectRatio="none">';
         if(fhi>=100)l3+='<line x1="0" y1="'+fy(105)+'" x2="720" y2="'+fy(105)+'" stroke="#f97316" stroke-width="1" stroke-dasharray="4 5" stroke-opacity=".4"/>';
         l3+='<polyline fill="none" stroke="#f97316" stroke-width="2" stroke-opacity="0.9" points="'+fpts+'"/>';
         l3+='<circle cx="'+tx(S3[0].t)+'" cy="'+fy(S3[0].fF)+'" r="3.5" fill="#f97316"/><circle cx="'+tx(S3[fpk].t)+'" cy="'+fy(S3[fpk].fF)+'" r="4" fill="#f97316"/><circle cx="'+tx(S3[S3.length-1].t)+'" cy="'+fy(S3[S3.length-1].fF)+'" r="3.5" fill="#f97316"/>';
@@ -4796,14 +4796,23 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
       if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
-      /* 0712n: bracket the event window(s) through every lane (owner pick S3). Windows = merged runs
-         of the ribbon's OWN storm/core segments \u2014 one source of truth, multi-wave days bracket each
-         wave for free, quiet days draw nothing. Same fraction math as the lens hairline. */
-      var evw=[],ew=null;
-      for(sg=0;sg<segs.length;sg++){var isEv=(segs[sg].cl==="storm"||segs[sg].cl==="core");
-        if(isEv){if(ew)ew.b=segs[sg].b;else ew={a:segs[sg].a,b:segs[sg].b};}
-        else if(ew){evw.push(ew);ew=null;}}
-      if(ew)evw.push(ew);
+      /* 0712r: the glow marks the EVENT, not the sky (owner call) \u2014 windows = contiguous runs of
+         concurrent downs >= 8, straight from the series the chart draws. Cause-neutral by construction:
+         wind holds, rain holds, lightning holds all get their frame; the ribbon keeps telling the sky\u2019s
+         story separately. Sub-15-min dips merge (a one-tick flutter must not split an event); slim
+         windows get a \u00b15-min pad so a brief wave still reads. */
+      var runs=[],cw=null;
+      for(i=0;i<series.length;i++){
+        if(series[i][1]>=8){if(cw)cw.b=series[i][0];else cw={a:series[i][0],b:series[i][0]};}
+        else if(cw){runs.push(cw);cw=null;}
+      }
+      if(cw)runs.push(cw);
+      var evw=[];
+      for(i=0;i<runs.length;i++){
+        if(evw.length&&runs[i].a-evw[evw.length-1].b<15)evw[evw.length-1].b=runs[i].b;
+        else evw.push({a:runs[i].a,b:runs[i].b});
+      }
+      for(i=0;i<evw.length;i++){if(evw[i].b-evw[i].a<10){evw[i].a=Math.max(T0,evw[i].a-5);evw[i].b=Math.min(T1,evw[i].b+5);}}
       var zones="";
       for(sg=0;sg<evw.length;sg++){var za=((evw[sg].a-T0)/(T1-T0)*100).toFixed(2),zw=((evw[sg].b-evw[sg].a)/(T1-T0)*100).toFixed(2);
         zones+='<div class="pw-szone" style="left:'+za+'%;width:'+zw+'%"></div>';}
