@@ -936,7 +936,7 @@
   .pw-fl-vm{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:var(--muted)}
   .pw-fl-ex{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:#f97316;fill-opacity:.7}
   .pw-lens-wrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none} /* 0712j: the chart is a scrub surface \u2014 vertical drift must not scroll the page out from under a read */
-  .pw-lens-line{position:absolute;top:2px;bottom:16px;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4} /* 0712l: one hairline through every lane */
+  .pw-lens-line{position:absolute;top:2px;bottom:20px;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4} /* 0712l: one hairline through every lane */ /* 0712u: +4px \u2014 the floor grew 56\u219264u for bigger icons; same landing at the band */
   .pw-lens-pill{position:absolute;top:-4px;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 11px;box-shadow:0 4px 14px rgba(20,24,44,.18);pointer-events:none;white-space:nowrap;z-index:5}
   .pw-lens-pill .pt{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);margin-right:7px}
   .pw-lens-pill .pv{font-size:11.5px;color:var(--muted)}
@@ -948,9 +948,8 @@
   .pw-lh .st.q{font-family:Inter,sans-serif;font-weight:600;font-size:10.5px;color:var(--muted)}
   .pw-lrule{height:1px;background:var(--line);margin:0 0 3px}
   .pw-lane{display:block;width:100%;overflow:visible}
-  .pw-rlab.clear{fill:#a16207}.pw-rlab.cloud{fill:#5b6474}.pw-rlab.storm{fill:#4f46e5}.pw-rlab.rain{fill:#1d4ed8}.pw-rlab.core{fill:#1d4ed8} /* 0712s: R1+ ribbon label ink - classes so Harbor dark can retint */
-  html.dark .pw-rlab.clear{fill:#fbbf24}html.dark .pw-rlab.cloud{fill:#a8b6c6}html.dark .pw-rlab.storm{fill:#a5b4fc}html.dark .pw-rlab.rain{fill:#93c5fd}html.dark .pw-rlab.core{fill:#93c5fd}
-  .pw-szone{position:absolute;top:28px;bottom:26px;background:linear-gradient(0deg,rgba(99,102,241,.16),rgba(99,102,241,.02));border-radius:3px 3px 0 0;pointer-events:none;z-index:3} /* 0712q: the glow ends AT the ribbon\u2019s top edge \u2014 rising from the segment, never washing its label */ /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */
+  .pw-sleg{font:600 11px/1.6 Inter,sans-serif;color:var(--muted);margin:8px 2px 0;letter-spacing:.01em} /* 0712t: in-use-only ribbon legend under the stack */
+  .pw-szone{position:absolute;top:28px;bottom:29px;background:linear-gradient(0deg,rgba(99,102,241,.16),rgba(99,102,241,.02));border-radius:3px 3px 0 0;pointer-events:none;z-index:3} /* 0712q: the glow ends AT the ribbon\u2019s top edge \u2014 rising from the segment, never washing its label */ /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */ /* 0712u: 26\u219229px \u2014 floor grew 56\u219264u; same landing on the band\u2019s top edge */
   .ltg-strip.lbl{height:38px}
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
   .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
@@ -1044,7 +1043,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4783,34 +4782,30 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         h+='<div class="pw-lh"><span class="nm">Feels-like</span><span class="st">'+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
       }
       /* the floor \u2014 ribbon (sensor-upgraded) + hour axis */
-      var cols=PW_RIBBON,tiers={clear:["clear","\u2600"],cloud:["clouds","\u2601"],storm:["\u26a1 lightning in the area","\u26a1 lightning","\u26a1"],rain:["\ud83c\udf27 rain","\ud83c\udf27"],core:["\ud83c\udf27 core","\ud83c\udf27"]}; /* 0712s: R1+ label tiers (owner pick) */
+      var cols=PW_RIBBON; /* 0712t: labels retired for icons (owner call) \u2014 see the icon pass below */
       function ltgAt2(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;}
       var segs=[],sm0=x.samples,s2;
       for(s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]);if(ltgAt2(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
         var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);
         if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
-      var rb='<svg class="pw-lane" viewBox="0 0 720 56" preserveAspectRatio="none">';
+      var rb='<svg class="pw-lane" viewBox="0 0 720 64" preserveAspectRatio="none">'; /* 0712u: taller floor (owner call) \u2014 room for fs30 icons; band stays y2 h13 */
       for(var sg=0;sg<segs.length;sg++){var Sg=segs[sg],w2=parseFloat(tx(Sg.b))-parseFloat(tx(Sg.a));
         rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>';
       }
-      /* 0712s: R1+ collision-aware labels (owner pick, mock-ratified) \u2014 the gate is "hits nothing",
-         not "fits inside". Labels stay centered on their segment; width may overhang toward a
-         neighbor's center minus that neighbor's minimal-glyph reserve (the lens pill's 0712i
-         pattern: content first, position second). Tiers degrade phrase \u2192 short \u2192 glyph;
-         hairline segments (<12u) stay quiet. Label ink lives in .pw-rlab so dark can retint. */
-      var mtx=document.createElement("canvas").getContext("2d");
-      function labW(s){mtx.font='600 20px Inter,sans-serif';return mtx.measureText(s).width;}
-      var segC=[],segMin=[],sc;
-      for(sc=0;sc<segs.length;sc++){segC.push((parseFloat(tx(segs[sc].a))+parseFloat(tx(segs[sc].b)))/2);var tt=tiers[segs[sc].cl];segMin.push(labW(tt[tt.length-1])/2);}
+      /* 0712t: icons-only ribbon (owner call, mock-ratified I1) \u2014 one vocabulary all day; the
+         0712s tier/collision/measurer machinery retires. A centered color glyph per segment;
+         icons are near-fixed width so the guard is three lines. Hairline segments (<12u) stay
+         quiet \u2014 they still paint in the band, and the legend still explains their color. */
+      var ICONS={clear:"\u2600\ufe0f",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
+      var lastR=-1e9;
       for(sg=0;sg<segs.length;sg++){var Sg2=segs[sg],w3=parseFloat(tx(Sg2.b))-parseFloat(tx(Sg2.a));if(w3<12)continue;
-        var lAv=(sg===0)?segC[sg]:(segC[sg]-segC[sg-1]-segMin[sg-1]-8),rAv=(sg===segs.length-1)?(720-segC[sg]):(segC[sg+1]-segC[sg]-segMin[sg+1]-8);
-        var allow=2*Math.max(0,Math.min(lAv,rAv)),tt2=tiers[Sg2.cl],pick=null,tk;
-        for(tk=0;tk<tt2.length;tk++){if(labW(tt2[tk])<=allow){pick=tt2[tk];break;}}
-        if(pick!==null)rb+='<text x="'+segC[sg].toFixed(1)+'" y="33" text-anchor="middle" font-family="Inter" font-size="20" font-weight="600" class="pw-rlab '+Sg2.cl+'">'+pick+'</text>';}
+        var icx=(parseFloat(tx(Sg2.a))+parseFloat(tx(Sg2.b)))/2;
+        if(icx-16<lastR+6)continue;
+        rb+='<text x="'+icx.toFixed(1)+'" y="44" text-anchor="middle" font-family="Inter" font-size="30">'+ICONS[Sg2.cl]+'</text>';lastR=icx+16;}
       /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
       var axLast=T0;
-      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="54" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
-      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="54" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
+      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
+      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
       /* 0712r: the glow marks the EVENT, not the sky (owner call) \u2014 windows = contiguous runs of
          concurrent downs >= 8, straight from the series the chart draws. Cause-neutral by construction:
@@ -4832,7 +4827,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var zones="";
       for(sg=0;sg<evw.length;sg++){var za=((evw[sg].a-T0)/(T1-T0)*100).toFixed(2),zw=((evw[sg].b-evw[sg].a)/(T1-T0)*100).toFixed(2);
         zones+='<div class="pw-szone" style="left:'+za+'%;width:'+zw+'%"></div>';}
-      return {html:zones+h+rb,T0:T0,T1:T1};
+      /* 0712t: in-use-only legend (owner call) \u2014 disclosure follows the data. The words the
+         ribbon stopped speaking live here, under the stack, only for the states the day used.
+         Canonical order so it never reshuffles; rain and rain core split \ud83c\udf27 vs \u26c8. */
+      var LEG_ORD=["clear","cloud","storm","rain","core"],LEG_TXT={clear:"\u2600\ufe0f clear",cloud:"\u2601\ufe0f clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27\ufe0f rain",core:"\u26c8\ufe0f rain core"};
+      var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)used[segs[lgi].cl]=1;
+      for(lgi=0;lgi<LEG_ORD.length;lgi++){if(used[LEG_ORD[lgi]])lg.push(LEG_TXT[LEG_ORD[lgi]]);}
+      var leg=lg.length?('<div class="pw-sleg">'+lg.join(" \u00b7 ")+'</div>'):"";
+      return {html:zones+h+rb,leg:leg,T0:T0,T1:T1};
     }
     /* ===== 0712e: the Sky lens \u2014 one hairline, every ledger. Silent-when-zero;
        hour-grain honesty ("this hr") until v3.8.2 sharpens it. Reader is pure. ===== */
@@ -4911,7 +4913,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       else{
         var LN=null;
         if(showDown){LN=skyLanes(x,(lastData.ltg&&lastData.ltg.samples)||null);
-          if(LN)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+LN.html+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div></div>';}
+          if(LN)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+LN.html+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div>'+(LN.leg||"")+'</div>';}
         if(stx&&!showDown)html+='<div class="pw-st-card pw-sky">'+stx.html+'</div>';
         if(fl&&!showDown)html+='<div class="pw-st-card pw-sky">'+fl.html+'</div>';
         var BB=skyBeats(lastData,x,live,op),bi;
