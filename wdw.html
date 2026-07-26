@@ -936,11 +936,18 @@
   .pw-fl-vm{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:var(--muted)}
   .pw-fl-ex{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:#f97316;fill-opacity:.7}
   .pw-lens-wrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none} /* 0712j: the chart is a scrub surface \u2014 vertical drift must not scroll the page out from under a read */
-  .pw-lens-line{position:absolute;top:7.9%;bottom:24.2%;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4}
+  .pw-lens-line{position:absolute;top:2px;bottom:16px;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4} /* 0712l: one hairline through every lane */
   .pw-lens-pill{position:absolute;top:-4px;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 11px;box-shadow:0 4px 14px rgba(20,24,44,.18);pointer-events:none;white-space:nowrap;z-index:5}
   .pw-lens-pill .pt{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);margin-right:7px}
   .pw-lens-pill .pv{font-size:11.5px;color:var(--muted)}
   .pw-lens-pill .pv b{color:var(--ink);font-weight:700}
+  .pw-lh{display:flex;align-items:baseline;gap:6px;margin:7px 2px 2px}
+  .pw-lh .nm{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;flex:1}
+  .pw-lh .st{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);white-space:nowrap}
+  .pw-lh .st i{font-style:normal;font-family:Inter,sans-serif;font-weight:600;font-size:10px;color:var(--muted)}
+  .pw-lh .st.q{font-family:Inter,sans-serif;font-weight:600;font-size:10.5px;color:var(--muted)}
+  .pw-lrule{height:1px;background:var(--line);margin:0 0 3px}
+  .pw-lane{display:block;width:100%;overflow:visible}
   .ltg-strip.lbl{height:38px}
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
   .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
@@ -1034,7 +1041,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4719,6 +4726,74 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       B.sort(function(a,b){return a.t-b.t;});
       return B;
     }
+    /* ===== 0712l: LANES (owner-ratified) \u2014 the merged chart was right on a desktop and dense on a
+       phone. Each voice gets a thin aligned lane on ONE shared clock; the V2 quiet-ledger header
+       states each lane's verdict (bold display stat \u00b7 muted time \u00b7 hairline rule); lanes carry dots
+       only \u2014 no in-chart text; a lane without news speaks plain ("none within 10 mi"). Full-bleed
+       x-mapping (0..720, no margins) \u2014 the lens math simplifies to pure fractions. The honest ribbon
+       keeps its words as the floor. stormSVG remains for reference; this page no longer calls it. */
+    function skyLanes(x,ltg){
+      var series=x.series;if(!series.length)return null;
+      var LT=ltg||[],firstT=series[0][0],lastT=series[series.length-1][0];
+      if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
+      if(LT.length){firstT=Math.min(firstT,LT[0].t-(LT[0].w||60));lastT=Math.max(lastT,LT[LT.length-1].t);}
+      var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
+      function tx(t){return (((t-T0)/(T1-T0))*720).toFixed(1);}
+      var h="";
+      /* lane 1 \u2014 attractions down */
+      var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
+      function dy(v){return (120-(v/DMAX)*112).toFixed(1);}
+      var area="M "+tx(series[0][0])+" "+dy(0),line="",i;
+      for(i=0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
+      area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
+      var l1='<svg class="pw-lane" viewBox="0 0 720 128" preserveAspectRatio="none">';
+      l1+='<line x1="0" y1="'+dy(DMAX/2)+'" x2="720" y2="'+dy(DMAX/2)+'" stroke="#eef0f6" stroke-width="1"/>';
+      l1+='<path d="'+area+'" fill="rgba(226,59,84,.12)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
+      if(x.onset)l1+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';
+      if(x.peakPt)l1+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';
+      l1+='</svg>';
+      var v1=x.peakPt?('peak '+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak);
+      h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div><div class="pw-lrule"></div>'+l1;
+      /* lane 2 \u2014 strikes */
+      var tot=0,mx=null,LM=0,lz;
+      for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];}
+      var l2='<svg class="pw-lane" viewBox="0 0 720 68" preserveAspectRatio="none">';
+      for(lz=0;lz<LT.length;lz++){var ln=LT[lz].n;if(ln>0){
+        var lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t)),lh2=Math.max(5,(ln/LM)*60);
+        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(64-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
+      l2+='</svg>';
+      var v2=(tot>0&&mx)?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):'none within 10 mi';
+      h+='<div class="pw-lh"><span class="nm">\u26a1 Strikes \u00b7 10 mi</span><span class="st'+((tot>0&&mx)?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+l2;
+      /* lane 3 \u2014 feels-like */
+      var S3=x.samples;
+      if(S3.length>1){var flo=1e9,fhi=-1e9,fz;
+        for(fz=0;fz<S3.length;fz++){var ff=S3[fz].fF;if(ff<flo)flo=ff;if(ff>fhi)fhi=ff;}
+        if(fhi-flo<4)fhi=flo+4;
+        var fy=function(f){return (6+(1-(f-flo)/(fhi-flo))*54).toFixed(1);};
+        var fpts="",fpk=0;
+        for(fz=0;fz<S3.length;fz++){if(S3[fz].fF>S3[fpk].fF)fpk=fz;fpts+=(fz?" ":"")+tx(S3[fz].t)+","+fy(S3[fz].fF);}
+        var l3='<svg class="pw-lane" viewBox="0 0 720 68" preserveAspectRatio="none">';
+        if(fhi>=100)l3+='<line x1="0" y1="'+fy(105)+'" x2="720" y2="'+fy(105)+'" stroke="#f97316" stroke-width="1" stroke-dasharray="4 5" stroke-opacity=".4"/>';
+        l3+='<polyline fill="none" stroke="#f97316" stroke-width="2" stroke-opacity="0.9" points="'+fpts+'"/>';
+        l3+='<circle cx="'+tx(S3[0].t)+'" cy="'+fy(S3[0].fF)+'" r="3.5" fill="#f97316"/><circle cx="'+tx(S3[fpk].t)+'" cy="'+fy(S3[fpk].fF)+'" r="4" fill="#f97316"/><circle cx="'+tx(S3[S3.length-1].t)+'" cy="'+fy(S3[S3.length-1].fF)+'" r="3.5" fill="#f97316"/>';
+        l3+='</svg>';
+        h+='<div class="pw-lh"><span class="nm">Feels-like</span><span class="st">'+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
+      }
+      /* the floor \u2014 ribbon (sensor-upgraded) + hour axis */
+      var cols=PW_RIBBON,labs={clear:"clear",cloud:"clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27 rain",core:"\ud83c\udf27 core"},labcol={clear:"#ca8a04",cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
+      function ltgAt2(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;}
+      var segs=[],sm0=x.samples,s2;
+      for(s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]);if(ltgAt2(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
+        var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);
+        if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
+      var rb='<svg class="pw-lane" viewBox="0 0 720 56" preserveAspectRatio="none">';
+      for(var sg=0;sg<segs.length;sg++){var Sg=segs[sg],w2=parseFloat(tx(Sg.b))-parseFloat(tx(Sg.a));
+        rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>';
+        if(w2>70)rb+='<text x="'+((parseFloat(tx(Sg.a))+parseFloat(tx(Sg.b)))/2).toFixed(1)+'" y="30" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="'+labcol[Sg.cl]+'">'+labs[Sg.cl]+'</text>';}
+      for(var t2=T0;t2<=T1;t2+=60)rb+='<text x="'+tx(t2)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(t2)+'</text>';
+      rb+='</svg>';
+      return {html:h+rb,T0:T0,T1:T1};
+    }
     /* ===== 0712e: the Sky lens \u2014 one hairline, every ledger. Silent-when-zero;
        hour-grain honesty ("this hr") until v3.8.2 sharpens it. Reader is pure. ===== */
     function skyLensRead(tRaw,D){
@@ -4738,9 +4813,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var act=false;
       function place(cx){
         var r=wrap.getBoundingClientRect();if(!r.width)return;
-        var vx=(cx-r.left)/r.width*720,t=D.T0+(vx-34)/672*(D.T1-D.T0);
+        var vx=(cx-r.left)/r.width,t=D.T0+Math.max(0,Math.min(1,vx))*(D.T1-D.T0); /* 0712l: full-bleed lanes \u2014 pure fraction, no margins */
         var rd=skyLensRead(t,D);
-        var lf=((34+(rd.t-D.T0)/(D.T1-D.T0)*672)/720*100).toFixed(2);
+        var lf=((rd.t-D.T0)/(D.T1-D.T0)*100).toFixed(2);
         ln.style.left=lf+"%";
         pl.innerHTML='<span class="pt">'+rd.clk+'</span><span class="pv">'+(rd.parts.join(" \u00b7 ")||"quiet")+'</span>';
         ln.hidden=false;pl.hidden=false;
@@ -4794,7 +4869,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var showDown=!!x.series.length&&x.downPeak>=8; /* flat down charts are noise on calm days */
       if(!x.series.length&&!stx&&!fl){html+='<div class="pw-msg">No timeline data for this day yet.</div>';}
       else{
-        if(showDown)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+stormSVG(x,(lastData.ltg&&lastData.ltg.samples)||null)+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div></div>';
+        var LN=null;
+        if(showDown){LN=skyLanes(x,(lastData.ltg&&lastData.ltg.samples)||null);
+          if(LN)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+LN.html+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div></div>';}
         if(stx&&!showDown)html+='<div class="pw-st-card pw-sky">'+stx.html+'</div>';
         if(fl&&!showDown)html+='<div class="pw-st-card pw-sky">'+fl.html+'</div>';
         var BB=skyBeats(lastData,x,live,op),bi;
@@ -4812,9 +4889,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?"hourly \u00b7 15-min through the storm":"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):"";
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
-      if(showDown){var lf0=x.series[0][0],ll0=x.series[x.series.length-1][0];
-        if(x.samples.length){lf0=Math.min(lf0,x.samples[0].t);ll0=Math.max(ll0,x.samples[x.samples.length-1].t);}
-        pwSkyBind({T0:Math.floor(lf0/60)*60,T1:Math.ceil(ll0/60)*60,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples});}
+      if(showDown&&LN)pwSkyBind({T0:LN.T0,T1:LN.T1,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples}); /* 0712l: one clock \u2014 the bind reads the renderer's own T0/T1 */
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
     }
