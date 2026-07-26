@@ -1046,7 +1046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4733,7 +4733,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(fz0=0;fz0<series.length;fz0++)if(series[fz0][1]>0){firstT=series[fz0][0];break;}
       if(firstT==null)firstT=lastT;
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
-      if(LT.length){firstT=Math.min(firstT,LT[0].t-(LT[0].w||60));lastT=Math.max(lastT,LT[LT.length-1].t);}
+      if(LT.length){firstT=Math.min(firstT,LT[0].t);lastT=Math.max(lastT,LT[LT.length-1].t);} /* 0713d: seed by the window\u2019s END \u2014 its ARRIVAL is the signal; the first bucket\u2019s hour-long reach-back resurrected the 6a dead space through the back door. Partial first stubs clamp at the domain edge; the footer states exact coverage. */
       var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
       function tx(t){return (((t-T0)/(T1-T0))*720).toFixed(1);}
       var h="";
@@ -4928,7 +4928,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lastData.ltg.samples.some(function(sv){return (sv.w||60)<50&&sv.n>0;})?"through the storm":"at close watch")):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
-      if(showDown&&LN)pwSkyBind({T0:LN.T0,T1:LN.T1,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples}); /* 0712l: one clock \u2014 the bind reads the renderer's own T0/T1 */
+      if(LN)pwSkyBind({T0:LN.T0,T1:LN.T1,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples}); /* 0712l: one clock. 0713d: the lens binds whenever the stack renders \u2014 the scrub is not a storm privilege */
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
     }
@@ -4995,7 +4995,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(fz0=0;fz0<series.length;fz0++)if(series[fz0][1]>0){firstT=series[fz0][0];break;}
       if(firstT==null)firstT=lastT; /* 0713c: first-signal domain (owner pick B) \u2014 skyLanes twin */
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
-      if(LT.length){firstT=Math.min(firstT,LT[0].t-(LT[0].w||60));lastT=Math.max(lastT,LT[LT.length-1].t);}
+      if(LT.length){firstT=Math.min(firstT,LT[0].t);lastT=Math.max(lastT,LT[LT.length-1].t);} /* 0713d: seed by the window\u2019s END \u2014 its ARRIVAL is the signal; the first bucket\u2019s hour-long reach-back resurrected the 6a dead space through the back door. Partial first stubs clamp at the domain edge; the footer states exact coverage. */
       var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
       function TX(t){return L+(t-T0)/(T1-T0)*(R-L);}
       /* the stat trio \u2014 edge-aligned to the lane rails (owner pick B2) */
@@ -5046,7 +5046,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* lane 2 \u2014 strikes, F2 sampled floor: a stub per banked window, bars from the same ground */
       laneHead(hd2,"LIGHTNING STRIKES \u00b7 10 MI","#fbbf24");
       var LM=0;for(lz=0;lz<LT.length;lz++)if(LT[lz].n>LM)LM=LT[lz].n;
-      for(lz=0;lz<LT.length;lz++){var wx1=TX(LT[lz].t-(LT[lz].w||60)),wx2=TX(LT[lz].t);
+      for(lz=0;lz<LT.length;lz++){var wx1=Math.max(TX(LT[lz].t-(LT[lz].w||60)),L),wx2=TX(LT[lz].t); /* 0713d: clamp partial windows at the rail */
         rr(wx1+1,sB-4,Math.max(3,wx2-wx1-2),4,2);ctx.fillStyle="rgba(251,191,36,0.30)";ctx.fill();
         if(LT[lz].n>0){var bh2=Math.max(8,(LT[lz].n/LM)*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}}
       if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t-(lmx.w||60))-10,L+330),sT+22,SG("700",24),"#fbbf24","right"); /* 0712w: anchored to the bar\u2019s LEFT edge \u2014 the label may not stand on its own column */
