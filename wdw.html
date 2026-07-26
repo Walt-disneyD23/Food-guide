@@ -935,7 +935,7 @@
   .pw-fl-vt{font-family:var(--font-display);font-weight:700;font-size:11px;fill:#f97316}
   .pw-fl-vm{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:var(--muted)}
   .pw-fl-ex{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:#f97316;fill-opacity:.7}
-  .pw-lens-wrap{position:relative;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+  .pw-lens-wrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none} /* 0712j: the chart is a scrub surface \u2014 vertical drift must not scroll the page out from under a read */
   .pw-lens-line{position:absolute;top:7.9%;bottom:24.2%;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4}
   .pw-lens-pill{position:absolute;top:-4px;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 11px;box-shadow:0 4px 14px rgba(20,24,44,.18);pointer-events:none;white-space:nowrap;z-index:5}
   .pw-lens-pill .pt{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);margin-right:7px}
@@ -1034,7 +1034,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4102,8 +4102,16 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var x=wxDerive(d);
       if(x.code>=95&&x.downPeak>=8)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak")};
       if(x.downPeak>=8){var hnp=0,hpk;for(hpk in x.parkPeaks){if(x.parkPeaks[hpk]>0)hnp++;}
+        /* 0712j: states earn their tense (the heat chip's doctrine, applied to holds). Recovered =
+           BOTH observed signals clear: current downs under the gate AND the latest lightning sample
+           quiet. Single-signal gating would have flipped mid-storm tonight (8:10 PM: 7 down, \u26a114). */
+        var hNow=(x.series&&x.series.length)?x.series[x.series.length-1][1]:0;
+        var hLg=(d.ltg&&d.ltg.samples&&d.ltg.samples.length)?d.ltg.samples[d.ltg.samples.length-1]:null;
+        var hRec=live&&hNow<8&&hLg&&hLg.n===0;
+        var hPP=(hnp>=4?"all four parks":hnp+" park"+(hnp===1?"":"s"));
+        if(hRec)return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses swept "+hPP+" \u2014 "+x.downPeak+" attractions at once at the peak"};
         /* 0712d: the hold chip \u2014 down-count is the truer storm signal than the point's code (6-for-6 on the trip week). Descriptive, never causal; "attractions", never "rides". Chevron opens the Sky page. */
-        return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses across "+(hnp>=4?"all four parks":hnp+" park"+(hnp===1?"":"s"))+" \u2014 "+x.downPeak+" attractions at once"+(live?" so far":" at the peak")};}
+        return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses across "+hPP+" \u2014 "+x.downPeak+" attractions at once"+(live?" so far":" at the peak")};}
       if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner")};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
@@ -4615,8 +4623,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         svg+='<circle cx="'+tx(fS[0].t)+'" cy="'+fy(fS[0].fF).toFixed(1)+'" r="4" fill="#f97316"/><text x="'+(parseFloat(tx(fS[0].t))+6).toFixed(1)+'" y="'+(fy(fS[0].fF)-8).toFixed(1)+'" font-family="Inter" font-size="13" font-weight="600" fill="#f97316">'+fS[0].fF+'\u00b0</text>';
         svg+='<circle cx="'+fxp.toFixed(1)+'" cy="'+fy(fS[fpk].fF).toFixed(1)+'" r="4.5" fill="#f97316"/><text x="'+fxc.toFixed(1)+'" y="'+(fy(fS[fpk].fF)-9).toFixed(1)+'" text-anchor="middle" font-family="Space Grotesk" font-size="14" font-weight="700" fill="#f97316">'+fS[fpk].fF+'\u00b0</text>';
         svg+='<circle cx="'+tx(fS[fN].t)+'" cy="'+fy(fS[fN].fF).toFixed(1)+'" r="4" fill="#f97316"/><text x="'+(parseFloat(tx(fS[fN].t))-6).toFixed(1)+'" y="'+(fy(fS[fN].fF)-8).toFixed(1)+'" text-anchor="end" font-family="Inter" font-size="13" font-weight="600" fill="#f97316">'+fS[fN].fF+'\u00b0</text>';}
-      if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))-9)+'" y="'+(parseFloat(dy(x.onset.tot))-10)+'" text-anchor="end" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#4f46e5">'+pwClk(x.onset.t)+' \u00b7 '+esc(pwPA(x.onset.park))+' held</text>';}
-      if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClk(x.peakPt.t)+'</text>';}
+      if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';} /* 0712j: annotation text retired \u2014 the chart shows, the beats tell, the lens reads. Canvas share card keeps its words (no lens there). */
+      if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';}
       var ry=pY1+30,rh=15,cols=PW_RIBBON,labs={clear:"clear",cloud:"clouds",storm:"⚡ lightning in the area",rain:"🌧 rain",core:"🌧 core"},labcol={clear:"#ca8a04",cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
       function ltgAt(tq){if(!ltg)return 0;for(var lq=0;lq<ltg.length;lq++){var lwq=ltg[lq].w||60;if(ltg[lq].t-lwq<tq&&tq<=ltg[lq].t)return ltg[lq].n;}return 0;}
       var segs=[],sm0=x.samples;
@@ -4738,9 +4746,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         pl.style.left=Math.max(half+1.5,Math.min(98.5-half,parseFloat(lf)))+"%";
       }
       function end(){act=false;ln.hidden=true;pl.hidden=true;}
-      wrap.addEventListener("pointerdown",function(e){act=true;place(e.clientX);});
+      wrap.addEventListener("pointerdown",function(e){act=true;try{wrap.setPointerCapture(e.pointerId);}catch(_e){}place(e.clientX);});
       wrap.addEventListener("pointermove",function(e){if(act)place(e.clientX);});
-      wrap.addEventListener("pointerup",end);wrap.addEventListener("pointercancel",end);wrap.addEventListener("pointerleave",end);
+      wrap.addEventListener("pointerup",end);wrap.addEventListener("pointercancel",end); /* 0712j: pointerleave retired \u2014 capture holds the read until the finger lifts */
     }
     function showStorm(){
       var wv=$id("wrapView");if(!wv||!lastData)return;
@@ -4762,8 +4770,15 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         kicker="Sky timeline";
         var ltgCl=(stx&&stx.tot>0)?(stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"):"no lightning within 10 mi";
         if(chReal&&chReal.kind==="hold"){
+          var hhNow=(x.series&&x.series.length)?x.series[x.series.length-1][1]:0;
+          var hhLg=(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.length)?lastData.ltg.samples[lastData.ltg.samples.length-1]:null;
+          if(live&&hhNow<8&&hhLg&&hhLg.n===0){ /* 0712j: recovered (owner pick A) */
+            ttl="The holds have cleared";
+            sub=x.downPeak+" attractions paused at once at the peak \u2014 back up now.";
+          }else{
           ttl="A holding pattern";
           sub=x.downPeak+" attractions paused at once"+(live?" so far":" at the peak")+((stx&&stx.tot>0)?(" \u2014 "+stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi."):".");
+          }
         }else if(chReal&&chReal.kind==="heat"&&op){
           ttl="A scorcher, end to end";
           sub="Feels-like "+(live?("has peaked at "+op.fF+"\u00b0 so far"):("peaked at "+op.fF+"\u00b0"))+" \u2014 "+ltgCl+((!live&&!(stx&&stx.tot>0))?" all day":"")+".";
