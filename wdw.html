@@ -1034,7 +1034,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3895,12 +3895,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         sent=live?(full?"<b>none detected today</b>":"<b>quiet from "+pwClk(S[0].t)+"</b>")
                  :(full?"<b>quiet all day</b> <span class=\"chk\">\u00b7 checked hourly, "+pwClk(S[0].t)+" \u2013 "+pwClk(latest.t)+"</span>":"<b>quiet from "+pwClk(S[0].t)+" to close</b>");
       }else if(live){
-        sent=(latest.n>0)?((tot>latest.n?"<b>"+tot+pl(tot)+" so far</b> \u2014 "+latest.n+" in the hour ending "+hr(latest.t)
-                                        :"<b>"+latest.n+pl(latest.n)+"</b> in the hour ending "+hr(latest.t)))
-                         :("none this hour \u2014 <b>peaked at "+max.n+"</b> in the hour ending "+hr(max.t));
+        sent=(latest.n>0)?((tot>latest.n?"<b>"+tot+pl(tot)+" so far</b> \u2014 "+latest.n+" in the "+pwW(latest.w)+" ending "+hr(latest.t)
+                                        :"<b>"+latest.n+pl(latest.n)+"</b> in the "+pwW(latest.w)+" ending "+hr(latest.t)))
+                         :("none this hour \u2014 <b>peaked at "+max.n+"</b> in the "+pwW(max.w)+" ending "+hr(max.t));
       }else{
-        sent=(tot===max.n)?("<b>"+tot+pl(tot)+"</b>, all in the hour ending "+hr(max.t))
-                          :("<b>"+tot+pl(tot)+"</b> across the day, peaked at "+max.n+" in the hour ending "+hr(max.t));
+        sent=(tot===max.n)?("<b>"+tot+pl(tot)+"</b>, all in the "+pwW(max.w)+" ending "+hr(max.t))
+                          :("<b>"+tot+pl(tot)+"</b> across the day, peaked at "+max.n+" in the "+pwW(max.w)+" ending "+hr(max.t));
       }
       var h='<div class="ltg-card'+(any?"":" quiet")+'" id="pwSkyCard" role="button" tabindex="0">';
       h+='<div class="row1"><span><span class="bolt">\u26a1</span> Lightning within 10 mi \u2014 '+sent+'</span>';
@@ -3917,14 +3917,16 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
       if(any||live){
         var bars="",hrs="",top=any?max.n:1;
-        var midIdx=0,mdd=1e9; /* 0712d: quiet axis (owner pick B) \u2014 edges + midday breathe; the tap toggle now reveals count AND hour per bar */
+        var midIdx=0,mdd=1e9,hrsPrev=""; /* 0712d: quiet axis (owner pick B) \u2014 edges + midday breathe; the tap toggle now reveals count AND hour per bar */
         for(i=0;i<S.length;i++){var dmm=Math.abs(S[i].t-720);if(dmm<mdd){mdd=dmm;midIdx=i;}}
         for(i=0;i<S.length;i++){
           var s=S[i],t=s.t,h12=((Math.floor(t/60)+11)%12)+1,apc=Math.floor(t/60)<12?"a":"p"; /* 0711s: axis labels are hour-only — the axis anchors bars; the precise minute lives in the sentence. Cron phase drift (:01 ticks) ballooned fourteen labels out of the box. */
-          if(s.n>0){var pct=Math.max(8,Math.round(s.n/top*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%"></i>';}
-          else bars+='<i class="z"></i>';
+          var sfw=s.w||60; /* 0712h: unequal windows get unequal widths \u2014 equal bars would misstate */
+          if(s.n>0){var pct=Math.max(8,Math.round(s.n/top*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%;flex:'+sfw+'"></i>';}
+          else bars+='<i class="z" style="flex:'+sfw+'"></i>';
           var edge=(S.length<=8)||(i===0||i===S.length-1||i===midIdx); /* short mornings keep full labels \u2014 same \u22648 exception as thinning */
-          hrs+='<s class="'+(edge?"e":"q")+'">'+h12+apc+'</s>';
+          var lab2=h12+apc,showL=(lab2===hrsPrev)?"":lab2;hrsPrev=lab2; /* 0712h: storm quarters share an hour \u2014 never print it twice */
+          hrs+='<s class="'+(edge?"e":"q")+'" style="flex:'+sfw+'">'+showL+'</s>';
         }
         h+='<div class="ltg-strip" id="pwLtgStrip">'+bars+'</div><div class="ltg-hrs">'+hrs+'</div>';
       }
@@ -4073,6 +4075,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     }
 
     /* ---- weather chip + storm timeline (Stage 1) ---- */
+    function pwW(w){w=w||60;return w>=50?"hour":w+" min";} /* 0712h: window phrase \u2014 v3.8.2 samples carry w; legacy defaults to the hour */
     function pwClk(m){var h=Math.floor(m/60),mm=m%60,ap=h<12?"AM":"PM",h12=((h+11)%12)+1;return h12+":"+(mm<10?"0":"")+mm+" "+ap;}
     function pwClkS(m){var h=Math.floor(m/60),ap=h<12?"a":"p",h12=((h+11)%12)+1;return h12+ap;}
     function pwPA(p){return ({"Magic Kingdom":"MK","Hollywood Studios":"HS","Animal Kingdom":"AK","EPCOT":"EPCOT"})[p]||p;}
@@ -4590,7 +4593,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* 0712e: strike hours join the axis \u2014 each bar SPANS its trailing hour (t-60,t], honest window geometry */
       if(ltg&&ltg.length){var LM=0,lz;for(lz=0;lz<ltg.length;lz++)if(ltg[lz].n>LM)LM=ltg[lz].n;
         for(lz=0;lz<ltg.length;lz++){var ln=ltg[lz].n;if(ln>0){
-          var lx1=Math.max(parseFloat(tx(ltg[lz].t-60)),pX0),lx2=parseFloat(tx(ltg[lz].t)),lh=Math.max(6,(ln/LM)*pH*0.35);
+          var lx1=Math.max(parseFloat(tx(ltg[lz].t-(ltg[lz].w||60))),pX0),lx2=parseFloat(tx(ltg[lz].t)),lh=Math.max(6,(ln/LM)*pH*0.35);
           svg+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(pY1-lh).toFixed(1)+'" width="'+(lx2-lx1-2).toFixed(1)+'" height="'+lh.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.5"/>';}}}
       var step=DMAX<=20?5:10;
       for(var g=0;g<=DMAX;g+=step){svg+='<line x1="'+pX0+'" y1="'+dy(g)+'" x2="'+pX1+'" y2="'+dy(g)+'" stroke="#eef0f6" stroke-width="1"/>';svg+='<text x="'+(pX0-7)+'" y="'+(parseFloat(dy(g))+4)+'" text-anchor="end" font-family="Inter" font-size="16" font-weight="600" fill="#9aa0b8">'+g+'</text>';}
@@ -4615,8 +4618,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';svg+='<text x="'+(parseFloat(tx(x.onset.t))-9)+'" y="'+(parseFloat(dy(x.onset.tot))-10)+'" text-anchor="end" font-family="Space Grotesk" font-size="15" font-weight="700" fill="#4f46e5">'+pwClk(x.onset.t)+' \u00b7 '+esc(pwPA(x.onset.park))+' held</text>';}
       if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';svg+='<text x="'+tx(x.peakPt.t)+'" y="'+(parseFloat(dy(x.peakPt.tot))-9)+'" text-anchor="end" font-family="Space Grotesk" font-size="16" font-weight="700" fill="#e23b54">'+x.peakPt.tot+' down · '+pwClk(x.peakPt.t)+'</text>';}
       var ry=pY1+30,rh=15,cols=PW_RIBBON,labs={clear:"clear",cloud:"clouds",storm:"⚡ lightning in the area",rain:"🌧 rain",core:"🌧 core"},labcol={clear:"#ca8a04",cloud:"#94a3b8",storm:"#6366f1",rain:"#2563eb",core:"#2563eb"};
+      function ltgAt(tq){if(!ltg)return 0;for(var lq=0;lq<ltg.length;lq++){var lwq=ltg[lq].w||60;if(ltg[lq].t-lwq<tq&&tq<=ltg[lq].t)return ltg[lq].n;}return 0;}
       var segs=[],sm0=x.samples;
-      for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]),a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
+      for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]);if(ltgAt(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm"; /* 0712h: the sensor outranks the model \u2014 observed strikes wear \u26a1 on the ribbon */
+        var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
       for(var sg=0;sg<segs.length;sg++){var S=segs[sg];svg+='<rect x="'+tx(S.a)+'" y="'+ry+'" width="'+(tx(S.b)-tx(S.a)).toFixed(1)+'" height="'+rh+'" rx="3" fill="'+cols[S.cl]+'"/>';if((parseFloat(tx(S.b))-parseFloat(tx(S.a)))>70){var cx=(parseFloat(tx(S.a))+parseFloat(tx(S.b)))/2;svg+='<text x="'+cx.toFixed(1)+'" y="'+(ry+rh+15)+'" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="'+labcol[S.cl]+'">'+labs[S.cl]+'</text>';}}
       svg+='</svg>';return svg;
     }
@@ -4652,9 +4657,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
        Pure builders below; showStorm assembles. Every beat earned by its own ledger;
        adjacency stated, causation never claimed. Lens arrives in the next build. ===== */
     function skyAxis(S){
-      var thin=S.length>8,hrs="",i;
-      for(i=0;i<S.length;i++){var t=S[i].t,h12=((Math.floor(t/60)+11)%12)+1,apc=Math.floor(t/60)<12?"a":"p";
-        hrs+='<s>'+((thin&&i%2===1)?"":(h12+apc))+'</s>';}
+      var thin=S.length>8,hrs="",i,prev="";
+      for(i=0;i<S.length;i++){var t=S[i].t,h12=((Math.floor(t/60)+11)%12)+1,apc=Math.floor(t/60)<12?"a":"p",lab=h12+apc;
+        var show=(thin&&i%2===1)?"":(lab===prev?"":lab); /* 0712h: storm-mode quarters share an hour \u2014 never print it twice */
+        hrs+='<s style="flex:'+(S[i].w||60)+'">'+show+'</s>';prev=lab;}
       return hrs;
     }
     function skyStrikes(d){
@@ -4662,7 +4668,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var max=0,tot=0,i,bars="";
       for(i=0;i<S.length;i++){tot+=S[i].n;if(S[i].n>max)max=S[i].n;}
       for(i=0;i<S.length;i++){var n=S[i].n;
-        bars+=n>0?('<i style="height:'+Math.max(6,Math.round(n/max*100))+'%" data-n="'+n+'"></i>'):'<i class="z"></i>';}
+        var sw=S[i].w||60;
+        bars+=n>0?('<i style="height:'+Math.max(6,Math.round(n/max*100))+'%;flex:'+sw+'" data-n="'+n+'"></i>'):('<i class="z" style="flex:'+sw+'"></i>');}
       return {tot:tot,max:max,html:'<div class="pw-sky-lab">Lightning within 10 mi</div><div class="pw-sky-bars">'+bars+'</div><div class="pw-sky-hrs">'+skyAxis(S)+'</div>'};
     }
     function skyFl(x){
@@ -4696,7 +4703,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var B=[];
       if(x.onset)B.push({t:x.onset.t,c:"#6366f1",h:pwClk(x.onset.t)+" \u2014 "+x.onset.park+" went first",b:x.onset.n+" rides held at once across "+x.onset.park+". "+x.downPeak+" paused across the resort at the peak."});
       var sp=skyStrikePeak(d);
-      if(sp)B.push({t:sp.t-30,c:"#f59e0b",h:"\u26a1 "+sp.n+" strike"+(sp.n===1?"":"s")+" within 10 mi",b:"Lightning peaked in the hour ending "+pwClk(sp.t)+"."});
+      if(sp)B.push({t:sp.t-30,c:"#f59e0b",h:"\u26a1 "+sp.n+" strike"+(sp.n===1?"":"s")+" within 10 mi",b:"Lightning peaked in the "+pwW(sp.w)+" ending "+pwClk(sp.t)+"."});
       if(x.core){var cb=pwCoreBeat(x);if(cb)B.push({t:(x.core.t!=null?x.core.t:1e9),c:PW_RIBBON.core,h:cb.h,b:cb.b});}
       if(!sp&&op&&op.fF>=100)B.push({t:op.t,c:"#f97316",h:pwClk(op.t)+" \u2014 feels-like peaked at "+op.fF+"\u00b0",b:"Off a "+op.airHi+"\u00b0 air high."});
       B.sort(function(a,b){return a.t-b.t;});
@@ -4707,11 +4714,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function skyLensRead(tRaw,D){
       var t=Math.round(tRaw/5)*5;if(t<D.T0)t=D.T0;if(t>D.T1)t=D.T1;
       var v=0,i;for(i=0;i<D.series.length;i++){if(D.series[i][0]<=t)v=D.series[i][1];else break;}
-      var n=0;for(i=0;i<D.ltg.length;i++){if(D.ltg[i].t-60<t&&t<=D.ltg[i].t){n=D.ltg[i].n;break;}}
+      var n=0,nw=60;for(i=0;i<D.ltg.length;i++){var lw=D.ltg[i].w||60;if(D.ltg[i].t-lw<t&&t<=D.ltg[i].t){n=D.ltg[i].n;nw=lw;break;}}
       var w=null,bd=1e9;for(i=0;i<D.wx.length;i++){var dd=Math.abs(D.wx[i].t-t);if(dd<bd){bd=dd;w=D.wx[i];}}
       var parts=[];
       if(v>0)parts.push("<b>"+v+"</b> down");
-      if(n>0)parts.push("\u26a1<b>"+n+"</b> this hr");
+      if(n>0)parts.push("\u26a1<b>"+n+"</b> this "+(nw>=50?"hr":nw+" min"));
       if(w)parts.push("feels <b>"+w.fF+"\u00b0</b>");
       if(w&&w.gust>=15)parts.push("gust "+w.gust);
       return {t:t,clk:pwClk(t),parts:parts};
@@ -4724,7 +4731,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         var vx=(cx-r.left)/r.width*720,t=D.T0+(vx-34)/672*(D.T1-D.T0);
         var rd=skyLensRead(t,D);
         var lf=((34+(rd.t-D.T0)/(D.T1-D.T0)*672)/720*100).toFixed(2)+"%";
-        ln.style.left=lf;pl.style.left=lf;
+        ln.style.left=lf;
+        pl.style.left=Math.max(12,Math.min(88,parseFloat(lf)))+"%"; /* 0712h: pill clamps inside the card; the hairline stays true */
         pl.innerHTML='<span class="pt">'+rd.clk+'</span><span class="pv">'+(rd.parts.join(" \u00b7 ")||"quiet")+'</span>';
         ln.hidden=false;pl.hidden=false;
       }
@@ -4752,7 +4760,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(!chReal||!TT[chReal.kind]){ /* 0712c: heat/cold aren't timeline chips \u2014 they take the sky vocabulary; heat leads (owner call) */
         kicker="Sky timeline";
         var ltgCl=(stx&&stx.tot>0)?(stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"):"no lightning within 10 mi";
-        if(chReal&&chReal.kind==="heat"&&op){
+        if(chReal&&chReal.kind==="hold"){
+          ttl="A holding pattern";
+          sub=x.downPeak+" attractions paused at once"+(live?" so far":" at the peak")+((stx&&stx.tot>0)?(" \u2014 "+stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"+(live?" so far.":".")):".");
+        }else if(chReal&&chReal.kind==="heat"&&op){
           ttl="A scorcher, end to end";
           sub="Feels-like "+(live?("has peaked at "+op.fF+"\u00b0 so far"):("peaked at "+op.fF+"\u00b0"))+" \u2014 "+ltgCl+((!live&&!(stx&&stx.tot>0))?" all day":"")+".";
         }else{
@@ -4779,7 +4790,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
       if(showDown)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>';
       var wxW={storm:"the storm",wind:"the wind",rain:"the rain"}[ch.kind]||"the weather";
-      var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked hourly, "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):"";
+      var lgMix=!!(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.some(function(sv){return (sv.w||60)<50;}));
+      var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?"hourly \u00b7 15-min through the storm":"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):"";
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
       if(showDown){var lf0=x.series[0][0],ll0=x.series[x.series.length-1][0];
