@@ -1043,7 +1043,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4760,8 +4760,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var tot=0,mx=null,LM=0,lz;
       for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];}
       var l2='<svg class="pw-lane" viewBox="0 0 720 92" preserveAspectRatio="none">';
-      for(lz=0;lz<LT.length;lz++){var ln=LT[lz].n;if(ln>0){
-        var lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t)),lh2=Math.max(6,(ln/LM)*84);
+      for(lz=0;lz<LT.length;lz++){var ln=LT[lz].n,lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t));
+        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="84" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="4" rx="2" fill="#fbbf24" fill-opacity="0.30"/>'; /* 0712w: F2 sampled floor (owner call) \u2014 a stub per banked window; the floor IS the ledger, card and page in one language. Zero days become a listening baseline (tweak #2 resolved). */
+        if(ln>0){var lh2=Math.max(6,(ln/LM)*84);
         l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(88-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
       l2+='</svg>';
       var v2=(tot>0&&mx)?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):'none within 10 mi';
@@ -4977,10 +4978,18 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
       T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
       if(D.badge!=="FINAL"){var asofT="as of "+new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"})+" ET";ctx.font=IN("500",19);var aw=ctx.measureText(asofT).width;T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+22,IN("500",19),C.muted2,"center");}
-      var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain"};
-      T(ell(TT[D.kind]||"When the weather hit",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
-      var leadW={storm:"Thunderstorms swept over Walt Disney World",wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World"};
-      T(ell((leadW[D.kind]||"Weather swept over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
+      /* 0712w: voice resolution (owner-ratified) \u2014 sensor outranks model one level above the
+         ribbon (0712h). Observed strikes upgrade the voice to storm; the lead then tiers by WHO
+         confirmed: model code>=95 earns "thunderstorms swept over"; sensor-only stays with what
+         the 10-mi radius can testify \u2014 "lightning swept the area around". Hold days borrow the
+         Sky hero\u2019s own title. Every clause earns its slot. */
+      var ltot=0,lmx=null,lz;for(lz=0;lz<LT.length;lz++){ltot+=LT[lz].n;if(!lmx||LT[lz].n>lmx.n)lmx=LT[lz];}
+      var modelStorm=false;for(lz=0;lz<x.samples.length;lz++)if(x.samples[lz].code>=95)modelStorm=true;
+      var kind=(ltot>0)?"storm":D.kind;
+      var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain",hold:"A holding pattern"};
+      T(ell(TT[kind]||"When the weather hit",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
+      var leadW={storm:(modelStorm?"Thunderstorms swept over Walt Disney World":"Lightning swept the area around Walt Disney World"),wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World",hold:"Ride pauses swept across Walt Disney World"};
+      T(ell((leadW[kind]||"Weather swept over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
       /* timeline domain \u2014 union of series, weather samples, and strike windows (skyLanes twin) */
       var series=x.series,firstT=series[0][0],lastT=series[series.length-1][0];
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
@@ -4988,7 +4997,6 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
       function TX(t){return L+(t-T0)/(T1-T0)*(R-L);}
       /* the stat trio \u2014 edge-aligned to the lane rails (owner pick B2) */
-      var ltot=0,lmx=null,lz;for(lz=0;lz<LT.length;lz++){ltot+=LT[lz].n;if(!lmx||LT[lz].n>lmx.n)lmx=LT[lz];}
       var S3=x.samples,fpk=-1;for(lz=0;lz<S3.length;lz++){if(fpk<0||S3[lz].fF>S3[fpk].fF)fpk=lz;}
       T(""+x.downPeak,L,330,SG("700",54),"#ff8195","left");T("paused at the peak",L,362,IN("600",20),C.muted,"left");
       T("\u26a1"+ltot,(L+R)/2,330,SG("700",54),"#fbbf24","center");T("strikes \u00b7 10 mi",(L+R)/2,362,IN("600",20),C.muted,"center");
@@ -5021,15 +5029,24 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       ctx.lineTo(TX(series[series.length-1][0]),DY(0));ctx.closePath();
       var ag=ctx.createLinearGradient(0,pT,0,pB);ag.addColorStop(0,"rgba(226,59,84,0.80)");ag.addColorStop(1,"rgba(226,59,84,0.05)");ctx.fillStyle=ag;ctx.fill();
       ctx.beginPath();for(i=0;i<series.length;i++){var lx=TX(series[i][0]),ly=DY(series[i][1]);if(i)ctx.lineTo(lx,ly);else ctx.moveTo(lx,ly);}ctx.strokeStyle="#ff5d73";ctx.lineWidth=4;ctx.lineJoin="round";ctx.stroke();
-      if(x.onset){var ox=TX(x.onset.t),oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();T(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held",Math.max(ox-14,L+330),oy-14,SG("700",24),"#a9b0f7","right");}
-      if(x.peakPt){var qx=TX(x.peakPt.t),qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();T(x.peakPt.tot+" down \u00b7 "+pwClk(x.peakPt.t),Math.max(qx-14,L+330),qy-14,SG("700",26),"#ff8195","right");}
+      /* 0712w: annotation collision stack (owner call) \u2014 when onset and peak land within 160px,
+         they render as one two-line block above the higher dot instead of overprinting. */
+      var ox=null,oy=null,qx=null,qy=null;
+      if(x.onset){ox=TX(x.onset.t);oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();}
+      if(x.peakPt){qx=TX(x.peakPt.t);qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();}
+      var onT=x.onset?(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held"):null;
+      var pkT=x.peakPt?(x.peakPt.tot+" down \u00b7 "+pwClk(x.peakPt.t)):null;
+      if(onT&&pkT&&Math.abs(ox-qx)<160){var ax=Math.max(Math.max(ox,qx)-14,L+330),ay=Math.max(Math.min(oy,qy)-44,pT+20);
+        T(pkT,ax,ay,SG("700",26),"#ff8195","right");T(onT,ax,ay+30,SG("700",24),"#a9b0f7","right");}
+      else{if(pkT)T(pkT,Math.max(qx-14,L+330),qy-14,SG("700",26),"#ff8195","right");
+        if(onT)T(onT,Math.max(ox-14,L+330),oy-14,SG("700",24),"#a9b0f7","right");}
       /* lane 2 \u2014 strikes, F2 sampled floor: a stub per banked window, bars from the same ground */
       laneHead(hd2,"\u26a1 STRIKES \u00b7 10 MI");
       var LM=0;for(lz=0;lz<LT.length;lz++)if(LT[lz].n>LM)LM=LT[lz].n;
       for(lz=0;lz<LT.length;lz++){var wx1=TX(LT[lz].t-(LT[lz].w||60)),wx2=TX(LT[lz].t);
         rr(wx1+1,sB-4,Math.max(3,wx2-wx1-2),4,2);ctx.fillStyle="rgba(251,191,36,0.30)";ctx.fill();
         if(LT[lz].n>0){var bh2=Math.max(8,(LT[lz].n/LM)*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}}
-      if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t)-10,L+330),sT+22,SG("700",24),"#fbbf24","right");
+      if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t-(lmx.w||60))-10,L+330),sT+22,SG("700",24),"#fbbf24","right"); /* 0712w: anchored to the bar\u2019s LEFT edge \u2014 the label may not stand on its own column */
       /* lane 3 \u2014 feels-like */
       laneHead(hd3,"FEELS-LIKE");
       if(S3.length>1){var flo=1e9,fhi=-1e9;
@@ -5064,7 +5081,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* footer \u2014 0712v layout (owner call): left column stacks reliability + credits; link alone on the right.
          Diverges from the emitCard family (0705i) deliberately; family follows if ratified on glass. */
       ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-      T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain"}[D.kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
+      T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain",hold:"the holds"}[kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
       T("parkpulse.live",R,fy+36,IN("700",26),C.green,"right");
       T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Xweather",L,fy+66,IN("500",20),C.muted2,"left");
       ctx.restore();
