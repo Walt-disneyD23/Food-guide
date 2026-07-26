@@ -1046,7 +1046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4130,7 +4130,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner")};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
-      if(x.feelsHigh!=null?x.feelsHigh>=105:x.dayHigh>=95){
+      /* 0713e: forecast latch (owner call \u2014 the 1:35 PM two-hero specimen: forecast oscillating
+         104\u2194105 flipped the day\u2019s identity between renders). Once any BANKED sample carried a
+         forecast roll >=105, the heat identity is irrevocable for the day \u2014 the ledger remembers
+         so the display doesn\u2019t flap. Frontend half of worker v3.8.3 (fFc); inert until the
+         worker banks the field \u2014 legacy samples have no fFc and change nothing. */
+      var hLatch=0,hlz,hls=x.samples||[];
+      for(hlz=0;hlz<hls.length;hlz++)if(hls[hlz].fFc!=null&&hls[hlz].fFc>hLatch)hLatch=hls[hlz].fFc;
+      if((x.feelsHigh!=null?x.feelsHigh>=105:x.dayHigh>=95)||hLatch>=105){
         /* Heat states earn their tense (0707a): forecast numbers speak future
            ("heading for"), observed numbers speak present/past. "and climbing"
            renders only when the latest sample is BOTH rising and already at
@@ -4143,7 +4150,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           for(hz=0;hz<hs.length;hz++)if(hs[hz]&&hs[hz].fF!=null)hf.push(hs[hz].fF);
           var hCur=hf.length?hf[hf.length-1]:null,hPrev=hf.length>1?hf[hf.length-2]:null,hMax=null;
           for(hz=0;hz<hf.length;hz++)if(hMax==null||hf[hz]>hMax)hMax=hf[hz];
-          var hFc=(x.feelsFcast!=null?x.feelsFcast:heatHi);
+          var hFc=Math.max((x.feelsFcast!=null?x.feelsFcast:heatHi)||0,hLatch); /* 0713e: the printed number is the day\u2019s own maximum banked proposal \u2014 provable, never a flap artifact */
           if(!live)hT=(hMax!=null?"Extreme heat — feels-like peaked at "+hMax+"°":"Extreme heat — a forecast feels-like of "+hFc+"°");
           else if(hMax!=null&&hCur!=null&&hCur<=hMax-5)hT="Extreme heat today — feels-like peaked at "+hMax+"°";
           else if(hCur!=null&&hPrev!=null&&hCur>hPrev&&hCur>=100)hT="Extreme heat today — feels like "+hCur+"° and climbing";
