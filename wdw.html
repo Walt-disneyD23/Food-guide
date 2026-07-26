@@ -1046,7 +1046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4931,8 +4931,13 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
       if(x.series.length)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>'; /* 0712y: every data day earns its card, not just storm days */
       var wxW={storm:"the storm",wind:"the wind",rain:"the rain"}[ch.kind]||"the weather";
-      var lgMix=!!(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.some(function(sv){return (sv.w||60)<50;}));
-      var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lastData.ltg.samples.some(function(sv){return (sv.w||60)<50&&sv.n>0;})?"through the storm":"at close watch")):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
+      /* 0713f: TRUE storm-cadence only (the w:30 finding, Jul 26) \u2014 w is the tiling gap since
+         the previous sample, so hourly-mode cron drift can legally print w<50; the worker\u2019s own
+         mode-exit test is w<=20, and a single sample is noise. The close-watch clause now
+         carries the MODE\u2019s span; the trailing range stays the day\u2019s full coverage. */
+      var lgSW=(lastData.ltg&&lastData.ltg.samples)?lastData.ltg.samples.filter(function(sv){return (sv.w||60)<=20;}):[];
+      var lgMix=lgSW.length>=2;
+      var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lgSW.some(function(sv){return sv.n>0;})?"through the storm":"at close watch")+" "+pwClk(lgSW[0].t)+"\u2013"+pwClk(lgSW[lgSW.length-1].t)):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a true 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
       if(LN)pwSkyBind({T0:LN.T0,T1:LN.T1,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples}); /* 0712l: one clock. 0713d: the lens binds whenever the stack renders \u2014 the scrub is not a storm privilege */
