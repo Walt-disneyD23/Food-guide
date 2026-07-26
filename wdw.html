@@ -897,6 +897,9 @@
   .pw-chip-hold{background:rgba(100,116,139,.16);border-color:rgba(148,163,184,.34)} /* 0712d: slate \u2014 factual, not alarming */
   .pw-chip-heat{background:rgba(239,108,59,.18);border-color:rgba(248,150,110,.34)}
   .pw-chip-cold{background:rgba(56,189,248,.16);border-color:rgba(125,211,252,.34)}
+  .ltg-verdict{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;font-size:var(--fs-small);font-weight:600;color:var(--pwh-ink);line-height:1.35;border-bottom:1px solid var(--pwh-line)} /* 0712z: M1 merge (owner pick) \u2014 the chip docks as the Sky card\u2019s verdict band; cascade tint reuses the chip palette */
+  .ltg-verdict .ic{font-size:var(--fs-title);line-height:1.2;flex:none}
+  .ltg-verdict-storm{background:rgba(99,102,241,.20)}.ltg-verdict-wind{background:rgba(13,148,136,.18)}.ltg-verdict-rain{background:rgba(59,130,246,.16)}.ltg-verdict-hold{background:rgba(100,116,139,.16)}.ltg-verdict-heat{background:rgba(239,108,59,.18)}.ltg-verdict-cold{background:rgba(56,189,248,.16)}
   /* ---- sky card (0711n): lightning ledger + live conditions, hero-bottom.
      Active tint = the storm chip's exact indigo (one weather block, no tint war);
      amber is reserved for the DATA (bolt, bars, tap-revealed counts). Quiet = slate.
@@ -1043,7 +1046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3892,7 +3895,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(s.fF!=null&&s.fF>=105)return "\ud83e\udd75";
       return s.code>=1?"\u26c5":"\u2600\ufe0f";
     }
-    function pwLtgCard(d,live,tab){
+    function pwLtgCard(d,live,tab,chip){ /* 0712z: chip rides in \u2014 rendered as the card\u2019s verdict band when present */
       var L=d&&d.ltg,S=L&&L.samples;
       if(!S||!S.length)return "";
       var i,max=null,latest=S[S.length-1],any=false,tot=0;
@@ -3914,6 +3917,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
                           :("<b>"+tot+pl(tot)+"</b> across the day, peaked at "+max.n+" in the "+pwW(max.w)+" ending "+hr(max.t));
       }
       var h='<div class="ltg-card'+(any?"":" quiet")+'" id="pwSkyCard" role="button" tabindex="0">';
+      if(chip)h+='<div class="ltg-verdict ltg-verdict-'+chip.kind+'"><span class="ic">'+chip.icon+'</span><span>'+esc(chip.text)+'</span></div>'; /* 0712z: verdict on top of the observatory \u2014 forecast voice stays here, observed stays in the rows below */
       h+='<div class="row1"><span><span class="bolt">\u26a1</span> Lightning within 10 mi \u2014 '+sent+'</span>';
       if(live&&tab==="today"&&cacheAt.today){
         var at=new Date(cacheAt.today),ah=at.getHours(),am=at.getMinutes(),ap=ah<12?"AM":"PM",a12=((ah+11)%12)+1;
@@ -3965,10 +3969,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chip=isWeek?null:wxChip(d,live);
       var ltgOn=!isWeek&&!!(d.ltg&&d.ltg.samples&&d.ltg.samples.some(function(s){return s.n>0;}));
       var wxKind=(chip&&(chip.kind==="storm"||chip.kind==="wind"||chip.kind==="rain"))?chip.kind:null,wxX=wxKind?wxDerive(d):null;
+      var ltgH=isWeek?"":pwLtgCard(d,live,tab,chip); /* 0712z: computed first \u2014 the chip only stands alone when there is no card to dock in */
       var chipH="";
-      if(chip){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
+      if(chip&&!ltgH){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
-      var ltgH=isWeek?"":pwLtgCard(d,live,tab);
       html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+ltgH+'</div>';
 
       html+='<div class="pw-grid">';
@@ -4702,10 +4706,45 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var pkI=0;for(i=1;i<S.length;i++)if(S[i].fF>S[pkI].fF)pkI=i;
       var xP=(((S[pkI].t-t0)/(t1-t0))*300),pxc=Math.max(34,Math.min(266,xP)),fLs=S[S.length-1];
       var ex=(hi>=100)?('<line x1="0" y1="'+yF(105).toFixed(1)+'" x2="300" y2="'+yF(105).toFixed(1)+'" stroke="#f97316" stroke-width="1" stroke-dasharray="3 4" stroke-opacity=".45"/><text class="pw-fl-ex" x="300" y="'+(yF(105)-4).toFixed(1)+'" text-anchor="end">extreme \u00b7 105\u00b0</text>'):"";
-      var dots='<circle cx="0" cy="'+yF(S[0].fF).toFixed(1)+'" r="3.5" fill="#f97316"/><text class="pw-fl-vm" x="4" y="'+(yF(S[0].fF)-5).toFixed(1)+'">'+S[0].fF+'\u00b0</text>'
+      /* 0712y: edge-peak label yield (owner find, live morning) \u2014 when the peak IS the first or
+         last sample, its label carries value+time and the edge mini-label stands down. */
+      var dots='<circle cx="0" cy="'+yF(S[0].fF).toFixed(1)+'" r="3.5" fill="#f97316"/>'+(pkI!==0?'<text class="pw-fl-vm" x="4" y="'+(yF(S[0].fF)-5).toFixed(1)+'">'+S[0].fF+'\u00b0</text>':'')
         +'<circle cx="'+xP.toFixed(1)+'" cy="'+yF(S[pkI].fF).toFixed(1)+'" r="4" fill="#f97316"/><text class="pw-fl-vt" x="'+pxc.toFixed(1)+'" y="'+(yF(S[pkI].fF)-7).toFixed(1)+'" text-anchor="middle">'+S[pkI].fF+'\u00b0 \u00b7 '+pwClk(S[pkI].t)+'</text>'
-        +'<circle cx="300" cy="'+yF(fLs.fF).toFixed(1)+'" r="3.5" fill="#f97316"/><text class="pw-fl-vm" x="296" y="'+(yF(fLs.fF)-5).toFixed(1)+'" text-anchor="end">'+fLs.fF+'\u00b0</text>';
+        +'<circle cx="300" cy="'+yF(fLs.fF).toFixed(1)+'" r="3.5" fill="#f97316"/>'+(pkI!==S.length-1?'<text class="pw-fl-vm" x="296" y="'+(yF(fLs.fF)-5).toFixed(1)+'" text-anchor="end">'+fLs.fF+'\u00b0</text>':'');
       return {hi:hi,lo:lo,html:'<div class="pw-sky-lab">Feels-like through the day</div><svg class="pw-sky-fl" viewBox="0 0 300 52" preserveAspectRatio="none"><polyline fill="none" stroke="#f97316" stroke-width="2" points="'+pts+'"/>'+ex+dots+'</svg>'};
+    }
+    /* 0712y: skyRibbonRow (owner call) \u2014 the icon ribbon + legend as a standalone quiet-day card;
+       the sky\u2019s story must not vanish with the downs chart. skyLanes floor twin (same segs,
+       same sensor upgrade, same icons/guard/axis/legend); downs lane stays gated by showDown. */
+    function skyRibbonRow(x,ltg){
+      var LT=ltg||[],sm0=x.samples;if(!sm0||!sm0.length)return null;
+      var firstT=sm0[0].t,lastT=sm0[sm0.length-1].t;
+      if(x.series.length){firstT=Math.min(firstT,x.series[0][0]);lastT=Math.max(lastT,x.series[x.series.length-1][0]);}
+      if(LT.length){firstT=Math.min(firstT,LT[0].t-(LT[0].w||60));lastT=Math.max(lastT,LT[LT.length-1].t);}
+      var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
+      function tx(t){return (((t-T0)/(T1-T0))*720).toFixed(1);}
+      function ltgAt3(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;}
+      var segs=[],s2;
+      for(s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]);if(ltgAt3(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
+        var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);
+        if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
+      var rb='<svg class="pw-lane" viewBox="0 0 720 64" preserveAspectRatio="none">';
+      for(s2=0;s2<segs.length;s2++){var w2=parseFloat(tx(segs[s2].b))-parseFloat(tx(segs[s2].a));
+        rb+='<rect x="'+tx(segs[s2].a)+'" y="2" width="'+Math.max(0,w2).toFixed(1)+'" height="13" rx="3" fill="'+PW_RIBBON[segs[s2].cl]+'"/>';}
+      var ICONS={clear:"\u2600\ufe0f",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
+      var lastR=-1e9;
+      for(s2=0;s2<segs.length;s2++){var w3=parseFloat(tx(segs[s2].b))-parseFloat(tx(segs[s2].a));if(w3<12)continue;
+        var icx=(parseFloat(tx(segs[s2].a))+parseFloat(tx(segs[s2].b)))/2;
+        if(icx-16<lastR+6)continue;
+        rb+='<text x="'+icx.toFixed(1)+'" y="44" text-anchor="middle" font-family="Inter" font-size="30">'+ICONS[segs[s2].cl]+'</text>';lastR=icx+16;}
+      var axLast=T0;
+      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
+      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>';
+      rb+='</svg>';
+      var LEG_ORD=["clear","cloud","storm","rain","core"],LEG_TXT={clear:"\u2600\ufe0f clear",cloud:"\u2601\ufe0f clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27\ufe0f rain",core:"\u26c8\ufe0f rain core"};
+      var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)used[segs[lgi].cl]=1;
+      for(lgi=0;lgi<LEG_ORD.length;lgi++){if(used[LEG_ORD[lgi]])lg.push(LEG_TXT[LEG_ORD[lgi]]);}
+      return {html:'<div class="pw-sky-lab">The sky through the day</div>'+rb+(lg.length?('<div class="pw-sleg">'+lg.join(" \u00b7 ")+'</div>'):"")};
     }
     function skyObsPeak(x){
       var S=x.samples;if(!S||!S.length)return null;
@@ -4915,6 +4954,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         var LN=null;
         if(showDown){LN=skyLanes(x,(lastData.ltg&&lastData.ltg.samples)||null);
           if(LN)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+LN.html+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div>'+(LN.leg||"")+'</div>';}
+        if(!showDown){var RB=skyRibbonRow(x,(lastData.ltg&&lastData.ltg.samples)||null);if(RB)html+='<div class="pw-st-card pw-sky">'+RB.html+'</div>';} /* 0712y: the sky leads the quiet page */
         if(stx&&!showDown)html+='<div class="pw-st-card pw-sky">'+stx.html+'</div>';
         if(fl&&!showDown)html+='<div class="pw-st-card pw-sky">'+fl.html+'</div>';
         var BB=skyBeats(lastData,x,live,op),bi;
@@ -4926,10 +4966,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           for(var pp=0;pp<parks.length;pp++){var v=x.parkPeaks[parks[pp]];html+='<div class="pb"><div class="nm">'+esc(parks[pp])+'</div><div class="track"><div class="fill" style="width:'+Math.round(v/maxpk*100)+'%"></div></div><div class="v">'+v+'</div></div>';}
           html+='</div>';}}
       }
-      if(showDown)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>';
+      if(x.series.length)html+='<button class="pw-share" id="pwShareS" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this timeline</button>'; /* 0712y: every data day earns its card, not just storm days */
       var wxW={storm:"the storm",wind:"the wind",rain:"the rain"}[ch.kind]||"the weather";
       var lgMix=!!(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.some(function(sv){return (sv.w||60)<50;}));
-      var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?"hourly \u00b7 15-min through the storm":"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):"";
+      var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lastData.ltg.samples.some(function(sv){return (sv.w||60)<50&&sv.n>0;})?"through the storm":"at close watch")):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
       if(showDown&&LN)pwSkyBind({T0:LN.T0,T1:LN.T1,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples}); /* 0712l: one clock \u2014 the bind reads the renderer's own T0/T1 */
@@ -4943,7 +4983,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var fin=isFinal(lastData),live=(!fin);
       var ch=wxChip(lastData,live)||{kind:"storm"};
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
-      var D={x:x,ltg:(lastData.ltg&&lastData.ltg.samples)||[],kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"parkpulse-storm.png",shareTitle:"ParkPulse \u2014 Storm"}; /* 0712v: ltg rides along \u2014 the card finally tells the strikes story */
+      var D={x:x,ltg:(lastData.ltg&&lastData.ltg.samples)||[],kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"parkpulse-sky.png",shareTitle:"ParkPulse \u2014 Sky"}; /* 0712v: ltg rides along. 0712y: Sky-named \u2014 the card serves every day now, not just storms */
       var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var ctx=cv.getContext("2d"); /* 0712v: 4:5 IG-portrait canvas (owner call) */
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
@@ -4986,10 +5026,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var ltot=0,lmx=null,lz;for(lz=0;lz<LT.length;lz++){ltot+=LT[lz].n;if(!lmx||LT[lz].n>lmx.n)lmx=LT[lz];}
       var modelStorm=false;for(lz=0;lz<x.samples.length;lz++)if(x.samples[lz].code>=95)modelStorm=true;
       var kind=(ltot>0)?"storm":D.kind;
-      var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain",hold:"A holding pattern"};
-      T(ell(TT[kind]||"When the weather hit",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
-      var leadW={storm:(modelStorm?"Thunderstorms swept over Walt Disney World":"Lightning swept the area around Walt Disney World"),wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World",hold:"Ride pauses swept across Walt Disney World"};
-      T(ell((leadW[kind]||"Weather swept over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
+      var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain",hold:"A holding pattern",heat:"Riding out the heat",cold:"Riding out the cold"};
+      T(ell(TT[kind]||"The day\u0027s sky",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
+      var leadW={storm:(modelStorm?"Thunderstorms swept over Walt Disney World":"Lightning swept the area around Walt Disney World"),wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World",hold:"Ride pauses swept across Walt Disney World",heat:"Heat pressed down on Walt Disney World",cold:"Cold settled over Walt Disney World"};
+      T(ell((leadW[kind]||"A quiet sky over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
       /* timeline domain \u2014 union of series, weather samples, and strike windows (skyLanes twin) */
       var series=x.series,firstT=series[0][0],lastT=series[series.length-1][0];
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
@@ -5081,7 +5121,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* footer \u2014 0712v layout (owner call): left column stacks reliability + credits; link alone on the right.
          Diverges from the emitCard family (0705i) deliberately; family follows if ratified on glass. */
       ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-      T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain",hold:"the holds"}[kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
+      T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain",hold:"the holds",heat:"the heat",cold:"the cold"}[kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
       T("parkpulse.live",R,fy+36,IN("700",26),C.green,"right");
       T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Xweather",L,fy+66,IN("500",20),C.muted2,"left");
       ctx.restore();
