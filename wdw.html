@@ -1043,7 +1043,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4766,7 +4766,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(88-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
       l2+='</svg>';
       var v2=(tot>0&&mx)?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):'none within 10 mi';
-      h+='<div class="pw-lh"><span class="nm">\u26a1 Strikes \u00b7 10 mi</span><span class="st'+((tot>0&&mx)?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+l2;
+      h+='<div class="pw-lh"><span class="nm">Lightning strikes \u00b7 10 mi</span><span class="st'+((tot>0&&mx)?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+l2; /* 0712x: word header (owner call) \u2014 headers are labels and labels state their measure; the \u26a1 vocabulary lives in the ribbon + legend. One language with the card. */
       /* lane 3 \u2014 feels-like */
       var S3=x.samples;
       if(S3.length>1){var flo=1e9,fhi=-1e9,fz;
@@ -5019,9 +5019,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(i=0;i<evw.length;i++){if(evw[i].b-evw[i].a<10){evw[i].a=Math.max(T0,evw[i].a-5);evw[i].b=Math.min(T1,evw[i].b+5);}}
       var eg=ctx.createLinearGradient(0,ry+4,0,pT-6);eg.addColorStop(0,"rgba(99,102,241,0.18)");eg.addColorStop(1,"rgba(99,102,241,0.02)");
       for(i=0;i<evw.length;i++){ctx.fillStyle=eg;ctx.fillRect(TX(evw[i].a),pT-6,TX(evw[i].b)-TX(evw[i].a),(ry+4)-(pT-6));}
-      function laneHead(y,name){T(name,L,y,IN("700",21),C.muted2,"left");ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+8);ctx.lineTo(R,y+8);ctx.stroke();}
+      function laneHead(y,name,key){if(key){rr(L,y-14,26,5,2.5);ctx.fillStyle=key;ctx.fill();}T(name,key?L+38:L,y,IN("700",22),"#b6c2d4","left");ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+8);ctx.lineTo(R,y+8);ctx.stroke();} /* 0712x: V3 keyed dash (owner pick) \u2014 a swatch in the lane\u2019s own ink does the wayfinding; type lifts to 22/#b6c2d4 (~8:1) without owning the page */
       /* lane 1 \u2014 attractions down */
-      laneHead(hd1,"ATTRACTIONS DOWN");
+      laneHead(hd1,"ATTRACTIONS DOWN","#ff5d73");
       var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
       function DY(v){return pB-(v/DMAX)*(pB-pT);}
       ctx.beginPath();ctx.moveTo(TX(series[0][0]),DY(0));
@@ -5041,14 +5041,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       else{if(pkT)T(pkT,Math.max(qx-14,L+330),qy-14,SG("700",26),"#ff8195","right");
         if(onT)T(onT,Math.max(ox-14,L+330),oy-14,SG("700",24),"#a9b0f7","right");}
       /* lane 2 \u2014 strikes, F2 sampled floor: a stub per banked window, bars from the same ground */
-      laneHead(hd2,"\u26a1 STRIKES \u00b7 10 MI");
+      laneHead(hd2,"LIGHTNING STRIKES \u00b7 10 MI","#fbbf24");
       var LM=0;for(lz=0;lz<LT.length;lz++)if(LT[lz].n>LM)LM=LT[lz].n;
       for(lz=0;lz<LT.length;lz++){var wx1=TX(LT[lz].t-(LT[lz].w||60)),wx2=TX(LT[lz].t);
         rr(wx1+1,sB-4,Math.max(3,wx2-wx1-2),4,2);ctx.fillStyle="rgba(251,191,36,0.30)";ctx.fill();
         if(LT[lz].n>0){var bh2=Math.max(8,(LT[lz].n/LM)*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}}
       if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t-(lmx.w||60))-10,L+330),sT+22,SG("700",24),"#fbbf24","right"); /* 0712w: anchored to the bar\u2019s LEFT edge \u2014 the label may not stand on its own column */
       /* lane 3 \u2014 feels-like */
-      laneHead(hd3,"FEELS-LIKE");
+      laneHead(hd3,"FEELS-LIKE","#f97316");
       if(S3.length>1){var flo=1e9,fhi=-1e9;
         for(lz=0;lz<S3.length;lz++){var ff=S3[lz].fF;if(ff<flo)flo=ff;if(ff>fhi)fhi=ff;}
         if(fhi-flo<4)fhi=flo+4;
