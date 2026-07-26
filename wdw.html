@@ -953,10 +953,13 @@
   .pw-lane{display:block;width:100%;overflow:visible}
   .pw-sleg{font:600 11px/1.6 Inter,sans-serif;color:var(--muted);margin:8px 2px 0;letter-spacing:.01em} /* 0712t: in-use-only ribbon legend under the stack */
   .pw-szone{position:absolute;top:28px;bottom:29px;background:linear-gradient(0deg,rgba(99,102,241,.16),rgba(99,102,241,.02));border-radius:3px 3px 0 0;pointer-events:none;z-index:3} /* 0712q: the glow ends AT the ribbon\u2019s top edge \u2014 rising from the segment, never washing its label */ /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */ /* 0712u: 26\u219229px \u2014 floor grew 56\u219264u; same landing on the band\u2019s top edge */
-  .ltg-strip.lbl{height:38px}
+  .ltg-strip.lbl{height:48px} /* 0713g: room for the guard\u2019s second label row */
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
   .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
   .ltg-strip.lbl i[data-n]:not(.z)::after{content:attr(data-n);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:2px;font-size:8.5px;font-weight:700;color:#fbbf24;font-family:var(--font-display)}
+  .ltg-strip.lbl i.st2::after{bottom:calc(100% + 11px)} /* 0713g label guard (owner storm finds: the edge-clipped \u201c2\u201d, the 2/36 overprint): crowded neighbors stagger to a second row\u2026 */
+  .ltg-strip.lbl i.egL::after{left:0;transform:none} /* \u2026and edge labels clamp inside the strip */
+  .ltg-strip.lbl i.egR::after{left:auto;right:0;transform:none}
   .ltg-hrs{display:flex;gap:3px;margin-top:3px}
   .ltg-hrs s{flex:1;text-decoration:none;font-size:8.5px;color:var(--pwh-dim);text-align:center;font-weight:600}
   .pw-tile .ctx .pw-wx{color:var(--accent);font-weight:600}
@@ -1046,7 +1049,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3895,6 +3898,24 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(s.fF!=null&&s.fF>=105)return "\ud83e\udd75";
       return s.code>=1?"\u26c5":"\u2600\ufe0f";
     }
+    /* 0713g: label guard for the tapped strip. Bar centers are MEASURED (exact); label widths are
+       estimated from digit count (pseudo-elements can\u0027t be measured) with conservative padding.
+       Edge labels clamp inside; colliding neighbors stagger to a second row; a rare three-deep
+       crowd may still kiss \u2014 accepted, noted. Runs on every toggle; classes reset first. */
+    function pwStripGuard(lst){
+      var i2,bs=lst.querySelectorAll("i[data-n]");
+      for(i2=0;i2<bs.length;i2++){bs[i2].classList.remove("egL","egR","st2");}
+      if(!lst.classList.contains("lbl"))return;
+      var R=lst.getBoundingClientRect(),r1=-1e9,r2=-1e9;
+      for(i2=0;i2<bs.length;i2++){var b=bs[i2],rb=b.getBoundingClientRect();
+        var hw=((""+b.getAttribute("data-n")).length*6.2+4)/2,cx0=rb.left+rb.width/2-R.left;
+        var a=cx0-hw,z=cx0+hw;
+        if(a<1){b.classList.add("egL");a=Math.max(rb.left-R.left,0);z=a+hw*2;}
+        else if(z>R.width-1){b.classList.add("egR");z=Math.min(rb.right-R.left,R.width);a=z-hw*2;}
+        if(a<r1+3){if(a<r2+3){r1=z;}else{b.classList.add("st2");r2=z;}}
+        else r1=z;
+      }
+    }
     function pwLtgCard(d,live,tab,chip){ /* 0712z: chip rides in \u2014 rendered as the card\u2019s verdict band when present */
       var L=d&&d.ltg,S=L&&L.samples;
       if(!S||!S.length)return "";
@@ -3931,13 +3952,13 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         }
       }
       if(any||live){
-        var bars="",hrs="",top=any?max.n:1;
+        var bars="",hrs="",topR=0;for(i=0;i<S.length;i++){var r0=S[i].n/(S[i].w||60);if(r0>topR)topR=r0;}if(!topR)topR=1; /* 0713g: W2 density (owner pick) \u2014 height = strikes per MINUTE, width = true window, so AREA = count; the gestalt finally tells the truth. Labels keep printing counts. */
         var midIdx=0,mdd=1e9,hrsPrev=""; /* 0712d: quiet axis (owner pick B) \u2014 edges + midday breathe; the tap toggle now reveals count AND hour per bar */
         for(i=0;i<S.length;i++){var dmm=Math.abs(S[i].t-720);if(dmm<mdd){mdd=dmm;midIdx=i;}}
         for(i=0;i<S.length;i++){
           var s=S[i],t=s.t,h12=((Math.floor(t/60)+11)%12)+1,apc=Math.floor(t/60)<12?"a":"p"; /* 0711s: axis labels are hour-only — the axis anchors bars; the precise minute lives in the sentence. Cron phase drift (:01 ticks) ballooned fourteen labels out of the box. */
           var sfw=s.w||60; /* 0712h: unequal windows get unequal widths \u2014 equal bars would misstate */
-          if(s.n>0){var pct=Math.max(8,Math.round(s.n/top*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%;flex:'+sfw+'"></i>';}
+          if(s.n>0){var pct=Math.max(8,Math.round((s.n/(s.w||60))/topR*100));bars+='<i data-n="'+s.n+'" style="height:'+pct+'%;flex:'+sfw+'"></i>';}
           else bars+='<i class="z" style="flex:'+sfw+'"></i>';
           var edge=(S.length<=8)||(i===0||i===S.length-1||i===midIdx); /* short mornings keep full labels \u2014 same \u22648 exception as thinning */
           var lab2=h12+apc,showL=(lab2===hrsPrev)?"":lab2;hrsPrev=lab2; /* 0712h: storm quarters share an hour \u2014 never print it twice */
@@ -4011,7 +4032,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var shb=$id("pwShare");if(shb)shb.addEventListener("click",function(){shareWrapCard();});
       var chb=$id("pwChip");if(chb){chb.addEventListener("click",function(){showStorm();});chb.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showStorm();}});}
       var lup=$id("pwLtgUpd");if(lup)lup.addEventListener("click",function(){delete cache.today;delete cacheAt.today;loadTab("today");});
-      var lst=$id("pwLtgStrip");if(lst)lst.addEventListener("click",function(){lst.classList.toggle("lbl");});
+      var lst=$id("pwLtgStrip");if(lst)lst.addEventListener("click",function(){lst.classList.toggle("lbl");pwStripGuard(lst);});
       var scd=$id("pwSkyCard");if(scd){scd.addEventListener("click",function(ev){var tg=ev.target;while(tg&&tg!==scd){if(tg.id==="pwLtgUpd"||tg.id==="pwLtgStrip")return;tg=tg.parentNode;}showStorm();});
         scd.addEventListener("keydown",function(e){if(e.key==="Enter"){showStorm();}});} /* 0712a: one door — card and chip both open the Sky Page */
     }
@@ -4717,7 +4738,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var B=[];
       if(x.onset)B.push({t:x.onset.t,c:"#6366f1",h:pwClk(x.onset.t)+" \u2014 "+x.onset.park+" went first",b:x.onset.n+" rides held at once across "+x.onset.park+". "+x.downPeak+" paused across the resort at the peak."});
       var sp=skyStrikePeak(d);
-      if(sp)B.push({t:sp.t-30,c:"#f59e0b",h:"\u26a1 "+sp.n+" strike"+(sp.n===1?"":"s")+" within 10 mi",b:"Lightning peaked in the "+pwW(sp.w)+" ending "+pwClk(sp.t)+"."});
+      if(sp){var spw=(sp.w||60);B.push({t:sp.t-spw/2,c:"#f59e0b",h:"\u26a1 "+sp.n+" strike"+(sp.n===1?"":"s")+" in "+(spw===60?"an hour":(spw+" minutes")),b:"The heaviest stretch of the day, ending "+pwClk(sp.t)+"."});} /* 0713g: sort at the TRUE window midpoint (the -30 back-dated storm windows by ~25 min and reshuffled beats between refreshes) + headline A (owner pick): the peak states its own measure, not the radius */
       if(x.core){var cb=pwCoreBeat(x);if(cb)B.push({t:(x.core.t!=null?x.core.t:1e9),c:PW_RIBBON.core,h:cb.h,b:cb.b});}
       if(!sp&&op&&op.fF>=100)B.push({t:op.t,c:"#f97316",h:pwClk(op.t)+" \u2014 feels-like peaked at "+op.fF+"\u00b0",b:"Off a "+op.airHi+"\u00b0 air high."});
       B.sort(function(a,b){return a.t-b.t;});
@@ -4762,12 +4783,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var v1=x.peakPt?('peak '+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak);
       h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div><div class="pw-lrule"></div>'+l1;
       /* lane 2 \u2014 strikes */
-      var tot=0,mx=null,LM=0,lz;
-      for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];}
+      var tot=0,mx=null,LM=0,LR=0,lz;
+      for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];var rr2=LT[lz].n/(LT[lz].w||60);if(rr2>LR)LR=rr2;}
       var l2='<svg class="pw-lane" viewBox="0 0 720 92" preserveAspectRatio="none">';
       for(lz=0;lz<LT.length;lz++){var ln=LT[lz].n,lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t));
         l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="84" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="4" rx="2" fill="#fbbf24" fill-opacity="0.30"/>'; /* 0712w: F2 sampled floor (owner call) \u2014 a stub per banked window; the floor IS the ledger, card and page in one language. Zero days become a listening baseline (tweak #2 resolved). */
-        if(ln>0){var lh2=Math.max(6,(ln/LM)*84);
+        if(ln>0){var lh2=Math.max(6,((ln/(ltg[lz].w||60))/(LR||1))*84); /* 0713g: W2 density \u2014 skyLanes twin */
         l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(88-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
       l2+='</svg>';
       var v2=(tot>0&&mx)?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):'none within 10 mi';
@@ -4862,6 +4883,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       function place(cx){
         var r=wrap.getBoundingClientRect();if(!r.width)return;
         var vx=(cx-r.left)/r.width,t=D.T0+Math.max(0,Math.min(1,vx))*(D.T1-D.T0); /* 0712l: full-bleed lanes \u2014 pure fraction, no margins */
+        if(D.TL!=null&&t>D.TL)t=D.TL; /* 0713g: the lens cannot scrub the future (owner storm find) \u2014 it pins at the last banked moment; the axis keeps its clean hour edge */
         var rd=skyLensRead(t,D);
         var lf=((rd.t-D.T0)/(D.T1-D.T0)*100).toFixed(2);
         ln.style.left=lf+"%";
@@ -4940,7 +4962,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lgSW.some(function(sv){return sv.n>0;})?"through the storm":"at close watch")+" "+pwClk(lgSW[0].t)+"\u2013"+pwClk(lgSW[lgSW.length-1].t)):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a true 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
       html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
       wv.innerHTML=html;topw();
-      if(LN)pwSkyBind({T0:LN.T0,T1:LN.T1,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples}); /* 0712l: one clock. 0713d: the lens binds whenever the stack renders \u2014 the scrub is not a storm privilege */
+      if(LN){var TLc=Math.max(x.series.length?x.series[x.series.length-1][0]:0,x.samples.length?x.samples[x.samples.length-1].t:0,(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.length)?lastData.ltg.samples[lastData.ltg.samples.length-1].t:0);
+      pwSkyBind({T0:LN.T0,T1:LN.T1,TL:TLc,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples});} /* 0712l: one clock. 0713d: not a storm privilege. 0713g: TL = the last banked moment \u2014 the lens\u2019s future fence */
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
     }
@@ -5000,7 +5023,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
          live/FINAL pair; past tense on a SO FAR TODAY badge was the pre-lane card\u2019s oldest
          latent bug, exposed by the first live share. */
       var lv=(D.badge!=="FINAL");
-      var leadW={storm:(modelStorm?(lv?"Thunderstorms are sweeping over Walt Disney World":"Thunderstorms swept over Walt Disney World"):(lv?"Lightning is sweeping the area around Walt Disney World":"Lightning swept the area around Walt Disney World")),wind:(lv?"High winds are moving through Walt Disney World":"High winds moved through Walt Disney World"),rain:(lv?"Heavy rain is sweeping over Walt Disney World":"Heavy rain swept over Walt Disney World"),hold:(lv?"Ride pauses are sweeping across Walt Disney World":"Ride pauses swept across Walt Disney World"),heat:(lv?"Heat is pressing down on Walt Disney World":"Heat pressed down on Walt Disney World"),cold:(lv?"Cold is settling over Walt Disney World":"Cold settled over Walt Disney World")};
+      var ltLast=0;for(lz=0;lz<LT.length;lz++)if(LT[lz].n>0&&LT[lz].t>ltLast)ltLast=LT[lz].t;
+      var nowEM=(D.nowM!=null?D.nowM:(function(){try{var p=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",hour12:false,hour:"2-digit",minute:"2-digit"}).formatToParts(new Date()),o={};p.forEach(function(q){o[q.type]=q.value;});return (parseInt(o.hour,10)%24)*60+parseInt(o.minute,10);}catch(e){var dd=new Date();return dd.getHours()*60+dd.getMinutes();}})()); /* pfEtMin twin \u2014 different IIFE; D.nowM is the harness override, never set in production */
+      var ltgFresh=(ltLast>0&&(nowEM-ltLast)<=30&&(nowEM-ltLast)>=-5); /* 0713g: the live sensor voice checks the last strike\u2019s AGE (owner call \u2014 the 5:44 lull card said \u201cis sweeping\u201d 29 min after the last strike). 30-min tunable in the 25-mph spirit; stale lightning speaks past tense even on a live day, exactly as the hold chip always has. */
+      var leadW={storm:(modelStorm?(lv?"Thunderstorms are sweeping over Walt Disney World":"Thunderstorms swept over Walt Disney World"):((lv&&ltgFresh)?"Lightning is sweeping the area around Walt Disney World":"Lightning swept the area around Walt Disney World")),wind:(lv?"High winds are moving through Walt Disney World":"High winds moved through Walt Disney World"),rain:(lv?"Heavy rain is sweeping over Walt Disney World":"Heavy rain swept over Walt Disney World"),hold:(lv?"Ride pauses are sweeping across Walt Disney World":"Ride pauses swept across Walt Disney World"),heat:(lv?"Heat is pressing down on Walt Disney World":"Heat pressed down on Walt Disney World"),cold:(lv?"Cold is settling over Walt Disney World":"Cold settled over Walt Disney World")};
       T(ell((leadW[kind]||(lv?"A quiet sky over Walt Disney World so far":"A quiet sky over Walt Disney World"))+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
       /* timeline domain \u2014 union of series, weather samples, and strike windows (skyLanes twin) */
       var series=x.series,lastT=series[series.length-1][0],firstT=null,fz0;
@@ -5057,10 +5083,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         if(onT)T(onT,Math.max(ox-14,L+330),oy-14,SG("700",24),"#a9b0f7","right");}
       /* lane 2 \u2014 strikes, F2 sampled floor: a stub per banked window, bars from the same ground */
       laneHead(hd2,"LIGHTNING STRIKES \u00b7 10 MI","#fbbf24");
-      var LM=0;for(lz=0;lz<LT.length;lz++)if(LT[lz].n>LM)LM=LT[lz].n;
+      var LM=0,LR2=0;for(lz=0;lz<LT.length;lz++){if(LT[lz].n>LM)LM=LT[lz].n;var rr3=LT[lz].n/(LT[lz].w||60);if(rr3>LR2)LR2=rr3;}
       for(lz=0;lz<LT.length;lz++){var wx1=Math.max(TX(LT[lz].t-(LT[lz].w||60)),L),wx2=TX(LT[lz].t); /* 0713d: clamp partial windows at the rail */
         rr(wx1+1,sB-4,Math.max(3,wx2-wx1-2),4,2);ctx.fillStyle="rgba(251,191,36,0.30)";ctx.fill();
-        if(LT[lz].n>0){var bh2=Math.max(8,(LT[lz].n/LM)*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}}
+        if(LT[lz].n>0){var bh2=Math.max(8,((LT[lz].n/(LT[lz].w||60))/(LR2||1))*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}} /* 0713g: W2 density \u2014 card twin */
       if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t-(lmx.w||60))-10,L+330),sT+22,SG("700",24),"#fbbf24","right"); /* 0712w: anchored to the bar\u2019s LEFT edge \u2014 the label may not stand on its own column */
       /* lane 3 \u2014 feels-like */
       laneHead(hd3,"FEELS-LIKE","#f97316");
