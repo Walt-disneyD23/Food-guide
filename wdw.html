@@ -948,6 +948,7 @@
   .pw-lh .st.q{font-family:Inter,sans-serif;font-weight:600;font-size:10.5px;color:var(--muted)}
   .pw-lrule{height:1px;background:var(--line);margin:0 0 3px}
   .pw-lane{display:block;width:100%;overflow:visible}
+  .pw-szone{position:absolute;top:2px;bottom:16px;border-left:1.5px dashed rgba(99,102,241,.6);border-right:1.5px dashed rgba(99,102,241,.42);pointer-events:none;z-index:3} /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */
   .ltg-strip.lbl{height:38px}
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
   .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
@@ -1041,7 +1042,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4790,9 +4791,23 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(var sg=0;sg<segs.length;sg++){var Sg=segs[sg],w2=parseFloat(tx(Sg.b))-parseFloat(tx(Sg.a));
         rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>';
         if(w2>70)rb+='<text x="'+((parseFloat(tx(Sg.a))+parseFloat(tx(Sg.b)))/2).toFixed(1)+'" y="30" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="'+labcol[Sg.cl]+'">'+labs[Sg.cl]+'</text>';}
-      for(var t2=T0;t2<=T1;t2+=60)rb+='<text x="'+tx(t2)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(t2)+'</text>';
+      /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
+      var axLast=T0;
+      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
+      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="52" text-anchor="middle" font-family="Inter" font-size="15" font-weight="600" fill="#9aa0b8">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
-      return {html:h+rb,T0:T0,T1:T1};
+      /* 0712n: bracket the event window(s) through every lane (owner pick S3). Windows = merged runs
+         of the ribbon's OWN storm/core segments \u2014 one source of truth, multi-wave days bracket each
+         wave for free, quiet days draw nothing. Same fraction math as the lens hairline. */
+      var evw=[],ew=null;
+      for(sg=0;sg<segs.length;sg++){var isEv=(segs[sg].cl==="storm"||segs[sg].cl==="core");
+        if(isEv){if(ew)ew.b=segs[sg].b;else ew={a:segs[sg].a,b:segs[sg].b};}
+        else if(ew){evw.push(ew);ew=null;}}
+      if(ew)evw.push(ew);
+      var zones="";
+      for(sg=0;sg<evw.length;sg++){var za=((evw[sg].a-T0)/(T1-T0)*100).toFixed(2),zw=((evw[sg].b-evw[sg].a)/(T1-T0)*100).toFixed(2);
+        zones+='<div class="pw-szone" style="left:'+za+'%;width:'+zw+'%"></div>';}
+      return {html:zones+h+rb,T0:T0,T1:T1};
     }
     /* ===== 0712e: the Sky lens \u2014 one hairline, every ledger. Silent-when-zero;
        hour-grain honesty ("this hr") until v3.8.2 sharpens it. Reader is pure. ===== */
