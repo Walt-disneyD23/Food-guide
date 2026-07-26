@@ -1046,7 +1046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4708,9 +4708,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var ex=(hi>=100)?('<line x1="0" y1="'+yF(105).toFixed(1)+'" x2="300" y2="'+yF(105).toFixed(1)+'" stroke="#f97316" stroke-width="1" stroke-dasharray="3 4" stroke-opacity=".45"/><text class="pw-fl-ex" x="300" y="'+(yF(105)-4).toFixed(1)+'" text-anchor="end">extreme \u00b7 105\u00b0</text>'):"";
       /* 0712y: edge-peak label yield (owner find, live morning) \u2014 when the peak IS the first or
          last sample, its label carries value+time and the edge mini-label stands down. */
-      var dots='<circle cx="0" cy="'+yF(S[0].fF).toFixed(1)+'" r="3.5" fill="#f97316"/>'+(pkI!==0?'<text class="pw-fl-vm" x="4" y="'+(yF(S[0].fF)-5).toFixed(1)+'">'+S[0].fF+'\u00b0</text>':'')
+      var dots='<circle cx="0" cy="'+yF(S[0].fF).toFixed(1)+'" r="3.5" fill="#f97316"/>'+(xP>34?'<text class="pw-fl-vm" x="4" y="'+(yF(S[0].fF)-5).toFixed(1)+'">'+S[0].fF+'\u00b0</text>':'') /* 0713b: yield by POSITION, not index \u2014 the peak label clamps to 34..266, so an edge label stands down whenever the peak crowds its zone (a second-to-last peak collided the index rule) */
         +'<circle cx="'+xP.toFixed(1)+'" cy="'+yF(S[pkI].fF).toFixed(1)+'" r="4" fill="#f97316"/><text class="pw-fl-vt" x="'+pxc.toFixed(1)+'" y="'+(yF(S[pkI].fF)-7).toFixed(1)+'" text-anchor="middle">'+S[pkI].fF+'\u00b0 \u00b7 '+pwClk(S[pkI].t)+'</text>'
-        +'<circle cx="300" cy="'+yF(fLs.fF).toFixed(1)+'" r="3.5" fill="#f97316"/>'+(pkI!==S.length-1?'<text class="pw-fl-vm" x="296" y="'+(yF(fLs.fF)-5).toFixed(1)+'" text-anchor="end">'+fLs.fF+'\u00b0</text>':'');
+        +'<circle cx="300" cy="'+yF(fLs.fF).toFixed(1)+'" r="3.5" fill="#f97316"/>'+(xP<266?'<text class="pw-fl-vm" x="296" y="'+(yF(fLs.fF)-5).toFixed(1)+'" text-anchor="end">'+fLs.fF+'\u00b0</text>':'');
       return {hi:hi,lo:lo,html:'<div class="pw-sky-lab">Feels-like through the day</div><svg class="pw-sky-fl" viewBox="0 0 300 52" preserveAspectRatio="none"><polyline fill="none" stroke="#f97316" stroke-width="2" points="'+pts+'"/>'+ex+dots+'</svg>'};
     }
     /* 0712y: skyRibbonRow (owner call) \u2014 the icon ribbon + legend as a standalone quiet-day card;
@@ -4981,7 +4981,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(!lastData)return;
       var x=wxDerive(lastData);if(!x.series.length)return;
       var fin=isFinal(lastData),live=(!fin);
-      var ch=wxChip(lastData,live)||{kind:"storm"};
+      var ch=wxChip(lastData,live)||{kind:null}; /* 0713b: the storm-era fallback retired \u2014 a chip-less day speaks the quiet voice; it never again claims a storm it cannot prove */
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var D={x:x,ltg:(lastData.ltg&&lastData.ltg.samples)||[],kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"parkpulse-sky.png",shareTitle:"ParkPulse \u2014 Sky"}; /* 0712v: ltg rides along. 0712y: Sky-named \u2014 the card serves every day now, not just storms */
       var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var ctx=cv.getContext("2d"); /* 0712v: 4:5 IG-portrait canvas (owner call) */
