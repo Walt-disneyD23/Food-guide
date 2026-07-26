@@ -897,7 +897,7 @@
   .pw-chip-hold{background:rgba(100,116,139,.16);border-color:rgba(148,163,184,.34)} /* 0712d: slate \u2014 factual, not alarming */
   .pw-chip-heat{background:rgba(239,108,59,.18);border-color:rgba(248,150,110,.34)}
   .pw-chip-cold{background:rgba(56,189,248,.16);border-color:rgba(125,211,252,.34)}
-  .ltg-verdict{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;font-size:var(--fs-small);font-weight:600;color:var(--pwh-ink);line-height:1.35;border-bottom:1px solid var(--pwh-line)} /* 0712z: M1 merge (owner pick) \u2014 the chip docks as the Sky card\u2019s verdict band; cascade tint reuses the chip palette */
+  .ltg-verdict{display:flex;align-items:flex-start;gap:8px;margin:-11px -26px 10px -12px;padding:10px 30px 10px 12px;border-radius:13px 13px 0 0;font-size:var(--fs-small);font-weight:600;color:var(--pwh-ink);line-height:1.35;border-bottom:1px solid var(--pwh-line)} /* 0712z: M1 merge (owner pick). 0713a: full-bleed \u2014 negative margins escape the card\u2019s 11/26/12 padding, top radii = card 14 minus its 1px border, right padding clears the chevron. A band, not a box in a box. */
   .ltg-verdict .ic{font-size:var(--fs-title);line-height:1.2;flex:none}
   .ltg-verdict-storm{background:rgba(99,102,241,.20)}.ltg-verdict-wind{background:rgba(13,148,136,.18)}.ltg-verdict-rain{background:rgba(59,130,246,.16)}.ltg-verdict-hold{background:rgba(100,116,139,.16)}.ltg-verdict-heat{background:rgba(239,108,59,.18)}.ltg-verdict-cold{background:rgba(56,189,248,.16)}
   /* ---- sky card (0711n): lightning ledger + live conditions, hero-bottom.
@@ -1046,7 +1046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5028,8 +5028,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var kind=(ltot>0)?"storm":D.kind;
       var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain",hold:"A holding pattern",heat:"Riding out the heat",cold:"Riding out the cold"};
       T(ell(TT[kind]||"The day\u0027s sky",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
-      var leadW={storm:(modelStorm?"Thunderstorms swept over Walt Disney World":"Lightning swept the area around Walt Disney World"),wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World",hold:"Ride pauses swept across Walt Disney World",heat:"Heat pressed down on Walt Disney World",cold:"Cold settled over Walt Disney World"};
-      T(ell((leadW[kind]||"A quiet sky over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
+      /* 0713a: tense flips WHOLE (owner rule, finally applied to the leads) \u2014 every lead is a
+         live/FINAL pair; past tense on a SO FAR TODAY badge was the pre-lane card\u2019s oldest
+         latent bug, exposed by the first live share. */
+      var lv=(D.badge!=="FINAL");
+      var leadW={storm:(modelStorm?(lv?"Thunderstorms are sweeping over Walt Disney World":"Thunderstorms swept over Walt Disney World"):(lv?"Lightning is sweeping the area around Walt Disney World":"Lightning swept the area around Walt Disney World")),wind:(lv?"High winds are moving through Walt Disney World":"High winds moved through Walt Disney World"),rain:(lv?"Heavy rain is sweeping over Walt Disney World":"Heavy rain swept over Walt Disney World"),hold:(lv?"Ride pauses are sweeping across Walt Disney World":"Ride pauses swept across Walt Disney World"),heat:(lv?"Heat is pressing down on Walt Disney World":"Heat pressed down on Walt Disney World"),cold:(lv?"Cold is settling over Walt Disney World":"Cold settled over Walt Disney World")};
+      T(ell((leadW[kind]||(lv?"A quiet sky over Walt Disney World so far":"A quiet sky over Walt Disney World"))+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
       /* timeline domain \u2014 union of series, weather samples, and strike windows (skyLanes twin) */
       var series=x.series,firstT=series[0][0],lastT=series[series.length-1][0];
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
