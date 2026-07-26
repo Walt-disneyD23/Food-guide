@@ -1034,7 +1034,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3897,7 +3897,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }else if(live){
         sent=(latest.n>0)?((tot>latest.n?"<b>"+tot+pl(tot)+" so far</b> \u2014 "+latest.n+" in the "+pwW(latest.w)+" ending "+hr(latest.t)
                                         :"<b>"+latest.n+pl(latest.n)+"</b> in the "+pwW(latest.w)+" ending "+hr(latest.t)))
-                         :("none this hour \u2014 <b>peaked at "+max.n+"</b> in the "+pwW(max.w)+" ending "+hr(max.t));
+                         :("none this "+pwW(latest.w)+" \u2014 <b>peaked at "+max.n+"</b> in the "+pwW(max.w)+" ending "+hr(max.t));
       }else{
         sent=(tot===max.n)?("<b>"+tot+pl(tot)+"</b>, all in the "+pwW(max.w)+" ending "+hr(max.t))
                           :("<b>"+tot+pl(tot)+"</b> across the day, peaked at "+max.n+" in the "+pwW(max.w)+" ending "+hr(max.t));
@@ -4730,11 +4730,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         var r=wrap.getBoundingClientRect();if(!r.width)return;
         var vx=(cx-r.left)/r.width*720,t=D.T0+(vx-34)/672*(D.T1-D.T0);
         var rd=skyLensRead(t,D);
-        var lf=((34+(rd.t-D.T0)/(D.T1-D.T0)*672)/720*100).toFixed(2)+"%";
-        ln.style.left=lf;
-        pl.style.left=Math.max(12,Math.min(88,parseFloat(lf)))+"%"; /* 0712h: pill clamps inside the card; the hairline stays true */
+        var lf=((34+(rd.t-D.T0)/(D.T1-D.T0)*672)/720*100).toFixed(2);
+        ln.style.left=lf+"%";
         pl.innerHTML='<span class="pt">'+rd.clk+'</span><span class="pv">'+(rd.parts.join(" \u00b7 ")||"quiet")+'</span>';
         ln.hidden=false;pl.hidden=false;
+        var half=(pl.offsetWidth/r.width*100)/2; /* 0712i: clamp by the pill's RENDERED width \u2014 content first, position second; the hairline stays true */
+        pl.style.left=Math.max(half+1.5,Math.min(98.5-half,parseFloat(lf)))+"%";
       }
       function end(){act=false;ln.hidden=true;pl.hidden=true;}
       wrap.addEventListener("pointerdown",function(e){act=true;place(e.clientX);});
@@ -4762,7 +4763,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         var ltgCl=(stx&&stx.tot>0)?(stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"):"no lightning within 10 mi";
         if(chReal&&chReal.kind==="hold"){
           ttl="A holding pattern";
-          sub=x.downPeak+" attractions paused at once"+(live?" so far":" at the peak")+((stx&&stx.tot>0)?(" \u2014 "+stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"+(live?" so far.":".")):".");
+          sub=x.downPeak+" attractions paused at once"+(live?" so far":" at the peak")+((stx&&stx.tot>0)?(" \u2014 "+stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi."):".");
         }else if(chReal&&chReal.kind==="heat"&&op){
           ttl="A scorcher, end to end";
           sub="Feels-like "+(live?("has peaked at "+op.fF+"\u00b0 so far"):("peaked at "+op.fF+"\u00b0"))+" \u2014 "+ltgCl+((!live&&!(stx&&stx.tot>0))?" all day":"")+".";
