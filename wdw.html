@@ -1043,7 +1043,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0712u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0712v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4942,8 +4942,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var fin=isFinal(lastData),live=(!fin);
       var ch=wxChip(lastData,live)||{kind:"storm"};
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
-      var D={x:x,kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"parkpulse-storm.png",shareTitle:"ParkPulse \u2014 Storm"};
-      var cv=document.createElement("canvas");cv.width=1080;cv.height=1280;var ctx=cv.getContext("2d");
+      var D={x:x,ltg:(lastData.ltg&&lastData.ltg.samples)||[],kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"parkpulse-storm.png",shareTitle:"ParkPulse \u2014 Storm"}; /* 0712v: ltg rides along \u2014 the card finally tells the strikes story */
+      var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var ctx=cv.getContext("2d"); /* 0712v: 4:5 IG-portrait canvas (owner call) */
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
         drawStormCard(ctx,D);
@@ -4956,7 +4956,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       });
     }
     function drawStormCard(ctx,D){
-      var W=1080,H=1280,x=D.x;
+      /* 0712v: full lane-era rewrite (owner-ratified B2 mock) \u2014 aligned stat trio, three quiet-headed
+         lanes, F2 sampled strikes floor (the floor IS the ledger), sensor-upgraded icon ribbon,
+         event glow anchored to the band's top edge, in-use-only legend, left-stacked footer.
+         Park bars retired from this card (C1 lineage); the Wrap card still carries park rows. */
+      var W=1080,H=1350,x=D.x,LT=D.ltg||[];
       var C=PW_CARD_ALT;
       function rr(X,Y,w,h,r){ctx.beginPath();ctx.moveTo(X+r,Y);ctx.arcTo(X+w,Y,X+w,Y+h,r);ctx.arcTo(X+w,Y+h,X,Y+h,r);ctx.arcTo(X,Y+h,X,Y,r);ctx.arcTo(X,Y,X+w,Y,r);ctx.closePath();}
       function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
@@ -4974,52 +4978,95 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
       if(D.badge!=="FINAL"){var asofT="as of "+new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"})+" ET";ctx.font=IN("500",19);var aw=ctx.measureText(asofT).width;T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+22,IN("500",19),C.muted2,"center");}
       var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain"};
-      T(ell(TT[D.kind]||"When the weather hit",R-L,SG("700",62)),L,224,SG("700",62),C.ink,"left");
+      T(ell(TT[D.kind]||"When the weather hit",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
       var leadW={storm:"Thunderstorms swept over Walt Disney World",wind:"High winds moved through Walt Disney World",rain:"Heavy rain swept over Walt Disney World"};
-      T(ell((leadW[D.kind]||"Weather swept over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",25)),L,270,IN("500",25),C.muted,"left");
-      T(x.downPeak+" attractions paused at the peak.",L,308,IN("600",26),"#ff9f6b","left");
+      T(ell((leadW[D.kind]||"Weather swept over Walt Disney World")+" \u00b7 "+D.date,R-L,IN("500",24)),L,248,IN("500",24),C.muted,"left");
+      /* timeline domain \u2014 union of series, weather samples, and strike windows (skyLanes twin) */
       var series=x.series,firstT=series[0][0],lastT=series[series.length-1][0];
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
+      if(LT.length){firstT=Math.min(firstT,LT[0].t-(LT[0].w||60));lastT=Math.max(lastT,LT[LT.length-1].t);}
       var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
+      function TX(t){return L+(t-T0)/(T1-T0)*(R-L);}
+      /* the stat trio \u2014 edge-aligned to the lane rails (owner pick B2) */
+      var ltot=0,lmx=null,lz;for(lz=0;lz<LT.length;lz++){ltot+=LT[lz].n;if(!lmx||LT[lz].n>lmx.n)lmx=LT[lz];}
+      var S3=x.samples,fpk=-1;for(lz=0;lz<S3.length;lz++){if(fpk<0||S3[lz].fF>S3[fpk].fF)fpk=lz;}
+      T(""+x.downPeak,L,330,SG("700",54),"#ff8195","left");T("paused at the peak",L,362,IN("600",20),C.muted,"left");
+      T("\u26a1"+ltot,(L+R)/2,330,SG("700",54),"#fbbf24","center");T("strikes \u00b7 10 mi",(L+R)/2,362,IN("600",20),C.muted,"center");
+      T(fpk>=0?(S3[fpk].fF+"\u00b0"):"\u2014",R,330,SG("700",54),"#f97316","right");T("feels-like high",R,362,IN("600",20),C.muted,"right");
+      /* lane geometry (B2): quiet headers, gaps 76 */
+      var hd1=416,pT=hd1+18,pB=pT+160,hd2=pB+76,sT=hd2+18,sB=sT+96,hd3=sB+76,fT=hd3+18,fB=fT+78;
+      var ry=fB+24,rh=26,iy=ry+rh+54,axY=iy+40,legY=axY+44,fy=legY+36;
+      /* event glow \u2014 dp>=8 runs from the series (0712r twin), anchored to the ribbon's top edge */
+      var runs=[],cwn=null,i;
+      for(i=0;i<series.length;i++){
+        if(series[i][1]>=8){if(cwn)cwn.b=series[i][0];else cwn={a:series[i][0],b:series[i][0]};}
+        else if(cwn){runs.push(cwn);cwn=null;}
+      }
+      if(cwn)runs.push(cwn);
+      var evw=[];
+      for(i=0;i<runs.length;i++){
+        if(evw.length&&runs[i].a-evw[evw.length-1].b<15)evw[evw.length-1].b=runs[i].b;
+        else evw.push({a:runs[i].a,b:runs[i].b});
+      }
+      for(i=0;i<evw.length;i++){if(evw[i].b-evw[i].a<10){evw[i].a=Math.max(T0,evw[i].a-5);evw[i].b=Math.min(T1,evw[i].b+5);}}
+      var eg=ctx.createLinearGradient(0,ry+4,0,pT-6);eg.addColorStop(0,"rgba(99,102,241,0.18)");eg.addColorStop(1,"rgba(99,102,241,0.02)");
+      for(i=0;i<evw.length;i++){ctx.fillStyle=eg;ctx.fillRect(TX(evw[i].a),pT-6,TX(evw[i].b)-TX(evw[i].a),(ry+4)-(pT-6));}
+      function laneHead(y,name){T(name,L,y,IN("700",21),C.muted2,"left");ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+8);ctx.lineTo(R,y+8);ctx.stroke();}
+      /* lane 1 \u2014 attractions down */
+      laneHead(hd1,"ATTRACTIONS DOWN");
       var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
-      var plotL=L+46,plotR=R,plotT=372,plotB=686;
-      function TX(t){return plotL+(t-T0)/(T1-T0)*(plotR-plotL);}
-      function DY(v){return plotB-(v/DMAX)*(plotB-plotT);}
-      var stormFrom=null,coreFrom=null;
-      for(var b=0;b<x.samples.length;b++){var cc=wxClass(x.samples[b]);if((cc==="storm"||cc==="core")&&stormFrom===null)stormFrom=x.samples[b].t;if(cc==="core"&&coreFrom===null)coreFrom=x.samples[b].t;}
-      if(stormFrom!==null){ctx.fillStyle="rgba(99,102,241,0.10)";ctx.fillRect(TX(stormFrom),plotT,TX(T1)-TX(stormFrom),plotB-plotT);}
-      if(coreFrom!==null){ctx.fillStyle="rgba(59,130,246,0.13)";ctx.fillRect(TX(coreFrom),plotT,TX(T1)-TX(coreFrom),plotB-plotT);}
-      var step=DMAX<=20?5:10;
-      for(var gg=0;gg<=DMAX;gg+=step){var yy=DY(gg);ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(plotL,yy);ctx.lineTo(plotR,yy);ctx.stroke();T(gg,plotL-12,yy+8,IN("600",22),C.muted2,"right");}
-      for(var tt=T0;tt<=T1;tt+=60){T(pwClkS(tt),TX(tt),plotB+34,IN("600",22),C.muted2,"center");}
+      function DY(v){return pB-(v/DMAX)*(pB-pT);}
       ctx.beginPath();ctx.moveTo(TX(series[0][0]),DY(0));
-      for(var i=0;i<series.length;i++)ctx.lineTo(TX(series[i][0]),DY(series[i][1]));
+      for(i=0;i<series.length;i++)ctx.lineTo(TX(series[i][0]),DY(series[i][1]));
       ctx.lineTo(TX(series[series.length-1][0]),DY(0));ctx.closePath();
-      var ag=ctx.createLinearGradient(0,plotT,0,plotB);ag.addColorStop(0,"rgba(226,59,84,0.80)");ag.addColorStop(1,"rgba(226,59,84,0.05)");ctx.fillStyle=ag;ctx.fill();
+      var ag=ctx.createLinearGradient(0,pT,0,pB);ag.addColorStop(0,"rgba(226,59,84,0.80)");ag.addColorStop(1,"rgba(226,59,84,0.05)");ctx.fillStyle=ag;ctx.fill();
       ctx.beginPath();for(i=0;i<series.length;i++){var lx=TX(series[i][0]),ly=DY(series[i][1]);if(i)ctx.lineTo(lx,ly);else ctx.moveTo(lx,ly);}ctx.strokeStyle="#ff5d73";ctx.lineWidth=4;ctx.lineJoin="round";ctx.stroke();
-      if(x.onset){var ox=TX(x.onset.t),oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();T(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held",ox-14,oy-12,SG("700",24),"#a9b0f7","right");}
-      if(x.peakPt){var qx=TX(x.peakPt.t),qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();T(x.peakPt.tot+" down \u00b7 "+pwClk(x.peakPt.t),qx,qy-16,SG("700",26),"#ff8195","right");}
-      var ry=plotB+52,rh=24,cols=PW_RIBBON,labs={clear:"clear",cloud:"clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27 rain",core:"\ud83c\udf27 core"},labcol={clear:"#fde68a",cloud:"#cbd5e1",storm:"#a9b0f7",rain:"#93b8fb",core:"#93b8fb"};
-      var segs=[],sm0=x.samples;
-      for(var s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]),a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
-      for(var sg=0;sg<segs.length;sg++){var S=segs[sg],sx=TX(S.a),sw=TX(S.b)-TX(S.a);rr(sx,ry,Math.max(sw,2),rh,5);ctx.fillStyle=cols[S.cl];ctx.fill();if(sw>120)T(labs[S.cl],sx+sw/2,ry+rh+26,IN("600",21),labcol[S.cl],"center");}
-      var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
-      parks.sort(function(a,bb){return x.parkPeaks[bb]-x.parkPeaks[a];});
-      var barY=ry+rh+74;
-      T("HARDEST HIT, AT EACH PARK'S PEAK",L,barY,IN("700",22),C.muted2,"left");
-      barY+=22;var maxpk=parks.length?x.parkPeaks[parks[0]]:1;
-      for(var pp=0;pp<parks.length;pp++){var pkn=parks[pp],pv=x.parkPeaks[pkn],rowY=barY+pp*52;
-        T(pkn,L,rowY+30,SG("700",26),C.ink,"left");
-        var trkX=L+364,trkW=R-trkX-72,th2=18,trkY=rowY+14;
-        rr(trkX,trkY,trkW,th2,9);ctx.fillStyle="rgba(255,255,255,0.10)";ctx.fill();
-        var fw=Math.max(th2,trkW*(pv/maxpk));rr(trkX,trkY,fw,th2,9);var bg2=ctx.createLinearGradient(trkX,0,trkX+trkW,0);bg2.addColorStop(0,"#ff9f6b");bg2.addColorStop(1,"#e23b54");ctx.fillStyle=bg2;ctx.fill();
-        T(pv,R,rowY+30,SG("700",28),"#ff7a91","right");}
-      var fy=cy+chh-84;
+      if(x.onset){var ox=TX(x.onset.t),oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();T(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held",Math.max(ox-14,L+330),oy-14,SG("700",24),"#a9b0f7","right");}
+      if(x.peakPt){var qx=TX(x.peakPt.t),qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();T(x.peakPt.tot+" down \u00b7 "+pwClk(x.peakPt.t),Math.max(qx-14,L+330),qy-14,SG("700",26),"#ff8195","right");}
+      /* lane 2 \u2014 strikes, F2 sampled floor: a stub per banked window, bars from the same ground */
+      laneHead(hd2,"\u26a1 STRIKES \u00b7 10 MI");
+      var LM=0;for(lz=0;lz<LT.length;lz++)if(LT[lz].n>LM)LM=LT[lz].n;
+      for(lz=0;lz<LT.length;lz++){var wx1=TX(LT[lz].t-(LT[lz].w||60)),wx2=TX(LT[lz].t);
+        rr(wx1+1,sB-4,Math.max(3,wx2-wx1-2),4,2);ctx.fillStyle="rgba(251,191,36,0.30)";ctx.fill();
+        if(LT[lz].n>0){var bh2=Math.max(8,(LT[lz].n/LM)*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}}
+      if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t)-10,L+330),sT+22,SG("700",24),"#fbbf24","right");
+      /* lane 3 \u2014 feels-like */
+      laneHead(hd3,"FEELS-LIKE");
+      if(S3.length>1){var flo=1e9,fhi=-1e9;
+        for(lz=0;lz<S3.length;lz++){var ff=S3[lz].fF;if(ff<flo)flo=ff;if(ff>fhi)fhi=ff;}
+        if(fhi-flo<4)fhi=flo+4;
+        var FYf=function(f){return fB-4-((f-flo)/(fhi-flo))*(fB-fT-12);};
+        ctx.beginPath();for(lz=0;lz<S3.length;lz++){var fx=TX(S3[lz].t),fyv=FYf(S3[lz].fF);if(lz)ctx.lineTo(fx,fyv);else ctx.moveTo(fx,fyv);}
+        ctx.strokeStyle="rgba(249,115,22,0.9)";ctx.lineWidth=3.5;ctx.lineJoin="round";ctx.stroke();
+        ctx.fillStyle="#f97316";ctx.beginPath();ctx.arc(TX(S3[fpk].t),FYf(S3[fpk].fF),6.5,0,6.2832);ctx.fill();
+        T(S3[fpk].fF+"\u00b0 \u00b7 "+pwClk(S3[fpk].t),Math.max(TX(S3[fpk].t)-14,L+330),FYf(S3[fpk].fF)-14,SG("700",24),"#f97316","right");}
+      /* the floor \u2014 sensor-upgraded icon ribbon (skyLanes twin) + sparse axis + in-use legend */
+      function ltgAt2(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;}
+      var segs=[],sm0=x.samples,s2;
+      for(s2=0;s2<sm0.length;s2++){var cl=wxClass(sm0[s2]);if(ltgAt2(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
+        var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);
+        if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
+      var ICONS={clear:"\u2600\ufe0f",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
+      for(s2=0;s2<segs.length;s2++){var sx2=TX(segs[s2].a),sw2=TX(segs[s2].b)-TX(segs[s2].a);
+        rr(sx2,ry,Math.max(sw2-1,2),rh,5);ctx.fillStyle=PW_RIBBON[segs[s2].cl];ctx.fill();}
+      ctx.font='44px "Inter",sans-serif';var lastIR=-1e9;
+      for(s2=0;s2<segs.length;s2++){var sw3=TX(segs[s2].b)-TX(segs[s2].a);if(sw3<16)continue;
+        var icx=(TX(segs[s2].a)+TX(segs[s2].b))/2,ihalf=ctx.measureText(ICONS[segs[s2].cl]).width/2;
+        if(icx-ihalf<lastIR+8)continue;
+        T(ICONS[segs[s2].cl],icx,iy,'44px "Inter",sans-serif',C.ink,"center");lastIR=icx+ihalf;}
+      var axLast=T0;
+      for(var t2=T0;t2<=T1;t2+=180){T(pwClkS(t2%1440),TX(t2),axY,IN("600",22),C.muted2,"center");axLast=t2;}
+      if(T1-axLast>=120)T(pwClkS(T1%1440),TX(T1),axY,IN("600",22),C.muted2,"center");
+      var LEG_ORD=["clear","cloud","storm","rain","core"],LEG_TXT={clear:"\u2600\ufe0f clear",cloud:"\u2601\ufe0f clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27\ufe0f rain",core:"\u26c8\ufe0f rain core"};
+      var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)used[segs[lgi].cl]=1;
+      for(lgi=0;lgi<LEG_ORD.length;lgi++){if(used[LEG_ORD[lgi]])lg.push(LEG_TXT[LEG_ORD[lgi]]);}
+      if(lg.length)T(lg.join(" \u00b7 "),L,legY,IN("600",22),C.muted,"left");
+      /* footer \u2014 0712v layout (owner call): left column stacks reliability + credits; link alone on the right.
+         Diverges from the emitCard family (0705i) deliberately; family follows if ratified on glass. */
       ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-      /* footer aligned to the emitCard family: link top-right at 26, credits under it (0705i) */
       T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain"}[D.kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
       T("parkpulse.live",R,fy+36,IN("700",26),C.green,"right");
-      T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki",R,fy+66,IN("500",20),C.muted2,"right");
+      T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Xweather",L,fy+66,IN("500",20),C.muted2,"left");
       ctx.restore();
     }
 
