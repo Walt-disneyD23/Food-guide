@@ -784,6 +784,30 @@
   .pw-hero .l{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1.16;margin-top:7px}
   .pw-hero .ttl{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat-lg);line-height:1.05;margin-top:5px}
   .pw-hero .sub{font-size:var(--fs-small);color:var(--pwh-sub);margin-top:7px;line-height:1.45}
+  /* ===== weekly wrap (0713a): strip D, weekday rail, legend, mini strips ===== */
+  .pw-wkbars{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;height:64px;margin-top:14px;position:relative}
+  .pw-wkbars .th{position:absolute;left:0;right:0;height:1px;background:rgba(230,233,251,.13);pointer-events:none}
+  .pw-wkbars.flat{height:34px}
+  .pw-wkbars.flat .th{display:none}
+  .pw-wkc{display:flex;flex-direction:column;justify-content:flex-end;position:relative;z-index:1}
+  .pw-wkc b{font-size:var(--fs-micro);font-weight:600;color:var(--pwh-dim);text-align:center;margin-bottom:3px}
+  .pw-wkc i{border-radius:6px 6px 3px 3px}
+  .pw-wkbars.flat .pw-wkc i{border-radius:var(--r-el)}
+  .pw-wkc.live{border:1.5px dashed rgba(230,233,251,.35);border-radius:var(--r-el);align-items:center;justify-content:flex-end;padding-bottom:6px}
+  .pw-wkc.live i{width:7px;height:7px;border-radius:50%;background:var(--pwh-key);animation:pwWkPulse 1.6s ease-in-out infinite}
+  .pw-wkc.off{border:1px dashed rgba(230,233,251,.12);border-radius:var(--r-el)}
+  @keyframes pwWkPulse{0%,100%{opacity:1}50%{opacity:.25}}
+  @media(prefers-reduced-motion:reduce){.pw-wkc.live i{animation:none}}
+  .pw-wkwd{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:5px}
+  .pw-wkwd span{text-align:center;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-dim);letter-spacing:.05em}
+  .pw-wkwd span.on{color:var(--pwh-key)}
+  .pw-wkleg{display:flex;gap:12px;margin-top:11px;flex-wrap:wrap}
+  .pw-wkleg span{display:flex;align-items:center;gap:5px;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-muted)}
+  .pw-wkleg i{width:8px;height:8px;border-radius:var(--r-dot)}
+  .pw-wkmini{display:flex;gap:3px;margin-top:6px}
+  .pw-wkmini i{width:15px;height:15px;border-radius:4.5px}
+  .pw-wkmini i.today{border:1.5px dashed var(--muted-2)}
+  .pw-wkmini i.off{border:1px dashed var(--line)}
   .pw-meta{display:flex;gap:16px;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)}
   .pw-meta div{font-size:var(--fs-meta);color:var(--pwh-muted)}
   .pw-meta b{display:block;font-family:var(--font-display);font-size:var(--fs-lead);color:#fff;font-weight:700;margin-top:2px}
@@ -1049,7 +1073,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3641,13 +3665,166 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(var i=0;i<d.rides.length;i++){var r=d.rides[i];if(r&&r.name!=null)r.name=demoji(r.name);if(!pwExcluded(r))out.push(r);}
       d.rides=out;return d;
     }
+    /* ===== weekly wrap 0713a: the digest era =====================================
+       Week = fixed Monday–Sunday (ratified Jul 26). Final days come from the
+       Worker's immortal dig: atoms (/digest); today rides in live from /history.
+       Digests are CURATION-FREE by design, so every read-time layer — pwExcluded,
+       realRides, headAvg — applies HERE. The assembler emits a week-shaped
+       /history object (every existing consumer untouched: board tiles keep their
+       raw-fallback week behavior, snap stays null) plus d.week for the new
+       weekly surfaces (strip, mini strips, hero facts). */
+    function pwWeekMonday(){
+      /* Monday of the CURRENT ET week. A date-only weekday is TZ-independent,
+         so asDate(etDate(0)).getDay() is safe on any client clock. */
+      var off=(asDate(etDate(0)).getDay()+6)%7;
+      return etDate(off);
+    }
+    function pwDayLvl(avg,park){
+      /* Day-scale crowd tier: the calibrated base thresholds + CROWD_BASELINE
+         park shifts. The live guardrails (45+ spread) are a now-snapshot idea
+         and stay live-only — a day aggregate has no "open right now". */
+      if(avg==null)return null;
+      var b=(park&&CROWD_BASELINE[park])||0;
+      return avg<15+b?1:avg<25+b?2:avg<40+b?3:4;
+    }
+    function pwWeekModel(dig,today){
+      var mon=pwWeekMonday(),tod=etDate(0);
+      function addD(str,n){var a=str.split("-");var dt=new Date(+a[0],+a[1]-1,+a[2]+n);
+        return dt.getFullYear()+"-"+("0"+(dt.getMonth()+1)).slice(-2)+"-"+("0"+dt.getDate()).slice(-2);}
+      var digs={};((dig&&dig.digests)||[]).forEach(function(g){if(g&&g.d>=mon&&g.d<tod)digs[g.d]=g;});
+      var merged={},dates=[],ticks=0,parksByDate={},wxByDate={};
+      function fold(f){var m=merged[f.id]||(merged[f.id]={id:f.id,name:f.name,park:f.park,samples:0,waitSum:0,waitMin:null,waitMinAt:0,waitMax:0,waitMaxAt:0,downEvents:0,downMinutes:0,operatingMinutes:0,closedMinutes:0,refurbMinutes:0});
+        m.name=f.name;m.park=f.park;
+        m.samples+=f.samples||0;m.waitSum+=(f.avgWait!=null?f.avgWait:0)*(f.samples||0);
+        if(f.minWait!=null&&(m.waitMin===null||f.minWait<m.waitMin)){m.waitMin=f.minWait;m.waitMinAt=f.minAt||0;}
+        if((f.maxWait||0)>m.waitMax){m.waitMax=f.maxWait||0;m.waitMaxAt=f.peakAt||0;}
+        m.downEvents+=f.downEvents||0;m.downMinutes+=f.downMinutes||0;
+        m.operatingMinutes+=f.operatingMinutes||0;m.closedMinutes+=f.closedMinutes||0;m.refurbMinutes+=f.refurbMinutes||0;}
+      var week={mon:mon,sun:addD(mon,6),days:[],finals:0,tot:{dn:0,dm:0,strikes:0},hero:null};
+      for(var i=0;i<7;i++){
+        var ds=addD(mon,i);
+        if(ds===tod&&today&&today.rides){
+          dates.push(ds);ticks+=today.ticks||0;
+          if(today.parksByDate&&today.parksByDate[ds])parksByDate[ds]=today.parksByDate[ds];
+          if(today.wxByDate&&today.wxByDate[ds])wxByDate[ds]=today.wxByDate[ds];
+          today.rides.forEach(fold);
+          week.days.push({d:ds,live:true});
+          continue;
+        }
+        var g=digs[ds];
+        if(!g){week.days.push({d:ds,future:ds>tod});continue;}
+        var tmp=[];for(var id in g.rides){var r=g.rides[id];
+          tmp.push({id:id,name:demoji(r.n),park:r.p,samples:r.sm,avgWait:r.avg,minWait:r.mn,minAt:r.mnAt,maxWait:r.mx,peakAt:r.mxAt,downEvents:r.dn,downMinutes:r.dm,operatingMinutes:r.om,closedMinutes:r.cm,refurbMinutes:r.rm,uptimePct:r.up});}
+        tmp.forEach(fold);
+        dates.push(ds);ticks+=g.ticks||0;parksByDate[ds]=g.parks;wxByDate[ds]=g.wx;
+        var pool=realRides({rides:tmp}).filter(function(r){return !pwExcluded(r);});
+        var day={d:ds,final:true,parks:{},resortAll:null,resortHead:null,dn:0,dm:0,strikes:0},aA=[],aH=[];
+        MAIN.forEach(function(p){
+          var rs=pool.filter(function(r){return r.park===p;}),wa=rs.filter(hasAvg);
+          var avg=null;if(wa.length){var s=0;wa.forEach(function(r){s+=r.avgWait;});avg=Math.round(s/wa.length);}
+          /* round-before-tier: the stored day avg is the number a surface would
+             print, so its tier can never disagree with it (labels move with
+             values; caught at EPCOT Mon Jul 20's exact 30-min boundary). */
+          var hd=headAvg(rs);
+          day.parks[p]={avg:avg,lvl:pwDayLvl(avg,p),head:hd};
+          if(avg!=null)aA.push(avg);if(hd!=null)aH.push(hd);
+          rs.forEach(function(r){day.dn+=r.downEvents||0;day.dm+=r.downMinutes||0;});
+        });
+        if(aA.length){var sA=0;aA.forEach(function(v){sA+=v;});day.resortAll=sA/aA.length;}
+        if(aH.length){var sH=0;aH.forEach(function(v){sH+=v;});day.resortHead=sH/aH.length;}
+        (g.ltg||[]).forEach(function(s){day.strikes+=s.n||0;});
+        week.days.push(day);week.finals++;
+        week.tot.dn+=day.dn;week.tot.dm+=day.dm;week.tot.strikes+=day.strikes;
+      }
+      if(week.finals>=2){
+        var calm=null,tough=null;
+        week.days.forEach(function(x){if(!x.final||x.resortHead==null)return;
+          if(calm===null||x.resortHead<calm.resortHead)calm=x;
+          if(tough===null||x.resortHead>tough.resortHead)tough=x;});
+        if(calm&&tough&&calm!==tough){
+          function wdName(s){return asDate(s).toLocaleDateString("en-US",{weekday:"long"});}
+          week.hero={calm:{wd:wdName(calm.d),head:calm.resortHead},tough:{wd:wdName(tough.d),head:tough.resortHead}};
+        }
+      }
+      var rides=Object.keys(merged).map(function(id){var m=merged[id];
+        var uptimePct=(m.operatingMinutes+m.downMinutes>0)?Math.round((m.operatingMinutes/(m.operatingMinutes+m.downMinutes))*100):null;
+        return {id:m.id,name:m.name,park:m.park,samples:m.samples,
+          avgWait:m.samples?Math.round(m.waitSum/m.samples):null,
+          minWait:m.waitMin,minAt:m.waitMinAt||null,maxWait:m.waitMax||null,peakAt:m.waitMaxAt||null,
+          downEvents:m.downEvents,downMinutes:m.downMinutes,operatingMinutes:m.operatingMinutes,
+          closedMinutes:m.closedMinutes,refurbMinutes:m.refurbMinutes,uptimePct:uptimePct};});
+      return {ok:true,v:(dig&&dig.v)||(today&&today.v)||null,range:"week",dates:dates,ticks:ticks,
+        cadenceMin:2,snapCadenceMin:5,parksByDate:parksByDate,wxByDate:wxByDate,failsByDate:{},
+        snap:null,wx:null,ltg:null,rides:rides,week:week};
+    }
+    function pwWeekStrip(d){
+      /* The week's fingerprint (strip D, mock-ratified direction Jul 26): one
+         bar per day — color = the calibrated tier of the mean of the four
+         parks' curated all-attraction averages; height = that same number on
+         the tier scale's 0–45 domain. One value, two channels; hairlines mark
+         the 25/40 thresholds; only the extremes get number labels. */
+      var wk=d.week;if(!wk)return "";
+      var mx=null,mn=null;
+      wk.days.forEach(function(x){if(x.final&&x.resortAll!=null){if(mx===null||x.resortAll>mx)mx=x.resortAll;if(mn===null||x.resortAll<mn)mn=x.resortAll;}});
+      var cells="",wd="",TL=["M","T","W","T","F","S","S"];
+      wk.days.forEach(function(x,i){
+        wd+='<span class="'+(x.live?"on":"")+'">'+TL[i]+'</span>';
+        if(x.live){cells+='<div class="pw-wkc live"><i></i></div>';return;}
+        if(!x.final||x.resortAll==null){cells+='<div class="pw-wkc off"></div>';return;}
+        var v=x.resortAll,hpct=Math.max(8,Math.min(100,v/45*100));
+        var lv=pwDayLvl(v,null),col=CROWD_TIERS[lv]?CROWD_TIERS[lv].color:PW_TIER.fallback;
+        var lab=(wk.finals>1&&mx!==mn&&(v===mx||v===mn))?('<b>'+Math.round(v)+'</b>'):"";
+        cells+='<div class="pw-wkc">'+lab+'<i style="height:'+hpct.toFixed(1)+'%;background:'+col+'"></i></div>';
+      });
+      var leg="";CROWD_TIERS.forEach(function(t){if(t)leg+='<span><i style="background:'+t.color+'"></i>'+t.label+'</span>';});
+      return '<div class="pw-wkbars"><span class="th" style="bottom:55.6%"></span><span class="th" style="bottom:88.9%"></span>'+cells+'</div>'
+        +'<div class="pw-wkwd">'+wd+'</div><div class="pw-wkleg">'+leg+'</div>';
+    }
+    function pwWeekMini(d,park){
+      var wk=d.week;if(!wk)return "";
+      var h='<div class="pw-wkmini">';
+      wk.days.forEach(function(x){
+        if(x.live){h+='<i class="today"></i>';return;}
+        if(!x.final||!x.parks[park]||x.parks[park].avg==null){h+='<i class="off"></i>';return;}
+        var col=CROWD_TIERS[x.parks[park].lvl]?CROWD_TIERS[x.parks[park].lvl].color:PW_TIER.fallback;
+        h+='<i style="background:'+col+'"></i>';
+      });
+      return h+'</div>';
+    }
+    function pwWeekParkStrip(d,park){
+      /* Single park = single-color cells are CORRECT here (the cheeseburger
+         ruling retired multi-slice cells; a park has one tier per day). */
+      var wk=d&&d.week;if(!wk)return "";
+      var cells="",wd="",TL=["M","T","W","T","F","S","S"];
+      wk.days.forEach(function(x,i){
+        wd+='<span class="'+(x.live?"on":"")+'">'+TL[i]+'</span>';
+        if(x.live){cells+='<div class="pw-wkc live"><i></i></div>';return;}
+        if(!x.final||!x.parks[park]||x.parks[park].avg==null){cells+='<div class="pw-wkc off"></div>';return;}
+        var col=CROWD_TIERS[x.parks[park].lvl]?CROWD_TIERS[x.parks[park].lvl].color:PW_TIER.fallback;
+        cells+='<div class="pw-wkc"><i style="height:100%;background:'+col+'"></i></div>';
+      });
+      return '<div class="pw-wkbars flat">'+cells+'</div><div class="pw-wkwd">'+wd+'</div>';
+    }
+    function pwLoadWeek(){
+      var wv=$id("wrapView");
+      var mon=pwWeekMonday(),yd=etDate(1);
+      var reqs=[fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();})];
+      if(mon<=yd)reqs.push(fetch(WRAP_URL+"/digest?from="+mon+"&to="+yd).then(function(r){return r.json();}));
+      Promise.all(reqs).then(function(rs){
+        var d=pwWeekModel(rs[1]||{digests:[]},rs[0]);
+        pwCleanData(d);
+        cache.week=d;cacheAt.week=Date.now();if(active&&curTab==="week")renderWrap(d,"week");
+      })["catch"](function(){
+        if(active&&curTab==="week"){wv.innerHTML=tabsHTML("week")+'<div class="pw-msg">Couldn’t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
+      });
+    }
     function loadTab(tab){
       curTab=tab;var wv=$id("wrapView");if(!wv)return;
       if(cache[tab]){renderWrap(cache[tab],tab);return;}
       wv.innerHTML=tabsHTML(tab)+'<div class="pw-msg">Loading the day…</div>';wireTabs();
+      if(tab==="week"){pwLoadWeek();return;} /* 0713a: calendar week = digests + today live */
       var url=WRAP_URL+"/history";
-      if(tab==="week")url+="?range=week";
-      else if(tab==="yesterday")url+="?date="+etDate(1);
+      if(tab==="yesterday")url+="?date="+etDate(1);
       else url+="?date="+etDate(0);
       fetch(url).then(function(r){return r.json();}).then(function(d){
         pwCleanData(d);
@@ -3976,10 +4153,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var c=compute(d);
       var html=tabsHTML(tab);
 
-      var dLine=isWeek?fmtRange(d.dates):fmtDate(dateStr);
-      var dSub=isWeek?"Walt Disney World · last 7 days":"Walt Disney World";
+      var dLine=isWeek?fmtRange((d.week&&[d.week.mon,d.week.sun])||d.dates):fmtDate(dateStr);
+      var dSub=isWeek?"Walt Disney World · this week":"Walt Disney World";
       var fin=isFinal(d);var live=(!isWeek&&!fin);
-      var badge=fin?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">So far today</span>';
+      var badge=fin?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+(isWeek?"So far this week":"So far today")+'</span>';
       html+='<div class="pw-date"><div><div class="d">'+esc(dLine)+'</div><div class="s">'+esc(dSub)+'</div></div>'+badge+'</div>';
 
       if(!c.busiestPark){
@@ -3987,6 +4164,17 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         wv.innerHTML=html;wireTabs();return;
       }
       var h=hero(c,dateStr,isWeek,fin);
+      if(isWeek&&d.week&&d.week.hero&&Math.round(d.week.hero.tough.head)!==Math.round(d.week.hero.calm.head)){var wh=d.week.hero;
+        /* rounded-tie guard: never print "42m against 42m" — fall back to the stock week hero */
+        /* Day-of-week intel (plan §1 MUST): scope words do the honesty work —
+           one sample per weekday, never "Wednesdays are quiet". Copy round
+           refines tense; facts come straight from the digests. */
+        h.k="This week";
+        h.l=wh.tough.wd+" ran toughest so far — "+wh.calm.wd+" kept it calm.";
+        h.sub="Headliners averaged "+Math.round(wh.tough.head)+"m "+wh.tough.wd+" against "+wh.calm.wd+"\u2019s "+Math.round(wh.calm.head)+"m. "
+          +d.week.finals+" days in: "+d.week.tot.dn+" outages \u00b7 "+Math.round(d.week.tot.dm/60)+" ride-hours lost"
+          +(d.week.tot.strikes?(" \u00b7 "+d.week.tot.strikes+" lightning strikes within 10 mi"):"")+".";
+      }
       var chip=isWeek?null:wxChip(d,live);
       var ltgOn=!isWeek&&!!(d.ltg&&d.ltg.samples&&d.ltg.samples.some(function(s){return s.n>0;}));
       var wxKind=(chip&&(chip.kind==="storm"||chip.kind==="wind"||chip.kind==="rain"))?chip.kind:null,wxX=wxKind?wxDerive(d):null;
@@ -3994,7 +4182,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chipH="";
       if(chip&&!ltgH){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
-      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+chipH+ltgH+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+(isWeek?pwWeekStrip(d):"")+chipH+ltgH+'</div>';
 
       html+='<div class="pw-grid">';
       if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park,null,c.toughest.id,c.toughest.park);
@@ -4023,7 +4211,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       c.parks.forEach(function(p){
         var fl=p.worst?'<span class="pw-flag warn">'+esc(shortName(p.worst.name))+' ⚠</span>':'<span class="pw-flag ok">100%</span>';
         var ctx=p.busiest?(esc(shortName(p.busiest.name))+" · "+p.busiest.avgWait):"";
-        html+='<div class="pw-row" data-park="'+esc(p.park)+'" role="button" tabindex="0"><div class="a"><b class="'+tier(p.headAvg)+'">'+p.headAvg+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(p.park)+'</div><div class="ctx">'+ctx+'</div></div>'+fl+'<span class="chev">›</span></div>';
+        html+='<div class="pw-row" data-park="'+esc(p.park)+'" role="button" tabindex="0"><div class="a"><b class="'+tier(p.headAvg)+'">'+p.headAvg+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(p.park)+'</div><div class="ctx">'+ctx+'</div>'+(isWeek?pwWeekMini(d,p.park):"")+'</div>'+fl+'<span class="chev">›</span></div>';
       });
 
       html+='<button class="pw-share" id="pwShare" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(tab==="week"?"Share this week":"Share this Wrap")+'</button>';
@@ -4066,7 +4254,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var isTod=(lastData&&lastData.dates&&lastData.dates[0]===etDate(0));
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":(live||isTod)?" today.":" yesterday.");
       var sub2=pk.leastRel?(pk.leastRel.name+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":" · recap")+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
       html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
       html+='<div class="pw-note" id="pwHeadInfo" hidden>Headliner avg — the average wait across this park\'s 8 busiest rides'+(isWeek?" this week.":live?" so far today.":" that day.")+' An estimate from wait times, not official attendance.</div>';
 
