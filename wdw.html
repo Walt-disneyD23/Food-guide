@@ -808,6 +808,32 @@
   .pw-wkmini i{width:15px;height:15px;border-radius:4.5px}
   .pw-wkmini i.today{border:1.5px dashed var(--muted-2)}
   .pw-wkmini i.off{border:1px dashed var(--line)}
+  /* ===== monthly wrap (0713i): calendar grid + board tiles ===== */
+  .pw-mnav{border:0;background:none;color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:20px;line-height:1;padding:0 4px;cursor:pointer;vertical-align:-1px}
+  .pw-mnav:disabled{color:var(--muted-2);opacity:.5;cursor:default}
+  .pw-mwd{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:14px}
+  .pw-mwd span{text-align:center;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-dim)}
+  .pw-mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:4px}
+  .pw-mc{height:42px;border-radius:9px;position:relative}
+  .pw-mc b{position:absolute;top:4px;left:6px;font-size:var(--fs-micro);font-weight:700;color:#0c1524}
+  .pw-mc em{position:absolute;bottom:4px;right:6px;font-family:var(--font-display);font-style:normal;font-weight:700;font-size:11px;color:#0c1524}
+  .pw-mc.out{opacity:.35}
+  .pw-mc.fut{border:1px dashed rgba(230,233,251,.14)}
+  .pw-mc.fut b{color:var(--pwh-dim)}
+  .pw-mc.out.fut{border-color:rgba(230,233,251,.06)}
+  .pw-mc.today{border:1.5px dashed rgba(230,233,251,.4);display:flex;align-items:center;justify-content:center}
+  .pw-mc.today b{color:var(--pwh-key)}
+  .pw-mc.today i{width:7px;height:7px;border-radius:50%;background:var(--pwh-key);animation:pwWkPulse 1.6s ease-in-out infinite}
+  .pw-mleg{display:flex;gap:12px;margin-top:11px;flex-wrap:wrap}
+  .pw-mleg span{display:flex;align-items:center;gap:5px;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-muted)}
+  .pw-mleg i{width:8px;height:8px;border-radius:var(--r-dot)}
+  .pw-mleg .sh{color:var(--pwh-dim)}
+  .pw-mtiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .pw-mtile{background:var(--card);border-radius:var(--r-tile);padding:13px;box-shadow:var(--shadow-sm)}
+  html.dark .pw-mtile{border:1px solid var(--line)}
+  .pw-mtile .h{font-size:var(--fs-micro);font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .pw-mtile .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title);line-height:1.2}
+  .pw-mtile .s{font-size:var(--fs-meta);line-height:1.45;color:var(--muted);margin-top:4px}
   .pw-meta{display:flex;gap:16px;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)}
   .pw-meta div{font-size:var(--fs-meta);color:var(--pwh-muted)}
   .pw-meta b{display:block;font-family:var(--font-display);font-size:var(--fs-lead);color:#fff;font-weight:700;margin-top:2px}
@@ -1073,7 +1099,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3637,7 +3663,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
 
     function tabsHTML(tab){
       function b(k,l){return '<button data-tab="'+k+'" class="'+(tab===k?"on":"")+'" type="button">'+l+'</button>';}
-      return '<div class="pw-tabs">'+b("yesterday","Yesterday")+b("today","Today")+b("week","This week")+'</div>';
+      return '<div class="pw-tabs">'+b("yesterday","Yesterday")+b("today","Today")+b("week","This week")+b("month",pwMonthLabel())+'</div>';
     }
     function wireTabs(){
       var wv=$id("wrapView");if(!wv)return;
@@ -3717,22 +3743,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           tmp.push({id:id,name:demoji(r.n),park:r.p,samples:r.sm,avgWait:r.avg,minWait:r.mn,minAt:r.mnAt,maxWait:r.mx,peakAt:r.mxAt,downEvents:r.dn,downMinutes:r.dm,operatingMinutes:r.om,closedMinutes:r.cm,refurbMinutes:r.rm,uptimePct:r.up});}
         tmp.forEach(fold);
         dates.push(ds);ticks+=g.ticks||0;parksByDate[ds]=g.parks;wxByDate[ds]=g.wx;
-        var pool=realRides({rides:tmp}).filter(function(r){return !pwExcluded(r);});
-        var day={d:ds,final:true,parks:{},resortAll:null,resortHead:null,dn:0,dm:0,strikes:0},aA=[],aH=[];
-        MAIN.forEach(function(p){
-          var rs=pool.filter(function(r){return r.park===p;}),wa=rs.filter(hasAvg);
-          var avg=null;if(wa.length){var s=0;wa.forEach(function(r){s+=r.avgWait;});avg=Math.round(s/wa.length);}
-          /* round-before-tier: the stored day avg is the number a surface would
-             print, so its tier can never disagree with it (labels move with
-             values; caught at EPCOT Mon Jul 20's exact 30-min boundary). */
-          var hd=headAvg(rs);
-          day.parks[p]={avg:avg,lvl:pwDayLvl(avg,p),head:hd};
-          if(avg!=null)aA.push(avg);if(hd!=null)aH.push(hd);
-          rs.forEach(function(r){day.dn+=r.downEvents||0;day.dm+=r.downMinutes||0;});
-        });
-        if(aA.length){var sA=0;aA.forEach(function(v){sA+=v;});day.resortAll=sA/aA.length;}
-        if(aH.length){var sH=0;aH.forEach(function(v){sH+=v;});day.resortHead=sH/aH.length;}
-        (g.ltg||[]).forEach(function(s){day.strikes+=s.n||0;});
+        var day=pwDigDay(g,tmp);day.d=ds;day.final=true; /* 0713i: ONE rollup for every zoom — see pwDigDay */
         week.days.push(day);week.finals++;
         week.tot.dn+=day.dn;week.tot.dm+=day.dm;week.tot.strikes+=day.strikes;
       }
@@ -3818,11 +3829,173 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         if(active&&curTab==="week"){wv.innerHTML=tabsHTML("week")+'<div class="pw-msg">Couldn’t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
       });
     }
+    /* ===== monthly wrap 0713i ==================================================
+       N1 ratified Jul 27 (thumb-tested on the interactive mock): the month is a
+       fourth tab labeled with the current month's name. The grid is round-3
+       ratified: SOLID tier cells with a luminosity veil scaled by within-tier
+       depth — opacity encodings invert on dark surfaces (Jason's readback,
+       Jul 27), so depth = a darker shade of the same hue, never transparency.
+       Extremes carry small value labels. ‹ › pages months so July survives
+       August 1. Cells drill to days in the NEXT cut (0713j) — not yet tappable,
+       so they must not look tappable. Data: one /digest fetch per month view
+       (grid lead-in through yesterday, ≤37 days, under the endpoint's 45 cap);
+       today's cell is a pulse and needs no live payload. */
+    var PW_TIER_SPAN={1:[0,15],2:[15,25],3:[25,40],4:[40,55]}; /* unshifted resort-scale spans for depth shading */
+    var pwMonthCursor=null,pwMonthCache={};
+    function pwMonthLabel(){return asDate(etDate(0)).toLocaleDateString("en-US",{month:"long"});}
+    function pwMonthName(cur){var a=cur.split("-");return new Date(+a[0],+a[1]-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});}
+    function pwMonAddM(cur,n){var a=cur.split("-");var d=new Date(+a[0],+a[1]-1+n,1);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2);}
+    function pwMonD(ds){return asDate(ds).toLocaleDateString("en-US",{month:"short",day:"numeric"});}
+    function pwDigDay(g,tmp){
+      /* ONE rollup for every zoom (week, month, whatever comes): curated
+         read-time pool -> park avgs, tiers, headliners, day totals.
+         round-before-tier: the stored day avg is the number a surface would
+         print, so its tier can never disagree with it (labels move with
+         values; caught at EPCOT Mon Jul 20's exact 30-min boundary). */
+      var pool=realRides({rides:tmp}).filter(function(r){return !pwExcluded(r);});
+      var day={parks:{},resortAll:null,resortHead:null,dn:0,dm:0,strikes:0};
+      var aA=[],aH=[];
+      MAIN.forEach(function(p){
+        var rs=pool.filter(function(r){return r.park===p;}),wa=rs.filter(hasAvg);
+        var avg=null;if(wa.length){var s=0;wa.forEach(function(r){s+=r.avgWait;});avg=Math.round(s/wa.length);}
+        var hd=headAvg(rs);
+        day.parks[p]={avg:avg,lvl:pwDayLvl(avg,p),head:hd};
+        if(avg!=null)aA.push(avg);if(hd!=null)aH.push(hd);
+        rs.forEach(function(r){day.dn+=r.downEvents||0;day.dm+=r.downMinutes||0;});
+      });
+      if(aA.length){var sA=0;aA.forEach(function(v){sA+=v;});day.resortAll=sA/aA.length;}
+      if(aH.length){var sH=0;aH.forEach(function(v){sH+=v;});day.resortHead=sH/aH.length;}
+      (((g||{}).ltg)||[]).forEach(function(s){day.strikes+=s.n||0;});
+      return day;
+    }
+    function pwMonthGrid(cur){
+      var a=cur.split("-"),y=+a[0],m=+a[1];
+      var first=cur+"-01",lastD=new Date(y,m,0).getDate(),last=cur+"-"+("0"+lastD).slice(-2);
+      function addD(str,n){var b=str.split("-");var d=new Date(+b[0],+b[1]-1,+b[2]+n);
+        return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+      var start=addD(first,-((asDate(first).getDay()+6)%7));
+      var end=addD(last,(7-((asDate(last).getDay()+6)%7)-1)%7);
+      var days=[],c=start;
+      while(true){days.push(c);if(c===end)break;c=addD(c,1);}
+      return {first:first,last:last,days:days};
+    }
+    function pwMonthModel(dig,cur){
+      var g=pwMonthGrid(cur),tod=etDate(0);
+      var digs={};(((dig||{}).digests)||[]).forEach(function(x){if(x)digs[x.d]=x;});
+      var cells=[],finals=0,tot={dn:0,dm:0,strikes:0},ltgFrom=null,perRide={};
+      var mnA=null,mxA=null,mnH=null,mxH=null;
+      g.days.forEach(function(ds){
+        var inM=(ds>=g.first&&ds<=g.last);
+        if(ds===tod){cells.push({d:ds,today:true,inM:inM});return;}
+        var x=digs[ds];
+        if(!x){cells.push({d:ds,future:ds>tod,inM:inM});return;}
+        var tmp=[];for(var id in x.rides){var r=x.rides[id];
+          tmp.push({id:id,name:demoji(r.n),park:r.p,samples:r.sm,avgWait:r.avg,minWait:r.mn,downEvents:r.dn,downMinutes:r.dm,uptimePct:r.up,su:r.su});}
+        var day=pwDigDay(x,tmp);day.d=ds;day.final=true;day.inM=inM;
+        cells.push(day);
+        if(!inM)return;
+        finals++;tot.dn+=day.dn;tot.dm+=day.dm;tot.strikes+=day.strikes;
+        if(day.strikes>0&&!ltgFrom)ltgFrom=ds;
+        if(day.resortAll!=null){
+          if(mnA===null||day.resortAll<mnA.resortAll)mnA=day;
+          if(mxA===null||day.resortAll>mxA.resortAll)mxA=day;}
+        if(day.resortHead!=null){
+          if(mnH===null||day.resortHead<mnH.resortHead)mnH=day;
+          if(mxH===null||day.resortHead>mxH.resortHead)mxH=day;}
+        /* board aggregation on the curated pool — the trail lesson (Jul 27):
+           only realRides-gated entities can wear a crown */
+        var pool=realRides({rides:tmp}).filter(function(r){return !pwExcluded(r);});
+        pool.forEach(function(r){
+          var w=perRide[r.id]=perRide[r.id]||{n:r.name,p:r.park,s:0,c:0,dm:0,dn:0,dd:0,days:0,hiSu:null,hiSuD:null};
+          w.days++;if(r.avgWait!=null&&r.samples>0){w.s+=r.avgWait*r.samples;w.c+=r.samples;}
+          w.dm+=r.downMinutes||0;w.dn+=r.downEvents||0;if((r.downEvents||0)>0)w.dd++;
+          if(r.su&&r.su.pk!=null&&(w.hiSu===null||r.su.pk>w.hiSu)){w.hiSu=r.su.pk;w.hiSuD=ds;}
+        });
+      });
+      var arr=[];for(var id in perRide)arr.push(perRide[id]);
+      var tough=null;arr.forEach(function(w){if(w.c>0){var a=Math.round(w.s/w.c);if(!tough||a>tough.a)tough={n:w.n,a:a};}});
+      var hiSu=null;arr.forEach(function(w){if(w.hiSu!=null&&(!hiSu||w.hiSu>hiSu.v))hiSu={v:w.hiSu,n:w.n,d:w.hiSuD};});
+      var prob=null;arr.forEach(function(w){if(w.dn>0&&(!prob||w.dm>prob.dm))prob={n:w.n,dm:w.dm,dn:w.dn,dd:w.dd};});
+      var present=arr.filter(function(w){return w.days===finals&&w.c>0;});
+      var ironAll=present.filter(function(w){return w.dn===0;}).sort(function(a,b){return b.c-a.c;});
+      var hero=null;
+      if(finals>=2&&mnH&&mxH&&mnH!==mxH&&Math.round(mxH.resortHead)!==Math.round(mnH.resortHead))
+        hero={calm:mnH,tough:mxH}; /* rounded-tie guard, same rule as the week hero */
+      return {cur:cur,label:pwMonthName(cur),grid:g,cells:cells,finals:finals,
+        inMonthTotal:+g.last.slice(8,10),tot:tot,ltgFrom:ltgFrom,
+        extremes:{mn:mnA&&mnA.d,mx:mxA&&mxA.d},hero:hero,
+        board:{tough:tough,hiSu:hiSu,prob:prob,iron:{one:ironAll[0]||null,count:ironAll.length,of:present.length}}};
+    }
+    function pwRenderMonth(m){
+      var wv=$id("wrapView");if(!wv)return;
+      var html=tabsHTML("month");
+      var canNext=(m.cur<etDate(0).slice(0,7));
+      var monthDone=(m.finals>=m.inMonthTotal);
+      var badge=monthDone?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+m.finals+' of '+m.inMonthTotal+' final</span>';
+      html+='<div class="pw-date"><div><div class="d"><button class="pw-mnav" id="pwMPrev" type="button">\u2039</button> '+esc(m.label)+' <button class="pw-mnav" id="pwMNext" type="button"'+(canNext?'':' disabled')+'>\u203a</button></div><div class="s">Walt Disney World \u00b7 monthly wrap</div></div>'+badge+'</div>';
+      if(!m.finals){
+        html+='<div class="pw-msg">No banked days in this month yet.</div>';
+        wv.innerHTML=html;wireTabs();pwWireMonthNav();return;
+      }
+      var l='The month so far.',sub='';
+      if(m.hero){
+        l=pwMonD(m.hero.tough.d)+' ran toughest \u2014 '+pwMonD(m.hero.calm.d)+' kept it calm.';
+        sub='Headliners averaged '+Math.round(m.hero.tough.resortHead)+'m against '+Math.round(m.hero.calm.resortHead)+'m. ';
+      }
+      sub+=m.finals+' days in: '+m.tot.dn+' outages \u00b7 '+Math.round(m.tot.dm/60)+' ride-hours lost'
+        +(m.tot.strikes?(' \u00b7 '+m.tot.strikes+' lightning strikes within 10 mi'+(m.ltgFrom?(' since '+pwMonD(m.ltgFrom)):'')):'')+'.';
+      var wd='<div class="pw-mwd"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>';
+      var cells='';
+      m.cells.forEach(function(x){
+        var dayN=+x.d.slice(8,10);
+        if(x.today){cells+='<div class="pw-mc today"><b>'+dayN+'</b><i></i></div>';return;}
+        if(!x.final||x.resortAll==null){cells+='<div class="pw-mc fut'+(x.inM?'':' out')+'"><b>'+dayN+'</b></div>';return;}
+        var lv=pwDayLvl(Math.round(x.resortAll),null);
+        var span=PW_TIER_SPAN[lv],pos=Math.min(1,Math.max(0,(x.resortAll-span[0])/(span[1]-span[0])));
+        var veil=(.55*pos).toFixed(2);
+        var col=CROWD_TIERS[lv]?CROWD_TIERS[lv].color:PW_TIER.fallback;
+        var lab=(x.inM&&(x.d===m.extremes.mn||x.d===m.extremes.mx))?('<em>'+Math.round(x.resortAll)+'</em>'):'';
+        cells+='<div class="pw-mc'+(x.inM?'':' out')+'" style="background:linear-gradient(rgba(10,16,28,'+veil+'),rgba(10,16,28,'+veil+')),'+col+'"><b>'+dayN+'</b>'+lab+'</div>';
+      });
+      var leg='<div class="pw-mleg">';
+      CROWD_TIERS.forEach(function(t){if(t)leg+='<span><i style="background:'+t.color+'"></i>'+t.label+'</span>';});
+      leg+='<span class="sh">darker = further into its tier</span></div>';
+      html+='<div class="pw-hero"><div class="k">Monthly Wrap \u00b7 '+esc(m.label)+'</div><div class="l">'+esc(l)+'</div><div class="sub">'+esc(sub)+'</div>'+wd+'<div class="pw-mgrid">'+cells+'</div>'+leg+'</div>';
+      function tile(h,v,s){return '<div class="pw-mtile"><div class="h">'+h+'</div><div class="v">'+esc(v)+'</div><div class="s">'+esc(s)+'</div></div>';}
+      var b=m.board,tiles='';
+      if(b.tough)tiles+=tile('Toughest Line of the Month',b.tough.n,b.tough.a+'m average across the month.');
+      if(b.hiSu)tiles+=tile('Highest Sustained Peak',b.hiSu.n+' \u00b7 '+b.hiSu.v+'m',pwMonD(b.hiSu.d)+'.');
+      if(b.prob)tiles+=tile('Problem Child',b.prob.n,'Down '+b.prob.dd+' of '+m.finals+' days \u00b7 '+b.prob.dn+' outages \u00b7 '+(b.prob.dm/60).toFixed(1)+' ride-hours lost.');
+      if(b.iron.one)tiles+=tile('Iron Horse of the Month',b.iron.one.n,(b.iron.count===1?'The only ride':'One of '+b.iron.count+' rides')+' of '+b.iron.of+' to run every day clean.');
+      if(tiles)html+='<div class="pw-mtiles">'+tiles+'</div>';
+      wv.innerHTML=html;wireTabs();pwWireMonthNav();
+    }
+    function pwWireMonthNav(){
+      var p=$id("pwMPrev"),n=$id("pwMNext");
+      if(p)p.addEventListener("click",function(){pwMonthCursor=pwMonAddM(pwMonthCursor||etDate(0).slice(0,7),-1);pwLoadMonth();});
+      if(n)n.addEventListener("click",function(){if(n.disabled)return;pwMonthCursor=pwMonAddM(pwMonthCursor||etDate(0).slice(0,7),1);pwLoadMonth();});
+    }
+    function pwLoadMonth(){
+      var cur=pwMonthCursor||(pwMonthCursor=etDate(0).slice(0,7));
+      if(pwMonthCache[cur]){pwRenderMonth(pwMonthCache[cur]);return;}
+      var g=pwMonthGrid(cur),yd=etDate(1);
+      var to=(g.last<yd)?g.last:yd;
+      if(g.days[0]>yd){pwRenderMonth(pwMonthModel({digests:[]},cur));return;}
+      fetch(WRAP_URL+"/digest?from="+g.days[0]+"&to="+to).then(function(r){return r.json();}).then(function(dig){
+        var m=pwMonthModel(dig,cur);
+        pwMonthCache[cur]=m;
+        if(active&&curTab==="month")pwRenderMonth(m);
+      })["catch"](function(){
+        var wv=$id("wrapView");
+        if(active&&curTab==="month"){wv.innerHTML=tabsHTML("month")+'<div class="pw-msg">Couldn\u2019t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
+      });
+    }
     function loadTab(tab){
       curTab=tab;var wv=$id("wrapView");if(!wv)return;
       if(cache[tab]){renderWrap(cache[tab],tab);return;}
       wv.innerHTML=tabsHTML(tab)+'<div class="pw-msg">Loading the day…</div>';wireTabs();
       if(tab==="week"){pwLoadWeek();return;} /* 0713a: calendar week = digests + today live */
+      if(tab==="month"){pwLoadMonth();return;} /* 0713i: calendar month from digests, ‹ › paged */
       var url=WRAP_URL+"/history";
       if(tab==="yesterday")url+="?date="+etDate(1);
       else url+="?date="+etDate(0);
