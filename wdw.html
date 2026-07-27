@@ -851,7 +851,7 @@
   .pw-band .pw-line{display:block;width:100%;height:76px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid var(--pwh-deep);transform:translate(-50%,-50%);box-sizing:content-box}
   .pw-band .pw-cap{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--pwh-deep);border:1.5px solid var(--accent-tint);transform:translate(-50%,-50%);box-sizing:content-box}
-  .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:var(--fs-meta);font-weight:700;text-shadow:0 0 3px var(--pwh-bg),0 0 3px var(--pwh-bg),0 0 3px var(--pwh-bg)}
+  .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:var(--fs-meta);font-weight:700;text-shadow:0 0 2px var(--pwh-bg),0 0 2px var(--pwh-bg),0 0 4px var(--pwh-bg),0 0 4px var(--pwh-bg),0 0 7px var(--pwh-bg),0 0 7px var(--pwh-bg)} /* 0713n: halo dense enough to beat the line (owner catch: 130 in the stroke) — the card twin's shadow treatment, in CSS */
   .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
   .pw-band .pw-voidlbl{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:var(--fs-micro);font-weight:600;color:var(--pwh-dim);text-align:center;line-height:1.4;white-space:nowrap;pointer-events:none}
   .pw-ribbon{border-radius:var(--r-dot);overflow:hidden;margin-top:3px}
@@ -1018,6 +1018,7 @@
   .ltg-strip.lbl i.egR::after{left:auto;right:0;transform:none}
   /* 0713l: the ride card's strike lane (A3) */
   .pw-band .ltg-strip{margin-top:2px}
+  .pw-band .ltg-strip.lbl{margin-top:26px} /* 0713n (owner catch): tap-revealed labels — including a staggered second row on a full-height bar — need headroom over the lane header */
   .ltg-strip i.z.sp{background:none} /* spacer = the sensor wasn't looking; no dash, no claim */
   .pw-rlanehead{display:flex;justify-content:space-between;align-items:baseline;margin:10px 2px 2px;font-size:var(--fs-micro);font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
   .pw-rlanehead span:last-child{color:var(--muted-2);font-weight:600;text-transform:none;letter-spacing:0}
@@ -1110,7 +1111,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4924,6 +4925,21 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       return '<div class="pw-rlanehead"><span>\u26a1 Lightning strikes \u00b7 10 mi</span><span>'+tot+' that day</span></div>'
         +'<div class="ltg-strip" id="pwRLane">'+bars+'</div>';
     }
+    function pwCardLane(m){
+      /* 0713m: the lane's RAW data for the canvas card — same clipping rules
+         as pwSkyLane (the DOM twin above): buckets clipped to the band window,
+         zero buckets kept as checked-quiet dashes, uncovered time simply
+         absent (no claim). Returns null when the day has no banked strikes. */
+      var S=lastData&&lastData.ltg&&lastData.ltg.samples;if(!S||!S.length)return null;
+      var tot=pwDayStrikes();if(!tot)return null;
+      var topR=0,i,bars=[];
+      for(i=0;i<S.length;i++){var r0=(S[i].n||0)/(S[i].w||60);if(r0>topR)topR=r0;}
+      if(!topR)return null;
+      for(i=0;i<S.length;i++){var s=S[i],w=s.w||60,a=s.t-w,b=s.t;
+        if(b<=m.t0||a>=m.t1)continue;
+        bars.push({a:Math.max(a,m.t0),b:Math.min(b,m.t1),n:s.n||0});}
+      return bars.length?{tot:tot,topR:topR,bars:bars}:null;
+    }
     /* ---- scrub lens engine. One delegated set of listeners; per-band model
        data lives in pwScrubReg (written by pwSparkBand each render). Honesty:
        the lens SNAPS to real 5-min samples (never interpolates), reads "Down"
@@ -5713,7 +5729,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* Canvas twin of the ride hero's wait-curve band, drawn from the same
          pwBandModel so app and card can never disagree. Returns block height. */
       function bandBlock(bx,by,bw,m){
-        var BH=340,i,j;
+        var BH=340,i,j; /* 0713m: strike days return BH+120 — the lane block below.
+           Callers key layout off the RETURN, so tiles and footer follow automatically. */
         ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx+bw,by);ctx.stroke();
         var pT=by+26,pH=190,pB=pT+pH,vpad=8;
         function BX(t){return bx+(t-m.t0)/(m.t1-m.t0)*bw;}
@@ -5733,7 +5750,12 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         for(i=0;i<m.runs.length;i++){
           var xa=BX(m.runs[i].t0),xb=(m.runs[i].end!=null)?BX(Math.min(m.runs[i].end,m.t1)):((i<m.runs.length-1)?BX(m.runs[i+1].t0):bx+bw);
           if(xb-xa<0.5)continue;
-          ctx.fillStyle=m.runs[i].c;ctx.fillRect(xa,ry,xb-xa,rh);
+          var fc2=m.runs[i].c;
+          if(fc2===PW_TIER.down&&D.lgIv&&D.lgIv.length){ /* 0713m: co-fire whisper, card twin — same per-window rule as the app ribbon */
+            var rE2=(m.runs[i].end!=null)?m.runs[i].end:((i<m.runs.length-1)?m.runs[i+1].t0:m.t1);
+            for(j=0;j<D.lgIv.length;j++){if(D.lgIv[j][0]<rE2&&D.lgIv[j][1]>m.runs[i].t0){fc2="#8b87ff";break;}}
+          }
+          ctx.fillStyle=fc2;ctx.fillRect(xa,ry,xb-xa,rh);
         }
         ctx.restore();
         for(i=0;i<m.dots.length;i++){
@@ -5782,6 +5804,26 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           rr(lx2,lyg,16,16,5);ctx.fillStyle=IT[i][0];ctx.fill();
           lx2+=24;ctx.fillStyle=C.muted;ctx.fillText(IT[i][1],lx2,lyg+15);
           lx2+=ctx.measureText(IT[i][1]).width+30;
+        }
+        if(D.lane){ /* 0713m: the strike lane, card twin — bars share BX so app
+             and card can never disagree on where the sky sat. Static medium:
+             counts live in the header line (the storm card's resolution);
+             per-bar labels stay an app-side tap-reveal. */
+          var ly0=by+BH,lh2=44,lby=ly0+56;
+          T("\u26a1 LIGHTNING STRIKES \u00b7 10 MI",bx,ly0+28,IN("700",22),C.muted2,"left");
+          T(D.lane.tot+" that day",bx+bw,ly0+28,IN("600",22),C.muted2,"right");
+          for(i=0;i<D.lane.bars.length;i++){
+            var lb2=D.lane.bars[i],lxa=BX(lb2.a),lxb=BX(lb2.b);
+            if(lb2.n>0){
+              var bh2=Math.max(6,((lb2.n/(lb2.b-lb2.a))/D.lane.topR)*lh2);
+              rr(lxa+1,lby+lh2-bh2,Math.max(lxb-lxa-2,3),bh2,4);
+              ctx.fillStyle="rgba(251,191,36,0.9)";ctx.fill();
+            }else{
+              ctx.fillStyle="rgba(255,255,255,0.22)";
+              ctx.fillRect(lxa+1,lby+lh2-3,Math.max(lxb-lxa-2,2),3);
+            }
+          }
+          return BH+120;
         }
         return BH;
       }
@@ -5903,10 +5945,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var dateStr=(d.dates&&d.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var r=findRide(park,rid);if(!r)return;
       var live=(!isWeek&&!isFinal(d));
-      var cKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null;
+      var cKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:(pwDayStrikes()>0?"storm":null);})():null; /* 0713m: trigger PARITY with showRide's 0713l sensor fallback — app and card must never disagree on a clause */
       var cClause=cKind?pwWxClause(r.id,wxDerive(d),cKind):"";
       var su=(!isWeek)?pwSustained(r.id):null;
       var bm=(!isWeek)?pwBandModel(r.id,su):null;
+      var lane=(bm)?pwCardLane(bm):null; /* 0713m: the strike lane's raw data for the card (null on zero-strike days) */
+      var lgIv=null;
+      if(lane){lgIv=[];var lgS0=(lastData.ltg&&lastData.ltg.samples)||[],lq;
+        for(lq=0;lq<lgS0.length;lq++)if(lgS0[lq].n>0)lgIv.push([lgS0[lq].t-(lgS0[lq].w||60),lgS0[lq].t]);}
       var noAvg=(r.avgWait==null);
       var line=noAvg
         ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
@@ -5917,7 +5963,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      emitCard({W:1080,H:(bm?1472:1132),title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
+      emitCard({W:1080,H:(bm?(lane?1592:1472):1132),lane:lane,lgIv:lgIv,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"parkpulse.live",fname:"parkpulse-ride-"+dateStr+".png",shareTitle:"ParkPulse — "+r.name});
     }
 
     /* ---- init: four-tab nav (0710n) — Phase 1 of the bottom-nav arc ----
