@@ -1016,6 +1016,11 @@
   .ltg-strip.lbl i.st2::after{bottom:calc(100% + 11px)} /* 0713g label guard (owner storm finds: the edge-clipped \u201c2\u201d, the 2/36 overprint): crowded neighbors stagger to a second row\u2026 */
   .ltg-strip.lbl i.egL::after{left:0;transform:none} /* \u2026and edge labels clamp inside the strip */
   .ltg-strip.lbl i.egR::after{left:auto;right:0;transform:none}
+  /* 0713l: the ride card's strike lane (A3) */
+  .pw-band .ltg-strip{margin-top:2px}
+  .ltg-strip i.z.sp{background:none} /* spacer = the sensor wasn't looking; no dash, no claim */
+  .pw-rlanehead{display:flex;justify-content:space-between;align-items:baseline;margin:10px 2px 2px;font-size:var(--fs-micro);font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .pw-rlanehead span:last-child{color:var(--muted-2);font-weight:600;text-transform:none;letter-spacing:0}
   .ltg-hrs{display:flex;gap:3px;margin-top:3px}
   .ltg-hrs s{flex:1;text-decoration:none;font-size:8.5px;color:var(--pwh-dim);text-align:center;font-weight:600}
   .pw-tile .ctx .pw-wx{color:var(--accent);font-weight:600}
@@ -1105,7 +1110,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4855,10 +4860,19 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         vl+='<span class="pw-voidlbl" style="left:'+vcx+'%">'+(vv.kind==="closed"?"park<br>closed":vv.kind==="refurb"?"refurb":"no data")+'</span>';
       }
       var rib="";
+      var lgS=(lastData&&lastData.ltg&&lastData.ltg.samples)||[],lgIv=[],li;
+      for(li=0;li<lgS.length;li++)if(lgS[li].n>0)lgIv.push([lgS[li].t-(lgS[li].w||60),lgS[li].t]);
       for(i=0;i<m.runs.length;i++){
         var xa=parseFloat(X(m.runs[i].t0)),xb=(m.runs[i].end!=null)?parseFloat(X(Math.min(m.runs[i].end,t1))):((i<m.runs.length-1)?parseFloat(X(m.runs[i+1].t0)):100);
         if(xb-xa<0.01)continue;
-        rib+='<rect x="'+xa.toFixed(2)+'" y="0" width="'+(xb-xa).toFixed(2)+'" height="8" fill="'+m.runs[i].c+'"/>';
+        var fc=m.runs[i].c;
+        if(fc===PW_TIER.down&&lgIv.length){ /* 0713l co-fire whisper: a pause's slate
+             turns active-sky indigo ONLY where banked strikes overlap ITS OWN
+             window — per-window honesty (Jul 20: 2 of 3 pauses had clear skies) */
+          var rE=(m.runs[i].end!=null)?m.runs[i].end:((i<m.runs.length-1)?m.runs[i+1].t0:t1);
+          for(li=0;li<lgIv.length;li++){if(lgIv[li][0]<rE&&lgIv[li][1]>m.runs[i].t0){fc="#8b87ff";break;}}
+        }
+        rib+='<rect x="'+xa.toFixed(2)+'" y="0" width="'+(xb-xa).toFixed(2)+'" height="8" fill="'+fc+'"/>';
       }
       var ticks="";
       for(i=0;i<m.ticks.length;i++){
@@ -4875,7 +4889,40 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
         +'</svg>'+dots+vl+scrub+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
+        +pwSkyLane(m)
         +tickRow+leg+'</div>';
+    }
+    function pwDayStrikes(){
+      var S=lastData&&lastData.ltg&&lastData.ltg.samples;if(!S)return 0;
+      var t=0;for(var i=0;i<S.length;i++)t+=S[i].n||0;return t;
+    }
+    function pwSkyLane(m){
+      /* 0713l (L-16, owner-ratified A3): the ride card's strike lane — the Sky
+         Page's W2 strip, one lane, aligned to the band's own time window by
+         flex arithmetic (bars flex = clipped minutes; spacers cover un-sensed
+         time). Wears .ltg-strip so bars, tap-reveal labels, and the 0713g
+         guard all come from the shipped machinery. Renders ONLY on days with
+         banked strikes — zero-strike days keep the card exactly as it was.
+         Spacer honesty: .z = checked-and-quiet (dash claim), .z.sp = the
+         sensor wasn't looking (blank, no claim). */
+      var S=lastData&&lastData.ltg&&lastData.ltg.samples;if(!S||!S.length)return "";
+      var tot=pwDayStrikes();if(!tot)return "";
+      var t0=m.t0,t1=m.t1,topR=0,i;
+      for(i=0;i<S.length;i++){var r0=(S[i].n||0)/(S[i].w||60);if(r0>topR)topR=r0;}
+      if(!topR)return "";
+      var bars="",pos=t0;
+      for(i=0;i<S.length;i++){var s=S[i],w=s.w||60,a=s.t-w,b=s.t;
+        if(b<=t0||a>=t1)continue;
+        var ca=Math.max(a,t0),cb=Math.min(b,t1);
+        if(ca>pos)bars+='<i class="z sp" style="flex:'+(ca-pos)+'"></i>';
+        if(s.n>0){var pct=Math.max(8,Math.round(((s.n)/w)/topR*100));
+          bars+='<i data-n="'+s.n+'" style="height:'+pct+'%;flex:'+(cb-ca)+'"></i>';}
+        else bars+='<i class="z" style="flex:'+(cb-ca)+'"></i>';
+        pos=cb;
+      }
+      if(pos<t1)bars+='<i class="z sp" style="flex:'+(t1-pos)+'"></i>';
+      return '<div class="pw-rlanehead"><span>\u26a1 Lightning strikes \u00b7 10 mi</span><span>'+tot+' that day</span></div>'
+        +'<div class="ltg-strip" id="pwRLane">'+bars+'</div>';
     }
     /* ---- scrub lens engine. One delegated set of listeners; per-band model
        data lives in pwScrubReg (written by pwSparkBand each render). Honesty:
@@ -4883,7 +4930,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
        exactly where the ribbon is slate (any negative — same rule the ribbon
        paints by), and shows only the void's own label inside voids. The
        weather glyph is descriptive of the nearest observed 15-min sample
-       (±7.5 min), one glyph max, acute before ambient: ⛈ code≥95 → 🌧 code≥51
+       (±7.5 min), one glyph max, acute before ambient: ⚡ inside a banked
+       strike window (0713l — the sensor leads; code 51 slept through 633
+       strikes on Jul 26) → ⛈ code≥95 → 🌧 code≥51
        → 💨 gust≥35 → 🥵 feels-like≥105 (same thresholds as wxClass + chips;
        pre-v3.4 days have no per-sample feels-like → no heat flag, gracefully). */
     var pwScrubReg={},pwScrubEl=null,pwScrubTimer=null;
@@ -4897,6 +4946,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       return {t:best[0],v:best[1]};
     }
     function pwScrubWx(t){
+      var lg=lastData&&lastData.ltg&&lastData.ltg.samples; /* 0713l: strikes lead */
+      if(lg)for(var li=0;li<lg.length;li++){var s2=lg[li];if(s2.n>0&&t>s2.t-(s2.w||60)&&t<=s2.t)return "\u26a1";}
       var wx=lastData&&lastData.wx&&lastData.wx.samples;if(!wx||!wx.length)return "";
       var best=null,bd=1e9;
       for(var i=0;i<wx.length;i++){var d=Math.abs(wx[i].t-t);if(d<bd){bd=d;best=wx[i];}}
@@ -5802,7 +5853,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         if(rz&&pwRefurbRow(rz,park)){r=rz;r._refurb=true;}
         else{showDetail(park);return;}
       }
-      var rKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null;
+      var rKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:(pwDayStrikes()>0?"storm":null);})():null; /* 0713l: sensor fallback — observed strikes earn the storm trigger; pwStormWin (dp≥8) still gates the window, so no resort hold ⇒ no clause */
       var rClause=rKind?pwWxClause(r.id,wxDerive(lastData),rKind):"";
       var su=(!isWeek)?pwSustained(r.id):null;
       var noAvg=(r.avgWait==null);
@@ -5829,6 +5880,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
+      var rl=$id("pwRLane");if(rl)rl.addEventListener("click",function(){rl.classList.toggle("lbl");pwStripGuard(rl);}); /* 0713l: same gesture as the Sky strip — tap reveals counts, guard handles the crowd */
       /* Peak / Lowest tiles jump the scrub lens to their sustained moment */
       if(band&&su){
         var gt=wv.querySelectorAll(".pw-grid .pw-tile");
