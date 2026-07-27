@@ -1111,7 +1111,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4197,6 +4197,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     /* ---- hero line (seeded so it's stable per day, varied across days) ---- */
     function seeded(seed){var h=2166136261;for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}
       return function(){h+=0x6D2B79F5;var t=h;t=Math.imul(t^t>>>15,1|t);t=(t+Math.imul(t^t>>>7,61|t))^t;return((t^t>>>14)>>>0)/4294967296;};}
+    function pwDayWord(ds){
+      /* 0713o (owner catch): a visited past day is neither today nor
+         yesterday — day-words listen to the DATE, all three ways. Tense
+         still listens to fin; this only names the day. */
+      if(ds===etDate(0))return "today";
+      if(ds===etDate(1))return "yesterday";
+      return "on "+pwMonD(ds);
+    }
     function hero(c,seed,isWeek,fin,forCard){
       var pk=c.busiestPark;
       if(!pk)return {k:"Daily Wrap",l:"A quiet day at Walt Disney World.",sub:""};
@@ -4205,7 +4213,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       /* Tense listens to fin; DAY-WORDS listen to the date. A night-final day
          is finished but still TODAY until midnight (owner catch, 11:56 PM):
          "ran hottest today", not "yesterday". */
-      var isToday=(seed===etDate(0)),dw=isToday?"today":"yesterday";
+      var isToday=(seed===etDate(0)),dw=pwDayWord(seed); /* 0713o: three-way */
       /* in-app uses relative day words (today/yesterday/this week); share cards are frozen
          images, so they drop the day word — the date + badge carry the "when" instead. */
       var opts=forCard?(isWeek?[
@@ -4236,7 +4244,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var line=opts[Math.floor(rnd()*opts.length)];
       var sub="Headliners "+(live?"averaging ":"averaged ")+pk.headAvg+" min";
       sub+=pk.worst?".":(isWeek?" — and stayed remarkably reliable.":live?" — and running clean so far.":" — and it stayed rock-solid, no breakdowns all day.");
-      return {k:isWeek?"The week in one line":((live||isToday)?"Today in one line":"Yesterday in one line"),l:line,sub:sub};
+      return {k:isWeek?"The week in one line":((live||isToday)?"Today in one line":(seed===etDate(1)?"Yesterday in one line":pwMonD(seed)+" in one line")),l:line,sub:sub};
     }
 
     function shortName(n){
@@ -4489,7 +4497,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       }
 
       var isTod=(lastData&&lastData.dates&&lastData.dates[0]===etDate(0));
-      var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":(live||isTod)?" today.":" yesterday.");
+      var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":" "+pwDayWord(dateStr)+"."); /* 0713o: the date names the day */
       var sub2=pk.leastRel?(pk.leastRel.name+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonD(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
       html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
@@ -5901,7 +5909,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var noAvg=(r.avgWait==null);
       var line=noAvg
         ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
-        :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":(live||(lastData&&lastData.dates&&lastData.dates[0]===etDate(0)))?" today.":" yesterday."));
+        :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":" "+pwDayWord((lastData&&lastData.dates&&lastData.dates[0])||etDate(0))+".")); /* 0713o */
       if(r._refurb)line=(isWeek?"In refurbishment this week.":live?"In refurbishment today.":"In refurbishment.");
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonD(pwVisitDate())):'')+'</div>';
