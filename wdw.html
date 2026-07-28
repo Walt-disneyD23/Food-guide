@@ -1124,7 +1124,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2611,7 +2611,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   /* ===== 0713p: Pulse rail — NOW | ATTRACTIONS (ride profiles, build one).
      Session-only view state; the park scope chips are a NOW filter and render
      only there. Leaving the rail to NOW resets the browse to its landing
-     (the ratified mock rule). Typical = the n-floor'd 28-day median. ===== */
+     (the ratified mock rule). Typical = the n-floor'd 28-day median.
+     0713q: the browse lists only rides with BANKED WAIT EVIDENCE (present in
+     /baseline) — trails, transports and walkthroughs typed ATTRACTION upstream
+     never post standby, so they never bank, so they never list. The Wrap's
+     realRides() rule, browse-shaped: read-time, no curation list to maintain. ===== */
   var rpView="now",rpPark=null;
   function rpMed(a){var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;if(!n)return null;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}
   function rpTypical(rid){ /* median of bucket day-medians; buckets under 10 days hidden (the n-floor law); 6+ qualifying buckets required to claim a day shape */
@@ -2626,20 +2630,24 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rpAttrHTML(){
     if(!rpPark){
       var rows=PARK_DEF.map(function(p){
-        var n=0,id;for(id in roster){if(roster[id].kind==="ride"&&roster[id].park===p.key)n++;}
-        return '<button class="rp-park" data-rpk="'+esc(p.key)+'" type="button"><span class="nm">'+esc(p.key)+'</span><span class="ct">'+n+' rides</span><span class="chev">\u203a</span></button>';
+        var n=0,id;if(pfBase&&pfBase.rides){for(id in roster){if(roster[id].kind==="ride"&&roster[id].park===p.key&&pfBase.rides[id])n++;}}
+        return '<button class="rp-park" data-rpk="'+esc(p.key)+'" type="button"><span class="nm">'+esc(p.key)+'</span><span class="ct">'+((pfBase&&pfBase.rides)?n+' rides':'\u2013')+'</span><span class="chev">\u203a</span></button>';
       }).join("");
       return '<div class="favcard" style="padding:6px 16px 4px"><div class="fc-head" style="padding-left:0"><span class="sec-lab">Browse by park</span></div>'+rows+'</div>';
     }
+    var crumb='<button class="rp-back" type="button">\u2039 Attractions</button>'+
+      '<div class="rp-crumb">Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b></div>';
+    if(!pfBase||!pfBase.rides){ /* 0713q: honest pre-baseline state; pfEnsureBase re-renders on arrival */
+      return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 28 days of banked waits \u2014 one moment.</div></div>';
+    }
     var items=[],id;
-    for(id in roster){var r=roster[id];if(r.kind!=="ride"||r.park!==rpPark)continue;
+    for(id in roster){var r=roster[id];if(r.kind!=="ride"||r.park!==rpPark||!pfBase.rides[id])continue;
       items.push({id:id,nm:r.name,ty:rpTypical(id)});}
     items.sort(function(a,b){var av=a.ty===null?-1:a.ty,bv=b.ty===null?-1:b.ty;if(av!==bv)return bv-av;return a.nm.localeCompare(b.nm);});
     var list=items.length?items.map(function(it){
       return '<div class="fc-row"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>MIN</small>')+'</span></div>';
     }).join(""):'<div class="fc-empty">No rides banked yet for this park.</div>';
-    return '<button class="rp-back" type="button">\u2039 Attractions</button>'+
-      '<div class="rp-crumb">Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b></div>'+
+    return crumb+
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab">Typical</span></div>'+list+
       '<div class="pf-basis">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div></div>';
   }
