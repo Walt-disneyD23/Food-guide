@@ -374,7 +374,7 @@
   .rd-edge b{font-size:var(--fs-stat);color:var(--short)}
   .rd-edge small{display:block;font:600 var(--fs-caps) var(--font-body);letter-spacing:.06em;color:var(--muted-2);margin-top:2px;text-transform:uppercase}
   .rd-edge.t-medium b{color:var(--medium)} .rd-edge.t-long b{color:var(--long)} .rd-edge.t-packed b{color:var(--packed)}
-  .rd-edge.allday b{font-size:var(--fs-title);letter-spacing:.02em}
+  /* 0714h: allday rows went level-forward \u2014 the base rd-edge value size returns */
   /* ===== 0714c: My Morning (L-28 cut 2) — the coach card + morning lanes ===== */
   .rm-rec .row{display:flex;gap:12px;align-items:flex-start;padding:10px 0}
   .rm-rec .row+.row{border-top:1px solid var(--line)}
@@ -1218,7 +1218,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3042,13 +3042,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       cv=rpWinCurve(id,win);
       if(!cv){out.out.push({id:id,nm:r.name});continue;}
       var mn=1e9,mx=-1e9,q;for(q=0;q<cv.bs.length;q++){if(cv.bs[q].med<mn)mn=cv.bs[q].med;if(cv.bs[q].med>mx)mx=cv.bs[q].med;} var it={id:id,nm:r.name,cv:cv,open:cv.bs[0].med,flatV:(mx===mn&&!cv.allday)?mx:null}; /* 0714f: strict-flat \u2014 one posted number all day carries no morning story (owner-caught: Canada/Reflections wearing never-easy) */
-      if(it.flatV!==null)out.flat.push(it); else if(cv.allday)out.allday.push(it);
+      if(it.flatV!==null){if(rpTierCls(it.flatV)==="short"){it.fk="held";it.val=it.flatV;out.allday.push(it);}else out.flat.push(it);} else if(cv.allday){it.fk="walk";it.val=cv.typ;out.allday.push(it);} /* 0714h: one phenomenon, one home \u2014 timing-invariance is the section\u2019s job, the tier gate keeps "easy" honest */
       else if(cv.front===null)out.never.push(it);
       else out.until.push(it);
     }
     out.never.sort(function(a,b){return (b.open-a.open)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     out.until.sort(function(a,b){return (a.cv.front-b.cv.front)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
-    out.allday.sort(function(a,b){return (b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
+    out.allday.sort(function(a,b){return (a.val-b.val)||a.nm.localeCompare(b.nm);});
     out.flat.sort(function(a,b){return a.nm.localeCompare(b.nm);}); out.out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
   }
@@ -3065,9 +3065,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }else if(kind==="never"){
       right='<div class="rd-edge t-'+rpTierCls(it.open)+'"><b>'+it.open+'m</b><small>at open</small></div>';
     }else{
-      right='<div class="rd-edge allday"><b>all day</b></div>';
+      right='<div class="rd-edge allday"><b>'+it.val+'m</b><small>all day</small></div>';
     }
-    return '<div class="rd-item"><div class="rd-row"><div class="rd-m"><div class="rd-nm">'+esc(it.nm)+'</div><div class="rd-ctx">'+rdCtx(it.cv)+'</div></div>'+right+'</div></div>';
+    var cx=(kind==="allday")?((it.fk==="held")?"one typical number at every hour":"walk-on at every hour"):rdCtx(it.cv); /* 0714h: timing-invariant rows say so plainly */
+    return '<div class="rd-item"><div class="rd-row"><div class="rd-m"><div class="rd-nm">'+esc(it.nm)+'</div><div class="rd-ctx">'+cx+'</div></div>'+right+'</div></div>';
   }
   function rdSec(title,cap,rows){
     if(!rows)return "";
@@ -3091,7 +3092,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var body="";
     body+=rdSec("Never an easy line","The median never dipped to walk-on \u2014 the open was the discount.",C.never.map(function(it){return rdRow(it,"never");}).join(""));
     body+=rdSec("Walk-on until \u2014","Shortest fuse first. Edges are typical-day patterns.",C.until.map(function(it){return rdRow(it,"until");}).join(""));
-    body+=rdSec("Easy all day","",C.allday.map(function(it){return rdRow(it,"allday");}).join(""));
+    body+=rdSec("Easy all day","Short at every hour \u2014 timing never mattered.",C.allday.map(function(it){return rdRow(it,"allday");}).join(""));
     if(!C.never.length&&!C.until.length&&!C.allday.length)
       body+='<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked mornings yet for a board.':'This window is too thin for a board \u2014 try All.')+'</div></div>';
     var foot='<div class="rpc">'+
