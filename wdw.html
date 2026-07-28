@@ -358,6 +358,23 @@
   .rp-hmc .xl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 8.5px var(--font-display);color:#fff;pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,.35),0 0 3px rgba(0,0,0,.35)}
   .rp-hmc .xl.ink{color:var(--ink);text-shadow:none}
   html.dark .rp-hmc .xl.ink{text-shadow:0 0 3px rgba(0,0,0,.5),0 0 3px rgba(0,0,0,.5)} /* 0713u: near-white ink over a light veil — the 0713n halo, Harbor only */
+  /* ===== 0714a: the Rope Drop Board (L-28 cut 1) — A Ledger on the ratified sections ===== */
+  .rd-door .nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);color:var(--ink)}
+  .rd-door .ct{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted-2);font-variant-numeric:tabular-nums}
+  .rd-door .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
+  .rd-sechead{font-size:var(--fs-meta);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:16px 2px 2px}
+  .rd-seccap{font-size:var(--fs-meta);color:var(--muted-2);margin:0 2px 8px}
+  .rd-item{border-top:1px solid var(--line);padding:11px 0}
+  .rd-item:first-of-type{border-top:0}
+  .rd-row{display:flex;align-items:center;gap:12px}
+  .rd-m{flex:1;min-width:0}
+  .rd-nm{font-weight:600;font-size:var(--fs-title);line-height:1.25;color:var(--ink)}
+  .rd-ctx{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
+  .rd-edge{flex:none;text-align:right;font-family:var(--font-display);font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+  .rd-edge b{font-size:var(--fs-stat);color:var(--short)}
+  .rd-edge small{display:block;font:600 var(--fs-caps) var(--font-body);letter-spacing:.06em;color:var(--muted-2);margin-top:2px;text-transform:uppercase}
+  .rd-edge.t-medium b{color:var(--medium)} .rd-edge.t-long b{color:var(--long)} .rd-edge.t-packed b{color:var(--packed)}
+  .rd-edge.allday b{font-size:var(--fs-title);letter-spacing:.02em}
   .rp-a{color:var(--accent)}
   .pg-h h3 .ps{color:var(--accent)}
   .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
@@ -1180,7 +1197,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2672,7 +2689,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      /baseline) — trails, transports and walkthroughs typed ATTRACTION upstream
      never post standby, so they never bank, so they never list. The Wrap's
      realRides() rule, browse-shaped: read-time, no curation list to maintain. ===== */
-  var rpView="now",rpPark=null,rpRide=null; /* 0713r: the profile rung */
+  var rpView="now",rpPark=null,rpRide=null,rpSub=null; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
   function rpMed(a){var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;if(!n)return null;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}
   function rpTypical(rid){ /* median of bucket day-medians; buckets under 10 days hidden (the n-floor law); 6+ qualifying buckets required to claim a day shape */
     if(!pfBase||!pfBase.rides)return null;
@@ -2766,7 +2783,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     rpDigsAt=Date.now();
     var days=RP_POOL; /* 0713x: the pool is the lens's own — the baseline keeps its 28 for the Pulse callouts */
     fetch(PUSH.WORKER_URL+"/digest?from="+rpDate(days)+"&to="+rpDate(1)).then(function(r){return r.json();}).then(function(j){
-      if(j&&j.ok&&j.digests){rpDigs=j.digests;if(rpView==="attr"&&rpRide)renderPulsePage();}
+      if(j&&j.ok&&j.digests){rpDigs=j.digests;if(rpView==="attr"&&(rpRide||rpSub))renderPulsePage();}
     })["catch"](function(){});
   }
   function rpRel(rid,pre){ /* per-day reliability from the digest atoms, 0713v window-scoped. A day counts
@@ -2981,6 +2998,80 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     return crumb+hero+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
   }
+  /* ===== 0714a \u00b7 THE ROPE DROP BOARD (L-28 cut 1) ============================
+     Sections fall straight out of rpWinCurve's own fields \u2014 never-easy (front
+     null, not allday: the open was the whole discount, biggest stakes first) \u00b7
+     until (a real morning edge, shortest fuse first, stakes break ties) \u00b7
+     easy all day. Curveless rides sit out cause-neutral: the window ran too
+     thin for a day shape \u2014 the board never guesses why. The lens is the
+     profile's own window authority; edges describe typical days, never today. */
+  function rdDoorHTML(){
+    return '<button class="rp-door rd-door" data-rpsub="board" type="button"><span class="nm">Rope drop board</span><span class="chev">\u203a</span></button>';
+  }
+  function rdClassify(win){
+    var out={never:[],until:[],allday:[],out:[]},id,r,cv;
+    for(id in roster){r=roster[id];
+      if(r.kind!=="ride"||r.park!==rpPark||!pfBase.rides[id])continue;
+      cv=rpWinCurve(id,win);
+      if(!cv){out.out.push({id:id,nm:r.name});continue;}
+      var it={id:id,nm:r.name,cv:cv,open:cv.bs[0].med};
+      if(cv.allday)out.allday.push(it);
+      else if(cv.front===null)out.never.push(it);
+      else out.until.push(it);
+    }
+    out.never.sort(function(a,b){return (b.open-a.open)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
+    out.until.sort(function(a,b){return (a.cv.front-b.cv.front)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
+    out.allday.sort(function(a,b){return (b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
+    out.out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
+    return out;
+  }
+  function rdCtx(cv){ /* rank receipts: typical + crest, and the evening return when it exists */
+    var s="typical "+cv.typ+"m \u00b7 crest "+cv.pk+"m, "+rpRange(cv.crest[0],cv.crest[1]);
+    if(cv.back!==null)s+=" \u00b7 again after "+rpClk(cv.back);
+    return s;
+  }
+  function rdRow(it,kind){
+    var right;
+    if(kind==="until"){
+      var t=rpClk(it.cv.front),sp=t.lastIndexOf(" ");
+      right='<div class="rd-edge"><b>'+t.slice(0,sp)+'</b><small>'+t.slice(sp+1)+'</small></div>';
+    }else if(kind==="never"){
+      right='<div class="rd-edge t-'+rpTierCls(it.open)+'"><b>'+it.open+'m</b><small>at open</small></div>';
+    }else{
+      right='<div class="rd-edge allday"><b>all day</b></div>';
+    }
+    return '<div class="rd-item"><div class="rd-row"><div class="rd-m"><div class="rd-nm">'+esc(it.nm)+'</div><div class="rd-ctx">'+rdCtx(it.cv)+'</div></div>'+right+'</div></div>';
+  }
+  function rdSec(title,cap,rows){
+    if(!rows)return "";
+    return '<div class="rd-sechead">'+title+'</div>'+(cap?'<div class="rd-seccap">'+cap+'</div>':'')+'<div class="rpc">'+rows+'</div>';
+  }
+  function rdBoardHTML(){
+    var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
+    var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends"};
+    var crumb='<button class="rp-back" type="button">\u2039 '+esc(rpPark)+'</button>'+
+      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>Rope drop</b></div>';
+    var loading=!rpDigs||!pfBase||!pfBase.rides,C=loading?null:rdClassify(rpWin);
+    var hero='<div class="rp-hero"><div class="eb">Rope Drop Board \u00b7 '+EBW[rpWin]+'</div>'+
+      '<h2>'+esc(rpPark)+'</h2>'+
+      '<div class="sub">How mornings typically ran \u2014 not a forecast.</div>'+
+      '<div class="hstats"><div class="hstat"><div class="k">Morning windows</div><div class="v">'+(C?C.until.length:'\u2013')+'</div></div>'+
+      '<div class="hstat"><div class="k">Never under 10m</div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
+      '<div class="hstat"><div class="k">Easy all day</div><div class="v">'+(C?C.allday.length:'\u2013')+'</div></div></div></div>';
+    var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].map(function(t){
+      return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
+    if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The board builds from the day ledger \u2014 one moment.</div></div>';
+    var body="";
+    body+=rdSec("Never an easy line","The median never dipped to walk-on \u2014 the open was the discount.",C.never.map(function(it){return rdRow(it,"never");}).join(""));
+    body+=rdSec("Walk-on until \u2014","Shortest fuse first. Edges are typical-day patterns.",C.until.map(function(it){return rdRow(it,"until");}).join(""));
+    body+=rdSec("Easy all day","",C.allday.map(function(it){return rdRow(it,"allday");}).join(""));
+    if(!C.never.length&&!C.until.length&&!C.allday.length)
+      body+='<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked mornings yet for a board.':'This window is too thin for a board \u2014 try All.')+'</div></div>';
+    var foot='<div class="rpc">'+
+      (C.out.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 this window ran too thin for a day shape: '+C.out.map(function(o){return esc(o.nm);}).join(", ")+'.</div>':'')+
+      '<div class="pf-basis"'+(C.out.length?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+({all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'})[rpWin]+' while operating \u00b7 walk-on = 10m or under \u00b7 edges describe typical days, not today \u00b7 slots under 10 days hidden</div></div>';
+    return crumb+hero+lens+body+foot;
+  }
   function rpAttrHTML(){
     if(!rpPark){
       var rows=PARK_DEF.map(function(p){
@@ -3001,7 +3092,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var list=items.length?items.map(function(it){
       return '<div class="rp-go rp-door" data-rid="'+esc(it.id)+'"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>MIN</small>')+'</span><span class="chev">\u203a</span></div>';
     }).join(""):'<div class="fc-empty">No rides banked yet for this park.</div>';
-    return crumb+
+    return crumb+rdDoorHTML()+ /* 0714a: the park's planning shelf, then its census */
       '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab" style="padding-right:6px">Typical</span></div>'+list+
       '<div class="pf-basis" style="border-top:0;padding:2px 6px 0">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div>';
   }
@@ -3030,7 +3121,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
-    if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+(rpRide?(rpEnsureDigs(),rpProfileHTML()):rpAttrHTML());} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung */
+    if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+(rpRide?(rpEnsureDigs(),rpProfileHTML()):(rpSub?(rpEnsureDigs(),rdBoardHTML()):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
     else el.innerHTML='<div class="pg-stick">'+head+rail+seg+'</div>'+
       pfFeedHTML(hlScope)+ /* 0711b: callout feed — owner picked feed-above-board (D1), G1 grammar */
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
@@ -3042,12 +3133,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
-      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;}renderPulsePage();rpTop();});});
+      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;}renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
-      rpPark=b.getAttribute("data-rpk");renderPulsePage();rpTop();});});
-    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rpRide)rpRide=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware */
+      rpPark=b.getAttribute("data-rpk");rpSub=null;renderPulsePage();rpTop();});});
+    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
     el.querySelectorAll(".rp-go").forEach(function(b){b.addEventListener("click",function(){
       rpRide=b.getAttribute("data-rid");renderPulsePage();rpTop();});});
+    el.querySelectorAll("[data-rpsub]").forEach(function(b){b.addEventListener("click",function(){ /* 0714a: the planning doors */
+      rpSub=b.getAttribute("data-rpsub");renderPulsePage();rpTop();});});
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
     if(dts)dts.addEventListener("click",function(e){
       var c=e.target;if(!c||!c.getAttribute||c.getAttribute("data-di")==null)return;
