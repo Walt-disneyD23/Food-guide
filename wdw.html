@@ -1218,7 +1218,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2992,7 +2992,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rpProfileHTML(){
     var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends"}; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
-    var crumb=rpBackBtn(esc(rpPark||"Attractions"))+
+    var crumb=rpBackBtn(esc(rpPark||"parks"))+
       '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a <b>'+esc(r.name||"")+'</b></div>';
     var hero='<div class="rp-hero"><div class="eb">Ride profile \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(r.name||"")+(watch[rpRide]?' <span class="fs">\u2605</span>':'')+'</h2>'+
@@ -3121,9 +3121,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     defer.sort(function(a,b){return (b.cv.typ-a.cv.typ)||((a.cv.front==null?9999:a.cv.front)-(b.cv.front==null?9999:b.cv.front))||a.nm.localeCompare(b.nm);});
     return never.concat(burn,defer);
   }
-  function rmCoach(it){ /* clause-derived; every headline provable from its own why */
+  function rmCoach(it,first){ /* clause-derived; every headline provable from its own why · 0714e: one rope drop per morning — later never-easies say Then (owner-caught: four Rope drops is an instruction you can’t follow) */
     var cv=it.cv;
-    if(it.cls==="never")return {hd:"Rope drop "+esc(it.nm),
+    if(it.cls==="never")return {hd:(first?"Rope drop ":"Then ")+esc(it.nm),
       why:"Never under 10m \u2014 opened near "+cv.bs[0].med+"m, typical "+cv.typ+"m."};
     return {hd:esc(it.nm)+" by "+rpClk(cv.front),
       why:"Walk-on until "+rpClk(cv.front)+" on typical days, with no evening return."};
@@ -3189,7 +3189,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(it.cls==="defer"){
         if(!started){rec+='<div class="later">Later</div>';started=true;}
         rec+='<div class="row tail"><div class="n">\u00b7</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+rmTailWhy(it)+'</div></div></div>';
-      }else{n++;var c=rmCoach(it);
+      }else{n++;var c=rmCoach(it,n===1);
         rec+='<div class="row"><div class="n">'+n+'</div><div class="m"><div class="hd">'+c.hd+'</div><div class="why">'+c.why+'</div></div></div>';}
     }
     var plan='<div class="rpc rm-rec"><div class="lbl">The plan</div>'+rec+
@@ -3204,7 +3204,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       }).join("");
       return '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">Browse by park</span></div>'+rows;
     }
-    var crumb=rpBackBtn("Attractions")+
+    var crumb=rpBackBtn("parks") /* 0714d: the pill names its destination */+
       '<div class="rp-crumb">Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b></div>';
     if(!pfBase||!pfBase.rides){ /* 0713q: honest pre-baseline state; pfEnsureBase re-renders on arrival */
       return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 28 days of banked waits \u2014 one moment.</div></div>';
