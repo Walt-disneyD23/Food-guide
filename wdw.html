@@ -342,6 +342,17 @@
   .rp-ddcap{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 6px}
   .rp-ddcap b{color:var(--ink);font-weight:700}
   .rp-tiles{margin:2px 0 9px}
+  /* ===== ride profile: hour grid (0713t) — G2' law: solid tier fill + luminosity veil ===== */
+  .rp-hmpre{display:flex;gap:14px;flex-wrap:wrap;padding:0 0 10px}
+  .rp-hm{display:grid;gap:2.5px;padding:2px 0}
+  .rp-hm .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--muted-2);text-align:center;text-transform:uppercase;font-style:normal;padding-bottom:2px}
+  .rp-hm .gt{font:600 var(--fs-micro) var(--font-body);color:var(--muted-2);font-style:normal;display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
+  .rp-hmc{display:block;height:19px;border-radius:4px;background:var(--card-2);position:relative;cursor:pointer}
+  .rp-hmc.f{background-image:linear-gradient(rgba(255,255,255,var(--a)),rgba(255,255,255,var(--a)))}
+  .rp-hmc.thin{opacity:.32}
+  .rp-hmc.on{outline:2px solid var(--accent);outline-offset:1px}
+  .rp-hmc .xl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 8.5px var(--font-display);color:#fff;pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,.35),0 0 3px rgba(0,0,0,.35)}
+  .rp-hmc .xl.ink{color:var(--ink);text-shadow:none}
   .rp-a{color:var(--accent)}
   .pg-h h3 .ps{color:var(--accent)}
   .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
@@ -1163,7 +1174,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2731,6 +2742,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
+  var rpHmPre="all"; /* 0713t: heat-map lookback lens — session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
   function rpTop(){try{window.scrollTo(0,0);}catch(e){}} /* rp-local twin: topw lives in an inner scope (0713p–r called it across the boundary — silent ReferenceError, fixed here) */
   function rpDate(off){ /* rp-local twin of etDate, byte-matched semantics */
@@ -2812,6 +2824,96 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="rp-ddcap">'+cap+'</div></div>'+tiles+
       '<div class="rpc"><div class="pf-basis" style="border-top:0;padding-top:2px">Each column a day \u00b7 height = time lost \u00b7 strike-day overlap is day-level (window overlap lands with the banking upgrade) \u00b7 refurb days excluded</div></div>';
   }
+  /* ===== 0713t: the hour grid — gv:2 h-fields, read-time pooled. G2' law:
+     hue = wait tier (rpTierCls, one family per measure), depth = a luminosity
+     veil on the solid fill (the 0713i inversion lesson). THE GRAIN FOLLOWS THE
+     WINDOW: pattern windows pool hour x weekday; "Last 7 days" is the week
+     ITSELF as dated day-columns (one week has no standing to claim a weekday
+     pattern — round-1 mock catch). Dimming is relative-only: it marks cells
+     thinner than their own grid's norm, so a uniform-thin board can never wash
+     out. "Week" stays the Weekly Wrap's word (fixed Mon-Sun); trailing windows
+     say their unit. Selection is render-mortal, like the downtime strip's. */
+  var RP_HM_LO={short:0,medium:20,long:45,packed:70},RP_HM_HI={short:20,medium:45,long:70,packed:120};
+  var RP_WD=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  var RP_WDL=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]; /* the readout speaks full words — "4 Mons" is not a measure */
+  function rpHmWd(d){var g=new Date(d+"T12:00:00Z").getUTCDay();return (g+6)%7;} /* 0=Mon..6=Sun */
+  function rpHmHr(h){return h===12?"12P":h<12?h+"A":(h-12)+"P";} /* axis micro-label; the readout speaks rpClk */
+  function rpHmDays(rid){ /* the ride's banked half-hour days, ascending — gv:2 rows only, gv:1 can't crash it */
+    if(!rpDigs||!rpDigs.length)return [];
+    var out=[],i,g,r;
+    for(i=0;i<rpDigs.length;i++){g=rpDigs[i];r=g.rides&&g.rides[rid];
+      if(r&&r.hs!=null&&r.hm&&r.hm.length)out.push({d:g.d,hs:r.hs,hm:r.hm});}
+    out.sort(function(a,b){return a.d<b.d?-1:1;});
+    return out;
+  }
+  function rpHmWindow(days,pre){
+    if(pre==="last7")return days.slice(-7);
+    if(pre==="month"){var m=rpDate(0).slice(0,7);return days.filter(function(x){return x.d.slice(0,7)===m;});}
+    if(pre==="wkend")return days.filter(function(x){var w=rpHmWd(x.d);return w===5||w===6;});
+    return days;
+  }
+  function rpHmPool(days,diary){ /* key = col+"-"+hour; diary cols = day index, pattern cols = weekday */
+    var m={},i,j,x,v,h,k;
+    for(i=0;i<days.length;i++){x=days[i];var c=diary?i:rpHmWd(x.d);
+      for(j=0;j<x.hm.length;j++){v=x.hm[j];if(v===null)continue;
+        h=Math.floor((x.hs+j)/2);k=c+"-"+h;
+        if(!m[k])m[k]={s:0,n:0,days:{}};
+        m[k].s+=v;m[k].n++;m[k].days[x.d]=1;}}
+    return m;
+  }
+  function rpHmVeil(a){ /* within-tier depth -> white-veil alpha (0 at the tier's ceiling) */
+    var t=rpTierCls(Math.round(a)),lo=RP_HM_LO[t],hi=RP_HM_HI[t];
+    var depth=Math.max(0,Math.min(1,(a-lo)/(hi-lo)));
+    return {t:t,depth:depth,alpha:+((1-depth)*0.55).toFixed(2)};
+  }
+  function rpHmRead(k){ /* tap readout — recomputed fresh, the rp-dt pattern */
+    var all=rpHmDays(rpRide),diary=(rpHmPre==="last7"),days=rpHmWindow(all,rpHmPre),P=rpHmPool(days,diary);
+    var p=k.split("-"),w=+p[0],h=+p[1],c=P[k];
+    var who=diary?(days[w]?RP_WD[rpHmWd(days[w].d)]+" "+rpDay(days[w].d):"\u2013"):RP_WD[w];
+    if(!c)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 no banked samples here';
+    var a=c.s/c.n,av=Math.round(a*10)/10,nd=0,dd;for(dd in c.days)nd++;
+    if(diary)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' half-hour medians that day';
+    return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' across '+nd+' '+RP_WDL[w]+(nd===1?'':'s')+(c.n<3?' \u00b7 thin \u2014 read gently':'');
+  }
+  function rpHmHTML(){
+    if(!rpDigs)return '<div class="rpc"><div class="lbl">By hour &amp; weekday</div><div class="fc-empty">The hour grid loads from the day ledger \u2014 one moment.</div></div>';
+    var all=rpHmDays(rpRide);
+    if(!all.length)return '<div class="rpc"><div class="lbl">By hour &amp; weekday</div><div class="fc-empty">Not enough banked half-hour detail yet for this ride.</div></div>';
+    var diary=(rpHmPre==="last7"),days=rpHmWindow(all,rpHmPre),P=rpHmPool(days,diary);
+    var tabs='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].map(function(t){
+      return '<button class="hl-tab'+(rpHmPre===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
+    var head=diary?'The last week \u00b7 hour by hour':'By hour &amp; weekday';
+    if(!days.length)return '<div class="rpc"><div class="lbl">'+head+'</div>'+tabs+'<div class="fc-empty">No finished days in this window yet.</div></div>';
+    var cols,colLab,i;
+    if(diary){cols=[];colLab=[];for(i=0;i<days.length;i++){cols.push(i);colLab.push(RP_WD[rpHmWd(days[i].d)].slice(0,2)+" "+(+days[i].d.slice(8)));}}
+    else if(rpHmPre==="wkend"){cols=[5,6];colLab=["Sat","Sun"];}
+    else{cols=[0,1,2,3,4,5,6];colLab=RP_WD;}
+    var h0=99,h1=-1,k,hh;
+    for(k in P){hh=+k.split("-")[1];if(hh<h0)h0=hh;if(hh>h1)h1=hh;}
+    var mn=null,mx=null,mnK=null,mxK=null,ns=[],c,a,h;
+    for(k in P){c=P[k];ns.push(c.n);a=c.s/c.n;
+      if(mn===null||a<mn){mn=a;mnK=k;}if(mx===null||a>mx){mx=a;mxK=k;}}
+    ns.sort(function(x,y){return x-y;});
+    var nMed=ns.length?ns[Math.floor(ns.length/2)]:0;
+    var grid='<div class="rp-hm" style="grid-template-columns:30px repeat('+cols.length+',1fr)"><i class="gt"></i>';
+    for(i=0;i<cols.length;i++)grid+='<i class="gh">'+colLab[i]+'</i>';
+    for(h=h0;h<=h1;h++){
+      grid+='<i class="gt">'+(h%2===0?rpHmHr(h):"")+'</i>';
+      for(i=0;i<cols.length;i++){k=cols[i]+"-"+h;c=P[k];
+        if(!c){grid+='<b class="rp-hmc" data-k="'+k+'"></b>';continue;}
+        a=c.s/c.n;var vl=rpHmVeil(a);
+        var thin=(!diary&&c.n<3&&nMed>=3);
+        var lab="";if(k===mnK||k===mxK)lab='<span class="xl'+(vl.depth>0.45?'':' ink')+'">'+Math.round(a)+'m</span>';
+        grid+='<b class="rp-hmc f'+(thin?' thin':'')+'" data-k="'+k+'" style="--a:'+vl.alpha+';background-color:var(--'+vl.t+')">'+lab+'</b>';}}
+    grid+='</div>';
+    var span=rpDay(days[0].d)+' \u2013 '+rpDay(days[days.length-1].d);
+    var basis;
+    if(diary)basis='The week itself, day by day \u2014 not a pattern \u00b7 '+span+' \u00b7 each cell one day\u2019s hour (n\u22482 half-hour medians)';
+    else basis=({all:'All banked days',month:'This month',wkend:'Weekends \u2014 Saturdays &amp; Sundays only'})[rpHmPre]+' \u00b7 '+span+' \u00b7 '+days.length+' days \u00b7 typical cell n\u2248'+nMed+' half-hour day-medians \u00b7 faint = thinner than this grid\u2019s norm \u00b7 lightest &amp; busiest labeled';
+    return '<div class="rpc"><div class="lbl">'+head+'</div>'+tabs+grid+
+      '<div class="rp-dtread" id="rpHmRead">Tap a cell for the exact average</div>'+
+      '<div class="pf-basis">'+basis+'</div></div>';
+  }
   function rpProfileHTML(){
     var r=roster[rpRide]||{},cv=rpCurve(rpRide),rel=rpRel(rpRide),days=(pfBase&&pfBase.days)||28;
     var crumb='<button class="rp-back" type="button">\u2039 '+esc(rpPark||"Attractions")+'</button>'+
@@ -2836,7 +2938,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         rpCurveSVG(cv)+
         '<div class="pf-basis">Typical = half-hour medians over the last '+days+' days while operating \u00b7 band = the middle half of days \u00b7 slots under 10 days hidden</div></div>';
     }
-    return crumb+hero+rpTakeHTML(cv,rel)+shape+rpRelHTML(rel);
+    return crumb+hero+rpTakeHTML(cv,rel)+shape+rpHmHTML()+rpRelHTML(rel); /* 0713t: the hour grid seats between shape and reliability */
   }
   function rpAttrHTML(){
     if(!rpPark){
@@ -2913,6 +3015,15 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var d2=rel2.series[+c.getAttribute("data-di")],out=$("rpDtRead");
       if(out&&d2)out.innerHTML='<b>'+d2.lab+'</b> \u2014 '+(d2.dm===0?'clean, no pauses':'<b>'+rpDtFmt(d2.dm)+' down</b> \u00b7 '+d2.dn+(d2.dn===1?' pause':' pauses'));
     });
+    var hmw=el.querySelector(".rp-hm"); /* 0713t: heat-map cell tap — the rp-dt delegation pattern; selection is render-mortal, like the strip's */
+    if(hmw)hmw.addEventListener("click",function(e){
+      var c=e.target;if(!c||!c.getAttribute||c.getAttribute("data-k")==null)return;
+      var prev=hmw.querySelector(".rp-hmc.on");if(prev)prev.classList.remove("on");c.classList.add("on");
+      var out2=$("rpHmRead");if(out2)out2.innerHTML=rpHmRead(c.getAttribute("data-k"));
+    });
+    el.querySelectorAll(".rp-hmpre button").forEach(function(b){b.addEventListener("click",function(){ /* 0713t: lookback lens — session-sticky */
+      var p=b.getAttribute("data-hmp");if(p===rpHmPre)return;rpHmPre=p;renderPulsePage();
+    });});
   }
 
   function render(){
