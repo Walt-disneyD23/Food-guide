@@ -13,6 +13,7 @@
 
   :root{
     --bg:#e9ebf4; --bg-2:#e2e5f1; --card:#ffffff; --card-2:#f4f5fb; --line:#e4e6f1;
+    --sh-soft:0 4px 12px -4px rgba(25,26,46,.16); /* 0713w: the door's lift — one tier under the favcard */
     --ink:#191a2e; --muted:#6b6f8c; --muted-2:#9fa3c0;
     --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff;
     --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6;
@@ -295,8 +296,11 @@
      pg-seg clothing; the park list speaks the quiet typographic grammar
      (owner-ratified, mock round 3). ===== */
   .pg-seg.rp-rail{margin-bottom:8px}
-  .rp-park{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:15px 2px;border-top:1px solid var(--line);font-family:var(--font-body)}
-  .rp-park:first-of-type{border-top:0}
+  /* 0713w: CARDS ARE DOORS, HAIRLINES ARE READOUTS — one door recipe, park + ride rungs.
+     Soft float, border kept (Harbor kills shadows; dark's door-read rides the border). Owner may retune the lift live. */
+  .rp-door{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:7px;padding:12px 13px;cursor:pointer;box-shadow:var(--sh-soft);font-family:var(--font-body);-webkit-tap-highlight-color:transparent}
+  .rp-door:active{background:var(--card-2)}
+  .rp-door .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
   .rp-park .nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-title);color:var(--ink)}
   .rp-park .ct{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted-2);font-variant-numeric:tabular-nums}
   .rp-park .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
@@ -308,7 +312,7 @@
      (owner-ratified, mock rounds 4–9). Shape of the Line: tier-colored half-hour
      bars over the p25–p75 band, windows clause-earned from the buckets. ===== */
   .rp-go{cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .rp-go:active{opacity:.7}
+
   .rp-hero{border-radius:var(--r-hero);border:1px solid var(--pwh-line);overflow:hidden;margin:2px 0 12px;padding:20px 20px 18px;
     background:linear-gradient(160deg,var(--pwh-bg2),var(--pwh-bg) 62%);color:var(--pwh-ink);box-shadow:var(--shadow)}
   .rp-hero .eb{font-family:var(--font-display);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--pwh-key)}
@@ -602,6 +606,7 @@
      hardcoded-surface stragglers, given night versions. ===== */
   html.dark{
     --bg:#0a141d; --bg-2:#0d1826; --card:#12202c; --card-2:#17293a; --line:#20374a;
+    --sh-soft:0 4px 12px -4px rgba(0,0,0,.42); /* 0713w: Harbor's door-read is the border — the lift is garnish */
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5;
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
@@ -1175,7 +1180,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2802,7 +2807,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     s+=". ";
     }
     if(rel){
-      s+=(cv?"Ran":OP+(OP?"ran":"Ran"))+" clean <b>"+rel.clean+" of "+rel.n+" days</b>";
+      s+=(cv?"Ran":OP+(OP?"ran":"Ran"))+" clean <b>"+rel.clean+" of "+rel.n+" "+(rel.n===1?"day":"days")+"</b>";
       if(rel.outDays>0&&rel.underHour>0)s+=" \u2014 "+(rel.underHour===rel.outDays?"every outage day lost under an hour":rel.underHour+" of "+rel.outDays+" outage days lost under an hour");
       s+=".";
     }
@@ -2817,11 +2822,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var st=d.dm===0?'height:4px;opacity:.45':'height:'+Math.max(7,d.dm/mx*100).toFixed(0)+'%';
       strip+='<i data-di="'+i+'" style="'+st+';background:'+col+'"></i>';}
     var over2=0;for(i=0;i<s.length;i++)if(s[i].dm>120)over2++;
-    var cap='<b>'+rel.clean+' clean days</b> of '+rel.n;
+    var cap='<b>'+rel.clean+' clean '+(rel.clean===1?'day':'days')+'</b> of '+rel.n;
     if(rel.outDays>0){if(rel.underHour>0)cap+=' \u00b7 '+rel.underHour+' outage '+(rel.underHour===1?'day':'days')+' lost under an hour';
       if(over2>0)cap+=' \u00b7 <b>'+over2+' lost over two</b>';}
     var W=rpWinDs(pre||"all"),WW=({all:"",wkend:"weekend ",month:RP_MONF[+rpDate(0).slice(5,7)-1]+" "})[pre]||""; /* 0713v: the strike tile's window-word */
-    var sTail=(pre==="last7"?" outages in the last 7 days":" "+WW+"outages");
+    var sN=rel.sinceN,sTail=(pre==="last7"?" outage"+(sN===1?"":"s")+" in the last 7 days":" "+WW+"outage"+(sN===1?"":"s")); /* 0713w: outage inflects — "1 outages" is not a measure */
     var sEp=(W.list.length&&W.list[0]<RP_LTG_EPOCH)?" \u00b7 since Jul 13":""; /* disclosure follows the data: the epoch stamp prints only where it truncates the window */
     var tiles='<div class="pw-grid rp-tiles">'+
       '<div class="pw-tile"><div class="lbl">Outages</div><div class="v pw-l">'+rel.outN+'<span class="u">\u00d7</span></div></div>'+
@@ -2910,7 +2915,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!all.length)return '<div class="rpc"><div class="lbl">By hour &amp; weekday</div><div class="fc-empty">Not enough banked half-hour detail yet for this ride.</div></div>';
     var diary=(rpWin==="last7"),days=rpHmWindow(all,rpWin),P=rpHmPool(days,diary);
 
-    var head=diary?'The last week \u00b7 hour by hour':'By hour &amp; weekday';
+    var head=diary?'The last 7 days \u00b7 hour by hour':'By hour &amp; weekday';
     if(!days.length)return '<div class="rpc"><div class="lbl">'+head+'</div>'+'<div class="fc-empty">No finished days in this window yet.</div></div>';
     var cols,colLab,i;
     if(diary){cols=[];colLab=[];for(i=0;i<days.length;i++){cols.push(i);colLab.push(RP_WD[rpHmWd(days[i].d)].slice(0,2)+" "+(+days[i].d.slice(8)));}}
@@ -2979,9 +2984,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!rpPark){
       var rows=PARK_DEF.map(function(p){
         var n=0,id;if(pfBase&&pfBase.rides){for(id in roster){if(roster[id].kind==="ride"&&roster[id].park===p.key&&pfBase.rides[id])n++;}}
-        return '<button class="rp-park" data-rpk="'+esc(p.key)+'" type="button"><span class="nm">'+esc(p.key)+'</span><span class="ct">'+((pfBase&&pfBase.rides)?n+' rides':'\u2013')+'</span><span class="chev">\u203a</span></button>';
+        return '<button class="rp-park rp-door" data-rpk="'+esc(p.key)+'" type="button"><span class="nm">'+esc(p.key)+'</span><span class="ct">'+((pfBase&&pfBase.rides)?n+' rides':'\u2013')+'</span><span class="chev">\u203a</span></button>';
       }).join("");
-      return '<div class="favcard" style="padding:6px 16px 4px"><div class="fc-head" style="padding-left:0"><span class="sec-lab">Browse by park</span></div>'+rows+'</div>';
+      return '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">Browse by park</span></div>'+rows;
     }
     var crumb='<button class="rp-back" type="button">\u2039 Attractions</button>'+
       '<div class="rp-crumb">Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b></div>';
@@ -2993,11 +2998,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       items.push({id:id,nm:r.name,ty:rpTypical(id)});}
     items.sort(function(a,b){var av=a.ty===null?-1:a.ty,bv=b.ty===null?-1:b.ty;if(av!==bv)return bv-av;return a.nm.localeCompare(b.nm);});
     var list=items.length?items.map(function(it){
-      return '<div class="fc-row rp-go" data-rid="'+esc(it.id)+'"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>MIN</small>')+'</span></div>';
+      return '<div class="rp-go rp-door" data-rid="'+esc(it.id)+'"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>MIN</small>')+'</span><span class="chev">\u203a</span></div>';
     }).join(""):'<div class="fc-empty">No rides banked yet for this park.</div>';
     return crumb+
-      '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab">Typical</span></div>'+list+
-      '<div class="pf-basis">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div></div>';
+      '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab" style="padding-right:6px">Typical</span></div>'+list+
+      '<div class="pf-basis" style="border-top:0;padding:2px 6px 0">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div>';
   }
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
