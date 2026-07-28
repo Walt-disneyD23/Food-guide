@@ -353,6 +353,7 @@
   .rp-hmc.on{outline:2px solid var(--accent);outline-offset:1px}
   .rp-hmc .xl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 8.5px var(--font-display);color:#fff;pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,.35),0 0 3px rgba(0,0,0,.35)}
   .rp-hmc .xl.ink{color:var(--ink);text-shadow:none}
+  html.dark .rp-hmc .xl.ink{text-shadow:0 0 3px rgba(0,0,0,.5),0 0 3px rgba(0,0,0,.5)} /* 0713u: near-white ink over a light veil — the 0713n halo, Harbor only */
   .rp-a{color:var(--accent)}
   .pg-h h3 .ps{color:var(--accent)}
   .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
@@ -1174,7 +1175,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2890,11 +2891,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     else{cols=[0,1,2,3,4,5,6];colLab=RP_WD;}
     var h0=99,h1=-1,k,hh;
     for(k in P){hh=+k.split("-")[1];if(hh<h0)h0=hh;if(hh>h1)h1=hh;}
-    var mn=null,mx=null,mnK=null,mxK=null,ns=[],c,a,h;
-    for(k in P){c=P[k];ns.push(c.n);a=c.s/c.n;
-      if(mn===null||a<mn){mn=a;mnK=k;}if(mx===null||a>mx){mx=a;mxK=k;}}
+    var ns=[],c,a,h;
+    for(k in P)ns.push(P[k].n);
     ns.sort(function(x,y){return x-y;});
     var nMed=ns.length?ns[Math.floor(ns.length/2)]:0;
+    var mn=null,mx=null,mnK=null,mxK=null;
+    for(k in P){c=P[k];if(!diary&&c.n<3&&nMed>=3)continue; /* 0713u: blips never take the crown — thin cells stay painted and tappable but hold no superlative */
+      a=c.s/c.n;
+      if(mn===null||a<mn){mn=a;mnK=k;}if(mx===null||a>mx){mx=a;mxK=k;}}
     var grid='<div class="rp-hm" style="grid-template-columns:30px repeat('+cols.length+',1fr)"><i class="gt"></i>';
     for(i=0;i<cols.length;i++)grid+='<i class="gh">'+colLab[i]+'</i>';
     for(h=h0;h<=h1;h++){
