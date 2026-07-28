@@ -1218,7 +1218,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3036,20 +3036,20 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return '<button class="rp-door rd-door" data-rpsub="board" type="button"><span class="m"><span class="nm">Rope drop board</span><span class="sub">'+sub+'</span></span><span class="chev">\u203a</span></button>'; /* 0714b: the sub speaks counts once digs are banked this session */
   }
   function rdClassify(win){
-    var out={never:[],until:[],allday:[],out:[]},id,r,cv;
+    var out={never:[],until:[],allday:[],flat:[],out:[]},id,r,cv;
     for(id in roster){r=roster[id];
       if(r.kind!=="ride"||r.park!==rpPark||!pfBase.rides[id])continue;
       cv=rpWinCurve(id,win);
       if(!cv){out.out.push({id:id,nm:r.name});continue;}
-      var it={id:id,nm:r.name,cv:cv,open:cv.bs[0].med};
-      if(cv.allday)out.allday.push(it);
+      var mn=1e9,mx=-1e9,q;for(q=0;q<cv.bs.length;q++){if(cv.bs[q].med<mn)mn=cv.bs[q].med;if(cv.bs[q].med>mx)mx=cv.bs[q].med;} var it={id:id,nm:r.name,cv:cv,open:cv.bs[0].med,flatV:(mx===mn&&!cv.allday)?mx:null}; /* 0714f: strict-flat \u2014 one posted number all day carries no morning story (owner-caught: Canada/Reflections wearing never-easy) */
+      if(it.flatV!==null)out.flat.push(it); else if(cv.allday)out.allday.push(it);
       else if(cv.front===null)out.never.push(it);
       else out.until.push(it);
     }
     out.never.sort(function(a,b){return (b.open-a.open)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     out.until.sort(function(a,b){return (a.cv.front-b.cv.front)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     out.allday.sort(function(a,b){return (b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
-    out.out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
+    out.flat.sort(function(a,b){return a.nm.localeCompare(b.nm);}); out.out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
   }
   function rdCtx(cv){ /* rank receipts: typical + crest, and the evening return when it exists */
@@ -3095,8 +3095,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!C.never.length&&!C.until.length&&!C.allday.length)
       body+='<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked mornings yet for a board.':'This window is too thin for a board \u2014 try All.')+'</div></div>';
     var foot='<div class="rpc">'+
+      (C.flat.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Posted one number all day \u2014 no morning story to tell: '+C.flat.map(function(o){return esc(o.nm)+" ("+o.flatV+"m)";}).join(", ")+'.</div>':'')+
       (C.out.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 this window ran too thin for a day shape: '+C.out.map(function(o){return esc(o.nm);}).join(", ")+'.</div>':'')+
-      '<div class="pf-basis"'+(C.out.length?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+({all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'})[rpWin]+' while operating \u00b7 walk-on = 10m or under \u00b7 edges describe typical days, not today \u00b7 slots under 10 days hidden</div></div>';
+      '<div class="pf-basis"'+((C.out.length||C.flat.length)?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+({all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'})[rpWin]+' while operating \u00b7 walk-on = 10m or under \u00b7 edges describe typical days, not today \u00b7 slots under 10 days hidden</div></div>';
     return crumb+hero+lens+body+foot;
   }
   /* ===== 0714c \u00b7 MY MORNING (L-28 cut 2) ====================================
@@ -3110,16 +3111,16 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      never today. */
   function rmClass(cv){
     if(cv.allday)return "defer";
-    if(cv.front===null)return "never";
+    var mn=1e9,mx=-1e9,q;for(q=0;q<cv.bs.length;q++){if(cv.bs[q].med<mn)mn=cv.bs[q].med;if(cv.bs[q].med>mx)mx=cv.bs[q].med;} if(mx===mn)return "flat"; /* 0714f: one posted number all day \u2014 no plan to give */ if(cv.front===null)return "never";
     return cv.back===null?"burn":"defer";
   }
   function rmPlanOrder(items){
     var never=[],burn=[],defer=[],i;
-    for(i=0;i<items.length;i++)({never:never,burn:burn,defer:defer})[items[i].cls].push(items[i]);
+    for(i=0;i<items.length;i++)({never:never,burn:burn,defer:defer,flat:defer})[items[i].cls].push(items[i]);
     never.sort(function(a,b){return (b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     burn.sort(function(a,b){return (a.cv.front-b.cv.front)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     defer.sort(function(a,b){return (b.cv.typ-a.cv.typ)||((a.cv.front==null?9999:a.cv.front)-(b.cv.front==null?9999:b.cv.front))||a.nm.localeCompare(b.nm);});
-    return never.concat(burn,defer);
+    var fl=defer.filter(function(x){return x.cls==="flat";}).sort(function(a,b){return a.nm.localeCompare(b.nm);}),df=defer.filter(function(x){return x.cls!=="flat";}); return never.concat(burn,df,fl); /* 0714f: flats sit last \u2014 the least actionable rows */
   }
   function rmCoach(it,first){ /* clause-derived; every headline provable from its own why · 0714e: one rope drop per morning — later never-easies say Then (owner-caught: four Rope drops is an instruction you can’t follow) */
     var cv=it.cv;
@@ -3130,7 +3131,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function rmTailWhy(it){ /* rank receipts: the stake leads, then the windows */
     var cv=it.cv;
-    if(cv.allday)return "Walk-on all day \u2014 typical "+cv.typ+"m.";
+    if(cv.allday)return "Walk-on all day \u2014 typical "+cv.typ+"m."; if(cv.back===null)return "Posted a flat "+cv.typ+"m all day \u2014 the line never moved."; /* 0714f: only flats reach the tail with no return window */
     return "Typically "+cv.typ+"m (crest "+cv.pk+"m) \u2014 walk-on until "+rpClk(cv.front)+", again after "+rpClk(cv.back)+".";
   }
   function rmStars(){
@@ -3157,7 +3158,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       for(j=0;j<it.cv.bs.length;j++)by[it.cv.bs[j].t]=it.cv.bs[j].med;
       for(j=540;j<780;j+=30){var m=by[j];
         cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+'"></i>';}
-      var edge=(it.cls==="never")?'<span class="rm-edge mut">never easy</span>'
+      var edge=(it.cls==="flat")?'<span class="rm-edge mut">posted flat</span>':(it.cls==="never")?'<span class="rm-edge mut">never easy</span>'
         :(it.cv.allday?'<span class="rm-edge">all day</span>'
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
       rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane">'+cells+'</div></div>';
@@ -3186,7 +3187,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var ord=rmPlanOrder(items),rec='',n=0,started=false;
     for(i=0;i<ord.length;i++){
       var it=ord[i];
-      if(it.cls==="defer"){
+      if(it.cls==="defer"||it.cls==="flat"){
         if(!started){rec+='<div class="later">Later</div>';started=true;}
         rec+='<div class="row tail"><div class="n">\u00b7</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+rmTailWhy(it)+'</div></div></div>';
       }else{n++;var c=rmCoach(it,n===1);
