@@ -1218,7 +1218,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3095,7 +3095,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!C.never.length&&!C.until.length&&!C.allday.length)
       body+='<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked mornings yet for a board.':'This window is too thin for a board \u2014 try All.')+'</div></div>';
     var foot='<div class="rpc">'+
-      (C.flat.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Posted one number all day \u2014 no morning story to tell: '+C.flat.map(function(o){return esc(o.nm)+" ("+o.flatV+"m)";}).join(", ")+'.</div>':'')+
+      (C.flat.length?'<div class="pf-more" style="border-top:0;padding-top:2px">One typical number all day \u2014 no morning story to tell: '+C.flat.map(function(o){return esc(o.nm)+" ("+o.flatV+"m)";}).join(", ")+'.</div>':'')+
       (C.out.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 this window ran too thin for a day shape: '+C.out.map(function(o){return esc(o.nm);}).join(", ")+'.</div>':'')+
       '<div class="pf-basis"'+((C.out.length||C.flat.length)?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+({all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'})[rpWin]+' while operating \u00b7 walk-on = 10m or under \u00b7 edges describe typical days, not today \u00b7 slots under 10 days hidden</div></div>';
     return crumb+hero+lens+body+foot;
@@ -3131,7 +3131,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function rmTailWhy(it){ /* rank receipts: the stake leads, then the windows */
     var cv=it.cv;
-    if(cv.allday)return "Walk-on all day \u2014 typical "+cv.typ+"m."; if(cv.back===null)return "Posted a flat "+cv.typ+"m all day \u2014 the line never moved."; /* 0714f: only flats reach the tail with no return window */
+    if(cv.allday)return "Walk-on all day \u2014 typical "+cv.typ+"m."; if(cv.back===null)return "Typically "+cv.typ+"m at every hour \u2014 the typical line never moved."; /* 0714g: median-true (owner-caught: a raw tape can move while its typical sits still) */ /* 0714f: only flats reach the tail with no return window */
     return "Typically "+cv.typ+"m (crest "+cv.pk+"m) \u2014 walk-on until "+rpClk(cv.front)+", again after "+rpClk(cv.back)+".";
   }
   function rmStars(){
@@ -3158,7 +3158,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       for(j=0;j<it.cv.bs.length;j++)by[it.cv.bs[j].t]=it.cv.bs[j].med;
       for(j=540;j<780;j+=30){var m=by[j];
         cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+'"></i>';}
-      var edge=(it.cls==="flat")?'<span class="rm-edge mut">posted flat</span>':(it.cls==="never")?'<span class="rm-edge mut">never easy</span>'
+      var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">never easy</span>'
         :(it.cv.allday?'<span class="rm-edge">all day</span>'
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
       rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane">'+cells+'</div></div>';
