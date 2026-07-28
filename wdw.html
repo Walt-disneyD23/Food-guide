@@ -1180,7 +1180,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0713w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0713x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2747,6 +2747,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
+  var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
   function rpTop(){try{window.scrollTo(0,0);}catch(e){}} /* rp-local twin: topw lives in an inner scope (0713p–r called it across the boundary — silent ReferenceError, fixed here) */
@@ -2763,7 +2764,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rpEnsureDigs(){ /* one fetch per session; failed fetch may retry after 10 min; no digs -> the reliability card says so, never fakes */
     if(rpDigs||(rpDigsAt&&Date.now()-rpDigsAt<10*60*1000))return;
     rpDigsAt=Date.now();
-    var days=(pfBase&&pfBase.days)||28; /* window-aligned with the baseline */
+    var days=RP_POOL; /* 0713x: the pool is the lens's own — the baseline keeps its 28 for the Pulse callouts */
     fetch(PUSH.WORKER_URL+"/digest?from="+rpDate(days)+"&to="+rpDate(1)).then(function(r){return r.json();}).then(function(j){
       if(j&&j.ok&&j.digests){rpDigs=j.digests;if(rpView==="attr"&&rpRide)renderPulsePage();}
     })["catch"](function(){});
@@ -2872,7 +2873,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(pre==="last7")return ds.slice(-7);
     if(pre==="month"){var m=rpDate(0).slice(0,7),o=[];for(i=0;i<ds.length;i++)if(ds[i].slice(0,7)===m)o.push(ds[i]);return o;}
     if(pre==="wkend"){var o2=[],g;for(i=0;i<ds.length;i++){g=rpHmWd(ds[i]);if(g===5||g===6)o2.push(ds[i]);}return o2;}
-    return ds;
+    return ds.slice(-RP_ALL); /* 0713x: All = the last 28 finished dates, exactly what the eyebrow says */
   }
   function rpWinDs(pre){var l=rpWinDates(pre),m={},i;for(i=0;i<l.length;i++)m[l[i]]=1;return {list:l,has:m,n:l.length};}
   function rpHmWindow(days,pre){ /* 0713v: filters through the date law — rpWinDs is the one window authority */
