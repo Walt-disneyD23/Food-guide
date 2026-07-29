@@ -1305,7 +1305,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3424,10 +3424,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="rc-nv t-'+rpTierCls(lv.wait)+'">'+lv.wait+'m<small>now</small></span>';
     return '<span class="rc-nv mut">\u2013<small>now</small></span>';
   }
-  function rcLiveLine(id,nowMed){ /* pure description of divergence \u2014 never advice, never a forecast */
+  function rcLiveLine(id,nowMed,st){ /* pure description of divergence \u2014 never advice, never a forecast */
     var lv=liveById[id];
     if(lv&&lv.status==="DOWN")return '<div class="lv"><span class="rc-dnc">DOWN</span> \u00b7 reopen unknown \u2014 the order stays typical-shaped</div>';
-    if(!(lv&&lv.status==="OPERATING"&&lv.wait!==null))return '';
+    if(!(lv&&lv.status==="OPERATING"&&lv.wait!==null))return lv?'<div class="lv">Closed now'+((st!==null&&st!==undefined)?' \u00b7 its typical day starts near '+rpClk(st):'')+'</div>':''; /* 0714s: CLOSED speaks too */
     var w=lv.wait,d2;
     if(nowMed===null)d2='its typical tape is thin this hour';
     else if(w-nowMed>=8)d2='running above its typical hour';
@@ -3451,10 +3451,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<wc.length;i++){var x=wc[i],rem=[];
       for(q=0;q<x.cv.bs.length;q++){var b=x.cv.bs[q];if(b.t>=nb&&(ct===null||b.t<ct))rem.push(b);}
       if(!rem.length){holds.push(x);continue;}
-      var nowMed=(rem[0].t===nb)?rem[0].med:null,mn=1e9,tm=null,mxA=-1,tmx=null;
+      var nowMed=(rem[0].t===nb)?rem[0].med:null,mn=1e9,tm=null,mxA=-1,tmx=null,st0=rem[0].t,lateStart=(rem[0].t>nb&&x.cv.bs[0].t>=nb);
       for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mxA){mxA=rem[q].med;tmx=rem[q].t;}}
       var base=(nowMed!==null)?nowMed:rem[0].med;
-      items.push({id:x.id,nm:x.nm,si:x.si,cv:x.cv,nowMed:nowMed,base:base,mn:mn,tm:tm,mxA:mxA,tmx:tmx,edge:base-mn,
+      items.push({id:x.id,nm:x.nm,si:x.si,cv:x.cv,nowMed:nowMed,base:base,mn:mn,tm:tm,mxA:mxA,tmx:tmx,st0:st0,lateStart:lateStart,edge:base-mn,
         near:(ct!==null&&tm!==null&&tm>=ct-45),backAhead:(x.cv.back!==null&&x.cv.back>=nb)});}
     if(!items.length)return '<div class="fc-empty">The day\u2019s tape is behind us \u2014 Full day carries it.</div>';
     items.sort(function(a,b){return (a.edge-b.edge)||((a.tm||0)-(b.tm||0))||a.nm.localeCompare(b.nm);});
@@ -3473,8 +3473,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         if(it.backAhead)p.push('a walk-on after '+rpClk(it.cv.back)+' on typical nights');
         else p.push('typically easing to ~'+it.mn+'m'+(it.tm!==null?(it.near?' near close':' by '+rpClk(it.tm)):''));
       }
+      if(it.lateStart)p.unshift('from its '+rpClk(it.st0)+' start'); /* 0714s: a tape that begins later says so */
       var why=p.join(' \u2014 ');why=why.charAt(0).toUpperCase()+why.slice(1)+'.';
-      h+='<div class="row"><span class="n">'+(i+1)+'.</span><div class="m"><div class="hd"><span class="rc-dot" style="background:var(--cmp-p'+(it.si+1)+')"></span> '+esc(it.nm)+sfx+'</div><div class="why">'+why+'</div>'+rcLiveLine(it.id,it.nowMed)+'</div></div>';}
+      h+='<div class="row"><span class="n">'+(i+1)+'.</span><div class="m"><div class="hd"><span class="rc-dot" style="background:var(--cmp-p'+(it.si+1)+')"></span> '+esc(it.nm)+sfx+'</div><div class="why">'+why+'</div>'+rcLiveLine(it.id,it.nowMed,it.lateStart?it.st0:null)+'</div></div>';}
     if(holds.length)h+='<div class="pf-more">Not placed \u2014 the tape from '+rpClk(nb)+' is too thin this window: '+holds.map(function(z){return esc(z.nm);}).join(", ")+'.</div>';
     return h+'<div class="pf-basis">From '+rpClk(nb)+' \u00b7 remaining half-hour medians \u00b7 live as of '+rpClk(nowT)+' \u00b7 typical describes the pattern, never a promise'+(ct!==null?' \u00b7 close = '+rpClk(ct>1440?ct-1440:ct)+' published':'')+'</div>';
   }
