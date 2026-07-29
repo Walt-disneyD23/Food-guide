@@ -475,9 +475,9 @@
   .rc-pill svg{width:13px;height:13px}
   .rc-dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
   .rc-dot.off{background:transparent;border:1.5px solid var(--muted-2)}
-  .rc-scrim{position:fixed;inset:0;background:rgba(10,12,26,.42);z-index:88}
-  .rc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:89;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;box-shadow:0 -14px 44px rgba(20,22,50,.26);padding:8px 16px calc(20px + env(safe-area-inset-bottom));max-height:86vh;overflow-y:auto;transition:transform .3s cubic-bezier(.32,.72,0,1)}
-  .rc-sheet.anim{animation:rcUp .28s cubic-bezier(.32,.72,0,1)}
+  .rc-scrim,.td-scrim{position:fixed;inset:0;background:rgba(10,12,26,.42);z-index:88}
+  .rc-sheet,.td-sheet{position:fixed;left:0;right:0;bottom:0;z-index:89;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;box-shadow:0 -14px 44px rgba(20,22,50,.26);padding:8px 16px calc(20px + env(safe-area-inset-bottom));max-height:86vh;overflow-y:auto;transition:transform .3s cubic-bezier(.32,.72,0,1)}
+  .rc-sheet.anim,.td-sheet.anim{animation:rcUp .28s cubic-bezier(.32,.72,0,1)}
   @keyframes rcUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .rc-grab{width:38px;height:4px;border-radius:999px;background:var(--muted-2);opacity:.5;margin:4px auto 12px}
   .rc-title{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
@@ -497,7 +497,7 @@
   .rc-pchip{border:1px solid var(--line);border-radius:var(--r-pill);padding:7px 13px;font:600 var(--fs-small) var(--font-body);color:var(--ink);background:var(--card-2);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .rc-pchip small{color:var(--muted);font-weight:500;margin-left:4px}
   .rc-pchip.seated,.rc-pchip[disabled]{opacity:.4;cursor:default}
-  .rc-srch{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--r-pill);padding:9px 14px;font:400 var(--fs-body) var(--font-body);color:var(--ink);background:var(--card-2);margin-bottom:6px;outline:none;-webkit-appearance:none}
+  .rc-srch,.td-srch{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--r-pill);padding:9px 14px;font:400 var(--fs-body) var(--font-body);color:var(--ink);background:var(--card-2);margin-bottom:6px;outline:none;-webkit-appearance:none}
   .rc-roster .rc-rrow{display:flex;align-items:center;gap:9px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer}
   .rc-roster .rc-rrow:last-child{border-bottom:none}
   .rc-rrow .typ{margin-left:auto;color:var(--muted);font-size:var(--fs-meta)}
@@ -505,6 +505,35 @@
   .rc-cap{font-size:var(--fs-meta);color:var(--muted-2);margin:8px 0 0;text-align:center}
   .rc-go{display:block;width:100%;border:none;border-radius:var(--r-tile);background:var(--accent-fill);color:#fff;font:600 var(--fs-title) var(--font-body);padding:13px 0;margin-top:14px;text-align:center;cursor:pointer}
   .rc-go[disabled]{background:var(--card-2);color:var(--muted-2);border:1px solid var(--line);cursor:default}
+  /* ===== 0715e: L-31 Cut 1 \u2014 the notebook day page (My Day \u00b7 one list, two lenses \u00b7 quick-add). In-park surfaces run a size warmer \u2014 fat fingers + sun. ===== */
+  .td-lab{font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:13px 0 2px;display:flex;justify-content:space-between;align-items:baseline}
+  .td-lab .n{letter-spacing:.02em}
+  .td-tabs{display:flex;gap:28px;margin:7px 0 2px}
+  .td-tabs .hl-tab{font-size:var(--fs-small);letter-spacing:.08em;padding:8px 2px 9px;margin-top:0}
+  .td-asn{row-gap:9px}
+  .td-asn .tp-ac{padding:7px 14px}
+  .td-sl{display:flex;gap:11px;padding:12px 0;border-top:1px solid var(--line);align-items:baseline}
+  .td-sl:first-of-type{border-top:0}
+  .td-sn{flex:none;width:16px;font:700 var(--fs-title) var(--font-display);color:var(--muted-2);text-align:center}
+  .td-sm{flex:1;min-width:0}
+  .td-snm{font-weight:600;font-size:var(--fs-body)}
+  .td-srx{font-size:var(--fs-meta);color:var(--muted);line-height:1.45;margin-top:.5px}
+  .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:pointer;padding:4px 10px;-webkit-tap-highlight-color:transparent}
+  .td-sl.lift{outline:2px solid var(--accent);outline-offset:-1px;border-radius:var(--r-el);background:var(--accent-soft)}
+  .td-sl.lift .td-grip{color:var(--accent)}
+  .td-hint{font:600 var(--fs-meta) var(--font-body);color:var(--accent);padding:6px 0 2px}
+  .td-addr{display:block;width:100%;box-sizing:border-box;text-align:center;font:700 var(--fs-meta) var(--font-body);color:var(--accent);background:none;border:1.5px dashed var(--accent);border-radius:var(--r-el);padding:11px;margin-top:11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .td-prof{margin:2px 0 12px}
+  .td-ttl{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+  .td-cnt{flex:none;font:700 var(--fs-meta) var(--font-body);color:var(--accent);font-variant-numeric:tabular-nums}
+  .td-rrow{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .td-roster .td-rrow:last-child{border-bottom:none}
+  .td-ck{flex:none;width:19px;height:19px;border-radius:6px;border:1.5px solid var(--muted-2);display:flex;align-items:center;justify-content:center;font:800 12px var(--font-body);color:transparent}
+  .td-rrow.on .td-ck{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
+  .td-rrow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .td-rrow.on .nm{font-weight:600}
+  .td-rrow .typ{margin-left:auto;flex:none;color:var(--muted);font-size:var(--fs-meta);font-variant-numeric:tabular-nums}
+  .td-done{display:block;width:100%;box-sizing:border-box;text-align:center;border:none;border-radius:var(--r-tile);padding:12px;margin-top:12px;font:700 var(--fs-body) var(--font-body);color:#fff;background:var(--accent-fill);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .rc-hero{border-radius:var(--r-hero);border:1px solid var(--pwh-line);overflow:hidden;margin:2px 0 12px;padding:17px 17px 15px;background:linear-gradient(150deg,var(--pwh-bg2),var(--pwh-bg));color:var(--pwh-ink)}
   .rc-hero .eb{font-family:var(--font-display);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--pwh-key)}
   .rc-hero .sub{color:var(--pwh-muted);font-size:var(--fs-meta);margin-top:10px}
@@ -821,7 +850,7 @@
     padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -14px 44px rgba(20,22,50,.26);
     max-height:86vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
   #setPop.show{transform:translateY(0)}
-  #alertsPop,#setPop,#helpSheet,.rc-sheet{overscroll-behavior-y:contain}
+  #alertsPop,#setPop,#helpSheet,.rc-sheet,.td-sheet{overscroll-behavior-y:contain}
   body.set-open{overflow:hidden}
   body.rc-open{overflow:hidden} /* 0714j: the compare picker joins the sheet body-lock family */
   .set-lab{font-size:var(--fs-caps);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:4px 2px 9px}
@@ -1377,7 +1406,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1729,7 +1758,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
       return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open");}
-    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open,.rc-sheet"));}
+    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open,.rc-sheet,.td-sheet"));}
     function setPull(px){
       ptr.classList.add("pull");
       ptr.style.opacity=Math.min(px/40,1);
@@ -2944,7 +2973,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null; /* L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="rd",tdLift=null,tdPk=false,tdPkA=false,tdQ=""; /* 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -3178,7 +3207,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         rpCurveSVG(cv)+
         '<div class="pf-basis">Typical = half-hour medians '+({all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends',trip:'on your trip\u2019s weekdays'})[rpWin]+' while operating \u00b7 band = the middle half of days \u00b7 slots under 10 days hidden</div></div>';
     }
-    return crumb+hero+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
+    var tdp="",TL9=tpLensTrip(); /* 0715e (L-31 Cut 1): the door-reached profile\u2019s add-path \u2014 tpLensDay names the day, the planned park gates it */
+    if(TL9&&tpLensDay&&(TL9.plan||{})[tpLensDay]===rpPark&&tpDays(TL9).indexOf(tpLensDay)>=0&&rpRide){
+      var in9=tdRides(TL9,tpLensDay).indexOf(rpRide)>=0,wd9=tpAsD(tpLensDay).toLocaleDateString("en-US",{weekday:"short"})+", "+tpMD(tpLensDay);
+      tdp='<button class="td-addr td-prof" data-tdprof type="button">'+(in9?'\u2713 In '+wd9+' \u2014 tap to remove':'+ Add to '+wd9)+'</button>';}
+    return crumb+hero+tdp+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
   }
   var RP_CURATED=null; /* 0714k \u00b7 W-23/L-10: park -> set of normalized curated ride names, built once from PARK_DEF */
   function rpCuratedRide(r){ /* planning surfaces walk the OWNER's ride list, never the feed's typing \u2014 read-time, one-fragment reversible (add a name to PARK_DEF.rides and it seats instantly) */
@@ -3587,8 +3620,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       }).join("");
       return '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">Browse by park</span></div>'+rows;
     }
-    var crumb=rpBackBtn("parks") /* 0714d: the pill names its destination */+
-      '<div class="rp-crumb">Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b></div>';
+    var TLa=tpLensTrip(); /* 0715e: doored in, the ladder\u2019s bottom rung is the trip board \u2014 pill and crumb both say so */
+    var crumb=(TLa?rpBackBtn(esc(TLa.n||"My trip")):rpBackBtn("parks")) /* 0714d: the pill names its destination */+
+      '<div class="rp-crumb">'+(TLa?'Pulse \u203a Trip \u203a '+esc(TLa.n||"My trip")+' \u203a <b>'+esc(rpPark)+'</b>':'Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b>')+'</div>';
     if(!pfBase||!pfBase.rides){ /* 0713q: honest pre-baseline state; pfEnsureBase re-renders on arrival */
       return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 28 days of banked waits \u2014 one moment.</div></div>';
     }
@@ -3871,6 +3905,145 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<button class="tp-save" type="button">Save my trip</button>'+
       ((t||tpTrips().length)?'<button class="tp-cancel" type="button">Cancel</button>':'')+(t?'<button class="tp-del'+(tpDelArm?' arm':'')+'" data-tpdel="'+esc(t.id)+'" type="button">'+(tpDelArm?'Tap again to delete':'Delete trip')+'</button>':'')+'</div>';
   }
+  /* ===== 0715e: L-31 Cut 1 (td-) — THE NOTEBOOK DAY PAGE. t.rides per-day map on the trip
+     (t.plan's exact shape, one-read store law); one list, two lenses (App's order · My order);
+     one start-aware engine — seat rides near their lows, receipts clause-earned at their own
+     thresholds; quick-add picker (A + stars, owner-picked Jul 29); history, never a promise. ===== */
+  function tdReset(){tdLens="app";tdStart="rd";tdLift=null;tdPk=false;tdPkA=false;tdQ="";}
+  function tdRides(t,ds){return (t&&t.rides||{})[ds]||[];}
+  function tdAdd(id,ds,rid){ /* one-read store law: mutate inside a single tpTrips() read */
+    var ts=tpTrips(),i;
+    for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      if(!ts[i].rides)ts[i].rides={};
+      var a=ts[i].rides[ds]||(ts[i].rides[ds]=[]);
+      if(a.indexOf(rid)<0)a.push(rid);
+      store.set("ppTrips",ts);return;}
+  }
+  function tdRemove(id,ds,rid){
+    var ts=tpTrips(),i,j;
+    for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      var a=(ts[i].rides||{})[ds];if(!a)return;
+      j=a.indexOf(rid);if(j<0)return;a.splice(j,1);
+      if(!a.length)delete ts[i].rides[ds];
+      store.set("ppTrips",ts);return;}
+  }
+  function tdMove(id,ds,li,ti){ /* lift-and-place — the mock's ratified splice, indices from the rendered list */
+    var ts=tpTrips(),i;
+    for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      var a=(ts[i].rides||{})[ds];if(!a||li<0||li>=a.length||ti<0||ti>=a.length||li===ti)return;
+      var m=a.splice(li,1)[0];a.splice(ti,0,m);
+      store.set("ppTrips",ts);return;}
+  }
+  function tdHours(ds,park){ /* published open/close in park-time minutes; after-midnight closes carry (the rcCloseT idiom) */
+    var rec=tpSched[ds.slice(0,7)],d=rec&&rec[park]&&rec[park][ds];
+    if(!d||!d.open)return {o:null,c:null};
+    var o=rcEtMin(new Date(d.open)),c=d.close?rcEtMin(new Date(d.close)):null;
+    if(c!==null&&c<360)c+=1440;
+    return {o:o,c:c};
+  }
+  var TD_STARTS=[["rd","Rope drop"],["mm","Mid-morning"],["af","Afternoon"],["ev","Evening"]];
+  function tdStartMin(k){return k==="mm"?630:k==="af"?780:k==="ev"?1020:0;} /* rope drop = the whole tape; it begins at open */
+  function tdCurve(rid,wd,wds){ /* the day's window: its weekday first, the trip's whole arc when thin — rpCurveOf's floors intact */
+    var days=rpHmDays(rid),a={},b={},i,j,x,v,k,g;
+    for(i=0;i<days.length;i++){x=days[i];g=rpHmWd(x.d);
+      var inWd=(g===wd),inArc=(wds[(g+1)%7]===1); /* Mon-first -> getDay map, the rpWinDates("trip") idiom */
+      if(!inWd&&!inArc)continue;
+      for(j=0;j<x.hm.length;j++){v=x.hm[j];if(v===null)continue;k=x.hs+j;
+        if(inWd)(a[k]=a[k]||[]).push(v);
+        if(inArc)(b[k]=b[k]||[]).push(v);}}
+    var cv=rpCurveOf(a);if(cv)return {cv:cv,arc:false};
+    cv=rpCurveOf(b);return cv?{cv:cv,arc:true}:null;
+  }
+  function tdEng(rows,startMin,ct){ /* one engine, start-aware: seat rides near their lows — deterministic, name-tiebroken */
+    var A=[],B=[],C=[],N=[],i,q;
+    for(i=0;i<rows.length;i++){var r=rows[i];
+      if(!r.cvx){N.push({id:r.id,nm:r.nm,why:"No banked tape to place this one yet."});continue;}
+      var cv=r.cvx.cv,rem=[];
+      for(q=0;q<cv.bs.length;q++){var b0=cv.bs[q];if(b0.t>=startMin&&(ct===null||b0.t<ct))rem.push(b0);}
+      if(!rem.length){N.push({id:r.id,nm:r.nm,why:"Its typical tape sits behind this start."});continue;}
+      var base=rem[0].med,mn=1e9,tm=null,mx=-1,tmx=null;
+      for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mx){mx=rem[q].med;tmx=rem[q].t;}}
+      var f=0;while(f<rem.length&&rem[f].med<=10)f++;
+      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
+        f2:(f>0&&f<rem.length)?rem[f-1].t+30:null,wk:(f===rem.length),
+        lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
+        near:(ct!==null&&tm!==null&&tm>=ct-45)};
+      if(it.wk||mx-mn<8){it.k="C";C.push(it);}
+      else if(base<=mn+3){it.k="A";A.push(it);}
+      else{it.k="B";B.push(it);}
+    }
+    A.sort(function(x,y){return ((y.mx-y.base)-(x.mx-x.base))||x.nm.localeCompare(y.nm);}); /* biggest climb = most perishable low */
+    B.sort(function(x,y){return ((x.tm||0)-(y.tm||0))||x.nm.localeCompare(y.nm);}); /* whose low lands first */
+    C.sort(function(x,y){return x.nm.localeCompare(y.nm);});
+    N.sort(function(x,y){return x.nm.localeCompare(y.nm);});
+    return {ord:A.concat(B,C),outs:N};
+  }
+  function tdWhy(it,startMin,openMin){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
+    var cv=it.cv,p=[];
+    if(it.wk)p.push((startMin===0&&cv.allday)?"a walk-on most of the day \u2014 anytime":"a walk-on from here on typical days \u2014 anytime");
+    else if(it.k==="C")p.push("holds near "+it.base+"m from here \u2014 anytime");
+    else if(it.k==="A"){
+      if(it.f2!==null)p.push("typically a walk-on until "+rpClk(it.f2));
+      else if(startMin===0)p.push("typically "+it.base+"m at "+((openMin!==null&&Math.abs(cv.bs[0].t-openMin)<=30)?"the "+rpClk(openMin)+" open":"its "+rpClk(it.st0)+" start"));
+      else p.push("near its remaining low from here \u2014 typically "+it.base+"m");
+      if(!cv.allday&&cv.crest&&cv.crest[0]>=it.st0)p.push("crests near "+cv.pk+"m by "+rpClk(cv.crest[0]));
+      else p.push("typically climbs toward ~"+it.mx+"m by "+rpClk(it.tmx));
+    }else{
+      if(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1])p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
+      p.push("typically eases to ~"+it.mn+"m"+(it.tm!==null?(it.near?" near close":" by "+rpClk(it.tm)):""));
+    }
+    if(it.lateStart)p.unshift("from its "+rpClk(it.st0)+" start");
+    var w=p.join(" \u2014 ");w=w.charAt(0).toUpperCase()+w.slice(1)+".";
+    if(it.arc)w+=" \u00b7 read on the trip\u2019s whole arc";
+    return w;
+  }
+  function tdPickHTML(t,ds,pk){ /* the quick-add picker — A + stars (owner-picked): lean toggle roster, count keeps score, dash rows stay addable */
+    var ids=tdRides(t,ds),wd=rpHmWd(ds),wds=tpWdSet(t),all=[],id,r;
+    for(id in roster){r=roster[id];if(!rpCuratedRide(r)||r.park!==pk)continue;
+      var cx=tdCurve(id,wd,wds);all.push({id:id,nm:r.name,ty:cx?cx.cv.typ:null});}
+    all.sort(function(x,y){return x.nm.localeCompare(y.nm);});
+    var q=tdQ.trim().toLowerCase();
+    var rows=all.map(function(x){var on=ids.indexOf(x.id)>=0,hide=(q&&x.nm.toLowerCase().indexOf(q)<0);
+      return '<div class="td-rrow'+(on?' on':'')+'" data-tdid="'+esc(x.id)+'"'+(hide?' style="display:none"':'')+'><span class="td-ck">\u2713</span><span class="nm">'+esc(x.nm)+'</span><span class="typ">'+(x.ty!==null?x.ty+'m':'\u2013')+'</span></div>';}).join("");
+    var stars=all.filter(function(x){return watch[x.id]&&ids.indexOf(x.id)<0;});
+    var st=stars.length?'<button class="rc-stars" data-tdstars="'+esc(stars.map(function(x){return x.id;}).join("|"))+'" type="button"><span class="fs">\u2605</span> Add your star'+(stars.length===1?'':'s')+' \u2014 '+stars.map(function(x){return esc(x.nm);}).join(" + ")+'</button>':'';
+    var wd3=tpAsD(ds).toLocaleDateString("en-US",{weekday:"short"});
+    return '<div class="td-scrim"></div><div class="td-sheet'+(tdPkA?' anim':'')+'"><div class="rc-grab"></div>'+
+      '<div class="td-ttl"><span class="rc-title">Add rides \u2014 '+wd3+', '+tpMD(ds)+'</span><span class="td-cnt">'+ids.length+' in</span></div>'+
+      '<div class="rc-sub">'+esc(pk)+' \u00b7 tap to add or remove</div>'+st+
+      '<input class="td-srch" type="search" placeholder="Search '+esc(pk)+' rides" value="'+esc(tdQ)+'" autocomplete="off"/>'+
+      ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from banked days \u2014 one moment</div>':'')+
+      '<div class="td-roster">'+rows+'</div>'+
+      '<button class="td-done" type="button">Done \u00b7 '+ids.length+' ride'+(ids.length===1?'':'s')+'</button></div>';
+  }
+  function tdSecHTML(t,ds){ /* MY DAY AT <PARK> — leads the opened day once a park is planned; the lens flips the reading, never the data */
+    var pk=(t&&t.plan||{})[ds];if(!pk)return "";
+    var ids=tdRides(t,ds);
+    var head='<div class="td-lab"><span>My day at '+esc(pk)+'</span>'+(ids.length?'<span class="n">'+ids.length+' ride'+(ids.length===1?'':'s')+'</span>':'')+'</div>';
+    var addr='<button class="td-addr" data-tdadd type="button">+ Add rides</button>';
+    var parksLab='<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>';
+    var pick=(tdPk?tdPickHTML(t,ds,pk):"");
+    if(!ids.length)return head+'<div class="fc-empty" style="padding:8px 2px">Nothing saved yet \u2014 add rides with the picker below, or from any '+esc(pk)+' ride\u2019s page reached through this day.</div>'+addr+pick+parksLab;
+    var tabs='<div class="td-tabs"><button class="hl-tab'+(tdLens!=="mine"?' on':'')+'" data-tdlens="app" type="button">App\u2019s order</button><button class="hl-tab'+(tdLens==="mine"?' on':'')+'" data-tdlens="mine" type="button">My order</button></div>';
+    var body="",basis,chips="",hint="";
+    if(tdLens==="mine"){
+      if(tdLift!==null&&ids.indexOf(tdLift)<0)tdLift=null; /* a removed ride can't stay lifted */
+      if(tdLift!==null)hint='<div class="td-hint">Moving '+esc((roster[tdLift]||{}).name||tdLift)+' \u2014 tap the ride whose spot it should take.</div>';
+      body=ids.map(function(rid,i){var r=roster[rid]||{};
+        return '<div class="td-sl'+(rid===tdLift?' lift':'')+'" data-tdsl="'+i+'"><span class="td-sn">'+(i+1)+'</span><div class="td-sm"><div class="td-snm">'+esc(r.name||rid)+'</div></div><span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
+      basis='Your order, exactly as you set it \u2014 lift a ride with \u2261, tap the spot it should take \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
+    }else{
+      tdLift=null;
+      var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),sm=tdStartMin(tdStart),wdn=tpWDn(ds),anyArc=false;
+      var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds);if(cx&&cx.arc)anyArc=true;return {id:rid,nm:r.name||rid,cvx:cx};});
+      var eng=tdEng(rows,sm,hrs.c),n=0;
+      chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+TD_STARTS.map(function(x){return '<span class="tp-ac'+(tdStart===x[0]?' sel':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
+      eng.ord.forEach(function(it){n++;body+='<div class="td-sl"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+'</div><div class="td-srx">'+tdWhy(it,sm,hrs.o)+'</div></div></div>';});
+      eng.outs.forEach(function(it){n++;body+='<div class="td-sl"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+'</div><div class="td-srx">'+it.why+'</div></div></div>';});
+      basis=(sm>0?'From '+rpClk(sm)+' \u00b7 ':'')+'A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(anyArc?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
+    }
+    return head+tabs+chips+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
+  }
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
     var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Pulse \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
@@ -3889,7 +4062,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var hol=HOLIDAYS[d0]?' <span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'';
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><span><span class="tp-wd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+hol+'</div>'+(pk?'<div class="tp-plcap">Planned \u00b7 '+esc(TP_PSHORT[pk]||pk)+'</div>':'')+(behind?'<div class="tp-behind">Behind you</div>':'')+'</span>'+cells+'</div>';
       var dx='';
-      if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tpParkRows(d0,model,t)+'</div>';}
+      if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+'</div>';
@@ -3949,10 +4122,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
-      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}renderPulsePage();rpTop();});});
+      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}tdReset();renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
       rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
-    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
+    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
     el.querySelectorAll(".rp-go").forEach(function(b){b.addEventListener("click",function(){
       rpRide=b.getAttribute("data-rid");rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-rpsub]").forEach(function(b){b.addEventListener("click",function(){ /* 0714a: the planning doors */
@@ -3979,12 +4152,39 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-rclens]").forEach(function(b){b.addEventListener("click",function(){ /* 0714m: the card's lens */
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
-      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;renderPulsePage();});});
+      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();renderPulsePage();});});
     el.querySelectorAll("[data-tpdoor]").forEach(function(b){b.addEventListener("click",function(){ /* 0715d: the home-base door — the lens's ONLY writer; the trip + day are the ones you're standing in, so the window can never misname its trip. tpSel survives: the TRIP pill walks back to this board. */
       var t2=tpCurTrip();if(!t2)return;
       tpLensSel=t2.id;tpLensDay=b.getAttribute("data-tpdd");
-      rpView="attr";rpPark=b.getAttribute("data-tpdoor");rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;rpWin="trip";
+      rpView="attr";rpPark=b.getAttribute("data-tpdoor");rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;rpWin="trip";tdReset();
       renderPulsePage();rpTop();});});
+    el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){ /* 0715e: the day page's lens — flips the reading, never the data */
+      var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;tdLift=null;renderPulsePage();});});
+    el.querySelectorAll("[data-tdst]").forEach(function(b){b.addEventListener("click",function(){ /* the one input only the user knows */
+      var v=b.getAttribute("data-tdst");if(v===tdStart)return;tdStart=v;renderPulsePage();});});
+    el.querySelectorAll("[data-tdgrip]").forEach(function(b){b.addEventListener("click",function(e2){ /* lift with \u2261 — tap again cancels */
+      e2.stopPropagation();var g=b.getAttribute("data-tdgrip");tdLift=(tdLift===g)?null:g;renderPulsePage();});});
+    el.querySelectorAll("[data-tdsl]").forEach(function(b){b.addEventListener("click",function(){ /* place — the tapped ride's spot */
+      if(tdLift===null)return;var t2=tpCurTrip();if(!t2||!tpOpen)return;
+      var ids=tdRides(t2,tpOpen),li=ids.indexOf(tdLift),ti=+b.getAttribute("data-tdsl");
+      if(li<0||ti===li){tdLift=null;renderPulsePage();return;}
+      tdMove(t2.id,tpOpen,li,ti);tdLift=null;renderPulsePage();});});
+    var tda=el.querySelector("[data-tdadd]");if(tda)tda.addEventListener("click",function(){tdPk=true;tdPkA=true;tdQ="";rpEnsureDigs();renderPulsePage();});
+    var tdsc=el.querySelector(".td-scrim");if(tdsc)tdsc.addEventListener("click",function(){tdPk=false;renderPulsePage();});
+    var tdsh=el.querySelector(".td-sheet");if(tdsh&&!tdsh.__dd){tdsh.__dd=1;sheetDragDismiss(tdsh,tdsc,function(){tdPk=false;renderPulsePage();});} /* one implementation, every sheet (0714q) */
+    el.querySelectorAll("[data-tdid]").forEach(function(b){b.addEventListener("click",function(){ /* tap to add or remove — the roster IS the manifest */
+      var t2=tpCurTrip();if(!t2||!tpOpen)return;var rid=b.getAttribute("data-tdid");
+      (tdRides(t2,tpOpen).indexOf(rid)>=0?tdRemove:tdAdd)(t2.id,tpOpen,rid);renderPulsePage();});});
+    el.querySelectorAll("[data-tdstars]").forEach(function(b){b.addEventListener("click",function(){ /* one tap seats the named stars (the 0714j idiom, uncapped) */
+      var t2=tpCurTrip();if(!t2||!tpOpen)return;
+      b.getAttribute("data-tdstars").split("|").forEach(function(rid){tdAdd(t2.id,tpOpen,rid);});renderPulsePage();});});
+    var tdq=el.querySelector(".td-srch");if(tdq)tdq.addEventListener("input",function(){ /* in-place filter — no re-render, no caret loss; tdQ survives row-tap repaints */
+      tdQ=tdq.value;var q2=tdQ.trim().toLowerCase();
+      el.querySelectorAll(".td-rrow").forEach(function(rw){rw.style.display=(!q2||rw.textContent.toLowerCase().indexOf(q2)>=0)?"":"none";});});
+    var tdd=el.querySelector(".td-done");if(tdd)tdd.addEventListener("click",function(){tdPk=false;renderPulsePage();});
+    var tdpb=el.querySelector("[data-tdprof]");if(tdpb)tdpb.addEventListener("click",function(){ /* the profile's add-path — the lens day names it */
+      var TLp=tpLensTrip();if(!TLp||!tpLensDay||!rpRide)return;
+      (tdRides(TLp,tpLensDay).indexOf(rpRide)>=0?tdRemove:tdAdd)(TLp.id,tpLensDay,rpRide);renderPulsePage();});
     var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
     var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;renderPulsePage();});
     var tps=el.querySelector(".tp-save");if(tps)tps.addEventListener("click",function(){ /* L-29: validate, persist via the shim, wake the schedule fetch */
@@ -4005,13 +4205,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-tppchg]").forEach(function(b){b.addEventListener("click",function(){tpPlanPick=b.getAttribute("data-tppchg");renderPulsePage();});});
     el.querySelectorAll("[data-tppclr]").forEach(function(b){b.addEventListener("click",function(){var t2=tpCurTrip();if(!t2)return;tpSetPlan(t2.id,b.getAttribute("data-tppclr"),null);tpPlanPick=null;renderPulsePage();});});
     el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
-      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tpEnsureSched();renderPulsePage();rpTop();});});
-    var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;renderPulsePage();rpTop();});
+      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tdReset();tpEnsureSched();renderPulsePage();rpTop();});});
+    var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;tdReset();renderPulsePage();rpTop();});
     var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
     var tpd=el.querySelector(".tp-del");if(tpd)tpd.addEventListener("click",function(){ /* 0714y: first tap arms, second deletes */
       if(!tpDelArm){tpDelArm=true;renderPulsePage();return;}
       tpDeleteTrip(tpd.getAttribute("data-tpdel"));renderPulsePage();rpTop();});
-    rcPkA=false;document.body.classList.toggle("rc-open",!!rcPk); /* 0714j: one lock writer \u2014 the render derives the body lock from rcPk \u00b7 the sheet\u2019s entrance plays once */
+    rcPkA=false;tdPkA=false;document.body.classList.toggle("rc-open",!!(rcPk||tdPk)); /* 0715e: the day picker joins the one lock writer */ /* 0714j: one lock writer \u2014 the render derives the body lock from rcPk \u00b7 the sheet\u2019s entrance plays once */
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
     if(dts)dts.addEventListener("click",function(e){
       var c=e.target;if(!c||!c.getAttribute||c.getAttribute("data-di")==null)return;
