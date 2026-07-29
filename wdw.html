@@ -1374,7 +1374,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3632,7 +3632,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tpSaveTrip(a,b,n){ /* 0714w: one save engine — the binder reads fields, this owns validation + persistence */
     if(!a||!b||b<a)return "Pick a first and last day \u2014 the last can\u2019t come before the first.";
     if(Math.round((tpAsD(b)-tpAsD(a))/864e5)+1>TP_MAXDAYS)return "Trips run up to "+TP_MAXDAYS+" days \u2014 shorten the range.";
-    var ts=tpTrips(),tgt=(tpEdit&&!tpNew)?tpCurTrip():null;
+    var ts=tpTrips(),tgt=null,ti; /* 0715a: the edit target resolves INSIDE this read — the serializing store returns fresh objects per read, so the 0714w two-read idiom silently dropped every on-glass edit (owner-caught, first field day) */
+    if(tpEdit&&!tpNew){var cur=tpCurTrip();if(cur)for(ti=0;ti<ts.length;ti++)if(ts[ti].id===cur.id){tgt=ts[ti];break;}}
     var pl=(tpPlanDraft!==null)?tpPlanDraft:((tgt&&tgt.plan)||{}),keep={}; /* Cut 2: picks prune to the saved range — a day the trip no longer contains can’t carry a pick */
     tpDays({a:a,b:b}).forEach(function(k){if(pl[k])keep[k]=pl[k];});
     if(tgt){tgt.n=n;tgt.a=a;tgt.b=b;tgt.plan=keep;tpSel=tgt.id;}
