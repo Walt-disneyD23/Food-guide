@@ -404,6 +404,9 @@
   .tp-plcap{font:600 var(--fs-micro) var(--font-body);color:var(--accent);margin-top:1px}
   .tp-dc.plan{outline:2px solid var(--accent);outline-offset:1.5px}
   .tp-dxr.pl{border-left:2.5px solid var(--accent);padding-left:9px;margin-left:-11.5px}
+  .tp-dxr.dr{padding-top:8px;padding-bottom:8px;cursor:pointer;border-radius:var(--r-el);-webkit-tap-highlight-color:transparent} /* 0715d: the door's clothing — longhand padding so the planned row's edge inset survives */
+  .tp-dxr.dr:active{background:var(--card)}
+  .chevn{display:inline-block;color:var(--muted-2);font-weight:700;font-size:var(--fs-small);margin-left:5px;vertical-align:.5px} /* 0715d: the name-side chevron — owner picked B over the far-right column */
   .tp-asn{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
   .tp-ac{font:700 var(--fs-meta) var(--font-body);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 12px;color:var(--muted);background:var(--card);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .tp-ac.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
@@ -1374,7 +1377,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2941,7 +2944,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null; /* L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null; /* L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -3630,10 +3633,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return out;
   }
   function tpCurTrip(){var ts=tpTrips(),i;if(tpSel){for(i=0;i<ts.length;i++)if(ts[i].id===tpSel)return ts[i];}return ts.length===1?ts[0]:null;}
-  function tpLensTrip(){ /* Cut 3 (0715c): the lens’s one trip — the soonest current-or-upcoming; none = no Trip-days preset (owner picked B: hidden until earned) */
-    var ts=tpTrips(),today=tpToday(),best=null,i;
-    for(i=0;i<ts.length;i++)if(ts[i].b>=today&&(!best||ts[i].a<best.a))best=ts[i];
-    return best;
+  function tpLensTrip(){ /* 0715d (home base, owner-ratified): the trip you doored in from — the door is the lens’s ONLY writer; no door this session = no Trip-days pill anywhere (the always-on offer + the soonest-trip law retired together). A deleted trip folds to null; the render guard resets rpWin. Past trips can hold the lens — the door names them unambiguously. */
+    if(!tpLensSel)return null;
+    var ts=tpTrips(),i;
+    for(i=0;i<ts.length;i++)if(ts[i].id===tpLensSel)return ts[i];
+    return null;
   }
   function tpWdSet(t){ /* the trip’s weekday set, getDay encoding (0=Sun..6=Sat) — seven days saturate it */
     var m={},d=t.a,i=0;while(d<=t.b&&i<7){m[tpAsD(d).getDay()]=1;d=tpAddD(d,1);i++;}return m;
@@ -3645,8 +3649,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(len===1)return N[tpAsD(t.a).getDay()];
     return N[tpAsD(t.a).getDay()]+(len===2?" & ":"\u2013")+N[tpAsD(t.b).getDay()];
   }
-  function tpLensPhrase(){ /* the hour grid’s basis name — safe when the trip is gone (the render guard resets the lens first) */
-    var T=tpLensTrip();return T?('Trip days \u2014 '+tpWdPhrase(T)+', the weekdays your trip holds'):'Trip days';
+  function tpLensPhrase(){ /* the hour grid’s basis name — safe when the trip is gone (the render guard resets the lens first); 0715d: tense flips whole for a past trip, and the L-27 season rider joins */
+    var T=tpLensTrip();return T?('Trip days \u2014 '+tpWdPhrase(T)+', the weekdays your trip '+(T.b<tpToday()?'held':'holds')+tpLensSeason(T)):'Trip days';
+  }
+  function tpLensSeason(T){ /* 0715d: the L-27 honesty rider — the ride-level basis carries the trip board’s season caveat whenever trip months sit outside THIS window’s banked dates (rpWinDates("all"), the very pool the trip predicate filters) */
+    var ds=rpWinDates("all");if(!ds.length)return '';
+    var bm={},i;for(i=0;i<ds.length;i++)bm[ds[i].slice(5,7)]=1;
+    var miss=null;tpDays(T).forEach(function(x){if(!bm[x.slice(5,7)]&&!miss)miss=x;});
+    if(!miss)return '';
+    var mn=tpAsD(miss).toLocaleDateString("en-US",{month:"long"});
+    var b0=tpAsD(ds[0]).toLocaleDateString("en-US",{month:"long"}),b1=tpAsD(ds[ds.length-1]).toLocaleDateString("en-US",{month:"long"});
+    return ' \u00b7 your trip '+(T.b<tpToday()?'was':'is')+' in '+mn+' \u2014 '+((b0===b1)?b0:(b0+'\u2013'+b1))+'\u2019s patterns can shift with the season';
   }
   function tpSaveTrip(a,b,n){ /* 0714w: one save engine — the binder reads fields, this owns validation + persistence */
     if(!a||!b||b<a)return "Pick a first and last day \u2014 the last can\u2019t come before the first.";
@@ -3826,7 +3839,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var pt=c.thin?('Too thin yet \u00b7 '+c.n+' '+wn+(c.n===1?'':'s')+' banked')
         :(tpTier(c.lvl)+' \u00b7 '+c.avg+'m avg'+(first?' across attractions':'')+' \u00b7 '+c.n+' '+wn+'s');
       if(!c.thin)first=false;
-      h+='<div class="tp-dxr'+(p===pk?' pl':'')+'"><span><span class="tp-pn">'+p+(p===pk?' \u00b7 planned':'')+'</span><div class="tp-pt">'+pt+'</div></span>'+tpHoursHTML(ds,p)+'</div>';}
+      h+='<div class="tp-dxr'+(p===pk?' pl':'')+(t?' dr':'')+'"'+(t?' role="button" tabindex="0" data-tpdoor="'+esc(p)+'" data-tpdd="'+ds+'"':'')+'><span><span class="tp-pn">'+p+(p===pk?' \u00b7 planned':'')+(t?'<span class="chevn">\u203a</span>':'')+'</span><div class="tp-pt">'+pt+'</div></span>'+tpHoursHTML(ds,p)+'</div>';} /* 0715d: the home-base door — every park row opens that park’s landing, trip-windowed */
     return h+(t?tpPlanRow(t,ds):'');
   }
   function tpEyebrow(t,today){
@@ -3904,7 +3917,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
        session-only is a two-line change if a parked scope reads wrong on a fuller page.
        Lens stays board furniture: hl-tabs beside the HOT LINES label (owner picked keep). */
     var el=$("pgPulse");if(!el)return;
-    if(rpWin==="trip"&&!tpLensTrip())rpWin="all"; /* Cut 3 (0715c): one writer — the Trip-days window lives only while a current-or-upcoming trip does */
+    if(rpWin==="trip"&&!tpLensTrip())rpWin="all"; /* 0715d: one guard — the Trip-days window lives only while the session’s doored trip does (covers deletion + the rail’s fold) */
     pfEnsureBase(); /* 0711b: non-blocking; re-renders this page on arrival */
     var items=hlModel(hlScope,hlLens);
     var head='<div class="pg-h"><h3><span class="ps"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg></span> Pulse</h3></div>';
@@ -3936,7 +3949,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
-      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}renderPulsePage();rpTop();});});
+      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
       rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
@@ -3967,6 +3980,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;renderPulsePage();});});
+    el.querySelectorAll("[data-tpdoor]").forEach(function(b){b.addEventListener("click",function(){ /* 0715d: the home-base door — the lens's ONLY writer; the trip + day are the ones you're standing in, so the window can never misname its trip. tpSel survives: the TRIP pill walks back to this board. */
+      var t2=tpCurTrip();if(!t2)return;
+      tpLensSel=t2.id;tpLensDay=b.getAttribute("data-tpdd");
+      rpView="attr";rpPark=b.getAttribute("data-tpdoor");rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;rpWin="trip";
+      renderPulsePage();rpTop();});});
     var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
     var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;renderPulsePage();});
     var tps=el.querySelector(".tp-save");if(tps)tps.addEventListener("click",function(){ /* L-29: validate, persist via the shim, wake the schedule fetch */
