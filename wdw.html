@@ -449,6 +449,10 @@
   html.dark .rc-wash{opacity:.08} /* 5.5% vanishes on the navy ground \u2014 the spec\u2019s reserved retune, taken */
   .rc-ln{transition:opacity .18s}
   .rc-ln.fade{opacity:.15}
+  .rc-ckey{display:flex;flex-wrap:wrap;gap:6px 12px;margin:8px 0 0} /* 0714n: the key lives where the chart lives */
+  .rc-ck{display:inline-flex;align-items:center;gap:6px;border:none;background:none;padding:2px 0;font:600 var(--fs-meta) var(--font-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;max-width:100%}
+  .rc-ck .n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rc-ck.fade{opacity:.4}
   .rc-tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
   .rc-tbl th{font:600 var(--fs-meta) var(--font-body);text-align:right;padding:0 0 8px 6px;vertical-align:bottom;color:var(--ink)} /* 0714l: names wrap \u2014 the clamp box owns containment now */
   .rc-tbl th:first-child{text-align:left}
@@ -1301,7 +1305,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3382,9 +3386,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<cand.length;i++){var t=cand[i];if(t<t0||t>t1)continue;var h=t/60;
       ticks+='<text x="'+C(Math.round((t-t0)/30)).toFixed(1)+'" y="'+(yB+15)+'" text-anchor="middle" font-size="9" font-weight="700" fill="var(--muted-2)" font-family="Inter,system-ui">'+((h%12)||12)+(h<12?"A":"P")+'</text>';}
     var thin=its.filter(function(x){return !x.cv;}).map(function(x){return esc(x.nm);});
+    var key='<div class="rc-ckey">'+its.filter(function(x){return !!x.cv;}).map(function(x){var f2=rcFoc===x.id;
+      return '<button class="rc-ck'+(rcFoc?(f2?' sel':' fade'):'')+'" data-rcfoc="'+esc(x.id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(its.indexOf(x)+1)+')"></span><span class="n">'+esc(x.nm)+'</span></button>';}).join("")+'</div>'; /* 0714n: same data-rcfoc \u2014 the focus tap moves to where the chart is, zero new wiring */
     return '<div class="rpc"><div class="lbl">The typical day, overlaid</div>'+
       '<svg class="rp-svg" viewBox="0 0 340 128" role="img" aria-label="Typical waits, overlaid">'+wash+
-      '<line x1="'+x0+'" y1="'+yB+'" x2="'+x1+'" y2="'+yB+'" stroke="var(--line)" stroke-width="1"/>'+lines+ticks+lab+'</svg>'+
+      '<line x1="'+x0+'" y1="'+yB+'" x2="'+x1+'" y2="'+yB+'" stroke="var(--line)" stroke-width="1"/>'+lines+ticks+lab+'</svg>'+key+
       '<div class="pf-basis">Lines wear each ride\u2019s identity \u00b7 faint bands = the wait tiers \u00b7 spread stays each profile\u2019s story'+(thin.length?' \u00b7 '+thin.join(", ")+' ran too thin this window':'')+'</div></div>';
   }
   function rcTableHTML(its,days){ /* identity colors the headers; values stay ink \u2014 color keeps one job */
