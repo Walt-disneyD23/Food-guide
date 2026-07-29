@@ -1305,7 +1305,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3451,10 +3451,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<wc.length;i++){var x=wc[i],rem=[];
       for(q=0;q<x.cv.bs.length;q++){var b=x.cv.bs[q];if(b.t>=nb&&(ct===null||b.t<ct))rem.push(b);}
       if(!rem.length){holds.push(x);continue;}
-      var nowMed=(rem[0].t===nb)?rem[0].med:null,mn=1e9,tm=null;
-      for(q=0;q<rem.length;q++)if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}
+      var nowMed=(rem[0].t===nb)?rem[0].med:null,mn=1e9,tm=null,mxA=-1,tmx=null;
+      for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mxA){mxA=rem[q].med;tmx=rem[q].t;}}
       var base=(nowMed!==null)?nowMed:rem[0].med;
-      items.push({id:x.id,nm:x.nm,si:x.si,cv:x.cv,nowMed:nowMed,base:base,mn:mn,tm:tm,edge:base-mn,
+      items.push({id:x.id,nm:x.nm,si:x.si,cv:x.cv,nowMed:nowMed,base:base,mn:mn,tm:tm,mxA:mxA,tmx:tmx,edge:base-mn,
         near:(ct!==null&&tm!==null&&tm>=ct-45),backAhead:(x.cv.back!==null&&x.cv.back>=nb)});}
     if(!items.length)return '<div class="fc-empty">The day\u2019s tape is behind us \u2014 Full day carries it.</div>';
     items.sort(function(a,b){return (a.edge-b.edge)||((a.tm||0)-(b.tm||0))||a.nm.localeCompare(b.nm);});
@@ -3466,7 +3466,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(i===0&&mnU&&items.length>1&&it.edge<mxE)sfx=' \u2014 waiting buys the least';
       else if(i===items.length-1&&mxU&&it.backAhead)sfx=' \u2014 save it';
       var p=[];
-      if(it.edge<=3)p.push('holds near '+it.base+'m from here \u2014 the typical barely moves again today');
+      if(it.edge<=3&&it.mxA-it.base<=8)p.push('holds near '+it.base+'m from here \u2014 the typical barely moves again today'); /* 0714r: "barely moves" is a RANGE claim \u2014 edge alone only looks downhill */
+      else if(it.edge<=3)p.push('about as cheap as it gets \u2014 typically climbs toward ~'+it.mxA+'m by '+rpClk(it.tmx));
       else{
         if(!it.cv.allday&&it.cv.crest&&nb>=it.cv.crest[0]&&nb<=it.cv.crest[1])p.push('at its '+rpRange(it.cv.crest[0],it.cv.crest[1])+' crest (typically '+it.cv.pk+'m)');
         if(it.backAhead)p.push('a walk-on after '+rpClk(it.cv.back)+' on typical nights');
