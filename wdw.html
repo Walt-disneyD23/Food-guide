@@ -405,7 +405,7 @@
   .rc-dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
   .rc-dot.off{background:transparent;border:1.5px solid var(--muted-2)}
   .rc-scrim{position:fixed;inset:0;background:rgba(10,12,26,.42);z-index:88}
-  .rc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:89;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;box-shadow:0 -14px 44px rgba(20,22,50,.26);padding:8px 16px calc(20px + env(safe-area-inset-bottom));max-height:86vh;overflow-y:auto}
+  .rc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:89;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;box-shadow:0 -14px 44px rgba(20,22,50,.26);padding:8px 16px calc(20px + env(safe-area-inset-bottom));max-height:86vh;overflow-y:auto;transition:transform .3s cubic-bezier(.32,.72,0,1)}
   .rc-sheet.anim{animation:rcUp .28s cubic-bezier(.32,.72,0,1)}
   @keyframes rcUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .rc-grab{width:38px;height:4px;border-radius:999px;background:var(--muted-2);opacity:.5;margin:4px auto 12px}
@@ -1305,7 +1305,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1419,7 +1419,7 @@ var PARK_DEF=[
         "Monsters, Inc. Laugh Floor","The Hall of Presidents","Walt Disney's Carousel of Progress"]},
     {key:"EPCOT", emblem:"🌐", img:"",
       grad:"linear-gradient(135deg,#1098ad,#5c7cfa)",
-      rides:["Guardians of the Galaxy: Cosmic Rewind","Test Track","Soarin' Around the World","Frozen Ever After",
+      rides:["Guardians of the Galaxy: Cosmic Rewind","Test Track","Soarin' Across America","Frozen Ever After",
         "Remy's Ratatouille Adventure","Mission: SPACE","Spaceship Earth","Living with the Land",
         "The Seas with Nemo & Friends","Journey Into Imagination With Figment",
         "Gran Fiesta Tour Starring The Three Caballeros"],
@@ -1427,7 +1427,7 @@ var PARK_DEF=[
     {key:"Hollywood Studios", emblem:"🎬", img:"",
       grad:"linear-gradient(135deg,#e8590c,#c2255c)",
       rides:["Star Wars: Rise of the Resistance","Millennium Falcon: Smugglers Run","The Twilight Zone Tower of Terror",
-        "Rock 'n' Roller Coaster Starring Aerosmith","Slinky Dog Dash","Toy Story Mania!",
+        "Rock 'n' Roller Coaster Starring The Muppets","Slinky Dog Dash","Toy Story Mania!",
         "Mickey & Minnie's Runaway Railway","Star Tours – The Adventures Continue","Alien Swirling Saucers"],
       shows:["Muppet*Vision 3D","Beauty and the Beast – Live on Stage","Indiana Jones Epic Stunt Spectacular!",
         "Fantasmic!","For the First Time in Forever: A Frozen Sing-Along"]},
@@ -1450,11 +1450,11 @@ var CATEGORY_TAGS={
     "walt disney world railroad":"Family","tomorrowland speedway":"Family","prince charming regal carrousel":"Kids",
     "magic carpets of aladdin":"Kids",
     "guardians of galaxy cosmic rewind":"Thrill","test track":"Thrill","mission space":"Thrill",
-    "soarin around world":"Family","frozen ever after":"Water","remys ratatouille adventure":"Family",
+    "soarin across america":"Family","frozen ever after":"Water","remys ratatouille adventure":"Family",
     "spaceship earth":"Family","living with land":"Family","seas with nemo and friends":"Kids",
     "journey into imagination with figment":"Kids","gran fiesta tour starring three caballeros":"Family",
     "star wars rise of resistance":"Thrill","millennium falcon smugglers run":"Thrill",
-    "twilight zone tower of terror":"Thrill","rock n roller coaster starring aerosmith":"Thrill",
+    "twilight zone tower of terror":"Thrill","rock n roller coaster starring muppets":"Thrill",
     "slinky dog dash":"Family","toy story mania":"Family","mickey and minnies runaway railway":"Family",
     "star tours adventures continue":"Family","alien swirling saucers":"Kids",
     "avatar flight of passage":"Thrill","navi river journey":"Water",
@@ -3575,6 +3575,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var rcd=el.querySelector("[data-rcopen]");if(rcd)rcd.addEventListener("click",function(){ /* 0714o: the landing door \u2014 unanchored picker, seats fill in pick order */
       rcPk=true;rcSel=[];rcPkA=true;rpEnsureDigs();renderPulsePage();});  /* 0714p: the door path feeds itself \u2014 the profile route ensured digs, this one must too */
     var rcs=el.querySelector(".rc-scrim");if(rcs)rcs.addEventListener("click",function(){rcPk=false;renderPulsePage();});
+    var rcsh=el.querySelector(".rc-sheet");if(rcsh&&!rcsh.__dd){rcsh.__dd=1;sheetDragDismiss(rcsh,rcs,function(){rcPk=false;renderPulsePage();});} /* 0714q: one implementation, every sheet \u2014 the render-scoped picker enrolls per paint */
     el.querySelectorAll("[data-rcid]").forEach(function(b){b.addEventListener("click",function(){ /* seats fill in pick order \u2014 identity follows the seat */
       if(rcSel.length>=3)return;var id=b.getAttribute("data-rcid");if(rcSel.indexOf(id)>=0)return;rcSel.push(id);renderPulsePage();});});
     el.querySelectorAll("[data-rcx]").forEach(function(b){b.addEventListener("click",function(){
