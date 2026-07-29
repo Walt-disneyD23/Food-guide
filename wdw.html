@@ -468,6 +468,7 @@
   .rc-nv.mut{color:var(--pwh-muted)}
   .rc-nv.t-short{color:var(--short)} .rc-nv.t-medium{color:var(--medium)} .rc-nv.t-long{color:var(--long)} .rc-nv.t-packed{color:var(--packed)}
   .rc-dnc{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;color:var(--packed);border:1px solid var(--packed);border-radius:6px;padding:1px 5px}
+  .rc-clc{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;color:var(--muted);border:1px solid var(--muted-2);border-radius:6px;padding:1px 5px} /* 0714t: slate \u2014 scheduled, not broken */
   .rc-olbl{display:flex;align-items:center;justify-content:space-between}
   .rc-lens{display:inline-flex;gap:4px}
   .rc-ord .row{display:flex;gap:12px;align-items:flex-start;padding:11px 0}
@@ -1305,7 +1306,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3422,12 +3423,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var lv=liveById[id];
     if(lv&&lv.status==="DOWN")return '<span class="rc-nv"><span class="rc-dnc">DOWN</span><small>now</small></span>';
     if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="rc-nv t-'+rpTierCls(lv.wait)+'">'+lv.wait+'m<small>now</small></span>';
+    if(lv)return '<span class="rc-nv mut">Closed<small>now</small></span>'; /* 0714t: scheduled-closed says so \u2014 the dash is reserved for true no-data */
     return '<span class="rc-nv mut">\u2013<small>now</small></span>';
   }
   function rcLiveLine(id,nowMed,st){ /* pure description of divergence \u2014 never advice, never a forecast */
     var lv=liveById[id];
     if(lv&&lv.status==="DOWN")return '<div class="lv"><span class="rc-dnc">DOWN</span> \u00b7 reopen unknown \u2014 the order stays typical-shaped</div>';
-    if(!(lv&&lv.status==="OPERATING"&&lv.wait!==null))return lv?'<div class="lv">Closed now'+((st!==null&&st!==undefined)?' \u00b7 its typical day starts near '+rpClk(st):'')+'</div>':''; /* 0714s: CLOSED speaks too */
+    if(!(lv&&lv.status==="OPERATING"&&lv.wait!==null))return lv?'<div class="lv"><span class="rc-clc">CLOSED</span> now'+((st!==null&&st!==undefined)?' \u00b7 its typical day starts near '+rpClk(st):'')+'</div>':''; /* 0714s: CLOSED speaks too */
     var w=lv.wait,d2;
     if(nowMed===null)d2='its typical tape is thin this hour';
     else if(w-nowMed>=8)d2='running above its typical hour';
@@ -3462,8 +3464,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var mnU=items.filter(function(z){return z.edge===mnE;}).length===1;
     var mxU=items.filter(function(z){return z.edge===mxE;}).length===1;
     var h='';
-    for(i=0;i<items.length;i++){var it=items[i],sfx='';
-      if(i===0&&mnU&&items.length>1&&it.edge<mxE)sfx=' \u2014 waiting buys the least';
+    for(i=0;i<items.length;i++){var it=items[i],sfx='',lvc=liveById[it.id];
+      var gated=!!(lvc&&lvc.status!=="OPERATING"&&lvc.status!=="DOWN"); /* 0714t: scheduled-closed adapts the suffix, never the sequence */
+      if(i===0&&mnU&&items.length>1&&it.edge<mxE)sfx=gated?' \u2014 first, once it opens':' \u2014 waiting buys the least';
       else if(i===items.length-1&&mxU&&it.backAhead)sfx=' \u2014 save it';
       var p=[];
       if(it.edge<=3&&it.mxA-it.base<=8)p.push('holds near '+it.base+'m from here \u2014 the typical barely moves again today'); /* 0714r: "barely moves" is a RANGE claim \u2014 edge alone only looks downhill */
