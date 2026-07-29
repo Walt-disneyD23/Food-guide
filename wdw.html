@@ -360,7 +360,7 @@
   .rp-hmc .xl.ink{color:var(--ink);text-shadow:none}
   html.dark .rp-hmc .xl.ink{text-shadow:0 0 3px rgba(0,0,0,.5),0 0 3px rgba(0,0,0,.5)} /* 0713u: near-white ink over a light veil — the 0713n halo, Harbor only */
   /* ===== 0714a: the Rope Drop Board (L-28 cut 1) — A Ledger on the ratified sections ===== */
-  .rd-door{padding:15px 16px;border-radius:var(--r-card)} .rd-door .m{flex:1;min-width:0} .rd-door .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)} .rd-door .sub{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:2px} /* 0714b: the marquee — a door that previews its destination; My Morning inherits this chrome */
+  .rd-door{padding:15px 16px;border-radius:var(--r-card)} .rd-door .m{flex:1;min-width:0} .rd-door .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)} .rd-door .sub{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* 0714b: the marquee — a door that previews its destination; My Morning inherits this chrome */
   .rd-door .ct{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted-2);font-variant-numeric:tabular-nums}
   .rd-door .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
   .rd-sechead{font-size:var(--fs-meta);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:16px 2px 2px}
@@ -1305,7 +1305,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3304,6 +3304,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
   }
+  function rcDoorHTML(){ /* 0714o: Compare graduated into a planning destination \u2014 destinations get doors (owner-raised, brother-validated) */
+    return '<button class="rp-door rd-door" data-rcopen type="button"><span class="m"><span class="nm">Compare rides</span><span class="sub">Pick 2 or 3 \u00b7 side by side on one scale</span></span><span class="chev">\u203a</span></button>';
+  }
   function rcSheetHTML(){ /* Variant B \u2014 headliner shelf: each chip seats one; identity follows the seat */
     var all=rcTyps(),by={},i;for(i=0;i<all.length;i++)by[all[i].id]=all[i];
     var me=roster[rpRide]||{},cap=rcSel.length>=3;
@@ -3311,8 +3314,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<rcSel.length;i++){var it=by[rcSel[i]]||{nm:(roster[rcSel[i]]||{}).name,cv:null};
       seats+='<div class="rc-seat"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(it.nm||"")+'</span>'+
         (it.cv?'<span class="typ">'+it.cv.typ+'m typical</span>':'')+
-        (i===0?'<span class="tag">Here now</span>':'<button class="rc-x" data-rcx="'+i+'" type="button">\u2715</button>')+'</div>';}
-    for(i=rcSel.length;i<3;i++)seats+='<div class="rc-seat empty"><span class="rc-dot"></span>'+(rcSel.length<2?'Pick at least one more':'Pick one more \u2014 or compare these two')+'</div>';
+        ((i===0&&rpRide)?'<span class="tag">Here now</span>':'<button class="rc-x" data-rcx="'+i+'" type="button">\u2715</button>')+'</div>';}
+    for(i=rcSel.length;i<3;i++)seats+='<div class="rc-seat empty"><span class="rc-dot"></span>'+(rcSel.length===0?(i===0?'Pick your first ride \u2014 it takes the indigo seat':'Then up to two more'):(rcSel.length<2?'Pick at least one more':'Pick one more \u2014 or compare these two'))+'</div>';
     var heads=all.filter(function(x){return x.cv&&x.id!==rpRide;}).sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,4);
     var chips=heads.map(function(x){var on=rcSel.indexOf(x.id)>=0;
       return '<button class="rc-pchip'+(on?' seated':'')+'"'+((on||cap)?' disabled':' data-rcid="'+esc(x.id)+'"')+' type="button">'+esc(x.nm)+' <small>'+x.cv.typ+'m</small></button>';}).join("");
@@ -3324,7 +3327,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       .sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,3-rcSel.length);
     var st=stars.length?'<button class="rc-stars" data-rcstars="'+esc(stars.map(function(x){return x.id;}).join("|"))+'" type="button"><span class="fs">\u2605</span> Seat your star'+(stars.length===1?'':'s')+' \u2014 '+stars.map(function(x){return esc(x.nm);}).join(" + ")+'</button>':'';
     return '<div class="rc-scrim"></div><div class="rc-sheet'+(rcPkA?' anim':'')+'"><div class="rc-grab"></div>'+
-      '<div class="rc-title">Compare '+esc(me.name||"")+' with\u2026</div>'+
+      '<div class="rc-title">'+(rpRide?'Compare '+esc(me.name||"")+' with\u2026':'Compare '+esc(rpPark||"")+' rides')+'</div>'+
       '<div class="rc-sub">'+esc(rpPark||"")+' only \u00b7 up to 3 rides \u00b7 the profile\u2019s window</div>'+
       '<div class="rc-seats">'+seats+'</div>'+
       st+'<div class="rc-plab">This park\u2019s headliners</div><div class="rc-prow">'+chips+'</div>'+
@@ -3484,11 +3487,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rcCompareHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends"};
-    var me=roster[rcIds[0]]||{},i,its=[];
+    var org=rpRide?(roster[rpRide]||{}):null,i,its=[];
     for(i=0;i<rcIds.length;i++){var rr=roster[rcIds[i]]||{};
       its.push({id:rcIds[i],nm:rr.name||"",cv:rpWinCurve(rcIds[i],rpWin),rel:rpRel(rcIds[i],rpWin)});}
-    var crumb=rpBackBtn(esc(me.name||""))+ /* the pill names its destination \u2014 the profile you came from */
-      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a '+esc(me.name||"")+' \u203a <b>Compare</b></div>';
+    var crumb=rpBackBtn(org?esc(org.name||""):esc(rpPark||""))+ /* the pill names its destination \u2014 the profile or the park you came from (0714o) */
+      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a '+(org?esc(org.name||"")+' \u203a ':'')+'<b>Compare</b></div>';
     var chips='';
     for(i=0;i<its.length;i++){var f=rcFoc===its[i].id;
       chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span>'+rcNowChip(its[i].id)+'</button>'; /* 0714m: live wears the hero (N1, ratified) */}
@@ -3518,9 +3521,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var list=items.length?items.map(function(it){
       return '<div class="rp-go rp-door" data-rid="'+esc(it.id)+'"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>m</small>')+'</span><span class="chev">\u203a</span></div>';
     }).join(""):'<div class="fc-empty">No rides banked yet for this park.</div>';
-    return crumb+rdDoorHTML()+rmDoorHTML()+ /* 0714a: the park's planning shelf, then its census */
+    return crumb+rdDoorHTML()+rmDoorHTML()+rcDoorHTML()+ /* 0714a: the park's planning shelf, then its census */
       '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab" style="padding-right:6px">Typical</span></div>'+list+
-      '<div class="pf-basis" style="border-top:0;padding:2px 6px 0">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div>';
+      '<div class="pf-basis" style="border-top:0;padding:2px 6px 0">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div>'+(rcPk?rcSheetHTML():""); /* 0714o: the landing carries the picker too */
   }
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
@@ -3547,7 +3550,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
-    if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+(rpRide?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
+    if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
     else el.innerHTML='<div class="pg-stick">'+head+rail+seg+'</div>'+
       pfFeedHTML(hlScope)+ /* 0711b: callout feed — owner picked feed-above-board (D1), G1 grammar */
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
@@ -3569,6 +3572,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       rpSub=b.getAttribute("data-rpsub");renderPulsePage();rpTop();});});
     var rcp=el.querySelector(".rc-pill");if(rcp)rcp.addEventListener("click",function(){ /* 0714i: the compare door opens the picker */
       rcPk=true;rcSel=[rpRide];rcPkA=true;renderPulsePage();});
+    var rcd=el.querySelector("[data-rcopen]");if(rcd)rcd.addEventListener("click",function(){ /* 0714o: the landing door \u2014 unanchored picker, seats fill in pick order */
+      rcPk=true;rcSel=[];rcPkA=true;renderPulsePage();});
     var rcs=el.querySelector(".rc-scrim");if(rcs)rcs.addEventListener("click",function(){rcPk=false;renderPulsePage();});
     el.querySelectorAll("[data-rcid]").forEach(function(b){b.addEventListener("click",function(){ /* seats fill in pick order \u2014 identity follows the seat */
       if(rcSel.length>=3)return;var id=b.getAttribute("data-rcid");if(rcSel.indexOf(id)>=0)return;rcSel.push(id);renderPulsePage();});});
