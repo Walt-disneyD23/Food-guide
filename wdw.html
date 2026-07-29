@@ -24,6 +24,7 @@
     /* color tokens (0708c): paired light/dark + theme-invariant pw-hero family + semantic aliases */
     --track:#dfe1ee; --dot-idle:#c9cde0; --accent-deep:#3c38a0; --emblem-plate:#fff; --accent-tint:#96a1f2; --open:#37e0a0;
     --down:var(--packed); --heat:var(--medium); --fav:#dfa000;
+    --cmp-p1:#4f46e5; --cmp-p2:#0891b2; --cmp-p3:#c026d3; /* 0714i: Compare identity \u2014 contained, never mistakable for a tier */
     --pwh-bg:#10243a; --pwh-bg2:#1b2d4d; --pwh-deep:#152a47; --pwh-ink:#e6e9fb; --pwh-sub:#c7cde0; --pwh-muted:#9aa6c4; --pwh-dim:#7a88aa; --pwh-key:#9bf7c9; --pwh-line:#24425c;
     --shadow:0 16px 40px -18px rgba(40,40,90,.22); --shadow-sm:0 6px 18px -8px rgba(40,40,90,.14); --shadow-tk:drop-shadow(0 6px 14px rgba(40,40,90,.16));
     --font-display:'Space Grotesk',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
@@ -396,6 +397,65 @@
   .rm-lane i.t-short{background:var(--short)} .rm-lane i.t-medium{background:var(--medium)} .rm-lane i.t-long{background:var(--long)} .rm-lane i.t-packed{background:var(--packed)}
   .rm-lane i.sp{background:var(--card-2);opacity:1}
   .rm-axis{display:flex;justify-content:space-between;font:700 var(--fs-micro) var(--font-body);color:var(--muted-2);padding:0 0 6px;letter-spacing:.04em}
+  /* ===== 0714i: Compare (L-28 cut 9, lean) \u2014 identity is contained, tiers stay tiers ===== */
+  .rc-hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
+  .rc-hrow .sub{margin-top:0}
+  .rc-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:5px 12px;color:var(--pwh-sub);font:600 var(--fs-meta) var(--font-body);background:rgba(255,255,255,.05);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .rc-pill svg{width:13px;height:13px}
+  .rc-dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+  .rc-dot.off{background:transparent;border:1.5px solid var(--muted-2)}
+  .rc-scrim{position:fixed;inset:0;background:rgba(10,12,26,.42);z-index:88}
+  .rc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:89;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;box-shadow:0 -14px 44px rgba(20,22,50,.26);padding:8px 16px calc(20px + env(safe-area-inset-bottom));max-height:86vh;overflow-y:auto}
+  .rc-sheet.anim{animation:rcUp .28s cubic-bezier(.32,.72,0,1)}
+  @keyframes rcUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .rc-grab{width:38px;height:4px;border-radius:999px;background:var(--muted-2);opacity:.5;margin:4px auto 12px}
+  .rc-title{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
+  .rc-sub{color:var(--muted);font-size:var(--fs-meta);margin:3px 0 12px}
+  .rc-seats{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+  .rc-seat{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:var(--r-tile);padding:9px 12px;background:var(--card-2);font-size:var(--fs-body);color:var(--ink)}
+  .rc-seat .nm{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rc-seat .typ{color:var(--muted);font-size:var(--fs-meta);margin-left:auto;flex:none}
+  .rc-seat .tag{flex:none;font:600 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin-left:10px}
+  .rc-seat .rc-x{flex:none;border:none;background:none;color:var(--muted-2);font-size:15px;line-height:1;margin-left:10px;padding:2px 4px;cursor:pointer}
+  .rc-seat.empty{border-style:dashed;background:transparent;color:var(--muted-2);font-size:var(--fs-meta)}
+  .rc-seat.empty .rc-dot{background:transparent;border:1.5px dashed var(--muted-2)}
+  .rc-plab{font:600 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+  .rc-prow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+  .rc-pchip{border:1px solid var(--line);border-radius:var(--r-pill);padding:7px 13px;font:600 var(--fs-small) var(--font-body);color:var(--ink);background:var(--card-2);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .rc-pchip small{color:var(--muted);font-weight:500;margin-left:4px}
+  .rc-pchip.seated,.rc-pchip[disabled]{opacity:.4;cursor:default}
+  .rc-srch{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--r-pill);padding:9px 14px;font:400 var(--fs-body) var(--font-body);color:var(--ink);background:var(--card-2);margin-bottom:6px;outline:none;-webkit-appearance:none}
+  .rc-roster .rc-rrow{display:flex;align-items:center;gap:9px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer}
+  .rc-roster .rc-rrow:last-child{border-bottom:none}
+  .rc-rrow .typ{margin-left:auto;color:var(--muted);font-size:var(--fs-meta)}
+  .rc-rrow.dim{opacity:.38;cursor:default}
+  .rc-cap{font-size:var(--fs-meta);color:var(--muted-2);margin:8px 0 0;text-align:center}
+  .rc-go{display:block;width:100%;border:none;border-radius:var(--r-tile);background:var(--accent-fill);color:#fff;font:600 var(--fs-title) var(--font-body);padding:13px 0;margin-top:14px;text-align:center;cursor:pointer}
+  .rc-go[disabled]{background:var(--card-2);color:var(--muted-2);border:1px solid var(--line);cursor:default}
+  .rc-hero{border-radius:var(--r-hero);border:1px solid var(--pwh-line);overflow:hidden;margin:2px 0 12px;padding:17px 17px 15px;background:linear-gradient(150deg,var(--pwh-bg2),var(--pwh-bg));color:var(--pwh-ink)}
+  .rc-hero .eb{font-family:var(--font-display);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--pwh-key)}
+  .rc-hero .sub{color:var(--pwh-muted);font-size:var(--fs-meta);margin-top:10px}
+  .rc-legend{display:flex;flex-direction:column;gap:7px;margin-top:11px}
+  .rc-lchip{display:flex;align-items:center;gap:9px;border:1px solid var(--pwh-line);border-radius:var(--r-tile);padding:8px 12px;background:rgba(255,255,255,.05);color:var(--pwh-ink);width:100%;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;font-family:var(--font-body)}
+  .rc-lchip .nm{font-weight:600;font-size:var(--fs-body);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rc-lchip .typ{margin-left:auto;color:var(--pwh-muted);font-size:var(--fs-meta);flex:none}
+  .rc-lchip.sel{border-color:rgba(255,255,255,.55)}
+  .rc-lchip.fade{opacity:.45}
+  .rc-read p{margin:0 0 8px;line-height:1.55;font-size:var(--fs-body)}
+  .rc-read p:last-of-type{margin-bottom:0}
+  .rc-wash{opacity:.055}
+  html.dark .rc-wash{opacity:.08} /* 5.5% vanishes on the navy ground \u2014 the spec\u2019s reserved retune, taken */
+  .rc-ln{transition:opacity .18s}
+  .rc-ln.fade{opacity:.15}
+  .rc-tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
+  .rc-tbl th{font:600 var(--fs-meta) var(--font-body);text-align:right;padding:0 0 8px 6px;vertical-align:bottom;color:var(--ink)}
+  .rc-tbl th:first-child{text-align:left}
+  .rc-tbl th .n{display:inline-block;max-width:74px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+  .rc-tbl th .rc-dot{width:8px;height:8px;margin-right:5px}
+  .rc-tbl td{padding:7px 0 7px 6px;border-top:1px solid var(--line);text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+  .rc-tbl td:first-child{text-align:left;color:var(--muted);font-size:var(--fs-meta)}
+  .rc-tbl .mut{color:var(--muted-2)}
+  .rc-tbl .fd{opacity:.35}
   .rp-a{color:var(--accent)}
   .pg-h h3 .ps{color:var(--accent)}
   .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
@@ -648,6 +708,7 @@
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5;
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
+    --cmp-p1:#8b87ff; --cmp-p2:#22d3ee; --cmp-p3:#e879f9; /* 0714i: dark identity */
     --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45); --shadow-tk:drop-shadow(0 6px 14px rgba(0,0,0,.5));
   }
   html.dark body{background:
@@ -1218,7 +1279,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2710,7 +2771,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      /baseline) — trails, transports and walkthroughs typed ATTRACTION upstream
      never post standby, so they never bank, so they never list. The Wrap's
      realRides() rule, browse-shaped: read-time, no curation list to maintain. ===== */
-  var rpView="now",rpPark=null,rpRide=null,rpSub=null; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
+  var rpView="now",rpPark=null,rpRide=null,rpSub=null,rcIds=null,rcPk=false,rcPkA=false,rcSel=null,rcFoc=null; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
   function rpMed(a){var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;if(!n)return null;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}
   function rpTypical(rid){ /* median of bucket day-medians; buckets under 10 days hidden (the n-floor law); 6+ qualifying buckets required to claim a day shape */
     if(!pfBase||!pfBase.rides)return null;
@@ -2996,7 +3057,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a <b>'+esc(r.name||"")+'</b></div>';
     var hero='<div class="rp-hero"><div class="eb">Ride profile \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(r.name||"")+(watch[rpRide]?' <span class="fs">\u2605</span>':'')+'</h2>'+
-      '<div class="sub">'+esc(rpPark||r.park||"")+'</div>'+
+      '<div class="rc-hrow"><div class="sub">'+esc(rpPark||r.park||"")+'</div><button class="rc-pill" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4L3 8l4 4M3 8h13M17 20l4-4-4-4M21 16H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Compare</button></div>'+ /* 0714i: the compare door \u2014 quiet, in the hero */
       '<div class="hstats"><div class="hstat"><div class="k">Typical wait</div><div class="v">'+(cv?cv.typ+'<small>m</small>':'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Typical peak</div><div class="v">'+(cv?cv.pk+'<small>m</small>':'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Clean days</div><div class="v">'+(rel?rel.clean+'<small>/'+rel.n+'</small>':'\u2013')+'</div></div></div></div>';
@@ -3017,7 +3078,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         rpCurveSVG(cv)+
         '<div class="pf-basis">Typical = half-hour medians '+({all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'})[rpWin]+' while operating \u00b7 band = the middle half of days \u00b7 slots under 10 days hidden</div></div>';
     }
-    return crumb+hero+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
+    return crumb+hero+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
   }
   function rpBackBtn(lb){ /* 0714c rider: the app's one return pill \u2014 the Wrap arrow + wording */
     return '<button class="rp-back" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+lb+'</button>';
@@ -3198,6 +3259,137 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="pf-basis">The order typical days suggest \u2014 a pattern, not today\u2019s promise \u00b7 rope-drop-first = a line that never dipped to walk-on \u00b7 by-a-time = the walk-on\u2019s typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first</div></div>';
     return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
   }
+  /* ===== 0714i \u00b7 COMPARE (L-28 cut 9, lean) ================================
+     One park, one scale, the profile's window \u2014 a choosing tool, not an ordering
+     tool (My Morning orders; the coach card stays banked in L28-Spec \u00a73 for a
+     later cut, owner call). Identity is contained: indigo = the ride you came
+     from, cyan and fuchsia follow the seats \u2014 never mistakable for a tier. */
+  function rcTyps(){ /* park roster with window typicals \u2014 the board's own per-ride walk */
+    var out=[],id,r;
+    for(id in roster){r=roster[id];
+      if(r.kind!=="ride"||r.park!==rpPark)continue;
+      out.push({id:id,nm:r.name,cv:rpWinCurve(id,rpWin)});}
+    out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
+    return out;
+  }
+  function rcSheetHTML(){ /* Variant B \u2014 headliner shelf: each chip seats one; identity follows the seat */
+    var all=rcTyps(),by={},i;for(i=0;i<all.length;i++)by[all[i].id]=all[i];
+    var me=roster[rpRide]||{},cap=rcSel.length>=3;
+    var seats='';
+    for(i=0;i<rcSel.length;i++){var it=by[rcSel[i]]||{nm:(roster[rcSel[i]]||{}).name,cv:null};
+      seats+='<div class="rc-seat"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(it.nm||"")+'</span>'+
+        (it.cv?'<span class="typ">'+it.cv.typ+'m typical</span>':'')+
+        (i===0?'<span class="tag">Here now</span>':'<button class="rc-x" data-rcx="'+i+'" type="button">\u2715</button>')+'</div>';}
+    for(i=rcSel.length;i<3;i++)seats+='<div class="rc-seat empty"><span class="rc-dot"></span>'+(rcSel.length<2?'Pick at least one more':'Pick one more \u2014 or compare these two')+'</div>';
+    var heads=all.filter(function(x){return x.cv&&x.id!==rpRide;}).sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,4);
+    var chips=heads.map(function(x){var on=rcSel.indexOf(x.id)>=0;
+      return '<button class="rc-pchip'+(on?' seated':'')+'"'+((on||cap)?' disabled':' data-rcid="'+esc(x.id)+'"')+' type="button">'+esc(x.nm)+' <small>'+x.cv.typ+'m</small></button>';}).join("");
+    var rows=all.map(function(x){var si=rcSel.indexOf(x.id),dis=x.id===rpRide||!x.cv||(cap&&si<0);
+      return '<div class="rc-rrow'+((dis&&si<0)?' dim':'')+'"'+((!dis&&si<0)?' data-rcid="'+esc(x.id)+'"':'')+'>'+
+        '<span class="rc-dot'+(si<0?' off':'')+'"'+(si>=0?' style="background:var(--cmp-p'+(si+1)+')"':'')+'></span>'+esc(x.nm)+
+        '<span class="typ">'+(x.cv?x.cv.typ+'m':'\u2013')+'</span></div>';}).join("");
+    return '<div class="rc-scrim"></div><div class="rc-sheet'+(rcPkA?' anim':'')+'"><div class="rc-grab"></div>'+
+      '<div class="rc-title">Compare '+esc(me.name||"")+' with\u2026</div>'+
+      '<div class="rc-sub">'+esc(rpPark||"")+' only \u00b7 up to 3 rides \u00b7 the profile\u2019s window</div>'+
+      '<div class="rc-seats">'+seats+'</div>'+
+      '<div class="rc-plab">This park\u2019s headliners</div><div class="rc-prow">'+chips+'</div>'+
+      '<input class="rc-srch" type="search" placeholder="Search '+esc(rpPark||"")+' rides" autocomplete="off"/>'+
+      '<div class="rc-roster">'+rows+'</div>'+
+      (cap?'<div class="rc-cap">Three seats filled \u2014 remove a ride to swap</div>':'')+
+      '<button class="rc-go" type="button"'+(rcSel.length<2?' disabled':'')+'>Compare '+rcSel.length+' ride'+(rcSel.length===1?'':'s')+'</button></div>';
+  }
+  function rcReadHTML(its){ /* clause-gated comparative \u2014 every sentence provable from the window's own fields; coach-register present tense */
+    var wc=its.filter(function(x){return !!x.cv;});
+    if(wc.length<2)return '<div class="rpc"><div class="lbl">The read</div><div class="fc-empty">This window is too thin to compare \u2014 the profiles carry it.</div></div>';
+    var by=wc.slice().sort(function(a,b){return a.cv.typ-b.cv.typ;});
+    var loT=by[0].cv.typ,hiT=by[by.length-1].cv.typ;
+    var los=wc.filter(function(x){return x.cv.typ===loT;}),his=wc.filter(function(x){return x.cv.typ===hiT;});
+    function nms(a){return a.map(function(x){return '<b>'+esc(x.nm)+'</b>';}).join(' and ');}
+    var s='';
+    if(loT===hiT)s='<p>'+nms(wc)+' share the same typical this window \u2014 <b>'+loT+'m</b>.</p>';
+    else{
+      s='<p>'+(los.length===1?nms(los)+' is the cheapest line here \u2014 typically <b>'+loT+'m</b>, topping out at <b>'+los[0].cv.pk+'m</b> on the typical day.':nms(los)+' share the cheapest typical \u2014 <b>'+loT+'m</b>.')+'</p>';
+      var t2='';
+      if(his.length===1){var hc=his[0].cv;
+        t2=nms(his)+' carries the tallest typical (<b>'+hiT+'m</b>)';
+        if(hc.allday)t2+=' \u2014 yet stays a walk-on all day.';
+        else if(hc.front===null)t2+=' and never opens easy \u2014 near <b>'+hc.bs[0].med+'m</b> at the bell.';
+        else t2+=' but opens as a walk-on until <b>'+rpClk(hc.front)+'</b>.';
+      }else t2=nms(his)+' share the tallest typical (<b>'+hiT+'m</b>).';
+      s+='<p>'+t2;
+      var mid=wc.filter(function(x){return los.indexOf(x)<0&&his.indexOf(x)<0;});
+      if(mid.length===1){var mc=mid[0].cv;
+        s+=' '+nms(mid)+' runs between them \u2014 typically <b>'+mc.typ+'m</b>'+(mc.allday?' as a walk-on all day.':(mc.front!==null?', a walk-on until <b>'+rpClk(mc.front)+'</b>.':', cresting '+rpRange(mc.crest[0],mc.crest[1])+'.'));}
+      s+='</p>';
+    }
+    var WN={all:'All banked days',last7:'The last 7 days',month:'This month',wkend:'Weekends'};
+    return '<div class="rpc rc-read"><div class="lbl">The read</div>'+s+
+      '<div class="pf-basis">'+WN[rpWin]+' \u00b7 typical half-hour medians while operating \u00b7 one scale, one window \u2014 like for like</div></div>';
+  }
+  function rcChartHTML(its){ /* lines wear identity; tier wash (20/45/70) restores the tier read; band off \u2014 spread stays the profile Shape's story */
+    var wc=its.filter(function(x){return !!x.cv;});
+    if(!wc.length)return '<div class="rpc"><div class="lbl">The typical day, overlaid</div><div class="fc-empty">This window is too thin to draw \u2014 the profiles carry it.</div></div>';
+    var t0=1e9,t1=-1,i,j;
+    for(i=0;i<wc.length;i++){var bs=wc[i].cv.bs;if(bs[0].t<t0)t0=bs[0].t;if(bs[bs.length-1].t>t1)t1=bs[bs.length-1].t;}
+    var N=Math.round((t1-t0)/30)+1,x0=8,x1=332,yT=16,yB=104,slot=(x1-x0)/N;
+    var mx=40;for(i=0;i<wc.length;i++){var b2=wc[i].cv.bs;for(j=0;j<b2.length;j++)if(b2[j].med+8>mx)mx=b2[j].med+8;}
+    function Y(v){return yB-(yB-yT)*v/mx;}
+    function C(k){return x0+slot*k+slot/2;}
+    var wash='',lab='',BANDS=[[0,20,"--short"],[20,45,"--medium"],[45,70,"--long"],[70,1e9,"--packed"]];
+    for(i=0;i<BANDS.length;i++){var lo=BANDS[i][0],hi=Math.min(BANDS[i][1],mx);if(hi<=lo)continue;
+      wash+='<rect class="rc-wash" x="'+x0+'" y="'+Y(hi).toFixed(1)+'" width="'+(x1-x0)+'" height="'+(Y(lo)-Y(hi)).toFixed(1)+'" fill="var('+BANDS[i][2]+')"/>';
+      if(lo>0)lab+='<text x="339" y="'+(Y(lo)+3).toFixed(1)+'" text-anchor="end" font-size="8" font-weight="700" fill="var(--muted-2)" font-family="Inter,system-ui">'+lo+'</text>';}
+    var lines='';
+    for(i=0;i<its.length;i++){var cv=its[i].cv;if(!cv)continue; /* a thin ride keeps its seat color \u2014 identity keys on the seat, not the draw order */
+      var byT={},p='',pen=false;for(j=0;j<cv.bs.length;j++)byT[cv.bs[j].t]=cv.bs[j].med;
+      for(j=0;j<N;j++){var m=byT[t0+30*j];
+        if(m==null){pen=false;continue;}
+        p+=(pen?' L':(p?' M':'M'))+C(j).toFixed(1)+' '+Y(m).toFixed(1);pen=true;}
+      var f=rcFoc&&rcFoc!==its[i].id;
+      lines+='<path class="rc-ln'+(f?' fade':'')+'" d="'+p+'" fill="none" stroke="var(--cmp-p'+(i+1)+')" stroke-width="'+(rcFoc===its[i].id?'2.6':'2.2')+'" stroke-linejoin="round" stroke-linecap="round"/>';}
+    var ticks='',cand=[540,720,900,1080,1260];
+    for(i=0;i<cand.length;i++){var t=cand[i];if(t<t0||t>t1)continue;var h=t/60;
+      ticks+='<text x="'+C(Math.round((t-t0)/30)).toFixed(1)+'" y="'+(yB+15)+'" text-anchor="middle" font-size="9" font-weight="700" fill="var(--muted-2)" font-family="Inter,system-ui">'+((h%12)||12)+(h<12?"A":"P")+'</text>';}
+    var thin=its.filter(function(x){return !x.cv;}).map(function(x){return esc(x.nm);});
+    return '<div class="rpc"><div class="lbl">The typical day, overlaid</div>'+
+      '<svg class="rp-svg" viewBox="0 0 340 128" role="img" aria-label="Typical waits, overlaid">'+wash+
+      '<line x1="'+x0+'" y1="'+yB+'" x2="'+x1+'" y2="'+yB+'" stroke="var(--line)" stroke-width="1"/>'+lines+ticks+lab+'</svg>'+
+      '<div class="pf-basis">Lines wear each ride\u2019s identity \u00b7 faint bands = the wait tiers \u00b7 spread stays each profile\u2019s story'+(thin.length?' \u00b7 '+thin.join(", ")+' ran too thin this window':'')+'</div></div>';
+  }
+  function rcTableHTML(its,days){ /* identity colors the headers; values stay ink \u2014 color keeps one job */
+    var i,heads='<th></th>',WD={all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'};
+    function fd(id){return (rcFoc&&rcFoc!==id)?' class="fd"':'';}
+    for(i=0;i<its.length;i++)heads+='<th'+fd(its[i].id)+'><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="n">'+esc(its[i].nm)+'</span></th>';
+    function row(lab2,fn){var c='<td>'+lab2+'</td>';
+      for(var q=0;q<its.length;q++)c+='<td'+fd(its[q].id)+'>'+fn(its[q])+'</td>';
+      return '<tr>'+c+'</tr>';}
+    var MUT='<span class="mut">\u2014</span>';
+    var b=row('Typical',function(x){return x.cv?x.cv.typ+'m':'\u2013';})+
+      row('Typical peak',function(x){return x.cv?x.cv.pk+'m':'\u2013';})+
+      row('Walk-on until',function(x){return x.cv?(x.cv.allday?'All day':(x.cv.front!==null?rpClk(x.cv.front):'<span class="mut">Never</span>')):'\u2013';})+
+      row('Walk-on again',function(x){return x.cv&&x.cv.back!==null?rpClk(x.cv.back):MUT;})+
+      row('Crests',function(x){return x.cv&&!x.cv.allday?rpRange(x.cv.crest[0],x.cv.crest[1]):MUT;})+
+      row('Clean days',function(x){return x.rel?x.rel.clean+'<span class="mut">/'+x.rel.n+'</span>':'\u2013';});
+    return '<div class="rpc"><div class="lbl">Side by side</div><table class="rc-tbl"><tr>'+heads+'</tr>'+b+'</table>'+
+      '<div class="pf-basis">Identity colors the headers; values stay ink \u2014 color keeps one job \u00b7 typical = half-hour medians '+WD[rpWin]+' while operating'+(rcFoc?' \u00b7 tap the chip again to release':'')+'</div></div>';
+  }
+  function rcCompareHTML(){
+    var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
+    var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends"};
+    var me=roster[rcIds[0]]||{},i,its=[];
+    for(i=0;i<rcIds.length;i++){var rr=roster[rcIds[i]]||{};
+      its.push({id:rcIds[i],nm:rr.name||"",cv:rpWinCurve(rcIds[i],rpWin),rel:rpRel(rcIds[i],rpWin)});}
+    var crumb=rpBackBtn(esc(me.name||""))+ /* the pill names its destination \u2014 the profile you came from */
+      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a '+esc(me.name||"")+' \u203a <b>Compare</b></div>';
+    var chips='';
+    for(i=0;i<its.length;i++){var f=rcFoc===its[i].id;
+      chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span></button>';}
+    var hero='<div class="rc-hero"><div class="eb">Compare \u00b7 '+EBW[rpWin]+'</div><div class="rc-legend">'+chips+'</div>'+
+      '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 same window as the profile</div></div>';
+    var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].map(function(t){
+      return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
+    return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcTableHTML(its,days);
+  }
   function rpAttrHTML(){
     if(!rpPark){
       var rows=PARK_DEF.map(function(p){
@@ -3247,7 +3439,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
-    if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+(rpRide?(rpEnsureDigs(),rpProfileHTML()):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
+    if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+(rpRide?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
     else el.innerHTML='<div class="pg-stick">'+head+rail+seg+'</div>'+
       pfFeedHTML(hlScope)+ /* 0711b: callout feed — owner picked feed-above-board (D1), G1 grammar */
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
@@ -3259,14 +3451,29 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
-      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;}renderPulsePage();rpTop();});});
+      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;}renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
-      rpPark=b.getAttribute("data-rpk");rpSub=null;renderPulsePage();rpTop();});});
-    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
+      rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
+    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
     el.querySelectorAll(".rp-go").forEach(function(b){b.addEventListener("click",function(){
-      rpRide=b.getAttribute("data-rid");renderPulsePage();rpTop();});});
+      rpRide=b.getAttribute("data-rid");rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-rpsub]").forEach(function(b){b.addEventListener("click",function(){ /* 0714a: the planning doors */
       rpSub=b.getAttribute("data-rpsub");renderPulsePage();rpTop();});});
+    var rcp=el.querySelector(".rc-pill");if(rcp)rcp.addEventListener("click",function(){ /* 0714i: the compare door opens the picker */
+      rcPk=true;rcSel=[rpRide];rcPkA=true;renderPulsePage();});
+    var rcs=el.querySelector(".rc-scrim");if(rcs)rcs.addEventListener("click",function(){rcPk=false;renderPulsePage();});
+    el.querySelectorAll("[data-rcid]").forEach(function(b){b.addEventListener("click",function(){ /* seats fill in pick order \u2014 identity follows the seat */
+      if(rcSel.length>=3)return;var id=b.getAttribute("data-rcid");if(rcSel.indexOf(id)>=0)return;rcSel.push(id);renderPulsePage();});});
+    el.querySelectorAll("[data-rcx]").forEach(function(b){b.addEventListener("click",function(){
+      rcSel.splice(+b.getAttribute("data-rcx"),1);renderPulsePage();});});
+    var rcg=el.querySelector(".rc-go");if(rcg)rcg.addEventListener("click",function(){
+      if(rcSel.length<2)return;rcIds=rcSel.slice();rcPk=false;rcFoc=null;renderPulsePage();rpTop();});
+    var rcq=el.querySelector(".rc-srch");if(rcq)rcq.addEventListener("input",function(){ /* in-place filter \u2014 no re-render, no caret loss */
+      var q=rcq.value.trim().toLowerCase();
+      el.querySelectorAll(".rc-rrow").forEach(function(rw){rw.style.display=(!q||rw.textContent.toLowerCase().indexOf(q)>=0)?"":"none";});});
+    el.querySelectorAll("[data-rcfoc]").forEach(function(b){b.addEventListener("click",function(){ /* tap-a-chip \u2014 tap again releases */
+      var id=b.getAttribute("data-rcfoc");rcFoc=(rcFoc===id)?null:id;renderPulsePage();});});
+    rcPkA=false; /* the sheet's entrance plays once \u2014 re-renders while picking paint it already-open */
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
     if(dts)dts.addEventListener("click",function(e){
       var c=e.target;if(!c||!c.getAttribute||c.getAttribute("data-di")==null)return;
