@@ -420,6 +420,8 @@
   .rc-seat.empty{border-style:dashed;background:transparent;color:var(--muted-2);font-size:var(--fs-meta)}
   .rc-seat.empty .rc-dot{background:transparent;border:1.5px dashed var(--muted-2)}
   .rc-plab{font:600 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+  .rc-stars{display:block;width:100%;box-sizing:border-box;text-align:left;border:1px solid var(--line);border-radius:var(--r-tile);padding:10px 12px;background:var(--card-2);font:600 var(--fs-small) var(--font-body);color:var(--ink);cursor:pointer;margin:0 0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+  .rc-stars .fs{color:var(--fav)}
   .rc-prow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
   .rc-pchip{border:1px solid var(--line);border-radius:var(--r-pill);padding:7px 13px;font:600 var(--fs-small) var(--font-body);color:var(--ink);background:var(--card-2);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .rc-pchip small{color:var(--muted);font-weight:500;margin-left:4px}
@@ -448,7 +450,7 @@
   .rc-ln{transition:opacity .18s}
   .rc-ln.fade{opacity:.15}
   .rc-tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
-  .rc-tbl th{font:600 var(--fs-meta) var(--font-body);text-align:right;padding:0 0 8px 6px;vertical-align:bottom;color:var(--ink)}
+  .rc-tbl th{font:600 var(--fs-meta) var(--font-body);text-align:right;padding:0 0 8px 6px;vertical-align:bottom;color:var(--ink);white-space:nowrap} /* 0714j: the dot stays beside its name */
   .rc-tbl th:first-child{text-align:left}
   .rc-tbl th .n{display:inline-block;max-width:74px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
   .rc-tbl th .rc-dot{width:8px;height:8px;margin-right:5px}
@@ -724,8 +726,9 @@
     padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -14px 44px rgba(20,22,50,.26);
     max-height:86vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
   #setPop.show{transform:translateY(0)}
-  #alertsPop,#setPop,#helpSheet{overscroll-behavior-y:contain}
+  #alertsPop,#setPop,#helpSheet,.rc-sheet{overscroll-behavior-y:contain}
   body.set-open{overflow:hidden}
+  body.rc-open{overflow:hidden} /* 0714j: the compare picker joins the sheet body-lock family */
   .set-lab{font-size:var(--fs-caps);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:4px 2px 9px}
   .pw-seg.set-seg{max-width:none;margin:0 0 10px}
   .set-cap{font-size:var(--fs-meta);color:var(--muted-2);margin:0 2px 18px}
@@ -1279,7 +1282,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1388,7 +1391,7 @@ var PARK_DEF=[
         "\"it's a small world\"","Buzz Lightyear's Space Ranger Spin","Tomorrowland Transit Authority PeopleMover",
         "Mad Tea Party","The Barnstormer","Dumbo the Flying Elephant","The Many Adventures of Winnie the Pooh",
         "Under the Sea ~ Journey of The Little Mermaid","Astro Orbiter","Walt Disney World Railroad",
-        "Tomorrowland Speedway","Prince Charming Regal Carrousel","The Magic Carpets of Aladdin"],
+        "Tomorrowland Speedway","Prince Charming Regal Carrousel","The Magic Carpets of Aladdin","Enchanted Tales with Belle"], /* 0714k: ruled a ride (standing invariant) \u2014 seats in the curated list the planning predicate reads */
       shows:["Mickey's PhilharMagic","Walt Disney's Enchanted Tiki Room","Country Bear Musical Jamboree",
         "Monsters, Inc. Laugh Floor","The Hall of Presidents","Walt Disney's Carousel of Progress"]},
     {key:"EPCOT", emblem:"🌐", img:"",
@@ -1630,8 +1633,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var startY=0,pulling=false,armed=false,busy=false;
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
-      return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open");}
-    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open"));}
+      return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open");}
+    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open,.rc-sheet"));}
     function setPull(px){
       ptr.classList.add("pull");
       ptr.style.opacity=Math.min(px/40,1);
@@ -3080,6 +3083,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     return crumb+hero+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
   }
+  var RP_CURATED=null; /* 0714k \u00b7 W-23/L-10: park -> set of normalized curated ride names, built once from PARK_DEF */
+  function rpCuratedRide(r){ /* planning surfaces walk the OWNER's ride list, never the feed's typing \u2014 read-time, one-fragment reversible (add a name to PARK_DEF.rides and it seats instantly) */
+    if(!r||r.kind!=="ride")return false;
+    if(!RP_CURATED){RP_CURATED={};for(var i=0;i<PARK_DEF.length;i++){var p=PARK_DEF[i],s2={},j;for(j=0;j<p.rides.length;j++)s2[normName(p.rides[j])]=1;RP_CURATED[p.key]=s2;}}
+    var m=RP_CURATED[r.park];return !!(m&&m[normName(r.name)]);
+  }
   function rpBackBtn(lb){ /* 0714c rider: the app's one return pill \u2014 the Wrap arrow + wording */
     return '<button class="rp-back" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+lb+'</button>';
   }
@@ -3099,7 +3108,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rdClassify(win){
     var out={never:[],until:[],allday:[],flat:[],out:[]},id,r,cv;
     for(id in roster){r=roster[id];
-      if(r.kind!=="ride"||r.park!==rpPark||!pfBase.rides[id])continue;
+      if(!rpCuratedRide(r)||r.park!==rpPark||!pfBase.rides[id])continue; /* 0714k: the board seats curated rides only */
       cv=rpWinCurve(id,win);
       if(!cv){out.out.push({id:id,nm:r.name});continue;}
       var mn=1e9,mx=-1e9,q;for(q=0;q<cv.bs.length;q++){if(cv.bs[q].med<mn)mn=cv.bs[q].med;if(cv.bs[q].med>mx)mx=cv.bs[q].med;} var it={id:id,nm:r.name,cv:cv,open:cv.bs[0].med,flatV:(mx===mn&&!cv.allday)?mx:null}; /* 0714f: strict-flat \u2014 one posted number all day carries no morning story (owner-caught: Canada/Reflections wearing never-easy) */
@@ -3199,7 +3208,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rmStars(){
     var out=[],id,r;
     for(id in roster){r=roster[id];
-      if(r.kind!=="ride"||r.park!==rpPark||!watch[id])continue;
+      if(!rpCuratedRide(r)||r.park!==rpPark||!watch[id])continue; /* 0714k: the \u2605 input walks the curated list */
       out.push({id:id,nm:r.name});}
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
@@ -3267,7 +3276,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function rcTyps(){ /* park roster with window typicals \u2014 the board's own per-ride walk */
     var out=[],id,r;
     for(id in roster){r=roster[id];
-      if(r.kind!=="ride"||r.park!==rpPark)continue;
+      if(!rpCuratedRide(r)||r.park!==rpPark)continue; /* 0714k: curated rides only \u2014 the feed\u2019s ATTRACTION typing never seats a gallery here */
       out.push({id:id,nm:r.name,cv:rpWinCurve(id,rpWin)});}
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
@@ -3288,11 +3297,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       return '<div class="rc-rrow'+((dis&&si<0)?' dim':'')+'"'+((!dis&&si<0)?' data-rcid="'+esc(x.id)+'"':'')+'>'+
         '<span class="rc-dot'+(si<0?' off':'')+'"'+(si>=0?' style="background:var(--cmp-p'+(si+1)+')"':'')+'></span>'+esc(x.nm)+
         '<span class="typ">'+(x.cv?x.cv.typ+'m':'\u2013')+'</span></div>';}).join("");
+    var stars=all.filter(function(x){return watch[x.id]&&x.id!==rpRide&&x.cv&&rcSel.indexOf(x.id)<0;}) /* 0714j: one symbol, one meaning \u2014 the \u2605 shelf reads the Favorites stars */
+      .sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,3-rcSel.length);
+    var st=stars.length?'<button class="rc-stars" data-rcstars="'+esc(stars.map(function(x){return x.id;}).join("|"))+'" type="button"><span class="fs">\u2605</span> Seat your star'+(stars.length===1?'':'s')+' \u2014 '+stars.map(function(x){return esc(x.nm);}).join(" + ")+'</button>':'';
     return '<div class="rc-scrim"></div><div class="rc-sheet'+(rcPkA?' anim':'')+'"><div class="rc-grab"></div>'+
       '<div class="rc-title">Compare '+esc(me.name||"")+' with\u2026</div>'+
       '<div class="rc-sub">'+esc(rpPark||"")+' only \u00b7 up to 3 rides \u00b7 the profile\u2019s window</div>'+
       '<div class="rc-seats">'+seats+'</div>'+
-      '<div class="rc-plab">This park\u2019s headliners</div><div class="rc-prow">'+chips+'</div>'+
+      st+'<div class="rc-plab">This park\u2019s headliners</div><div class="rc-prow">'+chips+'</div>'+
       '<input class="rc-srch" type="search" placeholder="Search '+esc(rpPark||"")+' rides" autocomplete="off"/>'+
       '<div class="rc-roster">'+rows+'</div>'+
       (cap?'<div class="rc-cap">Three seats filled \u2014 remove a ride to swap</div>':'')+
@@ -3404,7 +3416,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 28 days of banked waits \u2014 one moment.</div></div>';
     }
     var items=[],id;
-    for(id in roster){var r=roster[id];if(r.kind!=="ride"||r.park!==rpPark||!pfBase.rides[id])continue;
+    for(id in roster){var r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark||!pfBase.rides[id])continue; /* 0714k: browse walks the curated list */
       items.push({id:id,nm:r.name,ty:rpTypical(id)});}
     items.sort(function(a,b){var av=a.ty===null?-1:a.ty,bv=b.ty===null?-1:b.ty;if(av!==bv)return bv-av;return a.nm.localeCompare(b.nm);});
     var list=items.length?items.map(function(it){
@@ -3466,6 +3478,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(rcSel.length>=3)return;var id=b.getAttribute("data-rcid");if(rcSel.indexOf(id)>=0)return;rcSel.push(id);renderPulsePage();});});
     el.querySelectorAll("[data-rcx]").forEach(function(b){b.addEventListener("click",function(){
       rcSel.splice(+b.getAttribute("data-rcx"),1);renderPulsePage();});});
+    el.querySelectorAll("[data-rcstars]").forEach(function(b){b.addEventListener("click",function(){ /* 0714j: one tap seats the named stars */
+      b.getAttribute("data-rcstars").split("|").forEach(function(id){if(rcSel.length<3&&rcSel.indexOf(id)<0)rcSel.push(id);});renderPulsePage();});});
     var rcg=el.querySelector(".rc-go");if(rcg)rcg.addEventListener("click",function(){
       if(rcSel.length<2)return;rcIds=rcSel.slice();rcPk=false;rcFoc=null;renderPulsePage();rpTop();});
     var rcq=el.querySelector(".rc-srch");if(rcq)rcq.addEventListener("input",function(){ /* in-place filter \u2014 no re-render, no caret loss */
@@ -3473,7 +3487,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       el.querySelectorAll(".rc-rrow").forEach(function(rw){rw.style.display=(!q||rw.textContent.toLowerCase().indexOf(q)>=0)?"":"none";});});
     el.querySelectorAll("[data-rcfoc]").forEach(function(b){b.addEventListener("click",function(){ /* tap-a-chip \u2014 tap again releases */
       var id=b.getAttribute("data-rcfoc");rcFoc=(rcFoc===id)?null:id;renderPulsePage();});});
-    rcPkA=false; /* the sheet's entrance plays once \u2014 re-renders while picking paint it already-open */
+    rcPkA=false;document.body.classList.toggle("rc-open",!!rcPk); /* 0714j: one lock writer \u2014 the render derives the body lock from rcPk \u00b7 the sheet\u2019s entrance plays once */
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
     if(dts)dts.addEventListener("click",function(e){
       var c=e.target;if(!c||!c.getAttribute||c.getAttribute("data-di")==null)return;
@@ -6858,6 +6872,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if(k==="alerts"){openAlertsSheet();return;} /* 0710t: an overlay door in dock clothes — never becomes navTab; documented grammar exception (four siblings navigate, this one opens the sheet). Revert = this line + the dock button + nbadge CSS + the badge id. */
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
       navTab=k;
+      if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");} /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
       var pf=$id("pgFav"),pp=$id("pgPulse");
       if(pf)pf.hidden=(k!=="fav");
       if(pp)pp.hidden=(k!=="pulse");
