@@ -400,6 +400,22 @@
   .tp-new{display:block;width:100%;border:1.5px dashed var(--muted-2);border-radius:var(--r-card);background:none;color:var(--accent);font:700 var(--fs-body) var(--font-body);padding:14px 0;cursor:pointer;margin-top:2px}
   .tp-del{display:block;width:100%;margin-top:7px;border:1px solid var(--line);border-radius:var(--r-el);background:none;color:var(--packed);font:700 var(--fs-body) var(--font-body);padding:10px 0;cursor:pointer}
   .tp-del.arm{background:var(--packed);border-color:var(--packed);color:#fff}
+  /* ===== L-29 Cut 2 (0714z): the plan layer — creator B-grid (mock-4 ratified) + the 2b board clothing: caption, cell ring, row lift, assign row ===== */
+  .tp-plcap{font:600 var(--fs-micro) var(--font-body);color:var(--accent);margin-top:1px}
+  .tp-dc.plan{outline:2px solid var(--accent);outline-offset:1.5px}
+  .tp-dxr.pl{border-left:2.5px solid var(--accent);padding-left:9px;margin-left:-11.5px}
+  .tp-asn{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
+  .tp-ac{font:700 var(--fs-meta) var(--font-body);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 12px;color:var(--muted);background:var(--card);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tp-ac.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .tp-acap{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);padding:5px 2px}
+  .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
+  .tp-plsub{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
+  .tp-plgh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:9px 0 4px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+  .tp-plgh i{font-style:normal;text-align:center}
+  .tp-plrow{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;align-items:center;padding:4px 0}
+  .tp-plwd{font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);letter-spacing:-.01em}
+  .tp-plc{height:30px;border-radius:var(--r-el-sm);border:1px dashed var(--line);background:var(--card-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font:700 var(--fs-micro) var(--font-body);letter-spacing:.06em;color:var(--muted-2);-webkit-tap-highlight-color:transparent}
+  .tp-plc.sel{border:1px solid var(--accent-fill);background:var(--accent-fill);color:#fff}
   .rp-hmpre{display:flex;gap:14px;flex-wrap:wrap;padding:0 0 10px}
   .rp-hm{display:grid;gap:2.5px;padding:2px 0}
   .rp-hm .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--muted-2);text-align:center;text-transform:uppercase;font-style:normal;padding-bottom:2px}
@@ -1358,7 +1374,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2925,7 +2941,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={}; /* L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null; /* L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -3604,6 +3620,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     "2027-12-28":"Christmas week","2027-12-29":"Christmas week","2027-12-30":"Christmas week","2027-12-31":"New Year's Eve"};
   var TP_PARKS=[["Magic Kingdom","MK"],["EPCOT","EP"],["Hollywood Studios","HS"],["Animal Kingdom","AK"]];
   var TP_TW=["","Light","Moderate","Busy","Packed"],TP_FLOOR=3,TP_MAXDAYS=21;
+  var TP_PSHORT={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"}; /* Cut 2: the fan vocabulary the 2b chips ratified — full names stay the storage + prose vocabulary */
   function tpTripValid(t){return !!(t&&t.a&&t.b&&t.a<=t.b);}
   function tpTrips(){ /* 0714w: the trips array; the legacy single ppTrip migrates silently on first read */
     var ts=store.get("ppTrips",null);
@@ -3616,9 +3633,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!a||!b||b<a)return "Pick a first and last day \u2014 the last can\u2019t come before the first.";
     if(Math.round((tpAsD(b)-tpAsD(a))/864e5)+1>TP_MAXDAYS)return "Trips run up to "+TP_MAXDAYS+" days \u2014 shorten the range.";
     var ts=tpTrips(),tgt=(tpEdit&&!tpNew)?tpCurTrip():null;
-    if(tgt){tgt.n=n;tgt.a=a;tgt.b=b;tpSel=tgt.id;}
-    else{var t={id:String(Date.now())+"-"+ts.length,n:n,a:a,b:b};ts.push(t);tpSel=t.id;}
-    store.set("ppTrips",ts);tpEdit=false;tpNew=false;tpOpen=null;tpDelArm=false;
+    var pl=(tpPlanDraft!==null)?tpPlanDraft:((tgt&&tgt.plan)||{}),keep={}; /* Cut 2: picks prune to the saved range — a day the trip no longer contains can’t carry a pick */
+    tpDays({a:a,b:b}).forEach(function(k){if(pl[k])keep[k]=pl[k];});
+    if(tgt){tgt.n=n;tgt.a=a;tgt.b=b;tgt.plan=keep;tpSel=tgt.id;}
+    else{var t={id:String(Date.now())+"-"+ts.length,n:n,a:a,b:b,plan:keep};ts.push(t);tpSel=t.id;}
+    store.set("ppTrips",ts);tpEdit=false;tpNew=false;tpOpen=null;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;
     return null;
   }
   function tpDeleteTrip(id){ /* 0714y: the lifecycle's close — removes one trip; the dispatcher lands wherever the remainder leads (creator, board, or list) */
@@ -3626,6 +3645,39 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     store.set("ppTrips",out);
     tpSel=null;tpEdit=false;tpNew=false;tpOpen=null;tpDelArm=false;
     return out.length;
+  }
+  function tpSetPlan(id,d,p){ /* Cut 2: the board door writes the plan immediately — the tpSaveTrip idiom: mutate within one tpTrips() read, write the same array back */
+    var ts=tpTrips(),i;
+    for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      if(p){if(!ts[i].plan)ts[i].plan={};ts[i].plan[d]=p;}
+      else if(ts[i].plan)delete ts[i].plan[d];
+      store.set("ppTrips",ts);return;}
+  }
+  function tpPlanClause(t,ds,model,wd){ /* Cut 2 (2b-ratified): acknowledged, never judged — history first, pick second; no tier claim under the day floor */
+    var pk=(t&&t.plan||{})[ds];if(!pk)return "";
+    var c=tpCell(model,pk,wd);
+    if(c.thin)return ' Your pick, <b>'+esc(pk)+'</b>, is too thin yet.';
+    return ' Your pick, <b>'+esc(pk)+'</b>, ran '+tpTier(c.lvl)+'.';
+  }
+  function tpPlanRow(t,ds){ /* Cut 2: the drill-down’s assign row — Plan-a-park chips / Planned — Change · Clear (2b verbatim); board taps persist immediately */
+    var pk=(t.plan||{})[ds],h='<div class="tp-asn">',i;
+    if(pk&&tpPlanPick!==ds)return h+'<span class="tp-acap">Planned \u2014</span><span class="tp-ac sel">'+esc(TP_PSHORT[pk]||pk)+'</span><span class="tp-ac" data-tppchg="'+ds+'">Change</span><span class="tp-ac" data-tppclr="'+ds+'">Clear</span></div>';
+    h+='<span class="tp-acap">'+(pk?'Planned \u2014':'Plan a park \u2014')+'</span>';
+    for(i=0;i<4;i++){var p=TP_PARKS[i][0];h+='<span class="tp-ac'+(pk===p?' sel':'')+'" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'">'+(TP_PSHORT[p]||p)+'</span>';}
+    return h+'</div>';
+  }
+  function tpPlanSecHTML(a,b){ /* Cut 2: the creator’s park-day grid (mock-4 B, owner-ratified) — appears once the dates are valid, re-lists live, draft-backed until Save */
+    if(!a||!b||b<a)return "";
+    if(Math.round((tpAsD(b)-tpAsD(a))/864e5)+1>TP_MAXDAYS)return "";
+    if(tpPlanDraft===null)tpPlanDraft={};
+    var ds=tpDays({a:a,b:b}),h='<div class="tp-plhd">Park days \u00b7 optional</div><div class="tp-plsub">Tap a park for any day \u2014 tap it again to clear. Skip the rest.</div><div class="tp-plgh"><span></span>',i,j;
+    for(j=0;j<4;j++)h+='<i>'+TP_PARKS[j][1]+'</i>';
+    h+='</div>';
+    for(i=0;i<ds.length;i++){var d0=ds[i],hol=HOLIDAYS[d0]?' <span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'';
+      h+='<div class="tp-plrow"><span><span class="tp-plwd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+hol+'</div></span>';
+      for(j=0;j<4;j++){var p=TP_PARKS[j][0];h+='<span class="tp-plc'+(tpPlanDraft[d0]===p?' sel':'')+'" data-tppd="'+d0+'" data-tppk="'+esc(p)+'">'+TP_PARKS[j][1]+'</span>';}
+      h+='</div>';}
+    return h;
   }
   function tpToday(){var p=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());var o={},i;for(i=0;i<p.length;i++)o[p[i].type]=p[i].value;return o.year+"-"+o.month+"-"+o.day;}
   function tpAsD(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2]);}
@@ -3696,12 +3748,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var anyPk=false;rows.forEach(function(r){if(r.packed.length)anyPk=true;});
     return anyPk?(tS+' '+cS):(cS+' '+tS);
   }
-  function tpDayLine(ds,model){ /* the opened day's per-day voice + the clause-earned holiday honesty sub */
+  function tpDayLine(ds,model,t){ /* the opened day's per-day voice + the clause-earned holiday honesty sub */
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),thin=[],col=[],i;
     for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});}
     var hol=HOLIDAYS[ds];
     var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
-    if(!col.length)return {line:'<div class="tp-dxread">Still filling \u2014 not enough banked '+wn+'s for a read yet.</div>',sub:sub};
+    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxread">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</div>',sub:sub};}
     var best=5,worst=0;col.forEach(function(x){if(x.lvl<best)best=x.lvl;if(x.lvl>worst)worst=x.lvl;});
     var bests=col.filter(function(x){return x.lvl===best;}).map(function(x){return x.p;});
     var worsts=col.filter(function(x){return x.lvl===worst;}).map(function(x){return x.p;});
@@ -3713,6 +3765,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       else if(bests.length+worsts.length===col.length){s+=' \u2014 the rest '+tpTier(worst)+'.';if(worst<3)s+=' No park ran '+tpTier(3)+'.';}
       else s+=' \u2014 <b>'+tpAmp(worsts)+'</b> '+tpTier(worst)+'.';
     }
+    var pk2=(t&&t.plan||{})[ds]; /* Cut 2: the pick clause seats after the compare; a thin pick leaves the footnote (already spoken) */
+    s+=tpPlanClause(t,ds,model,wd);
+    if(pk2&&tpCell(model,pk2,wd).thin)thin=thin.filter(function(x){return x!==pk2;});
     if(thin.length)s+=' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>';
     return {line:'<div class="tp-dxread">'+s+'</div>',sub:sub};
   }
@@ -3743,14 +3798,16 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       })).then(function(){tpSched[mo]=out;if(rpView==="trip")renderPulsePage();});
     });
   }
-  function tpParkRows(ds,model){
+  function tpParkRows(ds,model,t){
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),h="",i,first=true;
-    for(i=0;i<4;i++){var p=TP_PARKS[i][0],c=tpCell(model,p,wd);
+    var pk=(t&&t.plan||{})[ds],order=[],p0; /* Cut 2 (2b-ratified): the planned park’s row rises to the top wearing the accent edge; the rest hold park order */
+    for(i=0;i<4;i++){p0=TP_PARKS[i][0];if(p0===pk)order.unshift(p0);else order.push(p0);}
+    for(i=0;i<4;i++){var p=order[i],c=tpCell(model,p,wd);
       var pt=c.thin?('Too thin yet \u00b7 '+c.n+' '+wn+(c.n===1?'':'s')+' banked')
         :(tpTier(c.lvl)+' \u00b7 '+c.avg+'m avg'+(first?' across attractions':'')+' \u00b7 '+c.n+' '+wn+'s');
       if(!c.thin)first=false;
-      h+='<div class="tp-dxr"><span><span class="tp-pn">'+p+'</span><div class="tp-pt">'+pt+'</div></span>'+tpHoursHTML(ds,p)+'</div>';}
-    return h;
+      h+='<div class="tp-dxr'+(p===pk?' pl':'')+'"><span><span class="tp-pn">'+p+(p===pk?' \u00b7 planned':'')+'</span><div class="tp-pt">'+pt+'</div></span>'+tpHoursHTML(ds,p)+'</div>';}
+    return h+(t?tpPlanRow(t,ds):'');
   }
   function tpEyebrow(t,today){
     var ds=tpDays(t);
@@ -3770,11 +3827,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return 'Same-weekday history \u00b7 the last '+model.cnt+' banked days ('+tpMD(model.w0)+' \u2013 '+tpMD(model.w1)+') \u00b7 color = the day crowd scale from each day\u2019s all-attraction average \u00b7 claims compare tiers, never raw minutes across parks'+tpSeason(t,model)+' \u00b7 history, never a promise \u00b7 hours = Disney\u2019s published schedule';
   }
   function tpCreatorHTML(t){
+    if(tpPlanDraft===null){tpPlanDraft={};var pl0=(t&&t.plan)||{},k0;for(k0 in pl0)tpPlanDraft[k0]=pl0[k0];} /* Cut 2: seed the draft once per creator entry — Save prunes + persists, Cancel discards */
     return '<div class="rpc tp-cr"><div class="tp-eb">My Trip</div><div class="tp-tt">Map your park days</div>'+
       '<div class="tp-ts">Save your dates and each day shows its same-weekday history across all four parks \u2014 plus published hours as Disney posts them. Trips run up to '+TP_MAXDAYS+' days.</div>'+
       '<div class="tp-fld"><label class="tp-fi"><span>First day</span><input type="date" id="tpA" value="'+esc((t&&t.a)||"")+'"></label>'+
       '<label class="tp-fi"><span>Last day</span><input type="date" id="tpB" value="'+esc((t&&t.b)||"")+'"></label></div>'+
       '<div class="tp-fld"><label class="tp-fi"><span>Name \u00b7 optional</span><input type="text" id="tpN" maxlength="40" placeholder="September trip" value="'+esc((t&&t.n)||"")+'"></label></div>'+
+      '<div id="tpPlan">'+tpPlanSecHTML((t&&t.a)||"",(t&&t.b)||"")+'</div>'+
       '<div id="tpErr" class="tp-err"></div>'+
       '<button class="tp-save" type="button">Save my trip</button>'+
       ((t||tpTrips().length)?'<button class="tp-cancel" type="button">Cancel</button>':'')+(t?'<button class="tp-del'+(tpDelArm?' arm':'')+'" data-tpdel="'+esc(t.id)+'" type="button">'+(tpDelArm?'Tap again to delete':'Delete trip')+'</button>':'')+'</div>';
@@ -3791,13 +3850,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var gh='<div class="tp-gh"><span></span>',rows='',j;
     for(j=0;j<TP_PARKS.length;j++)gh+='<i>'+TP_PARKS[j][1]+'</i>';
     gh+='</div>';
-    for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,cells='';
-      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd);
-        cells+=(c.thin?'<span class="tp-dc thin"></span>':'<span class="tp-dc" style="background:'+CROWD_TIERS[c.lvl].color+'"></span>');}
+    for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
+      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),pc=(TP_PARKS[j][0]===pk?' plan':''); /* Cut 2: the planned cell's ring */
+        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"></span>':'<span class="tp-dc'+pc+'" style="background:'+CROWD_TIERS[c.lvl].color+'"></span>');}
       var hol=HOLIDAYS[d0]?' <span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'';
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><span><span class="tp-wd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+hol+'</div>'+(behind?'<div class="tp-behind">Behind you</div>':'')+'</span>'+cells+'</div>';
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><span><span class="tp-wd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+hol+'</div>'+(pk?'<div class="tp-plcap">Planned \u00b7 '+esc(TP_PSHORT[pk]||pk)+'</div>':'')+(behind?'<div class="tp-behind">Behind you</div>':'')+'</span>'+cells+'</div>';
       var dx='';
-      if(open){var L=tpDayLine(d0,model);dx='<div class="tp-dx">'+L.line+L.sub+tpParkRows(d0,model)+'</div>';}
+      if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tpParkRows(d0,model,t)+'</div>';}
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+'</div>'+((tpTrips().length===1)?'<button class="tp-new" type="button">+ New trip</button>':'');
@@ -3887,18 +3946,30 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-rclens]").forEach(function(b){b.addEventListener("click",function(){ /* 0714m: the card's lens */
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
-      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;renderPulsePage();});});
-    var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;tpDelArm=false;renderPulsePage();rpTop();});
-    var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;renderPulsePage();});
+      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;renderPulsePage();});});
+    var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
+    var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;renderPulsePage();});
     var tps=el.querySelector(".tp-save");if(tps)tps.addEventListener("click",function(){ /* L-29: validate, persist via the shim, wake the schedule fetch */
       var a=($("tpA")||{}).value,b2=($("tpB")||{}).value,n=(($("tpN")||{}).value||"").trim(),err=$("tpErr");
       var e2=tpSaveTrip(a,b2,n); /* 0714w: one save engine */
       if(e2){if(err)err.textContent=e2;return;}
       tpEnsureSched();renderPulsePage();rpTop();});
+    var tpp=el.querySelector("#tpPlan"); /* Cut 2: the creator’s plan grid — the rows repaint alone so the fields never lose in-progress edits */
+    if(tpp){var tpRepaint=function(){tpp.innerHTML=tpPlanSecHTML(($("tpA")||{}).value||"",($("tpB")||{}).value||"");};
+      ["tpA","tpB"].forEach(function(fid){var f=$(fid);if(f)f.addEventListener("input",tpRepaint);});
+      tpp.addEventListener("click",function(ev2){var c2=ev2.target&&ev2.target.closest&&ev2.target.closest("[data-tppk]");if(!c2)return;
+        var d2=c2.getAttribute("data-tppd"),p2=c2.getAttribute("data-tppk");
+        if(tpPlanDraft===null)tpPlanDraft={};
+        if(tpPlanDraft[d2]===p2)delete tpPlanDraft[d2];else tpPlanDraft[d2]=p2; /* tap again to clear */
+        tpRepaint();});}
+    el.querySelectorAll("[data-tpbpk]").forEach(function(b){b.addEventListener("click",function(){ /* Cut 2: the board door — a tapped chip persists immediately */
+      var t2=tpCurTrip();if(!t2)return;tpSetPlan(t2.id,b.getAttribute("data-tppd"),b.getAttribute("data-tpbpk"));tpPlanPick=null;renderPulsePage();});});
+    el.querySelectorAll("[data-tppchg]").forEach(function(b){b.addEventListener("click",function(){tpPlanPick=b.getAttribute("data-tppchg");renderPulsePage();});});
+    el.querySelectorAll("[data-tppclr]").forEach(function(b){b.addEventListener("click",function(){var t2=tpCurTrip();if(!t2)return;tpSetPlan(t2.id,b.getAttribute("data-tppclr"),null);tpPlanPick=null;renderPulsePage();});});
     el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
-      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpEnsureSched();renderPulsePage();rpTop();});});
-    var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;renderPulsePage();rpTop();});
-    var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;renderPulsePage();rpTop();});
+      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tpEnsureSched();renderPulsePage();rpTop();});});
+    var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;renderPulsePage();rpTop();});
+    var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
     var tpd=el.querySelector(".tp-del");if(tpd)tpd.addEventListener("click",function(){ /* 0714y: first tap arms, second deletes */
       if(!tpDelArm){tpDelArm=true;renderPulsePage();return;}
       tpDeleteTrip(tpd.getAttribute("data-tpdel"));renderPulsePage();rpTop();});
