@@ -1305,7 +1305,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2891,7 +2891,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     rpDigsAt=Date.now();
     var days=RP_POOL; /* 0713x: the pool is the lens's own — the baseline keeps its 28 for the Pulse callouts */
     fetch(PUSH.WORKER_URL+"/digest?from="+rpDate(days)+"&to="+rpDate(1)).then(function(r){return r.json();}).then(function(j){
-      if(j&&j.ok&&j.digests){rpDigs=j.digests;if(rpView==="attr"&&(rpRide||rpSub))renderPulsePage();}
+      if(j&&j.ok&&j.digests){rpDigs=j.digests;if(rpView==="attr"&&(rpRide||rpSub||rcPk||rcIds))renderPulsePage(); /* 0714p: the picker and compare listen for digest arrival too */}
     })["catch"](function(){});
   }
   function rpRel(rid,pre){ /* per-day reliability from the digest atoms, 0713v window-scoped. A day counts
@@ -3332,7 +3332,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="rc-seats">'+seats+'</div>'+
       st+'<div class="rc-plab">This park\u2019s headliners</div><div class="rc-prow">'+chips+'</div>'+
       '<input class="rc-srch" type="search" placeholder="Search '+esc(rpPark||"")+' rides" autocomplete="off"/>'+
-      '<div class="rc-roster">'+rows+'</div>'+
+      ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from the last 28 days of banked waits \u2014 one moment</div>':'')+'<div class="rc-roster">'+rows+'</div>'+
       (cap?'<div class="rc-cap">Three seats filled \u2014 remove a ride to swap</div>':'')+
       '<button class="rc-go" type="button"'+(rcSel.length<2?' disabled':'')+'>Compare '+rcSel.length+' ride'+(rcSel.length===1?'':'s')+'</button></div>';
   }
@@ -3573,7 +3573,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var rcp=el.querySelector(".rc-pill");if(rcp)rcp.addEventListener("click",function(){ /* 0714i: the compare door opens the picker */
       rcPk=true;rcSel=[rpRide];rcPkA=true;renderPulsePage();});
     var rcd=el.querySelector("[data-rcopen]");if(rcd)rcd.addEventListener("click",function(){ /* 0714o: the landing door \u2014 unanchored picker, seats fill in pick order */
-      rcPk=true;rcSel=[];rcPkA=true;renderPulsePage();});
+      rcPk=true;rcSel=[];rcPkA=true;rpEnsureDigs();renderPulsePage();});  /* 0714p: the door path feeds itself \u2014 the profile route ensured digs, this one must too */
     var rcs=el.querySelector(".rc-scrim");if(rcs)rcs.addEventListener("click",function(){rcPk=false;renderPulsePage();});
     el.querySelectorAll("[data-rcid]").forEach(function(b){b.addEventListener("click",function(){ /* seats fill in pick order \u2014 identity follows the seat */
       if(rcSel.length>=3)return;var id=b.getAttribute("data-rcid");if(rcSel.indexOf(id)>=0)return;rcSel.push(id);renderPulsePage();});});
