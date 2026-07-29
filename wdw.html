@@ -1356,7 +1356,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3778,7 +3778,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="tp-eb">'+esc(tpEyebrow(t,today))+'</div>'+
       '<div class="tp-tt">'+esc(t.n||"My trip")+'</div>'+
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
-    if(!model)return head+'<div class="rpc"><div class="lbl">The board</div><div class="fc-empty">'+((!rpDigs)?'The board fills from banked days \u2014 one moment.':'No banked days to read yet.')+'</div></div>';
+    if(!model)return head+'<div class="rpc"><div class="lbl">The board</div><div class="fc-empty">'+((!rpDigs)?'The board fills from banked days \u2014 one moment.':'No banked days to read yet.')+'</div></div>'+((tpTrips().length===1)?'<button class="tp-new" type="button">+ New trip</button>':''); /* 0714x: the second trip's door — single-trip boards only; the list carries it after that */
     var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-read">'+tpRead(ds,model)+'</div></div>';
     var gh='<div class="tp-gh"><span></span>',rows='',j;
     for(j=0;j<TP_PARKS.length;j++)gh+='<i>'+TP_PARKS[j][1]+'</i>';
@@ -3792,7 +3792,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(open){var L=tpDayLine(d0,model);dx='<div class="tp-dx">'+L.line+L.sub+tpParkRows(d0,model)+'</div>';}
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
-    return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+'</div>';
+    return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+'</div>'+((tpTrips().length===1)?'<button class="tp-new" type="button">+ New trip</button>':'');
   }
   function tpListHTML(ts){ /* 0714w: the hero-list landing (C1 lean, owner-ratified) — upcoming soonest-first, past trips sink and dim */
     var today=tpToday();
