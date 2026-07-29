@@ -394,6 +394,10 @@
   .tp-err{color:var(--packed);font-size:var(--fs-meta);margin-top:8px;min-height:1em}
   .tp-save{display:block;width:100%;margin-top:10px;border:0;border-radius:var(--r-el);background:var(--accent-fill);color:#fff;font:700 var(--fs-body) var(--font-body);padding:12px 0;cursor:pointer}
   .tp-cancel{display:block;width:100%;margin-top:7px;border:1px solid var(--line);border-radius:var(--r-el);background:none;color:var(--muted);font:700 var(--fs-body) var(--font-body);padding:10px 0;cursor:pointer}
+  .tp-trl{position:relative;cursor:pointer;padding-right:38px;-webkit-tap-highlight-color:transparent}
+  .tp-trl .tp-chev{position:absolute;right:15px;top:50%;transform:translateY(-52%);color:var(--muted-2);font-size:22px;font-weight:600}
+  .tp-trl.dim .tp-tt{color:var(--muted)} .tp-trl.dim .tp-eb{color:var(--muted-2)}
+  .tp-new{display:block;width:100%;border:1.5px dashed var(--muted-2);border-radius:var(--r-card);background:none;color:var(--accent);font:700 var(--fs-body) var(--font-body);padding:14px 0;cursor:pointer;margin-top:2px}
   .rp-hmpre{display:flex;gap:14px;flex-wrap:wrap;padding:0 0 10px}
   .rp-hm{display:grid;gap:2.5px;padding:2px 0}
   .rp-hm .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--muted-2);text-align:center;text-transform:uppercase;font-style:normal;padding-bottom:2px}
@@ -1352,7 +1356,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2919,7 +2923,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpOpen=null,tpSched={},tpSchedAt={}; /* L-29 (0714u): My Trip session state — edit flag, accordion date, month-schedule cache */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpSched={},tpSchedAt={}; /* L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -3598,7 +3602,23 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     "2027-12-28":"Christmas week","2027-12-29":"Christmas week","2027-12-30":"Christmas week","2027-12-31":"New Year's Eve"};
   var TP_PARKS=[["Magic Kingdom","MK"],["EPCOT","EP"],["Hollywood Studios","HS"],["Animal Kingdom","AK"]];
   var TP_TW=["","Light","Moderate","Busy","Packed"],TP_FLOOR=3,TP_MAXDAYS=21;
-  function tpTrip(){var t=store.get("ppTrip",null);return (t&&t.a&&t.b&&t.a<=t.b)?t:null;}
+  function tpTripValid(t){return !!(t&&t.a&&t.b&&t.a<=t.b);}
+  function tpTrips(){ /* 0714w: the trips array; the legacy single ppTrip migrates silently on first read */
+    var ts=store.get("ppTrips",null);
+    if(!ts){var old=store.get("ppTrip",null);ts=tpTripValid(old)?[{id:"t1",n:old.n||"",a:old.a,b:old.b}]:[];if(ts.length)store.set("ppTrips",ts);}
+    var out=[],i;for(i=0;i<ts.length;i++)if(tpTripValid(ts[i]))out.push(ts[i]);
+    return out;
+  }
+  function tpCurTrip(){var ts=tpTrips(),i;if(tpSel){for(i=0;i<ts.length;i++)if(ts[i].id===tpSel)return ts[i];}return ts.length===1?ts[0]:null;}
+  function tpSaveTrip(a,b,n){ /* 0714w: one save engine — the binder reads fields, this owns validation + persistence */
+    if(!a||!b||b<a)return "Pick a first and last day \u2014 the last can\u2019t come before the first.";
+    if(Math.round((tpAsD(b)-tpAsD(a))/864e5)+1>TP_MAXDAYS)return "Trips run up to "+TP_MAXDAYS+" days \u2014 shorten the range.";
+    var ts=tpTrips(),tgt=(tpEdit&&!tpNew)?tpCurTrip():null;
+    if(tgt){tgt.n=n;tgt.a=a;tgt.b=b;tpSel=tgt.id;}
+    else{var t={id:String(Date.now())+"-"+ts.length,n:n,a:a,b:b};ts.push(t);tpSel=t.id;}
+    store.set("ppTrips",ts);tpEdit=false;tpNew=false;tpOpen=null;
+    return null;
+  }
   function tpToday(){var p=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());var o={},i;for(i=0;i<p.length;i++)o[p[i].type]=p[i].value;return o.year+"-"+o.month+"-"+o.day;}
   function tpAsD(s){var a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2]);}
   function tpAddD(s,n){var a=s.split("-"),d=new Date(+a[0],+a[1]-1,+a[2]+n);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
@@ -3697,7 +3717,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return '<span class="tp-hrs">'+h+'</span>';
   }
   function tpEnsureSched(){ /* lazy month fetch, once/session per trip month; re-render on arrival; missing dates = observed absence */
-    var t=tpTrip();if(!t||!parks||!parks.length)return;
+    var t=tpCurTrip();if(!t||!parks||!parks.length)return;
     var need={};tpDays(t).forEach(function(d){need[d.slice(0,7)]=1;});
     Object.keys(need).forEach(function(mo){
       if(tpSched[mo]||(tpSchedAt[mo]&&Date.now()-tpSchedAt[mo]<10*60*1000))return;
@@ -3749,11 +3769,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="tp-fld"><label class="tp-fi"><span>Name \u00b7 optional</span><input type="text" id="tpN" maxlength="40" placeholder="September trip" value="'+esc((t&&t.n)||"")+'"></label></div>'+
       '<div id="tpErr" class="tp-err"></div>'+
       '<button class="tp-save" type="button">Save my trip</button>'+
-      (t?'<button class="tp-cancel" type="button">Cancel</button>':'')+'</div>';
+      ((t||tpTrips().length)?'<button class="tp-cancel" type="button">Cancel</button>':'')+'</div>';
   }
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
-    var head='<div class="rpc tp-head"><button class="tp-edit" type="button">Edit</button>'+
+    var lad=(tpTrips().length>1)?('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Pulse \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'):''; /* 0714w: the list rung's ladder — rp-back is CSS clothing only; tp-bkp carries the binder */
+    var head=lad+'<div class="rpc tp-head"><button class="tp-edit" type="button">Edit</button>'+
       '<div class="tp-eb">'+esc(tpEyebrow(t,today))+'</div>'+
       '<div class="tp-tt">'+esc(t.n||"My trip")+'</div>'+
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
@@ -3773,7 +3794,22 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+'</div>';
   }
-  function tpPageHTML(){var t=tpTrip();return (!t||tpEdit)?tpCreatorHTML(t):tpBoardHTML(t);}
+  function tpListHTML(ts){ /* 0714w: the hero-list landing (C1 lean, owner-ratified) — upcoming soonest-first, past trips sink and dim */
+    var today=tpToday();
+    var up=ts.filter(function(t){return t.b>=today;}).sort(function(a,b){return a.a<b.a?-1:1;});
+    var past=ts.filter(function(t){return t.b<today;}).sort(function(a,b){return a.b>b.b?-1:1;});
+    function card(t,dim){var ds=tpDays(t);
+      return '<div class="rpc tp-trl'+(dim?' dim':'')+'" data-tpsel="'+esc(t.id)+'" role="button" tabindex="0"><div class="tp-eb">'+esc(tpEyebrow(t,today))+'</div><div class="tp-tt">'+esc(t.n||"My trip")+'</div><div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div><span class="tp-chev">\u203a</span></div>';}
+    return up.map(function(t){return card(t,false);}).join("")+past.map(function(t){return card(t,true);}).join("")+
+      '<button class="tp-new" type="button">+ New trip</button>';
+  }
+  function tpPageHTML(){ /* 0714w dispatcher: creator (empty or editing) > selected/single board > the hero list */
+    var ts=tpTrips();
+    if(tpEdit||!ts.length)return tpCreatorHTML((tpEdit&&!tpNew)?tpCurTrip():null);
+    var t=tpCurTrip();
+    if(t)return tpBoardHTML(t);
+    return tpListHTML(ts);
+  }
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
        away-guard so polls refresh it on any tab; navGo fresh-paints on entry. Page grammar
@@ -3813,7 +3849,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
-      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;}if(rpView!=="trip"){tpEdit=false;}renderPulsePage();rpTop();});});
+      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
       rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else rpPark=null;renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
@@ -3844,13 +3880,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;renderPulsePage();});});
-    var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;renderPulsePage();rpTop();});
-    var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;renderPulsePage();});
+    var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;renderPulsePage();rpTop();});
+    var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;renderPulsePage();});
     var tps=el.querySelector(".tp-save");if(tps)tps.addEventListener("click",function(){ /* L-29: validate, persist via the shim, wake the schedule fetch */
       var a=($("tpA")||{}).value,b2=($("tpB")||{}).value,n=(($("tpN")||{}).value||"").trim(),err=$("tpErr");
-      if(!a||!b2||b2<a){if(err)err.textContent="Pick a first and last day \u2014 the last can\u2019t come before the first.";return;}
-      if(Math.round((tpAsD(b2)-tpAsD(a))/864e5)+1>TP_MAXDAYS){if(err)err.textContent="Trips run up to "+TP_MAXDAYS+" days \u2014 shorten the range.";return;}
-      store.set("ppTrip",{n:n,a:a,b:b2});tpEdit=false;tpOpen=null;tpEnsureSched();renderPulsePage();rpTop();});
+      var e2=tpSaveTrip(a,b2,n); /* 0714w: one save engine */
+      if(e2){if(err)err.textContent=e2;return;}
+      tpEnsureSched();renderPulsePage();rpTop();});
+    el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
+      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpEnsureSched();renderPulsePage();rpTop();});});
+    var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;renderPulsePage();rpTop();});
+    var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;renderPulsePage();rpTop();});
     rcPkA=false;document.body.classList.toggle("rc-open",!!rcPk); /* 0714j: one lock writer \u2014 the render derives the body lock from rcPk \u00b7 the sheet\u2019s entrance plays once */
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
     if(dts)dts.addEventListener("click",function(e){
