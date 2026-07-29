@@ -1406,7 +1406,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3978,7 +3978,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     N.sort(function(x,y){return x.nm.localeCompare(y.nm);});
     return {ord:A.concat(B,C),outs:N};
   }
-  function tdWhy(it,startMin,openMin){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
+  function tdWhy(it,startMin,openMin,mark){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
     var cv=it.cv,p=[];
     if(it.wk)p.push((startMin===0&&cv.allday)?"a walk-on most of the day \u2014 anytime":"a walk-on from here on typical days \u2014 anytime");
     else if(it.k==="C")p.push("holds near "+it.base+"m from here \u2014 anytime");
@@ -3994,7 +3994,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     }
     if(it.lateStart)p.unshift("from its "+rpClk(it.st0)+" start");
     var w=p.join(" \u2014 ");w=w.charAt(0).toUpperCase()+w.slice(1)+".";
-    if(it.arc)w+=" \u00b7 read on the trip\u2019s whole arc";
+    if(it.arc&&mark)w+=" \u00b7 read on the trip\u2019s whole arc"; /* 0715f: the marker distinguishes — it prints only when the windows are mixed; all-arc speaks once in the basis */
     return w;
   }
   function tdPickHTML(t,ds,pk){ /* the quick-add picker — A + stars (owner-picked): lean toggle roster, count keeps score, dash rows stay addable */
@@ -4034,13 +4034,16 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       basis='Your order, exactly as you set it \u2014 lift a ride with \u2261, tap the spot it should take \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
       tdLift=null;
-      var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),sm=tdStartMin(tdStart),wdn=tpWDn(ds),anyArc=false;
-      var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds);if(cx&&cx.arc)anyArc=true;return {id:rid,nm:r.name||rid,cvx:cx};});
+      var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),sm=tdStartMin(tdStart),wdn=tpWDn(ds),arcN=0,cvN=0;
+      var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds);if(cx){cvN++;if(cx.arc)arcN++;}return {id:rid,nm:r.name||rid,cvx:cx};});
+      var allArc=(cvN>0&&arcN===cvN),mixed=(arcN>0&&arcN<cvN); /* 0715f: three window states — the basis frames each honestly */
       var eng=tdEng(rows,sm,hrs.c),n=0;
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+TD_STARTS.map(function(x){return '<span class="tp-ac'+(tdStart===x[0]?' sel':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
-      eng.ord.forEach(function(it){n++;body+='<div class="td-sl"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+'</div><div class="td-srx">'+tdWhy(it,sm,hrs.o)+'</div></div></div>';});
+      eng.ord.forEach(function(it){n++;body+='<div class="td-sl"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+'</div><div class="td-srx">'+tdWhy(it,sm,hrs.o,mixed)+'</div></div></div>';});
       eng.outs.forEach(function(it){n++;body+='<div class="td-sl"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+'</div><div class="td-srx">'+it.why+'</div></div></div>';});
-      basis=(sm>0?'From '+rpClk(sm)+' \u00b7 ':'')+'A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(anyArc?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
+      var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
+        :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
+      basis=(sm>0?'From '+rpClk(sm)+' \u00b7 ':'')+frame+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
     }
     return head+tabs+chips+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
   }
