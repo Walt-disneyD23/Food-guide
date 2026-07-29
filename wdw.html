@@ -1352,7 +1352,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3632,7 +3632,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var avg=Math.round(e.s/e.n);
     return {avg:avg,lvl:window.__pwDayLvl(avg,park),n:e.n};
   }
-  function tpRead(ds,model){ /* board-level read: tier COUNTS, ties named, even hold, Packed leads — never raw minutes across parks */
+  function tpRead(ds,model){ /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
     var rows=[],i,j;
     for(i=0;i<ds.length;i++){var wd=tpAsD(ds[i]).getDay(),cs=[],full=true;
       for(j=0;j<4;j++){var c=tpCell(model,TP_PARKS[j][0],wd);cs.push(c);if(c.thin)full=false;}
@@ -3641,22 +3641,30 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       for(j=0;j<4;j++){if(cs[j].lvl>=3)busy.push(TP_PARKS[j][0]);if(cs[j].lvl===1)light.push(TP_PARKS[j][0]);if(cs[j].lvl===4)packed.push(TP_PARKS[j][0]);}
       rows.push({d:ds[i],busy:busy,light:light,packed:packed});}
     if(rows.length<2)return 'Colors first \u2014 the read arrives once two of your days have a full set of banked weekdays.';
-    var ev=true;for(i=1;i<rows.length;i++){if(rows[i].busy.length!==rows[0].busy.length||rows[i].light.length!==rows[0].light.length)ev=false;}
+    var ev=true;for(i=1;i<rows.length;i++){if(rows[i].packed.length!==rows[0].packed.length||rows[i].busy.length!==rows[0].busy.length||rows[i].light.length!==rows[0].light.length)ev=false;}
     if(ev)return 'Your '+tpNumW(rows.length)+' days ran even \u2014 no day stood out.';
-    var srt=rows.slice().sort(function(a,b){return (a.busy.length-b.busy.length)||(b.light.length-a.light.length);});
-    var ck=srt[0],calm=rows.filter(function(r){return r.busy.length===ck.busy.length&&r.light.length===ck.light.length;});
-    var srt2=rows.slice().sort(function(a,b){return (b.busy.length-a.busy.length)||(a.light.length-b.light.length);});
-    var tk=srt2[0],tough=rows.filter(function(r){return r.busy.length===tk.busy.length&&r.light.length===tk.light.length;});
+    function calmKey(a,b){return (a.packed.length-b.packed.length)||(a.busy.length-b.busy.length)||(b.light.length-a.light.length);}
+    var srt=rows.slice().sort(calmKey);
+    var ck=srt[0],calm=rows.filter(function(r){return calmKey(r,ck)===0;});
+    var srt2=rows.slice().sort(function(a,b){return calmKey(b,a);});
+    var tk=srt2[0],tough=rows.filter(function(r){return calmKey(r,tk)===0;});
+    var oPmin=1e9,oBmin=1e9;rows.forEach(function(r){if(calmKey(r,ck)===0)return;if(r.packed.length<oPmin)oPmin=r.packed.length;if(r.busy.length<oBmin)oBmin=r.busy.length;});
     var cS=tpAnd(calm.map(function(r){return tpDayName(r.d);}))+' ran the calmest of your '+tpNumW(rows.length)+' days';
     if(ck.busy.length===0)cS+=(calm.length===1?' \u2014 the only one where nothing ran '+tpTier(3):' \u2014 nothing ran '+tpTier(3)+' on '+(calm.length===2?'either':'any of them'));
-    else cS+=' \u2014 the fewest parks running '+tpTier(3)+' ('+ck.busy.length+')';
+    else if(ck.packed.length===0&&oPmin>0)cS+=(calm.length===1?' \u2014 the only one where nothing ran '+tpTier(4):' \u2014 nothing ran '+tpTier(4)+' on '+(calm.length===2?'either':'any of them'));
+    else if(ck.packed.length>0&&ck.packed.length<oPmin)cS+=' \u2014 the fewest parks running '+tpTier(4)+' ('+ck.packed.length+')';
+    else if(ck.busy.length<oBmin)cS+=' \u2014 the fewest parks running '+tpTier(3)+' ('+ck.busy.length+')';
     if(calm.length===1&&ck.light.length)cS+=', with '+((ck.light.length===2)?(tpAmp(ck.light)+' both '+tpTier(1)):((ck.light.length===1)?(ck.light[0]+' '+tpTier(1)):(tpTier(1)+' at '+tpAmp(ck.light))));
     cS+='.';
+    var oPmax=-1,oBmax=-1;rows.forEach(function(r){if(calmKey(r,tk)===0)return;if(r.packed.length>oPmax)oPmax=r.packed.length;if(r.busy.length>oBmax)oBmax=r.busy.length;});
     var tS=tpAnd(tough.map(function(r){return tpDayName(r.d);}))+' ran toughest';
-    var shared=true;for(i=1;i<tough.length;i++){if(tough[i].busy.join("|")!==tough[0].busy.join("|"))shared=false;}
-    if(tough.length===1&&tough[0].packed.length)tS+=' \u2014 '+tpTier(4)+' at '+tpBoth(tough[0].packed)+'.';
-    else if(shared&&tough[0].busy.length)tS+=' \u2014 '+tpTier(3)+' at '+tpBoth(tough[0].busy)+'.';
-    else tS+=' \u2014 the most parks running '+tpTier(3)+' ('+tk.busy.length+' each).';
+    var sameP=true,sameB=true;for(i=1;i<tough.length;i++){if(tough[i].packed.join("|")!==tough[0].packed.join("|"))sameP=false;if(tough[i].busy.join("|")!==tough[0].busy.join("|"))sameB=false;}
+    if(tough.length===1&&tk.packed.length)tS+=' \u2014 '+tpTier(4)+' at '+tpBoth(tough[0].packed)+'.';
+    else if(tough.length>1&&sameP&&tk.packed.length)tS+=' \u2014 '+tpTier(4)+' at '+tpBoth(tough[0].packed)+' on each.';
+    else if(sameB&&tk.busy.length)tS+=' \u2014 '+tpTier(3)+' at '+tpBoth(tough[0].busy)+'.';
+    else if(tk.packed.length>oPmax)tS+=' \u2014 the most parks running '+tpTier(4)+' ('+tk.packed.length+(tough.length>1?' each':'')+').';
+    else if(tk.busy.length>oBmax)tS+=' \u2014 the most parks running '+tpTier(3)+' ('+tk.busy.length+(tough.length>1?' each':'')+').';
+    else tS+='.';
     var anyPk=false;rows.forEach(function(r){if(r.packed.length)anyPk=true;});
     return anyPk?(tS+' '+cS):(cS+' '+tS);
   }
