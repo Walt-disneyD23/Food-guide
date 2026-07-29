@@ -458,6 +458,25 @@
   .rc-tbl td:first-child{text-align:left;color:var(--muted);font-size:var(--fs-meta)}
   .rc-tbl .mut{color:var(--muted-2)}
   .rc-tbl .fd{opacity:.35}
+  /* ===== 0714m: the ordering card + live layer (FromHere-Contract) \u2014 live wears tier grammar, typicals stay ink ===== */
+  .rc-nv{flex:none;margin-left:10px;text-align:right;font:700 var(--fs-small) var(--font-display);font-variant-numeric:tabular-nums;color:var(--pwh-ink)}
+  .rc-nv small{display:block;font:600 var(--fs-micro) var(--font-body);letter-spacing:.08em;color:var(--pwh-muted);text-transform:uppercase}
+  .rc-nv.mut{color:var(--pwh-muted)}
+  .rc-nv.t-short{color:var(--short)} .rc-nv.t-medium{color:var(--medium)} .rc-nv.t-long{color:var(--long)} .rc-nv.t-packed{color:var(--packed)}
+  .rc-dnc{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;color:var(--packed);border:1px solid var(--packed);border-radius:6px;padding:1px 5px}
+  .rc-olbl{display:flex;align-items:center;justify-content:space-between}
+  .rc-lens{display:inline-flex;gap:4px}
+  .rc-ord .row{display:flex;gap:12px;align-items:flex-start;padding:11px 0}
+  .rc-ord .row+.row{border-top:1px solid var(--line)}
+  .rc-ord .n{flex:none;width:22px;font:700 var(--fs-stat) var(--font-display);line-height:1.05;color:var(--accent)}
+  .rc-ord .m{flex:1;min-width:0}
+  .rc-ord .hd{font-weight:700;font-size:var(--fs-body);line-height:1.35;color:var(--ink)}
+  .rc-ord .hd .rc-dot{width:8px;height:8px;margin-right:2px;vertical-align:1px}
+  .rc-ord .why{font-size:var(--fs-meta);color:var(--muted);margin-top:2px;line-height:1.5}
+  .rc-ord .lv{font-size:var(--fs-meta);color:var(--muted);margin-top:3px}
+  .rc-ord .lv b{font-family:var(--font-display)}
+  .rc-ord .lv .t-short{color:var(--short)} .rc-ord .lv .t-medium{color:var(--medium)} .rc-ord .lv .t-long{color:var(--long)} .rc-ord .lv .t-packed{color:var(--packed)}
+  .rc-ord .later{font-size:var(--fs-meta);color:var(--muted);padding:10px 0 0;border-top:1px solid var(--line);margin-top:2px;line-height:1.5}
   .rp-a{color:var(--accent)}
   .pg-h h3 .ps{color:var(--accent)}
   .pg-h h3 .ps svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;vertical-align:-2px}
@@ -1282,7 +1301,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0714l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0714m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2774,7 +2793,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      /baseline) — trails, transports and walkthroughs typed ATTRACTION upstream
      never post standby, so they never bank, so they never list. The Wrap's
      realRides() rule, browse-shaped: read-time, no curation list to maintain. ===== */
-  var rpView="now",rpPark=null,rpRide=null,rpSub=null,rcIds=null,rcPk=false,rcPkA=false,rcSel=null,rcFoc=null; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
+  var rpView="now",rpPark=null,rpRide=null,rpSub=null,rcIds=null,rcPk=false,rcPkA=false,rcSel=null,rcFoc=null,rcLens="day"; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
   function rpMed(a){var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;if(!n)return null;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}
   function rpTypical(rid){ /* median of bucket day-medians; buckets under 10 days hidden (the n-floor law); 6+ qualifying buckets required to claim a day shape */
     if(!pfBase||!pfBase.rides)return null;
@@ -3385,6 +3404,77 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return '<div class="rpc"><div class="lbl">Side by side</div><table class="rc-tbl"><tr>'+heads+'</tr>'+b+'</table>'+
       '<div class="pf-basis">Identity colors the headers; values stay ink \u2014 color keeps one job \u00b7 typical = half-hour medians '+WD[rpWin]+' while operating'+(rcFoc?' \u00b7 tap the chip again to release':'')+'</div></div>';
   }
+  function rcEtMin(d){ /* 0714m: minutes-of-day in park time (ET) \u2014 never the raw local clock */
+    var p=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",hour12:false,hour:"2-digit",minute:"2-digit"}).format(d).split(":");
+    return ((+p[0])%24)*60+(+p[1]);
+  }
+  function rcCloseT(){var pi=parkInfo[rpPark];if(!pi||!pi.close)return null;var c=rcEtMin(new Date(pi.close));return c<360?c+1440:c;} /* after-midnight closes carry past 24h */
+  function rcNowChip(id){ /* live wears the hero \u2014 tier colors speak the live grammar; typicals stay ink */
+    var lv=liveById[id];
+    if(lv&&lv.status==="DOWN")return '<span class="rc-nv"><span class="rc-dnc">DOWN</span><small>now</small></span>';
+    if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="rc-nv t-'+rpTierCls(lv.wait)+'">'+lv.wait+'m<small>now</small></span>';
+    return '<span class="rc-nv mut">\u2013<small>now</small></span>';
+  }
+  function rcLiveLine(id,nowMed){ /* pure description of divergence \u2014 never advice, never a forecast */
+    var lv=liveById[id];
+    if(lv&&lv.status==="DOWN")return '<div class="lv"><span class="rc-dnc">DOWN</span> \u00b7 reopen unknown \u2014 the order stays typical-shaped</div>';
+    if(!(lv&&lv.status==="OPERATING"&&lv.wait!==null))return '';
+    var w=lv.wait,d2;
+    if(nowMed===null)d2='its typical tape is thin this hour';
+    else if(w-nowMed>=8)d2='running above its typical hour';
+    else if(nowMed-w>=8)d2='under its typical hour';
+    else d2='on its typical';
+    return '<div class="lv">Now <b class="t-'+rpTierCls(w)+'">'+w+'m</b> \u00b7 '+d2+'</div>';
+  }
+  function rcDayBody(wc){ /* Full day lens \u2014 the morning register, the rm engine's own order via verbatim engine calls */
+    var seat={},i;for(i=0;i<wc.length;i++)seat[wc[i].id]=wc[i].si;
+    var items=wc.map(function(x){return {id:x.id,nm:x.nm,cv:x.cv,cls:rmClass(x.cv)};});
+    var ord=rmPlanOrder(items),head=[],tail=[];
+    for(i=0;i<ord.length;i++)(ord[i].cls==="never"||ord[i].cls==="burn"?head:tail).push(ord[i]);
+    var h='';
+    for(i=0;i<head.length;i++){var c=rmCoach(head[i],i===0);
+      h+='<div class="row"><span class="n">'+(i+1)+'.</span><div class="m"><div class="hd"><span class="rc-dot" style="background:var(--cmp-p'+(seat[head[i].id]+1)+')"></span> '+c.hd+'</div><div class="why">'+c.why+'</div></div></div>';}
+    for(i=0;i<tail.length;i++)h+='<div class="later"><span class="rc-dot" style="background:var(--cmp-p'+(seat[tail[i].id]+1)+');width:7px;height:7px"></span> Later: '+esc(tail[i].nm)+' \u2014 '+rmTailWhy(tail[i])+'</div>';
+    return h+'<div class="pf-basis">The typical day, whole \u00b7 the morning engine\u2019s own order \u00b7 flip to From now when you\u2019re standing in the park</div>';
+  }
+  function rcFromBody(wc,nowT,ct){ /* From now lens \u2014 the rest-of-day engine: median + clock, never a promise */
+    var nb=nowT-(nowT%30),items=[],holds=[],i,q;
+    for(i=0;i<wc.length;i++){var x=wc[i],rem=[];
+      for(q=0;q<x.cv.bs.length;q++){var b=x.cv.bs[q];if(b.t>=nb&&(ct===null||b.t<ct))rem.push(b);}
+      if(!rem.length){holds.push(x);continue;}
+      var nowMed=(rem[0].t===nb)?rem[0].med:null,mn=1e9,tm=null;
+      for(q=0;q<rem.length;q++)if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}
+      var base=(nowMed!==null)?nowMed:rem[0].med;
+      items.push({id:x.id,nm:x.nm,si:x.si,cv:x.cv,nowMed:nowMed,base:base,mn:mn,tm:tm,edge:base-mn,
+        near:(ct!==null&&tm!==null&&tm>=ct-45),backAhead:(x.cv.back!==null&&x.cv.back>=nb)});}
+    if(!items.length)return '<div class="fc-empty">The day\u2019s tape is behind us \u2014 Full day carries it.</div>';
+    items.sort(function(a,b){return (a.edge-b.edge)||((a.tm||0)-(b.tm||0))||a.nm.localeCompare(b.nm);});
+    var mnE=items[0].edge,mxE=items[items.length-1].edge;
+    var mnU=items.filter(function(z){return z.edge===mnE;}).length===1;
+    var mxU=items.filter(function(z){return z.edge===mxE;}).length===1;
+    var h='';
+    for(i=0;i<items.length;i++){var it=items[i],sfx='';
+      if(i===0&&mnU&&items.length>1&&it.edge<mxE)sfx=' \u2014 waiting buys the least';
+      else if(i===items.length-1&&mxU&&it.backAhead)sfx=' \u2014 save it';
+      var p=[];
+      if(it.edge<=3)p.push('holds near '+it.base+'m from here \u2014 the typical barely moves again today');
+      else{
+        if(!it.cv.allday&&it.cv.crest&&nb>=it.cv.crest[0]&&nb<=it.cv.crest[1])p.push('at its '+rpRange(it.cv.crest[0],it.cv.crest[1])+' crest (typically '+it.cv.pk+'m)');
+        if(it.backAhead)p.push('a walk-on after '+rpClk(it.cv.back)+' on typical nights');
+        else p.push('typically easing to ~'+it.mn+'m'+(it.tm!==null?(it.near?' near close':' by '+rpClk(it.tm)):''));
+      }
+      var why=p.join(' \u2014 ');why=why.charAt(0).toUpperCase()+why.slice(1)+'.';
+      h+='<div class="row"><span class="n">'+(i+1)+'.</span><div class="m"><div class="hd"><span class="rc-dot" style="background:var(--cmp-p'+(it.si+1)+')"></span> '+esc(it.nm)+sfx+'</div><div class="why">'+why+'</div>'+rcLiveLine(it.id,it.nowMed)+'</div></div>';}
+    if(holds.length)h+='<div class="pf-more">Not placed \u2014 the tape from '+rpClk(nb)+' is too thin this window: '+holds.map(function(z){return esc(z.nm);}).join(", ")+'.</div>';
+    return h+'<div class="pf-basis">From '+rpClk(nb)+' \u00b7 remaining half-hour medians \u00b7 live as of '+rpClk(nowT)+' \u00b7 typical describes the pattern, never a promise'+(ct!==null?' \u00b7 close = '+rpClk(ct>1440?ct-1440:ct)+' published':'')+'</div>';
+  }
+  function rcOrderHTML(its){ /* the card \u2014 Full day | From now lens, Full-day default (FromHere-Contract ruling 2) */
+    var wc=[],i;for(i=0;i<its.length;i++)if(its[i].cv)wc.push({id:its[i].id,nm:its[i].nm,cv:its[i].cv,si:i});
+    if(wc.length<2)return '';
+    var lens='<span class="rc-lens"><button class="hl-tab'+(rcLens!=="now"?' on':'')+'" data-rclens="day" type="button">Full day</button><button class="hl-tab'+(rcLens==="now"?' on':'')+'" data-rclens="now" type="button">From now</button></span>';
+    var body=(rcLens==="now")?rcFromBody(wc,rcEtMin(new Date()),rcCloseT()):rcDayBody(wc);
+    return '<div class="rpc rc-ord"><div class="lbl rc-olbl"><span>If you\u2019re riding '+(wc.length===2?'both':'all three')+'</span>'+lens+'</div>'+body+'</div>';
+  }
   function rcCompareHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends"};
@@ -3395,12 +3485,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a '+esc(me.name||"")+' \u203a <b>Compare</b></div>';
     var chips='';
     for(i=0;i<its.length;i++){var f=rcFoc===its[i].id;
-      chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span></button>';}
+      chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span>'+rcNowChip(its[i].id)+'</button>'; /* 0714m: live wears the hero (N1, ratified) */}
     var hero='<div class="rc-hero"><div class="eb">Compare \u00b7 '+EBW[rpWin]+'</div><div class="rc-legend">'+chips+'</div>'+
-      '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 same window as the profile</div></div>';
+      '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 now as of '+rpClk(rcEtMin(new Date()))+' \u00b7 refreshes ~5 min</div></div>';
     var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].map(function(t){
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
-    return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcTableHTML(its,days);
+    return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcOrderHTML(its)+rcTableHTML(its,days);
   }
   function rpAttrHTML(){
     if(!rpPark){
@@ -3487,6 +3577,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       el.querySelectorAll(".rc-rrow").forEach(function(rw){rw.style.display=(!q||rw.textContent.toLowerCase().indexOf(q)>=0)?"":"none";});});
     el.querySelectorAll("[data-rcfoc]").forEach(function(b){b.addEventListener("click",function(){ /* tap-a-chip \u2014 tap again releases */
       var id=b.getAttribute("data-rcfoc");rcFoc=(rcFoc===id)?null:id;renderPulsePage();});});
+    el.querySelectorAll("[data-rclens]").forEach(function(b){b.addEventListener("click",function(){ /* 0714m: the card's lens */
+      var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     rcPkA=false;document.body.classList.toggle("rc-open",!!rcPk); /* 0714j: one lock writer \u2014 the render derives the body lock from rcPk \u00b7 the sheet\u2019s entrance plays once */
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
     if(dts)dts.addEventListener("click",function(e){
