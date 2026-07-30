@@ -375,6 +375,10 @@
   .tp-dc.thin{background:none;border:1.5px dashed var(--muted-2)}
   .tp-dx{border-top:1px solid var(--line);padding:11px 16px 13px;background:var(--card-2)}
   .tp-dxread{font-size:var(--fs-body);line-height:1.5;margin-bottom:7px}
+  .tp-dxbx{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:11px 13px;margin:2px 0 4px}
+  .tp-dxbx .tp-dxread{margin-bottom:0}
+  .tp-dxbx .tp-hon{margin:5px 0 0}
+  .tp-dxeb{font:700 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin:0 0 5px}
   .tp-dxread b{font-weight:600}
   .tp-hon{font-size:var(--fs-meta);color:var(--muted-2);line-height:1.5;margin:-3px 0 8px}
   .tp-thnote{color:var(--muted-2);font-weight:500}
@@ -1441,7 +1445,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3855,7 +3859,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});}
     var hol=HOLIDAYS[ds];
     var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
-    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxread">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</div>',sub:sub};}
+    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-dxread">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</div>'+sub+'</div>',sub:""};}
     var best=5,worst=0;col.forEach(function(x){if(x.lvl<best)best=x.lvl;if(x.lvl>worst)worst=x.lvl;});
     var bests=col.filter(function(x){return x.lvl===best;}).map(function(x){return x.p;});
     var worsts=col.filter(function(x){return x.lvl===worst;}).map(function(x){return x.p;});
@@ -3871,7 +3875,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     s+=tpPlanClause(t,ds,model,wd);
     if(pk2&&tpCell(model,pk2,wd).thin)thin=thin.filter(function(x){return x!==pk2;});
     if(thin.length)s+=' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>';
-    return {line:'<div class="tp-dxread">'+s+'</div>',sub:sub};
+    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-dxread">'+s+'</div>'+sub+'</div>',sub:""}; /* 0715i: the day's read gets its box (owner-picked B) - the eyebrow names its own day, the holiday sub rides inside */
   }
   function tpExtK(s){var d=shortExtra(s);if(/early entry/i.test(d))return "EE";if(/extended/i.test(d))return "EEH";return "EVT";}
   function tpHoursHTML(ds,park){
