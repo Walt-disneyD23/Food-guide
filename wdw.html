@@ -528,7 +528,7 @@
   .td-sn{flex:none;width:18px;font:700 16px var(--font-display);color:var(--muted-2);text-align:center}
   .td-sm{flex:1;min-width:0}
   .td-snm{font-weight:650;font-size:var(--fs-title);letter-spacing:-.01em}
-  .td-srx{font-size:var(--fs-small);color:var(--muted);line-height:1.45;margin-top:.5px}
+  .td-srx{font-size:var(--fs-small);color:var(--muted);line-height:1.45;margin-top:.5px;min-height:36px}
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
   .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
@@ -543,7 +543,8 @@
   .td-rrow.on .td-ck{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
   .td-rrow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .td-rrow.on .nm{font-weight:600}
-  .td-rrow .typ{margin-left:auto;flex:none;color:var(--muted);font-size:var(--fs-meta);font-variant-numeric:tabular-nums}
+  .td-rrow .typ{margin-left:auto;flex:none;display:flex;flex-direction:column;align-items:flex-end;color:var(--muted);font-weight:700;font-size:var(--fs-meta);font-variant-numeric:tabular-nums;line-height:1.15}
+  .td-rrow .typ small{font:600 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
   .td-done{display:block;width:100%;box-sizing:border-box;text-align:center;border:none;border-radius:var(--r-tile);padding:12px;margin-top:12px;font:700 var(--fs-body) var(--font-body);color:#fff;background:var(--accent-fill);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .td-sl.pin{border-left:3px solid var(--accent);padding-left:9px}
   .td-sl.pdead{opacity:.55}
@@ -1453,7 +1454,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4128,12 +4129,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     all.sort(function(x,y){return x.nm.localeCompare(y.nm);});
     var q=tdQ.trim().toLowerCase();
     var rows=all.map(function(x){var on=ids.indexOf(x.id)>=0,hide=(q&&x.nm.toLowerCase().indexOf(q)<0);
-      return '<div class="td-rrow'+(on?' on':'')+'" data-tdid="'+esc(x.id)+'"'+(hide?' style="display:none"':'')+'><span class="td-ck">\u2713</span><span class="nm">'+esc(x.nm)+'</span><span class="typ">'+(x.ty!==null?x.ty+'m':'\u2013')+'</span></div>';}).join("");
+      return '<div class="td-rrow'+(on?' on':'')+'" data-tdid="'+esc(x.id)+'"'+(hide?' style="display:none"':'')+'><span class="td-ck">\u2713</span><span class="nm">'+esc(x.nm)+'</span><span class="typ">'+(x.ty!==null?x.ty+'m':'\u2013')+'<small>typ</small></span></div>';}).join("");
     var stars=all.filter(function(x){return watch[x.id]&&ids.indexOf(x.id)<0;});
     var st=stars.length?'<button class="rc-stars" data-tdstars="'+esc(stars.map(function(x){return x.id;}).join("|"))+'" type="button"><span class="fs">\u2605</span> Add your star'+(stars.length===1?'':'s')+' \u2014 '+stars.map(function(x){return esc(x.nm);}).join(" + ")+'</button>':'';
     var wd3=tpAsD(ds).toLocaleDateString("en-US",{weekday:"short"});
     return '<div class="td-scrim"></div><div class="td-sheet'+(tdPkA?' anim':'')+'"><div class="rc-grab"></div>'+
-      '<div class="td-ttl"><span class="rc-title">Add rides \u2014 '+wd3+', '+tpMD(ds)+'</span><span class="td-cnt">'+ids.length+' in</span></div>'+
+      '<div class="td-ttl"><span class="rc-title">Add rides \u2014 '+wd3+', '+tpMD(ds)+'</span><span class="td-cnt">'+ids.length+' in your day</span></div>'+
       '<div class="rc-sub">'+esc(pk)+' \u00b7 tap to add or remove</div>'+st+
       '<input class="td-srch" type="search" placeholder="Search '+esc(pk)+' rides" value="'+esc(tdQ)+'" autocomplete="off"/>'+
       ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from banked days \u2014 one moment</div>':'')+
@@ -4360,7 +4361,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var tdsh=el.querySelector(".td-sheet");if(tdsh&&!tdsh.__dd){tdsh.__dd=1;sheetDragDismiss(tdsh,tdsc,function(){tdPk=false;tdPin=null;renderPulsePage();});} /* one implementation, every sheet (0714q) */
     el.querySelectorAll("[data-tdid]").forEach(function(b){b.addEventListener("click",function(){ /* tap to add or remove — the roster IS the manifest */
       var t2=tpCurTrip();if(!t2||!tpOpen)return;var rid=b.getAttribute("data-tdid");
-      (tdRides(t2,tpOpen).indexOf(rid)>=0?tdRemove:tdAdd)(t2.id,tpOpen,rid);renderPulsePage();});});
+      var sh=el.querySelector(".td-sheet"),st0=sh?sh.scrollTop:0; /* 0715q: the roster keeps its scroll seat across the repaint (the dn-list idiom) */
+      (tdRides(t2,tpOpen).indexOf(rid)>=0?tdRemove:tdAdd)(t2.id,tpOpen,rid);renderPulsePage();
+      var sh2=el.querySelector(".td-sheet");if(sh2)sh2.scrollTop=st0;});});
     el.querySelectorAll("[data-tdstars]").forEach(function(b){b.addEventListener("click",function(){ /* one tap seats the named stars (the 0714j idiom, uncapped) */
       var t2=tpCurTrip();if(!t2||!tpOpen)return;
       b.getAttribute("data-tdstars").split("|").forEach(function(rid){tdAdd(t2.id,tpOpen,rid);});renderPulsePage();});});
