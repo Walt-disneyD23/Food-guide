@@ -510,7 +510,7 @@
   .td-lab .n{letter-spacing:.02em}
   .td-tabs{display:flex;gap:28px;margin:7px 0 2px}
   .td-tabs .hl-tab{font-size:var(--fs-small);letter-spacing:.08em;padding:8px 2px 9px;margin-top:0}
-  .td-asn{row-gap:9px}
+  .td-asn{row-gap:9px;margin-bottom:11px}
   .td-asn .tp-ac{padding:7px 14px}
   .td-sl{display:flex;gap:11px;padding:12px 0;border-top:1px solid var(--line);align-items:baseline}
   .td-sl:first-of-type{border-top:0}
@@ -557,6 +557,18 @@
   .td-psv[disabled]{background:var(--card-2);color:var(--muted-2);border:1px solid var(--line)}
   .td-prm{display:block;width:100%;text-align:center;background:none;border:none;font:700 var(--fs-meta) var(--font-body);color:var(--packed);padding:12px 0 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .td-pcl{display:block;width:100%;text-align:center;background:none;border:none;font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);padding:11px 0 2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .td-nvr{flex:none;margin-left:auto;align-self:baseline;display:flex;flex-direction:column;align-items:flex-end;min-width:46px;font:700 var(--fs-body) var(--font-body);font-variant-numeric:tabular-nums;line-height:1.15}
+  .td-nvr small{font:600 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+  .td-nvr .t-short{color:var(--short)} .td-nvr .t-medium{color:var(--medium)} .td-nvr .t-long{color:var(--long)} .td-nvr .t-packed{color:var(--packed)} .td-nvr .dash{color:var(--muted-2)}
+  .td-dnc{font:800 var(--fs-micro) var(--font-body);letter-spacing:.1em;color:#fff;background:var(--packed);border-radius:6px;padding:2.5px 7px;margin-bottom:1px}
+  .td-clc{font:800 var(--fs-micro) var(--font-body);letter-spacing:.1em;color:var(--muted);background:var(--card-2);border:1px solid var(--line);border-radius:6px;padding:2.5px 7px;margin-bottom:1px}
+  .td-ckc{flex:none;align-self:center;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--muted-2);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font:700 14px var(--font-body);color:transparent;padding:0;margin-left:10px;-webkit-tap-highlight-color:transparent}
+  .td-ckc.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
+  .td-sl.done{opacity:.5}
+  .td-sl.done .td-snm{text-decoration:line-through;text-decoration-thickness:1.5px}
+  .td-sn.ck{color:var(--accent)}
+  .td-ridlab{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);border-top:1px solid var(--line);padding:12px 0 0;margin-top:2px}
+  .td-asn .tp-ac.now.sel{background:var(--accent-fill);color:#fff;border-color:var(--accent-fill)}
   .rc-hero{border-radius:var(--r-hero);border:1px solid var(--pwh-line);overflow:hidden;margin:2px 0 12px;padding:17px 17px 15px;background:linear-gradient(150deg,var(--pwh-bg2),var(--pwh-bg));color:var(--pwh-ink)}
   .rc-hero .eb{font-family:var(--font-display);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--pwh-key)}
   .rc-hero .sub{color:var(--pwh-muted);font-size:var(--fs-meta);margin-top:10px}
@@ -1429,7 +1441,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2996,7 +3008,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="rd",tdLift=null,tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdLift=null,tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -3932,7 +3944,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      (t.plan's exact shape, one-read store law); one list, two lenses (App's order · My order);
      one start-aware engine — seat rides near their lows, receipts clause-earned at their own
      thresholds; quick-add picker (A + stars, owner-picked Jul 29); history, never a promise. ===== */
-  function tdReset(){tdLens="app";tdStart="rd";tdLift=null;tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;}
+  function tdReset(){tdLens="app";tdStart="";tdLift=null;tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;}
   function tdRides(t,ds){return (t&&t.rides||{})[ds]||[];}
   function tdAdd(id,ds,rid){ /* one-read store law: mutate inside a single tpTrips() read */
     var ts=tpTrips(),i;
@@ -3950,6 +3962,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(!a.length)delete ts[i].rides[ds];
       var pm=(ts[i].pins||{})[ds]; /* 0715g: a removed ride can't stay pinned */
       if(pm&&(rid in pm)){delete pm[rid];if(!Object.keys(pm).length)delete ts[i].pins[ds];}
+      var dl=(ts[i].done||{})[ds],dj; /* 0715h: nor keep its done mark */
+      if(dl&&(dj=dl.indexOf(rid))>=0){dl.splice(dj,1);if(!dl.length)delete ts[i].done[ds];}
       store.set("ppTrips",ts);return;}
   }
   function tdMove(id,ds,li,ti){ /* lift-and-place — the mock's ratified splice, indices from the rendered list */
@@ -3986,6 +4000,31 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tdPnRng(a,b){var A=tdPnClk(a),B=tdPnClk(b);return (A.slice(-2)===B.slice(-2)?A.slice(0,-3):A)+"\u2013"+B;}
   function tdPinTxt(p){return p.k==="part"?TD_PARTS[p.w][0]:(p.b!==null?tdPnRng(p.a,p.b):"at "+tdPnClk(p.a));} /* badges clock-only (ratified) */
   function tdPinBadge(rid,p){return '<span class="td-pinb">'+esc(tdPinTxt(p))+'<i class="x" data-tdpx="'+esc(rid)+'" role="button">\u2715</i></span>';}
+  function tdNow(){return rcEtMin(new Date());} /* ===== 0715h: L-31 Cut 3 (the live layer) - the one clock seam; the layer wakes on today only ===== */
+  function tdDoneList(t,ds){return (t&&t.done||{})[ds]||[];}
+  function tdMark(id,ds,rid){ /* one-read store law - done is your record, never a measurement */
+    var ts=tpTrips(),i;
+    for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      if(!ts[i].done)ts[i].done={};
+      var a=ts[i].done[ds]||(ts[i].done[ds]=[]);
+      if(a.indexOf(rid)<0)a.push(rid);
+      store.set("ppTrips",ts);return;}
+  }
+  function tdUnmark(id,ds,rid){
+    var ts=tpTrips(),i,j;
+    for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      var a=(ts[i].done||{})[ds];if(!a)return;
+      j=a.indexOf(rid);if(j<0)return;a.splice(j,1);
+      if(!a.length)delete ts[i].done[ds];
+      store.set("ppTrips",ts);return;}
+  }
+  function tdNvRail(rid){ /* the live rail - status truth on the right edge; DOWN never resequences (Compare's ruling) */
+    var lv=liveById[rid];
+    if(lv&&lv.status==="DOWN")return '<span class="td-nvr"><span class="td-dnc">DOWN</span><small>now</small></span>';
+    if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="td-nvr"><span class="t-'+rpTierCls(lv.wait)+'">'+lv.wait+'m</span><small>now</small></span>';
+    if(lv)return '<span class="td-nvr"><span class="td-clc">CLOSED</span><small>now</small></span>';
+    return '<span class="td-nvr"><span class="dash">\u2013</span><small>now</small></span>';
+  }
   function tdHours(ds,park){ /* published open/close in park-time minutes; after-midnight closes carry (the rcCloseT idiom) */
     var rec=tpSched[ds.slice(0,7)],d=rec&&rec[park]&&rec[park][ds];
     if(!d||!d.open)return {o:null,c:null};
@@ -4006,12 +4045,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var cv=rpCurveOf(a);if(cv)return {cv:cv,arc:false};
     cv=rpCurveOf(b);return cv?{cv:cv,arc:true}:null;
   }
-  function tdEng(rows,startMin,ct,pins){ /* one engine, start-aware: seat rides near their lows — deterministic, name-tiebroken */
-    pins=pins||{}; /* 0715g: pins seat first by anchor, the flexible pool flows around */
+  function tdEng(rows,startMin,ct,pins,pinClock){ /* one engine, start-aware: seat rides near their lows — deterministic, name-tiebroken */
+    pins=pins||{};if(pinClock===undefined||pinClock===null)pinClock=startMin; /* 0715h: the dim gate reads the REAL clock in From-now, mid-bucket honesty */
+    /* 0715g: pins seat first by anchor, the flexible pool flows around */
     var A=[],B=[],C=[],N=[],P=[],D=[],i,q;
     for(i=0;i<rows.length;i++){var r=rows[i];
       var pn=pins[r.id];
-      if(pn){var ip={id:r.id,nm:r.nm,pin:pn,anchor:tdPinAnchor(pn),dead:tdPinDead(pn,startMin)};
+      if(pn){var ip={id:r.id,nm:r.nm,pin:pn,anchor:tdPinAnchor(pn),dead:tdPinDead(pn,pinClock)};
         ip.why=ip.dead?"Your window sits before this start \u2014 the plan can\u2019t reach it.":"Your window \u2014 the plan flows around it.";
         (ip.dead?D:P).push(ip);continue;} /* a pinned ride leaves the flexible pool */
       if(!r.cvx){N.push({id:r.id,nm:r.nm,why:"No banked tape to place this one yet."});continue;}
@@ -4125,27 +4165,33 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!ids.length)return head+'<div class="fc-empty" style="padding:8px 2px">Nothing saved yet \u2014 add rides with the picker below, or from any '+esc(pk)+' ride\u2019s page reached through this day.</div>'+addr+pick+parksLab;
     var tabs='<div class="td-tabs"><button class="hl-tab'+(tdLens!=="mine"?' on':'')+'" data-tdlens="app" type="button">App\u2019s order</button><button class="hl-tab'+(tdLens==="mine"?' on':'')+'" data-tdlens="mine" type="button">My order</button></div>';
     var body="",basis,chips="",hint="";
+    var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
+    for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
     if(tdLens==="mine"){
       if(tdLift!==null&&ids.indexOf(tdLift)<0)tdLift=null; /* a removed ride can't stay lifted */
       if(tdLift!==null)hint='<div class="td-hint">Moving '+esc((roster[tdLift]||{}).name||tdLift)+' \u2014 tap the ride whose spot it should take.</div>';
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
-      body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid];
+      body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid]; /* 0715h: done stays exactly where YOU put it */
         var door=(tdLift===null)?' data-tdpd="'+esc(rid)+'"':''; /* a lifted list keeps every tap for its landing */
-        return '<div class="td-sl'+(pn?' pin':'')+(rid===tdLift?' lift':'')+'" data-tdsl="'+i+'"'+door+'><span class="td-sn">'+(i+1)+'</span><div class="td-sm"><div class="td-snm">'+esc(r.name||rid)+(pn?tdPinBadge(rid,pn):'')+'</div></div><span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
+        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+(rid===tdLift?' lift':'')+'" data-tdsl="'+i+'"'+door+'><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(r.name||rid)+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
       basis='Your order, exactly as you set it \u2014 lift a ride with \u2261, tap the spot it should take \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
       tdLift=null;
-      var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),sm=tdStartMin(tdStart),wdn=tpWDn(ds),arcN=0,cvN=0;
+      var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),wdn=tpWDn(ds),arcN=0,cvN=0;
+      var nowT=today?tdNow():null,stKey=tdStart||(today?"now":"rd");if(stKey==="now"&&!today)stKey="rd"; /* 0715h: the day's natural start - From now when you're standing in it */
+      var isNow=(stKey==="now"),sm=isNow?(nowT-(nowT%30)):tdStartMin(stKey);
       var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds);if(cx){cvN++;if(cx.arc)arcN++;}return {id:rid,nm:r.name||rid,cvx:cx};});
       var allArc=(cvN>0&&arcN===cvN),mixed=(arcN>0&&arcN<cvN); /* 0715f: three window states — the basis frames each honestly */
       var pns=tdPins(t,ds),np=0;ids.forEach(function(rid){if(pns[rid])np++;});
-      var eng=tdEng(rows,sm,hrs.c,pns),n=0;
-      chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+TD_STARTS.map(function(x){return '<span class="tp-ac'+(tdStart===x[0]?' sel':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
-      eng.ord.forEach(function(it){n++;body+='<div class="td-sl'+(it.pin?' pin':'')+(it.dead?' pdead':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(it.pin?it.why:tdWhy(it,sm,hrs.o,mixed))+'</div></div></div>';});
-      eng.outs.forEach(function(it){n++;body+='<div class="td-sl" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn">'+n+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+'</div><div class="td-srx">'+it.why+'</div></div></div>';});
+      var eng=tdEng(rows,sm,hrs.c,pns,isNow?nowT:sm),n=0,ridden="",rdn=0;
+      chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
+      var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(++n))+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
+      eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else body+=slA(it,false);});
+      if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
         :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
-      basis=(sm>0?'From '+rpClk(sm)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
+      basis=(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
     }
     return head+tabs+chips+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
   }
@@ -4321,6 +4367,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var t2=tpCurTrip();if(!t2||!tpOpen||tdPin===null)return;
       tdPinDel(t2.id,tpOpen,tdPin);tdPin=null;renderPulsePage();});
     var tdpcl=el.querySelector("[data-tdpcl]");if(tdpcl)tdpcl.addEventListener("click",function(){tdPin=null;renderPulsePage();});
+    el.querySelectorAll("[data-tdck]").forEach(function(b){b.addEventListener("click",function(e2){ /* 0715h: the done circle - your record, never a measurement; tap again undoes */
+      e2.stopPropagation();var t2=tpCurTrip();if(!t2||!tpOpen)return;var rid=b.getAttribute("data-tdck");
+      (tdDoneList(t2,tpOpen).indexOf(rid)>=0?tdUnmark:tdMark)(t2.id,tpOpen,rid);renderPulsePage();});});
     var tdpb=el.querySelector("[data-tdprof]");if(tdpb)tdpb.addEventListener("click",function(){ /* the profile's add-path — the lens day names it */
       var TLp=tpLensTrip();if(!TLp||!tpLensDay||!rpRide)return;
       (tdRides(TLp,tpLensDay).indexOf(rpRide)>=0?tdRemove:tdAdd)(TLp.id,tpLensDay,rpRide);renderPulsePage();});
