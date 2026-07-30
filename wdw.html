@@ -388,7 +388,7 @@
   .tp-hrs{flex:none;font-size:var(--fs-meta);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
   .tp-hrs b{color:var(--ink);font-weight:600}
   .tp-hrs.mut{color:var(--muted-2);max-width:132px}
-  .tp-ee{display:inline-block;font:700 var(--fs-micro) var(--font-body);letter-spacing:.04em;color:var(--pwh-key);background:var(--pwh-bg);border-radius:5px;padding:1px 5px;margin-left:4px}
+  .tp-eet{display:block;margin-top:2.5px;font-style:italic;font-weight:500;font-size:var(--fs-micro);letter-spacing:.01em;color:var(--muted);line-height:1.45}
   .tp-leg{display:flex;gap:13px;flex-wrap:wrap;padding:9px 2px 0;font-size:var(--fs-meta);color:var(--muted)}
   .tp-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
   .tp-fld{display:flex;gap:8px;margin-top:11px}
@@ -415,6 +415,9 @@
   .tp-ac{font:700 var(--fs-meta) var(--font-body);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 12px;color:var(--muted);background:var(--card);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .tp-ac.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
   .tp-acap{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);padding:5px 2px}
+  .tp-peb{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:13px 0 8px}
+  .tp-pgrid{display:flex;gap:9px}
+  .tp-pgrid .tp-ac{flex:1;text-align:center;padding:11px 0;font-size:var(--fs-small)}
   .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .tp-plsub{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
   .tp-plgh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:9px 0 4px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
@@ -1445,7 +1448,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715j</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3766,9 +3769,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return ' Your pick, <b>'+esc(pk)+'</b>, ran '+tpTier(c.lvl)+'.';
   }
   function tpPlanRow(t,ds){ /* Cut 2: the drill-down’s assign row — Plan-a-park chips / Planned — Change · Clear (2b verbatim); board taps persist immediately */
-    var pk=(t.plan||{})[ds],h='<div class="tp-asn">',i;
-    if(pk&&tpPlanPick!==ds)return h+'<span class="tp-acap">Planned \u2014</span><span class="tp-ac sel">'+esc(TP_PSHORT[pk]||pk)+'</span><span class="tp-ac" data-tppchg="'+ds+'">Change</span><span class="tp-ac" data-tppclr="'+ds+'">Clear</span></div>';
-    h+='<span class="tp-acap">'+(pk?'Planned \u2014':'Plan a park \u2014')+'</span>';
+    var pk=(t.plan||{})[ds],i; /* 0715k (owner-ratified P2): the caption becomes an eyebrow, the seats go equal-width - even geometry is the house taste */
+    if(pk&&tpPlanPick!==ds)return '<div class="tp-peb">Planned</div><div class="tp-pgrid"><span class="tp-ac sel">'+esc(TP_PSHORT[pk]||pk)+'</span><span class="tp-ac" data-tppchg="'+ds+'">Change</span><span class="tp-ac" data-tppclr="'+ds+'">Clear</span></div>';
+    var h='<div class="tp-peb">'+(pk?'Planned':'Plan a park')+'</div><div class="tp-pgrid">';
     for(i=0;i<4;i++){var p=TP_PARKS[i][0];h+='<span class="tp-ac'+(pk===p?' sel':'')+'" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'">'+(TP_PSHORT[p]||p)+'</span>';}
     return h+'</div>';
   }
@@ -3881,9 +3884,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tpHoursHTML(ds,park){
     var mo=ds.slice(0,7),rec=tpSched[mo],d=rec&&rec[park]&&rec[park][ds];
     if(!d||!d.open)return '<span class="tp-hrs mut">'+(rec?'Not in the published schedule yet':'Schedule loading\u2026')+'</span>';
-    var h='<b>'+tpClk(d.open)+' \u2013 '+tpClk(d.close)+'</b>',j;
-    for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];h+='<span class="tp-ee">'+x.k+' '+tpClk(x.o)+'</span>';}
-    return '<span class="tp-hrs">'+h+'</span>';
+    var h='<b>'+tpClk(d.open)+' \u2013 '+tpClk(d.close)+'</b>',j,ex=''; /* 0715k (owner-ratified H2\u00b7W3): the extras leave their pills for an italic line beneath the hours */
+    var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"};
+    for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];ex+=(ex?'<br>':'')+(EEN[x.k]||x.k)+' '+tpClk(x.o);}
+    return '<span class="tp-hrs">'+h+(ex?'<span class="tp-eet">'+ex+'</span>':'')+'</span>';
   }
   function tpEnsureSched(){ /* lazy month fetch, once/session per trip month; re-render on arrival; missing dates = observed absence */
     var t=tpCurTrip();if(!t||!parks||!parks.length)return;
