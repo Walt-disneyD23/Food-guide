@@ -1448,7 +1448,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3758,8 +3758,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tpSetPlan(id,d,p){ /* Cut 2: the board door writes the plan immediately — the tpSaveTrip idiom: mutate within one tpTrips() read, write the same array back */
     var ts=tpTrips(),i;
     for(i=0;i<ts.length;i++)if(ts[i].id===id){
+      var was=(ts[i].plan||{})[d]||null; /* 0715l (owner-ratified A): a CHANGED park wipes the day's rides, pins and done marks - Clear IS the delete-all; re-picking the same park keeps the list */
       if(p){if(!ts[i].plan)ts[i].plan={};ts[i].plan[d]=p;}
       else if(ts[i].plan)delete ts[i].plan[d];
+      if(was!==(p||null)){
+        if(ts[i].rides)delete ts[i].rides[d];
+        if(ts[i].pins)delete ts[i].pins[d];
+        if(ts[i].done)delete ts[i].done[d];
+      }
       store.set("ppTrips",ts);return;}
   }
   function tpPlanClause(t,ds,model,wd){ /* Cut 2 (2b-ratified): acknowledged, never judged — history first, pick second; no tier claim under the day floor */
@@ -4167,7 +4173,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var pk=(t&&t.plan||{})[ds];if(!pk)return "";
     var ids=tdRides(t,ds);
     var head='<div class="td-lab"><span>My day at '+esc(pk)+'</span>'+(ids.length?'<span class="n">'+ids.length+' ride'+(ids.length===1?'':'s')+'</span>':'')+'</div>';
-    var addr='<button class="td-addr" data-tdadd type="button">+ Add rides</button>';
+    var addr='<button class="td-addr" data-tdadd type="button">+ Add or remove rides</button>';
     var parksLab='<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>';
     var pick=(tdPk?tdPickHTML(t,ds,pk):"")+(tdPin!==null?tdPnHTML(t,ds,pk):""); /* 0715g: the pin sheet mounts beside the picker (never both open) */
     if(!ids.length)return head+'<div class="fc-empty" style="padding:8px 2px">Nothing saved yet \u2014 add rides with the picker below, or from any '+esc(pk)+' ride\u2019s page reached through this day.</div>'+addr+pick+parksLab;
