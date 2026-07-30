@@ -361,7 +361,7 @@
   .tp-read b{font-weight:700}
   .tp-tw1{color:#3dd68c;font-weight:700}.tp-tw2{color:#c98d05;font-weight:700}.tp-tw3{color:#ff7a59;font-weight:700}.tp-tw4{color:#ff6b6b;font-weight:700}
   html.dark .tp-tw2{color:#f5b544}
-  .tp-gh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:2px 16px 6px;font:700 8.5px var(--font-body);letter-spacing:.03em;line-height:1.25;text-transform:uppercase;color:var(--muted-2);align-items:end}
+  .tp-gh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:2px 16px 6px;font:700 8px var(--font-body);letter-spacing:.01em;line-height:1.25;text-transform:uppercase;color:var(--muted-2);align-items:end}
   .tp-gh i{font-style:normal;text-align:center}
   .tp-day{padding:0;overflow:hidden}
   .tp-drow{display:block;padding:14px 16px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -1453,7 +1453,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3020,7 +3020,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null,tpClrT=null,tpDelT=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -4428,14 +4428,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-tppchg]").forEach(function(b){b.addEventListener("click",function(){tpClrArm=null;tpPlanPick=b.getAttribute("data-tppchg");renderPulsePage();});});
     el.querySelectorAll("[data-tppclr]").forEach(function(b){b.addEventListener("click",function(){ /* 0715n: first tap arms, second fires - the trip-delete grammar */
       var t2=tpCurTrip();if(!t2)return;var ds3=b.getAttribute("data-tppclr");
-      if(tpClrArm!==ds3){tpClrArm=ds3;renderPulsePage();return;}
-      tpClrArm=null;tpSetPlan(t2.id,ds3,null);tpPlanPick=null;renderPulsePage();});});
+      if(tpClrArm!==ds3){tpClrArm=ds3;renderPulsePage(); /* 0715p: the arm self-resets - a sticky arm is a delayed accident */
+        clearTimeout(tpClrT);tpClrT=setTimeout(function(){if(tpClrArm===ds3){tpClrArm=null;renderPulsePage();}},4000);return;}
+      clearTimeout(tpClrT);tpClrArm=null;tpSetPlan(t2.id,ds3,null);tpPlanPick=null;renderPulsePage();});});
     el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
       tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tdReset();tpEnsureSched();renderPulsePage();rpTop();});});
     var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;tdReset();renderPulsePage();rpTop();});
     var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
     var tpd=el.querySelector(".tp-del");if(tpd)tpd.addEventListener("click",function(){ /* 0714y: first tap arms, second deletes */
-      if(!tpDelArm){tpDelArm=true;renderPulsePage();return;}
+      if(!tpDelArm){tpDelArm=true;renderPulsePage(); /* 0715p: same self-reset - one destructive grammar app-wide */
+        clearTimeout(tpDelT);tpDelT=setTimeout(function(){if(tpDelArm){tpDelArm=false;renderPulsePage();}},4000);return;}
+      clearTimeout(tpDelT);
       tpDeleteTrip(tpd.getAttribute("data-tpdel"));renderPulsePage();rpTop();});
     rcPkA=false;tdPkA=false;tdPnA=false;document.body.classList.toggle("rc-open",!!(rcPk||tdPk||tdPin!==null)); /* 0715e: the day picker joins the one lock writer */ /* 0714j: one lock writer \u2014 the render derives the body lock from rcPk \u00b7 the sheet\u2019s entrance plays once */
     var dts=el.querySelector(".rp-dt"); /* 0713s: tap-reveal on the downtime strip */
