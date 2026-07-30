@@ -522,10 +522,10 @@
   .td-sm{flex:1;min-width:0}
   .td-snm{font-weight:600;font-size:var(--fs-body)}
   .td-srx{font-size:var(--fs-meta);color:var(--muted);line-height:1.45;margin-top:.5px}
-  .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:pointer;padding:4px 10px;-webkit-tap-highlight-color:transparent}
-  .td-sl.lift{outline:2px solid var(--accent);outline-offset:-1px;border-radius:var(--r-el);background:var(--accent-soft)}
-  .td-sl.lift .td-grip{color:var(--accent)}
-  .td-hint{font:600 var(--fs-meta) var(--font-body);color:var(--accent);padding:6px 0 2px}
+  .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
+  .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
+  .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
+  .td-sl.shift{transition:transform .16s ease}
   .td-addr{display:block;width:100%;box-sizing:border-box;text-align:center;font:700 var(--fs-meta) var(--font-body);color:var(--accent);background:none;border:1.5px dashed var(--accent);border-radius:var(--r-el);padding:11px;margin-top:11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .td-prof{margin:2px 0 12px}
   .td-ttl{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
@@ -1445,7 +1445,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1797,7 +1797,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
       return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open");}
-    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open,.rc-sheet,.td-sheet"));}
+    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#statusPop,.dn-list.open,.rc-sheet,.td-sheet,.td-grip"));}
     function setPull(px){
       ptr.classList.add("pull");
       ptr.style.opacity=Math.min(px/40,1);
@@ -3012,7 +3012,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdLift=null,tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -3948,7 +3948,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      (t.plan's exact shape, one-read store law); one list, two lenses (App's order · My order);
      one start-aware engine — seat rides near their lows, receipts clause-earned at their own
      thresholds; quick-add picker (A + stars, owner-picked Jul 29); history, never a promise. ===== */
-  function tdReset(){tdLens="app";tdStart="";tdLift=null;tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;}
+  function tdReset(){tdLens="app";tdStart="";tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;}
   function tdRides(t,ds){return (t&&t.rides||{})[ds]||[];}
   function tdAdd(id,ds,rid){ /* one-read store law: mutate inside a single tpTrips() read */
     var ts=tpTrips(),i;
@@ -4172,15 +4172,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
     if(tdLens==="mine"){
-      if(tdLift!==null&&ids.indexOf(tdLift)<0)tdLift=null; /* a removed ride can't stay lifted */
-      if(tdLift!==null)hint='<div class="td-hint">Moving '+esc((roster[tdLift]||{}).name||tdLift)+' \u2014 tap the ride whose spot it should take.</div>';
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
-      body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid]; /* 0715h: done stays exactly where YOU put it */
-        var door=(tdLift===null)?' data-tdpd="'+esc(rid)+'"':''; /* a lifted list keeps every tap for its landing */
-        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+(rid===tdLift?' lift':'')+'" data-tdsl="'+i+'"'+door+'><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(r.name||rid)+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
-      basis='Your order, exactly as you set it \u2014 lift a ride with \u2261, tap the spot it should take \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
+      body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid]; /* 0715h: done stays exactly where YOU put it - 0715j: drag reorders from the grip, so every row stays a door */
+        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(r.name||rid)+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
+      basis='Your order, exactly as you set it \u2014 drag \u2261 to reorder \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
-      tdLift=null;
       var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),wdn=tpWDn(ds),arcN=0,cvN=0;
       var nowT=today?tdNow():null,stKey=tdStart||(today?"now":"rd");if(stKey==="now"&&!today)stKey="rd"; /* 0715h: the day's natural start - From now when you're standing in it */
       var isNow=(stKey==="now"),sm=isNow?(nowT-(nowT%30)):tdStartMin(stKey);
@@ -4314,16 +4310,36 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       rpView="attr";rpPark=b.getAttribute("data-tpdoor");rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;rpWin="trip";tdReset();
       renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){ /* 0715e: the day page's lens — flips the reading, never the data */
-      var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;tdLift=null;renderPulsePage();});});
+      var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;renderPulsePage();});});
     el.querySelectorAll("[data-tdst]").forEach(function(b){b.addEventListener("click",function(){ /* the one input only the user knows */
       var v=b.getAttribute("data-tdst");if(v===tdStart)return;tdStart=v;renderPulsePage();});});
-    el.querySelectorAll("[data-tdgrip]").forEach(function(b){b.addEventListener("click",function(e2){ /* lift with \u2261 — tap again cancels */
-      e2.stopPropagation();var g=b.getAttribute("data-tdgrip");tdLift=(tdLift===g)?null:g;renderPulsePage();});});
-    el.querySelectorAll("[data-tdsl]").forEach(function(b){b.addEventListener("click",function(){ /* place — the tapped ride's spot */
-      if(tdLift===null)return;var t2=tpCurTrip();if(!t2||!tpOpen)return;
-      var ids=tdRides(t2,tpOpen),li=ids.indexOf(tdLift),ti=+b.getAttribute("data-tdsl");
-      if(li<0||ti===li){tdLift=null;renderPulsePage();return;}
-      tdMove(t2.id,tpOpen,li,ti);tdLift=null;renderPulsePage();});});
+    el.querySelectorAll("[data-tdgrip]").forEach(function(g){ /* 0715j: handle-scoped drag (owner-ratified A, reorder-mock.html of record) - whole-row drag stays banned; the page scrolls everywhere but the grip */
+      g.addEventListener("click",function(e2){e2.stopPropagation();}); /* a bare grip tap stays inert - never a pin door */
+      g.addEventListener("touchstart",function(te){te.preventDefault();},{passive:false}); /* iOS: veto the pan before Safari enrolls it - touch-action alone loses the down-drag race (owner-caught on mock v1) */
+      g.addEventListener("touchmove",function(te){te.preventDefault();},{passive:false});
+      g.addEventListener("pointerdown",function(e0){
+        e0.preventDefault();
+        var t2=tpCurTrip();if(!t2||!tpOpen)return;
+        var rows=[].slice.call(el.querySelectorAll("[data-tdsl]"));if(rows.length<2)return;
+        var row=g.closest("[data-tdsl]");if(!row)return;
+        var from=+row.getAttribute("data-tdsl"),h=row.offsetHeight||56,y0=e0.clientY,cur=from,moved=false;
+        row.classList.add("drag");
+        rows.forEach(function(r){if(r!==row)r.classList.add("shift");});
+        try{g.setPointerCapture(e0.pointerId);}catch(e9){}
+        var mv=function(ev){var dy=ev.clientY-y0;if(dy>4||dy<-4)moved=true;
+          row.style.transform="translateY("+dy+"px)";
+          var tgt=Math.min(rows.length-1,Math.max(0,from+Math.round(dy/h)));
+          if(tgt!==cur){cur=tgt;
+            rows.forEach(function(r,i){if(i===from)return;
+              var sh=0;
+              if(from<cur&&i>from&&i<=cur)sh=-h;else if(from>cur&&i<from&&i>=cur)sh=h;
+              r.style.transform=sh?"translateY("+sh+"px)":"";});}};
+        var up=function(){
+          g.removeEventListener("pointermove",mv);g.removeEventListener("pointerup",up);g.removeEventListener("pointercancel",up);
+          if(moved&&cur!==from)tdMove(t2.id,tpOpen,from,cur); /* the store law commits; a taller-row wobble only shifts the preview, never the splice */
+          renderPulsePage();};
+        g.addEventListener("pointermove",mv);g.addEventListener("pointerup",up);g.addEventListener("pointercancel",up);
+      });});
     var tda=el.querySelector("[data-tdadd]");if(tda)tda.addEventListener("click",function(){tdPk=true;tdPkA=true;tdQ="";rpEnsureDigs();renderPulsePage();});
     var tdsc=el.querySelector(".td-scrim");if(tdsc)tdsc.addEventListener("click",function(){tdPk=false;tdPin=null;renderPulsePage();});
     var tdsh=el.querySelector(".td-sheet");if(tdsh&&!tdsh.__dd){tdsh.__dd=1;sheetDragDismiss(tdsh,tdsc,function(){tdPk=false;tdPin=null;renderPulsePage();});} /* one implementation, every sheet (0714q) */
