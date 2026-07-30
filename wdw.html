@@ -523,7 +523,7 @@
   .td-tabs .hl-tab{font-size:var(--fs-small);letter-spacing:.08em;padding:8px 2px 9px;margin-top:0}
   .td-asn{row-gap:9px;margin-bottom:11px}
   .td-asn .tp-ac{padding:7px 14px}
-  .td-sl{display:flex;gap:11px;padding:13px 13px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);margin-bottom:9px;align-items:baseline}
+  .td-sl{display:flex;gap:11px;padding:13px 13px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);margin-bottom:9px;min-height:112px;box-sizing:border-box;position:relative;align-items:center}
   .td-sl:first-of-type{margin-top:2px}
   .td-sn{flex:none;width:18px;font:700 16px var(--font-display);color:var(--muted-2);text-align:center}
   .td-sm{flex:1;min-width:0}
@@ -547,9 +547,9 @@
   .td-colh{display:flex;justify-content:flex-end;padding:6px 2px 2px}
   .td-colh span{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .td-done{display:block;width:100%;box-sizing:border-box;text-align:center;border:none;border-radius:var(--r-tile);padding:12px;margin-top:12px;font:700 var(--fs-body) var(--font-body);color:#fff;background:var(--accent-fill);cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .td-sl.pin{border-left:3px solid var(--accent)}
+  .td-sl.pin::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--accent)}
   .td-sl.pdead{opacity:.55}
-  .td-pinb{display:inline-flex;align-items:center;gap:7px;vertical-align:1px;margin-left:8px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--r-pill);padding:3px 9px;white-space:nowrap}
+  .td-pinb{display:flex;width:fit-content;align-items:center;gap:7px;margin:4px 0 1px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--r-pill);padding:3px 9px;white-space:nowrap}
   .td-pinb .x{font-style:normal;font-weight:700;cursor:pointer;padding:3px 4px;margin:-3px -4px;-webkit-tap-highlight-color:transparent}
   .td-plab{font:600 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:12px 0 8px}
   .td-parts{display:flex;gap:9px;row-gap:11px;flex-wrap:wrap}
@@ -1455,7 +1455,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3994,6 +3994,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var m=a.splice(li,1)[0];a.splice(ti,0,m);
       store.set("ppTrips",ts);return;}
   }
+  function tdNmShort(n){var i=n.indexOf(" - ");return i>0?n.slice(0,i):n;} /* 0715s (owner-ratified B2): subtitle-trim at the dash - display only, the full name lives behind the tile's own door; colons and slashes survive (Rise of the Resistance stays whole) */
   function tdPins(t,ds){return (t&&t.pins||{})[ds]||{};} /* ===== 0715g: L-31 Cut 2 (pins) - t.pins per-day map, minutes-precise; pins are USER data, the app never claims to know a window ===== */
   function tdPinSet(id,ds,rid,pin){ /* one-read store law */
     var ts=tpTrips(),i;
@@ -4191,7 +4192,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(tdLens==="mine"){
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
       body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid]; /* 0715h: done stays exactly where YOU put it - 0715j: drag reorders from the grip, so every row stays a door */
-        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(r.name||rid)+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
+        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(r.name||rid))+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
       basis='Your order, exactly as you set it \u2014 drag \u2261 to reorder \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
       var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),wdn=tpWDn(ds),arcN=0,cvN=0;
@@ -4203,7 +4204,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var eng=tdEng(rows,sm,hrs.c,pns,isNow?nowT:sm),n=0,ridden="",rdn=0;
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(++n))+'</span><div class="td-sm"><div class="td-snm">'+esc(it.nm)+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(++n))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else body+=slA(it,false);});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
