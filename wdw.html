@@ -523,8 +523,8 @@
   .td-tabs .hl-tab{font-size:var(--fs-small);letter-spacing:.08em;padding:8px 2px 9px;margin-top:0}
   .td-asn{row-gap:9px;margin-bottom:11px}
   .td-asn .tp-ac{padding:7px 14px}
-  .td-sl{display:flex;gap:11px;padding:14px 0;border-top:1px solid var(--line);align-items:baseline}
-  .td-sl:first-of-type{border-top:0}
+  .td-sl{display:flex;gap:11px;padding:13px 13px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);margin-bottom:9px;align-items:baseline}
+  .td-sl:first-of-type{margin-top:2px}
   .td-sn{flex:none;width:18px;font:700 16px var(--font-display);color:var(--muted-2);text-align:center}
   .td-sm{flex:1;min-width:0}
   .td-snm{font-weight:650;font-size:var(--fs-title);letter-spacing:-.01em}
@@ -543,10 +543,11 @@
   .td-rrow.on .td-ck{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
   .td-rrow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .td-rrow.on .nm{font-weight:600}
-  .td-rrow .typ{margin-left:auto;flex:none;display:flex;flex-direction:column;align-items:flex-end;color:var(--muted);font-weight:700;font-size:var(--fs-meta);font-variant-numeric:tabular-nums;line-height:1.15}
-  .td-rrow .typ small{font:600 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+  .td-rrow .typ{margin-left:auto;flex:none;color:var(--muted);font-weight:700;font-size:var(--fs-meta);font-variant-numeric:tabular-nums}
+  .td-colh{display:flex;justify-content:flex-end;padding:6px 2px 2px}
+  .td-colh span{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .td-done{display:block;width:100%;box-sizing:border-box;text-align:center;border:none;border-radius:var(--r-tile);padding:12px;margin-top:12px;font:700 var(--fs-body) var(--font-body);color:#fff;background:var(--accent-fill);cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .td-sl.pin{border-left:3px solid var(--accent);padding-left:9px}
+  .td-sl.pin{border-left:3px solid var(--accent)}
   .td-sl.pdead{opacity:.55}
   .td-pinb{display:inline-flex;align-items:center;gap:7px;vertical-align:1px;margin-left:8px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--r-pill);padding:3px 9px;white-space:nowrap}
   .td-pinb .x{font-style:normal;font-weight:700;cursor:pointer;padding:3px 4px;margin:-3px -4px;-webkit-tap-highlight-color:transparent}
@@ -580,7 +581,7 @@
   .td-sl.done{opacity:.5}
   .td-sl.done .td-snm{text-decoration:line-through;text-decoration-thickness:1.5px}
   .td-sn.ck{color:var(--accent)}
-  .td-ridlab{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);border-top:1px solid var(--line);padding:12px 0 0;margin-top:2px}
+  .td-ridlab{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);padding:8px 2px 9px;margin-top:2px}
   .td-asn .tp-ac.now.sel{background:var(--accent-fill);color:#fff;border-color:var(--accent-fill)}
   .rc-hero{border-radius:var(--r-hero);border:1px solid var(--pwh-line);overflow:hidden;margin:2px 0 12px;padding:17px 17px 15px;background:linear-gradient(150deg,var(--pwh-bg2),var(--pwh-bg));color:var(--pwh-ink)}
   .rc-hero .eb{font-family:var(--font-display);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--pwh-key)}
@@ -1454,7 +1455,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4129,7 +4130,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     all.sort(function(x,y){return x.nm.localeCompare(y.nm);});
     var q=tdQ.trim().toLowerCase();
     var rows=all.map(function(x){var on=ids.indexOf(x.id)>=0,hide=(q&&x.nm.toLowerCase().indexOf(q)<0);
-      return '<div class="td-rrow'+(on?' on':'')+'" data-tdid="'+esc(x.id)+'"'+(hide?' style="display:none"':'')+'><span class="td-ck">\u2713</span><span class="nm">'+esc(x.nm)+'</span><span class="typ">'+(x.ty!==null?x.ty+'m':'\u2013')+'<small>typ</small></span></div>';}).join("");
+      return '<div class="td-rrow'+(on?' on':'')+'" data-tdid="'+esc(x.id)+'"'+(hide?' style="display:none"':'')+'><span class="td-ck">\u2713</span><span class="nm">'+esc(x.nm)+'</span><span class="typ">'+(x.ty!==null?x.ty+'m':'\u2013')+'</span></div>';}).join("");
     var stars=all.filter(function(x){return watch[x.id]&&ids.indexOf(x.id)<0;});
     var st=stars.length?'<button class="rc-stars" data-tdstars="'+esc(stars.map(function(x){return x.id;}).join("|"))+'" type="button"><span class="fs">\u2605</span> Add your star'+(stars.length===1?'':'s')+' \u2014 '+stars.map(function(x){return esc(x.nm);}).join(" + ")+'</button>':'';
     var wd3=tpAsD(ds).toLocaleDateString("en-US",{weekday:"short"});
@@ -4137,6 +4138,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="td-ttl"><span class="rc-title">Add rides \u2014 '+wd3+', '+tpMD(ds)+'</span><span class="td-cnt">'+ids.length+' in your day</span></div>'+
       '<div class="rc-sub">'+esc(pk)+' \u00b7 tap to add or remove</div>'+st+
       '<input class="td-srch" type="search" placeholder="Search '+esc(pk)+' rides" value="'+esc(tdQ)+'" autocomplete="off"/>'+
+      '<div class="td-colh"><span>Typical</span></div>'+ /* 0715r (owner-ratified C): the column declares once, the rows go bare */
       ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from banked days \u2014 one moment</div>':'')+
       '<div class="td-roster">'+rows+'</div>'+
       '<button class="td-done" type="button">Done \u00b7 '+ids.length+' ride'+(ids.length===1?'':'s')+'</button></div>';
