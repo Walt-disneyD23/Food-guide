@@ -1455,7 +1455,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4088,6 +4088,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
         near:(ct!==null&&tm!==null&&tm>=ct-45)};
       if(it.wk||mx-mn<8){it.k="C";C.push(it);}
+      else if(mx<=35){it.k="C";it.easy=true;C.push(it);} /* 0715u (owner-ratified 35): the tolerance gate - an engine classifier, never a display tier; the receipt speaks the ride's own ceiling */
       else if(base<=mn+3){it.k="A";A.push(it);}
       else{it.k="B";B.push(it);}
     }
@@ -4108,6 +4109,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tdWhy(it,startMin,openMin,mark){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
     var cv=it.cv,p=[];
     if(it.wk)p.push((startMin===0&&cv.allday)?"a walk-on most of the day \u2014 anytime":"a walk-on from here on typical days \u2014 anytime");
+    else if(it.easy)p.push("typically never tops ~"+it.mx+"m"+(startMin>0?" from here":"")+" \u2014 anytime");
     else if(it.k==="C")p.push("holds near "+it.base+"m from here \u2014 anytime");
     else if(it.k==="A"){
       if(it.f2!==null)p.push("typically a walk-on until "+rpClk(it.f2));
