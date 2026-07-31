@@ -1155,6 +1155,17 @@
   /* ===== monthly wrap (0713i): calendar grid + board tiles ===== */
   .pw-mnav{border:0;background:none;color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:20px;line-height:1;padding:0 4px;cursor:pointer;vertical-align:-1px}
   .pw-mnav:disabled{color:var(--muted-2);opacity:.5;cursor:default}
+  /* ===== 0715w (T5-B): the month title is a door \u2014 jump-to-month picker sheet ===== */
+  .pw-mtitle{border:0;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);color:var(--accent);background:var(--accent-soft);border-radius:var(--r-pill);padding:2px 13px;display:inline-flex;align-items:center;gap:6px;vertical-align:-2px;-webkit-tap-highlight-color:transparent}
+  .pw-mtitle i{font-style:normal;font-size:10px;line-height:1;opacity:.7}
+  .pw-ym-t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title);text-align:center;margin:2px 0 12px}
+  .pw-ymy{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  .pw-ymy button{border:0;cursor:pointer;font-family:var(--font-body);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:var(--accent-soft);border-radius:var(--r-pill);padding:7px 0;-webkit-tap-highlight-color:transparent}
+  .pw-ymy button.on{background:var(--accent-fill);color:var(--accent-ink)}
+  .pw-ymm{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
+  .pw-ymm button{border:0;cursor:pointer;font-family:var(--font-body);font-weight:600;font-size:var(--fs-small);color:var(--ink);background:var(--card-2);border-radius:var(--r-el);padding:12px 0;-webkit-tap-highlight-color:transparent}
+  .pw-ymm button.on{background:var(--accent-fill);color:var(--accent-ink);font-weight:700}
+  .pw-ymm button:disabled{opacity:.4;cursor:default}
   .pw-mwd{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:14px}
   .pw-mwd span{text-align:center;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-dim)}
   .pw-mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:4px}
@@ -1455,7 +1466,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5693,6 +5704,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
        today's cell is a pulse and needs no live payload. */
     var PW_TIER_SPAN={1:[0,15],2:[15,25],3:[25,40],4:[40,55]}; /* unshifted resort-scale spans for depth shading */
     var pwMonthCursor=null,pwMonthCache={};
+    var PW_MONTH_MIN="2021-07"; /* 0715w: archive floor \u2014 the vault begins Jul 2021 */
     function pwMonthLabel(){return asDate(etDate(0)).toLocaleDateString("en-US",{month:"long"});}
     function pwMonthName(cur){var a=cur.split("-");return new Date(+a[0],+a[1]-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});}
     function pwMonAddM(cur,n){var a=cur.split("-");var d=new Date(+a[0],+a[1]-1+n,1);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2);}
@@ -5791,9 +5803,10 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var wv=$id("wrapView");if(!wv)return;
       var html=tabsHTML("month");
       var canNext=(m.cur<etDate(0).slice(0,7));
+      var canPrev=(m.cur>PW_MONTH_MIN); /* 0715w */
       var monthDone=(m.finals>=m.inMonthTotal);
       var badge=monthDone?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+m.finals+' of '+m.inMonthTotal+' final</span>';
-      html+='<div class="pw-date"><div><div class="d"><button class="pw-mnav" id="pwMPrev" type="button">\u2039</button> '+esc(m.label)+' <button class="pw-mnav" id="pwMNext" type="button"'+(canNext?'':' disabled')+'>\u203a</button></div><div class="s">Walt Disney World \u00b7 monthly wrap</div></div>'+badge+'</div>';
+      html+='<div class="pw-date"><div><div class="d"><button class="pw-mnav" id="pwMPrev" type="button"'+(canPrev?'':' disabled')+'>\u2039</button> <button class="pw-mtitle" id="pwMTitle" type="button">'+esc(m.label)+'<i>\u25be</i></button> <button class="pw-mnav" id="pwMNext" type="button"'+(canNext?'':' disabled')+'>\u203a</button></div><div class="s">Walt Disney World \u00b7 monthly wrap</div></div>'+badge+'</div>';
       if(!m.finals){
         html+='<div class="pw-msg">No banked days in this month yet.</div>';
         wv.innerHTML=html;wireTabs();pwWireMonthNav();return;
@@ -5844,9 +5857,38 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         tc.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();loadTab("today");}});}
     }
     function pwWireMonthNav(){
-      var p=$id("pwMPrev"),n=$id("pwMNext");
-      if(p)p.addEventListener("click",function(){pwMonthCursor=pwMonAddM(pwMonthCursor||etDate(0).slice(0,7),-1);pwLoadMonth();});
+      var p=$id("pwMPrev"),n=$id("pwMNext"),t=$id("pwMTitle");
+      if(p)p.addEventListener("click",function(){if(p.disabled)return;var c=pwMonAddM(pwMonthCursor||etDate(0).slice(0,7),-1);if(c<PW_MONTH_MIN)return;pwMonthCursor=c;pwLoadMonth();});
       if(n)n.addEventListener("click",function(){if(n.disabled)return;pwMonthCursor=pwMonAddM(pwMonthCursor||etDate(0).slice(0,7),1);pwLoadMonth();});
+      if(t)t.addEventListener("click",pwYmOpen); /* 0715w: the title is a door */
+    }
+    /* ===== 0715w (T5-B): jump-to-month picker \u2014 rides the rc sheet furniture;
+       lives inside wrapView so any re-render sweeps it away; floor/ceiling honest. ===== */
+    function pwYmOpen(){
+      var wv=$id("wrapView");if(!wv||$id("pwYm"))return;
+      var cur=pwMonthCursor||etDate(0).slice(0,7);
+      var box=document.createElement("div");box.id="pwYm";
+      wv.appendChild(box);
+      pwYmDraw(box,+cur.split("-")[0],cur);
+    }
+    function pwYmClose(){var x=$id("pwYm");if(x&&x.parentNode)x.parentNode.removeChild(x);}
+    function pwYmDraw(box,year,cur){
+      var nowM=etDate(0).slice(0,7),y0=+PW_MONTH_MIN.split("-")[0],y1=+nowM.split("-")[0];
+      var ys="";for(var y=y0;y<=y1;y++)ys+='<button type="button" data-y="'+y+'"'+(y===year?' class="on"':"")+">"+y+"</button>";
+      var MOS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],ms="",i;
+      for(i=0;i<12;i++){var c=year+"-"+("0"+(i+1)).slice(-2);
+        var dis=(c<PW_MONTH_MIN||c>nowM);
+        ms+='<button type="button" data-c="'+c+'"'+(dis?" disabled":(c===cur?' class="on"':""))+">"+MOS[i]+"</button>";}
+      box.innerHTML='<div class="rc-scrim"></div><div class="rc-sheet anim"><div class="rc-grab"></div>'+
+        '<div class="pw-ym-t">Jump to a month</div><div class="pw-ymy">'+ys+'</div><div class="pw-ymm">'+ms+"</div></div>";
+      box.querySelector(".rc-scrim").addEventListener("click",pwYmClose);
+      var sh=box.querySelector(".rc-sheet"),sy=null;
+      sh.addEventListener("touchstart",function(e){sy=(sh.scrollTop<=0)?e.touches[0].clientY:null;},{passive:true});
+      sh.addEventListener("touchmove",function(e){if(sy!==null&&e.touches[0].clientY-sy>56){sy=null;pwYmClose();}},{passive:true});
+      var yb=box.querySelectorAll(".pw-ymy button"),a;
+      for(a=0;a<yb.length;a++)(function(b){b.addEventListener("click",function(){pwYmDraw(box,+b.getAttribute("data-y"),cur);});})(yb[a]);
+      var mb=box.querySelectorAll(".pw-ymm button"),k;
+      for(k=0;k<mb.length;k++)(function(b){if(b.disabled)return;b.addEventListener("click",function(){var c=b.getAttribute("data-c");pwYmClose();if(c!==(pwMonthCursor||etDate(0).slice(0,7))){pwMonthCursor=c;pwLoadMonth();}});})(mb[k]);
     }
     var pwDayCache={};
     function pwVisitDate(){
