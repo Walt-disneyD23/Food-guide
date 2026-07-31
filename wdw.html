@@ -1466,7 +1466,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5882,9 +5882,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       box.innerHTML='<div class="rc-scrim"></div><div class="rc-sheet anim"><div class="rc-grab"></div>'+
         '<div class="pw-ym-t">Jump to a month</div><div class="pw-ymy">'+ys+'</div><div class="pw-ymm">'+ms+"</div></div>";
       box.querySelector(".rc-scrim").addEventListener("click",pwYmClose);
-      var sh=box.querySelector(".rc-sheet"),sy=null;
-      sh.addEventListener("touchstart",function(e){sy=(sh.scrollTop<=0)?e.touches[0].clientY:null;},{passive:true});
-      sh.addEventListener("touchmove",function(e){if(sy!==null&&e.touches[0].clientY-sy>56){sy=null;pwYmClose();}},{passive:true});
+      var sh=box.querySelector(".rc-sheet");
+      if(sh&&!sh.__dd){sh.__dd=1;sheetDragDismiss(sh,box.querySelector(".rc-scrim"),pwYmClose);} /* 0715x: one implementation, every sheet (0714q) */
       var yb=box.querySelectorAll(".pw-ymy button"),a;
       for(a=0;a<yb.length;a++)(function(b){b.addEventListener("click",function(){pwYmDraw(box,+b.getAttribute("data-y"),cur);});})(yb[a]);
       var mb=box.querySelectorAll(".pw-ymm button"),k;
