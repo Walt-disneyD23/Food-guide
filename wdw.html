@@ -1470,7 +1470,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6004,8 +6004,31 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     }
 
     /* ---- compute helpers ---- */
+    /* ===== 0716c (T2, ratified): RAILROAD RULE A AT READ TIME ==================
+       railroad-merge-v2.json is the machine copy. The three WDWRR station
+       entities merge into the single PARK_DEF ride on every Wrap pool:
+       any-operating (merged ride runs if ANY co-observed board runs), a dark
+       station while siblings run is partial route \u2014 signal, not outage.
+       Evidence basis: twins exact-agree 99.5% of 3,827 pair-days, so the
+       day\u2019s liveliest co-observed board IS the median-of-operating; its whole
+       ledger rides as the merged row (one coherent timeline, one number
+       family). Canonical door: Main Street\u2019s UUID, so month boards accumulate
+       under one key across days. Stations stay whole in the vault \u2014 the merge
+       is read-time and regenerable. Era-independent: 3, 2, or 1 station(s). */
+    var PW_RR={"e40ac396-cbac-43f4-8752-764ed60ccceb":1,"e39b831b-7731-49bb-815b-289b4f49a9fd":1,"06c599f9-1ddf-4d47-9157-a992acafc96b":1};
+    var PW_RR_CANON="e39b831b-7731-49bb-815b-289b4f49a9fd"; /* Main Street, U.S.A. \u2014 the one door */
+    function pwRailMerge(rs){
+      var st=[],out=[],i;
+      for(i=0;i<rs.length;i++){(PW_RR[rs[i].id]?st:out).push(rs[i]);}
+      if(!st.length)return rs;
+      var co=st.filter(function(r){return (r.samples||0)>0||(r.downMinutes||0)>0;});
+      var pick=(co.length?co:st).slice().sort(function(a,b){return (b.samples||0)-(a.samples||0);})[0];
+      var m={};for(var k in pick)m[k]=pick[k];
+      m.id=PW_RR_CANON;m.name="Walt Disney World Railroad";
+      out.push(m);return out;
+    }
     function realRides(d){
-      return (d.rides||[]).filter(function(r){
+      return pwRailMerge(d.rides||[]).filter(function(r){ /* 0716c: Rule A rides every pool through the one choke point */
         if(MAIN.indexOf(r.park)<0)return false;
         if(r.samples>0&&r.avgWait!=null)return true;      /* posted real waits */
         return r.downEvents>0&&r.downMinutes>0;            /* never posted a wait but had real unplanned downtime (e.g. down all day) */
