@@ -1470,7 +1470,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5534,7 +5534,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function wireTabs(){
       var wv=$id("wrapView");if(!wv)return;
       var bs=wv.querySelectorAll(".pw-tabs button");
-      for(var i=0;i<bs.length;i++){(function(btn){btn.addEventListener("click",function(){loadTab(btn.getAttribute("data-tab"));});})(bs[i]);}
+      for(var i=0;i<bs.length;i++){(function(btn){btn.addEventListener("click",function(){var t=btn.getAttribute("data-tab");if(t==="month")pwMonthCursor=null; /* 0716b: the tab names the current month \u2014 tapping it goes home from any depth */ loadTab(t);});})(bs[i]);}
     }
     /* ---- data cleanup: fix mojibake ride names + drop non-ride entities ---- */
     var PW_CP={"\u20AC":0x80,"\u201A":0x82,"\u0192":0x83,"\u201E":0x84,"\u2026":0x85,"\u2020":0x86,"\u2021":0x87,"\u02C6":0x88,"\u2030":0x89,"\u0160":0x8A,"\u2039":0x8B,"\u0152":0x8C,"\u017D":0x8E,"\u2018":0x91,"\u2019":0x92,"\u201C":0x93,"\u201D":0x94,"\u2022":0x95,"\u2013":0x96,"\u2014":0x97,"\u02DC":0x98,"\u2122":0x99,"\u0161":0x9A,"\u203A":0x9B,"\u0153":0x9C,"\u017E":0x9E,"\u0178":0x9F};
@@ -5895,7 +5895,18 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       wv.appendChild(box);
       pwYmDraw(box,+cur.split("-")[0],cur);
     }
-    function pwYmClose(){var x=$id("pwYm");if(x&&x.parentNode)x.parentNode.removeChild(x);}
+    function pwYmClose(now){
+      /* 0716b: a graceful exit \u2014 the sheet slides home and the scrim fades;
+         now===true removes instantly (post-drag cleanup; drag already animated). */
+      var x=$id("pwYm");if(!x)return;
+      if(now===true){if(x.parentNode)x.parentNode.removeChild(x);return;}
+      if(x.__closing)return;
+      x.__closing=1;
+      var sh=x.querySelector(".rc-sheet"),sc=x.querySelector(".rc-scrim");
+      if(sh)sh.style.transform="translateY(105%)";
+      if(sc){sc.style.transition="opacity .24s ease";sc.style.opacity="0";}
+      setTimeout(function(){if(x.parentNode)x.parentNode.removeChild(x);},300);
+    }
     function pwYmDraw(box,year,cur){
       var nowM=etDate(0).slice(0,7),y0=+PW_MONTH_MIN.split("-")[0],y1=+nowM.split("-")[0];
       var ys="";for(var y=y0;y<=y1;y++)ys+='<button type="button" data-y="'+y+'"'+(y===year?' class="on"':"")+">"+y+"</button>";
@@ -5907,11 +5918,19 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         '<div class="pw-ym-t">Jump to a month</div><div class="pw-ymy">'+ys+'</div><div class="pw-ymm">'+ms+"</div></div>";
       box.querySelector(".rc-scrim").addEventListener("click",pwYmClose);
       var sh=box.querySelector(".rc-sheet");
-      if(sh&&!sh.__dd){sh.__dd=1;sheetDragDismiss(sh,box.querySelector(".rc-scrim"),pwYmClose);} /* 0715x: one implementation, every sheet (0714q) */
+      if(sh&&!sh.__dd){sh.__dd=1;sheetDragDismiss(sh,box.querySelector(".rc-scrim"),function(){pwYmClose(true);});} /* 0715x/0716b: one implementation, every sheet (0714q) */
       var yb=box.querySelectorAll(".pw-ymy button"),a;
       for(a=0;a<yb.length;a++)(function(b){b.addEventListener("click",function(){pwYmDraw(box,+b.getAttribute("data-y"),cur);});})(yb[a]);
       var mb=box.querySelectorAll(".pw-ymm button"),k;
-      for(k=0;k<mb.length;k++)(function(b){if(b.disabled)return;b.addEventListener("click",function(){var c=b.getAttribute("data-c");pwYmClose();if(c!==(pwMonthCursor||etDate(0).slice(0,7))){pwMonthCursor=c;pwLoadMonth();}});})(mb[k]);
+      for(k=0;k<mb.length;k++)(function(b){if(b.disabled)return;b.addEventListener("click",function(){
+        if(box.__picked)return;box.__picked=1; /* 0716b: one pick per open */
+        var was=box.querySelector(".pw-ymm button.on");if(was&&was!==b)was.className="";
+        b.className="on"; /* 0716b: the flash \u2014 the pill you hit lights before anything moves */
+        var c=b.getAttribute("data-c");
+        setTimeout(function(){pwYmClose();
+          setTimeout(function(){if(c!==(pwMonthCursor||etDate(0).slice(0,7))){pwMonthCursor=c;pwLoadMonth();}},210);
+        },170);
+      });})(mb[k]);
     }
     /* ===== 0715y (T3, ratified C): confidence marks + archive provenance.
        grade + lowConf ride archive RECS only (p3recon contract: src:"archive",
