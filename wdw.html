@@ -1470,7 +1470,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5461,7 +5461,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       return o.year+"-"+o.month+"-"+o.day;
     }
     function asDate(str){var a=str.split("-");return new Date(+a[0],+a[1]-1,+a[2]);}
-    function fmtDate(str){return asDate(str).toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});}
+    function fmtDate(str){var s=asDate(str).toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});return s+((""+str).slice(0,4)!==etDate(0).slice(0,4)?", "+(""+str).slice(0,4):"");} /* 0715z: stamps carry the year outside the current year */
     function fmtRange(dates){
       if(!dates||!dates.length)return "Past 7 days";
       var ds=dates.slice().sort();var a=asDate(ds[0]),b=asDate(ds[ds.length-1]);
@@ -5713,6 +5713,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function pwMonthName(cur){var a=cur.split("-");return new Date(+a[0],+a[1]-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});}
     function pwMonAddM(cur,n){var a=cur.split("-");var d=new Date(+a[0],+a[1]-1+n,1);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2);}
     function pwMonD(ds){return asDate(ds).toLocaleDateString("en-US",{month:"short",day:"numeric"});}
+    /* 0715z (ratified): the year rides date STAMPS (kickers, crumbs, cards, day header),
+       never prose, never back pills, and only when the day is outside the current year
+       \u2014 the 0713k screenshot-self-dating law extended to the deep past. */
+    function pwYr(ds){return (ds&&(""+ds).slice(0,4)!==etDate(0).slice(0,4))?", "+(""+ds).slice(0,4):"";}
+    function pwMonDY(ds){return pwMonD(ds)+pwYr(ds);}
     function pwDigDay(g,tmp){
       /* ONE rollup for every zoom (week, month, whatever comes): curated
          read-time pool -> park avgs, tiers, headliners, day totals.
@@ -6409,7 +6414,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var isTod=(lastData&&lastData.dates&&lastData.dates[0]===etDate(0));
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":" "+pwDayWord(dateStr)+"."); /* 0713o: the date names the day */
       var sub2=pk.leastRel?(pk.leastRel.name+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonD(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
       html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
       html+='<div class="pw-note" id="pwHeadInfo" hidden>Headliner avg — the average wait across this park\'s 8 busiest rides'+(isWeek?" this week.":live?" so far today.":" that day.")+' An estimate from wait times, not official attendance.</div>';
 
@@ -7307,7 +7312,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var fin=isFinal(lastData),live=(!fin);
       var x=wxDerive(lastData);
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackS"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+(pwVisitDate()?esc(pwMonD(pwVisitDate())):"Wrap")+'</button></div>';
-      html+='<div class="pw-crumb"><b>Wrap</b> › '+(pwVisitDate()?esc(pwMonD(pwVisitDate()))+' › ':'')+'Sky</div>';
+      html+='<div class="pw-crumb"><b>Wrap</b> › '+(pwVisitDate()?esc(pwMonDY(pwVisitDate()))+' › ':'')+'Sky</div>';
       var sub,ttl,kicker;
       var chReal=wxChip(lastData,live),ch=chReal||{kind:"storm"};
       var stx=skyStrikes(lastData),op=skyObsPeak(x); /* 0713c: skyFl retired with the quiet skin */
@@ -7339,7 +7344,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           if(op&&op.fF>=100)sub+=" Feels-like peaked at "+op.fF+"\u00b0.";
         }
       }
-      html+='<div class="pw-hero"><div class="k">'+kicker+(pwVisitDate()?' · '+esc(pwMonD(pwVisitDate())):'')+'</div><div class="ttl">'+esc(ttl)+'</div><div class="sub">'+esc(sub)+'</div></div>';
+      html+='<div class="pw-hero"><div class="k">'+kicker+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div><div class="ttl">'+esc(ttl)+'</div><div class="sub">'+esc(sub)+'</div></div>';
       var showDown=!!x.series.length&&x.downPeak>=8; /* 0713c: no longer a layout gate \u2014 dp>=8 gates only the earned story blocks (park rows), the same observable as the glow */
       if(!x.series.length&&!stx){html+='<div class="pw-msg">No timeline data for this day yet.</div>';}
       else{
@@ -7822,8 +7827,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":" "+pwDayWord((lastData&&lastData.dates&&lastData.dates[0])||etDate(0))+".")); /* 0713o */
       if(r._refurb)line=(isWeek?"In refurbishment this week.":live?"In refurbishment today.":"In refurbishment.");
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
-      html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonD(pwVisitDate())):'')+'</div>';
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonD(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause)))+'</div>';
+      html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause)))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su):"";
       html+=band+'</div>';
       if(!r._refurb){
