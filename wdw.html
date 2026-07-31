@@ -1122,6 +1122,10 @@
   .pw-date .d{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead)}
   .pw-date .s{font-size:var(--fs-meta);color:var(--muted-2)}
   .pw-badge{font-size:var(--fs-caps);font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r-pill);background:rgba(21,163,107,.12);color:var(--short);flex:none}
+  /* ===== 0715y (T3): confidence marks + archive provenance ===== */
+  .pw-badges{display:flex;gap:6px;flex:none}
+  .pw-badge.rec{background:rgba(107,111,140,.14);color:var(--muted)}
+  .pw-hero .prov{font-size:var(--fs-meta);color:var(--pwh-dim);margin-top:12px;padding-top:11px;border-top:1px solid var(--pwh-line)}
   .pw-badge.live{background:rgba(79,70,229,.1);color:var(--accent)}
   .pw-hero{background:linear-gradient(135deg,var(--pwh-bg),var(--pwh-bg2));border-radius:var(--r-card);padding:18px;color:#fff;margin-bottom:11px}
   .pw-hero .k{font-size:var(--fs-meta);letter-spacing:.1em;text-transform:uppercase;color:var(--pwh-key);font-weight:700}
@@ -1466,7 +1470,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0715x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0715y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5889,6 +5893,22 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var mb=box.querySelectorAll(".pw-ymm button"),k;
       for(k=0;k<mb.length;k++)(function(b){if(b.disabled)return;b.addEventListener("click",function(){var c=b.getAttribute("data-c");pwYmClose();if(c!==(pwMonthCursor||etDate(0).slice(0,7))){pwMonthCursor=c;pwLoadMonth();}});})(mb[k]);
     }
+    /* ===== 0715y (T3, ratified C): confidence marks + archive provenance.
+       grade + lowConf ride archive RECS only (p3recon contract: src:"archive",
+       lowConf=[[startMin,endMin],...]). Disclosure follows the data \u2014 FULL days
+       (96.7%) stay silent. Copy is cause-neutral by law: the record went quiet,
+       never the park. Each provenance clause is independently earned \u2014 the
+       weather clause drops the day a backfilled sky ever lands. */
+    function pwRecBadge(d,isWeek){
+      if(isWeek||!d||d.src!=="archive"||!d.grade||String(d.grade).toUpperCase()==="FULL")return "";
+      var w=d.lowConf||[],mm=0,i;
+      for(i=0;i<w.length;i++)mm+=Math.max(0,(+w[i][1]||0)-(+w[i][0]||0));
+      return '<span class="pw-badge rec">Partial record'+(mm>0?" \u00b7 "+rpDtFmt(mm):"")+"</span>";
+    }
+    function pwProvLine(d,isWeek){
+      if(isWeek||!d||d.src!=="archive")return "";
+      return '<div class="prov">From the ParkPulse archive'+(d.wx?"":" \u00b7 no weather record this day")+"</div>";
+    }
     var pwDayCache={};
     function pwVisitDate(){
       /* 0713k (L-15): the visited date, or null. Drills consult this so a
@@ -6282,7 +6302,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var dSub=isWeek?"Walt Disney World · this week":"Walt Disney World";
       var fin=isFinal(d);var live=(!isWeek&&!fin);
       var badge=fin?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+(isWeek?"So far this week":"So far today")+'</span>';
-      html+='<div class="pw-date"><div><div class="d">'+esc(dLine)+'</div><div class="s">'+esc(dSub)+'</div></div>'+badge+'</div>';
+      html+='<div class="pw-date"><div><div class="d">'+esc(dLine)+'</div><div class="s">'+esc(dSub)+'</div></div><span class="pw-badges">'+pwRecBadge(d,isWeek)+badge+'</span></div>';
 
       if(!c.busiestPark){
         html+='<div class="pw-msg">Not enough data logged for this day yet. Once the parks have been open a while, the Wrap fills in.</div>';
@@ -6307,7 +6327,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var chipH="";
       if(chip&&!ltgH){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
-      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+(isWeek?pwWeekStrip(d):"")+chipH+ltgH+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+(isWeek?pwWeekStrip(d):"")+chipH+ltgH+pwProvLine(d,isWeek)+'</div>';
 
       html+='<div class="pw-grid">';
       if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park,null,c.toughest.id,c.toughest.park);
