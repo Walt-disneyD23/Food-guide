@@ -1404,7 +1404,7 @@
   .pw-alm-hero .l{font-family:var(--font-display);font-weight:700;font-size:var(--fs-head);margin-top:5px;color:var(--ink)}
   .pw-alm-hero .sub{color:var(--muted);font-size:var(--fs-small);margin-top:5px;line-height:1.45}
   .pw-alm-list{margin-top:11px}
-  .pw-alm-row{display:flex;align-items:center;gap:9px;width:100%;padding:7px 0;border:0;background:none;cursor:pointer;font-family:var(--font-body);text-align:left;-webkit-tap-highlight-color:transparent}
+  .pw-alm-row{display:flex;align-items:center;gap:9px;width:100%;padding:13px 0;border:0;background:none;cursor:pointer;font-family:var(--font-body);text-align:left;-webkit-tap-highlight-color:transparent}
   .pw-alm-row+.pw-alm-row{border-top:1px solid var(--line)}
   .pw-alm-row .bn{width:32px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.1em;color:var(--muted)}
   .pw-alm-row .btrack{flex:1;height:12px;border-radius:6px;background:var(--card-2);position:relative;overflow:hidden}
@@ -1458,6 +1458,7 @@
   .pw-alm-explain .xb{color:var(--muted);font-size:var(--fs-small);line-height:1.5}
   .pw-alm-explain .pw-alm-key{margin-top:10px}
   #pwAlmDoor{margin-top:10px}
+  .pw-alm-row .rchev{width:14px;text-align:right;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);flex:none}
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
 <script>
@@ -1530,7 +1531,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6067,7 +6068,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         rows+='<button class="pw-alm-row" type="button" data-alm-m="'+m+'">'
           +'<span class="bn">'+PW_ALM_MN[m]+'</span>'
           +'<span class="btrack"><i style="width:'+w+'%;background:var(--'+pwAlmTier(r)+')"></i></span>'
-          +'<b class="bv">'+r+'</b><span class="gly'+gc+'">'+(g||"")+"</span></button>";}
+          +'<b class="bv">'+r+'</b><span class="gly'+gc+'">'+(g||"")+'</span><span class="rchev">\u203a</span></button>';}
       var q=pwAlmQ(cells);
       return '<div class="pw-alm-hero"><div class="k">THE PARKPULSE ALMANAC</div>'
         +'<div class="l">A typical year at Walt Disney World</div>'
@@ -6129,7 +6130,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         else if(gap<=-5)sub=mf+" eases as it goes \u2014 early "+mf+" has run "+(-gap)+" minutes over late.";}
       function pill(k,lab,v){return '<button type="button" data-alm-seg="'+k+'"'+(seg===k?' class="on"':"")+">"+lab+" \u00b7 "+(v==null?"\u2014":v)+"</button>";}
       var h='<div class="pw-alm-dhero"><div class="k">'+mf.toUpperCase()+" \u00b7 TYPICAL DAY</div>"
-        +'<div class="big"><b id="pwAlmBig">'+(big==null?"\u2014":big)+'</b><span>min avg wait, resort-wide</span></div>'
+        +'<div class="big"><b id="pwAlmBig">'+(big==null?"\u2014":big)+'</b><span id="pwAlmBigL">min avg wait, resort-wide'+(seg==="E"?" \u00b7 early "+mf:seg==="M"?" \u00b7 mid-"+mf:seg==="L"?" \u00b7 late "+mf:"")+"</span></div>"
         +(sub?'<div class="sub">'+sub+"</div>":"")
         +'<div class="pw-alm-seg">'+pill("all","All",rA)+pill("E","Early",rE)+pill("M","Mid",rM)+pill("L","Late",rL)+"</div></div>";
       /* THE YEARS, SIDE BY SIDE \u2014 whole record (receipts, not gates: 2021\u201322
@@ -6230,10 +6231,14 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       wireTabs();pwAlmWireBack(function(){pwRenderAlmanac();});topw();
       var L=__avLens(pwAlmData.cells),ys3=L.obs(m).slice(-3);
       var vals={all:L.pool(ys3,"resort"),E:L.pool(ys3,"parts","E"),M:L.pool(ys3,"parts","M"),L:L.pool(ys3,"parts","L")};
+      var mf=PW_ALM_MFULL[m],wds={all:"",E:"early "+mf,M:"mid-"+mf,L:"late "+mf};
       var sg=wv.querySelectorAll("[data-alm-seg]"),i;
       for(i=0;i<sg.length;i++)(function(b){b.addEventListener("click",function(){
         var k=b.getAttribute("data-alm-seg"),p=vals[k];if(!p)return;
         var big=$id("pwAlmBig");if(big)big.textContent=Math.round(p.v);
+        var lb=$id("pwAlmBigL"); /* 0716g: the label carries the window \u2014 every tap
+          visibly answers even when segment numerals tie (the July lesson) */
+        if(lb)lb.textContent="min avg wait, resort-wide"+(wds[k]?" \u00b7 "+wds[k]:"");
         var was=wv.querySelector("[data-alm-seg].on");if(was&&was!==b)was.className="";
         b.className="on"; /* the number you tapped is the number you land on \u2014
           and the pills answer live; panels keep their own declared windows */
@@ -6358,7 +6363,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     }
 
     /* ---- compute helpers ---- */
-    /* ===== 0716f (T2, ratified): RAILROAD RULE A AT READ TIME ==================
+    /* ===== 0716g (T2, ratified): RAILROAD RULE A AT READ TIME ==================
        railroad-merge-v2.json is the machine copy. The three WDWRR station
        entities merge into the single PARK_DEF ride on every Wrap pool:
        any-operating (merged ride runs if ANY co-observed board runs), a dark
@@ -6382,7 +6387,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       out.push(m);return out;
     }
     function realRides(d){
-      return pwRailMerge(d.rides||[]).filter(function(r){ /* 0716f: Rule A rides every pool through the one choke point */
+      return pwRailMerge(d.rides||[]).filter(function(r){ /* 0716g: Rule A rides every pool through the one choke point */
         if(MAIN.indexOf(r.park)<0)return false;
         if(r.samples>0&&r.avgWait!=null)return true;      /* posted real waits */
         return r.downEvents>0&&r.downMinutes>0;            /* never posted a wait but had real unplanned downtime (e.g. down all day) */
