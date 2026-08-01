@@ -1459,6 +1459,10 @@
   .pw-alm-explain .pw-alm-key{margin-top:10px}
   #pwAlmDoor{margin-top:10px}
   .pw-alm-row .rchev{width:14px;text-align:right;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);flex:none}
+  /* 0716h: AT EPCOT festival calendar card */
+  .pw-ev-b b{font-weight:600;color:var(--ink)}
+  .pw-ev-b .dts{color:var(--muted-2)}
+  .pw-ev-b+.pw-ev-b{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
 <script>
@@ -1531,7 +1535,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6116,6 +6120,65 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       if((+last.y)-(+mx.y)>=2&&Math.abs(last.r-prev.r)<=1)
         return "The surge crested in "+mx.y+" and settled \u2014 the last two "+mFull+"s ran within a minute of each other.";
       return "";}
+    /* ===== 0716h: THE FESTIVAL CALENDAR (Event Calendar layer, consumer 1) ==
+       Curated events table, ratified evv:1 \u2014 canonical copy lives in
+       events-table.json (ev-harness.js, 944 asserts, guards it); this literal
+       is GENERATED from it, never hand-edited. Update path: table file first,
+       splice regenerated. Honesty class: SCHEDULE FACT \u2014 phrase = the
+       weakest claim true in every lens year, dates = the latest gated window
+       on record; gate law: only v in {vv,v} may surface; no crowd causation. */
+    var PW_EV_TABLE={"evv":1,"asOf":"2026-08-01","gateLaw":"surfaces and measurements consume only windows with v in {vv,v}; o/t are curation state, never cited","seatLaw":"boundary-spanning windows seat their split card in the majority month, window printed whole; tie seats with the month of the final day; the minority month may carry a schedule-fact context line only","events":[{"id":"boobash","type":"party","name":"Disney After Hours Boo Bash","park":"MK","note":"2021 replacement for MNSSHP; After Hours format, limited capacity","windows":[{"y":2021,"from":"2021-08-10","to":"2021-10-31","select":true,"v":"vv","src":["fandom","undercovertourist"]}]},{"id":"verymerriest","type":"party","name":"Disney Very Merriest After Hours","park":"MK","note":"2021 replacement for MVMCP; After Hours format, limited capacity","windows":[{"y":2021,"from":"2021-11-08","to":"2021-12-21","select":true,"v":"vv","src":["disneytouristblog","foxnews","thedisneyjourney"]}]},{"id":"mnsshp","type":"party","name":"Mickey's Not-So-Scary Halloween Party","park":"MK","windows":[{"y":2022,"from":"2022-08-12","to":"2022-10-31","select":true,"v":"v","src":["undercovertourist"]},{"y":2023,"from":"2023-08-11","to":"2023-11-01","select":true,"nights":38,"v":"vv","src":["disney","allears"],"note":"only party season in the record ending in November \u2014 Nov 1 party confirmed on Disney's own page and the priced date list"},{"y":2024,"from":"2024-08-09","to":"2024-10-31","select":true,"v":"o","src":[]},{"y":2025,"from":"2025-08-15","to":"2025-10-31","select":true,"v":"v","src":["disneylists"]},{"y":2026,"from":"2026-08-07","to":"2026-10-31","select":true,"nights":38,"v":"vv","src":["disney"]}]},{"id":"mvmcp","type":"party","name":"Mickey's Very Merry Christmas Party","park":"MK","windows":[{"y":2022,"from":"2022-11-08","to":"2022-12-22","select":true,"v":"o","src":[]},{"y":2023,"from":"2023-11-09","to":"2023-12-22","select":true,"v":"o","src":[]},{"y":2024,"from":"2024-11-08","to":"2024-12-20","select":true,"nights":25,"v":"vv","src":["wdwnt","disneytouristblog","imdb"]},{"y":2025,"from":"2025-11-07","to":"2025-12-21","select":true,"nights":25,"v":"o","src":[]},{"y":2026,"from":"2026-11-08","to":"2026-12-22","select":true,"nights":25,"v":"vv","src":["disney"]}]},{"id":"arts","type":"festival","name":"EPCOT International Festival of the Arts","park":"EP","windows":[{"y":2021,"from":"2021-01-08","to":"2021-02-22","v":"v","src":["wdwprepschool"]},{"y":2022,"from":"2022-01-14","to":"2022-02-21","v":"v","src":["wdwprepschool"]},{"y":2023,"from":"2023-01-13","to":"2023-02-20","v":"v","src":["wdwprepschool"]},{"y":2024,"from":"2024-01-12","to":"2024-02-19","v":"v","src":["wdwprepschool"]},{"y":2025,"from":"2025-01-17","to":"2025-02-24","v":"v","src":["wdwprepschool"]},{"y":2026,"from":"2026-01-16","to":"2026-02-23","v":"vv","src":["mousehacking","dfb"]}]},{"id":"fg","type":"festival","name":"EPCOT International Flower & Garden Festival","park":"EP","windows":[{"y":2021,"from":"2021-03-03","to":"2021-07-05","v":"vv","src":["wdwprepschool"],"note":"\"Taste of\" edition"},{"y":2022,"from":"2022-03-02","to":"2022-07-04","v":"vv","src":["wdwprepschool"]},{"y":2023,"from":"2023-03-01","to":"2023-07-05","v":"vv","src":["wdwprepschool"]},{"y":2024,"from":"2024-02-28","to":"2024-05-27","v":"vv","src":["wdwprepschool"]},{"y":2025,"from":"2025-03-05","to":"2025-06-02","v":"vv","src":["wdwprepschool"]},{"y":2026,"from":"2026-03-04","to":"2026-06-01","v":"vv","src":["wdwprepschool"]}]},{"id":"fw","type":"festival","name":"EPCOT International Food & Wine Festival","park":"EP","note":"owner's pick for biggest festival crowd driver; 2024 structural shift moved the start Jul-to-late-Aug \u2014 per-year windows are law","windows":[{"y":2021,"from":"2021-07-15","to":"2021-11-20","v":"vv","src":["wdwprepschool","fandom"]},{"y":2022,"from":"2022-07-14","to":"2022-11-19","v":"vv","src":["wdwprepschool"]},{"y":2023,"from":"2023-07-27","to":"2023-11-18","v":"vv","src":["wdwprepschool"]},{"y":2024,"from":"2024-08-29","to":"2024-11-23","v":"vv","src":["wdwprepschool"]},{"y":2025,"from":"2025-08-28","to":"2025-11-22","v":"vv","src":["wdwprepschool"]},{"y":2026,"from":"2026-08-27","to":"2026-11-21","v":"vv","src":["wdwprepschool"]}]},{"id":"holidays","type":"festival","name":"EPCOT International Festival of the Holidays","park":"EP","windows":[{"y":2021,"from":"2021-11-26","to":"2021-12-30","v":"v","src":["wdwprepschool"]},{"y":2022,"from":"2022-11-25","to":"2022-12-30","v":"v","src":["wdwprepschool"]},{"y":2023,"from":"2023-11-24","to":"2023-12-30","v":"v","src":["wdwprepschool"]},{"y":2024,"from":"2024-11-29","to":"2024-12-30","v":"v","src":["wdwprepschool"]},{"y":2025,"from":"2025-11-28","to":"2025-12-30","v":"v","src":["wdwprepschool"]},{"y":2026,"from":"2026-11-27","to":"2026-12-30","v":"vv","src":["eatsleepdisney","undercovertourist"]}]},{"id":"marathon","type":"race","name":"WDW Marathon Weekend","park":"resort","windows":[{"y":2022,"from":"2022-01-05","to":"2022-01-09","v":"vv","src":["clickorlando","disneycastledreaming"]},{"y":2023,"from":"2023-01-04","to":"2023-01-08","v":"vv","src":["touringplans","ropedrop"]},{"y":2024,"from":"2024-01-03","to":"2024-01-07","v":"vv","src":["dfb","patch"]},{"y":2025,"from":"2025-01-08","to":"2025-01-12","v":"vv","src":["wdwnt","dfb","runfloridarun"]},{"y":2026,"from":"2026-01-07","to":"2026-01-11","v":"o","src":[]},{"y":2027,"from":"2027-01-06","to":"2027-01-10","v":"vv","src":["disney","rundisney"]}]},{"id":"princess","type":"race","name":"Disney Princess Half Marathon Weekend","park":"resort","windows":[{"y":2022,"from":"2022-02-24","to":"2022-02-27","v":"vv","src":["ropedrop","fandom"]},{"y":2023,"from":"2023-02-23","to":"2023-02-26","v":"vv","src":["Events-Table-Verified.md"]},{"y":2024,"from":"2024-02-22","to":"2024-02-25","v":"vv","src":["Events-Table-Verified.md"]},{"y":2025,"from":"2025-02-20","to":"2025-02-24","v":"vv","src":["Events-Table-Verified.md"],"note":"five days, ends Monday"},{"y":2026,"from":"2026-02-26","to":"2026-03-02","v":"vv","src":["Events-Table-Verified.md"],"note":"five days, spans month boundary"}]},{"id":"springtime","type":"race","name":"runDisney Springtime Surprise Weekend","park":"resort","note":"series began 2022","windows":[{"y":2022,"from":"2022-03-31","to":"2022-04-03","v":"vv","src":["ropedrop","fandom"],"note":"spans month boundary"},{"y":2023,"from":"2023-04-13","to":"2023-04-16","v":"vv","src":["Events-Table-Verified.md"]},{"y":2024,"from":"2024-04-18","to":"2024-04-21","v":"vv","src":["Events-Table-Verified.md"]},{"y":2025,"from":"2025-04-03","to":"2025-04-06","v":"vv","src":["Events-Table-Verified.md"]},{"y":2026,"from":"2026-04-16","to":"2026-04-20","v":"v","src":["disney"],"note":"five days \u2014 corrects the seed's Apr 16-19"},{"y":2027,"from":"2027-04-08","to":"2027-04-11","v":"v","src":["rundisney"]}]},{"id":"winedine","type":"race","name":"Disney Wine & Dine Half Marathon Weekend","park":"resort","windows":[{"y":2021,"from":"2021-11-04","to":"2021-11-07","v":"vv","src":["mickeyblog","disneyfoodblog","atcp"],"note":"first in-person runDisney event back; virtual options also ran"},{"y":2022,"from":"2022-11-03","to":"2022-11-06","v":"vv","src":["touringplans","ropedrop"]},{"y":2023,"from":"2023-11-02","to":"2023-11-05","v":"vv","src":["Events-Table-Verified.md"]},{"y":2024,"from":"2024-10-31","to":"2024-11-03","v":"vv","src":["Events-Table-Verified.md"],"note":"spans month boundary"},{"y":2025,"from":"2025-10-23","to":"2025-10-26","v":"o","src":[]},{"y":2026,"from":"2026-10-22","to":"2026-10-25","v":"vv","src":["rundisney","magicofrunning"]}]},{"id":"aau-boys","type":"sports","name":"AAU Boys Basketball World Championships","park":"resort","note":"hypothesis-grade per taxonomy \u2014 localized spikes per owner, ~43k attendees expected 2026; NO surface consumes sports until measured against banked data (early-July confounds with Jul 4 week)","windows":[{"y":2026,"from":"2026-07-02","to":"2026-07-09","v":"o","src":[]}]},{"id":"wdw50","type":"era","name":"WDW 50th Anniversary Celebration","park":"resort","note":"era entries are receipts, never gates; Enchantment's final 50th run played to Apr 2 2023","windows":[{"y":2021,"from":"2021-10-01","to":"2023-03-31","v":"v","src":["wikipedia"]}]}]};
+    var PW_EV_MAB=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    var PW_EV_FEST_SHORT={arts:"Festival of the Arts",fg:"Flower & Garden Festival",fw:"Food & Wine Festival",holidays:"Festival of the Holidays"};
+    function pwEvGated(w){return w.v==="vv"||w.v==="v";}
+    function pwEvZone(d){return d<=10?"early":d<=20?"mid":"late";}
+    function pwEvZoneLab(z,mf){return z==="mid"?("mid-"+mf):(z+" "+mf);}
+    function pwEvLastDay(y,m){return new Date(Date.UTC(y,m+1,0)).getUTCDate();}
+    function pwEvFmtD(s){return PW_EV_MAB[+s.slice(5,7)-1]+" "+(+s.slice(8,10));}
+    function pwEvFestLines(events,m,lensYears){
+      var out=[],mm=String(m+1),i,j;
+      if(mm.length<2)mm="0"+mm;
+      for(i=0;i<events.length;i++){var e=events[i];
+        if(e.type!=="festival")continue;
+        var wins=[],earned=true;
+        for(j=0;j<lensYears.length;j++){var y=lensYears[j],w=null,k;
+          for(k=0;k<e.windows.length;k++)if(e.windows[k].y===y&&pwEvGated(e.windows[k])){w=e.windows[k];break;}
+          if(!w){earned=false;break;}
+          var ld=String(pwEvLastDay(y,m));if(ld.length<2)ld="0"+ld;
+          var first=y+"-"+mm+"-01",last=y+"-"+mm+"-"+ld;
+          if(!(w.from<=last&&w.to>=first)){earned=false;break;}
+          var cover=w.from<=first&&w.to>=last;
+          var sIn=w.from>first&&w.to>=last;
+          var eIn=w.from<=first&&w.to<last;
+          wins.push({ch:cover?"c":sIn?"s":eIn?"e":"w",fd:+w.from.slice(8,10),td:+w.to.slice(8,10)});}
+        if(!earned||!wins.length)continue;
+        var mf=PW_ALM_MFULL[m],allC=true,hasS=false,hasE=false,hasW=false;
+        for(j=0;j<wins.length;j++){
+          if(wins[j].ch!=="c")allC=false;
+          if(wins[j].ch==="s")hasS=true;
+          if(wins[j].ch==="e")hasE=true;
+          if(wins[j].ch==="w")hasW=true;}
+        var phrase;
+        if(allC)phrase="runs all month";
+        else if(hasS&&!hasE&&!hasW){
+          var sd=[],allS=true;
+          for(j=0;j<wins.length;j++){if(wins[j].ch==="s")sd.push(wins[j].fd);else allS=false;}
+          var oneZone=sd.every(function(d){return pwEvZone(d)===pwEvZone(sd[0]);});
+          if(allS&&oneZone)phrase="opens in "+pwEvZoneLab(pwEvZone(sd[0]),mf);
+          else phrase="underway by "+pwEvZoneLab(pwEvZone(Math.max.apply(null,sd)),mf);
+        }else if(hasE&&!hasS&&!hasW){
+          var td=[],allE=true;
+          for(j=0;j<wins.length;j++){if(wins[j].ch==="e")td.push(wins[j].td);else allE=false;}
+          var oneZ=td.every(function(d){return pwEvZone(d)===pwEvZone(td[0]);});
+          if(allE&&oneZ)phrase="runs through "+pwEvZoneLab(pwEvZone(td[0]),mf);
+          else phrase="runs into "+pwEvZoneLab(pwEvZone(Math.min.apply(null,td)),mf);
+        }else phrase="runs during "+mf;
+        var lw=null;
+        for(j=0;j<e.windows.length;j++)if(pwEvGated(e.windows[j])&&(!lw||e.windows[j].y>lw.y))lw=e.windows[j];
+        out.push({id:e.id,name:PW_EV_FEST_SHORT[e.id]||e.name,
+          phrase:phrase,
+          rider:lw?(lw.y+": "+pwEvFmtD(lw.from)+" \u2013 "+pwEvFmtD(lw.to)):null});}
+      return out;}
     function pwAlmMonthHTML(cells,m,seg){
       seg=seg||"all";
       var L=__avLens(cells),ys3=L.obs(m).slice(-3),mf=PW_ALM_MFULL[m];
@@ -6171,6 +6234,13 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           +'<div class="pw-alm-note" style="margin-top:0">On nights with a ticketed party, Magic Kingdom closed early \u2014 and its day averaged <b style="color:var(--short)">'
           +Math.round(ps/pn)+" min</b> against <b>"+Math.round(fsum/fn)+" min</b> on full nights ("
           +pn+" party nights across "+(pys.length>1?"the last "+(pys.length===3?"three":pys.length===2?"two":pys.length)+" "+mf+"s":mf+" "+pyLab)+").</div></div>";}
+      /* AT EPCOT \u2014 THE FESTIVAL CALENDAR (0716h): schedule facts only,
+         earned when EVERY lens year holds a gated window overlapping this
+         month; phrase = the weakest claim true in all of them; never causal. */
+      var fl=pwEvFestLines(PW_EV_TABLE.events,m,ys3.map(function(x){return +x.slice(0,4);})),fj,fb;
+      if(fl.length){fb="";
+        for(fj=0;fj<fl.length;fj++)fb+='<div class="pw-alm-note pw-ev-b" style="margin-top:0">The '+fl[fj].name+' <b>'+fl[fj].phrase+'</b>. <span class="dts">'+fl[fj].rider+'.</span></div>';
+        h+='<div class="pw-alm-card"><div class="sec"><span class="c1">AT EPCOT</span><span class="c2">FESTIVAL CALENDAR</span></div>'+fb+"</div>";}
       /* PARK BY PARK \u2014 trailing-3 */
       var pk=["MK","EP","HS","AK"],pcells="",pv,pall=true;
       for(i=0;i<4;i++){pv=L.pool(ys3,"parks",pk[i]);if(!pv){pall=false;break;}
@@ -6179,7 +6249,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var wlab=(ys3.length===3?"last three "+mf+"s":mf)+" ("+ys3[0].slice(0,4)+"\u2013"+ys3[ys3.length-1].slice(0,4)+")";
       if(pall)h+='<div class="pw-alm-card"><div class="sec"><span class="c1">PARK BY PARK</span><span class="c2">TYPICAL \u00b7 LAST '+ys3.length+" "+mf.toUpperCase()+"S</span></div>"
         +'<div class="pw-alm-pks">'+pcells+"</div>"
-        +'<div class="pw-alm-rcpt">From the ParkPulse archive \u00b7 '+wlab+", "+q3+" qualifying days \u00b7 years panel shows the whole record \u00b7 all numbers are minutes of average posted wait</div></div>";
+        +'<div class="pw-alm-rcpt">From the ParkPulse archive \u00b7 '+wlab+", "+q3+" qualifying days \u00b7 years panel shows the whole record"+(fl.length?" \u00b7 festival dates from published event calendars":"")+" \u00b7 all numbers are minutes of average posted wait</div></div>";
       return h;}
     /* ---- fetch + surfaces (DOM side) ---- */
     function pwAlmPrefetch(cb){/* background warm for the D3 sparkline */
