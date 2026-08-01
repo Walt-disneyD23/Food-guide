@@ -12,7 +12,7 @@
 <style>
 
   :root{
-    --bg:#e9ebf4; --bg-2:#e2e5f1; --card:#ffffff; --card-2:#f4f5fb; --line:#e4e6f1;
+    --bg:#e9ebf4;--bg-fade:rgba(233,235,244,0); --bg-2:#e2e5f1; --card:#ffffff; --card-2:#f4f5fb; --line:#e4e6f1;
     --sh-soft:0 4px 12px -4px rgba(25,26,46,.16); /* 0713w: the door's lift — one tier under the favcard */
     --ink:#191a2e; --muted:#6b6f8c; --muted-2:#9fa3c0;
     --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff;
@@ -131,7 +131,7 @@
   .alert-note{font-size:var(--fs-small);color:var(--muted);margin-top:12px}
   .alert-note b{color:var(--ink);font-weight:600}
 
-  .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,rgba(238,240,248,0));
+  .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade)); /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme */
     padding:8px 0 12px;margin:0}
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px}
   .filterbar{display:flex;align-items:center;gap:8px}
@@ -285,8 +285,7 @@
   /* 0710q: title + park control pin while the list scrolls; constant soft seam
      (an observer-gated stuck-only shadow lives on the polish list). z-5: above rows,
      below every floating layer (dock 25, PTR 60, popovers 70, sheets 88+). */
-  .pg-stick{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 2px 10px;margin:0 -2px;
-    box-shadow:0 8px 14px -12px rgba(25,26,46,.28)}
+  .pg-stick{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade));padding:8px 2px 10px;margin:0 -2px} /* 0716o: ONE sticky grammar \u2014 the fade, shadow retired (the owner-caught resting hairline) */
   /* 0710q: variant B — the theme-seg rhyme, page-scoped; Hot-lines keeps its small chips by construction */
   .pg-seg{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px}
   .pg-seg button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);cursor:pointer;text-align:center}
@@ -411,6 +410,16 @@
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
   .tp-dc.plan{outline:2px solid var(--accent);outline-offset:1.5px}
   .tp-dc.pn{outline:2px dashed var(--muted-2);outline-offset:1.5px} /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
+  .rd-evrib{background:var(--accent-soft);border-radius:var(--r-card);padding:12px 14px;margin-bottom:11px}
+  .rd-evrib i{display:block;font-style:normal;font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.13em;color:var(--accent)}
+  .rd-evrib span{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:5px;line-height:1.5}
+  .rd-evrib span b{color:var(--ink)}
+  .rd-evdoor{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;cursor:pointer;font-family:var(--font-body)}
+  .rd-evdoor .mm{flex:1;min-width:0}
+  .rd-evdoor .chev{flex:none;color:var(--accent);font-weight:700;font-size:var(--fs-title)}
+  .rd-evline{padding:2px 4px 12px;border-bottom:1px solid var(--line);margin-bottom:11px}
+  .rd-evline b{display:block;font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);color:var(--ink)}
+  .rd-evline span{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:3px;line-height:1.5}
   .tp-dxr.pl{border-left:2.5px solid var(--accent);padding-left:9px;margin-left:-11.5px}
   .tp-dxr.dr{padding-top:8px;padding-bottom:8px;cursor:pointer;border-radius:var(--r-el);-webkit-tap-highlight-color:transparent} /* 0715d: the door's clothing — longhand padding so the planned row's edge inset survives */
   .tp-dxr.dr:active{background:var(--card)}
@@ -879,7 +888,7 @@
      Vars do the heavy lifting; the rules below are the audited
      hardcoded-surface stragglers, given night versions. ===== */
   html.dark{
-    --bg:#0a141d; --bg-2:#0d1826; --card:#12202c; --card-2:#17293a; --line:#20374a;
+    --bg:#0a141d;--bg-fade:rgba(10,20,29,0); --bg-2:#0d1826; --card:#12202c; --card-2:#17293a; --line:#20374a;
     --sh-soft:0 4px 12px -4px rgba(0,0,0,.42); /* 0713w: Harbor's door-read is the border — the lift is garnish */
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5;
@@ -1553,7 +1562,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3780,10 +3789,37 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var list=items.length?items.map(function(it){
       return '<div class="rp-go rp-door" data-rid="'+esc(it.id)+'"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>m</small>')+'</span><span class="chev">\u203a</span></div>';
     }).join(""):'<div class="fc-empty">No rides banked yet for this park.</div>';
-    return crumb+rdDoorHTML()+rmDoorHTML()+rcDoorHTML()+ /* 0714a: the park's planning shelf, then its census */
+    return crumb+rpEvRaceLine()+rdDoorHTML()+rmDoorHTML()+rcDoorHTML()+ /* 0714a: the park's planning shelf, then its census \u00b7 0716o: the ribbon-door seats above (resort-scope, all four parks) */
       '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab" style="padding-right:6px">Typical</span></div>'+list+
       '<div class="pf-basis" style="border-top:0;padding:2px 6px 0">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div>'+(rcPk?rcSheetHTML():""); /* 0714o: the landing carries the picker too */
   }
+  /* ===== 0716o \u00b7 Cut B: THE RIBBON-DOOR (RaceSurfaces-Spec \u00a71.1) =====
+     Renders ONLY while today (ET) sits inside a gated race window (~19
+     days/yr; invisible otherwise). Clause OPEN \u2192 tinted door, receipt with
+     both pooled numbers, chevron, tap \u2192 the race's seat-month Almanac door
+     (latest-gated seat law). Clause CLOSED \u2192 quiet hairline: name + dates,
+     no tint, no tap, zero measured claims. Chrome loudness = claim strength.
+     Data rides the Cut-A exports; numbers from the spliced record only. */
+  function rpEvSeatYm(e){var g=null,j;for(j=0;j<e.windows.length;j++){var w=e.windows[j];if(w.v==="vv"||w.v==="v")g=w;}
+    if(!g)return null;var a=new Date(g.from+"T12:00:00"),b=new Date(g.to+"T12:00:00"),cnt={},best=null;
+    for(var t=new Date(a);t<=b;t.setDate(t.getDate()+1)){var ym=t.toISOString().slice(0,7);cnt[ym]=(cnt[ym]||0)+1;if(best===null||cnt[ym]>cnt[best]||(cnt[ym]===cnt[best]&&ym<best))best=ym;}
+    return best;}
+  function rpEvRaceLine(){
+    var T=window.__pwEvT,S=window.__pwRS;if(!T||!S)return "";
+    var d=etDate(0),i,j;
+    for(i=0;i<T.events.length;i++){var e=T.events[i];if(e.type!=="race")continue;
+      for(j=0;j<e.windows.length;j++){var w=e.windows[j];
+        if(!(w.v==="vv"||w.v==="v"))continue;
+        if(d<w.from||d>w.to)continue;
+        var word=TP_EV_WORD[e.id]||e.name,r=S[e.id];
+        if(r&&r.v==="open"){
+          var seat=rpEvSeatYm(e),cnt=r.win?r.win.length:0;
+          return '<button class="rd-evrib rd-evdoor" data-evalm="'+seat+'"><span class="mm"><i>RACE WEEKEND \u00b7 THROUGH '+tpWDn(w.to).slice(0,3).toUpperCase()+' '+tpMD(w.to).toUpperCase()+'</i><span>'+word+' weekends have run quieter than typical \u2014 <b>'+Math.round(r.pooled.race)+' min</b> against <b>'+Math.round(r.pooled.ctl)+'</b> across the last '+tpNumW(cnt)+' races.</span></span><span class="chev">\u203a</span></button>';
+        }
+        return '<div class="rd-evline"><b>'+esc(r&&r.n?r.n:word+" weekend")+' \u00b7 '+tpWDn(w.from).slice(0,3)+' '+tpMD(w.from)+' \u2013 '+tpWDn(w.to).slice(0,3)+' '+tpMD(w.to)+'</b><span>Race weekend at the resort.</span></div>';
+      }}
+    return "";}
+  document.addEventListener("click",function(ev){var t=ev.target,b=t&&t.closest?t.closest("[data-evalm]"):null;if(!b)return;var ym=b.getAttribute("data-evalm");if(ym&&window.__ppGoAlmMonth)window.__ppGoAlmMonth(ym);}); /* the door's promise: tap \u2192 the seat month */
   /* ===== L-29 Cut 1 (0714u): My Trip (tp-) — the trip core. Rail pill TRIP,
      creator/Edit, the H3 day board: header, the read, weekday grid over the
      calibrated day-crowd scale (CROWD_TIERS — the crowd measure's palette,
@@ -5844,6 +5880,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
        today's cell is a pulse and needs no live payload. */
     var PW_TIER_SPAN={1:[0,15],2:[15,25],3:[25,40],4:[40,55]}; /* unshifted resort-scale spans for depth shading */
     var pwMonthCursor=null,pwMonthCache={};
+    window.__ppGoAlmMonth=function(ym){ /* 0716o: the ribbon-door's destination \u2014 a door may not lead nowhere; reuses the real nav path */
+      var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
+      loadTab("month");pwMonthCursor=ym;pwLoadMonth();};
     var PW_MONTH_MIN="2021-07"; /* 0715w: archive floor \u2014 the vault begins Jul 2021 */
     function pwMonthLabel(){return asDate(etDate(0)).toLocaleDateString("en-US",{month:"long"});}
     function pwMonthName(cur){var a=cur.split("-");return new Date(+a[0],+a[1]-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});}
