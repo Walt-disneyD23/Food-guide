@@ -410,6 +410,7 @@
   .tp-plcap>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
   .tp-dc.plan{outline:2px solid var(--accent);outline-offset:1.5px}
+  .tp-dc.pn{outline:2px dashed var(--muted-2);outline-offset:1.5px} /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
   .tp-dxr.pl{border-left:2.5px solid var(--accent);padding-left:9px;margin-left:-11.5px}
   .tp-dxr.dr{padding-top:8px;padding-bottom:8px;cursor:pointer;border-radius:var(--r-el);-webkit-tap-highlight-color:transparent} /* 0715d: the door's clothing — longhand padding so the planned row's edge inset survives */
   .tp-dxr.dr:active{background:var(--card)}
@@ -1552,7 +1553,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3931,6 +3932,43 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var avg=Math.round(e.s/e.n);
     return {avg:avg,lvl:window.__pwDayLvl(avg,park),n:e.n};
   }
+  /* ===== 0716m \u00b7 Cut A: THE PARTY-TRUTH LAYER + THE RACE NOTE ==========
+     Events reach the board via the Wrap exports (__pwDayRoll precedent).
+     Disclosure laws (Funnel-Spec \u00a72): night badges render ONLY from banked
+     verified night lists \u00b7 the race receipt attaches ONLY where the ratified
+     clause is OPEN (fact-only otherwise) \u00b7 a party season whose nights
+     aren't verified speaks ONE soft schedule-fact line and marks no days \u00b7
+     tense flips whole with the trip. */
+  var TP_EV_WORD={marathon:"Marathon",princess:"Princess Half",springtime:"Springtime Surprise",winedine:"Wine &amp; Dine"};
+  function tpEvCtx(t,ds){
+    var T=window.__pwEvT,RSS=window.__pwRS,NN=window.__pwEvN,past=t.b<tpToday();
+    var out={night:{},race:{},read:"",used:false},i,j,d;
+    if(!T)return out;
+    if(NN&&NN.dates)for(i=0;i<ds.length;i++)if(NN.dates[ds[i]])out.night[ds[i]]=1;
+    var seen={};
+    for(i=0;i<T.events.length;i++){var e=T.events[i];if(e.type!=="race")continue;
+      for(j=0;j<e.windows.length;j++){var w=e.windows[j];
+        if(!(w.v==="vv"||w.v==="v"))continue;
+        if(w.from>t.b||w.to<t.a)continue;
+        for(d=0;d<ds.length;d++)if(ds[d]>=w.from&&ds[d]<=w.to)out.race[ds[d]]=e.id;
+        if(seen[e.id])continue;seen[e.id]=1;
+        var word=TP_EV_WORD[e.id]||e.name;
+        var span=tpWDn(w.from).slice(0,3)+" "+tpMD(w.from)+" \u2013 "+tpWDn(w.to).slice(0,3)+" "+tpMD(w.to);
+        var open=RSS&&RSS[e.id]&&RSS[e.id].v==="open";
+        out.read+=" Your dates "+(past?"overlapped":"overlap")+" <b>"+word+" weekend</b> ("+span+")"+(open?" \u2014 those weekends have run <b>quieter than typical, not busier</b>.":".");
+      }}
+    var nn=0;for(d in out.night)nn++;
+    if(nn)out.read+=" Magic Kingdom "+(past?"hosted":"hosts")+" a ticketed party on <b>"+nn+"</b> of your night"+(nn===1?"":"s")+" \u2014 it "+(past?"closed":"closes")+" early those days; calmer colors there reflect the shorter day, not a quieter park.";
+    for(i=0;i<T.events.length;i++){var e2=T.events[i];if(e2.type!=="party")continue;
+      for(j=0;j<e2.windows.length;j++){var w2=e2.windows[j];
+        if(!(w2.v==="vv"||w2.v==="v"))continue;
+        if(w2.from>t.b||w2.to<t.a)continue;
+        if(NN&&NN.yrs&&NN.yrs[e2.id]&&NN.yrs[e2.id][String(w2.y)])continue;
+        out.read+=" MK\u2019s party season "+(past?"ran":"runs")+" "+tpMD(w2.from)+" \u2013 "+tpMD(w2.to)+" \u2014 select nights "+(past?"closed":"close")+" early.";
+        break;}}
+    out.used=!!(out.read||nn);
+    return out;
+  }
   function tpRead(ds,model){ /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
     var rows=[],i,j;
     for(i=0;i<ds.length;i++){var wd=tpAsD(ds[i]).getDay(),cs=[],full=true;
@@ -4320,21 +4358,22 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="tp-tt">'+esc(t.n||"My trip")+'</div>'+
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
     if(!model)return head+'<div class="rpc"><div class="lbl">The board</div><div class="fc-empty">'+((!rpDigs)?'The board fills from banked days \u2014 one moment.':'No banked days to read yet.')+'</div></div>'; /* 0715b (W-33): the 0714x door retired — the second trip's door — the ever-present list carries + New trip now */
-    var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-read">'+tpRead(ds,model)+'</div></div>';
+    var EV=tpEvCtx(t,ds); /* 0716m: the party-truth layer feeds the read, the badges, and MK's ring */
+    var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-read">'+tpRead(ds,model)+EV.read+'</div></div>';
     var gh='<div class="tp-gh"><span></span>',rows='',j;
     for(j=0;j<TP_PARKS.length;j++)gh+='<i>'+TP_PARKS[j][0].split(" ").join("<br>")+'</i>'; /* 0715o (owner-ratified): the header speaks full names, two-lined */
     gh+='</div>';
     for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
-      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),pc=(TP_PARKS[j][0]===pk?' plan':''); /* Cut 2: the planned cell's ring */
+      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),pc=(TP_PARKS[j][0]===pk?' plan':(j===0&&EV.night[d0]?' pn':'')); /* Cut 2: the planned cell's ring \u00b7 0716m: MK's deceptively-Light party marker (plan ring wins) */
         cells+=(c.thin?'<span class="tp-dc thin'+pc+'"></span>':'<span class="tp-dc'+pc+'" style="background:'+CROWD_TIERS[c.lvl].color+'"></span>');}
-      var hol=HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'';
+      var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol">'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">MK party night \u00b7 closes early</span>':''); /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop"><span><span class="tp-wd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+'</div></span>'+cells+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+hol+'</div></div>';
       var dx='';
       if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
-    return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+'</div>';
+    return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
   }
   function tpListHTML(ts){ /* 0714w: the hero-list landing (C1 lean, owner-ratified) — upcoming soonest-first, past trips sink and dim */
     var today=tpToday();
@@ -6258,6 +6297,13 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
           if(hit)html+=head+'<div class="pw-alm-note pw-ev-b" style="margin-top:0">The '+e.name+' <b>runs '+dts+'</b>. <span class="dts">Its story seats on the '+PW_ALM_MFULL[seat]+' door.</span></div></div>';
         }}
       return {html:html,meth:meth};}
+    /* 0716m \u00b7 Cut A: the events reach the trip board the __pwDayRoll way.
+       PW_EV_NIGHTS is GENERATED from ev-nights-fixture.json (evnv:1) \u2014
+       verified night lists ONLY, never hand-edited; the fixture is the file
+       of record (table-file-first law). Flat date set + per-event verified-
+       year map (the season-caution gate needs to know WHICH years are known). */
+    var PW_EV_NIGHTS={"dates":{"2022-11-08":1,"2022-11-10":1,"2022-11-11":1,"2022-11-14":1,"2022-11-15":1,"2022-11-17":1,"2022-11-18":1,"2022-11-20":1,"2022-11-22":1,"2022-11-27":1,"2022-11-29":1,"2022-12-01":1,"2022-12-02":1,"2022-12-04":1,"2022-12-06":1,"2022-12-08":1,"2022-12-09":1,"2022-12-11":1,"2022-12-13":1,"2022-12-15":1,"2022-12-16":1,"2022-12-18":1,"2022-12-20":1,"2022-12-22":1,"2023-11-09":1,"2023-11-10":1,"2023-11-13":1,"2023-11-14":1,"2023-11-16":1,"2023-11-17":1,"2023-11-19":1,"2023-11-21":1,"2023-11-22":1,"2023-11-26":1,"2023-11-28":1,"2023-11-30":1,"2023-12-01":1,"2023-12-03":1,"2023-12-05":1,"2023-12-07":1,"2023-12-08":1,"2023-12-10":1,"2023-12-12":1,"2023-12-14":1,"2023-12-15":1,"2023-12-17":1,"2023-12-19":1,"2023-12-21":1,"2023-12-22":1,"2024-11-08":1,"2024-11-11":1,"2024-11-12":1,"2024-11-14":1,"2024-11-15":1,"2024-11-17":1,"2024-11-19":1,"2024-11-21":1,"2024-11-22":1,"2024-11-24":1,"2024-11-26":1,"2024-11-27":1,"2024-11-29":1,"2024-12-01":1,"2024-12-03":1,"2024-12-05":1,"2024-12-06":1,"2024-12-08":1,"2024-12-10":1,"2024-12-12":1,"2024-12-13":1,"2024-12-15":1,"2024-12-17":1,"2024-12-19":1,"2024-12-20":1,"2026-11-08":1,"2026-11-09":1,"2026-11-12":1,"2026-11-13":1,"2026-11-15":1,"2026-11-17":1,"2026-11-19":1,"2026-11-20":1,"2026-11-24":1,"2026-11-25":1,"2026-11-27":1,"2026-11-29":1,"2026-12-01":1,"2026-12-03":1,"2026-12-04":1,"2026-12-06":1,"2026-12-08":1,"2026-12-10":1,"2026-12-11":1,"2026-12-13":1,"2026-12-15":1,"2026-12-17":1,"2026-12-18":1,"2026-12-20":1,"2026-12-22":1,"2024-08-09":1,"2024-08-13":1,"2024-08-16":1,"2024-08-20":1,"2024-08-23":1,"2024-08-27":1,"2024-08-30":1,"2024-09-02":1,"2024-09-06":1,"2024-09-08":1,"2024-09-10":1,"2024-09-13":1,"2024-09-15":1,"2024-09-17":1,"2024-09-20":1,"2024-09-22":1,"2024-09-24":1,"2024-09-26":1,"2024-09-27":1,"2024-09-29":1,"2024-10-01":1,"2024-10-03":1,"2024-10-04":1,"2024-10-06":1,"2024-10-08":1,"2024-10-10":1,"2024-10-11":1,"2024-10-14":1,"2024-10-15":1,"2024-10-17":1,"2024-10-18":1,"2024-10-20":1,"2024-10-21":1,"2024-10-24":1,"2024-10-25":1,"2024-10-27":1,"2024-10-29":1,"2024-10-31":1,"2025-08-15":1,"2025-08-17":1,"2025-08-19":1,"2025-08-22":1,"2025-08-24":1,"2025-08-26":1,"2025-08-29":1,"2025-09-02":1,"2025-09-05":1,"2025-09-07":1,"2025-09-09":1,"2025-09-12":1,"2025-09-14":1,"2025-09-16":1,"2025-09-19":1,"2025-09-21":1,"2025-09-23":1,"2025-09-25":1,"2025-09-26":1,"2025-09-28":1,"2025-09-30":1,"2025-10-02":1,"2025-10-03":1,"2025-10-05":1,"2025-10-07":1,"2025-10-09":1,"2025-10-10":1,"2025-10-13":1,"2025-10-14":1,"2025-10-16":1,"2025-10-17":1,"2025-10-19":1,"2025-10-23":1,"2025-10-24":1,"2025-10-26":1,"2025-10-28":1,"2025-10-30":1,"2025-10-31":1,"2021-11-08":1,"2021-11-09":1,"2021-11-11":1,"2021-11-12":1,"2021-11-14":1,"2021-11-16":1,"2021-11-18":1,"2021-11-19":1,"2021-11-21":1,"2021-11-23":1,"2021-11-28":1,"2021-11-30":1,"2021-12-02":1,"2021-12-03":1,"2021-12-05":1,"2021-12-07":1,"2021-12-09":1,"2021-12-10":1,"2021-12-12":1,"2021-12-14":1,"2021-12-16":1,"2021-12-17":1,"2021-12-19":1,"2021-12-21":1,"2023-11-01":1},"yrs":{"mvmcp":{"2022":1,"2023":1,"2024":1,"2026":1},"mnsshp":{"2024":1,"2025":1},"verymerriest":{"2021":1},"mnsshp23finale":{"2023":1}}};
+    window.__pwEvT=PW_EV_TABLE;window.__pwRS=PW_RACE_SPLITS;window.__pwEvN=PW_EV_NIGHTS;
     function pwAlmMonthHTML(cells,m,seg){
       seg=seg||"all";
       var L=__avLens(cells),ys3=L.obs(m).slice(-3),mf=PW_ALM_MFULL[m];
