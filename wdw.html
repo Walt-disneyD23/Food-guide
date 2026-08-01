@@ -1457,6 +1457,7 @@
   .pw-alm-explain{margin-top:10px}
   .pw-alm-explain .xb{color:var(--muted);font-size:var(--fs-small);line-height:1.5}
   .pw-alm-explain .pw-alm-key{margin-top:10px}
+  #pwAlmDoor{margin-top:10px}
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
 <script>
@@ -1529,7 +1530,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5891,9 +5892,9 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var badge=monthDone?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+m.finals+' of '+m.inMonthTotal+' final</span>';
       html+='<div class="pw-date"><div><div class="d"><button class="pw-mnav" id="pwMPrev" type="button"'+(canPrev?'':' disabled')+'>\u2039</button> <button class="pw-mtitle" id="pwMTitle" type="button">'+esc(m.label)+'<i>\u25be</i></button> <button class="pw-mnav" id="pwMNext" type="button"'+(canNext?'':' disabled')+'>\u203a</button></div><div class="s">Walt Disney World \u00b7 monthly wrap</div></div>'+badge+'</div>';
       if(!m.finals){
-        html+='<div class="pw-msg">No banked days in this month yet.</div>';
+        html+=pwMonSkelHTML(m); /* 0716f (1B): the month has its shape from day one */
         html+=pwAlmDoorHTML(pwAlmData&&pwAlmData.cells); /* 0716d: the Almanac door seats on the empty board too */
-        wv.innerHTML=html;wireTabs();pwWireMonthNav();pwAlmWireDoor();return;
+        wv.innerHTML=html;wireTabs();pwWireMonthNav();pwWireMonthCells(wv);pwAlmWireDoor();return;
       }
       var l='The month so far.',sub='';
       if(m.hero){
@@ -6237,6 +6238,21 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         b.className="on"; /* the number you tapped is the number you land on \u2014
           and the pills answer live; panels keep their own declared windows */
       });})(sg[i]);}
+    function pwMonSkelHTML(m){/* 0716f (owner-blessed 1B): the unbanked-month
+        skeleton \u2014 month-board furniture riding this cut's module block. The
+        model walks the grid even at zero finals, so the shape is free. Copy
+        states what happens, never when (the first bank's timing is the
+        worker's, not ours); the count is computed, never typed. No legend
+        (no colors to explain), no tiles (nothing earned them). */
+      var wd='<div class="pw-mwd"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>';
+      var cs='';
+      m.cells.forEach(function(x){var dayN=+x.d.slice(8,10);
+        if(x.today){cs+='<div class="pw-mc today" data-today="1" role="button" tabindex="0"><b>'+dayN+'</b><i></i></div>';return;}
+        cs+='<div class="pw-mc fut'+(x.inM?'':' out')+'"><b>'+dayN+'</b></div>';});
+      return '<div class="pw-hero"><div class="k">Monthly Wrap \u00b7 '+esc(m.label)+'</div>'
+        +'<div class="l">The month is set.</div>'
+        +'<div class="sub">'+m.inMonthTotal+' days on the calendar. Each one colors in as its full day banks.</div>'
+        +wd+'<div class="pw-mgrid">'+cs+'</div></div>';}
     /* ===== end 0716d: THE ALMANAC ===== */
     function pwYmDraw(box,year,cur){
       var nowM=etDate(0).slice(0,7),y0=+PW_MONTH_MIN.split("-")[0],y1=+nowM.split("-")[0];
@@ -6342,7 +6358,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     }
 
     /* ---- compute helpers ---- */
-    /* ===== 0716e (T2, ratified): RAILROAD RULE A AT READ TIME ==================
+    /* ===== 0716f (T2, ratified): RAILROAD RULE A AT READ TIME ==================
        railroad-merge-v2.json is the machine copy. The three WDWRR station
        entities merge into the single PARK_DEF ride on every Wrap pool:
        any-operating (merged ride runs if ANY co-observed board runs), a dark
@@ -6366,7 +6382,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       out.push(m);return out;
     }
     function realRides(d){
-      return pwRailMerge(d.rides||[]).filter(function(r){ /* 0716e: Rule A rides every pool through the one choke point */
+      return pwRailMerge(d.rides||[]).filter(function(r){ /* 0716f: Rule A rides every pool through the one choke point */
         if(MAIN.indexOf(r.park)<0)return false;
         if(r.samples>0&&r.avgWait!=null)return true;      /* posted real waits */
         return r.downEvents>0&&r.downMinutes>0;            /* never posted a wait but had real unplanned downtime (e.g. down all day) */
