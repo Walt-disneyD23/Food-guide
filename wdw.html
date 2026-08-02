@@ -365,14 +365,15 @@
   .tp-gh i{font-style:normal;text-align:center}
   .tp-day{padding:0;overflow:hidden}
   .tp-drow{display:block;padding:14px 16px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .tp-dtop{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;align-items:center}
+  .tp-dtop{display:grid;grid-template-columns:1fr repeat(4,56px);gap:7px;align-items:center} /* 0717i: the boxes grow to the approved mock geometry (owner ask) */
   .tp-wd{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.012em}
   .tp-dt{font-size:var(--fs-body);color:var(--muted)}
-  .tp-hol{display:inline-block;font:700 var(--fs-micro) var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:8px;vertical-align:1px} /* 0716n: pill = control, text = readout \u2014 the badge slot converts whole (holidays included) under the ratified law */
+  .tp-hol{display:block;font:700 var(--fs-micro) var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
+  .tp-hols{display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-left:auto} /* 0717i: one rail, top-down \u2014 tags never scatter (owner ask: even and tidy) */ /* 0716n: pill = control, text = readout \u2014 the badge slot converts whole (holidays included) under the ratified law */
   .tp-behind{font:600 var(--fs-micro) var(--font-body);color:var(--muted-2);margin-top:1px}
   .tp-drow.dim .tp-wd,.tp-drow.dim .tp-dt{color:var(--muted-2)}
   .tp-drow.dim .tp-dc{opacity:.35}
-  .tp-dc{height:30px;border-radius:var(--r-el-sm);display:flex;align-items:center;justify-content:center}
+  .tp-dc{height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
   .tp-dc i{font-style:normal;font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:rgba(25,26,46,.55)} /* 0717h: the stamp \u2014 the week strip's ink, one grammar */
   .tp-dc.thin i{color:var(--muted-2)}
   .tp-dc.thin{background:none;border:1.5px dashed var(--muted-2)}
@@ -1684,7 +1685,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4564,7 +4565,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var phe=EV.night[d0]?(tfPartyEm(d0)||"ring"):"";
       var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+hol+'</div></div>';
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
       var dx='';
       if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
