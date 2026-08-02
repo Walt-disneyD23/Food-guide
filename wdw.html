@@ -359,6 +359,16 @@
   .tp-ts b{color:var(--ink);font-weight:600}
   .tp-read{font-size:var(--fs-body);line-height:1.55}
   .tp-read b{font-weight:700}
+  /* 0717j (owner pick C): THE SYMBOL RAIL \u2014 the read's beats become rows, each led by the mark the app already speaks: the tier dot, the race bar, the party glyph. Copy verbatim; layout only. */
+  .tp-readr .crow{display:flex;gap:11px;padding:8px 0;border-top:1px solid var(--line);align-items:flex-start}
+  .tp-readr .crow:first-child{border-top:0;padding-top:2px}
+  .tp-readr .ic{flex:none;width:20px;display:flex;justify-content:center;padding-top:3px}
+  .tp-readr .v{flex:1;font-size:var(--fs-body);line-height:1.5}
+  .tp-readr .v b{font-weight:700}
+  .tp-readr .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-top:2px}
+  .tp-readr .dot.pnf{background:none;border:1.5px dashed var(--muted)}
+  .tp-readr .swbar{width:15px;height:4.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);display:inline-block;margin-top:4px}
+  .tp-readr .em{font-size:14px;line-height:1}
   .tp-tw1{color:#3dd68c;font-weight:700}.tp-tw2{color:#c98d05;font-weight:700}.tp-tw3{color:#ff7a59;font-weight:700}.tp-tw4{color:#ff6b6b;font-weight:700}
   html.dark .tp-tw2{color:#f5b544}
   .tp-gh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:2px 16px 6px;font:700 8px var(--font-body);letter-spacing:.01em;line-height:1.25;text-transform:uppercase;color:var(--muted-2);align-items:end}
@@ -1685,7 +1695,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4137,7 +4147,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   var TP_EV_WORD={marathon:"Marathon",princess:"Princess Half",springtime:"Springtime Surprise",winedine:"Wine &amp; Dine"};
   function tpEvCtx(t,ds){
     var T=window.__pwEvT,RSS=window.__pwRS,NN=window.__pwEvN,past=t.b<tpToday();
-    var out={night:{},race:{},read:"",used:false},i,j,d;
+    var out={night:{},race:{},read:"",reads:[],used:false},i,j,d; /* 0717j: the beats, separable */
     if(!T)return out;
     if(NN&&NN.dates)for(i=0;i<ds.length;i++)if(NN.dates[ds[i]])out.night[ds[i]]=1;
     var seen={};
@@ -4150,21 +4160,22 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         var word=TP_EV_WORD[e.id]||e.name;
         var span=tpWDn(w.from).slice(0,3)+" "+tpMD(w.from)+" \u2013 "+tpWDn(w.to).slice(0,3)+" "+tpMD(w.to);
         var open=RSS&&RSS[e.id]&&RSS[e.id].v==="open";
-        out.read+=" Your dates "+(past?"overlapped":"overlap")+" <b>"+word+" weekend</b> ("+span+")"+(open?" \u2014 those weekends have run <b>quieter than typical, not busier</b>.":".");
+        var rs1="Your dates "+(past?"overlapped":"overlap")+" <b>"+word+" weekend</b> ("+span+")"+(open?" \u2014 those weekends have run <b>quieter than typical, not busier</b>.":".");out.read+=" "+rs1;out.reads.push({c:"race",h:rs1});
       }}
     var nn=0;for(d in out.night)nn++;
-    if(nn)out.read+=" Magic Kingdom "+(past?"hosted":"hosts")+" a ticketed party on <b>"+nn+"</b> of your night"+(nn===1?"":"s")+" \u2014 it "+(past?"closed":"closes")+" early those days; calmer colors there reflect the shorter day, not a quieter park.";
+    if(nn){var pg="";for(d in out.night){pg=tfPartyEm(d)||"";if(pg&&pg!=="ring")break;}
+      var rs2="Magic Kingdom "+(past?"hosted":"hosts")+" a ticketed party on <b>"+nn+"</b> of your night"+(nn===1?"":"s")+" \u2014 it "+(past?"closed":"closes")+" early those days; calmer colors there reflect the shorter day, not a quieter park.";out.read+=" "+rs2;out.reads.push({c:"party",e:(pg&&pg!=="ring")?pg:"",h:rs2});}
     for(i=0;i<T.events.length;i++){var e2=T.events[i];if(e2.type!=="party")continue;
       for(j=0;j<e2.windows.length;j++){var w2=e2.windows[j];
         if(!(w2.v==="vv"||w2.v==="v"))continue;
         if(w2.from>t.b||w2.to<t.a)continue;
         if(NN&&NN.yrs&&NN.yrs[e2.id]&&NN.yrs[e2.id][String(w2.y)])continue;
-        out.read+=" MK\u2019s party season "+(past?"ran":"runs")+" "+tpMD(w2.from)+" \u2013 "+tpMD(w2.to)+" \u2014 select nights "+(past?"closed":"close")+" early.";
+        var rs3="MK\u2019s party season "+(past?"ran":"runs")+" "+tpMD(w2.from)+" \u2013 "+tpMD(w2.to)+" \u2014 select nights "+(past?"closed":"close")+" early.";out.read+=" "+rs3;out.reads.push({c:"party",e:TF_PARTY_EM[e2.id]||"",h:rs3});
         break;}}
     out.used=!!(out.read||nn);
     return out;
   }
-  function tpRead(ds,model){ /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
+  function tpRead(ds,model){ tpRead.beats=null; /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
     var rows=[],i,j;
     for(i=0;i<ds.length;i++){var wd=tpAsD(ds[i]).getDay(),cs=[],full=true;
       for(j=0;j<4;j++){var c=tpCell(model,TP_PARKS[j][0],wd);cs.push(c);if(c.thin)full=false;}
@@ -4198,6 +4209,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     else if(tk.busy.length>oBmax)tS+=' \u2014 the most parks running '+tpTier(3)+' ('+tk.busy.length+(tough.length>1?' each':'')+').';
     else tS+='.';
     var anyPk=false;rows.forEach(function(r){if(r.packed.length)anyPk=true;});
+    tpRead.beats=anyPk?[{c:'packed',h:tS},{c:'short',h:cS}]:[{c:'short',h:cS},{c:'packed',h:tS}]; /* 0717j: the beats ride out in board order */
     return anyPk?(tS+' '+cS):(cS+' '+tS);
   }
   function tpDayLine(ds,model,t){ /* the opened day's per-day voice + the clause-earned holiday honesty sub */
@@ -4556,7 +4568,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
     if(!model)return head+'<div class="rpc"><div class="lbl">The board</div><div class="fc-empty">'+((!rpDigs)?'The board fills from banked days \u2014 one moment.':'No banked days to read yet.')+'</div></div>'; /* 0715b (W-33): the 0714x door retired — the second trip's door — the ever-present list carries + New trip now */
     var EV=tpEvCtx(t,ds); /* 0716m: the party-truth layer feeds the read, the badges, and MK's ring */
-    var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-read">'+tpRead(ds,model)+EV.read+'</div></div>';
+    var _rt=tpRead(ds,model),_rb=tpRead.beats,_er=(EV.reads||[]),_rw='',q; /* 0717j (owner pick C): the symbol rail \u2014 same gates, beats as rows; an unfired beat has no row */
+    if(_rb){for(q=0;q<_rb.length;q++)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+_rb[q].c+')"></i></span><span class="v">'+_rb[q].h+'</span></div>';}
+    else if(_rt)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">'+_rt+'</span></div>';
+    for(q=0;q<_er.length;q++)_rw+='<div class="crow"><span class="ic">'+(_er[q].c==="race"?'<i class="swbar"></i>':(_er[q].e?'<span class="em">'+_er[q].e+'</span>':'<i class="dot pnf"></i>'))+'</span><span class="v">'+_er[q].h+'</span></div>';
+    var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-readr">'+_rw+'</div></div>';
     var gh='',rows='',j; /* 0715o\u21920717h (owner pick A): the lonely top header retires \u2014 every cell wears its park's initials, the week strip's stamped grammar */
     for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
       for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),isPk=(TP_PARKS[j][0]===pk),pe0=(!isPk&&j===0&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""; /* Cut 2 \u00b7 0716m \u00b7 0717f: plan ring still wins; the party marker is the glyph now, the ring only its fallback */
