@@ -501,6 +501,20 @@
   .tf-mfl b{color:var(--short);font-weight:700}
   .tf-mfl .dts{color:var(--muted-2)}
   .tf-basis{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);line-height:1.55;margin-top:11px}
+  button.tf-bseg{border:0;background:none;padding:0;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent} /* Cut D (D-3): the band wakes \u2014 segments become doors to S3 */
+  .tf-go.gh{background:var(--accent-soft);color:var(--accent)}
+  .tf-wact{display:flex;gap:7px;margin-top:10px}
+  .tf-wact .tf-go{margin-top:0}
+  .tf-calh{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px} /* Cut D (D-3): S3 \u2014 the month up close (funnel-playable ratified) */
+  .tf-calh i{font:700 var(--fs-micro) var(--font-body);color:var(--muted-2);text-align:center;font-style:normal}
+  .tf-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .tf-cd{display:flex;align-items:center;justify-content:center;height:40px;border-radius:8px;border:0;padding:0;font:700 var(--fs-small) var(--font-display);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.22);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
+  .tf-cd.race:after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--short);box-shadow:0 0 0 2px #fff;pointer-events:none}
+  .tf-cd.inb{outline:2.5px solid var(--accent);outline-offset:-2.5px}
+  .tf-callg{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font:600 var(--fs-micro) var(--font-body);color:var(--muted)}
+  .tf-callg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .tf-callg i.rr{background:var(--short);border-radius:50%;box-shadow:0 0 0 2px #fff}
+  .tf-callg i.bb{background:none;outline:2.5px solid var(--accent);outline-offset:-2.5px}
   .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .tp-plsub{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
   .tp-plgh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:9px 0 4px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
@@ -1632,7 +1646,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4515,7 +4529,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x,ix){if(x)leg+='<span><i style="background:var(--t'+ix+')"></i>'+x.label+'</span>';});leg+='</div>'; /* Cut C (C-2): the board legend follows its own cells onto Soft */
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
   }
-  var tfOpen=false,tfSel=[],tfLen=5,tfCust=false,tfHand=null; /* Cut D (D-2): tfOpen is the screen ("s1"/"s2"/false); tfSel+tfLen survive re-entry (playground law); tfHand is the ONE seam value {a,b} \u2014 nothing else crosses. D-1: WHEN\u2192DAYS\u2192PARKS\u2192MORNINGS \u2014 the advisor funnel opens. D-1 ships the door + S1 as a pure record READOUT; the ask, the fits, and the creator seam ride the next cuts (no dead doors). */
+  var tfOpen=false,tfSel=[],tfLen=5,tfCust=false,tfHand=null,tfCurM=null,tfCurK=null,tfAnchor=1; /* Cut D (D-3): the calendar\u2019s seat \u2014 month, third, and the bracket anchor */ /* Cut D (D-2): tfOpen is the screen ("s1"/"s2"/false); tfSel+tfLen survive re-entry (playground law); tfHand is the ONE seam value {a,b} \u2014 nothing else crosses. D-1: WHEN\u2192DAYS\u2192PARKS\u2192MORNINGS \u2014 the advisor funnel opens. D-1 ships the door + S1 as a pure record READOUT; the ask, the fits, and the creator seam ride the next cuts (no dead doors). */
   var TF_MN=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
   var TF_MABs=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var TF_MFULL=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -4576,6 +4590,29 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var t3=(+c.t.slice(8,10))<=10?"Early":(+c.t.slice(8,10))<=20?"Mid":"Late";
       if(f3!==t&&t3!==t)continue;out+=tfChipHTML(c);}
     return out;}
+  function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
+    var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
+  function tfOpenCal(m,k){tfCurM=m;tfCurK=k;tfAnchor=tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";}
+  function tfS3HTML(){ /* S3 \u00b7 UP CLOSE (Cut D-3): every date wears its OWN third+DOW pool; race dots from the verified table; the bracket pre-seats bestRun and jumps on tap */
+    var m=tfCurM,y=tfYFor(m),n=tfDim(y,m),i,d;
+    var h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback3="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the fits</button></div>';
+    var avg=0,ok=true;for(i=0;i<tfLen;i++){var v0=tfDEst(m,y,tfAnchor+i);if(v0==null){ok=false;break;}avg+=v0;}
+    h+='<div class="rpc"><div class="lbl">'+TF_MFULL[m]+' '+y+' \u00b7 up close</div>';
+    h+='<div class="tf-read">Your '+tfLen+' days \u2014 <b>'+TF_MABs[m]+' '+tfAnchor+' \u2013 '+TF_MABs[m]+' '+(tfAnchor+tfLen-1)+'</b> \u2014 have run <b>'+(ok?Math.round(avg/tfLen)+' min':'\u2013')+'</b> on this pattern. Tap any day to move the window.</div>';
+    var marks=tfChips(m).filter(function(c){return c.cls==="race"||c.cls==="racef";});
+    h+='<div class="tf-calh">'+["S","M","T","W","T","F","S"].map(function(x){return '<i>'+x+'</i>';}).join('')+'</div><div class="tf-cal">';
+    var fd=new Date(Date.UTC(y,m,1)).getUTCDay();
+    for(i=0;i<fd;i++)h+='<span></span>';
+    for(d=1;d<=n;d++){var v=tfDEst(m,y,d);
+      var race=marks.some(function(w){var f=+w.f.slice(8,10),t2=+w.t.slice(8,10),fm=+w.f.slice(5,7)-1,tm=+w.t.slice(5,7)-1;
+        return (fm===m&&tm===m)?(d>=f&&d<=t2):(fm===m?d>=f:d<=t2);});
+      h+='<button type="button" class="tf-cd'+(race?' race':'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'" data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
+    h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'');
+    h+='<div class="tf-callg">'+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
+    h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:12px">Make this my trip \u203a</button>';
+    h+='<div class="tf-basis">Each date wears its third-of-month + weekday pool \u2014 a pattern, not a forecast.</div></div>';
+    return h;
+  }
   function tfS1HTML(){ /* S1 \u00b7 THE ASK (Cut D-2): multi-tap flexibility window; length pills + Custom stepper (2\u201314, TP_MAXDAYS-parity harnessed); the ranking spans the whole selection \u2014 compare and rank are one act */
     var L=(typeof window.__avL==="function")?window.__avL():null,h,i;
     h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to trips</button></div>';
@@ -4605,14 +4642,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var i;for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);
       [["E","early"],["M","mid"],["L","late"]].forEach(function(t){
         var v=P?Math.round(P[t[0]].v):null;
-        h+='<span class="tf-bseg"><i style="height:'+(v!=null?Math.max(8,Math.round((v-20)*2.6)):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></span>';});}
+        h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i style="height:'+(v!=null?Math.max(8,Math.round((v-20)*2.6)):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+tfFactsHTML()+'</div>';
     var top=tfWindows().slice(0,Math.min(5,tfSel.length*2+2)),c,r;
     for(i=0;i<top.length;i++){c=top[i];
       h+='<div class="rpc"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+' \u00b7 '+c.lean+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
         tfChipsFor(c.m,c.t)+
-        '<button type="button" class="tf-go" data-tfuse="'+c.m+'.'+c.k+'" style="margin-top:10px">Use these dates \u203a</button></div>';}
-    h+='<div class="tf-basis">Has run, never will run \u2014 every number is the banked record\u2019s last three years per month \u00b7 estimates blend each month\u2019s third with its weekday lean \u00b7 events from the verified table.</div>';
+        '<div class="tf-wact"><button type="button" class="tf-go" data-tfuse="'+c.m+'.'+c.k+'">Use these dates \u203a</button><button type="button" class="tf-go gh" data-tfsee="'+c.m+'.'+c.k+'">See it up close \u203a</button></div></div>';}
+    h+='<div class="tf-basis">Has run, never will run \u2014 every number is the banked record\u2019s last three years per month \u00b7 estimates blend each month\u2019s third with its weekday lean \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
     return h;
   }
   function tfDoorHTML(){ /* Cut D (D-1): the advisor door \u2014 seat B (after your trips, before + New trip; owner default, one-line swap) */
@@ -4632,7 +4669,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function tpPageHTML(){ /* 0715b dispatcher (W-33): creator (empty or editing) > the explicitly selected board > the hero list — a single trip lists like any other */
     var ts=tpTrips();
-    if(tfOpen)return (tfOpen==="s2")?tfS2HTML():tfS1HTML(); /* Cut D (D-2): the screen string routes; selections survive re-entry by construction */
+    if(tfOpen)return (tfOpen==="s3")?tfS3HTML():(tfOpen==="s2")?tfS2HTML():tfS1HTML(); /* Cut D (D-3): three screens, one string; selections survive re-entry by construction */
     if(tpEdit)return tpCreatorHTML((tpEdit&&!tpNew)?tpCurTrip():tfHand); /* Cut D (D-2): the ONE seam \u2014 "Use these dates" prefills {a,b}; nothing else crosses */
     if(!ts.length)return tpEmptyHTML(); /* Cut D (D-1): the quiet fork (owner pick A) */
     if(tpSel){var t=tpCurTrip();if(t)return tpBoardHTML(t);}
@@ -4838,7 +4875,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-tflen]").forEach(function(b){b.addEventListener("click",function(){var v=+b.getAttribute("data-tflen");if(v){tfCust=false;tfLen=v;}else{tfCust=true;tfLen=Math.min(14,Math.max(2,tfLen));}renderPulsePage();});});
     el.querySelectorAll("[data-tfstp]").forEach(function(b){b.addEventListener("click",function(){tfLen=Math.min(14,Math.max(2,tfLen+ +b.getAttribute("data-tfstp")));renderPulsePage();});});
     el.querySelectorAll("[data-tfgo]").forEach(function(b){b.addEventListener("click",function(){if(tfSel.length){tfOpen="s2";renderPulsePage();rpTop();}});});
-    el.querySelectorAll("[data-tfuse]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-2): the fast path \u2014 the window's bestRun becomes the creator's prefill */
+    el.querySelectorAll("[data-tfseg],[data-tfsee]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-3): band segments + See-it-up-close open the month up close */
+      var p=(b.getAttribute("data-tfseg")||b.getAttribute("data-tfsee")).split(".");tfOpenCal(+p[0],p[1]);renderPulsePage();rpTop();});});
+    el.querySelectorAll("[data-tfback3]").forEach(function(b){b.addEventListener("click",function(){tfOpen="s2";renderPulsePage();rpTop();});});
+    el.querySelectorAll("[data-tfday]").forEach(function(b){b.addEventListener("click",function(){tfJump(+b.getAttribute("data-tfday"));renderPulsePage();});});
+    el.querySelectorAll("[data-tfmake]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-3): the calendar's own seam \u2014 the bracket becomes the creator's prefill */
+      var y=tfYFor(tfCurM),a=tfDate(y,tfCurM,tfAnchor),bb=tpAddD(a,tfLen-1);
+      tfHand={a:a,b:bb};tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
+    el.querySelectorAll("[data-tfuse]").forEach(function(b){b.addEventListener("click",function(ev){ev.stopPropagation(); /* Cut D (D-2): the fast path \u2014 the window's bestRun becomes the creator's prefill; D-3 keeps it self-contained beside its See-it-up-close sibling */
       var p=b.getAttribute("data-tfuse").split("."),m=+p[0],k=p[1],y=tfYFor(m);
       var s=tfBestRun(m,y,k,tfLen),a=tfDate(y,m,s),bb=tpAddD(a,tfLen-1);
       tfHand={a:a,b:bb};tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
