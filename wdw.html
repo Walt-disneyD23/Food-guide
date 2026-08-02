@@ -502,9 +502,6 @@
   .tf-mfl .dts{color:var(--muted-2)}
   .tf-basis{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);line-height:1.55;margin-top:11px}
   button.tf-bseg{border:0;background:none;padding:0;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent} /* Cut D (D-3): the band wakes \u2014 segments become doors to S3 */
-  .tf-go.gh{background:var(--accent-soft);color:var(--accent)}
-  .tf-wact{display:flex;gap:7px;margin-top:10px}
-  .tf-wact .tf-go{margin-top:0}
   .tf-calh{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px} /* Cut D (D-3): S3 \u2014 the month up close (funnel-playable ratified) */
   .tf-calh i{font:700 var(--fs-micro) var(--font-body);color:var(--muted-2);text-align:center;font-style:normal}
   .tf-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
@@ -1646,7 +1643,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4239,10 +4236,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function tpCreatorHTML(t){ /* 0716v: Cancel ALWAYS renders (owner-caught) \u2014 the quiet fork now stands behind every creator entry, so there is always a home to go back to */
     if(tpPlanDraft===null){tpPlanDraft={};var pl0=(t&&t.plan)||{},k0;for(k0 in pl0)tpPlanDraft[k0]=pl0[k0];} /* Cut 2: seed the draft once per creator entry — Save prunes + persists, Cancel discards */
-    return '<div class="pw-nav"><button class="pw-back" type="button" data-tpcrback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+((t&&t.id)?'Back to the trip':(tfReturn==="s3"?'Back to the calendar':tfReturn==="s2"?'Back to the fits':'Back to trips'))+'</button></div>'+ /* 0716w: the fork's siblings share ONE way home (owner-caught) \u2014 the advisor's pill grammar rides the creator too; Cancel stays as the form's own discard beside Save */
+    return '<div class="pw-nav"><button class="pw-back" type="button" data-tpcrback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+((t&&t.id)?'Back to the trip':(tfReturn?'Back to the calendar':'Back to trips'))+'</button></div>'+ /* 0716w: the fork's siblings share ONE way home (owner-caught) \u2014 the advisor's pill grammar rides the creator too; Cancel stays as the form's own discard beside Save */
       '<div class="rpc tp-cr"><div class="tp-eb">My Trip</div><div class="tp-tt">Map your park days</div>'+
       '<div class="tp-ts">Save your dates and each day shows its same-weekday history across all four parks \u2014 plus published hours as Disney posts them. Trips run up to '+TP_MAXDAYS+' days.</div>'+
-      ((t&&!t.id)?'<div class="rd-evrib" style="margin:11px 0 0"><i>From the advisor</i><span><b>'+tpMD(t.a)+' \u2013 '+tpMD(t.b)+'</b> \u2014 your ranked window, prefilled. Adjust anything and save, or head back to keep comparing.</span></div>':'')+ /* 0716z: the receipt (owner-caught: \u201cdescribe it better\u201d) \u2014 derived from {a,b} alone; nothing else crossed the seam */
+      ((t&&!t.id)?'<div class="rd-evrib" style="margin:11px 0 0"><i>From the advisor</i><span><b>'+tpMD(t.a)+' \u2013 '+tpMD(t.b)+'</b> \u2014 picked up close, prefilled. Adjust anything and save, or head back to move the window.</span></div>':'')+ /* 0716z: the receipt (owner-caught: \u201cdescribe it better\u201d) \u2014 derived from {a,b} alone; nothing else crossed the seam */
       '<div class="tp-fld"><label class="tp-fi"><span>First day</span><input type="date" id="tpA" value="'+esc((t&&t.a)||"")+'"></label>'+
       '<label class="tp-fi"><span>Last day</span><input type="date" id="tpB" value="'+esc((t&&t.b)||"")+'"></label></div>'+
       '<div class="tp-fld"><label class="tp-fi"><span>Name \u00b7 optional</span><input type="text" id="tpN" maxlength="40" placeholder="September trip" value="'+esc((t&&t.n)||"")+'"></label></div>'+
@@ -4647,9 +4644,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+tfFactsHTML()+'</div>';
     var top=tfWindows().slice(0,Math.min(5,tfSel.length*2+2)),c,r;
     for(i=0;i<top.length;i++){c=top[i];
-      h+='<div class="rpc"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+' \u00b7 '+c.lean+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
+      h+='<div class="rpc tp-trl" data-tfsee="'+c.m+'.'+c.k+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+' \u00b7 '+c.lean+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
         tfChipsFor(c.m,c.t)+
-        '<div class="tf-wact"><button type="button" class="tf-go" data-tfuse="'+c.m+'.'+c.k+'">Use these dates \u203a</button><button type="button" class="tf-go gh" data-tfsee="'+c.m+'.'+c.k+'">See it up close \u203a</button></div></div>';}
+        '<span class="tp-chev">\u203a</span></div>'; /* 0717a: ONE door per card (owner call) \u2014 the fast path retired; the calendar pre-seats bestRun, so trusting the ranking costs exactly one more tap and buys sight of the real dates */}
     h+='<div class="tf-basis">Has run, never will run \u2014 every number is the banked record\u2019s last three years per month \u00b7 estimates blend each month\u2019s third with its weekday lean \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
     return h;
   }
@@ -4883,10 +4880,6 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-tfmake]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-3): the calendar's own seam \u2014 the bracket becomes the creator's prefill */
       var y=tfYFor(tfCurM),a=tfDate(y,tfCurM,tfAnchor),bb=tpAddD(a,tfLen-1);
       tfHand={a:a,b:bb};tfReturn="s3";tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
-    el.querySelectorAll("[data-tfuse]").forEach(function(b){b.addEventListener("click",function(ev){ev.stopPropagation(); /* Cut D (D-2): the fast path \u2014 the window's bestRun becomes the creator's prefill; D-3 keeps it self-contained beside its See-it-up-close sibling */
-      var p=b.getAttribute("data-tfuse").split("."),m=+p[0],k=p[1],y=tfYFor(m);
-      var s=tfBestRun(m,y,k,tfLen),a=tfDate(y,m,s),bb=tpAddD(a,tfLen-1);
-      tfHand={a:a,b:bb};tfReturn="s2";tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
     var tpd=el.querySelector(".tp-del");if(tpd)tpd.addEventListener("click",function(){ /* 0714y: first tap arms, second deletes */
       if(!tpDelArm){tpDelArm=true;renderPulsePage(); /* 0715p: same self-reset - one destructive grammar app-wide */
         clearTimeout(tpDelT);tpDelT=setTimeout(function(){if(tpDelArm){tpDelArm=false;renderPulsePage();}},4000);return;}
