@@ -487,7 +487,7 @@
   .tf-stp b{font:700 17px var(--font-display)}
   .tf-go{margin-top:12px;width:100%;border:0;background:var(--accent-fill);color:#fff;font:700 var(--fs-body) var(--font-body);border-radius:var(--r-el);padding:12px 0;cursor:pointer}
   .tf-go:disabled{opacity:.4}
-  .tf-band{display:grid;gap:5px;align-items:end;height:104px;margin-bottom:2px} /* the thirds band (readout in D-2; taps ride S3) */
+  .tf-band{display:grid;gap:5px;align-items:end;margin-bottom:2px} /* 0716z: height AUTO (owner-caught) \u2014 December\u2019s real 54 overflowed the fixed 104px box; bottoms align by the grid, the tallest month sets the roof */ /* the thirds band (readout in D-2; taps ride S3) */
   .tf-bseg{text-align:center}.tf-bseg i{display:block;width:100%;border-radius:6px 6px 3px 3px}
   .tf-bseg b{display:block;font:700 11px var(--font-display);margin-top:3px}
   .tf-bseg em{display:block;font:600 7.5px var(--font-body);text-transform:uppercase;letter-spacing:.03em;color:var(--muted-2);font-style:normal;line-height:1.25;margin-top:2px}
@@ -1646,7 +1646,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4239,9 +4239,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function tpCreatorHTML(t){ /* 0716v: Cancel ALWAYS renders (owner-caught) \u2014 the quiet fork now stands behind every creator entry, so there is always a home to go back to */
     if(tpPlanDraft===null){tpPlanDraft={};var pl0=(t&&t.plan)||{},k0;for(k0 in pl0)tpPlanDraft[k0]=pl0[k0];} /* Cut 2: seed the draft once per creator entry — Save prunes + persists, Cancel discards */
-    return '<div class="pw-nav"><button class="pw-back" type="button" data-tpcrback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+((t&&t.id)?'Back to the trip':'Back to trips')+'</button></div>'+ /* 0716w: the fork's siblings share ONE way home (owner-caught) \u2014 the advisor's pill grammar rides the creator too; Cancel stays as the form's own discard beside Save */
+    return '<div class="pw-nav"><button class="pw-back" type="button" data-tpcrback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+((t&&t.id)?'Back to the trip':(tfReturn==="s3"?'Back to the calendar':tfReturn==="s2"?'Back to the fits':'Back to trips'))+'</button></div>'+ /* 0716w: the fork's siblings share ONE way home (owner-caught) \u2014 the advisor's pill grammar rides the creator too; Cancel stays as the form's own discard beside Save */
       '<div class="rpc tp-cr"><div class="tp-eb">My Trip</div><div class="tp-tt">Map your park days</div>'+
       '<div class="tp-ts">Save your dates and each day shows its same-weekday history across all four parks \u2014 plus published hours as Disney posts them. Trips run up to '+TP_MAXDAYS+' days.</div>'+
+      ((t&&!t.id)?'<div class="rd-evrib" style="margin:11px 0 0"><i>From the advisor</i><span><b>'+tpMD(t.a)+' \u2013 '+tpMD(t.b)+'</b> \u2014 your ranked window, prefilled. Adjust anything and save, or head back to keep comparing.</span></div>':'')+ /* 0716z: the receipt (owner-caught: \u201cdescribe it better\u201d) \u2014 derived from {a,b} alone; nothing else crossed the seam */
       '<div class="tp-fld"><label class="tp-fi"><span>First day</span><input type="date" id="tpA" value="'+esc((t&&t.a)||"")+'"></label>'+
       '<label class="tp-fi"><span>Last day</span><input type="date" id="tpB" value="'+esc((t&&t.b)||"")+'"></label></div>'+
       '<div class="tp-fld"><label class="tp-fi"><span>Name \u00b7 optional</span><input type="text" id="tpN" maxlength="40" placeholder="September trip" value="'+esc((t&&t.n)||"")+'"></label></div>'+
@@ -4529,7 +4530,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x,ix){if(x)leg+='<span><i style="background:var(--t'+ix+')"></i>'+x.label+'</span>';});leg+='</div>'; /* Cut C (C-2): the board legend follows its own cells onto Soft */
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
   }
-  var tfOpen=false,tfSel=[],tfLen=5,tfCust=false,tfHand=null,tfCurM=null,tfCurK=null,tfAnchor=1; /* Cut D (D-3): the calendar\u2019s seat \u2014 month, third, and the bracket anchor */ /* Cut D (D-2): tfOpen is the screen ("s1"/"s2"/false); tfSel+tfLen survive re-entry (playground law); tfHand is the ONE seam value {a,b} \u2014 nothing else crosses. D-1: WHEN\u2192DAYS\u2192PARKS\u2192MORNINGS \u2014 the advisor funnel opens. D-1 ships the door + S1 as a pure record READOUT; the ask, the fits, and the creator seam ride the next cuts (no dead doors). */
+  var tfOpen=false,tfSel=[],tfLen=5,tfCust=false,tfHand=null,tfCurM=null,tfCurK=null,tfAnchor=1,tfReturn=null; /* 0716z: the seam remembers where it came from (owner-caught) */ /* Cut D (D-3): the calendar\u2019s seat \u2014 month, third, and the bracket anchor */ /* Cut D (D-2): tfOpen is the screen ("s1"/"s2"/false); tfSel+tfLen survive re-entry (playground law); tfHand is the ONE seam value {a,b} \u2014 nothing else crosses. D-1: WHEN\u2192DAYS\u2192PARKS\u2192MORNINGS \u2014 the advisor funnel opens. D-1 ships the door + S1 as a pure record READOUT; the ask, the fits, and the creator seam ride the next cuts (no dead doors). */
   var TF_MN=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
   var TF_MABs=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var TF_MFULL=["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -4642,7 +4643,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var i;for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);
       [["E","early"],["M","mid"],["L","late"]].forEach(function(t){
         var v=P?Math.round(P[t[0]].v):null;
-        h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i style="height:'+(v!=null?Math.max(8,Math.round((v-20)*2.6)):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
+        h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i style="height:'+(v!=null?Math.max(8,Math.min(96,Math.round((v-20)*2.6))):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+tfFactsHTML()+'</div>';
     var top=tfWindows().slice(0,Math.min(5,tfSel.length*2+2)),c,r;
     for(i=0;i<top.length;i++){c=top[i];
@@ -4838,13 +4839,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var TLp=tpLensTrip();if(!TLp||!tpLensDay||!rpRide)return;
       (tdRides(TLp,tpLensDay).indexOf(rpRide)>=0?tdRemove:tdAdd)(TLp.id,tpLensDay,rpRide);renderPulsePage();});
     var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
-    var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;tfHand=null;renderPulsePage();});
-    el.querySelectorAll("[data-tpcrback]").forEach(function(b){b.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;tfHand=null;renderPulsePage();rpTop();});}); /* 0716w: the pill discards exactly what Cancel discards */
+    var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;tfHand=null;if(tfReturn){tfOpen=tfReturn;tfReturn=null;renderPulsePage();rpTop();return;}renderPulsePage();}); /* 0716z: a seam-entered creator goes back to the screen that sent it */
+    el.querySelectorAll("[data-tpcrback]").forEach(function(b){b.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;tfHand=null;if(tfReturn){tfOpen=tfReturn;tfReturn=null;}renderPulsePage();rpTop();});}); /* 0716w: the pill discards exactly what Cancel discards */
     var tps=el.querySelector(".tp-save");if(tps)tps.addEventListener("click",function(){ /* L-29: validate, persist via the shim, wake the schedule fetch */
       var a=($("tpA")||{}).value,b2=($("tpB")||{}).value,n=(($("tpN")||{}).value||"").trim(),err=$("tpErr");
       var e2=tpSaveTrip(a,b2,n); /* 0714w: one save engine */
       if(e2){if(err)err.textContent=e2;return;}
-      tpEnsureSched();renderPulsePage();rpTop();});
+      tfHand=null;tfReturn=null;tpEnsureSched();renderPulsePage();rpTop();}); /* 0716z: a saved trip retires the seam \u2014 the board is home now */
     var tpp=el.querySelector("#tpPlan"); /* Cut 2: the creator’s plan grid — the rows repaint alone so the fields never lose in-progress edits */
     if(tpp){var tpRepaint=function(){tpp.innerHTML=tpPlanSecHTML(($("tpA")||{}).value||"",($("tpB")||{}).value||"");};
       ["tpA","tpB"].forEach(function(fid){var f=$(fid);if(f)f.addEventListener("input",tpRepaint);});
@@ -4866,8 +4867,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
       tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tdReset();tpEnsureSched();renderPulsePage();rpTop();});});
     var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;tdReset();renderPulsePage();rpTop();});
-    var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfHand=null;renderPulsePage();rpTop();});
-    el.querySelectorAll("[data-tfnew]").forEach(function(b){b.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfHand=null;renderPulsePage();rpTop();});}); /* Cut D (D-1): the fork's creator door writes the same state + New trip does */
+    var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfHand=null;tfReturn=null;renderPulsePage();rpTop();});
+    el.querySelectorAll("[data-tfnew]").forEach(function(b){b.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfHand=null;tfReturn=null;renderPulsePage();rpTop();});}); /* Cut D (D-1): the fork's creator door writes the same state + New trip does */
     el.querySelectorAll("[data-tfdoor]").forEach(function(b){b.addEventListener("click",function(){tfOpen=true;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfback]").forEach(function(b){b.addEventListener("click",function(){tfOpen=false;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfback2]").forEach(function(b){b.addEventListener("click",function(){tfOpen="s1";renderPulsePage();rpTop();});});
@@ -4881,11 +4882,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll("[data-tfday]").forEach(function(b){b.addEventListener("click",function(){tfJump(+b.getAttribute("data-tfday"));renderPulsePage();});});
     el.querySelectorAll("[data-tfmake]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-3): the calendar's own seam \u2014 the bracket becomes the creator's prefill */
       var y=tfYFor(tfCurM),a=tfDate(y,tfCurM,tfAnchor),bb=tpAddD(a,tfLen-1);
-      tfHand={a:a,b:bb};tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
+      tfHand={a:a,b:bb};tfReturn="s3";tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfuse]").forEach(function(b){b.addEventListener("click",function(ev){ev.stopPropagation(); /* Cut D (D-2): the fast path \u2014 the window's bestRun becomes the creator's prefill; D-3 keeps it self-contained beside its See-it-up-close sibling */
       var p=b.getAttribute("data-tfuse").split("."),m=+p[0],k=p[1],y=tfYFor(m);
       var s=tfBestRun(m,y,k,tfLen),a=tfDate(y,m,s),bb=tpAddD(a,tfLen-1);
-      tfHand={a:a,b:bb};tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
+      tfHand={a:a,b:bb};tfReturn="s2";tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfOpen=false;renderPulsePage();rpTop();});});
     var tpd=el.querySelector(".tp-del");if(tpd)tpd.addEventListener("click",function(){ /* 0714y: first tap arms, second deletes */
       if(!tpDelArm){tpDelArm=true;renderPulsePage(); /* 0715p: same self-reset - one destructive grammar app-wide */
         clearTimeout(tpDelT);tpDelT=setTimeout(function(){if(tpDelArm){tpDelArm=false;renderPulsePage();}},4000);return;}
