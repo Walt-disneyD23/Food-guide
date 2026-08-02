@@ -513,6 +513,11 @@
   .tf-callg i.rr{background:var(--short);border-radius:50%;box-shadow:0 0 0 2px #fff}
   .tf-callg i.bb{background:none;outline:2.5px solid var(--accent);outline-offset:-2.5px}
   .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
+  .tp-lanes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px} /* 0717b: THE TWIN LANES (owner pick B, no caption) \u2014 two equal cells name the two ways in; the old caption retires as redundant */
+  .tp-lane{background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-el);padding:10px 11px}
+  .tp-lane i{display:block;font-style:normal;font:700 var(--fs-micro) var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .tp-lane p{font-size:var(--fs-meta);color:var(--muted);line-height:1.5;margin-top:4px}
+  .tp-lane p b{color:var(--ink);font-weight:600}
   .tp-plsub{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
   .tp-plgh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:9px 0 4px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
   .tp-plgh i{font-style:normal;text-align:center}
@@ -1643,7 +1648,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4039,7 +4044,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!a||!b||b<a)return "";
     if(Math.round((tpAsD(b)-tpAsD(a))/864e5)+1>TP_MAXDAYS)return "";
     if(tpPlanDraft===null)tpPlanDraft={};
-    var ds=tpDays({a:a,b:b}),h='<div class="tp-plhd">Park days \u00b7 optional</div><div class="tp-plsub">Tap a park for any day \u2014 tap it again to clear. Skip the rest.</div><div class="tp-plgh"><span></span>',i,j;
+    var ds=tpDays({a:a,b:b}),h='<div class="tp-plhd">Park days \u00b7 optional</div><div class="tp-lanes"><div class="tp-lane"><i>Know your days?</i><p>Tap a park for any day \u2014 <b>tap again to clear</b>.</p></div><div class="tp-lane"><i>Not sure yet?</i><p>Skip it \u2014 every saved day shows <b>all four parks</b> and marks its <b>best fit</b>.</p></div></div><div class="tp-plgh"><span></span>',i,j;
     for(j=0;j<4;j++)h+='<i>'+TP_PARKS[j][1]+'</i>';
     h+='</div>';
     for(i=0;i<ds.length;i++){var d0=ds[i],hol=HOLIDAYS[d0]?' <span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'';
