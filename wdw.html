@@ -1696,7 +1696,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4214,12 +4214,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return anyPk?(tS+' '+cS):(cS+' '+tS);
   }
   var TP_TSTRONG=["","short","medium","long","packed"]; /* 0717k (owner: A amended): tier -> the trip rail's own dot family */
-  function tpDayLine(ds,model,t){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k: the symbol rail, prose retired */
+  function tpDayLine(ds,model,t,EV){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k: the symbol rail, prose retired; 0717l: the event rows join */
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),thin=[],col=[],i;
     for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});}
     var hol=HOLIDAYS[ds];
     var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
-    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr"><div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</span></div></div>'+sub+'</div>',sub:""};} /* 0717k: the fallback single-liner = one neutral-dot row */
+    var er=''; /* 0717l (owner: R1+P1): the day's event rows - the tags' own verified truths spoken as sentences; unfired = no row */
+    if(EV&&EV.race&&EV.race[ds]){var w0=TP_EV_WORD[EV.race[ds]]||EV.race[ds],op=window.__pwRS&&window.__pwRS[EV.race[ds]]&&window.__pwRS[EV.race[ds]].v==="open";
+      er+='<div class="crow"><span class="ic"><i class="swbar"></i></span><span class="v">A <b>'+w0+' weekend</b> day'+(op?' \u2014 those weekends have run <b>quieter than typical, not busier</b>.':'.')+'</span></div>';} /* the quieter clause keeps the composer's split-verdict gate */
+    if(EV&&EV.night&&EV.night[ds]){var bh=ds<tpToday(),pg2=tfPartyEm(ds)||"";
+      er+='<div class="crow"><span class="ic">'+((pg2&&pg2!=="ring")?'<span class="em">'+pg2+'</span>':'<i class="dot pnf"></i>')+'</span><span class="v">Magic Kingdom '+(bh?'hosted':'hosts')+' a ticketed party '+(bh?'that night':'tonight')+' \u2014 it '+(bh?'closed':'closes')+' early; calmer colors there reflect the shorter day, not a quieter park.</span></div>';} /* glyph via tfPartyEm; dashed ring only as the unrecognized-verified fallback (0717f law); tense flips on the DAY, not the trip */
+    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr"><div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</span></div>'+er+'</div>'+sub+'</div>',sub:""};} /* 0717k: the fallback single-liner = one neutral-dot row */
     var best=5,worst=0;col.forEach(function(x){if(x.lvl<best)best=x.lvl;if(x.lvl>worst)worst=x.lvl;});
     var bests=col.filter(function(x){return x.lvl===best;}).map(function(x){return x.p;});
     var worsts=col.filter(function(x){return x.lvl===worst;}).map(function(x){return x.p;});
@@ -4237,7 +4242,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var tn=thin.length?' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>':''; /* 0717k: the thin note rides the LAST row's tail - reading order untouched */
     var rw='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+TP_TSTRONG[best]+')"></i></span><span class="v">'+s+(pcl?'':tn)+'</span></div>'; /* 0717k: the tableau dot wears the trip rail's strong var for the tier the sentence leads with */
     if(pcl)rw+='<div class="crow"><span class="ic"><i class="dot pl"'+(c2.thin?'':' style="background:var(--t'+c2.lvl+')"')+'></i></span><span class="v">'+pcl+tn+'</span></div>'; /* 0717k: the ringed planned swatch - earned fill when fired, hollow when thin (no tier claim) */
-    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr">'+rw+'</div>'+sub+'</div>',sub:""}; /* 0715i box -> 0717k rail: beats as rows, an unfired beat has no row, the holiday sub keeps its seat beneath */
+    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr">'+rw+er+'</div>'+sub+'</div>',sub:""}; /* 0715i box -> 0717k rail: beats as rows, an unfired beat has no row, the holiday sub keeps its seat beneath */
   }
   function tpExtK(s){var d=shortExtra(s);if(/early entry/i.test(d))return "EE";if(/extended/i.test(d))return "EEH";return "EVT";}
   function tpHoursHTML(ds,park){
@@ -4587,7 +4592,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
       var dx='';
-      if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
+      if(open){var L=tpDayLine(d0,model,t,EV);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x,ix){if(x)leg+='<span><i style="background:var(--t'+ix+')"></i>'+x.label+'</span>';});leg+='</div>'; /* Cut C (C-2): the board legend follows its own cells onto Soft */
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
