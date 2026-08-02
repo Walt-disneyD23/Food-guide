@@ -1606,7 +1606,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4199,7 +4199,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   }
   function tpCreatorHTML(t){ /* 0716v: Cancel ALWAYS renders (owner-caught) \u2014 the quiet fork now stands behind every creator entry, so there is always a home to go back to */
     if(tpPlanDraft===null){tpPlanDraft={};var pl0=(t&&t.plan)||{},k0;for(k0 in pl0)tpPlanDraft[k0]=pl0[k0];} /* Cut 2: seed the draft once per creator entry — Save prunes + persists, Cancel discards */
-    return '<div class="rpc tp-cr"><div class="tp-eb">My Trip</div><div class="tp-tt">Map your park days</div>'+
+    return '<div class="pw-nav"><button class="pw-back" type="button" data-tpcrback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(t?'Back to the trip':'Back to trips')+'</button></div>'+ /* 0716w: the fork's siblings share ONE way home (owner-caught) \u2014 the advisor's pill grammar rides the creator too; Cancel stays as the form's own discard beside Save */
+      '<div class="rpc tp-cr"><div class="tp-eb">My Trip</div><div class="tp-tt">Map your park days</div>'+
       '<div class="tp-ts">Save your dates and each day shows its same-weekday history across all four parks \u2014 plus published hours as Disney posts them. Trips run up to '+TP_MAXDAYS+' days.</div>'+
       '<div class="tp-fld"><label class="tp-fi"><span>First day</span><input type="date" id="tpA" value="'+esc((t&&t.a)||"")+'"></label>'+
       '<label class="tp-fi"><span>Last day</span><input type="date" id="tpB" value="'+esc((t&&t.b)||"")+'"></label></div>'+
@@ -4691,6 +4692,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       (tdRides(TLp,tpLensDay).indexOf(rpRide)>=0?tdRemove:tdAdd)(TLp.id,tpLensDay,rpRide);renderPulsePage();});
     var tpe=el.querySelector(".tp-edit");if(tpe)tpe.addEventListener("click",function(){tpEdit=true;tpNew=false;tpDelArm=false;tpPlanDraft=null;renderPulsePage();rpTop();});
     var tpc=el.querySelector(".tp-cancel");if(tpc)tpc.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;renderPulsePage();});
+    el.querySelectorAll("[data-tpcrback]").forEach(function(b){b.addEventListener("click",function(){tpEdit=false;tpNew=false;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;renderPulsePage();rpTop();});}); /* 0716w: the pill discards exactly what Cancel discards */
     var tps=el.querySelector(".tp-save");if(tps)tps.addEventListener("click",function(){ /* L-29: validate, persist via the shim, wake the schedule fetch */
       var a=($("tpA")||{}).value,b2=($("tpB")||{}).value,n=(($("tpN")||{}).value||"").trim(),err=$("tpErr");
       var e2=tpSaveTrip(a,b2,n); /* 0714w: one save engine */
