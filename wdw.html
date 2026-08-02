@@ -1606,7 +1606,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4197,7 +4197,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tpBasis(t,model){
     return 'Same-weekday history \u00b7 the last '+model.cnt+' banked days ('+tpMD(model.w0)+' \u2013 '+tpMD(model.w1)+') \u00b7 color = the day crowd scale from each day\u2019s all-attraction average \u00b7 claims compare tiers, never raw minutes across parks'+tpSeason(t,model)+' \u00b7 history, never a promise \u00b7 hours = Disney\u2019s published schedule';
   }
-  function tpCreatorHTML(t){
+  function tpCreatorHTML(t){ /* 0716v: Cancel ALWAYS renders (owner-caught) \u2014 the quiet fork now stands behind every creator entry, so there is always a home to go back to */
     if(tpPlanDraft===null){tpPlanDraft={};var pl0=(t&&t.plan)||{},k0;for(k0 in pl0)tpPlanDraft[k0]=pl0[k0];} /* Cut 2: seed the draft once per creator entry — Save prunes + persists, Cancel discards */
     return '<div class="rpc tp-cr"><div class="tp-eb">My Trip</div><div class="tp-tt">Map your park days</div>'+
       '<div class="tp-ts">Save your dates and each day shows its same-weekday history across all four parks \u2014 plus published hours as Disney posts them. Trips run up to '+TP_MAXDAYS+' days.</div>'+
@@ -4207,7 +4207,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div id="tpPlan">'+tpPlanSecHTML((t&&t.a)||"",(t&&t.b)||"")+'</div>'+
       '<div id="tpErr" class="tp-err"></div>'+
       '<button class="tp-save" type="button">Save my trip</button>'+
-      ((t||tpTrips().length)?'<button class="tp-cancel" type="button">Cancel</button>':'')+(t?'<button class="tp-del'+(tpDelArm?' arm':'')+'" data-tpdel="'+esc(t.id)+'" type="button">'+(tpDelArm?'Tap again to delete':'Delete trip')+'</button>':'')+'</div>';
+      '<button class="tp-cancel" type="button">Cancel</button>'+(t?'<button class="tp-del'+(tpDelArm?' arm':'')+'" data-tpdel="'+esc(t.id)+'" type="button">'+(tpDelArm?'Tap again to delete':'Delete trip')+'</button>':'')+'</div>';
   }
   /* ===== 0715e: L-31 Cut 1 (td-) — THE NOTEBOOK DAY PAGE. t.rides per-day map on the trip
      (t.plan's exact shape, one-read store law); one list, two lenses (App's order · My order);
