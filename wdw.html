@@ -372,7 +372,9 @@
   .tp-behind{font:600 var(--fs-micro) var(--font-body);color:var(--muted-2);margin-top:1px}
   .tp-drow.dim .tp-wd,.tp-drow.dim .tp-dt{color:var(--muted-2)}
   .tp-drow.dim .tp-dc{opacity:.35}
-  .tp-dc{height:30px;border-radius:var(--r-el-sm)}
+  .tp-dc{height:30px;border-radius:var(--r-el-sm);display:flex;align-items:center;justify-content:center}
+  .tp-dc i{font-style:normal;font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:rgba(25,26,46,.55)} /* 0717h: the stamp \u2014 the week strip's ink, one grammar */
+  .tp-dc.thin i{color:var(--muted-2)}
   .tp-dc.thin{background:none;border:1.5px dashed var(--muted-2)}
   .tp-dx{border-top:1px solid var(--line);padding:11px 16px 13px;background:var(--card-2)}
   .tp-dxread{font-size:var(--fs-body);line-height:1.5;margin-bottom:7px}
@@ -406,8 +408,8 @@
   .tp-del{display:block;width:100%;margin-top:7px;border:1px solid var(--line);border-radius:var(--r-el);background:none;color:var(--packed);font:700 var(--fs-body) var(--font-body);padding:10px 0;cursor:pointer}
   .tp-del.arm{background:var(--packed);border-color:var(--packed);color:#fff}
   /* ===== L-29 Cut 2 (0714z): the plan layer — creator B-grid (mock-4 ratified) + the 2b board clothing: caption, cell ring, row lift, assign row ===== */
-  .tp-plcap{display:flex;justify-content:space-between;align-items:center;gap:8px;font:650 var(--fs-small) var(--font-body);color:var(--accent);margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
-  .tp-plcap>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tp-plcap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 8px;font:650 var(--fs-small) var(--font-body);color:var(--accent);margin-top:10px;border-top:1px solid var(--line);padding-top:9px;min-height:50px;align-content:flex-start} /* 0717g/0717h: busy days wrap, the caption never truncates \u2014 and EVERY card reserves the two lines (the even-height law, owner-stated) */
+  .tp-plcap>span:first-child{white-space:nowrap;flex:none}
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
   .tp-dc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the strengthened plan ring + theme-card halo */
   .tp-dc.pn.pnx{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717f: the dashed ring survives only as the unrecognized-party fallback */
@@ -486,6 +488,19 @@
   .tp-door i{display:block;font-style:normal;font:700 var(--fs-caps) var(--font-display);letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
   .tp-door p{font-size:var(--fs-meta);color:var(--muted);line-height:1.5;margin-top:4px}
   .tp-door .ch{display:block;margin-top:6px;font:700 var(--fs-meta) var(--font-body);color:var(--accent)}
+  /* 0717g: FLASH-THEN-COMMIT, the law of the flow (owner ask) \u2014 the Cut C picker pattern generalized:
+     the accent lights for 150ms, THEN the write lands and the repaint runs. Tier fills stay the crowd's;
+     their flash is an outline + brightness, never a repaint. */
+  [data-tfmon].hit,.tf-len.hit,[data-tfstp].hit,.tp-ac.hit,.tp-plc.hit{background:var(--accent-fill)!important;border-color:var(--accent-fill)!important;color:#fff!important}
+  [data-tfmon].hit *,.tp-plc.hit *,.tp-ac.hit *{color:#fff!important}
+  .tf-go.hit,.tp-save.hit,.tp-del.hit{filter:brightness(1.18)}
+  .tf-cd.hit{outline:2.5px solid var(--accent);outline-offset:-2.5px;filter:brightness(1.12)}
+  button.tf-bseg.hit{transform:scale(.95)}
+  .tp-trl.hit,.tp-door.hit,.rp-door.hit{background:var(--card-2)!important;transform:scale(.985)}
+  .tp-drow.hit,[data-tpday].hit{background:var(--card-2)}
+  .rp-back.hit{background:rgba(79,70,229,.24)}
+  .tp-cancel.hit{background:var(--card-2)}
+  .tp-edit.hit{opacity:.55}
   .tf-read{color:var(--muted);font-size:var(--fs-small);line-height:1.5;margin:2px 0 10px}
   .tf-mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px} /* twelve even cells (funnel-playable ratified) */
   .tf-mgc{background:var(--card-2);border-radius:10px;padding:9px 0 10px;text-align:center}
@@ -1669,7 +1684,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3948,7 +3963,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     "2027-12-28":"Christmas week","2027-12-29":"Christmas week","2027-12-30":"Christmas week","2027-12-31":"New Year's Eve"};
   var TP_PARKS=[["Magic Kingdom","MK"],["EPCOT","EP"],["Hollywood Studios","HS"],["Animal Kingdom","AK"]];
   var TP_TW=["","Light","Moderate","Busy","Packed"],TP_FLOOR=3,TP_MAXDAYS=21;
-  var TP_PSHORT={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"}; /* Cut 2: the fan vocabulary the 2b chips ratified — full names stay the storage + prose vocabulary */
+  var TP_PSHORT={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"},TP_P2={"Magic Kingdom":"MK","EPCOT":"EP","Hollywood Studios":"HS","Animal Kingdom":"AK"} /* 0717h: the cell stamps (owner pick A) */; /* Cut 2: the fan vocabulary the 2b chips ratified — full names stay the storage + prose vocabulary */
   function tpTripValid(t){return !!(t&&t.a&&t.b&&t.a<=t.b);}
   function tpTrips(){ /* 0714w: the trips array; the legacy single ppTrip migrates silently on first read */
     var ts=store.get("ppTrips",null);
@@ -4541,13 +4556,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!model)return head+'<div class="rpc"><div class="lbl">The board</div><div class="fc-empty">'+((!rpDigs)?'The board fills from banked days \u2014 one moment.':'No banked days to read yet.')+'</div></div>'; /* 0715b (W-33): the 0714x door retired — the second trip's door — the ever-present list carries + New trip now */
     var EV=tpEvCtx(t,ds); /* 0716m: the party-truth layer feeds the read, the badges, and MK's ring */
     var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-read">'+tpRead(ds,model)+EV.read+'</div></div>';
-    var gh='<div class="tp-gh"><span></span>',rows='',j;
-    for(j=0;j<TP_PARKS.length;j++)gh+='<i>'+TP_PARKS[j][0].split(" ").join("<br>")+'</i>'; /* 0715o (owner-ratified): the header speaks full names, two-lined */
-    gh+='</div>';
+    var gh='',rows='',j; /* 0715o\u21920717h (owner pick A): the lonely top header retires \u2014 every cell wears its park's initials, the week strip's stamped grammar */
     for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
       for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),isPk=(TP_PARKS[j][0]===pk),pe0=(!isPk&&j===0&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""; /* Cut 2 \u00b7 0716m \u00b7 0717f: plan ring still wins; the party marker is the glyph now, the ring only its fallback */
         var pc=(isPk?' plan':(pe0?' pn'+(pe0==="ring"?' pnx':''):''))+((j===1&&EV.race[d0])?' race':''),pea=((pe0&&pe0!=="ring")?' data-em="'+pe0+'"':'');
-        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"'+pea+'></span>':'<span class="tp-dc'+pc+'"'+pea+' style="background:var(--t'+c.lvl+')"></span>'); /* Cut C (C-2): Soft fills, trip-board-scoped */}
+        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"'+pea+'><i>'+TP_P2[TP_PARKS[j][0]]+'</i></span>':'<span class="tp-dc'+pc+'"'+pea+' style="background:var(--t'+c.lvl+')"><i>'+TP_P2[TP_PARKS[j][0]]+'</i></span>'); /* 0717h */ /* Cut C (C-2): Soft fills, trip-board-scoped */}
       var phe=EV.night[d0]?(tfPartyEm(d0)||"ring"):"";
       var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
@@ -4622,6 +4635,16 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k){tfCurM=m;tfCurK=k;tfAnchor=tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";}
+  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdst],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del';
+  document.addEventListener("click",function(e){ /* 0717g: flash-then-commit, delegated \u2014 the tap is intercepted at capture, the element lights, and the SAME click re-dispatches after 150ms so every existing handler runs unchanged. The picker chips (tp-acr) keep their own Cut C flash and stay out of this list. A second tap inside the window is swallowed \u2014 the free double-tap guard. */
+    if(e.__pp)return;
+    var t=e.target&&e.target.closest?e.target.closest(PP_TAP):null;
+    if(!t)return;
+    e.stopImmediatePropagation();e.stopPropagation();e.preventDefault();
+    if(t.__hit)return;
+    t.__hit=1;t.classList.add("hit");
+    setTimeout(function(){t.__hit=0;t.classList.remove("hit");var e2=new MouseEvent("click",{bubbles:true,cancelable:true});e2.__pp=1;t.dispatchEvent(e2);},150);
+  },true);
   var TF_PARTY_EM={mnsshp:"\ud83c\udf83",boobash:"\ud83c\udf83",mvmcp:"\ud83c\udf84",verymerriest:"\ud83c\udf84"};
   function tfPartyWins(){ /* 0717f: the verified party windows, shared \u2014 the funnel and the board resolve identity through ONE walk */
     var T=window.__pwEvT,w=[],q;if(T)for(q=0;q<T.events.length;q++){var e=T.events[q];if(e.type!=="party")continue;
