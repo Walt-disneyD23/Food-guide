@@ -506,12 +506,16 @@
   .tf-calh i{font:700 var(--fs-micro) var(--font-body);color:var(--muted-2);text-align:center;font-style:normal}
   .tf-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
   .tf-cd{display:flex;align-items:center;justify-content:center;height:40px;border-radius:8px;border:0;padding:0;font:700 var(--fs-small) var(--font-display);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.22);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
-  .tf-cd.race:after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--short);box-shadow:0 0 0 2px #fff;pointer-events:none}
+  .tf-cd.race:after{content:"";position:absolute;left:4px;right:4px;bottom:3px;height:3.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px rgba(255,255,255,.92);pointer-events:none} /* 0717c: the race BAR (owner idea) \u2014 a weekend is a span; consecutive bars read as one */
   .tf-cd.inb{outline:2.5px solid var(--accent);outline-offset:-2.5px}
   .tf-callg{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font:600 var(--fs-micro) var(--font-body);color:var(--muted)}
   .tf-callg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-  .tf-callg i.rr{background:var(--short);border-radius:50%;box-shadow:0 0 0 2px #fff}
+  .tf-callg i.rr{width:14px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px #fff;vertical-align:2px} /* 0717c: the legend swatch IS the bar */
   .tf-callg i.bb{background:none;outline:2.5px solid var(--accent);outline-offset:-2.5px}
+  .tf-cd.pn:before{content:attr(data-em);position:absolute;top:1px;left:2.5px;font-size:14px;line-height:1;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.4));pointer-events:none} /* 0717c: the seasonal party glyph (owner idea; E1 bare @14px) \u2014 the glyph marks the night, the color stays the crowd's */
+  .tf-cd.pnx:before{content:"";position:absolute;top:3.5px;left:3.5px;width:7px;height:7px;border-radius:50%;border:1.5px dashed #fff;opacity:.95} /* the neutral fallback \u2014 an unrecognized verified party never guesses a costume */
+  .tf-callg .em{font-style:normal;margin-right:5px}
+  .tf-callg i.pp{background:none;border:1.5px dashed var(--muted);border-radius:50%}
   .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .tp-lanes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px} /* 0717b: THE TWIN LANES (owner pick B, no caption) \u2014 two equal cells name the two ways in; the old caption retires as redundant */
   .tp-lane{background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-el);padding:10px 11px}
@@ -1648,7 +1652,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4596,6 +4600,16 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k){tfCurM=m;tfCurK=k;tfAnchor=tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";}
+  var TF_PARTY_EM={mnsshp:"\ud83c\udf83",boobash:"\ud83c\udf83",mvmcp:"\ud83c\udf84",verymerriest:"\ud83c\udf84"};
+  function tfPartyMap(m,y){ /* 0717c: verified nights \u2192 glyphs. The night list is dates-only truth; the party's IDENTITY resolves through the verified event windows (they never overlap). An unmatched verified night wears the neutral ring \u2014 never a guessed costume. */
+    var N=window.__pwEvN,T=window.__pwEvT,out={},d,q,n=tfDim(y,m);
+    if(!N||!N.dates)return out;
+    var wins=[];if(T)for(q=0;q<T.events.length;q++){var e=T.events[q];if(e.type!=="party")continue;
+      for(var j=0;j<e.windows.length;j++){var w=e.windows[j];if(w.v==="vv"||w.v==="v")wins.push({id:e.id,f:w.from,t:w.to});}}
+    for(d=1;d<=n;d++){var ds=tfDate(y,m,d);if(!N.dates[ds])continue;
+      var em="ring";for(q=0;q<wins.length;q++){if(wins[q].f<=ds&&ds<=wins[q].t){em=TF_PARTY_EM[wins[q].id]||"ring";break;}}
+      out[d]=em;}
+    return out;}
   function tfS3HTML(){ /* S3 \u00b7 UP CLOSE (Cut D-3): every date wears its OWN third+DOW pool; race dots from the verified table; the bracket pre-seats bestRun and jumps on tap */
     var m=tfCurM,y=tfYFor(m),n=tfDim(y,m),i,d;
     var h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback3="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the fits</button></div>';
@@ -4606,14 +4620,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     h+='<div class="tf-calh">'+["S","M","T","W","T","F","S"].map(function(x){return '<i>'+x+'</i>';}).join('')+'</div><div class="tf-cal">';
     var fd=new Date(Date.UTC(y,m,1)).getUTCDay();
     for(i=0;i<fd;i++)h+='<span></span>';
+    var pev=tfPartyMap(m,y); /* 0717c */
     for(d=1;d<=n;d++){var v=tfDEst(m,y,d);
       var race=marks.some(function(w){var f=+w.f.slice(8,10),t2=+w.t.slice(8,10),fm=+w.f.slice(5,7)-1,tm=+w.t.slice(5,7)-1;
         return (fm===m&&tm===m)?(d>=f&&d<=t2):(fm===m?d>=f:d<=t2);});
-      h+='<button type="button" class="tf-cd'+(race?' race':'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'" data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
+      h+='<button type="button" class="tf-cd'+(race?' race':'')+(pev[d]?' pn'+(pev[d]==="ring"?' pnx':''):'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'"'+((pev[d]&&pev[d]!=="ring")?' data-em="'+pev[d]+'"':'')+' data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'');
-    h+='<div class="tf-callg">'+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
+    var pset={},pk;for(pk in pev)pset[pev[pk]]=1;
+    var plg=(pset["\ud83c\udf83"]?'<span><i class="em">\ud83c\udf83</i>MK Halloween party night</span>':'')+(pset["\ud83c\udf84"]?'<span><i class="em">\ud83c\udf84</i>MK Christmas party night</span>':'')+(pset["ring"]?'<span><i class="pp"></i>MK party night</span>':'');
+    h+='<div class="tf-callg">'+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
     h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:12px">Make this my trip \u203a</button>';
-    h+='<div class="tf-basis">Each date wears its third-of-month + weekday pool \u2014 a pattern, not a forecast.</div></div>';
+    h+='<div class="tf-basis">Each date wears its third-of-month + weekday pool \u2014 a pattern, not a forecast \u00b7 party nights render only where the night list is verified \u00b7 the glyph marks the night; the color stays the crowd\u2019s.</div></div>';
     return h;
   }
   function tfS1HTML(){ /* S1 \u00b7 THE ASK (Cut D-2): multi-tap flexibility window; length pills + Custom stepper (2\u201314, TP_MAXDAYS-parity harnessed); the ranking spans the whole selection \u2014 compare and rank are one act */
