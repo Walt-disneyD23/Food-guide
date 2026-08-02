@@ -432,6 +432,22 @@
   .tp-pgrid{display:flex;gap:9px}
   .tp-pgrid .tp-ac{flex:1;text-align:center;padding:11px 0;font-size:var(--fs-small)}
   .tp-pgrid .tp-ac.arm{background:var(--packed);color:#fff;border-color:var(--packed)}
+  .tp-pgrid .tp-ac{border-radius:var(--r-el)} /* Cut C (C-1): square clothing on the plan row - the picker went square, its siblings follow */
+  .tp-acr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex:1;margin:0;border:1px solid var(--line);background:var(--card);border-radius:var(--r-el);padding:8px 0 7px;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent;transition:transform .06s ease} /* Cut C (C-1): the fit-in-picker chip - square two-line, park over its own tier word (playable13 ratified) */
+  .tp-acr b{font:600 var(--fs-meta) var(--font-body);color:var(--ink)}
+  .tp-acr i{font-style:normal;font:700 8.5px var(--font-body);letter-spacing:.04em;text-transform:uppercase}
+  .tp-acr.fitm{border-color:var(--accent);background:var(--accent-soft)} /* the day's fit wears the accent-soft dress */
+  .tp-acr.fitm b{color:var(--accent)}
+  .tp-acr.sel{background:var(--accent-fill);border-color:var(--accent-fill)} /* theming law: fills wear --accent-fill in BOTH themes; --accent is text-grade */
+  .tp-acr.sel b,.tp-acr.sel i{color:#fff}
+  .tp-acr.hit{background:var(--accent-fill);border-color:var(--accent-fill)} /* Cut C: flash-then-commit - the accent lights before the write lands */
+  .tp-acr.hit b,.tp-acr.hit i{color:#fff}
+  .tp-acr:active{transform:scale(.97)} /* the house tap grammar */
+  .td-lgd{display:flex;flex-wrap:wrap;gap:7px 16px;margin-top:9px;font:500 var(--fs-meta) var(--font-body);color:var(--muted)} /* Cut C (C-1): the fit legend - renders only while marks are on glass */
+  .td-lg{display:flex;align-items:center;gap:7px}
+  .td-lgstar{color:var(--accent);font-weight:800;font-size:13px;flex:none}
+  .td-lgsw{width:14px;height:14px;border-radius:5px;flex:none;display:inline-block;margin:0 2px}
+  .td-lgsw.pn{outline:2px dashed var(--muted-2);outline-offset:1.5px;background:#f5b544} /* drawn as the shipping party ring (.tp-dc.pn); the halo dress rides C-2 */
   .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .tp-plsub{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
   .tp-plgh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:9px 0 4px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
@@ -1562,7 +1578,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3909,18 +3925,37 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       }
       store.set("ppTrips",ts);return;}
   }
+  function tdAnchoredRender(ds){ /* Cut C (C-1) feel law: A WRITE MAY NOT MOVE THE READER - the day's own row holds its screen position across the rebuild; the browser's scroll clamp IS the settle-nearest clause (bottom-of-trip) */
+    var q='.tp-drow[data-tpday="'+ds+'"]',el=document.querySelector(q),t0=el?el.getBoundingClientRect().top:null;
+    renderPulsePage();
+    var el2=document.querySelector(q);
+    if(el2&&t0!==null){var dd=el2.getBoundingClientRect().top-t0;if(dd)window.scrollBy(0,dd);}
+  }
   function tpPlanClause(t,ds,model,wd){ /* Cut 2 (2b-ratified): acknowledged, never judged — history first, pick second; no tier claim under the day floor */
     var pk=(t&&t.plan||{})[ds];if(!pk)return "";
     var c=tpCell(model,pk,wd);
     if(c.thin)return ' Your pick, <b>'+esc(pk)+'</b>, is too thin yet.';
     return ' Your pick, <b>'+esc(pk)+'</b>, ran '+tpTier(c.lvl)+'.';
   }
-  function tpPlanRow(t,ds){ /* Cut 2: the drill-down’s assign row — Plan-a-park chips / Planned — Change · Clear (2b verbatim); board taps persist immediately */
-    var pk=(t.plan||{})[ds],i; /* 0715k (owner-ratified P2): the caption becomes an eyebrow, the seats go equal-width - even geometry is the house taste */
+  function tdDayMarks(model,ds,night){ /* Cut C (C-1): the day's fit - the read box's own best-tier group among non-thin parks; every non-thin park tied = no park stood out = no marks; the party-truth floor only ever REMOVES (Cut A, Law 12). NO cross-park raw-minute comparison anywhere - the tier group IS the lawful fit. */
+    var wd=tpAsD(ds).getDay(),best=9,tiers={},nt=0,i;
+    for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)continue;tiers[TP_PARKS[i][0]]=c.lvl;nt++;if(c.lvl<best)best=c.lvl;}
+    var m={},cnt=0,p;
+    for(p in tiers)if(tiers[p]===best){m[p]=1;cnt++;}
+    if(!nt||cnt===nt)return {};
+    if(night&&night[ds])delete m["Magic Kingdom"];
+    return m;
+  }
+  function tpPlanRow(t,ds,model,EV){ /* Cut 2: the drill-down's assign row / Cut C (C-1): the fit lives IN the picker - square two-line chips, each wearing its own tier word; the day's calmest-tier group wears the four-point star; the manual tap IS the acceptance (Law 11 by construction) */
+    var pk=(t.plan||{})[ds],i;
     if(pk&&tpPlanPick!==ds)return '<div class="tp-peb">Planned</div><div class="tp-pgrid"><span class="tp-ac sel">'+esc(TP_PSHORT[pk]||pk)+'</span><span class="tp-ac" data-tppchg="'+ds+'">Change</span><span class="tp-ac'+(tpClrArm===ds?' arm':'')+'" data-tppclr="'+ds+'">'+(tpClrArm===ds?'Tap again':'Clear')+'</span></div>'; /* 0715n: Clear arms red first - it is the delete-all */
+    var wd=tpAsD(ds).getDay(),NT=(EV&&EV.night)||{},mk=tdDayMarks(model,ds,NT),any=false;
     var h='<div class="tp-peb">'+(pk?'Planned':'Plan a park')+'</div><div class="tp-pgrid">';
-    for(i=0;i<4;i++){var p=TP_PARKS[i][0];h+='<span class="tp-ac'+(pk===p?' sel':'')+'" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'">'+(TP_PSHORT[p]||p)+'</span>';}
-    return h+'</div>';
+    for(i=0;i<4;i++){var p=TP_PARKS[i][0],cc=tpCell(model,p,wd),star=mk[p]&&pk!==p;if(mk[p])any=true; /* thin cells carry no tier word and no mark eligibility */
+      h+='<button class="tp-acr'+(pk===p?' sel':'')+(star?' fitm':'')+'" type="button" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'"><b>'+(star?'\u2726 ':'')+(TP_PSHORT[p]||p)+'</b>'+(cc.thin?'':'<i class="tp-tw'+cc.lvl+'">'+TP_TW[cc.lvl]+'</i>')+'</button>';}
+    h+='</div>';
+    if(any&&!pk)h+='<div class="td-lgd"><span class="td-lg"><b class="td-lgstar">\u2726</b><span>the day\u2019s fit \u2014 its calmest tier on '+tpWDn(ds)+'s \u00b7 yours to overrule</span></span>'+(NT[ds]?'<span class="td-lg"><i class="td-lgsw pn"></i><span>party night \u2014 MK closes early, so the \u2726 won\u2019t suggest it today</span></span>':'')+'</div>'; /* the legend renders only while marks are on glass; clause B (ratified) rides verified party nights */
+    return h;
   }
   function tpPlanSecHTML(a,b){ /* Cut 2: the creator’s park-day grid (mock-4 B, owner-ratified) — appears once the dates are valid, re-lists live, draft-backed until Save */
     if(!a||!b||b<a)return "";
@@ -4092,7 +4127,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       })).then(function(){tpSched[mo]=out;if(rpView==="trip")renderPulsePage();});
     });
   }
-  function tpParkRows(ds,model,t){
+  function tpParkRows(ds,model,t,EV){
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),h="",i,first=true;
     var pk=(t&&t.plan||{})[ds],order=[],p0; /* Cut 2 (2b-ratified): the planned park’s row rises to the top wearing the accent edge; the rest hold park order */
     for(i=0;i<4;i++){p0=TP_PARKS[i][0];if(p0===pk)order.unshift(p0);else order.push(p0);}
@@ -4101,7 +4136,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         :(tpTier(c.lvl)+' \u00b7 '+c.avg+'m avg'+(first?' across attractions':'')+' \u00b7 '+c.n+' '+wn+'s');
       if(!c.thin)first=false;
       h+='<div class="tp-dxr'+(p===pk?' pl':'')+(t?' dr':'')+'"'+(t?' role="button" tabindex="0" data-tpdoor="'+esc(p)+'" data-tpdd="'+ds+'"':'')+'><span><span class="tp-pn">'+p+(p===pk?' \u00b7 planned':'')+(t?'<span class="chevn">\u203a</span>':'')+'</span><div class="tp-pt">'+pt+'</div></span>'+tpHoursHTML(ds,p)+'</div>';} /* 0715d: the home-base door — every park row opens that park’s landing, trip-windowed */
-    return h+(t?tpPlanRow(t,ds):'');
+    return h+(t?tpPlanRow(t,ds,model,EV):'');
   }
   function tpEyebrow(t,today){
     var ds=tpDays(t);
@@ -4406,7 +4441,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop"><span><span class="tp-wd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+'</div></span>'+cells+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+hol+'</div></div>';
       var dx='';
-      if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
+      if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
@@ -4603,14 +4638,16 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         if(tpPlanDraft===null)tpPlanDraft={};
         if(tpPlanDraft[d2]===p2)delete tpPlanDraft[d2];else tpPlanDraft[d2]=p2; /* tap again to clear */
         tpRepaint();});}
-    el.querySelectorAll("[data-tpbpk]").forEach(function(b){b.addEventListener("click",function(){ /* Cut 2: the board door — a tapped chip persists immediately */
-      var t2=tpCurTrip();if(!t2)return;tpSetPlan(t2.id,b.getAttribute("data-tppd"),b.getAttribute("data-tpbpk"));tpPlanPick=null;renderPulsePage();});});
-    el.querySelectorAll("[data-tppchg]").forEach(function(b){b.addEventListener("click",function(){tpClrArm=null;tpPlanPick=b.getAttribute("data-tppchg");renderPulsePage();});});
+    el.querySelectorAll("[data-tpbpk]").forEach(function(b){b.addEventListener("click",function(){ /* Cut 2: the board door - a tapped chip persists immediately / Cut C (C-1) feel law: FLASH-THEN-COMMIT - the accent lights ~150ms BEFORE the write+re-render (same-frame destruction defeats :active alone); the write then lands scroll-anchored */
+      var t2=tpCurTrip();if(!t2)return;var ds0=b.getAttribute("data-tppd"),p0=b.getAttribute("data-tpbpk");
+      b.classList.add("hit");
+      setTimeout(function(){tpSetPlan(t2.id,ds0,p0);tpPlanPick=null;tdAnchoredRender(ds0);},150);});});
+    el.querySelectorAll("[data-tppchg]").forEach(function(b){b.addEventListener("click",function(){tpClrArm=null;tpPlanPick=b.getAttribute("data-tppchg");tdAnchoredRender(tpPlanPick);});});
     el.querySelectorAll("[data-tppclr]").forEach(function(b){b.addEventListener("click",function(){ /* 0715n: first tap arms, second fires - the trip-delete grammar */
       var t2=tpCurTrip();if(!t2)return;var ds3=b.getAttribute("data-tppclr");
       if(tpClrArm!==ds3){tpClrArm=ds3;renderPulsePage(); /* 0715p: the arm self-resets - a sticky arm is a delayed accident */
         clearTimeout(tpClrT);tpClrT=setTimeout(function(){if(tpClrArm===ds3){tpClrArm=null;renderPulsePage();}},4000);return;}
-      clearTimeout(tpClrT);tpClrArm=null;tpSetPlan(t2.id,ds3,null);tpPlanPick=null;renderPulsePage();});});
+      clearTimeout(tpClrT);tpClrArm=null;tpSetPlan(t2.id,ds3,null);tpPlanPick=null;tdAnchoredRender(ds3);});});
     el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
       tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tdReset();tpEnsureSched();renderPulsePage();rpTop();});});
     var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;tdReset();renderPulsePage();rpTop();});
