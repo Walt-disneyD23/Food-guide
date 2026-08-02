@@ -369,6 +369,7 @@
   .tp-readr .dot.pnf{background:none;border:1.5px dashed var(--muted)}
   .tp-readr .swbar{width:15px;height:4.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);display:inline-block;margin-top:4px}
   .tp-readr .em{font-size:14px;line-height:1}
+  .tp-readr .dot.pl{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717k: the planned ring at rail size - the .tp-dc.plan recipe on the 9px dot */
   .tp-tw1{color:#3dd68c;font-weight:700}.tp-tw2{color:#c98d05;font-weight:700}.tp-tw3{color:#ff7a59;font-weight:700}.tp-tw4{color:#ff6b6b;font-weight:700}
   html.dark .tp-tw2{color:#f5b544}
   .tp-gh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:2px 16px 6px;font:700 8px var(--font-body);letter-spacing:.01em;line-height:1.25;text-transform:uppercase;color:var(--muted-2);align-items:end}
@@ -1695,7 +1696,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717j</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4212,12 +4213,13 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     tpRead.beats=anyPk?[{c:'packed',h:tS},{c:'short',h:cS}]:[{c:'short',h:cS},{c:'packed',h:tS}]; /* 0717j: the beats ride out in board order */
     return anyPk?(tS+' '+cS):(cS+' '+tS);
   }
-  function tpDayLine(ds,model,t){ /* the opened day's per-day voice + the clause-earned holiday honesty sub */
+  var TP_TSTRONG=["","short","medium","long","packed"]; /* 0717k (owner: A amended): tier -> the trip rail's own dot family */
+  function tpDayLine(ds,model,t){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k: the symbol rail, prose retired */
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),thin=[],col=[],i;
     for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});}
     var hol=HOLIDAYS[ds];
     var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
-    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-dxread">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</div>'+sub+'</div>',sub:""};}
+    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr"><div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</span></div></div>'+sub+'</div>',sub:""};} /* 0717k: the fallback single-liner = one neutral-dot row */
     var best=5,worst=0;col.forEach(function(x){if(x.lvl<best)best=x.lvl;if(x.lvl>worst)worst=x.lvl;});
     var bests=col.filter(function(x){return x.lvl===best;}).map(function(x){return x.p;});
     var worsts=col.filter(function(x){return x.lvl===worst;}).map(function(x){return x.p;});
@@ -4230,10 +4232,12 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       else s+=' \u2014 <b>'+tpAmp(worsts)+'</b> '+tpTier(worst)+'.';
     }
     var pk2=(t&&t.plan||{})[ds]; /* Cut 2: the pick clause seats after the compare; a thin pick leaves the footnote (already spoken) */
-    s+=tpPlanClause(t,ds,model,wd);
-    if(pk2&&tpCell(model,pk2,wd).thin)thin=thin.filter(function(x){return x!==pk2;});
-    if(thin.length)s+=' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>';
-    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-dxread">'+s+'</div>'+sub+'</div>',sub:""}; /* 0715i: the day's read gets its box (owner-picked B) - the eyebrow names its own day, the holiday sub rides inside */
+    var c2=pk2?tpCell(model,pk2,wd):null,pcl=tpPlanClause(t,ds,model,wd); /* 0717k: the pick beat separates - sentence byte-identical, seated on its own row */
+    if(pk2&&c2.thin)thin=thin.filter(function(x){return x!==pk2;});
+    var tn=thin.length?' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>':''; /* 0717k: the thin note rides the LAST row's tail - reading order untouched */
+    var rw='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+TP_TSTRONG[best]+')"></i></span><span class="v">'+s+(pcl?'':tn)+'</span></div>'; /* 0717k: the tableau dot wears the trip rail's strong var for the tier the sentence leads with */
+    if(pcl)rw+='<div class="crow"><span class="ic"><i class="dot pl"'+(c2.thin?'':' style="background:var(--t'+c2.lvl+')"')+'></i></span><span class="v">'+pcl+tn+'</span></div>'; /* 0717k: the ringed planned swatch - earned fill when fired, hollow when thin (no tier claim) */
+    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr">'+rw+'</div>'+sub+'</div>',sub:""}; /* 0715i box -> 0717k rail: beats as rows, an unfired beat has no row, the holiday sub keeps its seat beneath */
   }
   function tpExtK(s){var d=shortExtra(s);if(/early entry/i.test(d))return "EE";if(/extended/i.test(d))return "EEH";return "EVT";}
   function tpHoursHTML(ds,park){
