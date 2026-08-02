@@ -410,7 +410,14 @@
   .tp-plcap>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
   .tp-dc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the strengthened plan ring + theme-card halo */
-  .tp-dc.pn{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the party ring gains the halo; plan ring wins in the painter */ /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
+  .tp-dc.pn.pnx{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717f: the dashed ring survives only as the unrecognized-party fallback */
+  .tp-dc{position:relative}
+  .tp-dc.pn:before{content:attr(data-em);position:absolute;top:2px;left:4px;font-size:13px;line-height:1;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35));pointer-events:none} /* 0717f (owner pick 1B): ONE party grammar app-wide \u2014 the board adopts the funnel's glyph */
+  .tp-dc.race:after,.wc.race:after{content:"";position:absolute;left:4px;right:4px;bottom:3px;height:3.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px rgba(255,255,255,.92);pointer-events:none} /* the race bar marks its park on the board too \u2014 cells and tags never disagree */
+  .tp-swem{font-style:normal;margin-right:5px;font-size:13px;line-height:1}
+  .tp-swbar{display:inline-block;width:13px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);margin-right:6px;vertical-align:1px}
+  .td-em{font-style:normal;font-size:13px;line-height:1}
+  .td-lgsw.rce{width:14px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card-2);outline:none} /* Cut C (C-2): the party ring gains the halo; plan ring wins in the painter */ /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
   .rd-evrib{background:var(--accent-soft);border-radius:var(--r-card);padding:12px 14px;margin-bottom:11px}
   .rd-evrib i{display:block;font-style:normal;font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.13em;color:var(--accent)}
   .rd-evrib span{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:5px;line-height:1.5}
@@ -461,7 +468,9 @@
   .td-ws .wc.l1{background:var(--t1)}.td-ws .wc.l2{background:var(--t2)}.td-ws .wc.l3{background:var(--t3)}.td-ws .wc.l4{background:var(--t4)}
   .td-ws .wc.thin{background:none;border:1.5px dashed var(--muted-2)} .td-ws .wc.thin i{color:var(--muted-2)}
   .td-ws .wc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)}
-  .td-ws .wc.pn{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)}
+  .td-ws .wc.pn.pnx{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)}
+  .wc{position:relative}
+  .wc.pn:before{content:attr(data-em);position:absolute;top:1px;left:3px;font-size:11px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));pointer-events:none}
   .td-ws .wc.cur{height:38px;box-shadow:0 3px 9px -3px rgba(79,70,229,.5)} /* your day's row runs taller */
   .td-lgt{font:600 var(--fs-caps) var(--font-body);color:var(--muted-2);margin-top:6px;line-height:1.5} /* the truth line */
   .td-ws .wc.cur i{font-size:11px;font-weight:800;color:var(--ink);letter-spacing:.02em} /* the today-stamp boost \u2014 MUST seat after every size rule (cascade law, harness-asserted) */
@@ -516,7 +525,7 @@
   .tf-cd{display:flex;align-items:center;justify-content:center;height:40px;border-radius:8px;border:0;padding:0;font:700 var(--fs-small) var(--font-display);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.22);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
   .tf-cd.race:after{content:"";position:absolute;left:4px;right:4px;bottom:3px;height:3.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px rgba(255,255,255,.92);pointer-events:none} /* 0717c: the race BAR (owner idea) \u2014 a weekend is a span; consecutive bars read as one */
   .tf-cd.inb{outline:2.5px solid var(--accent);outline-offset:-2.5px}
-  .tf-callg{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font:600 var(--fs-micro) var(--font-body);color:var(--muted)}
+  .tf-callg{display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:9px;font:600 var(--fs-meta) var(--font-body);color:var(--muted)} /* 0717f (owner pick 2M): a legend you can\u2019t read isn\u2019t a legend */
   .tf-callg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
   .tf-callg i.rr{width:14px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px #fff;vertical-align:2px} /* 0717c: the legend swatch IS the bar */
   .tf-callg i.bb{background:none;outline:2.5px solid var(--accent);outline-offset:-2.5px}
@@ -1660,7 +1669,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4029,16 +4038,19 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return m;
   }
   function tdWeekStrip(t,ds,model,EV,fit){ /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 axis-flipped pure readout on the picker's own columns (playable13 ratified). Days are rows, parks are columns; rings from t.plan + EV.night, plan ring wins; NOTHING here taps, writes, or navigates (the locality law, owner-caught). */
-    var days=tpDays(t),NT=(EV&&EV.night)||{},pl=(t.plan||{}),hasPlan=false,hasPn=false,h='',i,j;
+    var days=tpDays(t),NT=(EV&&EV.night)||{},pl=(t.plan||{}),hasPlan=false,hasPn=false,hasRace=false,pnE="",PW=tfPartyWins(),h='',i,j; /* 0717f */
     for(i=0;i<days.length;i++){var d=days[i],wd=tpAsD(d).getDay(),cur=(d===ds);
       for(j=0;j<TP_PARKS.length;j++){var p=TP_PARKS[j][0],c=tpCell(model,p,wd);
-        var ring=(pl[d]===p)?' plan':((p==="Magic Kingdom"&&NT[d]&&pl[d]!==p)?' pn':'');
-        if(ring===' plan')hasPlan=true;else if(ring===' pn')hasPn=true;
-        h+='<span class="wc'+(c.thin?' thin':' l'+c.lvl)+ring+(cur?' cur':'')+'"><i>'+tpWD3(d)+'</i></span>';}}
+        var pem=(p==="Magic Kingdom"&&NT[d]&&pl[d]!==p)?(tfPartyEm(d,PW)||"ring"):"";
+        var rc=(j===1&&EV&&EV.race&&EV.race[d])?' race':'';if(rc)hasRace=true;
+        var ring=(pl[d]===p)?' plan':(pem?' pn'+(pem==="ring"?' pnx':''):'');
+        if(ring===' plan')hasPlan=true;else if(pem){hasPn=true;if(pem!=="ring"&&pnE.indexOf(pem)<0)pnE+=pem;}
+        h+='<span class="wc'+(c.thin?' thin':' l'+c.lvl)+ring+rc+(cur?' cur':'')+'"'+((pem&&pem!=="ring")?' data-em="'+pem+'"':'')+'><i>'+tpWD3(d)+'</i></span>';}}
     var lg='';
     if(fit)lg+='<span class="td-lg"><b class="td-lgstar">\u2726</b><span>day\u2019s fit \u00b7 yours to overrule</span></span>'; /* 0717e: folded from the seam \u2014 renders only while stars are on glass */
     if(hasPlan)lg+='<span class="td-lg"><i class="td-lgsw plan"></i><span>planned</span></span>';
-    if(hasPn)lg+='<span class="td-lg"><i class="td-lgsw pn"></i><span>MK party night \u00b7 closes early</span></span>';
+    if(hasPn)lg+='<span class="td-lg">'+(pnE?'<span class="td-em">'+pnE+'</span>':'<i class="td-lgsw pn"></i>')+'<span>MK party night \u00b7 closes early</span></span>';
+    if(hasRace)lg+='<span class="td-lg"><i class="td-lgsw rce"></i><span>race weekend</span></span>';
     return '<div class="tp-peb td-wkh">The week, park by park</div><div class="td-ws">'+h+'</div>'+(lg?'<div class="td-lgd">'+lg+'</div>':'')+'<div class="td-lgt">A readout, not buttons \u2014 each column is one park on its own scale; colors never compare across columns \u00b7 your day\u2019s stamps run bold</div>';
   }
   function tpPlanRow(t,ds,model,EV){ /* Cut 2: the drill-down's assign row / Cut C (C-1): the fit lives IN the picker - square two-line chips, each wearing its own tier word; the day's calmest-tier group wears the four-point star; the manual tap IS the acceptance (Law 11 by construction) */
@@ -4533,9 +4545,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(j=0;j<TP_PARKS.length;j++)gh+='<i>'+TP_PARKS[j][0].split(" ").join("<br>")+'</i>'; /* 0715o (owner-ratified): the header speaks full names, two-lined */
     gh+='</div>';
     for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
-      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),pc=(TP_PARKS[j][0]===pk?' plan':(j===0&&EV.night[d0]?' pn':'')); /* Cut 2: the planned cell's ring \u00b7 0716m: MK's deceptively-Light party marker (plan ring wins) */
-        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"></span>':'<span class="tp-dc'+pc+'" style="background:var(--t'+c.lvl+')"></span>'); /* Cut C (C-2): Soft fills, trip-board-scoped */}
-      var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol">'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">MK party night \u00b7 closes early</span>':''); /* 0716m: race + verified-night badges ride the holiday slot */
+      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),isPk=(TP_PARKS[j][0]===pk),pe0=(!isPk&&j===0&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""; /* Cut 2 \u00b7 0716m \u00b7 0717f: plan ring still wins; the party marker is the glyph now, the ring only its fallback */
+        var pc=(isPk?' plan':(pe0?' pn'+(pe0==="ring"?' pnx':''):''))+((j===1&&EV.race[d0])?' race':''),pea=((pe0&&pe0!=="ring")?' data-em="'+pe0+'"':'');
+        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"'+pea+'></span>':'<span class="tp-dc'+pc+'"'+pea+' style="background:var(--t'+c.lvl+')"></span>'); /* Cut C (C-2): Soft fills, trip-board-scoped */}
+      var phe=EV.night[d0]?(tfPartyEm(d0)||"ring"):"";
+      var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+hol+'</div></div>';
       var dx='';
@@ -4609,14 +4623,18 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k){tfCurM=m;tfCurK=k;tfAnchor=tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";}
   var TF_PARTY_EM={mnsshp:"\ud83c\udf83",boobash:"\ud83c\udf83",mvmcp:"\ud83c\udf84",verymerriest:"\ud83c\udf84"};
-  function tfPartyMap(m,y){ /* 0717c: verified nights \u2192 glyphs. The night list is dates-only truth; the party's IDENTITY resolves through the verified event windows (they never overlap). An unmatched verified night wears the neutral ring \u2014 never a guessed costume. */
-    var N=window.__pwEvN,T=window.__pwEvT,out={},d,q,n=tfDim(y,m);
-    if(!N||!N.dates)return out;
-    var wins=[];if(T)for(q=0;q<T.events.length;q++){var e=T.events[q];if(e.type!=="party")continue;
-      for(var j=0;j<e.windows.length;j++){var w=e.windows[j];if(w.v==="vv"||w.v==="v")wins.push({id:e.id,f:w.from,t:w.to});}}
-    for(d=1;d<=n;d++){var ds=tfDate(y,m,d);if(!N.dates[ds])continue;
-      var em="ring";for(q=0;q<wins.length;q++){if(wins[q].f<=ds&&ds<=wins[q].t){em=TF_PARTY_EM[wins[q].id]||"ring";break;}}
-      out[d]=em;}
+  function tfPartyWins(){ /* 0717f: the verified party windows, shared \u2014 the funnel and the board resolve identity through ONE walk */
+    var T=window.__pwEvT,w=[],q;if(T)for(q=0;q<T.events.length;q++){var e=T.events[q];if(e.type!=="party")continue;
+      for(var j=0;j<e.windows.length;j++){var x=e.windows[j];if(x.v==="vv"||x.v==="v")w.push({id:e.id,f:x.from,t:x.to});}}
+    return w;}
+  function tfPartyEm(ds,wins){ /* date \u2192 glyph. Nights are dates-only truth; identity resolves through the verified windows (they never overlap). An unmatched verified night wears the neutral ring \u2014 never a guessed costume. */
+    var N=window.__pwEvN,q;if(!N||!N.dates||!N.dates[ds])return "";
+    wins=wins||tfPartyWins();
+    for(q=0;q<wins.length;q++){if(wins[q].f<=ds&&ds<=wins[q].t)return TF_PARTY_EM[wins[q].id]||"ring";}
+    return "ring";}
+  function tfPartyMap(m,y){ /* 0717c/0717f: a month's nights \u2192 glyphs, on the shared resolver */
+    var out={},d,n=tfDim(y,m),wins=tfPartyWins();
+    for(d=1;d<=n;d++){var em=tfPartyEm(tfDate(y,m,d),wins);if(em)out[d]=em;}
     return out;}
   function tfS3HTML(){ /* S3 \u00b7 UP CLOSE (Cut D-3): every date wears its OWN third+DOW pool; race dots from the verified table; the bracket pre-seats bestRun and jumps on tap */
     var m=tfCurM,y=tfYFor(m),n=tfDim(y,m),i,d;
@@ -4637,7 +4655,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var pset={},pk;for(pk in pev)pset[pev[pk]]=1;
     var plg=(pset["\ud83c\udf83"]?'<span><i class="em">\ud83c\udf83</i>MK Halloween party night</span>':'')+(pset["\ud83c\udf84"]?'<span><i class="em">\ud83c\udf84</i>MK Christmas party night</span>':'')+(pset["ring"]?'<span><i class="pp"></i>MK party night</span>':'');
     h+='<div class="tf-callg">'+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
-    h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:12px">Make this my trip \u203a</button>';
+    h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:15px">Make this my trip \u203a</button>';
     h+='<div class="tf-basis">Each date wears its third-of-month + weekday pool \u2014 a pattern, not a forecast \u00b7 party nights render only where the night list is verified \u00b7 the glyph marks the night; the color stays the crowd\u2019s.</div></div>';
     return h;
   }
