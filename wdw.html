@@ -1696,7 +1696,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4214,17 +4214,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return anyPk?(tS+' '+cS):(cS+' '+tS);
   }
   var TP_TSTRONG=["","short","medium","long","packed"]; /* 0717k (owner: A amended): tier -> the trip rail's own dot family */
-  function tpDayLine(ds,model,t,EV){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k: the symbol rail, prose retired; 0717l: the event rows join */
+  function tpDayS(ds,model){ /* 0717m Cut 1: the day-sentence composer - ONE source for the rail and the card (DayCard-Spec §3) */
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),thin=[],col=[],i;
     for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});}
-    var hol=HOLIDAYS[ds];
-    var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
-    var er=''; /* 0717l (owner: R1+P1): the day's event rows - the tags' own verified truths spoken as sentences; unfired = no row */
-    if(EV&&EV.race&&EV.race[ds]){var w0=TP_EV_WORD[EV.race[ds]]||EV.race[ds],op=window.__pwRS&&window.__pwRS[EV.race[ds]]&&window.__pwRS[EV.race[ds]].v==="open";
-      er+='<div class="crow"><span class="ic"><i class="swbar"></i></span><span class="v">A <b>'+w0+' weekend</b> day'+(op?' \u2014 those weekends have run <b>quieter than typical, not busier</b>.':'.')+'</span></div>';} /* the quieter clause keeps the composer's split-verdict gate */
-    if(EV&&EV.night&&EV.night[ds]){var bh=ds<tpToday(),pg2=tfPartyEm(ds)||"";
-      er+='<div class="crow"><span class="ic">'+((pg2&&pg2!=="ring")?'<span class="em">'+pg2+'</span>':'<i class="dot pnf"></i>')+'</span><span class="v">Magic Kingdom '+(bh?'hosted':'hosts')+' a ticketed party '+(bh?'that night':'tonight')+' \u2014 it '+(bh?'closed':'closes')+' early; calmer colors there reflect the shorter day, not a quieter park.</span></div>';} /* glyph via tfPartyEm; dashed ring only as the unrecognized-verified fallback (0717f law); tense flips on the DAY, not the trip */
-    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr"><div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</span></div>'+er+'</div>'+sub+'</div>',sub:""};} /* 0717k: the fallback single-liner = one neutral-dot row */
+    if(!col.length)return {wd:wd,wn:wn,thin:thin,col:col,s:"",best:0,worst:0};
     var best=5,worst=0;col.forEach(function(x){if(x.lvl<best)best=x.lvl;if(x.lvl>worst)worst=x.lvl;});
     var bests=col.filter(function(x){return x.lvl===best;}).map(function(x){return x.p;});
     var worsts=col.filter(function(x){return x.lvl===worst;}).map(function(x){return x.p;});
@@ -4236,6 +4229,25 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       else if(bests.length+worsts.length===col.length){s+=' \u2014 the rest '+tpTier(worst)+'.';if(worst<3)s+=' No park ran '+tpTier(3)+'.';}
       else s+=' \u2014 <b>'+tpAmp(worsts)+'</b> '+tpTier(worst)+'.';
     }
+    return {wd:wd,wn:wn,thin:thin,col:col,s:s,best:best,worst:worst};
+  }
+  function tpDayEvS(ds,EV){ /* 0717m Cut 1: the day's event sentences - the 0717l R1+P1 strings, one source; the rail dresses them, the card will too */
+    var out=[];
+    if(EV&&EV.race&&EV.race[ds]){var w0=TP_EV_WORD[EV.race[ds]]||EV.race[ds],op=window.__pwRS&&window.__pwRS[EV.race[ds]]&&window.__pwRS[EV.race[ds]].v==="open";
+      out.push({k:"race",h:'A <b>'+w0+' weekend</b> day'+(op?' \u2014 those weekends have run <b>quieter than typical, not busier</b>.':'.')});}
+    if(EV&&EV.night&&EV.night[ds]){var bh=ds<tpToday(),pg2=tfPartyEm(ds)||"";
+      out.push({k:"party",e:(pg2&&pg2!=="ring")?pg2:"",h:'Magic Kingdom '+(bh?'hosted':'hosts')+' a ticketed party '+(bh?'that night':'tonight')+' \u2014 it '+(bh?'closed':'closes')+' early; calmer colors there reflect the shorter day, not a quieter park.'});}
+    return out;
+  }
+  function tpDayLine(ds,model,t,EV){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k rail; 0717l event rows; 0717m: composers extracted, this is now the dresser */
+    var D=tpDayS(ds,model),wd=D.wd,wn=D.wn,thin=D.thin,col=D.col,best=D.best,s=D.s,i;
+    var hol=HOLIDAYS[ds];
+    var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
+    var ev2=tpDayEvS(ds,EV),er='';
+    for(i=0;i<ev2.length;i++){var b2=ev2[i];
+      er+= b2.k==="race" ? '<div class="crow"><span class="ic"><i class="swbar"></i></span><span class="v">'+b2.h+'</span></div>'
+                          : '<div class="crow"><span class="ic">'+(b2.e?'<span class="em">'+b2.e+'</span>':'<i class="dot pnf"></i>')+'</span><span class="v">'+b2.h+'</span></div>';}
+    if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr"><div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</span></div>'+er+'</div>'+sub+'</div>',sub:""};} /* 0717k: the fallback single-liner = one neutral-dot row */
     var pk2=(t&&t.plan||{})[ds]; /* Cut 2: the pick clause seats after the compare; a thin pick leaves the footnote (already spoken) */
     var c2=pk2?tpCell(model,pk2,wd):null,pcl=tpPlanClause(t,ds,model,wd); /* 0717k: the pick beat separates - sentence byte-identical, seated on its own row */
     if(pk2&&c2.thin)thin=thin.filter(function(x){return x!==pk2;});
