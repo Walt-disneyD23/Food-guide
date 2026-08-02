@@ -1696,7 +1696,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4545,20 +4545,21 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       '<div class="td-phalf"><button class="td-pcl" data-tdpcl type="button">Cancel</button>'+(ex?'<button class="td-prm" data-tdprm type="button">Remove pin</button>':"")+'</div></div>'; /* 0715n (owner-ratified S3): boxed even halves - a fresh pin\'s lone Cancel runs full width */
   }
   function tdSecHTML(t,ds){ /* MY DAY AT <PARK> — leads the opened day once a park is planned; the lens flips the reading, never the data */
-    var pk=(t&&t.plan||{})[ds];if(!pk)return "";
+    var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
     var ids=tdRides(t,ds);
     var head='<div class="td-lab"><span>My day at '+esc(pk)+'</span>'+(ids.length?'<span class="n">'+ids.length+' ride'+(ids.length===1?'':'s')+'</span>':'')+'</div>';
     var addr='<button class="td-addr" data-tdadd type="button">+ Add or remove rides</button>';
     var parksLab='<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>';
     var pick=(tdPk?tdPickHTML(t,ds,pk):"")+(tdPin!==null?tdPnHTML(t,ds,pk):""); /* 0715g: the pin sheet mounts beside the picker (never both open) */
-    if(!ids.length)return head+'<div class="fc-empty" style="padding:8px 2px">Nothing saved yet \u2014 add rides with the picker below, or from any '+esc(pk)+' ride\u2019s page reached through this day.</div>'+addr+pick+parksLab;
+    if(!ids.length){tdSecHTML.rows=[];return head+'<div class="fc-empty" style="padding:8px 2px">Nothing saved yet \u2014 add rides with the picker below, or from any '+esc(pk)+' ride\u2019s page reached through this day.</div>'+addr+pick+parksLab;}
     var tabs='<div class="td-tabs"><button class="hl-tab'+(tdLens!=="mine"?' on':'')+'" data-tdlens="app" type="button">App\u2019s order</button><button class="hl-tab'+(tdLens==="mine"?' on':'')+'" data-tdlens="mine" type="button">My order</button></div>';
-    var body="",basis,chips="",hint="";
+    var body="",basis,chips="",hint="",_cr=[]; /* 0717n: the rows side-channel - the card reads what the sheet shows, one walk */
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
     if(tdLens==="mine"){
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
       body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid]; /* 0715h: done stays exactly where YOU put it - 0715j: drag reorders from the grip, so every row stays a door */
+        _cr.push({seat:dnf?'\u2713':String(i+1),pin:!!pn,badge:pn?tdPinTxt(pn):'',nm:tdNmShort(r.name||rid),sub:''}); /* 0717n: the card drinks the same rows (mine lens carries no sub, honestly) */
         return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(r.name||rid))+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
       basis='Your order, exactly as you set it \u2014 drag \u2261 to reorder \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
@@ -4571,15 +4572,53 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var eng=tdEng(rows,sm,hrs.c,pns,isNow?nowT:sm),n=0,ridden="",rdn=0;
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(it.pin?'':(++n)))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
+        var _st=dnf?'\u2713':(it.pin?'':(++n)); /* 0717n: the seat computes once - same value, now capturable */
+        _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else body+=slA(it,false);});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
         :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
       basis=(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
     }
+    tdSecHTML.rows=_cr; /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
     return head+tabs+chips+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
   }
+  function tdStrip(t,model,ds){ /* 0717n (D-1 ratified): one chip per trip day - planned park's tier when planned, else the day's leading tier, neutral when thin; ring = the card's day */
+    var days=tpDays(t),out=[],i;
+    for(i=0;i<days.length;i++){var d0=days[i],wd=tpAsD(d0).getDay(),pk=(t.plan||{})[d0],lvl=0;
+      if(pk){var c=tpCell(model,pk,wd);if(!c.thin)lvl=c.lvl;}
+      if(!lvl){var Dd=tpDayS(d0,model);lvl=Dd.col.length?Dd.best:0;}
+      out.push({ds:d0,dt:+d0.slice(8,10),wd3:tpWDn(d0).slice(0,3).toUpperCase(),lvl:lvl,td:d0===ds});}
+    return out;}
+  function tdUnHTML(x){return String(x).replace(/<[^>]*>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&');} /* 0717n: canvas text is TEXT - tags off, esc()'s five entities decoded, &amp; last */
+  function tdCardHead(D){ /* 0717n: the H1-H4 headline engine (DayCard-Spec §2, owner-ratified incl. "most parks") - receipts always print beneath */
+    if(!D.col.length)return {h:'Still filling.',r:'Not enough banked '+D.wn+'s for a read yet.'};
+    var strip=tdUnHTML;
+    if(D.best===D.worst)return {h:'A '+TP_TW[D.best]+' '+D.wn+', everywhere.',r:strip(D.s),hl:D.best};
+    var bn=0;D.col.forEach(function(x){if(x.lvl===D.best)bn++;});
+    if(bn*2>D.col.length)return {h:'A '+TP_TW[D.best]+' '+D.wn+', most parks.',r:strip(D.s),hl:D.best};
+    return {h:'A '+TP_TW[D.best]+'-to-'+TP_TW[D.worst]+' '+D.wn+'.',r:strip(D.s),hl:D.best};}
+  function tdCardData(t,ds,model,EV){ /* 0717n Cut 2a: the whole card model - every field from the shipped engines, nothing invented (drawer consumes in 0717o) */
+    var strip=tdUnHTML;
+    var D=tpDayS(ds,model),pk=(t&&t.plan||{})[ds],wd=tpAsD(ds).getDay();
+    var days=tpDays(t),di=days.indexOf(ds);
+    var tier=pk?tpCell(model,pk,wd):null;
+    var mo=ds.slice(0,7),rec=tpSched[mo],hd=rec&&pk&&rec[pk]&&rec[pk][ds],hrs='',ee='';
+    if(pk){if(hd&&hd.open){hrs=tpClk(hd.open)+' \u2013 '+tpClk(hd.close);var EEN={EE:'Early Entry',EEH:'Extended Evening',EVT:'Event'},j,xp=[];
+        for(j=0;j<(hd.ext||[]).length;j++){var x=hd.ext[j];xp.push((EEN[x.k]||x.k)+' '+tpClk(x.o));}
+        ee=xp.join(' \u00b7 ');}
+      else hrs=rec?'hours TBA':'';} /* unpublished -> the honest phrase; loading -> silent (the card is drawn on demand) */
+    var hd2=tdCardHead(D),ev2=tpDayEvS(ds,EV),foots=[],q;
+    for(q=0;q<ev2.length;q++)foots.push({k:ev2[q].k,e:ev2[q].e||'',h:strip(ev2[q].h)});
+    var thin=D.thin.slice();if(pk&&tier&&tier.thin)thin=thin.filter(function(z){return z!==pk;});
+    return {ds:ds,dayName:tpWDn(ds).toUpperCase(),dateStr:tpMD(ds),
+      eyebrow:((t&&t.n)||'My trip').toUpperCase()+' \u00b7 DAY '+(di+1)+' OF '+days.length,
+      park:pk||'',tierW:(tier&&!tier.thin)?TP_TW[tier.lvl]:'',tierL:(tier&&!tier.thin)?tier.lvl:0,
+      hrs:hrs,ee:ee,strip:tdStrip(t,model,ds),head:hd2,foots:foots,
+      thinNote:thin.length?tpAmp(thin)+' too thin yet.':'',
+      rows:pk?(tdSecHTML.rows||[]):[],count:pk?(tdSecHTML.rows||[]).length:0, /* 0717n: an unplanned day carries no board, whatever the channel last held */
+      basis:'Banked '+tpWDn(ds)+'s \u00b7 a pattern, not a forecast',link:'parkpulse.live'};}
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
     var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Pulse \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
