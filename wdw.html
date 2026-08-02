@@ -17,6 +17,7 @@
     --ink:#191a2e; --muted:#6b6f8c; --muted-2:#9fa3c0;
     --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff;
     --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6;
+    --t1:#93e2ba; --t2:#cbdba3; --t3:#f8d38f; --t4:#ffb197; --ringc:#3b32c8; /* Cut C (C-2): Soft tier fills + the plan-ring color \u2014 TRIP-BOARD-SCOPED (owner, Aug 2); the app-wide retune is shelved */
     /* radius scale (0708a): dot 3 / el-sm 8 / el 10 / tile 14 / card 16 / hero 22 / sheet 24 / pill */
     --r-dot:3px; --r-el-sm:8px; --r-el:10px; --r-tile:14px; --r-card:16px; --r-hero:22px; --r-sheet:24px; --r-pill:999px;
     /* type ladder (0708b): micro 9.5 / caps 10.5 / meta 11.5 / small 12.5 / body 13.5 / title 15 / lead 17 / head 19 / stat 22 / stat-lg 24 / swing 26 / wait 29 / emblem 33 */
@@ -408,8 +409,8 @@
   .tp-plcap{display:flex;justify-content:space-between;align-items:center;gap:8px;font:650 var(--fs-small) var(--font-body);color:var(--accent);margin-top:10px;border-top:1px solid var(--line);padding-top:9px}
   .tp-plcap>span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
-  .tp-dc.plan{outline:2px solid var(--accent);outline-offset:1.5px}
-  .tp-dc.pn{outline:2px dashed var(--muted-2);outline-offset:1.5px} /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
+  .tp-dc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the strengthened plan ring + theme-card halo */
+  .tp-dc.pn{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the party ring gains the halo; plan ring wins in the painter */ /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
   .rd-evrib{background:var(--accent-soft);border-radius:var(--r-card);padding:12px 14px;margin-bottom:11px}
   .rd-evrib i{display:block;font-style:normal;font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.13em;color:var(--accent)}
   .rd-evrib span{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:5px;line-height:1.5}
@@ -445,9 +446,26 @@
   .tp-acr:active{transform:scale(.97)} /* the house tap grammar */
   .td-lgd{display:flex;flex-wrap:wrap;gap:7px 16px;margin-top:9px;font:500 var(--fs-meta) var(--font-body);color:var(--muted)} /* Cut C (C-1): the fit legend - renders only while marks are on glass */
   .td-lg{display:flex;align-items:center;gap:7px}
-  .td-lgstar{color:var(--accent);font-weight:800;font-size:13px;flex:none}
+  .td-lgstar{color:var(--accent);font-weight:800;font-size:16.5px;flex:none} /* Cut C (C-2): \u2726 size D (owner-picked) \u2014 both instances scale together */
   .td-lgsw{width:14px;height:14px;border-radius:5px;flex:none;display:inline-block;margin:0 2px}
-  .td-lgsw.pn{outline:2px dashed var(--muted-2);outline-offset:1.5px;background:#f5b544} /* drawn as the shipping party ring (.tp-dc.pn); the halo dress rides C-2 */
+  .td-lgsw.pn{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card);background:#f5b544} /* drawn as the shipping party ring (.tp-dc.pn), halo landed (C-2) */
+  .td-lgsw.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card);background:#f5b544} /* Cut C (C-2): the strip legend's planned swatch, drawn as the strengthened ring */
+  .td-st{display:inline-block;font-size:16.5px;line-height:11px;vertical-align:-1px} /* Cut C (C-2): the chip's \u2726 at size D \u2014 line box pinned to the label's own so the chip never grows */
+  .tp-dtop.solo{grid-template-columns:1fr} /* Cut C (C-2): the clean hero \u2014 the opened day sheds its four tier cells; closed rows always keep theirs */
+  .tp-wd.big{font-size:24px;letter-spacing:-.015em} /* Cut C (C-2): big-day typography on the shed hero */
+  .tp-dt.big{font-size:var(--fs-title);margin-top:1px}
+  .td-wkh{margin-top:12px} /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 the picker's own columns; a pure readout (the locality law) */
+  .td-ws{display:grid;grid-template-columns:repeat(4,1fr);gap:5px 9px;margin-top:2px} /* the SAME four equal columns + 9px gap as .tp-pgrid \u2014 the chips ARE the headers */
+  .td-ws .wc{height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center} /* chunky (playable13 ratified) */
+  .td-ws .wc i{font-style:normal;font:600 var(--fs-micro) var(--font-body);letter-spacing:.04em;color:rgba(25,26,46,.55)} /* low-contrast day stamp on the tier fill */
+  .td-ws .wc.l1{background:var(--t1)}.td-ws .wc.l2{background:var(--t2)}.td-ws .wc.l3{background:var(--t3)}.td-ws .wc.l4{background:var(--t4)}
+  .td-ws .wc.thin{background:none;border:1.5px dashed var(--muted-2)} .td-ws .wc.thin i{color:var(--muted-2)}
+  .td-ws .wc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)}
+  .td-ws .wc.pn{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)}
+  .td-ws .wc.cur{height:38px;box-shadow:0 3px 9px -3px rgba(79,70,229,.5)} /* your day's row runs taller */
+  .td-lgt{font:600 var(--fs-caps) var(--font-body);color:var(--muted-2);margin-top:6px;line-height:1.5} /* the truth line */
+  .td-ws .wc.cur i{font-size:11px;font-weight:800;color:var(--ink);letter-spacing:.02em} /* the today-stamp boost \u2014 MUST seat after every size rule (cascade law, harness-asserted) */
+  html.dark .td-ws .wc.cur i{color:#fff}
   .tp-plhd{margin-top:14px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .tp-plsub{font-size:var(--fs-meta);color:var(--muted);margin-top:1px}
   .tp-plgh{display:grid;grid-template-columns:1fr repeat(4,46px);gap:6px;padding:9px 0 4px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
@@ -908,6 +926,7 @@
     --sh-soft:0 4px 12px -4px rgba(0,0,0,.42); /* 0713w: Harbor's door-read is the border — the lift is garnish */
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5;
+    --t1:#2c8f61; --t2:#78904e; --t3:#b3893c; --t4:#bd674c; --ringc:#b4b0ff; /* Cut C (C-2): soft dark \u2014 dimmer, not paler; ringc needs LIGHTER in dark */
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
     --cmp-p1:#8b87ff; --cmp-p2:#22d3ee; --cmp-p3:#e879f9; /* 0714i: dark identity */
     --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45); --shadow-tk:drop-shadow(0 6px 14px rgba(0,0,0,.5));
@@ -1578,7 +1597,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3946,15 +3965,28 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(night&&night[ds])delete m["Magic Kingdom"];
     return m;
   }
+  function tdWeekStrip(t,ds,model,EV){ /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 axis-flipped pure readout on the picker's own columns (playable13 ratified). Days are rows, parks are columns; rings from t.plan + EV.night, plan ring wins; NOTHING here taps, writes, or navigates (the locality law, owner-caught). */
+    var days=tpDays(t),NT=(EV&&EV.night)||{},pl=(t.plan||{}),hasPlan=false,hasPn=false,h='',i,j;
+    for(i=0;i<days.length;i++){var d=days[i],wd=tpAsD(d).getDay(),cur=(d===ds);
+      for(j=0;j<TP_PARKS.length;j++){var p=TP_PARKS[j][0],c=tpCell(model,p,wd);
+        var ring=(pl[d]===p)?' plan':((p==="Magic Kingdom"&&NT[d]&&pl[d]!==p)?' pn':'');
+        if(ring===' plan')hasPlan=true;else if(ring===' pn')hasPn=true;
+        h+='<span class="wc'+(c.thin?' thin':' l'+c.lvl)+ring+(cur?' cur':'')+'"><i>'+tpWD3(d)+'</i></span>';}}
+    var lg='';
+    if(hasPlan)lg+='<span class="td-lg"><i class="td-lgsw plan"></i><span>planned</span></span>';
+    if(hasPn)lg+='<span class="td-lg"><i class="td-lgsw pn"></i><span>MK party night \u00b7 closes early</span></span>';
+    return '<div class="tp-peb td-wkh">The week, park by park</div><div class="td-ws">'+h+'</div>'+(lg?'<div class="td-lgd">'+lg+'</div>':'')+'<div class="td-lgt">A readout, not buttons \u2014 each column is one park on its own scale; colors never compare across columns \u00b7 your day\u2019s stamps run bold</div>';
+  }
   function tpPlanRow(t,ds,model,EV){ /* Cut 2: the drill-down's assign row / Cut C (C-1): the fit lives IN the picker - square two-line chips, each wearing its own tier word; the day's calmest-tier group wears the four-point star; the manual tap IS the acceptance (Law 11 by construction) */
     var pk=(t.plan||{})[ds],i;
     if(pk&&tpPlanPick!==ds)return '<div class="tp-peb">Planned</div><div class="tp-pgrid"><span class="tp-ac sel">'+esc(TP_PSHORT[pk]||pk)+'</span><span class="tp-ac" data-tppchg="'+ds+'">Change</span><span class="tp-ac'+(tpClrArm===ds?' arm':'')+'" data-tppclr="'+ds+'">'+(tpClrArm===ds?'Tap again':'Clear')+'</span></div>'; /* 0715n: Clear arms red first - it is the delete-all */
     var wd=tpAsD(ds).getDay(),NT=(EV&&EV.night)||{},mk=tdDayMarks(model,ds,NT),any=false;
     var h='<div class="tp-peb">'+(pk?'Planned':'Plan a park')+'</div><div class="tp-pgrid">';
     for(i=0;i<4;i++){var p=TP_PARKS[i][0],cc=tpCell(model,p,wd),star=mk[p]&&pk!==p;if(mk[p])any=true; /* thin cells carry no tier word and no mark eligibility */
-      h+='<button class="tp-acr'+(pk===p?' sel':'')+(star?' fitm':'')+'" type="button" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'"><b>'+(star?'\u2726 ':'')+(TP_PSHORT[p]||p)+'</b>'+(cc.thin?'':'<i class="tp-tw'+cc.lvl+'">'+TP_TW[cc.lvl]+'</i>')+'</button>';}
+      h+='<button class="tp-acr'+(pk===p?' sel':'')+(star?' fitm':'')+'" type="button" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'"><b>'+(star?'<span class="td-st">\u2726</span> ':'')+(TP_PSHORT[p]||p)+'</b>'+(cc.thin?'':'<i class="tp-tw'+cc.lvl+'">'+TP_TW[cc.lvl]+'</i>')+'</button>';}
     h+='</div>';
     if(any&&!pk)h+='<div class="td-lgd"><span class="td-lg"><b class="td-lgstar">\u2726</b><span>the day\u2019s fit \u2014 its calmest tier on '+tpWDn(ds)+'s \u00b7 yours to overrule</span></span>'+(NT[ds]?'<span class="td-lg"><i class="td-lgsw pn"></i><span>party night \u2014 MK closes early, so the \u2726 won\u2019t suggest it today</span></span>':'')+'</div>'; /* the legend renders only while marks are on glass; clause B (ratified) rides verified party nights */
+    h+=tdWeekStrip(t,ds,model,EV); /* Cut C (C-2): the strip rides the informative chips only \u2014 the planned early-return above IS the ratified collapse */
     return h;
   }
   function tpPlanSecHTML(a,b){ /* Cut 2: the creator’s park-day grid (mock-4 B, owner-ratified) — appears once the dates are valid, re-lists live, draft-backed until Save */
@@ -3975,6 +4007,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tpAddD(s,n){var a=s.split("-"),d=new Date(+a[0],+a[1]-1,+a[2]+n);return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
   function tpDays(t){var out=[],d=t.a,i=0;while(d<=t.b&&i<TP_MAXDAYS){out.push(d);d=tpAddD(d,1);i++;}return out;}
   function tpWDn(s){return tpAsD(s).toLocaleDateString("en-US",{weekday:"long"});}
+  function tpWD3(s){return tpAsD(s).toLocaleDateString("en-US",{weekday:"short"});} /* Cut C (C-2): the strip's 3-letter day stamp */
   function tpMD(s){return tpAsD(s).toLocaleDateString("en-US",{month:"short",day:"numeric"});}
   function tpRangeFmt(t){function f(s){return tpAsD(s).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}return f(t.a)+" \u2013 "+f(t.b);}
   function tpNumW(n){var W=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];return (n>=0&&n<=10)?W[n]:String(n);}
@@ -4436,14 +4469,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     gh+='</div>';
     for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
       for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),pc=(TP_PARKS[j][0]===pk?' plan':(j===0&&EV.night[d0]?' pn':'')); /* Cut 2: the planned cell's ring \u00b7 0716m: MK's deceptively-Light party marker (plan ring wins) */
-        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"></span>':'<span class="tp-dc'+pc+'" style="background:'+CROWD_TIERS[c.lvl].color+'"></span>');}
+        cells+=(c.thin?'<span class="tp-dc thin'+pc+'"></span>':'<span class="tp-dc'+pc+'" style="background:var(--t'+c.lvl+')"></span>'); /* Cut C (C-2): Soft fills, trip-board-scoped */}
       var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol">'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">MK party night \u00b7 closes early</span>':''); /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop"><span><span class="tp-wd">'+tpWDn(d0)+'</span><div class="tp-dt">'+tpMD(d0)+'</div></span>'+cells+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+hol+'</div></div>';
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+hol+'</div></div>';
       var dx='';
       if(open){var L=tpDayLine(d0,model,t);dx='<div class="tp-dx">'+L.line+L.sub+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
-    var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x){if(x)leg+='<span><i style="background:'+x.color+'"></i>'+x.label+'</span>';});leg+='</div>';
+    var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x,ix){if(x)leg+='<span><i style="background:var(--t'+ix+')"></i>'+x.label+'</span>';});leg+='</div>'; /* Cut C (C-2): the board legend follows its own cells onto Soft */
     return head+read+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
   }
   function tpListHTML(ts){ /* 0714w: the hero-list landing (C1 lean, owner-ratified) — upcoming soonest-first, past trips sink and dim */
