@@ -1597,7 +1597,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0716s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0716t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3962,7 +3962,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var m={},cnt=0,p;
     for(p in tiers)if(tiers[p]===best){m[p]=1;cnt++;}
     if(!nt||cnt===nt)return {};
-    if(night&&night[ds])delete m["Magic Kingdom"];
+    /* 0716t: the party-truth floor RETIRED (owner call, Aug 2) \u2014 the \u2726 reads banked tier history and stands wherever it's earned; the early close moved from suppression to DISCLOSURE (clause B, below the chips). */
     return m;
   }
   function tdWeekStrip(t,ds,model,EV){ /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 axis-flipped pure readout on the picker's own columns (playable13 ratified). Days are rows, parks are columns; rings from t.plan + EV.night, plan ring wins; NOTHING here taps, writes, or navigates (the locality law, owner-caught). */
@@ -3985,7 +3985,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<4;i++){var p=TP_PARKS[i][0],cc=tpCell(model,p,wd),star=mk[p]&&pk!==p;if(mk[p])any=true; /* thin cells carry no tier word and no mark eligibility */
       h+='<button class="tp-acr'+(pk===p?' sel':'')+(star?' fitm':'')+'" type="button" data-tppd="'+ds+'" data-tpbpk="'+esc(p)+'"><b>'+(star?'<span class="td-st">\u2726</span> ':'')+(TP_PSHORT[p]||p)+'</b>'+(cc.thin?'':'<i class="tp-tw'+cc.lvl+'">'+TP_TW[cc.lvl]+'</i>')+'</button>';}
     h+='</div>';
-    if(any&&!pk)h+='<div class="td-lgd"><span class="td-lg"><b class="td-lgstar">\u2726</b><span>the day\u2019s fit \u2014 its calmest tier on '+tpWDn(ds)+'s \u00b7 yours to overrule</span></span>'+(NT[ds]?'<span class="td-lg"><i class="td-lgsw pn"></i><span>party night \u2014 MK closes early, so the \u2726 won\u2019t suggest it today</span></span>':'')+'</div>'; /* the legend renders only while marks are on glass; clause B (ratified) rides verified party nights */
+    if(any&&!pk)h+='<div class="td-lgd"><span class="td-lg"><b class="td-lgstar">\u2726</b><span>the day\u2019s fit \u2014 its calmest tier on '+tpWDn(ds)+'s \u00b7 yours to overrule</span></span>'+(NT[ds]?'<span class="td-lg"><i class="td-lgsw pn"></i><span>party night \u2014 MK closes early; the \u2726 reads crowds, not hours</span></span>':'')+'</div>'; /* the legend renders only while marks are on glass; clause B (ratified) rides verified party nights */
     h+=tdWeekStrip(t,ds,model,EV); /* Cut C (C-2): the strip rides the informative chips only \u2014 the planned early-return above IS the ratified collapse */
     return h;
   }
