@@ -383,6 +383,7 @@
   .td-shg::after{content:"";position:absolute;inset:-6px} /* the invisible 44pt hitbox, the story-door law */
   .td-shg.hit{background:var(--accent-fill)!important;color:#fff!important;transform:scale(.94)} /* 0717r: the door lights like every chip - the accent flash before the sheet rises */
   html.dark .td-shg{background:rgba(139,135,255,.14)} /* 0717i: the boxes grow to the approved mock geometry (owner ask) */
+  .tp-shg{position:absolute;top:6px;right:56px;margin-top:0} /* 0717v: the trip door seats beside Edit on the head card */
   .tp-wd{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.012em}
   .tp-dt{font-size:var(--fs-body);color:var(--muted)}
   .tp-hol{display:block;font:700 var(--fs-micro) var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
@@ -1702,7 +1703,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4778,10 +4779,122 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return {eyebrow:((t&&t.n)||"My trip").toUpperCase(),big:tpRangeBig(t),meta:tpCardMeta(t,today),
       head:tpCardHd(rows,ds.length),rail:rail,rows:rows,n:ds.length,
       basis:model?tpBasis(t,model):"The board fills from banked days",link:"parkpulse.live"};}
+  function tpWrapRuns(K,runs,mw){ /* 0717v Cut 2b: run-aware wrapping - words keep their run's dress (bold / tier ink); lines of merged segments; run-edge spacing collapses to single spaces by construction */
+    var toks=[],i;
+    for(i=0;i<runs.length;i++){var r=runs[i],ws=String(r.t).split(" "),j;
+      for(j=0;j<ws.length;j++)if(ws[j]!=="")toks.push({w:ws[j],b:r.b,tier:r.tier});}
+    var lines=[],cur=[],cw=0;
+    for(i=0;i<toks.length;i++){var tk=toks[i],f=tk.b?RB(700,33):RB(500,33);
+      var pre=cur.length?" ":"",w2=K.tw(f,pre+tk.w);
+      if(cw+w2>mw&&cur.length){lines.push(cur);cur=[];cw=0;pre="";w2=K.tw(f,tk.w);}
+      var last=cur[cur.length-1];
+      if(last&&last.b===tk.b&&last.tier===tk.tier)last.t+=pre+tk.w;
+      else cur.push({t:pre+tk.w,b:tk.b,tier:tk.tier});
+      cw+=w2;}
+    if(cur.length)lines.push(cur);
+    return lines;}
+  function tpMetaSegs(r){ /* 0717v: the row's meta as unbreakable segments - wrap happens BETWEEN them only (the EE law, owner-caught on v6) */
+    var s=[];
+    if(r.pk){s.push({t:r.count?(r.count+" ride"+(r.count===1?"":"s")):"no rides saved yet",mint:false});
+      if(r.hrs)s.push({t:r.hrs,mint:false});
+      if(r.ee)s.push({t:r.ee,mint:true});}
+    return s;}
+  function tpDrawCard(D){ /* 0717v Cut 2b: the trip drawer - the day card one level up (TR2 read + anatomy B + S3 rows, all owner-ratified), single-path two-pass on tdKit; the amber-word paint is the day card's own mechanism */
+    var W=1080,L=84,R=W-84,C=window.__pwCardInk,TI=["",C.green,"#ffce5c",C.busy,C.packed];
+    var K=tdKit(),tw=K.tw,ell=K.ell;
+    var railW=R-L-52,railL=D.rail.map(function(rr){return tpWrapRuns(K,rr.runs,railW);});
+    var metaL=D.rows.map(function(r){var s=tpMetaSegs(r),mw=R-(L+240),l1=[],l2=[],wsum=0,i;
+      for(i=0;i<s.length;i++){var sep=l1.length?" \u00b7 ":"";
+        var f=s[i].mint?RD(700,29):RB(500,33);
+        var w2=(sep?tw(RB(500,33),sep):0)+tw(f,s[i].t);
+        if(!l2.length&&wsum+w2<=mw){l1.push(s[i]);wsum+=w2;}
+        else l2.push(s[i]);}
+      return {l1:l1,l2:l2};});
+    function pass(x){
+      var G=K.geom(x),rr2=G.rr2,T2=G.T2;function HL(py){G.HL(L,R,py);}
+      function segLine(segs,mx2,my){var i2;
+        for(i2=0;i2<segs.length;i2++){var s3=segs[i2];
+          if(i2>0){T2(" \u00b7 ",mx2,my,RB(500,33),C.muted);mx2+=tw(RB(500,33)," \u00b7 ");}
+          var f3=s3.mint?RD(700,29):RB(500,33);
+          T2(s3.t,mx2,my,f3,s3.mint?"#9bf7c9":C.muted);mx2+=tw(f3,s3.t);}}
+      var y=104,q,j,i2;
+      T2(ell(D.eyebrow,RD(700,30),R-L),L,y,RD(700,30),C.violet);y+=108;
+      T2(ell(D.big,RD(700,117),R-L),L,y,RD(700,117),C.ink);y+=64;
+      T2(D.meta,L,y,RB(500,36),C.muted);y+=58;
+      var hw=D.head.hl?TP_TW[D.head.hl]:null,hh=D.head.h,hLines=K.wrapN(RD(700,58),hh,R-L);y+=46;
+      for(q=0;q<hLines.length;q++){var hln=hLines[q];
+        if(hw&&hln.indexOf(hw)>=0){var pi=hln.indexOf(hw),pre=hln.slice(0,pi),post=hln.slice(pi+hw.length),xx=L;
+          T2(pre,xx,y,RD(700,58),C.ink);xx+=tw(RD(700,58),pre);
+          T2(hw,xx,y,RD(700,58),"#ffce5c");xx+=tw(RD(700,58),hw);
+          T2(post,xx,y,RD(700,58),C.ink);}
+        else T2(hln,L,y,RD(700,58),C.ink);
+        if(q<hLines.length-1)y+=68;}
+      y+=36;
+      for(q=0;q<D.rail.length;q++){var ro=D.rail[q],ls=railL[q];y+=44;
+        if(x){var k2=ro.k;
+          if(k2==="race"){x.fillStyle=C.green;rr2(L,y-18,34,12,6);x.fill();}
+          else if(k2==="party"&&ro.e){x.font="34px sans-serif";x.fillStyle=C.ink;x.textAlign="left";x.fillText(ro.e,L-2,y+2);}
+          else if(k2==="party"){x.strokeStyle=C.violet;x.lineWidth=3;x.setLineDash([5,5]);x.beginPath();x.arc(L+16,y-12,12,0,7);x.stroke();x.setLineDash([]);}
+          else{x.fillStyle=(k2==="packed"?C.packed:(k2==="short"?C.green:C.muted2));x.beginPath();x.arc(L+16,y-11,13,0,7);x.fill();}}
+        for(j=0;j<ls.length;j++){var xx2=L+52;
+          for(i2=0;i2<ls[j].length;i2++){var sg=ls[j][i2],f2=sg.b?RB(700,33):RB(500,33);
+            T2(sg.t,xx2,y,f2,sg.tier?TI[sg.tier]:(sg.b?C.ink:"#c7d6dc"));xx2+=tw(f2,sg.t);}
+          if(j<ls.length-1)y+=44;}
+        y+=20;}
+      y+=24;HL(y);y+=64;
+      T2("MY "+D.n+" DAY"+(D.n===1?"":"S"),L,y,RD(700,29),C.muted2);y+=42;
+      for(q=0;q<D.rows.length;q++){var r3=D.rows[q],M=metaL[q];
+        if(x)x.globalAlpha=r3.behind?0.68:1;
+        if(x){x.fillStyle=r3.lvl?TD_SOFT[r3.lvl]:"rgba(255,255,255,.16)";rr2(L,y,204,114,30);x.fill();
+          if(r3.ring){x.strokeStyle="#b4b0ff";x.lineWidth=7;rr2(L-9,y-9,222,132,38);x.stroke();}
+          if(r3.race){x.fillStyle="#3dd68c";rr2(L+18,y+92,168,10,6);x.fill();x.strokeStyle="rgba(255,255,255,.92)";x.lineWidth=4;rr2(L+18,y+92,168,10,6);x.stroke();}
+          if(r3.pe==="ring"){x.strokeStyle=C.muted;x.lineWidth=4;x.setLineDash([8,8]);rr2(L-5,y-5,214,124,32);x.stroke();x.setLineDash([]);}}
+        var ci=r3.lvl?"#1c1a38":"#7d97a1";
+        T2(String(r3.dt),L+102,y+52,RD(700,42),ci,"center");
+        T2(r3.wd3,L+102,y+90,RB(600,24),ci,"center");
+        if(x&&r3.pe&&r3.pe!=="ring"){x.shadowColor="rgba(0,0,0,.35)";x.shadowOffsetY=3;x.shadowBlur=4;x.font="54px sans-serif";x.textAlign="left";x.fillStyle=C.ink;x.fillText(r3.pe,L-10,y+30);x.shadowColor="transparent";x.shadowBlur=0;x.shadowOffsetY=0;}
+        var tx=L+240;
+        if(r3.pk){var pw=r3.tierW?tw(RD(700,33),r3.tierW)+24:0;
+          T2(ell(r3.pk,RD(700,46),R-tx-pw),tx,y+46,RD(700,46),C.ink);
+          if(r3.tierW)T2(r3.tierW,R,y+44,RD(700,33),"#ffce5c","right");
+          if(M.l1.length)segLine(M.l1,tx,y+92);
+          if(M.l2.length)segLine(M.l2,tx,y+136);}
+        else T2("Not planned yet",tx,y+68,RB(500,42),C.muted2);
+        if(x)x.globalAlpha=1;
+        y+=114+(M.l2.length?44:0);
+        if(q<D.rows.length-1)HL(y+28);
+        y+=84;}
+      y-=30;
+      var fy=y+126; /* the family geometry - hairline at fy-96, green at fy-36, credits at fy */
+      HL(fy-96);
+      T2(ell(D.basis,RB(500,26),R-L),L,fy-96+34,RB(500,26),C.muted2);
+      T2("parkpulse.live",R,fy-36,RB(700,31),C.green,"right");
+      T2("Data: ThemeParks.wiki",R,fy,RB(500,25),C.muted2,"right");
+      return fy+56;
+    }
+    var H=pass(null);
+    var cv=document.createElement("canvas");cv.width=W;cv.height=H;var x2=cv.getContext("2d");
+    var g=x2.createLinearGradient(0,0,W,H);g.addColorStop(0,"#1b2d4d");g.addColorStop(.55,"#10243a");g.addColorStop(1,"#0c1a2c");x2.fillStyle=g;x2.fillRect(0,0,W,H);
+    pass(x2);
+    return cv;
+  }
+  function tpShareCard(){ /* 0717v Cut 2b: the trip door's engine - the family lifecycle verbatim (fonts.ready -> toBlob -> canShare/download) */
+    var t=tpCurTrip();if(!t)return;
+    var D=tpCardData(t);
+    document.fonts.ready.then(function(){
+      var cv=tpDrawCard(D);
+      cv.toBlob(function(blob){ if(!blob)return;
+        var slug=((t.n||"trip").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trip");
+        var fname="parkpulse-"+slug+"-"+t.a+".png",file=new File([blob],fname,{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:"ParkPulse \u2014 "+(t.n||"My trip")})["catch"](function(){});}
+        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();}
+      },"image/png");
+    });
+  }
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
     var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Pulse \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
-    var head=lad+'<div class="rpc tp-head"><button class="tp-edit" type="button">Edit</button>'+
+    var head=lad+'<div class="rpc tp-head"><button class="td-shg tp-shg" data-tpshare type="button" aria-label="Share this trip"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="tp-edit" type="button">Edit</button>'+
       '<div class="tp-eb">'+esc(tpEyebrow(t,today))+'</div>'+
       '<div class="tp-tt">'+esc(t.n||"My trip")+'</div>'+
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
@@ -4871,7 +4984,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k){tfCurM=m;tfCurK=k;tfAnchor=tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";}
-  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdst],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
+  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdst],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
   document.addEventListener("click",function(e){ /* 0717g: flash-then-commit, delegated \u2014 the tap is intercepted at capture, the element lights, and the SAME click re-dispatches after 150ms so every existing handler runs unchanged. The picker chips (tp-acr) keep their own Cut C flash and stay out of this list. A second tap inside the window is swallowed \u2014 the free double-tap guard. */
     if(e.__pp)return;
     var t=e.target&&e.target.closest?e.target.closest(PP_TAP):null;
@@ -5022,7 +5135,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     el.querySelectorAll(".pf-shr").forEach(function(b){b.addEventListener("click",function(){ /* 0711f: story door */
       var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
-    el.querySelectorAll("[data-tdshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tdShareCard(b.getAttribute("data-tdshare"));});}); /* 0717o: the day-card door - the tap must not toggle the day beneath it */
+    el.querySelectorAll("[data-tdshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tdShareCard(b.getAttribute("data-tdshare"));});});
+    el.querySelectorAll("[data-tpshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tpShareCard();});}); /* 0717v: the trip door - same family, stopPropagation keeps the head card quiet */ /* 0717o: the day-card door - the tap must not toggle the day beneath it */
     el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
       var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}tdReset();renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
