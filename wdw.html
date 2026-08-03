@@ -206,6 +206,30 @@
     background:var(--card-2);border:1px solid var(--line);color:var(--muted-2);transition:.15s;font-size:var(--fs-title)}
   .flagbtn:hover{background:var(--line);color:var(--muted)}
   .flagbtn.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff;box-shadow:0 3px 10px -3px rgba(79,70,229,.55)}
+  /* ===== Up Next board (L-32 Cut 1, 0718e). Ratified A-shape rows +
+     the B control stack (five park seats, two type seats). The 13px mark
+     seat is the working default pending the on-glass legibility call. */
+  #upNextCard{margin:14px 2px 0}
+  .ux-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 16px}
+  .ux-k{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.2em;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .ux-k span:last-child{color:var(--muted-2);letter-spacing:.08em;font-variant-numeric:tabular-nums}
+  .ux-pks,.ux-typ{display:flex;gap:6px;margin:10px 0 0}
+  .ux-pks button,.ux-typ button{flex:1;border:0;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.08em;border-radius:999px;padding:8px 0;background:var(--card-2);color:var(--muted)}
+  .ux-typ button{font-size:10.5px;padding:7px 0}
+  .ux-pks button.on,.ux-typ button.on{background:var(--accent-fill);color:#fff}
+  .ux-rows{margin-top:4px}
+  .ux-row{display:flex;align-items:center;gap:10px;padding:9px 0}
+  .ux-row+.ux-row{border-top:1px solid var(--line)}
+  .ux-tm{flex:0 0 72px;text-align:right}
+  .ux-tm b{display:block;font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);color:var(--ink);font-variant-numeric:tabular-nums}
+  .ux-tm span{display:block;font-family:var(--font-display);font-weight:700;font-size:var(--fs-micro);letter-spacing:.1em;color:var(--muted-2)}
+  .ux-ic{flex:0 0 20px;text-align:center;font-size:13px}
+  .ux-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-body);color:var(--ink);line-height:1.3}
+  .ux-pk{font-size:var(--fs-meta);color:var(--muted-2);font-weight:700}
+  .ux-row.dim{opacity:.55}
+  .ux-sec{font-family:var(--font-display);font-weight:700;font-size:var(--fs-micro);letter-spacing:.14em;color:var(--muted-2);padding:10px 0 2px;border-top:1px solid var(--line);margin-top:4px}
+  .ux-more{display:block;width:100%;border:0;cursor:pointer;text-align:center;font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:none;padding:10px 0 2px}
+  .ux-quiet{font-size:var(--fs-small);color:var(--muted);padding:10px 0 2px;line-height:1.4}
   /* ===== Favorites card (Cut 2, 0709g) ===== */
   #favCard{margin-top:8px} /* 22px seam below the last park card (0709h) */
   .favcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:6px 14px 4px;margin-bottom:14px}
@@ -1703,7 +1727,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2369,7 +2393,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
             for(var i=0;i<times.length;i++){if(new Date(times[i]).getTime()>=now){nextShow=fmtClock(times[i]);break;}}
             if(!nextShow&&times.length)nextShow=fmtClock(times[0]);
           }
-          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow};
+          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
           if(e.entityType==="RESTAURANT")dineCapture(e,p.short); /* D1 0710b: dining rides the same poll — no new fetches */
         });
       }).catch(function(){});
@@ -2682,6 +2706,108 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
      =========================================================== */
   var BANNERS=[ALL_DEF].concat(PARK_DEF);
   var BANNER_MONO={"Magic Kingdom":"MK","EPCOT":"EP","Hollywood Studios":"HS","Animal Kingdom":"AK"};
+
+  /* ===== UP NEXT \u2014 the live-experience board (L-32 Cut 1, 0718e).
+     One row per SHOW-kind entity = its next posted start today; the data
+     is the existing live poll (uxShowsOf banks the pairs \u2014 no new
+     fetches, the no-dependency invariant holds). Predicate is
+     data-driven: no posted showtime, no seat; entries spanning >=2h are
+     windows, not sets \u2014 gated (the films rule in ears; threshold
+     provisional until real payload shapes are verified on-glass). Meets
+     = "meet " name-prefix plus three un-named encounters, governed by
+     the PERFORMANCES/EVERYTHING switch (owner-ratified B, Aug 3;
+     default EVERYTHING). JUST STARTED = the single most recent past
+     start within 60 min \u2014 we know the start, never the duration, so
+     it never says "ended". Marks hand-curated in UX_MARKS (CATEGORY_TAGS
+     pattern, keys through normName); an unmatched show entity that
+     posts sets still rides, wearing a neutral dot. */
+  var UX_MEET="\uD83E\uDD1D",UX_WINDOW_MS=7200000,UX_STARTED_MS=3600000;
+  var UX_MARKS={
+    "acrobatico":"\u266A","adventure friends cavalcade":"\uD83C\uDF88","adventures with kevin on discovery island":"\uD83E\uDD1D",
+    "animal encounters winged encounters kingdom takes flight":"\uD83C\uDFAD","beats and strings":"\u266A","beauty and beast live on stage":"\uD83C\uDFAD",
+    "blueys wild world at conservation station":"\uD83E\uDD1D","caseys corner pianist":"\u266A","celebracin encanto":"\uD83C\uDFAD",
+    "command performance":"\u266A","dapper dans":"\u266A","divine":"\u266A",
+    "ecorhythmics":"\u266A","enchantment at after hours at magic kingdom":"\uD83C\uDF86","entertainment at canada mill stage":"\u266A",
+    "entertainment at germany gazebo":"\u266A","fantasmic":"\uD83C\uDF86","feathered friends in flight":"\uD83C\uDFAD",
+    "festival of fantasy parade":"\uD83C\uDF88","festival of lion king":"\uD83C\uDFAD","finding nemo big blue and beyond":"\uD83C\uDFAD",
+    "first order searches for resistance":"\u266A","flag retreat":"\u266A","for first time in forever a frozen singalong celebration":"\uD83C\uDFAD",
+    "garden rocks concert series at epcot international flower and garden festival":"\uD83C\uDFAD","goofycore at communicore hall":"\u266A","green army drum corps":"\u266A",
+    "happily ever after":"\uD83C\uDF86","harambe village street band burudika":"\u266A","hollygroove swingin":"\u266A",
+    "indiana jones epic stunt spectacular":"\uD83C\uDFAD","jammitors":"\u266A","jessies roundup a riproarin revue":"\uD83C\uDFAD",
+    "jr mickey mouse clubhouse live":"\uD83C\uDFAD","kora tinga tinga":"\u266A","little mermaid a musical adventure":"\uD83C\uDFAD",
+    "luminous symphony of us":"\uD83C\uDF86","main street philharmonic at main street usa":"\u266A","mariachi cobre":"\u266A",
+    "marimba de las amricas":"\u266A","matsuriza":"\u266A","mickeys magical friendship faire":"\uD83C\uDFAD",
+    "movie magic":"\uD83C\uDF86","notsospooky spectacular at mickeys notsoscary halloween party":"\uD83C\uDF86","record setters":"\u266A",
+    "rose and crown pub musician":"\u266A","sergio":"\u266A","starlight dream night away":"\uD83C\uDF88",
+    "tam tam drummers of harambe":"\u266A","tree of life awakenings":"\uD83C\uDF86","villains unfairly ever after":"\uD83C\uDFAD",
+    "viva gaia street band":"\u266A","viva mexico":"\u266A","voices of liberty":"\u266A",
+    "wonderful world of animation":"\uD83C\uDF86","zoogether day gathering spot":"\uD83E\uDD1D"
+  };
+  function uxShowsOf(e){ /* full showtime pairs off the same poll */
+    if(!e||!e.showtimes||!e.showtimes.length)return null;
+    var out=[],i;for(i=0;i<e.showtimes.length;i++){var s=e.showtimes[i];if(!s||!s.startTime)continue;
+      var st=new Date(s.startTime).getTime();if(isNaN(st))continue;
+      var en=s.endTime?new Date(s.endTime).getTime():null;if(en!=null&&isNaN(en))en=null;
+      out.push({s:st,e:en});}
+    return out.length?out:null;
+  }
+  function uxIsMeet(n){return n.indexOf("meet ")===0||UX_MARKS[n]===UX_MEET;}
+  function uxMark(n){return UX_MARKS[n]||(n.indexOf("meet ")===0?UX_MEET:"\u2022");}
+  function uxSetsOf(lv){
+    if(!lv||!lv.shows||!lv.shows.length)return null;
+    var sets=[],i;for(i=0;i<lv.shows.length;i++){var sh=lv.shows[i];
+      if(!sh||typeof sh.s!=="number")continue;
+      if(sh.e!=null&&(sh.e-sh.s)>=UX_WINDOW_MS)continue;
+      sets.push(sh.s);}
+    if(!sets.length)return null;
+    sets.sort(function(a,b){return a-b;});return sets;
+  }
+  function uxRows(nowMs,pk,everything){
+    var next=[],lastPast=null,id;
+    for(id in roster){var r=roster[id];if(!r||r.kind!=="show")continue;
+      if(pk!=="all"&&r.park!==pk)continue;
+      var n=normName(r.name);
+      if(!everything&&uxIsMeet(n))continue;
+      var sets=uxSetsOf(liveById[id]);if(!sets)continue;
+      var mk=uxMark(n),tag=BANNER_MONO[r.park]||"";
+      var fut=null,lp=null,i;
+      for(i=0;i<sets.length;i++){if(sets[i]>=nowMs){if(fut==null)fut=sets[i];}else lp=sets[i];}
+      if(fut!=null)next.push({t:fut,nm:r.name,mk:mk,pk:tag,id:id});
+      if(lp!=null&&(nowMs-lp)<=UX_STARTED_MS&&(lastPast==null||lp>lastPast.t))lastPast={t:lp,nm:r.name,mk:mk,pk:tag,id:id};
+    }
+    next.sort(function(a,b){return a.t-b.t||(a.nm<b.nm?-1:a.nm>b.nm?1:0);});
+    return {next:next,started:lastPast?[lastPast]:[]};
+  }
+  var uxState={pk:store.get("uxPk","all")||"all",all:store.get("uxAll",true)!==false,open:false};
+  function uxRel(ms){var m=Math.round(ms/60000);if(m<1)return "NOW";if(m<60)return "IN "+m+"M";
+    var h=Math.floor(m/60),mm=m%60;return "IN "+h+"H"+(mm?" "+mm+"M":"");}
+  function uxClk(ms){return fmtClock(new Date(ms).toISOString())||"";}
+  function renderUpNext(){
+    var el=document.getElementById("upNextCard");if(!el)return;
+    var haveShows=false,id;for(id in liveById){if(liveById[id]&&liveById[id].shows){haveShows=true;break;}}
+    if(!haveShows){el.innerHTML="";return;} /* pre-poll or no showtime data: the seat stays empty */
+    var now=Date.now(),res=uxRows(now,uxState.pk,uxState.all),cap=uxState.open?15:5,next=res.next.slice(0,cap);
+    var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT &middot; LIVE SHOWS</span><span>'+esc(uxClk(now))+'</span></div>';
+    h+='<div class="ux-pks"><button type="button" data-uxpk="all"'+(uxState.pk==="all"?' class="on"':'')+'>ALL</button>';
+    PARK_DEF.forEach(function(p){h+='<button type="button" data-uxpk="'+esc(p.key)+'"'+(uxState.pk===p.key?' class="on"':'')+'>'+esc(BANNER_MONO[p.key]||p.key)+'</button>';});
+    h+='</div><div class="ux-typ"><button type="button" data-uxall="0"'+(uxState.all?'':' class="on"')+'>PERFORMANCES</button><button type="button" data-uxall="1"'+(uxState.all?' class="on"':'')+'>EVERYTHING</button></div>';
+    if(!next.length&&!res.started.length){h+='<div class="ux-quiet">No upcoming shows on the board right now.</div>';}
+    else{
+      h+='<div class="ux-rows">';
+      next.forEach(function(x){h+='<div class="ux-row"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>'+esc(uxRel(x.t-now))+'</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});
+      if(res.started.length){h+='<div class="ux-sec">JUST STARTED</div>';
+        res.started.forEach(function(x){var ago=Math.max(1,Math.round((now-x.t)/60000));
+          h+='<div class="ux-row dim"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>STARTED '+ago+'M AGO</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});}
+      h+='</div>';
+      if(res.next.length>5)h+='<button type="button" class="ux-more">'+(uxState.open?'Fewer shows \u25B4':'More shows \u25BE')+'</button>';
+    }
+    h+='</div>';
+    el.innerHTML=h;
+    el.querySelectorAll('[data-uxpk]').forEach(function(b){b.addEventListener("click",function(){uxState.pk=this.getAttribute("data-uxpk");store.set("uxPk",uxState.pk);renderUpNext();});});
+    el.querySelectorAll('[data-uxall]').forEach(function(b){b.addEventListener("click",function(){uxState.all=this.getAttribute("data-uxall")==="1";store.set("uxAll",uxState.all);renderUpNext();});});
+    var mo=el.querySelector(".ux-more");if(mo)mo.addEventListener("click",function(){uxState.open=!uxState.open;renderUpNext();});
+  }
+
   var bannerEls={};
 
   function buildBanners(){
@@ -2713,6 +2839,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       elBanners.appendChild(mnt);
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v")};
     });
+    var uxm=document.createElement("div");uxm.id="upNextCard";elBanners.appendChild(uxm); /* L-32 Cut 1: the Up Next board \u2014 after the last park hero, before Favorites (the day, the parks, what\u2019s playing, yours, everything) */
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
   }
 
@@ -5349,6 +5476,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     renderDownFlow();
     renderFavPage(); /* Phase 2 (0710p): before the away-guard — polls refresh the Favorites page on any tab */
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
+    renderUpNext(); /* L-32 Cut 1: the board refreshes on any tab \u2014 the favPage rule */
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
