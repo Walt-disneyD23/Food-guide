@@ -1763,7 +1763,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2802,6 +2802,64 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return {door:'<div class="rd-row rd-door" id="rdDnDoor"><span class="ic"><span class="dot" style="background:#ff8fa0"></span></span><div class="tx">'+headHTML+'</div><span class="chev">\u25be</span></div>',
       list:'<div class="rd-dn-list" id="rdDnList">'+rows+'<div class="rd-dn-share"><button type="button" id="rdDnShare">\u21e7&nbsp; Share</button></div></div>'};
   }
+  /* ===== VS-TYPICAL VERDICT (vd-, L-32 Cut 4, 0718i) — the read's top seat,
+     the arc's one new engine. Model/renderer split per the pf law: vdVerdict()
+     is the model, vdLine() the renderer. FAMILY = fixed-8 per park by TYPICAL
+     for this half-hour — membership decided by the baseline side (never by
+     current wait, so a spiking non-member can't buy a seat), paired deltas
+     over eligible members (OPERATING + numeric wait + park open + bucket>=5,
+     the NOW fold's own gates). AGGREGATE = mean of (now - typical); over one
+     fixed set, mean-of-deltas IS delta-of-means. One truth: pfQuartiles /
+     pfEtMin / pfBase are the NOW fold's own organs, reused. Quiet is a
+     mathematical property here too: every member exactly at its typical
+     computes 0. GATES: no base -> no row (never a fake one); no open park ->
+     no row (the empty parks never speak); <8 eligible members -> no row (a
+     3-ride resort verdict at rope drop is dishonest). Quiet band |agg|<5 —
+     the worth-minutes floor, the engine's own constant. Display rounds the
+     AGGREGATE only ("About" + integer). COPY LAW: bare "typical" is the
+     engine's basis (this half-hour, last 28 days); the weekday + day-part
+     stamp the observable NOW — the pool is weekday-agnostic, so "a typical
+     Monday" would over-claim (ratified Aug 3). Tense: strictly present, the
+     read's own law. */
+  function vdDayPart(m){return m<660?"morning":m<840?"midday":m<1020?"afternoon":m<1200?"evening":"night";}
+  function vdWeekday(){
+    try{return new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"long"}).format(new Date());}
+    catch(e){try{return new Intl.DateTimeFormat("en-US",{weekday:"long"}).format(new Date());}catch(_){return "";}}
+  }
+  function vdVerdict(){
+    if(typeof pfBase==="undefined"||!pfBase||!pfBase.rides)return {state:"none"};
+    var anyOpen=PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])!==false;});
+    if(!anyOpen)return {state:"none"};
+    var bkey=String(Math.floor(pfEtMin()/30)),deltas=[],i,s=0;
+    PARK_DEF.forEach(function(p){
+      if(isOpenNow(parkInfo[p.key])===false)return;
+      var fam=[],id;
+      for(id in pfBase.rides){
+        var r=roster[id];if(!r||r.park!==p.key)continue;
+        var arr=(pfBase.rides[id].b||{})[bkey];if(!arr||arr.length<5)continue;
+        fam.push({id:id,typ:pfQuartiles(arr).med});
+      }
+      fam.sort(function(a,b){return b.typ-a.typ;});
+      fam=fam.slice(0,8);
+      for(i=0;i<fam.length;i++){
+        var lv=liveById[fam[i].id];
+        if(!lv||lv.status!=="OPERATING"||typeof lv.wait!=="number")continue;
+        deltas.push(lv.wait-fam[i].typ);
+      }
+    });
+    if(deltas.length<8)return {state:"none"};
+    for(i=0;i<deltas.length;i++)s+=deltas[i];
+    var agg=s/deltas.length;
+    return {state:agg>=5?"over":agg<=-5?"under":"quiet",n:Math.round(Math.abs(agg)),agg:agg,
+      members:deltas.length,dayPart:vdDayPart(pfEtMin()),weekday:vdWeekday()};
+  }
+  function vdLine(v){
+    if(!v||v.state==="none")return "";
+    var wd=esc(v.weekday||""),dp=esc(v.dayPart),lead=wd?wd+" "+dp:dp;
+    if(v.state==="quiet")return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span><div class="tx"><b>A quiet '+lead+'</b> \u2014 headliners near their typical.</div></div>';
+    if(v.state==="over")return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#ffb197"></span></span><div class="tx"><b>About '+v.n+' over</b> typical this '+lead+'.</div></div>';
+    return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span><div class="tx"><b class="rd-go">About '+v.n+' under</b> typical this '+lead+'.</div></div>';
+  }
   function renderRead(){
     var el=document.getElementById("rdRead");if(!el)return;
     if(typeof pfEnsureBase==="function")pfEnsureBase();
@@ -2810,7 +2868,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var wasOpen=!!(prevL&&prevL.classList.contains("open"));
     var prevScroll=wasOpen?prevL.scrollTop:0;
     var dn=rdDownClause(rdDownState());
-    var h=dn?dn.door+dn.list:"";
+    var h=vdLine(vdVerdict()); /* L-32 Cut 4 (0718i): the verdict takes the read's top seat */
+    h+=dn?dn.door+dn.list:"";
     h+=[rdGoClause(),rdShowClause()].filter(Boolean).join("");
     el.innerHTML=h;
     var door=document.getElementById("rdDnDoor"),list=document.getElementById("rdDnList");
