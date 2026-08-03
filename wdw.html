@@ -1764,7 +1764,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2347,7 +2347,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     setPulse("ok");
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
-      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();render();checkAlerts();
+      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();render();checkAlerts(); /* 0718s: the lightning feed rides the poll, self-throttled */
       if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
     }).catch(function(err){
       setPulse("error");
@@ -2943,6 +2943,35 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var who=monos.length===1?monos[0]:monos.slice(0,-1).join(", ")+" and "+monos[monos.length-1];
     return '<div class="rd-row"><span class="ic">\uD83C\uDF19</span><div class="tx"><b>'+esc(who)+'</b> '+(names.length===1?"runs":"run")+' to <b>'+esc(fmtClock(bestIso)||"")+'</b> tonight \u2014 the resort\u2019s longest day.'+rdTnEE(best,names)+'</div></div>';
   }
+  /* ===== LIGHTNING (rdLtg-, L-32 5b, 0718s) — clause 5 of the read, the
+     observed channel wired to Live at last (deferred honestly in 0718f).
+     ONE TRUTH: the Worker's own lightning ledger (CG strikes, trailing
+     window, 10 mi of the resort centroid, radius validated on the July
+     specimens) via /ltgnow (v3.14, owner-ratified transport C) — no new
+     Xweather calls; the ledger's cadence is the freshness. GATES (owner
+     pick A): strikes only — a calm sky renders nothing, the clause-earned
+     law; the sample must be TODAY'S and fresh (<=75 min old — cadence 60
+     plus grace; an expired observation is not a now-truth). Copy states
+     the sample's own window (w). Fetch rides the live poll, throttled to
+     its own cadence, failure-silent — no base, no row, never a fake one. */
+  var rdLtg=null,rdLtgAt=0;
+  function rdLtgTick(){
+    if(Date.now()-rdLtgAt<270000)return;
+    rdLtgAt=Date.now();
+    try{fetch(PUSH.WORKER_URL+"/ltgnow").then(function(r){return r.json();}).then(function(j){
+      if(j&&j.ok){rdLtg=j;renderRead();} /* the read's rebuild-survival law (dd-proven) makes the re-render safe */
+    }).catch(function(){});}catch(e){}
+  }
+  function rdLtgClause(){
+    if(!rdLtg||!rdLtg.last)return "";
+    var l=rdLtg.last;if(!(l.n>0))return "";
+    if(typeof pfEtMin!=="function"||typeof tpToday!=="function")return "";
+    if(rdLtg.date!==tpToday())return "";
+    var nowM=pfEtMin();
+    if(nowM<l.t||nowM-l.t>75)return ""; /* stale or skewed: the observation expired */
+    var win=l.w===60?"in the last hour":"in the last "+l.w+" minutes";
+    return '<div class="rd-row"><span class="ic" style="color:#fbbf24">\u26a1</span><div class="tx"><b>Lightning within 10 mi</b> \u2014 <b>'+l.n+' strike'+(l.n===1?"":"s")+'</b> '+win+'.</div></div>';
+  }
   function renderRead(){
     var el=document.getElementById("rdRead");if(!el)return;
     if(typeof pfEnsureBase==="function")pfEnsureBase();
@@ -2953,7 +2982,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var dn=rdDownClause(rdDownState());
     var h=vdLine(vdVerdict()); /* L-32 Cut 4 (0718i): the verdict takes the read's top seat */
     h+=dn?dn.door+dn.list:"";
-    h+=[rdGoClause(),rdTonightClause(),rdShowClause()].filter(Boolean).join(""); /* 0718n: the tonight seat, clause 4 */
+    h+=[rdGoClause(),rdTonightClause(),rdLtgClause(),rdShowClause()].filter(Boolean).join(""); /* 0718n: the tonight seat, clause 4 · 0718s: lightning, clause 5 */
     el.innerHTML=h;
     var door=document.getElementById("rdDnDoor"),list=document.getElementById("rdDnList");
     if(door&&list){
