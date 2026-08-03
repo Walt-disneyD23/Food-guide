@@ -240,6 +240,7 @@
   .rd-row .tx{flex:1;min-width:0}
   .rd-row .tx b{color:#fff}
   .rd-row b.rd-go{color:#7ef0bd}
+  .rd-row .ic .rd-evbar{display:inline-block;width:14px;height:5px;border-radius:3px;background:#37e0a0;margin-top:7px} /* 0718n: the race mark, mock geometry */
   .rd-door{cursor:pointer;-webkit-tap-highlight-color:transparent}
   .rd-door .chev{flex:0 0 16px;align-self:center;color:var(--pwh-muted)}
   /* ===== Up Next board (L-32 Cut 1, 0718e). Ratified A-shape rows +
@@ -1763,7 +1764,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2860,6 +2861,64 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(v.state==="over")return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#ffb197"></span></span><div class="tx">Headliners <b>about '+v.n+' min over</b> typical this '+lead+'.</div></div>';
     return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span><div class="tx">Headliners <b class="rd-go">about '+v.n+' min under</b> typical this '+lead+'.</div></div>';
   }
+  /* ===== THE TONIGHT SEAT (rdTn-, L-32 Cut 5a, 0718n) — clause 4 of the read.
+     One seat, one home: the hours truth yields to any EARNED event truth; on a
+     night when both a party and a race qualify, BOTH render, party first
+     (owner ruling Aug 3 — the spec's "never both" bound events against the
+     HOURS line, not against each other). Events consume only v in {vv,v}
+     windows (the table's own gate law). The party row needs the NIGHT
+     (PW_EV_NIGHTS date map — parties are select nights; a window alone can't
+     earn "tonight"). The race quieter claim prints only on an RS open verdict;
+     flat/none races state the schedule fact alone (owner pick A — "people
+     want to see when these events are happening"). The hours line speaks the
+     PUBLISHED close (the walk-on circumstance law), names every park tied at
+     the latest close (owner pick), and the seat EMPTIES after the last close —
+     the read speaks NOW; Wrap owns recaps. typeof guards: the read never dies
+     where the events organs are absent. */
+  function rdTnParty(ds){
+    if(typeof window==="undefined"||!window.__pwEvN||!window.__pwEvN.dates||!window.__pwEvN.dates[ds])return null;
+    var T=window.__pwEvT;if(!T||!T.events)return null;
+    for(var i=0;i<T.events.length;i++){var e=T.events[i];
+      if(e.type!=="party")continue;
+      var ws=e.windows||[];
+      for(var j=0;j<ws.length;j++){var w=ws[j];
+        if((w.v==="vv"||w.v==="v")&&w.from<=ds&&ds<=w.to)
+          return {id:e.id,park:e.park||"MK",holiday:(e.id==="mvmcp"||e.id==="verymerriest")};
+      }}
+    return null;
+  }
+  function rdTnRace(ds){
+    if(typeof window==="undefined"||!window.__pwEvT||!window.__pwEvT.events)return null;
+    var T=window.__pwEvT,RS=window.__pwRS;
+    for(var i=0;i<T.events.length;i++){var e=T.events[i];
+      if(e.type!=="race")continue;
+      var ws=e.windows||[];
+      for(var j=0;j<ws.length;j++){var w=ws[j];
+        if((w.v==="vv"||w.v==="v")&&w.from<=ds&&ds<=w.to)
+          return {id:e.id,word:(typeof TP_EV_WORD!=="undefined"&&TP_EV_WORD[e.id])||e.id, /* authored pre-escaped — inserted raw, the trip surfaces' own idiom */
+            open:!!(RS&&RS[e.id]&&RS[e.id].v==="open")};
+      }}
+    return null;
+  }
+  function rdTonightClause(){
+    if(usingFallback)return "";
+    var ds=(typeof tpToday==="function")?tpToday():null;if(!ds)return "";
+    var h="",p=rdTnParty(ds),r=rdTnRace(ds);
+    if(p)h+='<div class="rd-row"><span class="ic">'+(p.holiday?"\uD83C\uDF84":"\uD83C\uDF83")+'</span><div class="tx"><b>'+esc(p.park)+'</b> hosts a ticketed '+(p.holiday?"holiday party":"party")+' tonight \u2014 it <b>closes early</b>; lighter waits there can be the shorter day talking.</div></div>';
+    if(r)h+=r.open
+      ?'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend \u2014 these weekends <b>have run quieter than typical</b>, not busier.</div></div>'
+      :'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend across the resort.</div></div>';
+    if(h)return h; /* the hours line yields its seat to any earned event */
+    var bestIso=null,best=0,names=[],now=Date.now(),k;
+    for(k in parkInfo){var inf=parkInfo[k];if(!inf||!inf.close)continue;
+      var c=new Date(inf.close).getTime();if(!(c>now))continue;
+      if(!bestIso||c>best){best=c;bestIso=inf.close;names=[k];}
+      else if(c===best)names.push(k);}
+    if(!bestIso)return ""; /* after the last close (or pre-hours) the seat is empty */
+    var monos=names.map(function(n){return BANNER_MONO[n]||n;});
+    var who=monos.length===1?monos[0]:monos.slice(0,-1).join(", ")+" and "+monos[monos.length-1];
+    return '<div class="rd-row"><span class="ic">\uD83C\uDF19</span><div class="tx"><b>'+esc(who)+'</b> '+(names.length===1?"runs":"run")+' to <b>'+esc(fmtClock(bestIso)||"")+'</b> tonight \u2014 the resort\u2019s longest day.</div></div>';
+  }
   function renderRead(){
     var el=document.getElementById("rdRead");if(!el)return;
     if(typeof pfEnsureBase==="function")pfEnsureBase();
@@ -2870,7 +2929,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var dn=rdDownClause(rdDownState());
     var h=vdLine(vdVerdict()); /* L-32 Cut 4 (0718i): the verdict takes the read's top seat */
     h+=dn?dn.door+dn.list:"";
-    h+=[rdGoClause(),rdShowClause()].filter(Boolean).join("");
+    h+=[rdGoClause(),rdTonightClause(),rdShowClause()].filter(Boolean).join(""); /* 0718n: the tonight seat, clause 4 */
     el.innerHTML=h;
     var door=document.getElementById("rdDnDoor"),list=document.getElementById("rdDnList");
     if(door&&list){
