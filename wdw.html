@@ -1703,7 +1703,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4183,7 +4183,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     out.used=!!(out.read||nn);
     return out;
   }
-  function tpRead(ds,model){ tpRead.beats=null; /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
+  function tpRead(ds,model){ tpRead.beats=null; var fut=!(ds.length&&ds[ds.length-1]<tpToday()); function dn(d){var s=tpDayName(d);return fut?s.replace("</b>","s</b>"):s;} /* 0717x (owner-caught on the card): a trip not yet over speaks the PATTERN voice - plural weekdays + present perfect, the race read's own 'have run' dress; a finished trip keeps today's strings. One source: board and card flip together */ /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
     var rows=[],i,j;
     for(i=0;i<ds.length;i++){var wd=tpAsD(ds[i]).getDay(),cs=[],full=true;
       for(j=0;j<4;j++){var c=tpCell(model,TP_PARKS[j][0],wd);cs.push(c);if(c.thin)full=false;}
@@ -4193,22 +4193,22 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       rows.push({d:ds[i],busy:busy,light:light,packed:packed});}
     if(rows.length<2)return 'Colors first \u2014 the read arrives once two of your days have a full set of banked weekdays.';
     var ev=true;for(i=1;i<rows.length;i++){if(rows[i].packed.length!==rows[0].packed.length||rows[i].busy.length!==rows[0].busy.length||rows[i].light.length!==rows[0].light.length)ev=false;}
-    if(ev)return 'Your '+tpNumW(rows.length)+' days ran even \u2014 no day stood out.';
+    if(ev)return 'Your '+tpNumW(rows.length)+' days '+(fut?'have run even':'ran even')+' \u2014 no day stood out.';
     function calmKey(a,b){return (a.packed.length-b.packed.length)||(a.busy.length-b.busy.length)||(b.light.length-a.light.length);}
     var srt=rows.slice().sort(calmKey);
     var ck=srt[0],calm=rows.filter(function(r){return calmKey(r,ck)===0;});
     var srt2=rows.slice().sort(function(a,b){return calmKey(b,a);});
     var tk=srt2[0],tough=rows.filter(function(r){return calmKey(r,tk)===0;});
     var oPmin=1e9,oBmin=1e9;rows.forEach(function(r){if(calmKey(r,ck)===0)return;if(r.packed.length<oPmin)oPmin=r.packed.length;if(r.busy.length<oBmin)oBmin=r.busy.length;});
-    var cS=tpAnd(calm.map(function(r){return tpDayName(r.d);}))+' ran the calmest of your '+tpNumW(rows.length)+' days';
-    if(ck.busy.length===0)cS+=(calm.length===1?' \u2014 the only one where nothing ran '+tpTier(3):' \u2014 nothing ran '+tpTier(3)+' on '+(calm.length===2?'either':'any of them'));
-    else if(ck.packed.length===0&&oPmin>0)cS+=(calm.length===1?' \u2014 the only one where nothing ran '+tpTier(4):' \u2014 nothing ran '+tpTier(4)+' on '+(calm.length===2?'either':'any of them'));
+    var cS=tpAnd(calm.map(function(r){return dn(r.d);}))+(fut?' have run the calmest of your ':' ran the calmest of your ')+tpNumW(rows.length)+' days';
+    if(ck.busy.length===0)cS+=(calm.length===1?' \u2014 the only '+(fut?'day':'one')+' where nothing ran '+tpTier(3):' \u2014 nothing ran '+tpTier(3)+' on '+(calm.length===2?'either':'any of them'));
+    else if(ck.packed.length===0&&oPmin>0)cS+=(calm.length===1?' \u2014 the only '+(fut?'day':'one')+' where nothing ran '+tpTier(4):' \u2014 nothing ran '+tpTier(4)+' on '+(calm.length===2?'either':'any of them'));
     else if(ck.packed.length>0&&ck.packed.length<oPmin)cS+=' \u2014 the fewest parks running '+tpTier(4)+' ('+ck.packed.length+')';
     else if(ck.busy.length<oBmin)cS+=' \u2014 the fewest parks running '+tpTier(3)+' ('+ck.busy.length+')';
     if(calm.length===1&&ck.light.length)cS+=', with '+((ck.light.length===2)?(tpAmp(ck.light)+' both '+tpTier(1)):((ck.light.length===1)?(ck.light[0]+' '+tpTier(1)):(tpTier(1)+' at '+tpAmp(ck.light))));
     cS+='.';
     var oPmax=-1,oBmax=-1;rows.forEach(function(r){if(calmKey(r,tk)===0)return;if(r.packed.length>oPmax)oPmax=r.packed.length;if(r.busy.length>oBmax)oBmax=r.busy.length;});
-    var tS=tpAnd(tough.map(function(r){return tpDayName(r.d);}))+' ran toughest';
+    var tS=tpAnd(tough.map(function(r){return dn(r.d);}))+(fut?' have run toughest':' ran toughest');
     var sameP=true,sameB=true;for(i=1;i<tough.length;i++){if(tough[i].packed.join("|")!==tough[0].packed.join("|"))sameP=false;if(tough[i].busy.join("|")!==tough[0].busy.join("|"))sameB=false;}
     if(tough.length===1&&tk.packed.length)tS+=' \u2014 '+tpTier(4)+' at '+tpBoth(tough[0].packed)+'.';
     else if(tough.length>1&&sameP&&tk.packed.length)tS+=' \u2014 '+tpTier(4)+' at '+tpBoth(tough[0].packed)+' on each.';
@@ -4780,13 +4780,14 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       head:tpCardHd(rows,ds.length),rail:rail,rows:rows,n:ds.length,
       basis:model?tpBasis(t,model):"The board fills from banked days",link:"parkpulse.live"};}
   function tpWrapRuns(K,runs,mw){ /* 0717v Cut 2b: run-aware wrapping - words keep their run's dress (bold / tier ink); lines of merged segments; run-edge spacing collapses to single spaces by construction */
-    var toks=[],i;
-    for(i=0;i<runs.length;i++){var r=runs[i],ws=String(r.t).split(" "),j;
-      for(j=0;j<ws.length;j++)if(ws[j]!=="")toks.push({w:ws[j],b:r.b,tier:r.tier});}
+    var toks=[],i,prevSp=true;
+    for(i=0;i<runs.length;i++){var r=runs[i],s0=String(r.t),ws=s0.split(" "),j,st=/^\s/.test(s0);
+      for(j=0;j<ws.length;j++)if(ws[j]!=="")toks.push({w:ws[j],b:r.b,tier:r.tier,gl:(j===0&&!st&&!prevSp&&toks.length>0)});
+      prevSp=/\s$/.test(s0)||s0==="";} /* 0717w: tight punctuation glues to its word - no phantom space before a period after a bold run (owner-caught on glass) */
     var lines=[],cur=[],cw=0;
     for(i=0;i<toks.length;i++){var tk=toks[i],f=tk.b?RB(700,33):RB(500,33);
-      var pre=cur.length?" ":"",w2=K.tw(f,pre+tk.w);
-      if(cw+w2>mw&&cur.length){lines.push(cur);cur=[];cw=0;pre="";w2=K.tw(f,tk.w);}
+      var pre=(cur.length&&!tk.gl)?" ":"",w2=K.tw(f,pre+tk.w);
+      if(!tk.gl&&cw+w2>mw&&cur.length){lines.push(cur);cur=[];cw=0;pre="";w2=K.tw(f,tk.w);}
       var last=cur[cur.length-1];
       if(last&&last.b===tk.b&&last.tier===tk.tier)last.t+=pre+tk.w;
       else cur.push({t:pre+tk.w,b:tk.b,tier:tk.tier});
@@ -4847,7 +4848,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
         if(x)x.globalAlpha=r3.behind?0.68:1;
         if(x){x.fillStyle=r3.lvl?TD_SOFT[r3.lvl]:"rgba(255,255,255,.16)";rr2(L,y,204,114,30);x.fill();
           if(r3.ring){x.strokeStyle="#b4b0ff";x.lineWidth=7;rr2(L-9,y-9,222,132,38);x.stroke();}
-          if(r3.race){x.fillStyle="#3dd68c";rr2(L+18,y+92,168,10,6);x.fill();x.strokeStyle="rgba(255,255,255,.92)";x.lineWidth=4;rr2(L+18,y+92,168,10,6);x.stroke();}
+          if(r3.race){x.fillStyle="#3dd68c";rr2(L+18,y+97,168,10,6);x.fill();x.strokeStyle="rgba(255,255,255,.92)";x.lineWidth=4;rr2(L+18,y+97,168,10,6);x.stroke();} /* 0717x: the bar sits a tad lower - air under SUN, closer to the chip edge (owner-caught) */
           if(r3.pe==="ring"){x.strokeStyle=C.muted;x.lineWidth=4;x.setLineDash([8,8]);rr2(L-5,y-5,214,124,32);x.stroke();x.setLineDash([]);}}
         var ci=r3.lvl?"#1c1a38":"#7d97a1";
         T2(String(r3.dt),L+102,y+52,RD(700,42),ci,"center");
@@ -4867,7 +4868,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       y-=30;
       var fy=y+126; /* the family geometry - hairline at fy-96, green at fy-36, credits at fy */
       HL(fy-96);
-      T2(ell(D.basis,RB(500,26),R-L),L,fy-96+34,RB(500,26),C.muted2);
+      var bL=K.wrapN(RB(500,26),D.basis,460),bMore=bL.length>2;bL=bL.slice(0,2);
+      if(bMore)bL[1]=ell(bL[1]+" \u2026",RB(500,26),460); /* 0717w: the basis wraps in its own narrow left column (the mock-approved footer) - the long real tpBasis no longer runs under the green */
+      T2(bL[0],L,fy-96+34,RB(500,26),C.muted2);
+      if(bL[1])T2(bL[1],L,fy-96+68,RB(500,26),C.muted2);
       T2("parkpulse.live",R,fy-36,RB(700,31),C.green,"right");
       T2("Data: ThemeParks.wiki",R,fy,RB(500,25),C.muted2,"right");
       return fy+56;
