@@ -206,6 +206,23 @@
     background:var(--card-2);border:1px solid var(--line);color:var(--muted-2);transition:.15s;font-size:var(--fs-title)}
   .flagbtn:hover{background:var(--line);color:var(--muted)}
   .flagbtn.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff;box-shadow:0 3px 10px -3px rgba(79,70,229,.55)}
+  /* ===== The Read (L-32 Cut 2, 0718f). The hero's clause-earned row block,
+     ratified B grammar (live-read-mock-2). A row renders only when its clause
+     is earned; an empty read renders nothing at all. The editorial hero's art
+     is a bottom-aligned flex row, so it learns to wrap and the read takes the
+     full-width line beneath the head. */
+  .banner-art.bnr-ed{flex-wrap:wrap}
+  .rdwrap{width:100%;margin-top:12px;border-top:1px solid var(--pwh-line);padding-top:2px;position:relative;z-index:1}
+  .rdwrap:empty{display:none}
+  .rd-row{display:flex;gap:10px;padding:8px 0;font-size:var(--fs-body);line-height:1.45;color:var(--pwh-ink);text-align:left;font-weight:400;text-shadow:none}
+  .rd-row+.rd-row{border-top:1px solid var(--pwh-line)}
+  .rd-row .ic{flex:0 0 20px;text-align:center;padding-top:2px;font-size:13px}
+  .rd-row .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-top:5px}
+  .rd-row .tx{flex:1;min-width:0}
+  .rd-row .tx b{color:#fff}
+  .rd-row b.rd-go{color:#7ef0bd}
+  .rd-door{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .rd-door .chev{flex:0 0 16px;align-self:center;color:var(--pwh-muted)}
   /* ===== Up Next board (L-32 Cut 1, 0718e). Ratified A-shape rows +
      the B control stack (five park seats, two type seats). The 13px mark
      seat is the working default pending the on-glass legibility call. */
@@ -1727,7 +1744,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2707,6 +2724,48 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   var BANNERS=[ALL_DEF].concat(PARK_DEF);
   var BANNER_MONO={"Magic Kingdom":"MK","EPCOT":"EP","Hollywood Studios":"HS","Animal Kingdom":"AK"};
 
+  /* ===== THE READ (L-32 Cut 2, 0718f). Clause-earned rows in the All Parks
+     hero (spec §1, owner pick B). This cut ships the two clauses whose data
+     already lives on this page: GO-NOW surfaces pfCallouts("all")'s biggest
+     under — the NOW engine's own gate IS the predicate, no second gate, one
+     engine one truth — and the ♪ clause is pure arithmetic off the Up Next
+     data (performances only: it is the ♪ clause), a DOOR that scroll-glides
+     to the board. Lightning defers: its observed channel feeds Wrap's sky
+     card today; wiring it to Live is its own step. The verdict (Cut 4), the
+     down door (Cut 3) and the tonight seat (Cut 5) arrive with their arcs.
+     The read shares Pulse's one-per-session baseline fetch — no base, no
+     clause, never a fake one. */
+  function rdGoClause(){
+    if(typeof pfCallouts!=="function")return null;
+    var c=pfCallouts("all");
+    if(!c||!c.go||!c.go.length)return null;
+    var g=c.go[0];if(!g||!g.nm||typeof g.delta!=="number")return null;
+    return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span>'+
+      '<div class="tx"><b>'+esc(g.nm)+'</b> is <b class="rd-go">'+Math.round(g.delta)+' under</b> typical — the discount of the moment.</div></div>';
+  }
+  function rdShowClause(){
+    if(typeof uxRows!=="function")return null;
+    var haveShows=false,id;for(id in liveById){if(liveById[id]&&liveById[id].shows){haveShows=true;break;}}
+    if(!haveShows)return null;
+    var now=Date.now(),res=uxRows(now,"all",false);
+    if(!res.next.length)return null;
+    var first=res.next[0],later=res.next.filter(function(x){return x.t>first.t&&x.t<=now+7200000;});
+    var tx='<b>'+esc(first.nm)+'</b> at <b>'+esc(uxClk(first.t))+'</b>';
+    if(later.length){tx+=' — '+later.length+' more act'+(later.length===1?'':'s')+' across the parks by '+esc(uxClk(later[later.length-1].t))+'.';}
+    else{tx+=' — the next act across the parks.';}
+    return '<div class="rd-row rd-door" id="rdShowDoor"><span class="ic">♪</span><div class="tx">'+tx+'</div><span class="chev">▸</span></div>';
+  }
+  function renderRead(){
+    var el=document.getElementById("rdRead");if(!el)return;
+    if(typeof pfEnsureBase==="function")pfEnsureBase();
+    var rows=[rdGoClause(),rdShowClause()];
+    el.innerHTML=rows.filter(Boolean).join("");
+    var d=document.getElementById("rdShowDoor");
+    if(d)d.addEventListener("click",function(ev){ev.stopPropagation(); /* the hero art is itself a door — the ♪ row must not expand it */
+      var b=document.getElementById("upNextCard");if(b)b.scrollIntoView({behavior:"smooth",block:"center"});});
+  }
+
+
   /* ===== UP NEXT \u2014 the live-experience board (L-32 Cut 1, 0718e).
      One row per SHOW-kind entity = its next posted start today; the data
      is the existing live poll (uxShowsOf banks the pairs \u2014 no new
@@ -2839,6 +2898,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       elBanners.appendChild(mnt);
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v")};
     });
+    var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
+    (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);})(); /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
     var uxm=document.createElement("div");uxm.id="upNextCard";elBanners.appendChild(uxm); /* L-32 Cut 1: the Up Next board \u2014 after the last park hero, before Favorites (the day, the parks, what\u2019s playing, yours, everything) */
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
   }
@@ -5477,6 +5538,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     renderFavPage(); /* Phase 2 (0710p): before the away-guard — polls refresh the Favorites page on any tab */
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
     renderUpNext(); /* L-32 Cut 1: the board refreshes on any tab \u2014 the favPage rule */
+    renderRead(); /* L-32 Cut 2: the read refreshes with the board — same rule */
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
