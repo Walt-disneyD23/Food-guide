@@ -1764,7 +1764,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3118,6 +3118,17 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
   }
 
+  function bkParksClause(){ /* 0718p (owner-caught + picks): the hero's bare
+     "Open" was at-least-one-park wearing an everything's-open costume. The
+     status now states its measure: N of 4 parks open (green dot while any
+     park is open); "Parks closed" only when every park is KNOWN closed;
+     "Live" while schedules are unknown — never a closed claim on a guess. */
+    var st=PARK_DEF.map(function(p){return isOpenNow(parkInfo[p.key]);});
+    var n=st.filter(function(v){return v===true;}).length;
+    if(n>0)return {open:true,txt:n+" of "+PARK_DEF.length+" parks open"};
+    if(st.every(function(v){return v===false;}))return {open:false,txt:"Parks closed"};
+    return {open:false,txt:"Live"};
+  }
   function bannerStats(key){
     var waits=scopeWaits(key);
     var avg=waits.length?Math.round(waits.reduce(function(a,b){return a+b;},0)/waits.length):null;
@@ -5764,8 +5775,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var key=def.key,el=bannerEls[key];if(!el)return;
       var s=bannerStats(key);
         /* A+ banner (0709a): live subline + labeled stat; aura color = s.crowd.color (one source), tier class = ramp depth only */
-        var sub=['<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?"Open":s.isOpen===false?"Closed":"Live")];
-        if(s.open)sub.push('<span class="cwu">'+s.open+' open</span>'); /* 0709s: count never separates from its noun */
+        var pc=key==="all"?bkParksClause():null; /* 0718p: the hero states its measure */
+        var sub=[pc?'<i class="dot'+(pc.open?' open':'')+'"></i>'+esc(pc.txt)
+                   :'<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?"Open":s.isOpen===false?"Closed":"Live")];
+        if(s.open)sub.push('<span class="cwu">'+s.open+' rides open</span>'); /* 0709s law, noun restored (0718p) */
         if(s.crowd)sub.push('<span class="cwu">crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est.</span>'); /* 0709r: est. never separates from the value it qualifies \u2014 narrow viewports wrap BEFORE the clause, never inside */
         el.sub.innerHTML=sub.join('<span class="sep">\u00b7</span>');
         el.statV.innerHTML=(s.headAvg!==null?s.headAvg+'<span class="u">m</span>':'\u2013');
