@@ -1706,7 +1706,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2980,8 +2980,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function pfDrawCard(ctx,D){
     var W=D.W,H=D.H,C=PW_CARD_ALT;
     function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-    function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
-    function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+    function SG(w,s){return w+" "+s+'px ui-rounded,"Space Grotesk",sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
     function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
     function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
     function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
@@ -3070,8 +3070,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function pfDrawParkCard(ctx,D){
     var W=D.W,H=D.H,C=PW_CARD_ALT;
     function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-    function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
-    function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+    function SG(w,s){return w+" "+s+'px ui-rounded,"Space Grotesk",sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
     function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
     function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
     function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
@@ -3264,11 +3264,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     for(i=0;i<cand.length;i++){var t=cand[i];if(t<bs[0].t||t>bs[N-1].t)continue;
       var bi=-1,q;for(q=0;q<N;q++)if(bs[q].t===t){bi=q;break;}
       if(bi<0)continue;var h=t/60;
-      ticks+='<text x="'+C(bi).toFixed(1)+'" y="'+(yB+15)+'" text-anchor="middle" font-size="9" font-weight="700" fill="var(--muted-2)" font-family="Inter,system-ui">'+((h%12)||12)+(h<12?"A":"P")+'</text>';}
+      ticks+='<text x="'+C(bi).toFixed(1)+'" y="'+(yB+15)+'" text-anchor="middle" font-size="9" font-weight="700" fill="var(--muted-2)" font-family="-apple-system,Inter,system-ui">'+((h%12)||12)+(h<12?"A":"P")+'</text>';}
     return '<svg class="rp-svg" viewBox="0 0 340 128" role="img" aria-label="Typical wait by half hour">'+
       '<path d="'+band+'" fill="var(--accent)" opacity="0.10"/>'+
       '<line x1="'+x0+'" y1="'+yB+'" x2="'+x1+'" y2="'+yB+'" stroke="var(--line)" stroke-width="1"/>'+bars+
-      (pkX!==null&&!cv.allday?'<text x="'+pkX.toFixed(1)+'" y="'+(Y(cv.pk)-6).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="800" fill="var(--ink)" font-family="Inter,system-ui">'+cv.pk+'</text>':'')+
+      (pkX!==null&&!cv.allday?'<text x="'+pkX.toFixed(1)+'" y="'+(Y(cv.pk)-6).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="800" fill="var(--ink)" font-family="-apple-system,Inter,system-ui">'+cv.pk+'</text>':'')+
       ticks+'</svg>';
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
@@ -3783,7 +3783,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var wash='',lab='',BANDS=[[0,20,"--short"],[20,45,"--medium"],[45,70,"--long"],[70,1e9,"--packed"]];
     for(i=0;i<BANDS.length;i++){var lo=BANDS[i][0],hi=Math.min(BANDS[i][1],mx);if(hi<=lo)continue;
       wash+='<rect class="rc-wash" x="'+x0+'" y="'+Y(hi).toFixed(1)+'" width="'+(x1-x0)+'" height="'+(Y(lo)-Y(hi)).toFixed(1)+'" fill="var('+BANDS[i][2]+')"/>';
-      if(lo>0)lab+='<text x="339" y="'+(Y(lo)+3).toFixed(1)+'" text-anchor="end" font-size="8" font-weight="700" fill="var(--muted-2)" font-family="Inter,system-ui">'+lo+'</text>';}
+      if(lo>0)lab+='<text x="339" y="'+(Y(lo)+3).toFixed(1)+'" text-anchor="end" font-size="8" font-weight="700" fill="var(--muted-2)" font-family="-apple-system,Inter,system-ui">'+lo+'</text>';}
     var lines='';
     for(i=0;i<its.length;i++){var cv=its[i].cv;if(!cv)continue; /* a thin ride keeps its seat color \u2014 identity keys on the seat, not the draw order */
       var byT={},p='',pen=false;for(j=0;j<cv.bs.length;j++)byT[cv.bs[j].t]=cv.bs[j].med;
@@ -3794,7 +3794,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       lines+='<path class="rc-ln'+(f?' fade':'')+'" d="'+p+'" fill="none" stroke="var(--cmp-p'+(i+1)+')" stroke-width="'+(rcFoc===its[i].id?'2.6':'2.2')+'" stroke-linejoin="round" stroke-linecap="round"/>';}
     var ticks='',cand=[540,720,900,1080,1260];
     for(i=0;i<cand.length;i++){var t=cand[i];if(t<t0||t>t1)continue;var h=t/60;
-      ticks+='<text x="'+C(Math.round((t-t0)/30)).toFixed(1)+'" y="'+(yB+15)+'" text-anchor="middle" font-size="9" font-weight="700" fill="var(--muted-2)" font-family="Inter,system-ui">'+((h%12)||12)+(h<12?"A":"P")+'</text>';}
+      ticks+='<text x="'+C(Math.round((t-t0)/30)).toFixed(1)+'" y="'+(yB+15)+'" text-anchor="middle" font-size="9" font-weight="700" fill="var(--muted-2)" font-family="-apple-system,Inter,system-ui">'+((h%12)||12)+(h<12?"A":"P")+'</text>';}
     var thin=its.filter(function(x){return !x.cv;}).map(function(x){return esc(x.nm);});
     var key='<div class="rc-ckey">'+its.filter(function(x){return !!x.cv;}).map(function(x){var f2=rcFoc===x.id;
       return '<button class="rc-ck'+(rcFoc?(f2?' sel':' fade'):'')+'" data-rcfoc="'+esc(x.id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(its.indexOf(x)+1)+')"></span><span class="n">'+esc(x.nm)+'</span></button>';}).join("")+'</div>'; /* 0714n: same data-rcfoc \u2014 the focus tap moves to where the chart is, zero new wiring */
@@ -4641,7 +4641,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       rows:pk?(tdSecHTML.rows||[]):[],count:pk?(tdSecHTML.rows||[]).length:0, /* 0717n: an unplanned day carries no board, whatever the channel last held */
       basis:'Banked '+tpWDn(ds)+'s \u00b7 a pattern, not a forecast',link:'parkpulse.live'};}
   function RD(w,z){return w+" "+z+'px ui-rounded,"Space Grotesk",sans-serif';} /* 0717o: the Hybrid face debuts on this surface (owner call; the identity round follows later) */
-  function RB(w,z){return w+" "+z+'px "Inter",sans-serif';}
+  function RB(w,z){return w+" "+z+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
   var TD_SOFT=["","#93e2ba","#cbdba3","#f8d38f","#ffb197"]; /* the board's soft fills as card constants - cards keep their own palette in both themes */
   function tdKit(){ /* 0717t Cut 1: the drawer toolkit, hoisted verbatim from tdDrawCard - measuring context + text/geometry hands, ONE set for the day card and the trip card */
     var mc=document.createElement("canvas");mc.width=8;mc.height=8;var mx=mc.getContext("2d");
@@ -5710,8 +5710,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var C=PW_CARD;
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
       function T(str,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(str,x,y);}
-      function SG(w,sz){return w+" "+sz+'px "Space Grotesk",sans-serif';}
-      function IN(w,sz){return w+" "+sz+'px "Inter",sans-serif';}
+      function SG(w,sz){return w+" "+sz+'px ui-rounded,"Space Grotesk",sans-serif';}
+      function IN(w,sz){return w+" "+sz+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
       function hexA(hex,al){var n=parseInt(hex.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+al+")";}
       function ell(str,mw,f){ctx.font=f;if(ctx.measureText(str).width<=mw)return str;while(str.length>1&&ctx.measureText(str+"\u2026").width>mw)str=str.slice(0,-1);return str+"\u2026";}
       function num(x,y,n,unit){if(n===null||n===undefined){T("\u2014",x,y,SG("600",48),C.ink);return;}ctx.font=SG("600",48);ctx.fillStyle=C.ink;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(String(n),x,y);var nw=ctx.measureText(String(n)).width;T(unit,x+nw+8,y,IN("500",24),C.muted);}
@@ -5853,8 +5853,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var C=PW_CARD;
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
       function Tx(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
-      function SG(w,sz){return w+" "+sz+'px "Space Grotesk",sans-serif';}
-      function IN(w,sz){return w+" "+sz+'px "Inter",sans-serif';}
+      function SG(w,sz){return w+" "+sz+'px ui-rounded,"Space Grotesk",sans-serif';}
+      function IN(w,sz){return w+" "+sz+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
       function hexA(hex,al){var n=parseInt(hex.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+al+")";}
       function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
 
@@ -5981,8 +5981,8 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var C=PW_CARD;
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
       function Tx(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
-      function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
-      function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+      function SG(w,s){return w+" "+s+'px ui-rounded,"Space Grotesk",sans-serif';}
+      function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
       function hexA(h,a){var n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
       function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
 
@@ -6861,7 +6861,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         x=X(k);y=Y(p.v);ax=Math.max(46,Math.min(W-46,x));
         lab=PW_ALM_MN[+p.ym.slice(5)-1]+" "+p.ym.slice(0,4)+" \u00b7 "+Math.round(p.v)+"m";
         return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" fill="var(--'+cls+')"/>'
-          +'<text x="'+ax.toFixed(1)+'" y="'+(up?(y-6):(y+13)).toFixed(1)+'" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="8.5" fill="var(--'+cls+')">'+lab+"</text>";}
+          +'<text x="'+ax.toFixed(1)+'" y="'+(up?(y-6):(y+13)).toFixed(1)+'" text-anchor="middle" font-family="ui-rounded,Space Grotesk,sans-serif" font-weight="700" font-size="8.5" fill="var(--'+cls+')">'+lab+"</text>";}
       return '<div class="pw-alm-card pw-alm-ribbon"><div class="sec"><span class="c1">'
         +pwAlmYearsWord().toUpperCase()+' YEARS, ONE LINE</span><span class="c2">JUL 2021 \u2192 TODAY</span></div>'
         +'<svg viewBox="0 0 '+W+" "+H+'" aria-hidden="true"><polyline points="'+pl
@@ -8438,7 +8438,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         if(fhi>=100)svg+='<line x1="'+pX0+'" y1="'+fy(105).toFixed(1)+'" x2="'+pX1+'" y2="'+fy(105).toFixed(1)+'" stroke="#f97316" stroke-width="1" stroke-dasharray="4 5" stroke-opacity=".4"/><text x="'+pX1+'" y="'+(fy(105)-5).toFixed(1)+'" text-anchor="end" font-family="Inter" font-size="12" font-weight="600" fill="#f97316" fill-opacity=".7">extreme \u00b7 105\u00b0</text>';
         var fS=x.samples,fN=fS.length-1,fxp=parseFloat(tx(fS[fpk].t)),fxc=Math.max(pX0+30,Math.min(pX1-30,fxp));
         svg+='<circle cx="'+tx(fS[0].t)+'" cy="'+fy(fS[0].fF).toFixed(1)+'" r="4" fill="#f97316"/><text x="'+(parseFloat(tx(fS[0].t))+6).toFixed(1)+'" y="'+(fy(fS[0].fF)-8).toFixed(1)+'" font-family="Inter" font-size="13" font-weight="600" fill="#f97316">'+fS[0].fF+'\u00b0</text>';
-        svg+='<circle cx="'+fxp.toFixed(1)+'" cy="'+fy(fS[fpk].fF).toFixed(1)+'" r="4.5" fill="#f97316"/><text x="'+fxc.toFixed(1)+'" y="'+(fy(fS[fpk].fF)-9).toFixed(1)+'" text-anchor="middle" font-family="Space Grotesk" font-size="14" font-weight="700" fill="#f97316">'+fS[fpk].fF+'\u00b0</text>';
+        svg+='<circle cx="'+fxp.toFixed(1)+'" cy="'+fy(fS[fpk].fF).toFixed(1)+'" r="4.5" fill="#f97316"/><text x="'+fxc.toFixed(1)+'" y="'+(fy(fS[fpk].fF)-9).toFixed(1)+'" text-anchor="middle" font-family="ui-rounded,Space Grotesk,sans-serif" font-size="14" font-weight="700" fill="#f97316">'+fS[fpk].fF+'\u00b0</text>';
         svg+='<circle cx="'+tx(fS[fN].t)+'" cy="'+fy(fS[fN].fF).toFixed(1)+'" r="4" fill="#f97316"/><text x="'+(parseFloat(tx(fS[fN].t))-6).toFixed(1)+'" y="'+(fy(fS[fN].fF)-8).toFixed(1)+'" text-anchor="end" font-family="Inter" font-size="13" font-weight="600" fill="#f97316">'+fS[fN].fF+'\u00b0</text>';}
       if(x.onset){svg+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/>';svg+='<circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';} /* 0712j: annotation text retired \u2014 the chart shows, the beats tell, the lens reads. Canvas share card keeps its words (no lens there). */
       if(x.peakPt){svg+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';}
@@ -8552,7 +8552,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       l1+='<path d="'+area+'" fill="rgba(226,59,84,.12)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
       if(x.onset)l1+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';
       if(x.peakPt)l1+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';
-      if(calmDay)l1+='<text x="360" y="70" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="22" fill="#9aa0b8">no hold waves'+((x.downPeak>0&&x.peakPt)?(' \u2014 peak '+x.downPeak+' \u00b7 '+pwClk(x.peakPt.t)):'')+'</text>'; /* 0713c: Q2 (owner pick) \u2014 the calm says so; provable from the dp>=8 gate, gone the moment a wave exists */
+      if(calmDay)l1+='<text x="360" y="70" text-anchor="middle" font-family="ui-rounded,Space Grotesk,sans-serif" font-weight="700" font-size="22" fill="#9aa0b8">no hold waves'+((x.downPeak>0&&x.peakPt)?(' \u2014 peak '+x.downPeak+' \u00b7 '+pwClk(x.peakPt.t)):'')+'</text>'; /* 0713c: Q2 (owner pick) \u2014 the calm says so; provable from the dp>=8 gate, gone the moment a wave exists */
       l1+='</svg>';
       var v1=x.peakPt?('peak '+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak);
       h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div><div class="pw-lrule"></div>'+l1;
@@ -8769,8 +8769,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var W=1080,H=1350,x=D.x,LT=D.ltg||[];
       var C=PW_CARD_ALT;
       function rr(X,Y,w,h,r){ctx.beginPath();ctx.moveTo(X+r,Y);ctx.arcTo(X+w,Y,X+w,Y+h,r);ctx.arcTo(X+w,Y+h,X,Y+h,r);ctx.arcTo(X,Y+h,X,Y,r);ctx.arcTo(X,Y,X+w,Y,r);ctx.closePath();}
-      function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
-      function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+      function SG(w,s){return w+" "+s+'px ui-rounded,"Space Grotesk",sans-serif';}
+      function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
       function T(s,X,Y,f,c,a,bl){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=bl||"alphabetic";ctx.fillText(s,X,Y);}
       function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
       ctx.clearRect(0,0,W,H);
@@ -8881,11 +8881,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var ICONS={clear:"\u2600\ufe0f",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
       for(s2=0;s2<segs.length;s2++){var sx2=TX(segs[s2].a),sw2=TX(segs[s2].b)-TX(segs[s2].a);
         rr(sx2,ry,Math.max(sw2-1,2),rh,5);ctx.fillStyle=PW_RIBBON[segs[s2].cl];ctx.fill();}
-      ctx.font='44px "Inter",sans-serif';var lastIR=-1e9;
+      ctx.font='44px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';var lastIR=-1e9;
       for(s2=0;s2<segs.length;s2++){var sw3=TX(segs[s2].b)-TX(segs[s2].a);if(sw3<16)continue;
         var icx=(TX(segs[s2].a)+TX(segs[s2].b))/2,ihalf=ctx.measureText(ICONS[segs[s2].cl]).width/2;
         if(icx-ihalf<lastIR+8)continue;
-        T(ICONS[segs[s2].cl],icx,iy,'44px "Inter",sans-serif',C.ink,"center");lastIR=icx+ihalf;}
+        T(ICONS[segs[s2].cl],icx,iy,'44px -apple-system,BlinkMacSystemFont,"Inter",sans-serif',C.ink,"center");lastIR=icx+ihalf;}
       var axLast=T0;
       for(var t2=T0;t2<=T1;t2+=180){T(pwClkS(t2%1440),TX(t2),axY,IN("600",22),C.muted2,"center");axLast=t2;}
       if(T1-axLast>=120)T(pwClkS(T1%1440),TX(T1),axY,IN("600",22),C.muted2,"center");
@@ -8921,8 +8921,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var C=PW_CARD_ALT;
       function tcol(cl){return cl==="pw-p"?"#ff6b6b":cl==="pw-l"?"#ff9f6b":cl==="pw-m"?"#ffce5c":"#3dd68c";}
       function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-      function SG(w,s){return w+" "+s+'px "Space Grotesk",sans-serif';}
-      function IN(w,s){return w+" "+s+'px "Inter",sans-serif';}
+      function SG(w,s){return w+" "+s+'px ui-rounded,"Space Grotesk",sans-serif';}
+      function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
       function T(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
       function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
       function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
