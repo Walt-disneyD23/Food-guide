@@ -1702,7 +1702,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4628,12 +4628,22 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
   function RD(w,z){return w+" "+z+'px ui-rounded,"Space Grotesk",sans-serif';} /* 0717o: the Hybrid face debuts on this surface (owner call; the identity round follows later) */
   function RB(w,z){return w+" "+z+'px "Inter",sans-serif';}
   var TD_SOFT=["","#93e2ba","#cbdba3","#f8d38f","#ffb197"]; /* the board's soft fills as card constants - cards keep their own palette in both themes */
-  function tdDrawCard(D){ /* 0717o Cut 2b: single-path two-pass - pass(null) measures the height, pass(ctx) paints; one arithmetic, zero drift */
-    var W=1080,L=84,R=W-84,C=window.__pwCardInk; /* 0717p: PW_CARD lives in the Wrap IIFE - the export is the bridge */
+  function tdKit(){ /* 0717t Cut 1: the drawer toolkit, hoisted verbatim from tdDrawCard - measuring context + text/geometry hands, ONE set for the day card and the trip card */
     var mc=document.createElement("canvas");mc.width=8;mc.height=8;var mx=mc.getContext("2d");
     function tw(f,t){mx.font=f;return mx.measureText(t).width;}
     function wrapN(f,t,mw){var ws=String(t).split(" "),ln="",o=[];for(var i=0;i<ws.length;i++){var t2=(ln?ln+" ":"")+ws[i];if(tw(f,t2)>mw&&ln){o.push(ln);ln=ws[i];}else ln=t2;}if(ln)o.push(ln);return o;}
     function ell(t,f,mw){if(tw(f,t)<=mw)return t;while(t.length&&tw(f,t+"\u2026")>mw)t=t.slice(0,-1);return t+"\u2026";}
+    function geom(x){ /* x=null in a dry pass: T2/HL no-op; rr2 callers guard on x themselves (the shipped contract) */
+      function rr2(px,py,w2,h2,r2){x.beginPath();x.moveTo(px+r2,py);x.arcTo(px+w2,py,px+w2,py+h2,r2);x.arcTo(px+w2,py+h2,px,py+h2,r2);x.arcTo(px,py+h2,px,py,r2);x.arcTo(px,py,px+w2,py,r2);x.closePath();}
+      function T2(t,px,py,f,c2,al){if(!x)return;x.font=f;x.fillStyle=c2;x.textAlign=al||"left";x.fillText(t,px,py);x.textAlign="left";}
+      function HL(L2,R2,py){if(!x)return;x.strokeStyle="rgba(255,255,255,.09)";x.lineWidth=2;x.beginPath();x.moveTo(L2,py);x.lineTo(R2,py);x.stroke();}
+      return {rr2:rr2,T2:T2,HL:HL};
+    }
+    return {tw:tw,wrapN:wrapN,ell:ell,geom:geom};
+  }
+  function tdDrawCard(D){ /* 0717o Cut 2b: single-path two-pass - pass(null) measures the height, pass(ctx) paints; one arithmetic, zero drift */
+    var W=1080,L=84,R=W-84,C=window.__pwCardInk; /* 0717p: PW_CARD lives in the Wrap IIFE - the export is the bridge */
+    var K=tdKit(),tw=K.tw,wrapN=K.wrapN,ell=K.ell; /* 0717t Cut 1: the toolkit consumed from tdKit - bodies byte-identical, hoisted not rewritten */
     var recL=wrapN(RB(500,34),D.head.r+(D.thinNote?" "+D.thinNote:""),R-L);
     var ftL=D.foots.map(function(f){return wrapN(RB(500,31),f.h,R-L-52);});
     var rowsM=D.rows.map(function(rr){
@@ -4641,9 +4651,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var sbL=rr.sub?wrapN(RB(500,30),rr.sub,R-L-64):[];
       return {nm:nmL,sb:sbL};});
     function pass(x){ /* x=null: dry (height only) */
-      function rr2(px,py,w2,h2,r2){x.beginPath();x.moveTo(px+r2,py);x.arcTo(px+w2,py,px+w2,py+h2,r2);x.arcTo(px+w2,py+h2,px,py+h2,r2);x.arcTo(px,py+h2,px,py,r2);x.arcTo(px,py,px+w2,py,r2);x.closePath();}
-      function T2(t,px,py,f,c2,al){if(!x)return;x.font=f;x.fillStyle=c2;x.textAlign=al||"left";x.fillText(t,px,py);x.textAlign="left";}
-      function HL(py){if(!x)return;x.strokeStyle="rgba(255,255,255,.09)";x.lineWidth=2;x.beginPath();x.moveTo(L,py);x.lineTo(R,py);x.stroke();}
+      var G=K.geom(x),rr2=G.rr2,T2=G.T2;function HL(py){G.HL(L,R,py);} /* 0717t Cut 1: geometry hands from the kit; HL keeps its local L/R seat so the pass body below is untouched */
       var y=104,q,j;
       T2(D.eyebrow,L,y,RD(700,30),C.violet);y+=108; /* 0717s (owner-agreed): the eyebrow breathes - 12px more air over the day name */
       T2(D.dayName,L,y,RD(700,120),C.ink);y+=64;
