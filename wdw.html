@@ -1764,7 +1764,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2900,6 +2900,30 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       }}
     return null;
   }
+  function rdTnEE(best,names){ /* 0718o (owner pick B): the Extended Evening suffix.
+     Fires ONLY when another park's EE close reaches or beats the longest
+     PUBLISHED close — the one case where the published-close law would
+     mislead. Label from the feed's own desc (never Early Entry); the named
+     parks exclude themselves; capability-honest — names the program, claims
+     nothing about who qualifies. Equal -> "matches it"; later -> "runs past
+     it to <clock>" (the stronger truth alone when both somehow occur). */
+    var eq=[],bt=[],btBest=0,btIso=null,k,i;
+    for(k in parkInfo){
+      if(names.indexOf(k)>=0)continue;
+      var xs=(parkInfo[k]&&parkInfo[k].extras)||[];
+      for(i=0;i<xs.length;i++){var x=xs[i];
+        if(!x||!x.close||!/extended evening/i.test(x.desc||""))continue;
+        var c=new Date(x.close).getTime();
+        if(c===best)eq.push(BANNER_MONO[k]||k);
+        else if(c>best){bt.push(BANNER_MONO[k]||k);if(c>btBest){btBest=c;btIso=x.close;}}
+      }
+    }
+    function j(a){return a.length===1?a[0]:a.slice(0,-1).join(", ")+" and "+a[a.length-1];}
+    var out="";
+    if(eq.length&&!bt.length)out=' <b>'+esc(j(eq))+'</b> match'+(eq.length===1?"es":"")+' it for <b>Extended Evening</b> guests.';
+    else if(bt.length)out=' <b>'+esc(j(bt))+'</b> run'+(bt.length===1?"s":"")+' past it to <b>'+esc(fmtClock(btIso)||"")+'</b> for <b>Extended Evening</b> guests.';
+    return out;
+  }
   function rdTonightClause(){
     if(usingFallback)return "";
     var ds=(typeof tpToday==="function")?tpToday():null;if(!ds)return "";
@@ -2917,7 +2941,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!bestIso)return ""; /* after the last close (or pre-hours) the seat is empty */
     var monos=names.map(function(n){return BANNER_MONO[n]||n;});
     var who=monos.length===1?monos[0]:monos.slice(0,-1).join(", ")+" and "+monos[monos.length-1];
-    return '<div class="rd-row"><span class="ic">\uD83C\uDF19</span><div class="tx"><b>'+esc(who)+'</b> '+(names.length===1?"runs":"run")+' to <b>'+esc(fmtClock(bestIso)||"")+'</b> tonight \u2014 the resort\u2019s longest day.</div></div>';
+    return '<div class="rd-row"><span class="ic">\uD83C\uDF19</span><div class="tx"><b>'+esc(who)+'</b> '+(names.length===1?"runs":"run")+' to <b>'+esc(fmtClock(bestIso)||"")+'</b> tonight \u2014 the resort\u2019s longest day.'+rdTnEE(best,names)+'</div></div>';
   }
   function renderRead(){
     var el=document.getElementById("rdRead");if(!el)return;
