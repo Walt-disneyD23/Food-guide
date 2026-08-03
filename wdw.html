@@ -1704,7 +1704,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0717y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0717z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4027,7 +4027,18 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(tpEdit&&!tpNew){var cur=tpCurTrip();if(cur)for(ti=0;ti<ts.length;ti++)if(ts[ti].id===cur.id){tgt=ts[ti];break;}}
     var pl=(tpPlanDraft!==null)?tpPlanDraft:((tgt&&tgt.plan)||{}),keep={}; /* Cut 2: picks prune to the saved range — a day the trip no longer contains can’t carry a pick */
     tpDays({a:a,b:b}).forEach(function(k){if(pl[k])keep[k]=pl[k];});
-    if(tgt){tgt.n=n;tgt.a=a;tgt.b=b;tgt.plan=keep;tpSel=tgt.id;}
+    if(tgt){ /* 0717z (owner-caught): the creator's save obeys the 0715l law - anywhere the pick CHANGED or dropped, that day's rides, pins and done marks go with it; a day pruned out of the new range carries nothing forward; re-keeping the same park keeps the list. One hygiene law, every door */
+      var op=tgt.plan||{},dk={},k2,inR={};
+      tpDays({a:a,b:b}).forEach(function(k3){inR[k3]=1;});
+      for(k2 in op)dk[k2]=1;for(k2 in keep)dk[k2]=1;
+      if(tgt.rides)for(k2 in tgt.rides)dk[k2]=1;
+      if(tgt.pins)for(k2 in tgt.pins)dk[k2]=1;
+      if(tgt.done)for(k2 in tgt.done)dk[k2]=1;
+      for(k2 in dk)if(!inR[k2]||(op[k2]||null)!==(keep[k2]||null)){
+        if(tgt.rides)delete tgt.rides[k2];
+        if(tgt.pins)delete tgt.pins[k2];
+        if(tgt.done)delete tgt.done[k2];}
+      tgt.n=n;tgt.a=a;tgt.b=b;tgt.plan=keep;tpSel=tgt.id;}
     else{var t={id:String(Date.now())+"-"+ts.length,n:n,a:a,b:b,plan:keep};ts.push(t);tpSel=t.id;}
     store.set("ppTrips",ts);tpEdit=false;tpNew=false;tpOpen=null;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;
     return null;
