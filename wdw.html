@@ -1586,6 +1586,8 @@
   .pw-alm-yr .ytrack{flex:1;height:12px;border-radius:6px;background:var(--card-2);position:relative;overflow:hidden}
   .pw-alm-yr .ytrack i{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
   .pw-alm-yr .yv{width:72px;text-align:right;font-family:var(--font-display);font-weight:700;font-size:var(--fs-small);color:var(--ink);white-space:nowrap}
+  .pw-alm-yr .yv.stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15} /* 0718b: the so-far seat (owner pick A) \u2014 the qualifier stacks under the value it qualifies; column and tracks untouched */
+  .pw-alm-yr .yv.stack small{font-family:var(--font-display);font-weight:700;font-size:var(--fs-micro);letter-spacing:.14em;color:var(--muted-2)}
   .pw-alm-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
   .pw-alm-dow .dc{background:var(--card-2);border-radius:var(--r-el);text-align:center;padding:8px 0 9px}
   .pw-alm-dow .dc i{display:block;font-style:normal;font-family:var(--font-display);font-weight:700;font-size:var(--fs-micro);letter-spacing:.08em;color:var(--muted-2)}
@@ -1704,7 +1706,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7076,7 +7078,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       for(i=0;i<yrs.length;i++){r=yrs[i].r;
         yrows+='<div class="pw-alm-yr"><span class="yy">'+yrs[i].y+'</span>'
           +'<span class="ytrack"><i style="width:'+Math.min(100,Math.round(yrs[i].v/summit.v*100))+'%;background:var(--'+pwAlmTier(r)+')"></i></span>'
-          +'<b class="yv">'+r+" min"+(yrs[i].ym===curYm?" \u00b7 so far":"")+"</b></div>";}
+          +'<b class="yv'+(yrs[i].ym===curYm?" stack":"")+'">'+r+" min"+(yrs[i].ym===curYm?"<small>SO FAR</small>":"")+"</b></div>";}
       var ynote=pwAlmYearsNote(yrs,mf);
       h+='<div class="pw-alm-card"><div class="sec"><span class="c1">THE YEARS, SIDE BY SIDE</span><span class="c2">'+mf.toUpperCase()+"</span></div>"
         +yrows+(ynote?'<div class="pw-alm-note">'+ynote+"</div>":"")+"</div>";
