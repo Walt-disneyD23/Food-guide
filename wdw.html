@@ -1763,7 +1763,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718j</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3016,11 +3016,11 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
             '<div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
             '<div class="banner-sub"></div></div>'+
             (key==="all"
-              ?statHTML+'</div>'+'<div class="banner-chev">\u25be</div>'+'</div>'
+              ?statHTML+'</div>'+'</div>' /* 0718k: no chevron — the hero no longer expands */
               :'</div>'+'<div class="tk-stub"><div class="tk-admit">ParkPulse</div>'+statHTML+'<div class="banner-chev">\u25be</div></div></div>')+
         '</div>'+
         '<div class="banner-panel" hidden></div>';
-      root.querySelector(".banner-art").addEventListener("click",function(){
+      if(key!=="all")root.querySelector(".banner-art").addEventListener("click",function(){ /* 0718k: the All-list retires — the hero is the read, one card one job; parks keep the full lifecycle */
         expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
         if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
       });
