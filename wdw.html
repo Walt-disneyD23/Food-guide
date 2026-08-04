@@ -1765,7 +1765,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1837,7 +1837,6 @@ document.documentElement.classList.add("dark");}catch(e){}
 </div>
 
 <div class="wrap">
-  <div id="dnFlow" hidden></div>
   <div id="banners"></div>
   <div id="searchResults" hidden></div>
   <div id="wrapView" class="pw-view" hidden></div>
@@ -2208,7 +2207,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     nx.textContent=nextRefreshAt?countdownText(nextRefreshAt):"—";
   }
   /* Status cover is now a pure glance line; the down banner + Notify-me list
-     live in the Live feed (#dnFlow) as ambient in-flow content — rebuilt by
+     live in the hero read's down door (0718h) — rebuilt by
      render(), preserving its tap-to-expand state across refreshes. */
   function downRidesNow(){
     var ids=Object.keys(roster),down=[];
@@ -2228,54 +2227,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       ? s.down.length+' ride'+(s.down.length===1?'':'s')+' down right now'
       : (allClosed?'all parks closed':'all rides running'))+'</b>';
   }
-  function renderDownFlow(){
-    var dn=$("dnFlow");if(!dn)return;
-    var s=downRidesNow(),n=s.down.length;
-    var hide=!!window.__pwActive||usingFallback||!s.total||!n||!!f.search.trim();
-    dn.hidden=hide;
-    if(hide){dn.innerHTML="";dn.classList.remove("open");dn.style.marginBottom="0";return;}
-    var prevList=dn.querySelector("#dnList");
-    var wasOpen=!!(prevList&&prevList.classList.contains("open"));
-    var prevScroll=wasOpen?prevList.scrollTop:0;   /* survive the innerHTML rebuild (0705e) */
-    dn.style.marginBottom="14px";
-    s.down.sort(function(a,b){return a.park.localeCompare(b.park)||a.name.localeCompare(b.name);});
-    var rows=s.down.map(function(r){
-      var on=!!reopen[r.id];
-      return '<div class="dn-row"><span class="rdot"></span>'+
-        '<div class="dn-info"><div class="nm">'+esc(r.name)+'</div><div class="pk">'+esc(r.park)+'</div></div>'+
-        '<button class="dn-watch'+(on?" on":"")+'" data-watch="'+esc(r.id)+'">'+(on?"✓ Alert set":"Notify me")+'</button>'+
-      '</div>';}).join("");
-    dn.innerHTML=
-      '<div id="dnTrigger" class="dn-bar">'+
-        '<span class="dn-tx">'+n+' ride'+(n===1?"":"s")+' down</span>'+
-        '<span class="dn-cc">\u25be</span>'+
-      '</div>'+
-      '<div class="dn-list" id="dnList">'+rows+'</div>'+
-      '<button type="button" id="dnShare" class="dnshare" style="display:none">Share what\'s down</button>';
-    var t=dn.querySelector("#dnTrigger");
-    function applyOpen(open){
-      dn.classList.toggle("open",open);
-      dn.querySelector("#dnList").classList.toggle("open",open);
-      var sh=dn.querySelector("#dnShare");if(sh)sh.style.display=open?"block":"none";
-    }
-    if(t)t.addEventListener("click",function(){
-      applyOpen(!dn.querySelector("#dnList").classList.contains("open"));});
-    if(wasOpen){applyOpen(true);var nl=dn.querySelector("#dnList");if(nl&&prevScroll)nl.scrollTop=prevScroll;}
-    var dsh=dn.querySelector("#dnShare");
-    if(dsh)dsh.addEventListener("click",function(){shareDownNow();});
-    Array.prototype.forEach.call(dn.querySelectorAll("[data-watch]"),function(btn){
-      btn.addEventListener("click",function(){
-        var id=btn.getAttribute("data-watch"),on=!reopen[id];
-        if(on){reopen[id]=true;
-if(!armed[id])reopenOnly[id]=true;   /* transient unless a standing threshold alert exists */
-prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
-else{delete reopen[id];delete reopenOnly[id];}
-saveReopen();saveReopenOnly();
-btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
-        updateAlertBadge();render();
-      });
-    });
-  }
+  /* 0718u: renderDownFlow swept — the reverse path served its one build (0718h → 0718u); the door lives in the hero read */
   function agoText(ts){var s=Math.round((Date.now()-ts)/1000);return s<60?"just now":Math.floor(s/60)+" min ago";}
   function countdownText(ts){var r=Math.max(0,ts-Date.now()),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);return m+":"+(s<10?"0":"")+s;}
 
@@ -2764,6 +2716,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span>'+
       '<div class="tx"><b>'+esc(g.nm)+'</b> is <b class="rd-go">'+Math.round(g.delta)+' under</b> typical — the discount of the moment.</div></div>';
   }
+  function rdClampNm(n){ /* 0718u (parked 0718d): ♪ titles clamp word-safe at 30 + ellipsis; one token to retune */
+    n=String(n||"");if(n.length<=30)return n;
+    var c=n.slice(0,29).replace(/\s+\S*$/,"");return (c||n.slice(0,29))+"\u2026";
+  }
   function rdShowClause(){
     if(typeof uxRows!=="function")return null;
     var haveShows=false,id;for(id in liveById){if(liveById[id]&&liveById[id].shows){haveShows=true;break;}}
@@ -2771,7 +2727,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var now=Date.now(),res=uxRows(now,"all",false);
     if(!res.next.length)return null;
     var first=res.next[0],later=res.next.filter(function(x){return x.t>first.t&&x.t<=now+7200000;});
-    var tx='<b>'+esc(first.nm)+'</b> at <b>'+esc(uxClk(first.t))+'</b>';
+    var tx='<b>'+esc(rdClampNm(first.nm))+'</b> at <b>'+esc(uxClk(first.t))+'</b>';
     if(later.length){tx+=' — '+later.length+' more act'+(later.length===1?'':'s')+' across the parks by '+esc(uxClk(later[later.length-1].t))+'.';}
     else{tx+=' — the next act across the parks.';}
     return '<div class="rd-row rd-door" id="rdShowDoor"><span class="ic">♪</span><div class="tx">'+tx+'</div><span class="chev">▸</span></div>';
@@ -3132,7 +3088,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
               ?statHTML+'</div>'+'</div>' /* 0718k: no chevron — the hero no longer expands */
               :'</div>'+'<div class="tk-stub"><div class="tk-admit">ParkPulse</div>'+statHTML+'<div class="banner-chev">\u25be</div></div></div>')+
         '</div>'+
-        '<div class="banner-panel" hidden></div>';
+        (key==="all"?'':'<div class="banner-panel" hidden></div>'); /* 0718u: the hero never expands (0718k) — no panel */
       if(key!=="all")root.querySelector(".banner-art").addEventListener("click",function(){ /* 0718k: the All-list retires — the hero is the read, one card one job; parks keep the full lifecycle */
         expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
         if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
@@ -3144,7 +3100,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     });
     var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
     (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);})(); /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
-    var uxm=document.createElement("div");uxm.id="upNextCard";elBanners.appendChild(uxm); /* L-32 Cut 1: the Up Next board \u2014 after the last park hero, before Favorites (the day, the parks, what\u2019s playing, yours, everything) */
+    var uxm=document.createElement("div");uxm.id="upNextCard";elBanners.appendChild(uxm); /* L-32 Cut 1: the Up Next board — after the last park hero, before Favorites (the day, the parks, what’s playing, yours, everything) */
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
   }
 
@@ -5818,7 +5774,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       var isExp=expanded===key;
       el.root.classList.toggle("expanded",isExp);
       if(isExp){el.panel.hidden=false;renderPanel(key,el.panel);}
-      else{el.panel.hidden=true;el.panel.innerHTML="";}
+      else if(el.panel){el.panel.hidden=true;el.panel.innerHTML="";} /* 0718u: the hero has no panel — guard the collapse path */
     });
     renderFavTeaser();
     bk2Sync(); /* P1 (0710l): return pill tracks the expanded header */
@@ -6003,7 +5959,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     var tiles=
       '<div class="lstat"><div class="lbl">Shortest</div><div class="v">'+(s.min===null?'\u2013':s.min+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.min?esc(mm.min.n):'')+'</div></div>'+
       '<div class="lstat"><div class="lbl">Longest</div><div class="v">'+(s.max===null?'\u2013':s.max+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.max?esc(mm.max.n):'')+'</div></div>';
-    if(key!=="all"){
+    { /* 0718u: park-only since 0718k — the Busiest tile swept; bannerStats' busiest model stays for the ledgered re-seat */
       var info=parkInfo[key],line;
       if(info&&info.open&&info.close)line=fmtClock(info.open)+" \u2013 "+fmtClock(info.close);
       else if(usingFallback)line="Hours load with live feed";
@@ -6012,12 +5968,10 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(info&&info.extras&&info.extras.length)
         extra=info.extras.map(function(e){return esc(e.desc)+' '+fmtClock(e.open)+'\u2013'+fmtClock(e.close);}).join(" \u00b7 ");
       tiles+='<div class="lstat wide"><div class="lbl">Hours</div><div class="v txt">'+esc(line)+'</div><div class="ctx">'+extra+'</div></div>';
-    }else{
-      tiles+='<div class="lstat wide"><div class="lbl">Busiest park</div><div class="v txt">'+(s.busiest?esc(s.busiest):'\u2013')+'</div><div class="ctx">highest headliner avg</div></div>';
     }
     var face='<div class="lstat-grid">'+tiles+'</div>';
     var fine='<div class="lfine">'+
-      '<span>Headliner avg <b>'+(s.headAvg===null?'\u2013':s.headAvg+'m')+'</b> <button type="button" class="info-i" data-info="'+(key==="all"?"headAll":"headPark")+'" aria-label="How this is calculated">i</button></span>'+
+      '<span>Headliner avg <b>'+(s.headAvg===null?'\u2013':s.headAvg+'m')+'</b> <button type="button" class="info-i" data-info="headPark" aria-label="How this is calculated">i</button></span>'+
       (s.crowd?'<span>Crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></span>':'')+
       '</div>';
     /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
