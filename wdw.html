@@ -262,6 +262,7 @@
   .ux-tm span{display:block;font-family:var(--font-display);font-weight:700;font-size:var(--fs-micro);letter-spacing:.1em;color:var(--muted-2)}
   .ux-ic{flex:0 0 20px;text-align:center;font-size:13px}
   .ux-nm{flex:1;min-width:0;font-weight:600;font-size:var(--fs-body);color:var(--ink);line-height:1.3}
+  .ux-then{display:block;font-weight:500;font-size:var(--fs-meta);color:var(--muted);margin-top:1px} /* 0718t: later starts, quiet — owner soak on density */
   .ux-pk{font-size:var(--fs-meta);color:var(--muted-2);font-weight:700}
   .ux-row.dim{opacity:.55}
   .ux-sec{font-family:var(--font-display);font-weight:700;font-size:var(--fs-micro);letter-spacing:.14em;color:var(--muted-2);padding:10px 0 2px;border-top:1px solid var(--line);margin-top:4px}
@@ -1764,7 +1765,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3072,9 +3073,9 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
       if(!everything&&uxIsMeet(n))continue;
       var sets=uxSetsOf(liveById[id]);if(!sets)continue;
       var mk=uxMark(n),tag=BANNER_MONO[r.park]||"";
-      var fut=null,lp=null,i;
-      for(i=0;i<sets.length;i++){if(sets[i]>=nowMs){if(fut==null)fut=sets[i];}else lp=sets[i];}
-      if(fut!=null)next.push({t:fut,nm:r.name,mk:mk,pk:tag,id:id});
+      var fut=null,lp=null,l2=null,ln=0,i; /* 0718t: the "then" tail (owner pick A) — later starts beyond the seat, min+count, order-robust */
+      for(i=0;i<sets.length;i++){if(sets[i]>=nowMs){if(fut==null)fut=sets[i];else{ln++;if(l2==null||sets[i]<l2)l2=sets[i];}}else lp=sets[i];}
+      if(fut!=null)next.push({t:fut,nm:r.name,mk:mk,pk:tag,id:id,l2:l2,ln:ln});
       if(lp!=null&&(nowMs-lp)<=UX_STARTED_MS&&(lastPast==null||lp>lastPast.t))lastPast={t:lp,nm:r.name,mk:mk,pk:tag,id:id};
     }
     next.sort(function(a,b){return a.t-b.t||(a.nm<b.nm?-1:a.nm>b.nm?1:0);});
@@ -3096,7 +3097,7 @@ btn.classList.toggle("on",on);btn.textContent=on?"✓ Alert set":"Notify me";
     if(!next.length&&!res.started.length){h+='<div class="ux-quiet">No upcoming shows on the board right now.</div>';}
     else{
       h+='<div class="ux-rows">';
-      next.forEach(function(x){h+='<div class="ux-row"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>'+esc(uxRel(x.t-now))+'</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});
+      next.forEach(function(x){h+='<div class="ux-row"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>'+esc(uxRel(x.t-now))+'</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+(x.l2!=null?'<span class="ux-then">then '+esc(uxClk(x.l2))+(x.ln>1?' \u00b7 +'+(x.ln-1)+' later':'')+'</span>':'')+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});
       if(res.started.length){h+='<div class="ux-sec">JUST STARTED</div>';
         res.started.forEach(function(x){var ago=Math.max(1,Math.round((now-x.t)/60000));
           h+='<div class="ux-row dim"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>STARTED '+ago+'M AGO</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});}
