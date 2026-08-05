@@ -1767,7 +1767,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6260,7 +6260,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var c=inf.close?new Date(inf.close).getTime():0;
       if(c>latest)latest=c;
     });
-    var eeOffsets=[],eeParks=[];
+    var eeList=[]; /* C (owner-ratified Aug 4): per-park offset ledger — the rule leads, the outlier gets named */
     PARK_DEF.forEach(function(p){
       var inf=parkInfo[p.key]||{};
       var cell={nm:p.key,avg:headlinerAvgFrom(scopeWaits(p.key)),
@@ -6275,8 +6275,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(!x)return;
         var dsc=x.desc||"";
         if(/early entry/i.test(dsc)){
-          if(eeParks.indexOf(p.key)<0)eeParks.push(p.key);
-          if(x.open&&inf.open){var off=Math.round((new Date(inf.open)-new Date(x.open))/60000);if(off>0&&eeOffsets.indexOf(off)<0)eeOffsets.push(off);}
+          var already=eeList.some(function(e){return e.k===p.key;});
+          if(!already){
+            var off=null;
+            if(x.open&&inf.open){var o2=Math.round((new Date(inf.open)-new Date(x.open))/60000);if(o2>0)off=o2;}
+            eeList.push({k:p.key,pk:BANNER_MONO[p.key]||p.key,off:off});
+          }
           return;
         }
         if(/extended evening/i.test(dsc)){
@@ -6291,9 +6295,16 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(fest[p.key])cell.chips.push({kind:"fest",tx:fest[p.key]});
       D.parks.push(cell);
     });
-    if(eeParks.length){
-      D.early=(eeParks.length===PARK_DEF.length?"Early Entry \u00b7 every park":"Early Entry \u00b7 "+eeParks.map(function(k){return BANNER_MONO[k]||k;}).join(", "))
-        +(eeOffsets.length===1?" \u00b7 "+eeOffsets[0]+" min before open":"");
+    if(eeList.length){
+      var known=eeList.filter(function(e){return e.off!=null;}),counts={},mode=null,best=0,tie=false;
+      known.forEach(function(e){counts[e.off]=(counts[e.off]||0)+1;});
+      Object.keys(counts).forEach(function(k2){var c2=counts[k2];if(c2>best){best=c2;mode=+k2;tie=false;}else if(c2===best)tie=true;});
+      D.early="Early Entry \u00b7 "+(eeList.length===PARK_DEF.length?"every park":eeList.map(function(e){return e.pk;}).join(", "));
+      if(mode!=null&&!tie){ /* a rule exists only when one offset holds the majority outright */
+        D.early+=" \u00b7 "+mode+" min before open";
+        var exc=known.filter(function(e){return e.off!==mode;}).map(function(e){return e.pk+": "+e.off;});
+        if(exc.length)D.early+=" ("+exc.join(", ")+")"; /* the exception, named — never a false "every" claim */
+      }
     }
     if(!usingFallback){
       var dn=downRidesNow();
@@ -6473,7 +6484,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(ci=0;ci<P2.chips.length;ci++){chip(px,cyc,P2.chips[ci]);cyc+=50;}
     }
     y=y+2*cellh+gap;
-    if(D.early){y+=44;T(D.early,L,y,IN("500",26),C.muted2);}
+    if(D.early){y+=44;T(ell(D.early,CW,IN("500",26)),L,y,IN("500",26),C.muted2);}
     /* DOWN RIGHT NOW — the banner's truth, diversified cap */
     if(D.down){
       y+=44;hair(y);y+=30;
