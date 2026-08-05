@@ -1767,7 +1767,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6267,6 +6267,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         open:inf.open?(fmtClock(inf.open)||null):null,close:inf.close?(fmtClock(inf.close)||null):null,
         longest:!!(inf.close&&latest&&new Date(inf.close).getTime()===latest),
         chips:[]};
+      var opn=isOpenNow(inf); /* B + A2 (owner-ratified Aug 4): the second line is time-aware */
+      cell.st=(opn===false)
+        ?((inf.open&&Date.now()<new Date(inf.open).getTime())?"pre":(cell.open&&cell.close?"done":"tba"))
+        :((cell.open&&cell.close)?"open":"tba");
       (inf.extras||[]).forEach(function(x){
         if(!x)return;
         var dsc=x.desc||"";
@@ -6457,9 +6461,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(ns=32;ns>25;ns--){if(MW(P2.nm,SG("800",ns))<=lane)break;}
       if(isCalm){ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(px+8,cy0+52,8,0,7);ctx.fill();T(ell(P2.nm,lane,SG("800",ns)),px+26,cy0+60,SG("800",ns),C.green);}
       else T(ell(P2.nm,lane,SG("800",ns)),px,cy0+60,SG("800",ns),C.muted);
-      var hrs=(P2.open&&P2.close)?(P2.open+" \u2013 "+P2.close):"Hours TBA";
-      T(hrs,px,cy0+116,IN("500",30),(P2.open&&P2.close)?"#c8d2e8":C.muted2);
-      if(P2.longest&&P2.open&&P2.close)T("\u263d",px+MW(hrs,IN("500",30))+12,cy0+116,IN("500",29),"#f5e6a8");
+      var hrs,hcol; /* the time-aware pair (B + A2): open -> hours; pre-open -> the day ahead; done -> status + the published fact; else TBA */
+      if(P2.st==="open"){hrs=P2.open+" \u2013 "+P2.close;hcol="#c8d2e8";}
+      else if(P2.st==="pre"){hrs="Opens at "+P2.open;hcol="#c8d2e8";}
+      else if(P2.st==="done"){hrs="Closed \u00b7 "+P2.open+" \u2013 "+P2.close;hcol=C.muted2;}
+      else{hrs="Hours TBA";hcol=C.muted2;}
+      var hsz;for(hsz=30;hsz>24;hsz--){if(MW(hrs,IN("500",hsz))<=cellw-60)break;} /* measure-right-first: the line fits its cell before it prints */
+      T(ell(hrs,cellw-60,IN("500",hsz)),px,cy0+116,IN("500",hsz),hcol);
+      if(P2.longest&&P2.st==="open")T("\u263d",px+MW(hrs,IN("500",hsz))+12,cy0+116,IN("500",34),"#f5e6a8"); /* grown a notch (owner, Aug 4); prints only on the open hours form */
       var cyc=cy0+144,ci;
       for(ci=0;ci<P2.chips.length;ci++){chip(px,cyc,P2.chips[ci]);cyc+=50;}
     }
