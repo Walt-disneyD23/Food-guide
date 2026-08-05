@@ -1767,7 +1767,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0718y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6295,7 +6295,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(fest[p.key])cell.chips.push({kind:"fest",tx:fest[p.key]});
       D.parks.push(cell);
     });
-    if(eeList.length){
+    var dayLive=D.parks.some(function(p){return p.st==="open"||p.st==="pre";}); /* the resort's day: still open, or still ahead */
+    if(eeList.length&&dayLive){ /* the EE line expires with the day (owner-ratified Aug 4): a done resort prints no morning promises */
       var known=eeList.filter(function(e){return e.off!=null;}),counts={},mode=null,best=0,tie=false;
       known.forEach(function(e){counts[e.off]=(counts[e.off]||0)+1;});
       Object.keys(counts).forEach(function(k2){var c2=counts[k2];if(c2>best){best=c2;mode=+k2;tie=false;}else if(c2===best)tie=true;});
