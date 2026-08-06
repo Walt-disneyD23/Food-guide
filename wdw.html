@@ -619,6 +619,8 @@
   .rpc.tf-dip{border-color:var(--short)}
   .tp-dc.aw:before{content:"";position:absolute;left:4px;right:4px;top:3px;height:3px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* Cut 2 (L2): the week ribbon on trip cells \u2014 the mark names the week; the color stays the crowd\u2019s */
   .crow .dia{width:9px;height:9px;transform:rotate(45deg);border-radius:2.5px;display:inline-block;margin-top:1px} /* Cut 2: the season\u2019s diamond \u2014 never a tier dot */
+  .tf-cd.hd:after{content:"";position:absolute;right:4.5px;bottom:4px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 1px 2px rgba(0,0,0,.25);pointer-events:none} /* Cut 3 (C-A, owner pick A): the holiday\u2019s own corner dot \u2014 the ribbon names the week; the dot names the day */
+  .tf-callg i.hh{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 1px 2px rgba(0,0,0,.25);border:1px solid var(--line)}
   .tf-basis{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);line-height:1.55;margin-top:11px}
   button.tf-bseg{border:0;background:none;padding:0;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent} /* Cut D (D-3): the band wakes \u2014 segments become doors to S3 */
   .tf-calh{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px} /* Cut D (D-3): S3 \u2014 the month up close (funnel-playable ratified) */
@@ -1775,7 +1777,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5381,7 +5383,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         var pc=(isPk?' plan':(pe0?' pn'+(pe0==="ring"?' pnx':''):''))+((j===1&&EV.race[d0])?' race':'')+(c.aw?' aw':''),pea=((pe0&&pe0!=="ring")?' data-em="'+pe0+'"':'');
         cells+=(c.thin?'<span class="tp-dc thin'+pc+'"'+pea+'><i>'+TP_P2[TP_PARKS[j][0]]+'</i></span>':'<span class="tp-dc'+pc+'"'+pea+' style="background:var(--t'+c.lvl+')"><i>'+TP_P2[TP_PARKS[j][0]]+'</i></span>'); /* 0717h */ /* Cut C (C-2): Soft fills, trip-board-scoped */}
       var phe=EV.night[d0]?(tfPartyEm(d0)||"ring"):"";
-      var hol=(SZ.tag[d0]?'<span class="tp-hol">'+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':''))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
+      var hdn=(HOLIDAYS[d0]&&HOLIDAYS[d0]!=="Christmas week")?HOLIDAYS[d0]:null; /* Cut 3 (O-A): a SPECIFIC day-name wins its own row; the generic stretch label yields to the seasonal tag \u2014 the bars name the week either way */
+      var hol=(hdn?'<span class="tp-hol">'+esc(hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
       var dx='';
@@ -5542,15 +5545,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(d=1;d<=n;d++){var v=tfDEst(m,y,d);
       var race=marks.some(function(w){var f=+w.f.slice(8,10),t2=+w.t.slice(8,10),fm=+w.f.slice(5,7)-1,tm=+w.t.slice(5,7)-1;
         return (fm===m&&tm===m)?(d>=f&&d<=t2):(fm===m?d>=f:d<=t2);});
-      var an3=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,d)):null,seatd=an3&&(an3.a.kind==="lift"||an3.a.kind==="dip")&&an3.a.scopes&&an3.a.scopes.resort&&an3.a.scopes.resort.q!=null; /* L2 (F1): only SEATED anchors mark \u2014 held ones render nothing, anywhere */
-      h+='<button type="button" class="tf-cd'+(race?' race':'')+(seatd?' aw1':'')+(pev[d]?' pn'+(pev[d]==="ring"?' pnx':''):'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'"'+((pev[d]&&pev[d]!=="ring")?' data-em="'+pev[d]+'"':'')+' data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
+      var ds3=tfDate(y,m,d),an3=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(ds3):null,seatd=an3&&(an3.a.kind==="lift"||an3.a.kind==="dip")&&an3.a.scopes&&an3.a.scopes.resort&&an3.a.scopes.resort.q!=null; /* L2 (F1): only SEATED anchors mark \u2014 held ones render nothing, anywhere */
+      var hd3=seatd&&HOLIDAYS[ds3]&&HOLIDAYS[ds3]!=="Christmas week"; /* Cut 3 (C-A): the day\u2019s dot rides only inside marked weeks, specific names only */
+      h+='<button type="button" class="tf-cd'+(race?' race':'')+(seatd?' aw1':'')+(hd3?' hd':'')+(pev[d]?' pn'+(pev[d]==="ring"?' pnx':''):'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'"'+((pev[d]&&pev[d]!=="ring")?' data-em="'+pev[d]+'"':'')+' data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'');
     var pset={},pk;for(pk in pev)pset[pev[pk]]=1;
     var plg=(pset["\ud83c\udf83"]?'<span><i class="em">\ud83c\udf83</i>MK Halloween party night</span>':'')+(pset["\ud83c\udf84"]?'<span><i class="em">\ud83c\udf84</i>MK Christmas party night</span>':'')+(pset["ring"]?'<span><i class="pp"></i>MK party night</span>':'');
     var ancs={},alg='',dl; /* L2 (F1): the grown legend \u2014 the swatch wears the actual bar; the entry names the anchor AND its direction, per month */
     for(dl=1;dl<=n;dl++){var al=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,dl)):null;
       if(al&&(al.a.kind==="lift"||al.a.kind==="dip")&&al.a.scopes&&al.a.scopes.resort&&al.a.scopes.resort.q!=null&&!ancs[al.id]){
-        ancs[al.id]=1;alg+='<span><i class="awc"></i>'+esc(al.a.name)+' \u00b7 has run ~'+Math.round(Math.abs(al.a.scopes.resort.q-1)*100)+'% '+(al.a.scopes.resort.q>1?'over':'quieter than')+' nearby ordinary weeks</span>';}}
+        ancs[al.id]=1;alg+='<span><i class="awc"></i>'+esc(al.a.name)+' \u00b7 has run ~'+Math.round(Math.abs(al.a.scopes.resort.q-1)*100)+'% '+(al.a.scopes.resort.q>1?'over':'quieter than')+' nearby ordinary weeks</span>';}
+      var dsl=tfDate(y,m,dl); /* Cut 3 (C-A): the legend names each marked holiday with its date \u2014 real names, never a generic phrase (owner-confirmed) */
+      if(al&&al.a.scopes&&al.a.scopes.resort&&al.a.scopes.resort.q!=null&&(al.a.kind==="lift"||al.a.kind==="dip")&&HOLIDAYS[dsl]&&HOLIDAYS[dsl]!=="Christmas week")alg+='<span><i class="hh"></i>'+esc(HOLIDAYS[dsl])+' \u00b7 '+TF_MABs[m]+' '+dl+'</span>';}
     h+='<div class="tf-callg">'+alg+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
     h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:15px">Make this my trip \u203a</button>';
     h+='<div class="tf-basis">Each date wears the company it keeps: same part of the month, same day of the week, ordinary days only \u00b7 dates in a marked week wear that week\u2019s own history, lifted or eased by how it\u2019s really run \u00b7 a pattern, never a forecast \u00b7 party nights show only where the night list is verified \u00b7 the mark names the week; the color stays the crowd\u2019s.</div></div>';
