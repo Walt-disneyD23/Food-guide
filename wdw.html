@@ -611,6 +611,12 @@
   .tf-mfl+.tf-mfl{border-top:1px solid var(--line)}
   .tf-mfl b{color:var(--short);font-weight:700}
   .tf-mfl .dts{color:var(--muted-2)}
+  .tf-mfl b.h{color:var(--ink)} /* L2: the lift receipt's bold speaks ink \u2014 green stays the measured-quieter license */
+  .tf-cd.aw1:before{content:"";position:absolute;left:4px;right:4px;top:3px;height:3.5px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* L2 (F1): the week ribbon \u2014 the mark names the week; the color stays the crowd's */
+  .tf-callg i.awc{width:16px;height:13px;border-radius:4px;background:var(--long);position:relative} /* L2: legend swatch = a mini tier cell wearing the actual bar (the grown-legend standard) */
+  .tf-callg i.awc:before{content:"";position:absolute;left:2.5px;right:2.5px;top:2px;height:2.5px;border-radius:2px;background:rgba(255,255,255,.92)}
+  .rpc.tf-lift{border-color:var(--medium)} /* L2: anchor cards wear their direction \u2014 amber lift, green dip */
+  .rpc.tf-dip{border-color:var(--short)}
   .tf-basis{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);line-height:1.55;margin-top:11px}
   button.tf-bseg{border:0;background:none;padding:0;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent} /* Cut D (D-3): the band wakes \u2014 segments become doors to S3 */
   .tf-calh{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px} /* Cut D (D-3): S3 \u2014 the month up close (funnel-playable ratified) */
@@ -1767,7 +1773,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0718y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3764,7 +3770,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="rp-dtx"><span>'+s[0].lab+'</span><span>'+s[s.length-1].lab+'</span></div>'+
       '<div class="rp-dtread" id="rpDtRead">Tap a day for the detail</div>'+
       '<div class="rp-ddcap">'+cap+'</div></div>'+tiles+
-      '<div class="rpc"><div class="pf-basis" style="border-top:0;padding-top:2px">'+({all:"All banked days",last7:"The last 7 days",month:"This month",wkend:"Weekends only",trip:"Your trip\u2019s weekdays"})[pre||"all"]+' \u00b7 Each column a day \u00b7 height = time lost \u00b7 strike-day overlap is day-level (window overlap lands with the banking upgrade) \u00b7 refurb days excluded</div></div>';
+      '<div class="rpc"><div class="pf-basis" style="border-top:0;padding-top:2px">'+({all:"Last 28 days",last7:"The last 7 days",month:"This month",wkend:"Weekends only",trip:"Your trip\u2019s weekdays"})[pre||"all"]+' \u00b7 Each column a day \u00b7 height = time lost \u00b7 strike-day overlap is day-level (window overlap lands with the banking upgrade) \u00b7 refurb days excluded</div></div>';
   }
   /* ===== 0713t: the hour grid — gv:2 h-fields, read-time pooled. G2' law:
      hue = wait tier (rpTierCls, one family per measure), depth = a luminosity
@@ -3872,7 +3878,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var span=rpDay(days[0].d)+' \u2013 '+rpDay(days[days.length-1].d);
     var basis;
     if(diary)basis='The week itself, day by day \u2014 not a pattern \u00b7 '+span+' \u00b7 each cell one day\u2019s hour (n\u22482 half-hour medians)';
-    else basis=({all:'All banked days',month:'This month',wkend:'Weekends \u2014 Saturdays &amp; Sundays only',trip:tpLensPhrase()})[rpWin]+' \u00b7 '+span+' \u00b7 '+days.length+' days \u00b7 typical cell n\u2248'+nMed+' half-hour day-medians \u00b7 faint = thinner than this grid\u2019s norm \u00b7 lightest &amp; busiest labeled';
+    else basis=({all:'Last 28 days',month:'This month',wkend:'Weekends \u2014 Saturdays &amp; Sundays only',trip:tpLensPhrase()})[rpWin]+' \u00b7 '+span+' \u00b7 '+days.length+' days \u00b7 typical cell n\u2248'+nMed+' half-hour day-medians \u00b7 faint = thinner than this grid\u2019s norm \u00b7 lightest &amp; busiest labeled';
     return '<div class="rpc"><div class="lbl">'+head+'</div>'+grid+
       '<div class="rp-dtread" id="rpHmRead">Tap a cell for the exact average</div>'+
       '<div class="pf-basis">'+basis+'</div></div>';
@@ -3888,7 +3894,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="hstats"><div class="hstat"><div class="k">Typical wait</div><div class="v">'+(cv?cv.typ+'<small>m</small>':'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Typical peak</div><div class="v">'+(cv?cv.pk+'<small>m</small>':'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Clean days</div><div class="v">'+(rel?rel.clean+'<small>/'+rel.n+'</small>':'\u2013')+'</div></div></div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>'; /* 0713v: D1 — one lens under the hero, windowing the entire profile */
     var shape;
     if(loading)shape='<div class="rpc"><div class="lbl">Shape of the line</div><div class="fc-empty">The shape loads from the day ledger \u2014 one moment.</div></div>';
@@ -3984,7 +3990,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="hstats"><div class="hstat"><div class="k">Morning windows</div><div class="v">'+(C?C.until.length:'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Never under 10m</div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Easy all day</div><div class="v">'+(C?C.allday.length:'\u2013')+'</div></div></div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The board builds from the day ledger \u2014 one moment.</div></div>';
     var body="";
@@ -4074,7 +4080,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hero='<div class="rp-hero"><div class="eb">My Morning \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
       '<div class="sub">Built from your starred rides\u2019 typical mornings.</div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(!stars.length)return crumb+hero+'<div class="rpc"><div class="fc-empty">Star rides in this park \u2014 from Live, Favorites, or a ride\u2019s profile \u2014 and the morning builds itself here.</div></div>';
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The plan builds from the day ledger \u2014 one moment.</div></div>';
@@ -4165,7 +4171,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         s+=' '+nms(mid)+' runs between them \u2014 typically <b>'+mc.typ+'m</b>'+(mc.allday?' as a walk-on all day.':(mc.front!==null?', a walk-on until <b>'+rpClk(mc.front)+'</b>.':', cresting '+rpRange(mc.crest[0],mc.crest[1])+'.'));}
       s+='</p>';
     }
-    var WN={all:'All banked days',last7:'The last 7 days',month:'This month',wkend:'Weekends'};
+    var WN={all:'Last 28 days',last7:'The last 7 days',month:'This month',wkend:'Weekends'};
     return '<div class="rpc rc-read"><div class="lbl">The read</div>'+s+
       '<div class="pf-basis">'+WN[rpWin]+' \u00b7 typical half-hour medians while operating \u00b7 one scale, one window \u2014 like for like</div></div>';
   }
@@ -4306,7 +4312,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span>'+rcNowChip(its[i].id)+'</button>'; /* 0714m: live wears the hero (N1, ratified) */}
     var hero='<div class="rc-hero"><div class="eb">Compare \u00b7 '+EBW[rpWin]+'</div><div class="rc-legend">'+chips+'</div>'+
       '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 now as of '+rpClk(rcEtMin(new Date()))+' \u00b7 refreshes ~5 min</div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","All"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcOrderHTML(its)+rcTableHTML(its,days);
   }
@@ -5343,30 +5349,71 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var TF_FEST={fw:"Food & Wine",holidays:"Festival of the Holidays",arts:"Festival of the Arts",fg:"Flower & Garden"};
   function tfYFor(m){ /* next occurrence: strictly-future months this year; the current month and earlier roll to next (funnel-playable ratified) */
     var t=tpToday(),cm=+t.slice(5,7)-1,cy=+t.slice(0,4);return m>cm?cy:cy+1;}
-  function tfMP(m){ /* one month's pooled numbers from the exported lens \u2014 the ONLY number family the advisor speaks (Law 2) */
-    var L=(typeof window.__avL==="function")?window.__avL():null;if(!L)return null;
-    var ys=L.obs(m).slice(-3),all=L.pool(ys,"resort");if(!all)return null;
-    var P={all:all,E:L.pool(ys,"parts","E"),M:L.pool(ys,"parts","M"),L:L.pool(ys,"parts","L"),d:[],ys:ys},js;
-    for(js=0;js<7;js++)P.d[js]=L.pool(ys,"dow",(js+6)%7); /* cells are Mon-first; js is Sun-first \u2014 the translation lives HERE and nowhere else */
-    return (P.E&&P.M&&P.L)?P:null;}
+  function tfMP(m){ /* one month's ORDINARY pools from the day lens \u2014 the forecast voice de-mixed (L2 Cut 1, H2); dow pools are Sun-first at the source now (day atoms), the old cell translation seam retired with its source */
+    var L=(typeof window.__tfL==="function")?window.__tfL():null;if(!L)return null;
+    var P=L.ordP(m+1);
+    return (P&&P.all&&P.E&&P.M&&P.L)?P:null;}
   function tfLean(P,g){var s=0,n=0,i,x;for(i=0;i<g.length;i++){x=P.d[g[i]];if(x&&x.n){s+=x.v*x.n;n+=x.n;}}return n?{v:s/n,n:n}:null;}
-  function tfEst(P,k,lean){return Math.round(P[k].v+(lean.v-P.all.v));} /* estimate = round(third + (lean \u2212 monthAll)) \u2014 the ratified formula, rounded ONCE */
-  function tfWindows(){var out=[],i;for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);if(!P)continue;
-    var mw=tfLean(P,[2,3,4]),we=tfLean(P,[5,6,0]);if(!mw||!we)continue;
-    [["Early","E"],["Mid","M"],["Late","L"]].forEach(function(t){
-      out.push({m:m,t:t[0],k:t[1],lean:"midweek",est:tfEst(P,t[1],mw)});
-      out.push({m:m,t:t[0],k:t[1],lean:"weekend",est:tfEst(P,t[1],we)});});}
-    out.sort(function(a,b){return a.est-b.est;});return out;}
+  function tfRunLean(y,m,s,len){ /* a run's own majority composition \u2014 Monday neutral; the lean words retire wherever composition can't tell them apart (a 7-day run is always 3v3) */
+    var mw=0,we=0,i,js;
+    for(i=0;i<len;i++){js=new Date(Date.UTC(y,m,s+i)).getUTCDay();
+      if(js>=2&&js<=4)mw++;else if(js===5||js===6||js===0)we++;}
+    return mw>we?"midweek":(we>mw?"weekend":null);}
+  function tfRuns(y,m,k,len){ /* K1 candidates: contiguous runs starting inside the third, ORDINARY DATES ONLY \u2014 an ordinary-labeled card may never price anchor dates; the anchor has its own card */
+    var lo=k==="E"?1:k==="M"?11:21,hi=k==="E"?10:k==="M"?20:tfDim(y,m),out=[],s,i;
+    for(s=lo;s<=Math.min(hi,tfDim(y,m)-len+1);s++){var sum=0,ok=true;
+      for(i=0;i<len;i++){if(typeof window.__slOrd==="function"&&!window.__slOrd(tfDate(y,m,s+i))){ok=false;break;}
+        var v=tfDEst(m,y,s+i);if(v==null){ok=false;break;}sum+=v;}
+      if(ok)out.push({s:s,sum:sum,lean:tfRunLean(y,m,s,len)});}
+    return out;}
+  function tfWindows(){ /* K1 (L2 Cut 1): every card prices its own pre-seated run; anchors are their own named cards at base \u00d7 q, dates stated; the ranking ranks the same numbers it prints (H2). Floor: a lean class needs n>=6 ordinary days (owner-ratified) \u2014 thin patterns hold rather than overclaim. */
+    var out=[],anchorN=0,seen={},i;
+    for(i=0;i<tfSel.length;i++){(function(m){var y=tfYFor(m),P=tfMP(m);if(!P)return;
+      [["Early","E"],["Mid","M"],["Late","L"]].forEach(function(t){
+        var rr=tfRuns(y,m,t[1],tfLen),leaned=false;
+        ["midweek","weekend"].forEach(function(ln){
+          if((P.ix[t[1]+"."+ln]||0)<6)return;
+          var best=null,j;for(j=0;j<rr.length;j++){if(rr[j].lean!==ln)continue;if(!best||rr[j].sum<best.sum)best=rr[j];}
+          if(!best)return;leaned=true;
+          out.push({m:m,t:t[0],k:t[1],lean:ln,est:Math.round(best.sum/tfLen),s:best.s});});
+        if(!leaned){var bt=null,j2;for(j2=0;j2<rr.length;j2++){if(rr[j2].lean!==null)continue;if(!bt||rr[j2].sum<bt.sum)bt=rr[j2];}
+          if(bt)out.push({m:m,t:t[0],k:t[1],lean:null,est:Math.round(bt.sum/tfLen),s:bt.s});}});
+      var AN=(typeof window.__slAnchors==="function")?window.__slAnchors():null;if(!AN)return;
+      var ym=tfDate(y,m,1).slice(0,7),aid,yw;
+      for(aid in AN){var a=AN[aid];
+        if(a.kind!=="lift"&&a.kind!=="dip")continue;
+        if(!(a.scopes&&a.scopes.resort&&a.scopes.resort.q!=null))continue;
+        for(yw in a.windows){var w=a.windows[yw];
+          if(w[0].slice(0,7)!==ym&&w[1].slice(0,7)!==ym)continue;
+          if(seen[aid+"."+w[0]])break;seen[aid+"."+w[0]]=1;
+          var vals=[],t0=Date.UTC(+w[0].slice(0,4),+w[0].slice(5,7)-1,+w[0].slice(8,10)),t1=Date.UTC(+w[1].slice(0,4),+w[1].slice(5,7)-1,+w[1].slice(8,10)),tt;
+          for(tt=t0;tt<=t1;tt+=86400000){var D2=new Date(tt),v2=tfDEst(D2.getUTCMonth(),D2.getUTCFullYear(),D2.getUTCDate());if(v2!=null)vals.push(v2);}
+          if(!vals.length)break;
+          var s2=0,q2;for(q2=0;q2<vals.length;q2++)s2+=vals[q2];
+          var qv=a.scopes.resort.q;
+          out.push({anchor:aid,name:a.name,kind:a.kind,est:Math.round(s2/vals.length),f:w[0],tt:w[1],pct:Math.round(Math.abs(qv-1)*100),nyr:(a.scopes.resort.n||0)});
+          anchorN++;break;}}
+    })(tfSel[i]);}
+    out.sort(function(a,b){return a.est-b.est;}); /* stable sort: ties keep build order \u2014 E/M/L, leans, then anchors, per month (harness-pinned) */
+    tfWindows.__cap=Math.min(7,tfSel.length*2+2+anchorN); /* the anchor card must never be crowded out \u2014 its seat rides the cap */
+    return out;}
   function tfDim(y,m){return new Date(y,m+1,0).getDate();}
-  function tfDEst(m,y,d){var P=tfMP(m);if(!P)return null;var k=d<=10?"E":d<=20?"M":"L";
+  function tfDEst(m,y,d){ /* per-date value (L2): a SEATED-window date wears the pre-window base \u00d7 the anchor's resort q; an ordinary date its OWN ordinary third+DOW pool; held anchors quote nothing \u2014 their dates wear the base pattern */
+    var ds=tfDate(y,m,d),an=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(ds):null;
+    if(an&&(an.a.kind==="lift"||an.a.kind==="dip")&&an.a.scopes&&an.a.scopes.resort&&an.a.scopes.resort.q!=null){
+      var L2=window.__tfL();if(!L2)return null;
+      var A=L2.preP(an.id,an.y);if(!A)return null;
+      var jb=L2.jsDow(ds),b=(A.d[jb]&&A.d[jb].v!=null)?A.d[jb].v:A.all.v;
+      return Math.round(b*an.a.scopes.resort.q);}
+    var P=tfMP(m);if(!P)return null;var k=d<=10?"E":d<=20?"M":"L";
     var js=new Date(Date.UTC(y,m,d)).getUTCDay(),w=P.d[js];if(!w)return null;
-    return Math.round(P[k].v+(w.v-P.all.v));} /* each date wears its OWN third+DOW pool (S3 speaks these same numbers later) */
-  function tfBestRun(m,y,k,len){ /* quietest contiguous len-day run STARTING inside the third; ties \u2192 earliest (strict <) */
-    var lo=k==="E"?1:k==="M"?11:21,hi=k==="E"?10:k==="M"?20:tfDim(y,m),best=null,s,q,sum;
-    for(s=lo;s<=Math.min(hi,tfDim(y,m)-len+1);s++){sum=0;
-      for(q=0;q<len;q++){var v=tfDEst(m,y,s+q);if(v==null){sum=null;break;}sum+=v;}
-      if(sum!=null&&(!best||sum<best.sum))best={s:s,sum:sum};}
-    return best?best.s:Math.max(1,Math.min(lo,tfDim(y,m)-len+1));}
+    return Math.round(P[k].v+(w.v-P.all.v));}
+  function tfBestRun(m,y,k,len){ /* the band-tap seat: quietest ORDINARY-ONLY run in the third, any composition; ties \u2192 earliest (strict <). When an anchor eats the third whole, fall to the clamp \u2014 the read line then wears the window's receipt. */
+    var rr=tfRuns(y,m,k,len),best=null,i;
+    for(i=0;i<rr.length;i++)if(!best||rr[i].sum<best.sum)best=rr[i];
+    if(best)return best.s;
+    var lo=k==="E"?1:k==="M"?11:21;
+    return Math.max(1,Math.min(lo,tfDim(y,m)-len+1));}
   function tfDate(y,m,d){return y+"-"+("0"+(m+1)).slice(-2)+"-"+("0"+d).slice(-2);}
   function tfSpan(f,t){return TF_MABs[+f.slice(5,7)-1]+" "+(+f.slice(8,10))+" \u2013 "+TF_MABs[+t.slice(5,7)-1]+" "+(+t.slice(8,10));}
   function tfChips(m){ /* month facts from the VERIFIED table only (gated v/vv), next-occurrence year; festivals + parties speak schedule facts, races carry the measured receipt ONLY where the ratified clause is OPEN */
@@ -5399,7 +5446,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return out;}
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
-  function tfOpenCal(m,k){tfCurM=m;tfCurK=k;tfAnchor=tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";}
+  function tfOpenCal(m,k,s){tfCurM=m;tfCurK=k;tfAnchor=(s!=null&&!isNaN(s))?Math.max(1,Math.min(s,tfDim(tfYFor(m),m)-tfLen+1)):tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";} /* L2 (K1): a tapped card hands its OWN pre-seated run to the calendar; anchor cards hand their window\u2019s start */
   var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdst],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
   document.addEventListener("click",function(e){ /* 0717g: flash-then-commit, delegated \u2014 the tap is intercepted at capture, the element lights, and the SAME click re-dispatches after 150ms so every existing handler runs unchanged. The picker chips (tp-acr) keep their own Cut C flash and stay out of this list. A second tap inside the window is swallowed \u2014 the free double-tap guard. */
     if(e.__pp)return;
@@ -5427,9 +5474,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tfS3HTML(){ /* S3 \u00b7 UP CLOSE (Cut D-3): every date wears its OWN third+DOW pool; race dots from the verified table; the bracket pre-seats bestRun and jumps on tap */
     var m=tfCurM,y=tfYFor(m),n=tfDim(y,m),i,d;
     var h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback3="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the fits</button></div>';
+    if(!((typeof window.__tfL==="function")&&window.__tfL())){ /* L2: same honest hold as the fits */
+      if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen)renderPulsePage();});
+      if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen)renderPulsePage();});
+      return h+'<div class="rpc"><div class="lbl">'+TF_MFULL[m]+' '+y+' \u00b7 up close</div><div class="tf-read">Warming up the record\u2026</div></div>';}
     var avg=0,ok=true;for(i=0;i<tfLen;i++){var v0=tfDEst(m,y,tfAnchor+i);if(v0==null){ok=false;break;}avg+=v0;}
     h+='<div class="rpc"><div class="lbl">'+TF_MFULL[m]+' '+y+' \u00b7 up close</div>';
-    h+='<div class="tf-read">Your '+tfLen+' days \u2014 <b>'+TF_MABs[m]+' '+tfAnchor+' \u2013 '+TF_MABs[m]+' '+(tfAnchor+tfLen-1)+'</b> \u2014 have run <b>'+(ok?Math.round(avg/tfLen)+' min':'\u2013')+'</b> on this pattern. Tap any day to move the window.</div>';
+    var rcp='',ri; /* L2: the bracket-on-a-week receipt \u2014 clause-earned from sv at render, seated anchors only */
+    for(ri=0;ri<tfLen;ri++){var ar=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,tfAnchor+ri)):null;
+      if(ar&&(ar.a.kind==="lift"||ar.a.kind==="dip")&&ar.a.scopes&&ar.a.scopes.resort&&ar.a.scopes.resort.q!=null){
+        var qp=Math.round(Math.abs(ar.a.scopes.resort.q-1)*100);
+        rcp=' Your days sit in <b>'+esc(ar.a.name)+'</b>, which has run about '+qp+'% '+(ar.a.scopes.resort.q>1?'over':'quieter than')+' nearby ordinary weeks ('+(ar.a.scopes.resort.n||0)+' prior years).';break;}}
+    h+='<div class="tf-read">Your '+tfLen+' days \u2014 <b>'+TF_MABs[m]+' '+tfAnchor+' \u2013 '+TF_MABs[m]+' '+(tfAnchor+tfLen-1)+'</b> \u2014 have run <b>'+(ok?Math.round(avg/tfLen)+' min':'\u2013')+'</b> on this pattern. Tap any day to move the window.'+rcp+'</div>';
     var marks=tfChips(m).filter(function(c){return c.cls==="race"||c.cls==="racef";});
     h+='<div class="tf-calh">'+["S","M","T","W","T","F","S"].map(function(x){return '<i>'+x+'</i>';}).join('')+'</div><div class="tf-cal">';
     var fd=new Date(Date.UTC(y,m,1)).getUTCDay();
@@ -5438,19 +5494,25 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(d=1;d<=n;d++){var v=tfDEst(m,y,d);
       var race=marks.some(function(w){var f=+w.f.slice(8,10),t2=+w.t.slice(8,10),fm=+w.f.slice(5,7)-1,tm=+w.t.slice(5,7)-1;
         return (fm===m&&tm===m)?(d>=f&&d<=t2):(fm===m?d>=f:d<=t2);});
-      h+='<button type="button" class="tf-cd'+(race?' race':'')+(pev[d]?' pn'+(pev[d]==="ring"?' pnx':''):'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'"'+((pev[d]&&pev[d]!=="ring")?' data-em="'+pev[d]+'"':'')+' data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
+      var an3=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,d)):null,seatd=an3&&(an3.a.kind==="lift"||an3.a.kind==="dip")&&an3.a.scopes&&an3.a.scopes.resort&&an3.a.scopes.resort.q!=null; /* L2 (F1): only SEATED anchors mark \u2014 held ones render nothing, anywhere */
+      h+='<button type="button" class="tf-cd'+(race?' race':'')+(seatd?' aw1':'')+(pev[d]?' pn'+(pev[d]==="ring"?' pnx':''):'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'"'+((pev[d]&&pev[d]!=="ring")?' data-em="'+pev[d]+'"':'')+' data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'');
     var pset={},pk;for(pk in pev)pset[pev[pk]]=1;
     var plg=(pset["\ud83c\udf83"]?'<span><i class="em">\ud83c\udf83</i>MK Halloween party night</span>':'')+(pset["\ud83c\udf84"]?'<span><i class="em">\ud83c\udf84</i>MK Christmas party night</span>':'')+(pset["ring"]?'<span><i class="pp"></i>MK party night</span>':'');
-    h+='<div class="tf-callg">'+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
+    var ancs={},alg='',dl; /* L2 (F1): the grown legend \u2014 the swatch wears the actual bar; the entry names the anchor AND its direction, per month */
+    for(dl=1;dl<=n;dl++){var al=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,dl)):null;
+      if(al&&(al.a.kind==="lift"||al.a.kind==="dip")&&al.a.scopes&&al.a.scopes.resort&&al.a.scopes.resort.q!=null&&!ancs[al.id]){
+        ancs[al.id]=1;alg+='<span><i class="awc"></i>'+esc(al.a.name)+' \u00b7 has run ~'+Math.round(Math.abs(al.a.scopes.resort.q-1)*100)+'% '+(al.a.scopes.resort.q>1?'over':'quieter than')+' nearby ordinary weeks</span>';}}
+    h+='<div class="tf-callg">'+alg+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
     h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:15px">Make this my trip \u203a</button>';
-    h+='<div class="tf-basis">Each date wears its third-of-month + weekday pool \u2014 a pattern, not a forecast \u00b7 party nights render only where the night list is verified \u00b7 the glyph marks the night; the color stays the crowd\u2019s.</div></div>';
+    h+='<div class="tf-basis">Each date wears the company it keeps: same part of the month, same day of the week, ordinary days only \u00b7 dates in a marked week wear that week\u2019s own history, lifted or eased by how it\u2019s really run \u00b7 a pattern, never a forecast \u00b7 party nights show only where the night list is verified \u00b7 the mark names the week; the color stays the crowd\u2019s.</div></div>';
     return h;
   }
   function tfS1HTML(){ /* S1 \u00b7 THE ASK (Cut D-2): multi-tap flexibility window; length pills + Custom stepper (2\u201314, TP_MAXDAYS-parity harnessed); the ranking spans the whole selection \u2014 compare and rank are one act */
     var L=(typeof window.__avL==="function")?window.__avL():null,h,i;
     h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to trips</button></div>';
     h+='<div class="rpc"><div class="lbl">When should we go?</div>';
+    if(typeof window.__slGo==="function")window.__slGo(null); /* L2: warm /seasonal beside the almanac \u2014 the fits need both */
     if(!L){
       if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen)renderPulsePage();});
       return h+'<div class="tf-read">Warming up the record\u2026</div></div>';
@@ -5470,6 +5532,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tfS2HTML(){ /* S2 \u00b7 THE FITS (Cut D-2): thirds band (readout \u2014 its taps ride S3) \u00b7 the key \u00b7 month facts in festival-line prose \u00b7 ranked window cards, #1's value green; single commit in this cut (See-it-up-close rides S3 \u2014 no dead doors) */
     var h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback2="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the months</button></div>';
     if(!tfSel.length){tfOpen="s1";return tfS1HTML();}
+    if(!((typeof window.__tfL==="function")&&window.__tfL())){ /* L2: the de-mix needs the day atoms + sv \u2014 warm both, hold honestly (never the smeared numbers) */
+      if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen)renderPulsePage();});
+      if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen)renderPulsePage();});
+      return h+'<div class="rpc"><div class="lbl">The fits</div><div class="tf-read">Warming up the record\u2026</div></div>';}
     var lbl=tfSel.length===1?TF_MFULL[tfSel[0]]:TF_MFULL[tfSel[0]]+" \u2013 "+TF_MFULL[tfSel[tfSel.length-1]];
     h+='<div class="rpc"><div class="lbl">Across '+lbl+'</div>';
     h+='<div class="tf-band" style="grid-template-columns:repeat('+(tfSel.length*3)+',1fr)">';
@@ -5478,12 +5544,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         var v=P?Math.round(P[t[0]].v):null;
         h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i style="height:'+(v!=null?Math.max(8,Math.min(96,Math.round((v-20)*2.6))):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+tfFactsHTML()+'</div>';
-    var top=tfWindows().slice(0,Math.min(5,tfSel.length*2+2)),c,r;
+    var top=tfWindows().slice(0,tfWindows.__cap||5),c,r;
     for(i=0;i<top.length;i++){c=top[i];
-      h+='<div class="rpc tp-trl" data-tfsee="'+c.m+'.'+c.k+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+' \u00b7 '+c.lean+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
+      if(c.anchor){ /* L2 (H2): the anchor's own named, ranked card \u2014 base \u00d7 q, receipt clause-earned, dates stated; amber = lift, green = dip */
+        var dir=(c.kind==="dip")?'<b>Has run about '+c.pct+'% quieter</b> than nearby ordinary weeks':'<b class="h">Has run about '+c.pct+'% over</b> nearby ordinary weeks';
+        h+='<div class="rpc tp-trl tf-anc '+(c.kind==="dip"?"tf-dip":"tf-lift")+'" data-tfsee="'+c.f+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+esc(c.name)+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
+          '<div class="tf-mfl">'+dir+' <span class="dts">\u00b7 '+tfSpan(c.f,c.tt)+' \u00b7 '+c.nyr+' prior year'+(c.nyr===1?'':'s')+'</span></div>'+
+          '<span class="tp-chev">\u203a</span></div>';
+      }else{
+        h+='<div class="rpc tp-trl" data-tfsee="'+c.m+'.'+c.k+'.'+c.s+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+(c.lean?' \u00b7 '+c.lean:'')+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
         tfChipsFor(c.m,c.t)+
-        '<span class="tp-chev">\u203a</span></div>'; /* 0717a: ONE door per card (owner call) \u2014 the fast path retired; the calendar pre-seats bestRun, so trusting the ranking costs exactly one more tap and buys sight of the real dates */}
-    h+='<div class="tf-basis">Has run, never will run \u2014 every number is the banked record\u2019s last three years per month \u00b7 estimates blend each month\u2019s third with its weekday lean \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
+        '<span class="tp-chev">\u203a</span></div>'; /* 0717a: ONE door per card \u2014 the calendar pre-seats the card's OWN run (K1), so trusting the ranking costs exactly one more tap and buys sight of the real dates */}}
+    h+='<div class="tf-basis">Has run, never will run. Every number comes from real days the record has kept, the last three years of each month\u2019s ordinary days \u00b7 each card shows what its exact dates have really run \u00b7 a marked week wears its own history, lifted or eased by how it usually runs \u00b7 where the record runs thin, a card holds back rather than guess \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
     return h;
   }
   function tpHomeHTML(){ /* 0717d: the planner's HOMEPAGE (owner pick A1) \u2014 the jewel hero + twin doors; both landing states wear it, and it moves whole to the dedicated tab in polish week */
@@ -5715,7 +5787,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     el.querySelectorAll("[data-tfstp]").forEach(function(b){b.addEventListener("click",function(){tfLen=Math.min(14,Math.max(2,tfLen+ +b.getAttribute("data-tfstp")));renderPulsePage();});});
     el.querySelectorAll("[data-tfgo]").forEach(function(b){b.addEventListener("click",function(){if(tfSel.length){tfOpen="s2";renderPulsePage();rpTop();}});});
     el.querySelectorAll("[data-tfseg],[data-tfsee]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-3): band segments + See-it-up-close open the month up close */
-      var p=(b.getAttribute("data-tfseg")||b.getAttribute("data-tfsee")).split(".");tfOpenCal(+p[0],p[1]);renderPulsePage();rpTop();});});
+      var av=b.getAttribute("data-tfseg")||b.getAttribute("data-tfsee");
+      if(av.indexOf("-")>0){tfOpenCal(+av.slice(5,7)-1,"W",+av.slice(8,10));}else{var p=av.split(".");tfOpenCal(+p[0],p[1],p.length>2?+p[2]:null);}
+      renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfback3]").forEach(function(b){b.addEventListener("click",function(){tfOpen="s2";renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfday]").forEach(function(b){b.addEventListener("click",function(){tfJump(+b.getAttribute("data-tfday"));renderPulsePage();});});
     el.querySelectorAll("[data-tfmake]").forEach(function(b){b.addEventListener("click",function(){ /* Cut D (D-3): the calendar's own seam \u2014 the bracket becomes the creator's prefill */
@@ -7245,7 +7319,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       return pwDigDay(g,tmp);
     };
     window.__pwDayLvl=pwDayLvl;
-    window.__avL=function(){return (pwAlmData&&pwAlmData.cells&&pwAlmData.cells.length)?__avLens(pwAlmData.cells):null;};window.__avTier=pwAlmTier;window.__avKey=pwAlmKeyHTML;window.__avGo=pwAlmPrefetch; /* Cut D (D-1): the alm-pool export (__pwDayRoll precedent) \u2014 ONE lens, one tier fn, the key verbatim, and the session\u2019s own /almanac warm. The funnel speaks ONLY this number family (Funnel-Spec Laws 2+3); the mock\u2019s re-implementation is dead. */
+    window.__avL=function(){return (pwAlmData&&pwAlmData.cells&&pwAlmData.cells.length)?__avLens(pwAlmData.cells):null;};window.__avTier=pwAlmTier;window.__avKey=pwAlmKeyHTML;window.__avGo=pwAlmPrefetch;window.__slGo=pwSlPrefetch;window.__slOrd=slOrd;window.__slAnchorOf=slAnchorOf;window.__slAnchors=function(){return pwSlData?pwSlData.anchors:null;};window.__tfL=__tfDLens; /* L2 Cut 1: the predicate + the day lens join the export seam \u2014 one function each, every consumer */ /* Cut D (D-1): the alm-pool export (__pwDayRoll precedent) \u2014 ONE lens, one tier fn, the key verbatim, and the session\u2019s own /almanac warm. The funnel speaks ONLY this number family (Funnel-Spec Laws 2+3); the mock\u2019s re-implementation is dead. */
     function pwMonthGrid(cur){
       var a=cur.split("-"),y=+a[0],m=+a[1];
       var first=cur+"-01",lastD=new Date(y,m,0).getDate(),last=cur+"-"+("0"+lastD).slice(-2);
@@ -7742,6 +7816,68 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         +'<div class="pw-alm-rcpt">From the ParkPulse archive \u00b7 '+wlab+", "+q3+" qualifying days \u00b7 years panel shows the whole record"+(fl.length?" \u00b7 festival dates from published event calendars":"")+(rcv.meth?" \u00b7 race splits compare each race against day-of-week-matched days around it":"")+" \u00b7 all numbers are minutes of average posted wait</div></div>";
       return h;}
     /* ---- fetch + surfaces (DOM side) ---- */
+    /* ===== L2 Cut 1 (0718z): THE FORECAST VOICE'S ATOMS =====================
+       ONE PREDICATE, EVERY CONSUMER: slOrd walks sv:1's windows (all eight
+       anchors, held ones included) \u2014 the funnel today, the trip model at Cut 2,
+       every future consumer. The day lens pools ORDINARY days only, thirds at
+       the funnel's own 10/20 walk; pre-window pools price the anchor cards
+       (base \u00d7 q \u2014 the backtest-decided base, Seasonal-L2-Spec \u00a72 settled
+       at build: mean err 5.2 vs thirds' 7.3, worst 8.9 vs 21.9). ============ */
+    var pwSlData=null;
+    function pwSlPrefetch(cb){/* the /seasonal warm \u2014 one fetch per session, the almanac idiom */
+      if(pwSlData){if(cb)cb();return;}
+      if(pwSlPrefetch.__busy)return;pwSlPrefetch.__busy=1;
+      fetch(WRAP_URL+"/seasonal").then(function(r){return r.json();}).then(function(d){
+        pwSlPrefetch.__busy=0;
+        if(d&&d.ok&&d.seeded&&d.sv&&d.sv.anchors)pwSlData=d.sv;
+        if(cb&&pwSlData)cb();
+      })["catch"](function(){pwSlPrefetch.__busy=0;});}
+    function slAnchorOf(ds){/* date -> {id,y,f,t,a}|null through the sv windows (they never overlap) */
+      if(!pwSlData)return null;var id,y,ws;
+      for(id in pwSlData.anchors){ws=pwSlData.anchors[id].windows;
+        for(y in ws){if(ws[y][0]<=ds&&ds<=ws[y][1])return {id:id,y:+y,f:ws[y][0],t:ws[y][1],a:pwSlData.anchors[id]};}}
+      return null;}
+    function slOrd(ds){return !slAnchorOf(ds);} /* THE predicate: ordinary = inside NO anchor window \u2014 held anchors quote nothing, but their dates still leave every ordinary pool */
+    var __tfLC=null;
+    function __tfDLens(){/* the forecast voice's lens: /almanac day atoms \u00d7 the predicate; memoized \u2014 both blobs are one-fetch-per-session */
+      if(__tfLC)return __tfLC;
+      if(!(pwAlmData&&pwAlmData.days&&pwAlmData.days.length&&pwSlData))return null;
+      var days=pwAlmData.days,byD={},i,r;
+      for(i=0;i<days.length;i++)byD[days[i].d]=days[i];
+      var mAll={},mOrd={};
+      for(i=0;i<days.length;i++){r=days[i];var mo=+r.d.slice(5,7);
+        (mAll[mo]=mAll[mo]||{})[r.d.slice(0,7)]=1;
+        if(slOrd(r.d))(mOrd[mo]=mOrd[mo]||[]).push(r);}
+      function jsDow(ds){return new Date(Date.UTC(+ds.slice(0,4),+ds.slice(5,7)-1,+ds.slice(8,10))).getUTCDay();}
+      function third(ds){var d2=+ds.slice(8,10);return d2<=10?"E":d2<=20?"M":"L";}
+      function pool(list){var t=0,q=0,j;for(j=0;j<list.length;j++){t+=list[j].ra;q++;}return q?{v:t/q,n:q}:null;}
+      var pc={};
+      function ordP(mo){/* trailing-3 OBSERVED year-months of the calendar month, ordinary only \u2014 the reconciliation gate rides the harness */
+        if(pc[mo])return pc[mo];
+        var ys=Object.keys(mAll[mo]||{}).sort().slice(-3),j;
+        var dd=(mOrd[mo]||[]).filter(function(x){return ys.indexOf(x.d.slice(0,7))>=0;});
+        var P={ys:ys,all:pool(dd),E:null,M:null,L:null,d:[],ix:{}};
+        ["E","M","L"].forEach(function(k){P[k]=pool(dd.filter(function(x){return third(x.d)===k;}));});
+        for(j=0;j<7;j++)(function(j2){P.d[j2]=pool(dd.filter(function(x){return jsDow(x.d)===j2;}));})(j);
+        ["E","M","L"].forEach(function(k){[["midweek",[2,3,4]],["weekend",[5,6,0]]].forEach(function(g){
+          P.ix[k+"."+g[0]]=dd.filter(function(x){return third(x.d)===k&&g[1].indexOf(jsDow(x.d))>=0;}).length;});});
+        return (pc[mo]=P);}
+      var ac={};
+      function preP(aid,refY){/* the anchor-card base: the <=3 most recent PRIOR years' own 28-ordinary-before-window runs (q's own denominator run forward), DOW-textured */
+        var key=aid+"."+refY;if(key in ac)return ac[key];
+        var a=pwSlData.anchors[aid];if(!a)return (ac[key]=null);
+        var ys=Object.keys(a.windows).map(Number).filter(function(y2){return y2>=2022&&y2<refY;}).sort().slice(-3);
+        var got=[],j,k2;
+        for(j=0;j<ys.length;j++){var w=a.windows[ys[j]];
+          var t=Date.UTC(+w[0].slice(0,4),+w[0].slice(5,7)-1,+w[0].slice(8,10)),steps=0,run=[];
+          while(run.length<28&&steps<60){t-=86400000;var ds=new Date(t).toISOString().slice(0,10);
+            if(byD[ds]&&slOrd(ds))run.push(byD[ds]);steps++;}
+          got=got.concat(run);}
+        if(!got.length)return (ac[key]=null);
+        var A={all:pool(got),d:[],nyrs:ys.length};
+        for(k2=0;k2<7;k2++)(function(j2){A.d[j2]=pool(got.filter(function(x){return jsDow(x.d)===j2;}));})(k2);
+        return (ac[key]=A);}
+      return (__tfLC={byD:byD,ordP:ordP,preP:preP,jsDow:jsDow});}
     function pwAlmPrefetch(cb){/* background warm for the D3 sparkline */
       if(pwAlmData){if(cb)cb();return;}
       if(pwAlmPrefetch.__busy)return;pwAlmPrefetch.__busy=1;
