@@ -617,6 +617,8 @@
   .tf-callg i.awc:before{content:"";position:absolute;left:2.5px;right:2.5px;top:2px;height:2.5px;border-radius:2px;background:rgba(255,255,255,.92)}
   .rpc.tf-lift{border-color:var(--medium)} /* L2: anchor cards wear their direction \u2014 amber lift, green dip */
   .rpc.tf-dip{border-color:var(--short)}
+  .tp-dc.aw:before{content:"";position:absolute;left:4px;right:4px;top:3px;height:3px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* Cut 2 (L2): the week ribbon on trip cells \u2014 the mark names the week; the color stays the crowd\u2019s */
+  .crow .dia{width:9px;height:9px;transform:rotate(45deg);border-radius:2.5px;display:inline-block;margin-top:1px} /* Cut 2: the season\u2019s diamond \u2014 never a tier dot */
   .tf-basis{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);line-height:1.55;margin-top:11px}
   button.tf-bseg{border:0;background:none;padding:0;cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent} /* Cut D (D-3): the band wakes \u2014 segments become doors to S3 */
   .tf-calh{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px} /* Cut D (D-3): S3 \u2014 the month up close (funnel-playable ratified) */
@@ -1773,7 +1775,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4548,6 +4550,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!rpDigs||!rpDigs.length||typeof window.__pwDayRoll!=="function")return null;
     var m={},w0=null,w1=null,cnt=0,i,g,roll,wd,j,p,P;
     for(i=0;i<rpDigs.length;i++){g=rpDigs[i];if(!g||!g.d)continue;
+      if(typeof window.__slOrd==="function"&&!window.__slOrd(g.d))continue; /* Cut 2: ordinary days only \u2014 anchor weeks leave every trip pool (until sv lands, everything reads ordinary: graceful, unfiltered) */
       roll=window.__pwDayRoll(g);if(!roll||!roll.parks)continue;
       wd=tpAsD(g.d).getDay();cnt++;
       if(w0===null||g.d<w0)w0=g.d;if(w1===null||g.d>w1)w1=g.d;
@@ -4570,6 +4573,44 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      clause is OPEN (fact-only otherwise) \u00b7 a party season whose nights
      aren't verified speaks ONE soft schedule-fact line and marks no days \u00b7
      tense flips whole with the trip. */
+  /* ===== L2 Cut 2 (0719c): THE TRIP VOICE LEARNS THE SEASONS ==============
+     One predicate, every consumer (slOrd \u2014 the funnel\u2019s own, exported at L1).
+     The trip formula is the backtest\u2019s own-year winner: the model\u2019s ordinary
+     same-weekday base \u00d7 that park\u2019s own measured lift. Held anchors render
+     nothing, anywhere. The divergence line fires only where a park\u2019s measured
+     direction breaks from the resort\u2019s \u2014 on sv:1 that is EPCOT, Labor Day. */
+  var TP_SL_TAG={thanksgiving:"Thanksgiving wk",xmasny:"Christmas\u2013NY",presidents:"Presidents wk",july4:"July 4th wk",laborday:"Labor Day wknd"};
+  function tpSznOf(ds){ /* seated-anchor lookup \u2014 lift/dip with a served q only */
+    var an=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(ds):null;
+    return (an&&(an.a.kind==="lift"||an.a.kind==="dip")&&an.a.scopes&&an.a.scopes.resort&&an.a.scopes.resort.q!=null)?an:null;}
+  function tpSznQ(an,parkFull){ /* the park\u2019s own measured lift; the resort\u2019s where the park cell didn\u2019t survive the seed\u2019s gate */
+    var code=TP_P2[parkFull],sc=an.a.scopes||{},p=sc[code],r=sc.resort;
+    return (p&&p.q!=null)?p.q:r.q;}
+  function tpSznCell(model,park,wd,ds){ /* the seasonal-aware cell: ordinary base \u00d7 q on seated dates; thin stays thin \u2014 the floor grammar is older than the season */
+    var c=tpCell(model,park,wd),an=tpSznOf(ds);
+    if(!an||c.thin)return c;
+    var q=tpSznQ(an,park),a2=Math.round(c.avg*q);
+    return {avg:a2,lvl:window.__pwDayLvl(a2,park),n:c.n,aw:1,aid:an.id,base:c.avg,q:q};}
+  function tpSznFull(code){var i;for(i=0;i<TP_PARKS.length;i++)if(TP_P2[TP_PARKS[i][0]]===code)return TP_PARKS[i][0];return code;}
+  function tpSznFest(code,t){ /* the schedule-fact juxtaposition, earned from the VERIFIED table only \u2014 a fact beside the number, never its cause */
+    var T=window.__pwEvT;if(!T||!t)return null;var i,j;
+    for(i=0;i<T.events.length;i++){var e=T.events[i];if(e.type!=="festival"||e.park!==code)continue;
+      for(j=0;j<e.windows.length;j++){var w=e.windows[j];
+        if(!(w.v==="vv"||w.v==="v"))continue;
+        if(w.from<=t.b&&w.to>=t.a)return TF_FEST[e.id]||e.name;}}
+    return null;}
+  function tpSznCtx(t,ds){ /* the trip\u2019s season beats: the week line, then the direction-break line \u2014 measured, clause-earned, dedup by anchor */
+    var out={reads:[],tag:{},any:0},seen={},i,pk;
+    for(i=0;i<ds.length;i++){var an=tpSznOf(ds[i]);if(!an)continue;
+      out.any=1;out.tag[ds[i]]=TP_SL_TAG[an.id]||an.a.name;
+      if(seen[an.id])continue;seen[an.id]=1;
+      var r=an.a.scopes.resort,pct=Math.round(Math.abs(r.q-1)*100),past=!!(t&&t.b<tpToday());
+      out.reads.push({dia:(r.q>1?"medium":"short"),h:"Your dates "+(past?"sat":"sit")+" in <b>"+esc(an.a.name)+"</b> \u00b7 has run about <b>"+pct+"% "+(r.q>1?"over":"quieter than")+"</b> nearby ordinary weeks ("+(r.n||0)+" prior years)."});
+      var dv=null;for(pk in an.a.scopes){if(pk==="resort"||pk==="rides")continue;var ps=an.a.scopes[pk];
+        if(ps&&ps.q!=null&&((ps.q>1)!==(r.q>1)))dv={p:pk,q:ps.q};}
+      if(dv){var dp=Math.round(Math.abs(dv.q-1)*100),fest=tpSznFest(dv.p,t);
+        out.reads.push({dia:(dv.q>1?"medium":"short"),h:"<b>"+esc(tpSznFull(dv.p))+" "+(past?"ran":"runs")+" its own way here</b> \u00b7 has run about "+dp+"% "+(dv.q>1?"over":"quieter")+" while the rest of the resort "+(r.q>1?"climbs":"eases")+(fest?" \u00b7 "+esc(fest)+" "+(past?"ran":"runs")+" then":"")+"."});}}
+    return out;}
   var TP_EV_WORD={marathon:"Marathon",princess:"Princess Half",springtime:"Springtime Surprise",winedine:"Wine &amp; Dine"};
   function tpEvCtx(t,ds){
     var T=window.__pwEvT,RSS=window.__pwRS,NN=window.__pwEvN,past=t.b<tpToday();
@@ -4667,7 +4708,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tpDayLine(ds,model,t,EV){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k rail; 0717l event rows; 0717m: composers extracted, this is now the dresser */
     var D=tpDayS(ds,model),wd=D.wd,wn=D.wn,thin=D.thin,col=D.col,best=D.best,s=D.s,i;
     var hol=HOLIDAYS[ds];
-    var sub=hol?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
+    var anD=tpSznOf(ds); /* Cut 2: on a seated date the colors DO carry the week \u2014 the old apology retires there and the diamond speaks instead */
+    var sub=(hol&&!anD)?'<div class="tp-hon">'+esc(hol)+' itself isn\u2019t in these colors \u2014 the bank holds ordinary '+wn+'s only.</div>':'';
+    var szr='';if(anD){var rD=anD.a.scopes.resort,pctD=Math.round(Math.abs(rD.q-1)*100);
+      szr='<div class="crow"><span class="ic"><i class="dia" style="background:var(--'+(rD.q>1?'medium':'short')+')"></i></span><span class="v">'+wn+' sits in <b>'+esc(anD.a.name)+'</b> \u00b7 has run about '+pctD+'% '+(rD.q>1?'over':'quieter than')+' nearby ordinary weeks ('+(rD.n||0)+' prior years).</span></div>';}
     var ev2=tpDayEvS(ds,EV),er='';
     for(i=0;i<ev2.length;i++){var b2=ev2[i];
       er+= b2.k==="race" ? '<div class="crow"><span class="ic"><i class="swbar"></i></span><span class="v">'+b2.h+'</span></div>'
@@ -4679,7 +4723,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var tn=thin.length?' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>':''; /* 0717k: the thin note rides the LAST row's tail - reading order untouched */
     var rw='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+TP_TSTRONG[best]+')"></i></span><span class="v">'+s+(pcl?'':tn)+'</span></div>'; /* 0717k: the tableau dot wears the trip rail's strong var for the tier the sentence leads with */
     if(pcl)rw+='<div class="crow"><span class="ic"><i class="dot pl"'+(c2.thin?'':' style="background:var(--t'+c2.lvl+')"')+'></i></span><span class="v">'+pcl+tn+'</span></div>'; /* 0717k: the ringed planned swatch - earned fill when fired, hollow when thin (no tier claim) */
-    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr">'+rw+er+'</div>'+sub+'</div>',sub:""}; /* 0715i box -> 0717k rail: beats as rows, an unfired beat has no row, the holiday sub keeps its seat beneath */
+    return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr">'+szr+rw+er+'</div>'+sub+'</div>',sub:""}; /* 0715i box -> 0717k rail: beats as rows, an unfired beat has no row, the holiday sub keeps its seat beneath */
   }
   function tpExtK(s){var d=shortExtra(s);if(/early entry/i.test(d))return "EE";if(/extended/i.test(d))return "EEH";return "EVT";}
   function tpHoursHTML(ds,park){
@@ -4713,9 +4757,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),h="",i,first=true;
     var pk=(t&&t.plan||{})[ds],order=[],p0; /* Cut 2 (2b-ratified): the planned park’s row rises to the top wearing the accent edge; the rest hold park order */
     for(i=0;i<4;i++){p0=TP_PARKS[i][0];if(p0===pk)order.unshift(p0);else order.push(p0);}
-    for(i=0;i<4;i++){var p=order[i],c=tpCell(model,p,wd);
+    for(i=0;i<4;i++){var p=order[i],c=tpSznCell(model,p,wd,ds);
       var pt=c.thin?('Too thin yet \u00b7 '+c.n+' '+wn+(c.n===1?'':'s')+' banked')
-        :(tpTier(c.lvl)+' \u00b7 '+c.avg+'m avg'+(first?' across attractions':'')+' \u00b7 '+c.n+' '+wn+'s');
+        :(c.aw?(tpTier(c.lvl)+' \u00b7 \u2248'+c.avg+'m these weeks'+(first?' across attractions':'')+' \u00b7 '+(c.q>1?'lifted':'eased')+' from its ordinary \u2248'+c.base+'m \u00b7 '+c.n+' '+wn+'s')
+              :(tpTier(c.lvl)+' \u00b7 '+c.avg+'m avg'+(first?' across attractions':'')+' \u00b7 '+c.n+' '+wn+'s'));
       if(!c.thin)first=false;
       h+='<div class="tp-dxr'+(p===pk?' pl':'')+(t?' dr':'')+'"'+(t?' role="button" tabindex="0" data-tpdoor="'+esc(p)+'" data-tpdd="'+ds+'"':'')+'><span><span class="tp-pn">'+p+(p===pk?' \u00b7 planned':'')+(t?'<span class="chevn">\u203a</span>':'')+'</span><div class="tp-pt">'+pt+'</div></span>'+tpHoursHTML(ds,p)+'</div>';} /* 0715d: the home-base door — every park row opens that park’s landing, trip-windowed */
     return h+(t?tpPlanRow(t,ds,model,EV):'');
@@ -4735,7 +4780,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return ' \u00b7 your trip is in '+mn+' \u2014 '+((b0===b1)?b0:(b0+"\u2013"+b1))+'\u2019s patterns can shift with the season';
   }
   function tpBasis(t,model){
-    return 'Same-weekday history \u00b7 the last '+model.cnt+' banked days ('+tpMD(model.w0)+' \u2013 '+tpMD(model.w1)+') \u00b7 color = the day crowd scale from each day\u2019s all-attraction average \u00b7 claims compare tiers, never raw minutes across parks'+tpSeason(t,model)+' \u00b7 history, never a promise \u00b7 hours = Disney\u2019s published schedule';
+    return 'Same-weekday history \u00b7 the last '+model.cnt+' banked days ('+tpMD(model.w0)+' \u2013 '+tpMD(model.w1)+') \u00b7 color = the day crowd scale from each day\u2019s all-attraction average \u00b7 claims compare tiers, never raw minutes across parks'+tpSeason(t,model)+' \u00b7 ordinary days only \u2014 days in a marked week wear that week\u2019s own history, lifted or eased by how it\u2019s really run \u00b7 history, never a promise \u00b7 hours = Disney\u2019s published schedule';
   }
   function tpCreatorHTML(t){ /* 0716v: Cancel ALWAYS renders (owner-caught) \u2014 the quiet fork now stands behind every creator entry, so there is always a home to go back to */
     if(tpPlanDraft===null){tpPlanDraft={};var pl0=(t&&t.plan)||{},k0;for(k0 in pl0)tpPlanDraft[k0]=pl0[k0];} /* Cut 2: seed the draft once per creator entry — Save prunes + persists, Cancel discards */
@@ -5322,18 +5367,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
     if(!model)return head+'<div class="rpc"><div class="lbl">The board</div><div class="fc-empty">'+((!rpDigs)?'The board fills from banked days \u2014 one moment.':'No banked days to read yet.')+'</div></div>'; /* 0715b (W-33): the 0714x door retired — the second trip's door — the ever-present list carries + New trip now */
     var EV=tpEvCtx(t,ds); /* 0716m: the party-truth layer feeds the read, the badges, and MK's ring */
+    if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* Cut 2: warm /seasonal; the guard keeps the cached sync path from ever re-entering (0719b\u2019s lesson) */
+    var SZ=tpSznCtx(t,ds);
     var _rt=tpRead(ds,model),_rb=tpRead.beats,_er=(EV.reads||[]),_rw='',q; /* 0717j (owner pick C): the symbol rail \u2014 same gates, beats as rows; an unfired beat has no row */
+    for(q=0;q<SZ.reads.length;q++)_rw+='<div class="crow"><span class="ic"><i class="dia" style="background:var(--'+SZ.reads[q].dia+')"></i></span><span class="v">'+SZ.reads[q].h+'</span></div>'; /* Cut 2: the season leads the read \u2014 the diamond is its mark */
     if(_rb){for(q=0;q<_rb.length;q++)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+_rb[q].c+')"></i></span><span class="v">'+_rb[q].h+'</span></div>';}
     else if(_rt)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">'+_rt+'</span></div>';
     for(q=0;q<_er.length;q++)_rw+='<div class="crow"><span class="ic">'+(_er[q].c==="race"?'<i class="swbar"></i>':(_er[q].e?'<span class="em">'+_er[q].e+'</span>':'<i class="dot pnf"></i>'))+'</span><span class="v">'+_er[q].h+'</span></div>';
     var read='<div class="rpc"><div class="lbl">The read</div><div class="tp-readr">'+_rw+'</div></div>';
     var gh='',rows='',j; /* 0715o\u21920717h (owner pick A): the lonely top header retires \u2014 every cell wears its park's initials, the week strip's stamped grammar */
     for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
-      for(j=0;j<TP_PARKS.length;j++){var c=tpCell(model,TP_PARKS[j][0],wd),isPk=(TP_PARKS[j][0]===pk),pe0=(!isPk&&j===0&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""; /* Cut 2 \u00b7 0716m \u00b7 0717f: plan ring still wins; the party marker is the glyph now, the ring only its fallback */
-        var pc=(isPk?' plan':(pe0?' pn'+(pe0==="ring"?' pnx':''):''))+((j===1&&EV.race[d0])?' race':''),pea=((pe0&&pe0!=="ring")?' data-em="'+pe0+'"':'');
+      for(j=0;j<TP_PARKS.length;j++){var c=tpSznCell(model,TP_PARKS[j][0],wd,d0),isPk=(TP_PARKS[j][0]===pk),pe0=(!isPk&&j===0&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""; /* Cut 2 \u00b7 0716m \u00b7 0717f: plan ring still wins; the party marker is the glyph now, the ring only its fallback */
+        var pc=(isPk?' plan':(pe0?' pn'+(pe0==="ring"?' pnx':''):''))+((j===1&&EV.race[d0])?' race':'')+(c.aw?' aw':''),pea=((pe0&&pe0!=="ring")?' data-em="'+pe0+'"':'');
         cells+=(c.thin?'<span class="tp-dc thin'+pc+'"'+pea+'><i>'+TP_P2[TP_PARKS[j][0]]+'</i></span>':'<span class="tp-dc'+pc+'"'+pea+' style="background:var(--t'+c.lvl+')"><i>'+TP_P2[TP_PARKS[j][0]]+'</i></span>'); /* 0717h */ /* Cut C (C-2): Soft fills, trip-board-scoped */}
       var phe=EV.night[d0]?(tfPartyEm(d0)||"ring"):"";
-      var hol=(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
+      var hol=(SZ.tag[d0]?'<span class="tp-hol">'+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':''))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
       var dx='';
