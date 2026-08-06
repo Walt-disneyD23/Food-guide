@@ -1773,7 +1773,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5475,8 +5475,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var m=tfCurM,y=tfYFor(m),n=tfDim(y,m),i,d;
     var h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback3="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the fits</button></div>';
     if(!((typeof window.__tfL==="function")&&window.__tfL())){ /* L2: same honest hold as the fits */
-      if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen)renderPulsePage();});
-      if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen)renderPulsePage();});
+      if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
+      if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
       return h+'<div class="rpc"><div class="lbl">'+TF_MFULL[m]+' '+y+' \u00b7 up close</div><div class="tf-read">Warming up the record\u2026</div></div>';}
     var avg=0,ok=true;for(i=0;i<tfLen;i++){var v0=tfDEst(m,y,tfAnchor+i);if(v0==null){ok=false;break;}avg+=v0;}
     h+='<div class="rpc"><div class="lbl">'+TF_MFULL[m]+' '+y+' \u00b7 up close</div>';
@@ -5533,8 +5533,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var h='<div class="pw-nav"><button class="pw-back" type="button" data-tfback2="1"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the months</button></div>';
     if(!tfSel.length){tfOpen="s1";return tfS1HTML();}
     if(!((typeof window.__tfL==="function")&&window.__tfL())){ /* L2: the de-mix needs the day atoms + sv \u2014 warm both, hold honestly (never the smeared numbers) */
-      if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen)renderPulsePage();});
-      if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen)renderPulsePage();});
+      if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
+      if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
       return h+'<div class="rpc"><div class="lbl">The fits</div><div class="tf-read">Warming up the record\u2026</div></div>';}
     var lbl=tfSel.length===1?TF_MFULL[tfSel[0]]:TF_MFULL[tfSel[0]]+" \u2013 "+TF_MFULL[tfSel[tfSel.length-1]];
     h+='<div class="rpc"><div class="lbl">Across '+lbl+'</div>';
@@ -7824,13 +7824,16 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
        (base \u00d7 q \u2014 the backtest-decided base, Seasonal-L2-Spec \u00a72 settled
        at build: mean err 5.2 vs thirds' 7.3, worst 8.9 vs 21.9). ============ */
     var pwSlData=null;
-    function pwSlPrefetch(cb){/* the /seasonal warm \u2014 one fetch per session, the almanac idiom */
+    function pwSlPrefetch(cb){/* the /seasonal warm \u2014 one fetch per session; waiters QUEUE, never drop (0719b: the in-flight second caller used to lose its callback) */
       if(pwSlData){if(cb)cb();return;}
+      if(!pwSlPrefetch.__q)pwSlPrefetch.__q=[];
+      if(cb)pwSlPrefetch.__q.push(cb);
       if(pwSlPrefetch.__busy)return;pwSlPrefetch.__busy=1;
       fetch(WRAP_URL+"/seasonal").then(function(r){return r.json();}).then(function(d){
         pwSlPrefetch.__busy=0;
         if(d&&d.ok&&d.seeded&&d.sv&&d.sv.anchors)pwSlData=d.sv;
-        if(cb&&pwSlData)cb();
+        var q=pwSlPrefetch.__q;pwSlPrefetch.__q=[];
+        if(pwSlData)for(var i=0;i<q.length;i++)q[i]();
       })["catch"](function(){pwSlPrefetch.__busy=0;});}
     function slAnchorOf(ds){/* date -> {id,y,f,t,a}|null through the sv windows (they never overlap) */
       if(!pwSlData)return null;var id,y,ws;
@@ -7878,13 +7881,16 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
         for(k2=0;k2<7;k2++)(function(j2){A.d[j2]=pool(got.filter(function(x){return jsDow(x.d)===j2;}));})(k2);
         return (ac[key]=A);}
       return (__tfLC={byD:byD,ordP:ordP,preP:preP,jsDow:jsDow});}
-    function pwAlmPrefetch(cb){/* background warm for the D3 sparkline */
+    function pwAlmPrefetch(cb){/* background warm for the D3 sparkline \u2014 waiters QUEUE, never drop (0719b) */
       if(pwAlmData){if(cb)cb();return;}
+      if(!pwAlmPrefetch.__q)pwAlmPrefetch.__q=[];
+      if(cb)pwAlmPrefetch.__q.push(cb);
       if(pwAlmPrefetch.__busy)return;pwAlmPrefetch.__busy=1;
       fetch(WRAP_URL+"/almanac").then(function(r){return r.json();}).then(function(d){
         pwAlmPrefetch.__busy=0;
         if(d&&d.ok&&d.cells&&d.cells.length)pwAlmData=d;
-        if(cb&&pwAlmData)cb();
+        var q=pwAlmPrefetch.__q;pwAlmPrefetch.__q=[];
+        if(pwAlmData)for(var i=0;i<q.length;i++)q[i]();
       })["catch"](function(){pwAlmPrefetch.__busy=0;});}
     function pwAlmDoorPatch(){var d=$id("pwAlmDoor");if(!d||!pwAlmData)return;
       var sp=d.querySelector(".pw-alm-spark");if(sp)sp.innerHTML=pwAlmSparkBars(pwAlmData.cells);}
