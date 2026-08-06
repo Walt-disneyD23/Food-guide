@@ -1777,7 +1777,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5546,7 +5546,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var race=marks.some(function(w){var f=+w.f.slice(8,10),t2=+w.t.slice(8,10),fm=+w.f.slice(5,7)-1,tm=+w.t.slice(5,7)-1;
         return (fm===m&&tm===m)?(d>=f&&d<=t2):(fm===m?d>=f:d<=t2);});
       var ds3=tfDate(y,m,d),an3=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(ds3):null,seatd=an3&&(an3.a.kind==="lift"||an3.a.kind==="dip")&&an3.a.scopes&&an3.a.scopes.resort&&an3.a.scopes.resort.q!=null; /* L2 (F1): only SEATED anchors mark \u2014 held ones render nothing, anywhere */
-      var hd3=seatd&&HOLIDAYS[ds3]&&HOLIDAYS[ds3]!=="Christmas week"; /* Cut 3 (C-A): the day\u2019s dot rides only inside marked weeks, specific names only */
+      var hd3=HOLIDAYS[ds3]&&HOLIDAYS[ds3]!=="Christmas week"; /* Cut 3 (C-A, widened on owner catch \u2014 Halloween was invisible): EVERY curated holiday wears its dot, seated or not; a day-name is a calendar fact, not a seasonal claim, so held anchors keep the law (no ribbon, no lift) while their day gets its name */
       h+='<button type="button" class="tf-cd'+(race?' race':'')+(seatd?' aw1':'')+(hd3?' hd':'')+(pev[d]?' pn'+(pev[d]==="ring"?' pnx':''):'')+((d>=tfAnchor&&d<tfAnchor+tfLen)?' inb':'')+'"'+((pev[d]&&pev[d]!=="ring")?' data-em="'+pev[d]+'"':'')+' data-tfday="'+d+'" style="background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')">'+d+'</button>';}
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'');
     var pset={},pk;for(pk in pev)pset[pev[pk]]=1;
@@ -5555,8 +5555,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(dl=1;dl<=n;dl++){var al=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,dl)):null;
       if(al&&(al.a.kind==="lift"||al.a.kind==="dip")&&al.a.scopes&&al.a.scopes.resort&&al.a.scopes.resort.q!=null&&!ancs[al.id]){
         ancs[al.id]=1;alg+='<span><i class="awc"></i>'+esc(al.a.name)+' \u00b7 has run ~'+Math.round(Math.abs(al.a.scopes.resort.q-1)*100)+'% '+(al.a.scopes.resort.q>1?'over':'quieter than')+' nearby ordinary weeks</span>';}
-      var dsl=tfDate(y,m,dl); /* Cut 3 (C-A): the legend names each marked holiday with its date \u2014 real names, never a generic phrase (owner-confirmed) */
-      if(al&&al.a.scopes&&al.a.scopes.resort&&al.a.scopes.resort.q!=null&&(al.a.kind==="lift"||al.a.kind==="dip")&&HOLIDAYS[dsl]&&HOLIDAYS[dsl]!=="Christmas week")alg+='<span><i class="hh"></i>'+esc(HOLIDAYS[dsl])+' \u00b7 '+TF_MABs[m]+' '+dl+'</span>';}
+      var dsl=tfDate(y,m,dl); /* Cut 3 (C-A, widened): the legend names EVERY curated holiday with its date \u2014 real names, never a generic phrase (owner-confirmed) */
+      if(HOLIDAYS[dsl]&&HOLIDAYS[dsl]!=="Christmas week")alg+='<span><i class="hh"></i>'+esc(HOLIDAYS[dsl])+' \u00b7 '+TF_MABs[m]+' '+dl+'</span>';}
     h+='<div class="tf-callg">'+alg+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
     h+='<button type="button" class="tf-go" data-tfmake="1" style="margin-top:15px">Make this my trip \u203a</button>';
     h+='<div class="tf-basis">Each date wears the company it keeps: same part of the month, same day of the week, ordinary days only \u00b7 dates in a marked week wear that week\u2019s own history, lifted or eased by how it\u2019s really run \u00b7 a pattern, never a forecast \u00b7 party nights show only where the night list is verified \u00b7 the mark names the week; the color stays the crowd\u2019s.</div></div>';
