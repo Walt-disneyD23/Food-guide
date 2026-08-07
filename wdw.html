@@ -519,6 +519,7 @@
 .md-tph{margin:2px 0 10px}
 .md-doors .tp-door{display:flex;flex-direction:column}
 .md-doors .tp-door .ch{margin-top:auto;padding-top:8px}
+.md-doors .tp-door p{font-size:var(--fs-body);line-height:1.5}
 .md-pchip{display:inline-block;font:700 var(--fs-meta) var(--font-display);background:#fff3d6;color:#8a6100;border:1px solid #f0d79a;border-radius:999px;padding:3px 10px}
   .tp-acap{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);padding:5px 2px}
   .tp-peb{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:13px 0 8px}
@@ -1781,7 +1782,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4139,15 +4140,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     ne.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     fd.sort(function(a,b){return (a.ev.tm-b.ev.tm)||(b.ev.mn-a.ev.mn)||a.nm.localeCompare(b.nm);}); /* deepest = the lowest floor, one measure with the crown */
     return ne.concat(fd);}
-  function meCoach(it,isLast,boardMn,boardTm,pre){var e=it.ev,hd,why;
+  function meCoach(it,isLast,boardMn,boardTm,pre,fdN){var e=it.ev,hd,why;
     if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
       why="Eases, but never gets easy \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
     else{var rc="";
-      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre);if(xn.n>0)rc=" \u00b7 under 10 in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";}
-      var fall="Typically ~"+e.e0+"m at "+rpClk(e.bs[0].t)+" \u2014 falls to ~"+e.mn+"m by "+rpClk(e.tm);
-      if(isLast&&e.mn===boardMn&&e.tm===boardTm){hd="Save "+esc(it.nm)+" for last";
+      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre);if(xn.n>0)rc=" \u00b7 10 or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";} /* 0719o: the receipt speaks the definition */
+      var t0=e.bs[0].t,fromStart=(e.wk===t0);
+      var fall=fromStart
+        ?("Typically ~"+e.e0+"m already at "+rpClk(t0)+(e.tm>t0&&e.mn<e.e0?" \u2014 drifting to ~"+e.mn+"m by "+rpClk(e.tm):"")) /* 0719o: no fall grammar for a ride that starts at its floor */
+        :("Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 falls to ~"+e.mn+"m by "+rpClk(e.tm));
+      if(isLast&&fdN>1&&e.tm>t0&&e.mn===boardMn&&e.tm===boardTm){hd="Save "+esc(it.nm)+" for last"; /* 0719o: the crown needs a comparison set and a low the window didn\u2019t open with */
         why=fall+rc+" \u00b7 the deepest dip on the board, and it comes latest.";}
-      else{hd="Then "+esc(it.nm)+(e.wk!==null?" \u2014 after "+rpClk(e.wk):"");
+      else{hd=(fromStart?esc(it.nm)+" \u2014 easy from the start":"Then "+esc(it.nm)+(e.wk!==null?" \u2014 after "+rpClk(e.wk):""));
         why=fall+rc+".";}}
     return {hd:hd,why:why};}
   function meCtx(items,pre){ /* T3-A: the clause seats only when a pooled date is a marked one */
@@ -4198,10 +4202,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!ev){thin.push(items[i]);continue;}
       evs.push({id:items[i].id,nm:items[i].nm,ev:ev});}
     if(!evs.length)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The evening ran too thin for a plan here \u2014 try All.</div></div>'+rmOuts(outs);
-    var ord=mePlanOrder(evs),boardMn=1e9,boardTm=-1;
-    for(i=0;i<ord.length;i++){if(!ord[i].ev.ne){if(ord[i].ev.mn<boardMn)boardMn=ord[i].ev.mn;if(ord[i].ev.tm>boardTm)boardTm=ord[i].ev.tm;}}
+    var ord=mePlanOrder(evs),boardMn=1e9,boardTm=-1,fdN=0;
+    for(i=0;i<ord.length;i++){if(!ord[i].ev.ne){fdN++;if(ord[i].ev.mn<boardMn)boardMn=ord[i].ev.mn;if(ord[i].ev.tm>boardTm)boardTm=ord[i].ev.tm;}}
     var rec='',n=0;
-    for(i=0;i<ord.length;i++){n++;var c=meCoach(ord[i],i===ord.length-1,boardMn,boardTm,rpWin);
+    for(i=0;i<ord.length;i++){n++;var c=meCoach(ord[i],i===ord.length-1,boardMn,boardTm,rpWin,fdN);
       rec+='<div class="row"><div class="n">'+n+'</div><div class="m"><div class="hd">'+c.hd+'</div><div class="why">'+c.why+'</div></div></div>';}
     var tail='';
     if(thin.length)tail='<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 the evening ran too thin here: '+thin.map(function(o){return esc(o.nm);}).join(", ")+'.</div>';
