@@ -515,7 +515,7 @@
   .chevn{display:inline-block;color:var(--muted-2);font-weight:700;font-size:var(--fs-small);margin-left:5px;vertical-align:.5px} /* 0715d: the name-side chevron — owner picked B over the far-right column */
   .tp-asn{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
   .tp-ac{font:700 var(--fs-meta) var(--font-body);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 12px;color:var(--muted);background:var(--card);cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .tp-ac.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .tp-ac.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}.tp-ac.dis{opacity:.38;pointer-events:none}
   .tp-acap{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);padding:5px 2px}
   .tp-peb{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:13px 0 8px}
   .tp-pgrid{display:flex;gap:9px}
@@ -1777,7 +1777,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3681,7 +3681,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null,tpClrT=null,tpDelT=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdLeave="cl",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null,tpClrT=null,tpDelT=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -4802,7 +4802,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      (t.plan's exact shape, one-read store law); one list, two lenses (App's order · My order);
      one start-aware engine — seat rides near their lows, receipts clause-earned at their own
      thresholds; quick-add picker (A + stars, owner-picked Jul 29); history, never a promise. ===== */
-  function tdReset(){tdLens="app";tdStart="";tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;tpClrArm=null;}
+  function tdReset(){tdLens="app";tdStart="";tdLeave="cl";tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;tpClrArm=null;}
   function tdRides(t,ds){return (t&&t.rides||{})[ds]||[];}
   function tdAdd(id,ds,rid){ /* one-read store law: mutate inside a single tpTrips() read */
     var ts=tpTrips(),i;
@@ -4893,6 +4893,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   var TD_STARTS=[["rd","Rope drop"],["mm","Mid-morning"],["af","Afternoon"],["ev","Evening"]];
   function tdStartMin(k){return k==="mm"?630:k==="af"?780:k==="ev"?1020:0;} /* rope drop = the whole tape; it begins at open */
+  var TD_LEAVES=[["lt","Lunchtime"],["ma","Mid-afternoon"],["ad","After dinner"],["cl","Close"]]; /* 0719h (O1-A ratified): the window's far end \u2014 day-part warmth mirroring the Starting chips; Close = today's behavior, zero silent shifts */
+  function tdLeaveMin(k){return k==="lt"?780:k==="ma"?960:k==="ad"?1200:null;} /* null = the published close carries */
   function tdCurve(rid,wd,wds){ /* the day's window: its weekday first, the trip's whole arc when thin — rpCurveOf's floors intact */
     var days=rpHmDays(rid),a={},b={},i,j,x,v,k,g;
     for(i=0;i<days.length;i++){x=days[i];g=rpHmWd(x.d);
@@ -4904,22 +4906,25 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var cv=rpCurveOf(a);if(cv)return {cv:cv,arc:false};
     cv=rpCurveOf(b);return cv?{cv:cv,arc:true}:null;
   }
-  function tdEng(rows,startMin,ct,pins,pinClock){ /* one engine, start-aware: seat rides near their lows — deterministic, name-tiebroken */
+  function tdEng(rows,startMin,ct,pins,pinClock,fullCt){ /* 0719h: fullCt = the published close when ct wears a leave clamp; absent or equal \u2192 every new branch is inert */ /* one engine, start-aware: seat rides near their lows — deterministic, name-tiebroken */
     pins=pins||{};if(pinClock===undefined||pinClock===null)pinClock=startMin; /* 0715h: the dim gate reads the REAL clock in From-now, mid-bucket honesty */
     /* 0715g: pins seat first by anchor, the flexible pool flows around */
-    var A=[],B=[],C=[],N=[],P=[],D=[],i,q;
+    var A=[],B=[],C=[],N=[],P=[],D=[],L=[],i,q;var clmp=(fullCt!==undefined&&fullCt!==null&&ct!==null&&fullCt>ct);
     for(i=0;i<rows.length;i++){var r=rows[i];
       var pn=pins[r.id];
       if(pn){var ip={id:r.id,nm:r.nm,pin:pn,anchor:tdPinAnchor(pn),dead:tdPinDead(pn,pinClock)};
-        ip.why=ip.dead?"Your window sits before this start \u2014 the plan can\u2019t reach it.":"Your window \u2014 the plan flows around it.";
+        var lvd=(!ip.dead&&clmp&&ip.anchor>=ct);if(lvd)ip.dead=true; /* 0719h: the before-start dim\u2019s after-leave twin */
+        ip.why=lvd?"This sits after your leave \u2014 the plan can\u2019t reach it.":(ip.dead?"Your window sits before this start \u2014 the plan can\u2019t reach it.":"Your window \u2014 the plan flows around it.");
         (ip.dead?D:P).push(ip);continue;} /* a pinned ride leaves the flexible pool */
       if(!r.cvx){N.push({id:r.id,nm:r.nm,why:"No banked tape to place this one yet."});continue;}
-      var cv=r.cvx.cv,rem=[];
-      for(q=0;q<cv.bs.length;q++){var b0=cv.bs[q];if(b0.t>=startMin&&(ct===null||b0.t<ct))rem.push(b0);}
+      var cv=r.cvx.cv,rem=[],remL=[];
+      for(q=0;q<cv.bs.length;q++){var b0=cv.bs[q];if(b0.t>=startMin&&(ct===null||b0.t<ct))rem.push(b0);else if(clmp&&b0.t>=ct&&b0.t<fullCt)remL.push(b0);} /* 0719h: the after-leave tail, read only under a clamp */
       if(!rem.length){N.push({id:r.id,nm:r.nm,why:"Its typical tape sits behind this start."});continue;}
       var base=rem[0].med,mn=1e9,tm=null,mx=-1,tmx=null;
       for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mx){mx=rem[q].med;tmx=rem[q].t;}}
       var f=0;while(f<rem.length&&rem[f].med<=10)f++;
+      if(remL.length&&mn>10){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=10){lt=remL[q].t;break;}}
+        if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
       var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
         f2:(f>0&&f<rem.length)?rem[f-1].t+30:null,wk:(f===rem.length),
         lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
@@ -4941,7 +4946,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(fj>=Fx.length||(pi<P.length&&P[pi].anchor<=fref(Fx[fj])))M.push(P[pi++]);
       else M.push(Fx[fj++]);
     }
-    return {ord:D.concat(M),outs:N};
+    return {ord:D.concat(M),outs:L.concat(N)};
   }
   function tdWhy(it,startMin,openMin,mark){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
     var cv=it.cv,p=[];
@@ -5041,17 +5046,20 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds);if(cx){cvN++;if(cx.arc)arcN++;}return {id:rid,nm:r.name||rid,cvx:cx};});
       var allArc=(cvN>0&&arcN===cvN),mixed=(arcN>0&&arcN<cvN); /* 0715f: three window states — the basis frames each honestly */
       var pns=tdPins(t,ds),np=0;ids.forEach(function(rid){if(pns[rid])np++;});
-      var eng=tdEng(rows,sm,hrs.c,pns,isNow?nowT:sm),n=0,ridden="",rdn=0;
+      if(tdLeaveMin(tdLeave)!==null&&tdLeaveMin(tdLeave)<=sm)tdLeave="cl"; /* 0719h: a leave the start has passed snaps to Close on glass \u2014 never a silent clamp */
+      var lvM=tdLeaveMin(tdLeave),ct2=(lvM===null)?hrs.c:((hrs.c===null)?lvM:Math.min(hrs.c,lvM)),lvOn=(lvM!==null&&(hrs.c===null||ct2<hrs.c));
+      var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,hrs.c),n=0,ridden="",rdn=0;
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
+      chips+='<div class="tp-asn td-asn"><span class="tp-acap">Leaving by \u2014</span>'+TD_LEAVES.map(function(x){var xm=tdLeaveMin(x[0]),dis=(xm!==null&&xm<=sm);return '<span class="tp-ac'+(tdLeave===x[0]?' sel':'')+(dis?' dis':'')+'" data-tdlv="'+x[0]+'"'+(dis?'':' role="button"')+'>'+x[1]+'</span>';}).join("")+'</div>'; /* 0719h: the mirror row \u2014 chips the start has passed dim, Close always stands */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
-        var _st=dnf?'\u2713':(it.pin?'':(++n)); /* 0717n: the seat computes once - same value, now capturable */
+        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n))); /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
         return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else body+=slA(it,false);});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
         :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
-      basis=(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
+      basis=(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
     }
     tdSecHTML.rows=_cr; /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
     return head+tabs+chips+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
@@ -5498,7 +5506,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k,s){tfCurM=m;tfCurK=k;tfAnchor=(s!=null&&!isNaN(s))?Math.max(1,Math.min(s,tfDim(tfYFor(m),m)-tfLen+1)):tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";} /* L2 (K1): a tapped card hands its OWN pre-seated run to the calendar; anchor cards hand their window\u2019s start */
-  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdst],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
+  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdst],[data-tdlv],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
   document.addEventListener("click",function(e){ /* 0717g: flash-then-commit, delegated \u2014 the tap is intercepted at capture, the element lights, and the SAME click re-dispatches after 150ms so every existing handler runs unchanged. The picker chips (tp-acr) keep their own Cut C flash and stay out of this list. A second tap inside the window is swallowed \u2014 the free double-tap guard. */
     if(e.__pp)return;
     var t=e.target&&e.target.closest?e.target.closest(PP_TAP):null;
@@ -5720,6 +5728,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;renderPulsePage();});});
     el.querySelectorAll("[data-tdst]").forEach(function(b){b.addEventListener("click",function(){ /* the one input only the user knows */
       var v=b.getAttribute("data-tdst");if(v===tdStart)return;tdStart=v;renderPulsePage();});});
+    el.querySelectorAll("[data-tdlv]").forEach(function(b){b.addEventListener("click",function(){ /* 0719h: the window's far end \u2014 the second input only the user knows */
+      if(b.className.indexOf(" dis")>=0)return;var v=b.getAttribute("data-tdlv");if(v===tdLeave)return;tdLeave=v;renderPulsePage();});});
     el.querySelectorAll("[data-tdgrip]").forEach(function(g){ /* 0715j: handle-scoped drag (owner-ratified A, reorder-mock.html of record) - whole-row drag stays banned; the page scrolls everywhere but the grip */
       g.addEventListener("click",function(e2){e2.stopPropagation();}); /* a bare grip tap stays inert - never a pin door */
       g.addEventListener("touchstart",function(te){te.preventDefault();},{passive:false}); /* iOS: veto the pan before Safari enrolls it - touch-action alone loses the down-drag race (owner-caught on mock v1) */
