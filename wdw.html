@@ -516,6 +516,10 @@
   .tp-asn{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
   .tp-ac{font:700 var(--fs-meta) var(--font-body);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 12px;color:var(--muted);background:var(--card);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .tp-ac.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}.tp-ac.dis{opacity:.38;pointer-events:none}
+.md-tph{margin:2px 0 10px}
+.md-doors .tp-door{display:flex;flex-direction:column}
+.md-doors .tp-door .ch{margin-top:auto;padding-top:8px}
+.md-pchip{display:inline-block;font:700 var(--fs-meta) var(--font-display);background:#fff3d6;color:#8a6100;border:1px solid #f0d79a;border-radius:999px;padding:3px 10px}
   .tp-acap{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);padding:5px 2px}
   .tp-peb{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:13px 0 8px}
   .tp-pgrid{display:flex;gap:9px}
@@ -1777,7 +1781,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4051,10 +4055,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
   }
-  function rmDoorHTML(){
-    var n=rmStars().length;
-    var sub=n?('Built from your stars \u00b7 \u2605 '+n):'Star rides to build a morning';
-    return '<button class="rp-door rd-door" data-rpsub="morning" type="button"><span class="m"><span class="nm">My morning</span><span class="sub">'+sub+'</span></span><span class="chev">\u203a</span></button>';
+  function rmDoorHTML(){ /* 0719l (IA-B, owner-ratified): one door, the landing behind it — morning and evening stand as siblings inside */
+    return '<button class="rp-door rd-door" data-rpsub="hours" type="button"><span class="m"><span class="nm">My day</span><span class="sub">Pick your hours · morning or evening</span></span><span class="chev">›</span></button>';
   }
   function rmOuts(outs){
     if(!outs.length)return "";
@@ -4106,7 +4108,115 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="pf-basis">The order typical days suggest \u2014 a pattern, not today\u2019s promise \u00b7 rope-drop-first = a line that never dipped to walk-on \u00b7 by-a-time = the walk-on\u2019s typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first</div></div>';
     return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
   }
-  /* ===== 0714i \u00b7 COMPARE (L-28 cut 9, lean) ================================
+/* ===== 0719l (ME): MY EVENING \u2014 engine + landing =========================
+     The morning's mirror on the same organs: rpWinCurve curves, rpHmDays day
+     tapes, rpWinDs windows. Window law (owner-ratified): evening = the later
+     of 4 PM or five hours before the record's own last banked slot \u2014 T2-A,
+     derived per park from data, never guessed. T4-A openers = never-easy in
+     the window; faders order by when the low lands, deepest-latest last.
+     T1-C receipts count REAL days per slot. T3-A: one context clause when the
+     pooled dates include a marked stretch. Party flag (ev:1 verified nights)
+     replaces the evening door's case; the close reads the published schedule. */
+  function meTodayDs(){try{return new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}catch(e){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}}
+  function meCloseMin(){var i,sh=null;for(i=0;i<parks.length;i++)if(parks[i].name===rpPark){sh=parks[i].short;break;}
+    var pi=sh&&parkInfo[sh];if(!pi||!pi.close)return null;var c=rcEtMin(new Date(pi.close));if(c<360)c+=1440;return c;}
+  function meWindow(items){var last=-1,i,q,bs;
+    for(i=0;i<items.length;i++){bs=items[i].cv.bs;for(q=0;q<bs.length;q++)if(bs[q].t>last)last=bs[q].t;}
+    if(last<0)return null;return {a:Math.max(960,last+30-300),b:last+30};}
+  function meView(cv,win){var bs=[],q;
+    for(q=0;q<cv.bs.length;q++)if(cv.bs[q].t>=win.a)bs.push(cv.bs[q]);
+    if(bs.length<2)return null;
+    var mn=1e9,tm=null,mx=-1e9,e0=bs[0].med,lastB=bs[bs.length-1],wk=null;
+    for(q=0;q<bs.length;q++){if(bs[q].med<mn){mn=bs[q].med;tm=bs[q].t;}if(bs[q].med>mx)mx=bs[q].med;}
+    for(q=0;q<bs.length;q++){if(bs[q].med<=10){wk=bs[q].t;break;}}
+    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>10)};}
+  function meXN(rid,t,pre){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v;
+    for(i=0;i<days.length;i++){idx=(t/30)-days[i].hs;if(idx<0||idx>=days[i].hm.length)continue;
+      v=days[i].hm[idx];if(v===null)continue;n++;if(v<=10)x++;}
+    return {x:x,n:n};}
+  function mePlanOrder(evs){var ne=[],fd=[],i;
+    for(i=0;i<evs.length;i++)(evs[i].ev.ne?ne:fd).push(evs[i]);
+    ne.sort(function(a,b){return a.nm.localeCompare(b.nm);});
+    fd.sort(function(a,b){return (a.ev.tm-b.ev.tm)||(b.ev.mn-a.ev.mn)||a.nm.localeCompare(b.nm);}); /* deepest = the lowest floor, one measure with the crown */
+    return ne.concat(fd);}
+  function meCoach(it,isLast,boardMn,boardTm,pre){var e=it.ev,hd,why;
+    if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
+      why="Eases, but never gets easy \u2014 typically "+e.lastLo+"\u2013"+e.lastHi+"m even at "+rpClk(e.lastT)+", so waiting buys you little here.";}
+    else{var rc="";
+      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre);if(xn.n>0)rc=" \u00b7 under 10 in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";}
+      var fall="Typically ~"+e.e0+"m at "+rpClk(e.bs[0].t)+" \u2014 falls to ~"+e.mn+"m by "+rpClk(e.tm);
+      if(isLast&&e.mn===boardMn&&e.tm===boardTm){hd="Save "+esc(it.nm)+" for last";
+        why=fall+rc+" \u00b7 the deepest dip on the board, and it comes latest.";}
+      else{hd="Then "+esc(it.nm)+(e.wk!==null?" \u2014 after "+rpClk(e.wk):"");
+        why=fall+rc+".";}}
+    return {hd:hd,why:why};}
+  function meCtx(items,pre){ /* T3-A: the clause seats only when a pooled date is a marked one */
+    if(typeof window.__slOrd!=="function"||!items.length)return "";
+    var seen={},i,j,ds;
+    for(i=0;i<items.length;i++){var days=rpHmWindow(rpHmDays(items[i].id),pre);
+      for(j=0;j<days.length;j++){ds=days[j].d;if(seen[ds])continue;seen[ds]=1;
+        if(!window.__slOrd(ds))return " \u00b7 a marked stretch sits in these days \u2014 typicals lean with it";}}
+    return "";}
+  function meEveningHTML(){
+    var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
+    var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
+    var stars=rmStars(),loading=!rpDigs||!pfBase||!pfBase.rides;
+    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My evening</b></div>';
+    var hero='<div class="rp-hero"><div class="eb">My Evening \u00b7 '+EBW[rpWin]+'</div>'+
+      '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
+      '<div class="sub">Built from your starred rides\u2019 typical evenings.</div></div>';
+    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+      return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
+    if(!stars.length)return crumb+hero+'<div class="rpc"><div class="fc-empty">Star rides in this park \u2014 from Live, Favorites, or a ride\u2019s profile \u2014 and the evening builds itself here.</div></div>';
+    if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The plan builds from the day ledger \u2014 one moment.</div></div>';
+    var items=[],outs=[],i,cv;
+    for(i=0;i<stars.length;i++){cv=rpWinCurve(stars[i].id,rpWin);
+      if(!cv){outs.push(stars[i]);continue;}
+      items.push({id:stars[i].id,nm:stars[i].nm,cv:cv});}
+    if(!items.length)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked evenings yet for your stars.':'This window is too thin for a plan \u2014 try All.')+'</div></div>'+rmOuts(outs);
+    var win=meWindow(items);
+    if(!win)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The record hasn\u2019t kept enough of the evening here yet.</div></div>'+rmOuts(outs);
+    var evs=[],thin=[];
+    for(i=0;i<items.length;i++){var ev=meView(items[i].cv,win);
+      if(!ev){thin.push(items[i]);continue;}
+      evs.push({id:items[i].id,nm:items[i].nm,ev:ev});}
+    if(!evs.length)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The evening ran too thin for a plan here \u2014 try All.</div></div>'+rmOuts(outs);
+    var ord=mePlanOrder(evs),boardMn=1e9,boardTm=-1;
+    for(i=0;i<ord.length;i++){if(!ord[i].ev.ne){if(ord[i].ev.mn<boardMn)boardMn=ord[i].ev.mn;if(ord[i].ev.tm>boardTm)boardTm=ord[i].ev.tm;}}
+    var rec='',n=0;
+    for(i=0;i<ord.length;i++){n++;var c=meCoach(ord[i],i===ord.length-1,boardMn,boardTm,rpWin);
+      rec+='<div class="row"><div class="n">'+n+'</div><div class="m"><div class="hd">'+c.hd+'</div><div class="why">'+c.why+'</div></div></div>';}
+    var tail='';
+    if(thin.length)tail='<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 the evening ran too thin here: '+thin.map(function(o){return esc(o.nm);}).join(", ")+'.</div>';
+    var plan='<div class="rpc rm-rec"><div class="lbl">The plan</div>'+rec+tail+
+      '<div class="pf-basis">The order typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 openers = rides that ease least, so they cost the same now \u00b7 save-it-for-last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b>1440?win.b-1440:win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+meCtx(items,rpWin)+'</div></div>';
+    return crumb+hero+lens+plan+rmOuts(outs);
+  }
+  function mdLandingHTML(){
+    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My day</b></div>';
+    var cl=meCloseMin();
+    var hero='<div class="tph md-tph"><div class="eb">'+esc(rpPark)+' \u00b7 My day</div>'+
+      '<h2>Pick your hours like you\u2019ve been before.</h2>'+
+      '<div class="sub">'+(cl!==null?('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 '):'')+'built from your starred rides\u2019 typical days \u2014 history, never a promise.</div></div>';
+    var rcpt='',id,r,q;
+    if(rpDigs&&pfBase&&pfBase.rides){var cnt=0,anyLate=false;
+      for(id in roster){r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark)continue;
+        var cv=rpWinCurve(id,"all");if(!cv)continue;var hit=false;
+        for(q=0;q<cv.bs.length;q++){if(cv.bs[q].t>=1320){anyLate=true;if(cv.bs[q].med<=10){hit=true;break;}}}
+        if(hit)cnt++;}
+      if(anyLate&&cnt>0)rcpt=' \u00b7 <b>'+cnt+' ride'+(cnt===1?'':'s')+' walk-on past 10</b> lately'; /* the number only where the claim can form (AK\u2019s nights end early \u2014 no false zero) */}
+    var party=(rpPark==="Magic Kingdom"&&window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[meTodayDs()]);
+    var evCase=party
+      ?'<span class="md-pchip">Party tonight \u00b7 closes '+(cl!==null?rpClk(cl>1440?cl-1440:cl):'early')+' to day guests</span>'
+      :'The lines go home before the crowds do'+rcpt+'.';
+    var doors='<div class="tp-doors md-doors">'+
+      '<div class="tp-door" data-rpsub="morning" role="button" tabindex="0"><i>My morning</i><p>The park wakes up slowly \u00b7 ride ahead of it, done by lunch.</p><span class="ch">Plan it \u203a</span></div>'+
+      '<div class="tp-door" data-rpsub="evening" role="button" tabindex="0"><i>My evening</i><p>'+evCase+'</p><span class="ch">Plan it \u203a</span></div>'+
+      '</div>';
+    return crumb+hero+doors;
+  }
+  /* ===== end 0719l ME ===== */
+    /* ===== 0714i \u00b7 COMPARE (L-28 cut 9, lean) ================================
      One park, one scale, the profile's window \u2014 a choosing tool, not an ordering
      tool (My Morning orders; the coach card stays banked in L28-Spec \u00a73 for a
      later cut, owner call). Identity is contained: indigo = the ride you came
@@ -5021,10 +5131,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<button class="td-psv" data-tdpsv type="button"'+(txt?"":" disabled")+'>'+(txt?esc((ex?'Save pin \u2014 ':'Pin it \u2014 ')+txt):'Pin it')+'</button>'+
       '<div class="td-phalf"><button class="td-pcl" data-tdpcl type="button">Cancel</button>'+(ex?'<button class="td-prm" data-tdprm type="button">Remove pin</button>':"")+'</div></div>'; /* 0715n (owner-ratified S3): boxed even halves - a fresh pin\'s lone Cancel runs full width */
   }
-  function tdSecHTML(t,ds){ /* MY DAY AT <PARK> — leads the opened day once a park is planned; the lens flips the reading, never the data */
+function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows stay silent, never mislabeled */
+    var st=tdStart||"rd",lv=tdLeave||"cl";
+    if(st==="now")return "";
+    if((st==="rd"||st==="mm")&&lv==="lt")return "morning";
+    if(st==="af"&&lv==="ma")return "afternoon";
+    if(st==="ev"&&(lv==="ad"||lv==="cl"))return "evening";
+    return "";}
+    function tdSecHTML(t,ds){ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
     var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
     var ids=tdRides(t,ds);
-    var head='<div class="td-lab"><span>My day at '+esc(pk)+'</span>'+(ids.length?'<span class="n">'+ids.length+' ride'+(ids.length===1?'':'s')+'</span>':'')+'</div>';
+    var _pw=tdPartWord(),_wdn=tpWDn(ds),_dd=tpDays(t),_rep=0,_z;for(_z=0;_z<_dd.length;_z++)if(tpWDn(_dd[_z])===_wdn)_rep++; /* 0719l: the day names itself — the earned adjective seats only when the chip pair cleanly is one part; the date suffix only when the trip repeats the weekday */
+    var head='<div class="td-lab"><span>'+_wdn+(_pw?' '+_pw:'')+' at '+esc(pk)+(_rep>1?' · '+tpMD(ds):'')+'</span>'+(ids.length?'<span class="n">'+ids.length+' ride'+(ids.length===1?'':'s')+'</span>':'')+'</div>';
     var addr='<button class="td-addr" data-tdadd type="button">+ Add or remove rides</button>';
     var parksLab='<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>';
     var pick=(tdPk?tdPickHTML(t,ds,pk):"")+(tdPin!==null?tdPnHTML(t,ds,pk):""); /* 0715g: the pin sheet mounts beside the picker (never both open) */
@@ -5674,7 +5792,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
     if(rpView==="trip"){rpEnsureDigs();tpEnsureSched();el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+tpPageHTML();} /* L-29 (0714u): the trip rung — a new entry path feeds itself (Learning 45): digs + months ensured here */
-    else if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
+    else if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rpSub==="evening"?meEveningHTML():rpSub==="hours"?mdLandingHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
     else el.innerHTML='<div class="pg-stick">'+head+rail+seg+'</div>'+
       pfFeedHTML(hlScope)+ /* 0711b: callout feed — owner picked feed-above-board (D1), G1 grammar */
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
@@ -5691,7 +5809,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}tdReset();renderPulsePage();rpTop();});});
     el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
       rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
-    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=null;else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
+    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=(rpSub==="morning"||rpSub==="evening")?"hours":null; /* 0719l: the hours rooms pop to their landing; the board keeps its park-page door */else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
     el.querySelectorAll(".rp-go").forEach(function(b){b.addEventListener("click",function(){
       rpRide=b.getAttribute("data-rid");rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-rpsub]").forEach(function(b){b.addEventListener("click",function(){ /* 0714a: the planning doors */
