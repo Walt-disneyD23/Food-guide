@@ -1781,7 +1781,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4118,8 +4118,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      pooled dates include a marked stretch. Party flag (ev:1 verified nights)
      replaces the evening door's case; the close reads the published schedule. */
   function meTodayDs(){try{return new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}catch(e){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}}
-  function meCloseMin(){var i,sh=null;for(i=0;i<parks.length;i++)if(parks[i].name===rpPark){sh=parks[i].short;break;}
-    var pi=sh&&parkInfo[sh];if(!pi||!pi.close)return null;var c=rcEtMin(new Date(pi.close));if(c<360)c+=1440;return c;}
+  function meCloseMin(){ /* 0719n: parkInfo is keyed by the display name (shortName) \u2014 a direct hit, no loop */
+    var pi=parkInfo[rpPark];if(!pi||!pi.close)return null;var c=rcEtMin(new Date(pi.close));if(c<360)c+=1440;return c;}
   function meWindow(items){var last=-1,i,q,bs;
     for(i=0;i<items.length;i++){bs=items[i].cv.bs;for(q=0;q<bs.length;q++)if(bs[q].t>last)last=bs[q].t;}
     if(last<0)return null;return {a:Math.max(960,last+30-300),b:last+30};}
@@ -4141,7 +4141,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return ne.concat(fd);}
   function meCoach(it,isLast,boardMn,boardTm,pre){var e=it.ev,hd,why;
     if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
-      why="Eases, but never gets easy \u2014 typically "+e.lastLo+"\u2013"+e.lastHi+"m even at "+rpClk(e.lastT)+", so waiting buys you little here.";}
+      why="Eases, but never gets easy \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
     else{var rc="";
       if(e.wk!==null){var xn=meXN(it.id,e.wk,pre);if(xn.n>0)rc=" \u00b7 under 10 in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";}
       var fall="Typically ~"+e.e0+"m at "+rpClk(e.bs[0].t)+" \u2014 falls to ~"+e.mn+"m by "+rpClk(e.tm);
@@ -4214,7 +4214,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var cl=meCloseMin();
     var hero='<div class="tph md-tph"><div class="eb">'+esc(rpPark)+' \u00b7 My day</div>'+
       '<h2>Pick your hours like you\u2019ve been before.</h2>'+
-      '<div class="sub">'+(cl!==null?('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 '):'')+'built from your starred rides\u2019 typical days \u2014 history, never a promise.</div></div>';
+      '<div class="sub">'+(cl!==null?('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 built'):'Built')+' from your starred rides\u2019 typical days \u2014 history, never a promise.</div></div>';
     var rcpt='',id,r,q;
     if(rpDigs&&pfBase&&pfBase.rides){var cnt=0,anyLate=false;
       for(id in roster){r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark)continue;
