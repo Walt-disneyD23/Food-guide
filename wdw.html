@@ -1781,7 +1781,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4157,6 +4157,23 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(j=0;j<days.length;j++){ds=days[j].d;if(seen[ds])continue;seen[ds]=1;
         if(!window.__slOrd(ds))return " \u00b7 a marked stretch sits in these days \u2014 typicals lean with it";}}
     return "";}
+  function meAx(t){var h=Math.floor((t%1440)/60),mm=t%60,ap=h>=12?"P":"A";h=h%12;if(!h)h=12;return h+(mm?":30":"")+ap;}
+  function meLanesHTML(ord,win){ /* 0719m: the evening strip \u2014 the morning's lane component over the evening window; green BEGINS where the edge does */
+    var rows='',i,j;
+    for(i=0;i<ord.length;i++){
+      var it=ord[i],cells='',by={};
+      for(j=0;j<it.ev.bs.length;j++)by[it.ev.bs[j].t]=it.ev.bs[j].med;
+      for(j=win.a;j<win.b;j+=30){var m=by[j];
+        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+'"></i>';}
+      var edge=it.ev.ne?'<span class="rm-edge mut">eases, never easy</span>'
+        :'<span class="rm-edge">walk-on after '+rpClk(it.ev.wk)+'</span>';
+      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane">'+cells+'</div></div>';
+    }
+    var ax='',t;for(t=win.a;t<=win.b;t+=60)ax+='<span>'+meAx(t)+'</span>';
+    return '<div class="rpc"><div class="lbl">Their evenings, side by side \u00b7 '+rpClk(win.a)+' \u2013 '+rpClk(win.b>1440?win.b-1440:win.b)+'</div>'+
+      '<div class="rm-axis">'+ax+'</div>'+rows+
+      '<div class="pf-basis">Typical half-hour medians \u00b7 walk-on = 10m or under \u00b7 green begins where the edge does \u00b7 gray = slot hidden by the n-floor</div></div>';
+  }
   function meEveningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
@@ -4190,7 +4207,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(thin.length)tail='<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 the evening ran too thin here: '+thin.map(function(o){return esc(o.nm);}).join(", ")+'.</div>';
     var plan='<div class="rpc rm-rec"><div class="lbl">The plan</div>'+rec+tail+
       '<div class="pf-basis">The order typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 openers = rides that ease least, so they cost the same now \u00b7 save-it-for-last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b>1440?win.b-1440:win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+meCtx(items,rpWin)+'</div></div>';
-    return crumb+hero+lens+plan+rmOuts(outs);
+    return crumb+hero+lens+plan+meLanesHTML(ord,win)+rmOuts(outs);
   }
   function mdLandingHTML(){
     var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My day</b></div>';
