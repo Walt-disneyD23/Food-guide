@@ -1777,7 +1777,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4928,7 +4928,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
         f2:(f>0&&f<rem.length)?rem[f-1].t+30:null,wk:(f===rem.length),
         lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
-        near:(ct!==null&&tm!==null&&tm>=ct-45)};
+        near:(ct!==null&&tm!==null&&tm>=ct-45),lvw:clmp}; /* 0719i: the clause knows which end of the window it names */
       if(it.wk||mx-mn<8){it.k="C";C.push(it);}
       else if(mx<=35){it.k="C";it.easy=true;C.push(it);} /* 0715u (owner-ratified 35): the tolerance gate - an engine classifier, never a display tier; the receipt speaks the ride's own ceiling */
       else if(base<=mn+3){it.k="A";A.push(it);}
@@ -4961,7 +4961,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       else p.push("typically climbs toward ~"+it.mx+"m by "+rpClk(it.tmx));
     }else{
       if(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1])p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
-      p.push("typically eases to ~"+it.mn+"m"+(it.tm!==null?(it.near?" near close":" by "+rpClk(it.tm)):""));
+      p.push("typically eases to ~"+it.mn+"m"+(it.tm!==null?(it.near?(it.lvw?" near your leave":" near close"):" by "+rpClk(it.tm)):""));
     }
     if(it.lateStart)p.unshift("from its "+rpClk(it.st0)+" start");
     var w=p.join(" \u2014 ");w=w.charAt(0).toUpperCase()+w.slice(1)+".";
@@ -5059,7 +5059,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
         :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
-      basis=(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':'');
+      basis=(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>1440?hrs.c-1440:hrs.c)+' published':' \u00b7 hours not published yet');
     }
     tdSecHTML.rows=_cr; /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
     return head+tabs+chips+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
