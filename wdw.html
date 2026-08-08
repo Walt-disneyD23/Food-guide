@@ -1782,7 +1782,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4121,6 +4121,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function meTodayDs(){try{return new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());}catch(e){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}}
   function meCloseMin(){ /* 0719n: parkInfo is keyed by the display name (shortName) \u2014 a direct hit, no loop */
     var pi=parkInfo[rpPark];if(!pi||!pi.close)return null;var c=rcEtMin(new Date(pi.close));if(c<360)c+=1440;return c;}
+  function meTonight(){ /* 0719q: tense flips whole \u2014 the hero may not say "open till" about a night that ended */
+    var cl=meCloseMin();if(cl===null)return {cl:null,closed:false,nx:null};
+    var nowM=rcEtMin(new Date());
+    var closed=(cl<=1440?nowM>cl:(nowM>cl-1440&&nowM<300));
+    var pi=parkInfo[rpPark],nx=null;
+    if(closed&&pi&&pi.nextOpen){nx=rcEtMin(new Date(pi.nextOpen));}
+    return {cl:cl,closed:closed,nx:nx};}
   function meWindow(items){var last=-1,i,q,bs;
     for(i=0;i<items.length;i++){bs=items[i].cv.bs;for(q=0;q<bs.length;q++)if(bs[q].t>last)last=bs[q].t;}
     if(last<0)return null;return {a:Math.max(960,last+30-300),b:last+30};}
@@ -4215,10 +4222,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function mdLandingHTML(){
     var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My day</b></div>';
-    var cl=meCloseMin();
+    var tn=meTonight(),cl=tn.cl;
+    var _fact=(cl===null)?'Built':(tn.closed?('Closed for the night'+(tn.nx!==null?' \u00b7 back at '+rpClk(tn.nx)+' tomorrow':'')+' \u00b7 built'):('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 built'));
     var hero='<div class="tph md-tph"><div class="eb">'+esc(rpPark)+' \u00b7 My day</div>'+
       '<h2>Pick your hours like you\u2019ve been before.</h2>'+
-      '<div class="sub">'+(cl!==null?('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 built'):'Built')+' from your starred rides\u2019 typical days \u2014 history, never a promise.</div></div>';
+      '<div class="sub">'+_fact+' from your starred rides\u2019 typical days \u2014 history, never a promise.</div></div>';
     var rcpt='',id,r,q;
     if(rpDigs&&pfBase&&pfBase.rides){var cnt=0,anyLate=false;
       for(id in roster){r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark)continue;
@@ -4228,7 +4236,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(anyLate&&cnt>0)rcpt=' \u00b7 <b>'+cnt+' ride'+(cnt===1?'':'s')+' walk-on past 10</b> lately'; /* the number only where the claim can form (AK\u2019s nights end early \u2014 no false zero) */}
     var party=(rpPark==="Magic Kingdom"&&window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[meTodayDs()]);
     var evCase=party
-      ?'<span class="md-pchip">Party tonight \u00b7 closes '+(cl!==null?rpClk(cl>1440?cl-1440:cl):'early')+' to day guests</span>'
+      ?'<span class="md-pchip">Party tonight \u00b7 '+(tn.closed?'closed ':'closes ')+(cl!==null?rpClk(cl>1440?cl-1440:cl):'early')+' to day guests</span>'
       :'The lines go home before the crowds do'+rcpt+'.';
     var doors='<div class="tp-doors md-doors">'+
       '<div class="tp-door" data-rpsub="morning" role="button" tabindex="0"><i>My morning</i><p>The park wakes up slowly \u00b7 ride ahead of it, done by lunch.</p><span class="ch">Plan it \u203a</span></div>'+
