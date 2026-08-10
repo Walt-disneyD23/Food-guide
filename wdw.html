@@ -1797,6 +1797,26 @@
   .mr-empty .big{font-size:34px;color:var(--fav)}
   .mr-empty .t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);margin-top:8px}
   .mr-empty .s{font-size:var(--fs-meta);color:var(--muted);margin-top:6px;line-height:1.5}
+  /* ===== MY RIDES Stage 2 (0719z) — chips lens + YOUR PULSE, mock v12 grammar */
+  .mr-chips{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:5px;margin-bottom:10px}
+  .mr-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:999px;padding:8px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .mr-chip.on{background:var(--accent-soft);color:var(--accent)}
+  .mr-chip.dim{color:var(--muted-2);opacity:.55}
+  .mr-pulse{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);overflow:hidden;margin-bottom:10px}
+  .mr-pulse .cap{font:700 var(--fs-caps) var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding:12px 14px 2px}
+  .mr-prow{display:flex;align-items:center;gap:10px;padding:11px 14px;border-top:1px solid var(--line)}
+  .mr-prow .m{flex:1;min-width:0}
+  .mr-prow .tag{font:700 var(--fs-caps) var(--font-display);letter-spacing:.1em}
+  .mr-prow .tag.go{color:var(--short)}
+  .mr-prow .tag.rough{color:var(--long)}
+  .mr-prow .nm{font:700 18px var(--font-display);letter-spacing:-.01em;margin-top:2px}
+  .mr-prow .typ{font-size:var(--fs-meta);color:var(--muted);margin-top:3px}
+  .mr-prow .typ b{color:var(--ink)}
+  .mr-prow .r{text-align:right;flex:none}
+  .mr-prow .pk{font:700 var(--fs-meta) var(--font-display);color:var(--muted-2)}
+  .mr-prow .w{font:700 22px var(--font-display)}
+  .mr-prow .w small{font:700 10px;color:var(--muted-2);letter-spacing:.06em}
+  .mr-pulse .rest{font-size:var(--fs-meta);color:var(--muted);padding:10px 14px;border-top:1px solid var(--line)}
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
 <script>
@@ -1846,7 +1866,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3258,7 +3278,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(pfBase||(pfBaseAt&&Date.now()-pfBaseAt<10*60*1000))return;
     pfBaseAt=Date.now();
     fetch(PUSH.WORKER_URL+"/baseline").then(function(r){return r.json();}).then(function(j){
-      if(j&&j.ok&&j.rides){pfBase={days:j.days,rides:j.rides};renderPulsePage();}
+      if(j&&j.ok&&j.rides){pfBase={days:j.days,rides:j.rides};renderPulsePage();if(typeof renderMyRidesPage==="function")renderMyRidesPage();}
     }).catch(function(){});
   }
   function pfTick(){ /* once per poll, beside checkAlerts(): park-wide down→up, 2-poll-confirmed runs */
@@ -7066,9 +7086,55 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       '<div class="acts"><button class="def" id="mrShDef" type="button">Use default rule</button><button class="save" id="mrShSave" type="button">Save</button></div></div>';
   }
   function mrPageHTML(){
-    var ids=mrStars();
-    if(!ids.length&&!Object.keys(resolved).length)return mrEmptyHTML();
-    return mrHeroHTML(ids)+mrShelfHTML()+mrGroupsHTML(ids)+mrLogHTML()+mrRulesHTML()+mrPlanDoorHTML()+mrSheetHTML();
+    var all=mrStars();
+    if(!all.length&&!Object.keys(resolved).length)return mrEmptyHTML();
+    if(mrLens!=="ALL"&&!all.some(function(id){return roster[id].park===mrLens;}))mrLens="ALL"; /* the lens self-heals when its park loses its last star */
+    var ids=mrLens==="ALL"?all:all.filter(function(id){return roster[id].park===mrLens;});
+    return mrHeroHTML(all)+mrChipsHTML()+mrPulseHTML(ids)+mrShelfHTML()+mrGroupsHTML(ids)+mrLogHTML()+mrRulesHTML()+mrPlanDoorHTML()+mrSheetHTML();
+  }
+  /* ===== Stage 2 (0719z): THE PULSE + THE LENS. Chips filter the page (pulse ·
+     groups · resting line); THE SHELF IS A DUTY, NOT A VIEW — BACK UP never filters;
+     the hero never filters (your stars are your stars). YOUR PULSE consumes
+     pfCallouts("all") VERBATIM filtered to stars — one engine, one truth, the
+     receipts here and on LIVE can never disagree. Reopen cards stay off the pulse:
+     the shelf owns that story (one phenomenon, one home). */
+  var mrLens="ALL";
+  function mrChipsHTML(){
+    var have={};mrStars().forEach(function(id){have[roster[id].park]=1;});
+    var b='<button class="mr-chip'+(mrLens==="ALL"?' on':'')+'" data-p="ALL" type="button">ALL</button>';
+    PARK_DEF.forEach(function(p){
+      var dim=!have[p.key];
+      b+='<button class="mr-chip'+(mrLens===p.key?' on':'')+(dim?' dim':'')+'" data-p="'+esc(p.key)+'" type="button"'+(dim?' aria-disabled="true"':'')+'>'+(BANNER_MONO[p.key]||p.key)+'</button>';
+    });
+    return '<div class="mr-chips">'+b+'</div>';
+  }
+  function mrPulseModel(ids){
+    if(typeof pfCallouts!=="function")return {state:"nobase",cards:[]};
+    var m=pfCallouts("all")||{state:"nobase"};
+    if(m.state!=="cards"&&m.state!=="quiet")return {state:m.state,cards:[]};
+    var set={};ids.forEach(function(id){set[id]=1;});
+    var cards=(m.cards||[]).filter(function(c){return set[c.id]&&(c.kind==="go"||c.kind==="rough");});
+    return {state:cards.length?"cards":"quiet",cards:cards};
+  }
+  function mrRestLine(ids,cards){
+    var carded={};cards.forEach(function(c){carded[c.id]=1;});
+    var rest=ids.filter(function(id){var lv=liveById[id];return lv&&lv.status==="OPERATING"&&!carded[id];}).length;
+    if(!rest)return "";
+    if(cards.length)return '<div class="rest">Your other '+(rest===1?"one is running its usual line.":mrW(rest)+" are running their usual lines.")+'</div>';
+    return '<div class="rest">'+(rest===1?"Your star is running its usual line.":"All "+mrW(rest)+" are running their usual lines.")+'</div>';
+  }
+  function mrPulseHTML(ids){
+    var m=mrPulseModel(ids);
+    if(m.state!=="cards"&&m.state!=="quiet")return "";
+    var rows=m.cards.map(function(c){
+      return '<div class="mr-prow"><div class="m"><div class="tag '+(c.kind==="go"?'go">GO NOW':'rough">ROUGH RIGHT NOW')+'</div>'+
+        '<div class="nm">'+esc(c.nm)+'</div>'+
+        '<div class="typ">typically <b>'+c.typ+'</b> this half-hour · <b>'+c.delta+' '+(c.kind==="go"?"under":"over")+'</b></div></div>'+
+        '<div class="r"><div class="pk">'+esc(c.pk)+'</div><div class="w t-'+c.tier+'">'+c.w+'<small> MIN</small></div></div></div>';
+    }).join("");
+    var rest=mrRestLine(ids,m.cards);
+    if(!rows&&!rest)return "";
+    return '<div class="mr-pulse"><div class="cap">Your pulse</div>'+rows+rest+'</div>';
   }
   function mrBellTap(id){
     var r=roster[id],nm=r?r.name:"Ride";
@@ -7100,12 +7166,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function renderMyRidesPage(){
     var el=$("pgMyRides");if(!el)return;
     if(mrShId)return; /* the rule sheet is open — polls wait; save/close repaints */
+    if(typeof pfEnsureBase==="function")pfEnsureBase();
     el.innerHTML=mrPageHTML();
     bindMyRides(el);
   }
   function bindMyRides(el){
     function each(sel,fn){Array.prototype.forEach.call(el.querySelectorAll(sel),fn);}
     each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
+    each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
     each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
     each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});});
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
