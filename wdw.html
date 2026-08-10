@@ -1745,6 +1745,11 @@
   .ty-pgl{margin-top:8px;font-size:var(--fs-body);color:var(--pwh-sub);font-weight:600}
   .ty-pgl .dn{color:var(--pwh-key)}
   .ty-pgl.win{color:var(--pwh-key)}
+  .pg-today .td-asn{display:none} /* the ratified board is from-NOW only (§8 + mock-6 carry no Starting/Leaving rows); the trip room keeps its chips */
+  .ty-chips{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px;margin:0 0 10px}
+  .ty-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:var(--r-pill);padding:8px 0;cursor:pointer}
+  .ty-chip.on{background:var(--accent-soft);color:var(--accent)}
+  .ty-chip.dim{opacity:.45;cursor:default}
   .ty-hl{flex:none;text-align:right}
   .ty-hl .n{font:700 22px var(--font-display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
   .ty-hl .n small{font-size:11px}
@@ -1896,7 +1901,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7159,12 +7164,25 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return '<button class="ty-back" data-tyback type="button">\u2039 All parks</button>'+
       '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+'</div>';
   }
+  function tyChipOn(pk){ /* a chip takes the tap on the same terms as its landing row */
+    var inf=parkInfo[pk]||null,open=isOpenNow(inf);
+    if(open===true)return true;
+    if(open===false)return !!(inf&&inf.open&&Date.now()<new Date(inf.open).getTime());
+    return true; /* no schedule yet - never lock a door on missing data */
+  }
+  function tyChipsHTML(cur){ /* mock-6's chip row verbatim: the pick sticks, the chips hop (\u00a78 ruling) */
+    return '<div class="ty-chips">'+TP_PARKS.map(function(p){var pk=p[0],on=tyChipOn(pk);
+      return '<button class="ty-chip'+(pk===cur?' on':'')+(on?'':' dim')+'" data-tychip="'+esc(pk)+'" type="button"'+(on?'':' disabled')+'>'+p[1]+'</button>';}).join("")+'</div>';
+  }
   function tyBindLanding(el){
     el.querySelectorAll("[data-typk]").forEach(function(b){b.addEventListener("click",function(){
       tyPick(b.getAttribute("data-typk"));rpEnsureDigs();tyEnsureSched();renderTodayPage();window.scrollTo(0,0);});});
   }
   function tyBindWalker(el,pk,tr){
     var tid=tr?tr.id:"__today",ds=tyDs();
+    el.querySelectorAll("[data-tychip]").forEach(function(b){b.addEventListener("click",function(){
+      var p2=b.getAttribute("data-tychip");if(p2===pk)return;
+      tyPick(p2);tdPk=false;tdPin=null;rpEnsureDigs();tyEnsureSched();renderTodayPage();window.scrollTo(0,0);});});
     var bk=el.querySelector("[data-tyback]");if(bk)bk.addEventListener("click",function(){tyHome=true;tdPk=false;tdPin=null;renderTodayPage();window.scrollTo(0,0);});
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){
       var v=b.getAttribute("data-tdlens")==="mine"?"mine":"app";if(v===tdLens)return;tdLens=v;renderTodayPage();});});
@@ -7256,7 +7274,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var pk=o.park,tr=tyBridge(pk);
     var T=tr||tyT();
     var sec=tdSecHTML(T,tyDs()).replace('<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>',''); /* 0720f: the hop rows retire (dead doors, owner-caught) \u2014 hopping rides the All-parks pill; the section sheds its trip-facing tail label render-side, the walker untouched */
-    el.innerHTML=tyHeadHTML(pk,tr,T)+sec;
+    el.innerHTML=tyHeadHTML(pk,tr,T)+tyChipsHTML(pk)+sec;
     tyBindWalker(el,pk,tr);
   }
 
