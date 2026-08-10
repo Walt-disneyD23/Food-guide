@@ -991,12 +991,12 @@
      until their phases land. Always visible; sheets (z88+) slide over it and their scrims dim it;
      content clearance lives in the body padding; .bk2top and .toasts are lifted above it. ===== */
   .appnav{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:25;
-    display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
+    display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
     padding:7px;box-shadow:var(--shadow)}
   .appnav .it{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
-    border:0;background:none;color:var(--muted-2);padding:8px 15px;border-radius:var(--r-pill);font-family:var(--font-body)}
+    border:0;background:none;color:var(--muted-2);padding:9px 13px;border-radius:var(--r-pill);font-family:var(--font-body)}
   .appnav .it svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-  .appnav .it span{font:700 8.5px var(--font-body);letter-spacing:.05em}
+  .appnav .it span{font:700 9px var(--font-body);letter-spacing:.05em;white-space:nowrap}
   .appnav .it.on{background:var(--accent-soft);color:var(--accent)}
   .appnav .it{position:relative} /* 0710t: badge anchor for the dock door */
   .appnav .it .nbadge{position:absolute;top:2px;right:8px;min-width:16px;height:16px;border-radius:var(--r-pill);background:var(--packed);color:#fff;font:800 9.5px var(--font-body);display:none;place-items:center;padding:0 4px}
@@ -1725,7 +1725,10 @@
      head, back pill; tokens only. IN-PARK SURFACES GET GROWN HIT TARGETS. */
   .pg-today{margin-top:8px}
   .ty-tph{margin:4px 0 10px}
-  .ty-back{display:inline-flex;align-items:center;gap:6px;margin:10px 0 2px;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-size:var(--fs-meta);font-weight:600;cursor:pointer}
+  .ty-back{display:inline-flex;align-items:center;gap:7px;background:rgba(79,70,229,.12);border:0;border-radius:var(--r-pill);padding:10px 18px 10px 13px;font:600 var(--fs-title) var(--font-body);color:var(--accent);cursor:pointer;margin:2px 0 12px} /* the rp-back face verbatim — one return pill, app-wide */
+  .pg-today .td-tabs{background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px;margin:7px 0 11px} /* segment-A ratified — the pg-seg face; the trip view retrofits in the cohesion cut */
+  .pg-today .td-tabs .hl-tab{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);text-align:center}
+  .pg-today .td-tabs .hl-tab.on{background:rgba(79,70,229,.13);color:var(--accent)}
   .ty-prow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 8px;padding:14px;border:1px solid var(--line);border-left:4px solid var(--medium);border-radius:var(--r-card);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;box-shadow:var(--sh-soft)}
   .ty-prow.short{border-left-color:var(--short)}
   .ty-prow.medium{border-left-color:var(--medium)}
@@ -1893,7 +1896,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7052,7 +7055,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyT(){ /* the virtual trip — a pure read, never mutates the store */
     var o=tyRec(),ds=o.ds,c=o.park?tyCellRead(o,o.park):{rides:null,done:[],pins:{}};
-    var T={id:"__today",plan:{},rides:{},done:{},pins:{}};
+    var T={id:"__today",a:ds,b:ds,plan:{},rides:{},done:{},pins:{}}; /* 0720f: a one-DAY trip by birth \u2014 tpDays/tpWdSet walk a..b, and without them every curve died ("No banked tape" on every row, owner-caught on glass) */
     if(o.park)T.plan[ds]=o.park;
     T.rides[ds]=c.rides||[];T.done[ds]=c.done||[];T.pins[ds]=c.pins||{};
     return T;
@@ -7252,7 +7255,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!o.park||tyHome){el.innerHTML=tyLandingHTML();tyBindLanding(el);return;}
     var pk=o.park,tr=tyBridge(pk);
     var T=tr||tyT();
-    el.innerHTML=tyHeadHTML(pk,tr,T)+tdSecHTML(T,tyDs())+PARK_DEF.filter(function(p){return p.key!==pk;}).map(tyRowHTML).join("");
+    var sec=tdSecHTML(T,tyDs()).replace('<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>',''); /* 0720f: the hop rows retire (dead doors, owner-caught) \u2014 hopping rides the All-parks pill; the section sheds its trip-facing tail label render-side, the walker untouched */
+    el.innerHTML=tyHeadHTML(pk,tr,T)+sec;
     tyBindWalker(el,pk,tr);
   }
 
