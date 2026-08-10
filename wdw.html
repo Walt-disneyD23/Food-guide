@@ -476,7 +476,7 @@
   .tp-hon{font-size:var(--fs-meta);color:var(--muted-2);line-height:1.5;margin:-3px 0 8px}
   .tp-thnote{color:var(--muted-2);font-weight:500}
   .tp-dxr{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0}
-  .tp-pn{font-weight:600;font-size:var(--fs-body)}
+  .tp-pn{font:700 var(--fs-lead) var(--font-display);letter-spacing:-.01em}
   .tp-pt{font-size:var(--fs-meta);color:var(--muted)}
   .tp-hrs{flex:none;font-size:var(--fs-meta);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
   .tp-hrs b{color:var(--ink);font-weight:600}
@@ -1721,6 +1721,31 @@
   .pw-rs-yr .tk i{display:block;height:100%;border-radius:4px}
   .pw-rs-yr .yv{font-size:var(--fs-meta);font-weight:600;color:var(--muted-2);text-align:right;font-variant-numeric:tabular-nums}
   .pw-rs-yr .yv em{font-style:normal;color:var(--short);font-weight:700}
+  /* ===== 0720b (TY): TODAY — the walker freed from the trip. Landing rows,
+     head, back pill; tokens only. IN-PARK SURFACES GET GROWN HIT TARGETS. */
+  .pg-today{margin-top:8px}
+  .ty-tph{margin:4px 0 10px}
+  .ty-back{display:inline-flex;align-items:center;gap:6px;margin:10px 0 2px;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-size:var(--fs-meta);font-weight:600;cursor:pointer}
+  .ty-prow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:0 0 8px;padding:14px;border:1px solid var(--line);border-left:4px solid var(--medium);border-radius:var(--r-card);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;box-shadow:var(--sh-soft)}
+  .ty-prow.short{border-left-color:var(--short)}
+  .ty-prow.medium{border-left-color:var(--medium)}
+  .ty-prow.long{border-left-color:var(--long)}
+  .ty-prow.off{opacity:.62;cursor:default}
+  .ty-prow .m{flex:1;min-width:0}
+  .ty-prow .nm{font:700 var(--fs-lead) var(--font-display);letter-spacing:-.01em}
+  .ty-sub{color:var(--muted);font-size:var(--fs-meta);margin-top:3px;line-height:1.5}
+  .ty-sub .tw{font-weight:700}
+  .ty-sub .tw.c1,.ty-hl .n.c1{color:var(--short)}
+  .ty-sub .tw.c2,.ty-hl .n.c2{color:var(--medium)}
+  .ty-sub .tw.c3,.ty-hl .n.c3{color:var(--long)}
+  .ty-sub.closed{color:var(--muted-2)}
+  .ty-pgl{margin-top:8px;font-size:var(--fs-body);color:var(--pwh-sub);font-weight:600}
+  .ty-pgl .dn{color:var(--pwh-key)}
+  .ty-pgl.win{color:var(--pwh-key)}
+  .ty-hl{flex:none;text-align:right}
+  .ty-hl .n{font:700 22px var(--font-display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .ty-hl .n small{font-size:11px}
+  .ty-hl .l{font-size:var(--fs-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin-top:1px}
   /* ===== MY RIDES (Cut 3, 0719w) — mock of record: my-rides-mock-v12, Stage-1 slice.
      The hero keeps the mock's dark jewel literally in both themes (share-card precedent);
      everything else consumes the app vars so Harbor gets it free. */
@@ -1868,7 +1893,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1945,10 +1970,12 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="wrapView" class="pw-view" hidden></div>
   <div id="pgMyRides" class="pg-myrides" hidden></div>
   <div id="pgPulse" class="pg-pulse" hidden></div>
+  <div id="pgToday" class="pg-today" hidden></div>
 </div>
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
 <nav id="appNav" class="appnav" aria-label="Sections">
   <button class="it on" data-pg="live" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg><span>LIVE</span></button>
+  <button class="it" data-pg="today" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.2A6.5 6.5 0 0 1 12 4.3a6.5 6.5 0 0 1 6.5 6.5C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.8" r="2.3"/></svg><span>TODAY</span></button>
   <button class="it" data-pg="pulse" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg><span>PLAN</span></button>
   <button class="it" data-pg="myrides" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>MY RIDES</span><span class="nbadge" id="navAlertBadge"></span></button>
   <button class="it" data-pg="wrap" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="17" y2="7"/><line x1="7" y1="17" x2="5.3" y2="18.7"/></svg><span>WRAP</span></button>
@@ -6048,6 +6075,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
 
   function render(){
     /* renderDownFlow() retired — L-32 Cut 3 (0718h): the card-banner is absorbed into the hero’s down door. The function body and #dnFlow stay for one build as the reverse path; removal in a later sweep. */
+    if(typeof renderTodayPage==="function"&&!(navTab==="today"&&(tdPk||tdPin!==null)))renderTodayPage(); /* 0720b: TODAY drinks the same poll - waits and tiers refresh on any tab; an open sheet on-screen is never stomped */
     renderMyRidesPage(); /* Cut 3 (0719w): before the away-guard — polls refresh MY RIDES on any tab; the room skips repaints while its rule sheet is open */
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
     renderUpNext(); /* L-32 Cut 1: the board refreshes on any tab \u2014 the favPage rule */
@@ -6993,6 +7021,240 @@ render();});});
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
 }
+
+  /* ===== 0720b (TY): TODAY — the walker, freed from the trip (Arc A Stage 1).
+     Spec of record: Today-Spec.md. One engine, one more entrance: tdSecHTML runs
+     on a VIRTUAL trip (id "__today") fabricated from the ppToday store; the
+     walker itself is untouched. ONE DAY, ONE TRUTH: when a doored trip plans
+     today at the tapped park, TODAY opens THAT trip's day — reads and writes
+     ride the trip path; ppToday stays out of it. The ds-discard law: any read
+     where the stored ds isn't today throws the record away whole — the ET day
+     roll IS the reset (check-offs live for the day only). Per-park cells: a hop
+     never bleeds one park's record into another; hop back and your morning's
+     checks still stand. Party attendees running past the day-guest close =
+     banked for a later stage (owner note, Aug 10). */
+  var tyHome=false; /* transient: the back pill shows the landing without unsticking the pick */
+  function tyDs(){return tpToday();}
+  function tyRaw(){var o=store.get("ppToday",null);return (o&&o.ds===tyDs())?o:null;}
+  function tySave(o){o.ds=tyDs();store.set("ppToday",o);}
+  function tyRec(){return tyRaw()||{ds:tyDs(),park:null,byPark:{}};}
+  function tyCell(o,pk){var b=o.byPark||(o.byPark={});return b[pk]||(b[pk]={rides:null,done:[],pins:{}});} /* rides null = never seeded; [] = the user's own emptying stands */
+  function tyCellRead(o,pk){return (o.byPark||{})[pk]||{rides:null,done:[],pins:{}};}
+  function tySeed(pk){ /* stars ∩ the park's curated roster (B) */
+    var out=[],id;for(id in watch){var r=roster[id];if(r&&r.park===pk&&rpCuratedRide(r))out.push(id);}
+    out.sort(function(a,b){return (((roster[a]||{}).name)||"").localeCompare((((roster[b]||{}).name)||""));});
+    return out;
+  }
+  function tyBridge(pk){ /* ONE DAY, ONE TRUTH — park-match scope */
+    var ds=tyDs(),ts=tpTrips(),i;
+    for(i=0;i<ts.length;i++){var t=ts[i];if(t&&t.id&&(t.plan||{})[ds]===pk)return t;}
+    return null;
+  }
+  function tyT(){ /* the virtual trip — a pure read, never mutates the store */
+    var o=tyRec(),ds=o.ds,c=o.park?tyCellRead(o,o.park):{rides:null,done:[],pins:{}};
+    var T={id:"__today",plan:{},rides:{},done:{},pins:{}};
+    if(o.park)T.plan[ds]=o.park;
+    T.rides[ds]=c.rides||[];T.done[ds]=c.done||[];T.pins[ds]=c.pins||{};
+    return T;
+  }
+  function tyMut(fn){var o=tyRec();fn(o);tySave(o);}
+  function tyPick(pk){tyMut(function(o){o.park=pk;var c=tyCell(o,pk);if(c.rides===null)c.rides=tySeed(pk);});tyHome=false;}
+  function tyMark(rid){tyMut(function(o){var c=tyCell(o,o.park);if(c.done.indexOf(rid)<0)c.done.push(rid);});}
+  function tyUnmark(rid){tyMut(function(o){var c=tyCell(o,o.park),i=c.done.indexOf(rid);if(i>=0)c.done.splice(i,1);});}
+  function tyAdd(rid){tyMut(function(o){var c=tyCell(o,o.park);if(!c.rides)c.rides=[];if(c.rides.indexOf(rid)<0)c.rides.push(rid);});}
+  function tyRemove(rid){tyMut(function(o){var c=tyCell(o,o.park),i=(c.rides||[]).indexOf(rid);if(i>=0)c.rides.splice(i,1);});}
+  function tyMove(li,ti){tyMut(function(o){var a=tyCell(o,o.park).rides;
+    if(!a||li<0||li>=a.length||ti<0||ti>=a.length||li===ti)return;
+    var m=a.splice(li,1)[0];a.splice(ti,0,m);});}
+  function tyPinSet(rid,pin){tyMut(function(o){tyCell(o,o.park).pins[rid]=pin;});}
+  function tyPinDel(rid){tyMut(function(o){delete tyCell(o,o.park).pins[rid];});}
+  /* routers — td-identical signatures so the handler bodies stay verbatim-shaped */
+  function tyRMark(id,ds,rid){if(id==="__today")tyMark(rid);else tdMark(id,ds,rid);}
+  function tyRUnmark(id,ds,rid){if(id==="__today")tyUnmark(rid);else tdUnmark(id,ds,rid);}
+  function tyRAdd(id,ds,rid){if(id==="__today")tyAdd(rid);else tdAdd(id,ds,rid);}
+  function tyRRemove(id,ds,rid){if(id==="__today")tyRemove(rid);else tdRemove(id,ds,rid);}
+  function tyRMove(id,ds,li,ti){if(id==="__today")tyMove(li,ti);else tdMove(id,ds,li,ti);}
+  function tyRPinSet(id,ds,rid,pin){if(id==="__today")tyPinSet(rid,pin);else tdPinSet(id,ds,rid,pin);}
+  function tyRPinDel(id,ds,rid){if(id==="__today")tyPinDel(rid);else tdPinDel(id,ds,rid);}
+  function tyEnsureSched(){ /* tpEnsureSched is trip-bound by birth; TODAY warms its own month (same fetch, same shape, same 10-min retry law) */
+    if(!parks||!parks.length)return;
+    var mo=tyDs().slice(0,7);
+    if(tpSched[mo]||(tpSchedAt[mo]&&Date.now()-tpSchedAt[mo]<10*60*1000))return;
+    tpSchedAt[mo]=Date.now();
+    var out={},a=mo.split("-");
+    Promise.all(parks.map(function(p){
+      return fetch(API+"/entity/"+p.id+"/schedule/"+a[0]+"/"+a[1]).then(function(r){return r.json();}).then(function(d){
+        var m={};(d.schedule||[]).forEach(function(s){
+          if(!s||!s.date||s.date.slice(0,7)!==mo)return;
+          var e=m[s.date]||(m[s.date]={open:null,close:null,ext:[]});
+          if(s.type==="OPERATING"){e.open=s.openingTime;e.close=s.closingTime;}
+          else if(s.openingTime&&s.closingTime)e.ext.push({k:tpExtK(s),o:s.openingTime});});
+        out[p.short]=m;
+      }).catch(function(){});
+    })).then(function(){tpSched[mo]=out;if(navTab==="today")renderTodayPage();});
+  }
+  function tyClkIso(iso){if(!iso)return null;var m=rcEtMin(new Date(iso));return isNaN(m)?null:rpClk(m);}
+  function tyTier(pk){ /* the LIVE crowd family — an ESTIMATE, always labeled est. */
+    var ws=scopeWaits(pk);if(!ws.length)return null;
+    var t=0,lc=0,i;for(i=0;i<ws.length;i++){t+=ws[i];if(ws[i]>=45)lc++;}
+    return crowdLevel(Math.round(t/ws.length),ws.length,lc,pk)||null; /* crowdLevel returns the tier object itself */
+  }
+  function tyDown(pk){ /* the mock-6 down count \u2014 DOWN only; CLOSED and REFURB never count (the snap-code law) */
+    var n=0,id;for(id in roster){var r=roster[id],lv=liveById[id];
+      if(r&&r.park===pk&&rpCuratedRide(r)&&lv&&lv.status==="DOWN")n++;}
+    return n;
+  }
+  function tyHeadAvg(pk){return headlinerAvgFrom(scopeWaits(pk));} /* ONE NUMBER FAMILY \u2014 the same top-8 rank LIVE speaks */
+  function tyRowHTML(p){ /* pick-state C park row \u2014 mock-6 of record: colored tier word \u00b7 till X \u00b7 down count; the headliner avg holds the right edge; est. speaks once, in the hero's resort line */
+    var pk=p.key,inf=parkInfo[pk]||null,open=isOpenNow(inf);
+    var edge="",body="",tap=true,hl="";
+    if(open===true){
+      var tr=tyTier(pk),cl=tyClkIso(inf.close),dn=tyDown(pk),av=tyHeadAvg(pk);
+      edge=tr?(tr.level>=3?"long":tr.level===2?"medium":"short"):"";
+      var tc=tr?(tr.level>=3?"c3":tr.level===2?"c2":"c1"):"";
+      var tw=tr?'<b class="tw '+tc+'">'+tr.label+'</b> \u00b7 ':'';
+      body='<div class="ty-sub">'+tw+(cl?('till '+cl):'open now')+' \u00b7 '+(dn>0?(dn+' down'):'all running')+'</div>';
+      if(av!==null)hl='<span class="ty-hl"><span class="n '+tc+'">'+av+'<small>m</small></span><span class="l">Headliners</span></span>';
+    }else if(open===false){
+      var nowMs=Date.now();
+      if(inf&&inf.open&&nowMs<new Date(inf.open).getTime()){
+        body='<div class="ty-sub">Opens at '+tyClkIso(inf.open)+'</div>';
+      }else if(inf&&inf.nextOpen){
+        body='<div class="ty-sub closed">Closed for the day \u00b7 back at '+tyClkIso(inf.nextOpen)+' tomorrow</div>';tap=false;
+      }else{
+        body='<div class="ty-sub closed">Closed today</div>';tap=false;
+      }
+    }else{
+      body='<div class="ty-sub">\u2014</div>'; /* no schedule yet \u2014 the row waits honestly, no fake state */
+    }
+    return '<button class="ty-prow'+(edge?' '+edge:'')+(tap?'':' off')+'" data-typk="'+esc(pk)+'" type="button"'+(tap?'':' disabled')+'><span class="m"><span class="nm">'+esc(pk)+'</span>'+body+'</span>'+hl+'</button>';
+  }
+  function tyLandingHTML(){
+    var ds=tyDs(),d0=tpAsD(ds);
+    var wd=d0.toLocaleDateString("en-US",{weekday:"long"}),md=tpMD(ds);
+    var nOpen=0;PARK_DEF.forEach(function(p){if(isOpenNow(parkInfo[p.key])===true)nOpen++;});
+    var rt=tyTier("all");
+    var sub=(nOpen?('<b>'+nOpen+' of 4 parks open</b>'+(rt?(' \u00b7 resort crowd <b>'+rt.label+'</b> \u00b7 est.'):'')+' \u00b7 '):'')+'your pick sticks for the day \u2014 hop any time.';
+    return '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+md+'</div>'+
+      '<h2>Where are you today?</h2><div class="sub">'+sub+'</div></div>'+
+      PARK_DEF.map(tyRowHTML).join("");
+  }
+  function tyHeadHTML(pk,tr,T){ /* Option A (owner, Aug 10): the place leads \u2014 the park holds the h2, the date the eyebrow, and the count speaks one quiet line in mock-6's own words */
+    var ds=tyDs(),inf=parkInfo[pk]||null,open=isOpenNow(inf);
+    var d0=tpAsD(ds),wd=d0.toLocaleDateString("en-US",{weekday:"long"});
+    var bits=[];
+    if(open===true&&inf.close)bits.push('Open till '+tyClkIso(inf.close));
+    var t2=tyTier(pk);if(open===true&&t2)bits.push('crowd '+t2.label+' \u00b7 est.');
+    var sub=bits.join(' \u00b7 ')||'';
+    if(tr)sub+=(sub?' \u00b7 ':'')+'Walking your trip\u2019s plan \u2014 one day, one truth.';
+    var nD=tdDoneList(T,ds).length,nT=tdRides(T,ds).length,togo=nT-nD,pg='';
+    if(nT>0){
+      if(nD>=nT)pg='<div class="ty-pgl win">All ridden. Victory lap?</div>';
+      else if(nD>0)pg='<div class="ty-pgl">'+togo+' to go <span class="dn">\u00b7 '+nD+' ridden</span></div>';
+      else pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 from now</div>';
+    }
+    return '<button class="ty-back" data-tyback type="button">\u2039 All parks</button>'+
+      '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+'</div>';
+  }
+  function tyBindLanding(el){
+    el.querySelectorAll("[data-typk]").forEach(function(b){b.addEventListener("click",function(){
+      tyPick(b.getAttribute("data-typk"));rpEnsureDigs();tyEnsureSched();renderTodayPage();window.scrollTo(0,0);});});
+  }
+  function tyBindWalker(el,pk,tr){
+    var tid=tr?tr.id:"__today",ds=tyDs();
+    var bk=el.querySelector("[data-tyback]");if(bk)bk.addEventListener("click",function(){tyHome=true;tdPk=false;tdPin=null;renderTodayPage();window.scrollTo(0,0);});
+    el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){
+      var v=b.getAttribute("data-tdlens")==="mine"?"mine":"app";if(v===tdLens)return;tdLens=v;renderTodayPage();});});
+    el.querySelectorAll("[data-tdst]").forEach(function(b){b.addEventListener("click",function(){
+      var v=b.getAttribute("data-tdst");if(v===tdStart)return;tdStart=v;renderTodayPage();});});
+    el.querySelectorAll("[data-tdlv]").forEach(function(b){b.addEventListener("click",function(){
+      var v=b.getAttribute("data-tdlv");if(v===tdLeave)return;tdLeave=v;renderTodayPage();});});
+    el.querySelectorAll("[data-tdck]").forEach(function(b){b.addEventListener("click",function(e2){
+      e2.stopPropagation();var rid=b.getAttribute("data-tdck");
+      (tdDoneList(tr||tyT(),ds).indexOf(rid)>=0?tyRUnmark:tyRMark)(tid,ds,rid);renderTodayPage();});});
+    var tda=el.querySelector("[data-tdadd]");if(tda)tda.addEventListener("click",function(){tdPk=true;tdPkA=true;tdQ="";rpEnsureDigs();renderTodayPage();});
+    var tdsc=el.querySelector(".td-scrim");if(tdsc)tdsc.addEventListener("click",function(){tdPk=false;tdPin=null;renderTodayPage();});
+    var tdsh=el.querySelector(".td-sheet");if(tdsh&&!tdsh.__dd){tdsh.__dd=1;sheetDragDismiss(tdsh,tdsc,function(){tdPk=false;tdPin=null;renderTodayPage();});}
+    el.querySelectorAll("[data-tdid]").forEach(function(b){b.addEventListener("click",function(){
+      var rid=b.getAttribute("data-tdid");
+      var sh=el.querySelector(".td-sheet"),st0=sh?sh.scrollTop:0;
+      (tdRides(tr||tyT(),ds).indexOf(rid)>=0?tyRRemove:tyRAdd)(tid,ds,rid);renderTodayPage();
+      var sh2=el.querySelector(".td-sheet");if(sh2)sh2.scrollTop=st0;});});
+    el.querySelectorAll("[data-tdstars]").forEach(function(b){b.addEventListener("click",function(){
+      b.getAttribute("data-tdstars").split("|").forEach(function(rid){tyRAdd(tid,ds,rid);});renderTodayPage();});});
+    var tdq=el.querySelector(".td-srch");if(tdq)tdq.addEventListener("input",function(){
+      tdQ=tdq.value;var q2=tdQ.trim().toLowerCase();
+      el.querySelectorAll(".td-rrow").forEach(function(rw){rw.style.display=(!q2||rw.textContent.toLowerCase().indexOf(q2)>=0)?"":"none";});});
+    var tdd=el.querySelector(".td-done");if(tdd)tdd.addEventListener("click",function(){tdPk=false;renderTodayPage();});
+    el.querySelectorAll("[data-tdpd]").forEach(function(b){b.addEventListener("click",function(){
+      var rid=b.getAttribute("data-tdpd");
+      var p0=tdPins(tr||tyT(),ds)[rid]||null;
+      tdPin=rid;tdPnA=true;tdPk=false;
+      tdPnP=(p0&&p0.k==="part")?p0.w:null;tdPnS=(p0&&p0.k==="win")?p0.a:null;tdPnE=(p0&&p0.k==="win")?p0.b:null;tdPnL=null;
+      renderTodayPage();});});
+    el.querySelectorAll("[data-tdpx]").forEach(function(b){b.addEventListener("click",function(e2){
+      e2.stopPropagation();tyRPinDel(tid,ds,b.getAttribute("data-tdpx"));renderTodayPage();});});
+    el.querySelectorAll("[data-tdpp]").forEach(function(b){b.addEventListener("click",function(){
+      var w=b.getAttribute("data-tdpp");tdPnP=(tdPnP===w)?null:w;tdPnS=null;tdPnE=null;tdPnL=null;renderTodayPage();});});
+    el.querySelectorAll("[data-tdpt]").forEach(function(b){b.addEventListener("click",function(){
+      var t3=+b.getAttribute("data-tdpt"),h0=(tdPnS!==null)?tdPnS-(tdPnS%30):null;
+      tdPnP=null;
+      if(tdPnS!==null&&t3===h0&&tdPnE===null){tdPnS=null;tdPnL=null;}
+      else if(tdPnS===null||t3<=h0||tdPnE!==null){tdPnS=t3;tdPnE=null;tdPnL="a";}
+      else{tdPnE=t3;tdPnL="b";}
+      renderTodayPage();});});
+    el.querySelectorAll("[data-tdpf]").forEach(function(b){b.addEventListener("click",function(){
+      var o=+b.getAttribute("data-tdpf");
+      if(tdPnL==="a"&&tdPnS!==null){tdPnS=tdPnS-(tdPnS%30)+o;if(tdPnE!==null&&tdPnE<=tdPnS)tdPnE=null;}
+      else if(tdPnL==="b"&&tdPnE!==null)tdPnE=tdPnE-(tdPnE%30)+o;
+      renderTodayPage();});});
+    var tdp1=el.querySelector("[data-tdp1]");if(tdp1)tdp1.addEventListener("click",function(){
+      if(tdPnS===null)return;tdPnE=tdPnS+60;tdPnL=null;renderTodayPage();});
+    var tdpsv=el.querySelector("[data-tdpsv]");if(tdpsv)tdpsv.addEventListener("click",function(){
+      if(tdPin===null)return;
+      var pin=tdPnP?{k:"part",w:tdPnP}:(tdPnS!==null?{k:"win",a:tdPnS,b:tdPnE}:null);
+      if(!pin)return;
+      tyRPinSet(tid,ds,tdPin,pin);tdPin=null;renderTodayPage();});
+    var tdprm=el.querySelector("[data-tdprm]");if(tdprm)tdprm.addEventListener("click",function(){
+      if(tdPin===null)return;
+      tyRPinDel(tid,ds,tdPin);tdPin=null;renderTodayPage();});
+    var tdpcl=el.querySelector("[data-tdpcl]");if(tdpcl)tdpcl.addEventListener("click",function(){tdPin=null;renderTodayPage();});
+    el.querySelectorAll("[data-tdgrip]").forEach(function(g){
+      g.addEventListener("click",function(e2){e2.stopPropagation();});
+      g.addEventListener("touchstart",function(te){te.preventDefault();},{passive:false});
+      g.addEventListener("touchmove",function(te){te.preventDefault();},{passive:false});
+      g.addEventListener("pointerdown",function(e0){
+        e0.preventDefault();
+        var rows=[].slice.call(el.querySelectorAll("[data-tdsl]"));if(rows.length<2)return;
+        var row=g.closest("[data-tdsl]");if(!row)return;
+        var from=+row.getAttribute("data-tdsl"),h=row.offsetHeight||56,y0=e0.clientY,cur=from,moved=false;
+        row.classList.add("drag");
+        rows.forEach(function(r){if(r!==row)r.classList.add("shift");});
+        try{g.setPointerCapture(e0.pointerId);}catch(e9){}
+        var mv=function(ev){var dy=ev.clientY-y0;if(Math.abs(dy)>4)moved=true;
+          row.style.transform="translateY("+dy+"px)";
+          var tgt=Math.min(rows.length-1,Math.max(0,from+Math.round(dy/h)));
+          if(tgt!==cur){cur=tgt;
+            rows.forEach(function(r,i){if(i===from)return;
+              var sh=0;
+              if(from<cur&&i>from&&i<=cur)sh=-h;else if(from>cur&&i<from&&i>=cur)sh=h;
+              r.style.transform=sh?"translateY("+sh+"px)":"";});}};
+        var up=function(){
+          g.removeEventListener("pointermove",mv);g.removeEventListener("pointerup",up);g.removeEventListener("pointercancel",up);
+          if(moved&&cur!==from)tyRMove(tid,ds,from,cur);
+          renderTodayPage();};
+        g.addEventListener("pointermove",mv);g.addEventListener("pointerup",up);g.addEventListener("pointercancel",up);
+      });});
+  }
+  function renderTodayPage(){
+    var el=$("pgToday");if(!el)return;
+    var o=tyRec();
+    if(!o.park||tyHome){el.innerHTML=tyLandingHTML();tyBindLanding(el);return;}
+    var pk=o.park,tr=tyBridge(pk);
+    var T=tr||tyT();
+    el.innerHTML=tyHeadHTML(pk,tr,T)+tdSecHTML(T,tyDs())+PARK_DEF.filter(function(p){return p.key!==pk;}).map(tyRowHTML).join("");
+    tyBindWalker(el,pk,tr);
+  }
 
   /* ===== MY RIDES (Cut 3, 0719w) — the merge made physical. The Favorites page and the
      alerts sheet retire; one room holds the stars, the shelf, the rules, and the log.
@@ -10489,9 +10751,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
       navTab=k;
       if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");} /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
-      var pm=$id("pgMyRides"),pp=$id("pgPulse");
+      var pm=$id("pgMyRides"),pp=$id("pgPulse"),pt=$id("pgToday");
       if(pm)pm.hidden=(k!=="myrides");
       if(pp)pp.hidden=(k!=="pulse");
+      if(pt)pt.hidden=(k!=="today");
       if(k==="live"||k==="wrap"){
         setMode(k==="wrap");
       }else{
@@ -10505,6 +10768,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(wv)wv.hidden=true;
         if(k==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage(); /* 0710p: fresh paint on entry */
         if(k==="pulse"&&typeof renderPulsePage==="function")renderPulsePage(); /* Phase 3a (0710s): fresh paint on entry */
+        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();rpEnsureDigs();tyEnsureSched();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F) */
       }
       navSync(k);
       window.scrollTo(0,0);
