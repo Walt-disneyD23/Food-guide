@@ -342,7 +342,7 @@
   .pg-h{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
   .pg-h h3{font-family:var(--font-display);font-size:var(--fs-head);color:var(--ink)}
   .pg-h h3 .fs{color:var(--fav)}
-  /* 0710s: page-flag knob resolved — 36px override retired; inherits the base 40px icon-btn (owner: “= header ⚑”) */
+  /* 0710s: page-flag knob resolved — 36px override retired; inherits the base 40px icon-btn (owner rule: = header bell) */
   .pg-list .fc-row:first-child{border-top:0}
   .pg-list .fc-empty{border-top:0}
   /* 0710q: title + park control pin while the list scrolls; constant soft seam
@@ -1721,6 +1721,82 @@
   .pw-rs-yr .tk i{display:block;height:100%;border-radius:4px}
   .pw-rs-yr .yv{font-size:var(--fs-meta);font-weight:600;color:var(--muted-2);text-align:right;font-variant-numeric:tabular-nums}
   .pw-rs-yr .yv em{font-style:normal;color:var(--short);font-weight:700}
+  /* ===== MY RIDES (Cut 3, 0719w) — mock of record: my-rides-mock-v12, Stage-1 slice.
+     The hero keeps the mock's dark jewel literally in both themes (share-card precedent);
+     everything else consumes the app vars so Harbor gets it free. */
+  .pg-myrides{margin-top:8px}
+  .flagbtn svg{width:17px;height:17px;stroke:currentColor;fill:none}
+  .flagbtn.on svg{fill:#fff}
+  .mr-hero{background:linear-gradient(160deg,#1b2d4d,#10243a 62%);border:1px solid #24425c;border-radius:var(--r-hero);padding:15px 16px;color:#e6e9fb;margin-bottom:10px}
+  .mr-hero .eb{font-family:var(--font-display);font-weight:600;font-size:var(--fs-caps);letter-spacing:.18em;text-transform:uppercase;color:#9bf7c9}
+  .mr-hero h2{font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:-.02em;margin:4px 0 0}
+  .mr-hero h2 .fs{color:#f5b73d;font-size:18px}
+  .mr-hero .sub{color:#9aa6c4;font-size:var(--fs-meta);margin-top:4px}
+  .mr-hero .sub b{color:#e6e9fb}
+  .mr-bk{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--short);border-radius:var(--r-card);box-shadow:var(--sh-soft);padding:13px 14px;margin-bottom:10px}
+  .mr-bk .cap{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;color:var(--short)}
+  .mr-bk .m{display:flex;align-items:center;gap:10px;margin-top:6px}
+  .mr-bk .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title)}
+  .mr-bk .sub{font-size:var(--fs-meta);color:var(--muted);margin-top:2px}
+  .mr-clear{font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);background:var(--accent-fill);color:#fff;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;flex:none}
+  .mr-grp{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);overflow:hidden;margin-bottom:10px}
+  .mr-grp .hd{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);padding:11px 14px 4px}
+  .mr-rw{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
+  .mr-rw:first-of-type{border-top:0}
+  .mr-rw .st{color:var(--fav);font-size:15px;flex:none}
+  .mr-rw .m{flex:1;min-width:0}
+  .mr-rw .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
+  .mr-rl{font-size:var(--fs-meta);color:var(--muted-2);margin-top:2px;letter-spacing:.02em;cursor:pointer}
+  .mr-rl b{color:var(--accent);font-weight:700}
+  .mr-w{font-family:var(--font-display);font-weight:700;font-size:22px;min-width:56px;text-align:right;flex:none}
+  .mr-w small{font-weight:700;font-size:10px;color:var(--muted-2);letter-spacing:.06em}
+  .mr-w.word{font-size:var(--fs-title);letter-spacing:.04em}
+  .pg-myrides .t-short{color:var(--short)}.pg-myrides .t-medium{color:var(--medium)}.pg-myrides .t-long{color:var(--long)}.pg-myrides .t-packed{color:var(--packed)}.pg-myrides .t-down{color:var(--packed)}.pg-myrides .t-closed{color:var(--closed)}.pg-myrides .t-refurb{color:var(--closed)}
+  .mr-bell{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card-2);border:1px solid var(--line);flex:none;-webkit-tap-highlight-color:transparent}
+  .mr-bell svg{stroke:var(--muted-2);fill:none}
+  .mr-bell.on{background:var(--accent-soft);border-color:rgba(139,135,255,.45)}
+  .mr-bell.on svg{stroke:var(--accent);fill:var(--accent)}
+  .mr-log .hd2{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
+  .mr-log .hd2 .t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title)}
+  .mr-log .hd2 .n{font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px}
+  .mr-log .body{display:none}
+  .mr-log.open .body{display:block}
+  .mr-log .li{font-size:var(--fs-meta);color:var(--muted);padding:9px 14px;border-top:1px solid var(--line);line-height:1.5}
+  .mr-log .li b{color:var(--ink)}
+  .mr-rh{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);margin-bottom:10px;padding:0 14px}
+  .mr-rh .rhhd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;cursor:pointer}
+  .mr-rh .cap{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
+  .mr-rh .ro{flex:1;font-size:var(--fs-meta);color:var(--muted);text-align:right}
+  .mr-rh .ro b{color:var(--ink)}
+  .mr-rh .chv{color:var(--muted-2);font-weight:700;transition:transform .18s}
+  .mr-rh.open .chv{transform:rotate(90deg)}
+  .mr-rh .body{display:none;padding-bottom:12px}
+  .mr-rh.open .body{display:block}
+  .mr-rh .sent,.mr-sheet .sent{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:var(--fs-body);color:var(--muted)}
+  .mr-rh select,.mr-sheet select{font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);color:var(--accent);background:var(--accent-soft);border:1px solid rgba(139,135,255,.45);border-radius:999px;padding:5px 10px;-webkit-appearance:none;appearance:none}
+  .mr-rh .sw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:var(--fs-body)}
+  .mr-rh .sw .d{font-size:var(--fs-micro);color:var(--muted-2);margin-top:2px}
+  .mr-rh .tog{width:40px;height:24px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;flex:none;-webkit-tap-highlight-color:transparent}
+  .mr-rh .tog::after{content:"";position:absolute;top:2.5px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
+  .mr-rh .tog.on{background:var(--accent-fill)}
+  .mr-rh .tog.on::after{left:18px}
+  .mr-door{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border:1px solid rgba(139,135,255,.35);border-radius:var(--r-card);padding:13px 14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--sh-soft)}
+  .mr-door .nm{flex:1;font-family:var(--font-display);font-weight:700;font-size:var(--fs-title);color:var(--accent)}
+  .mr-door .chev{color:var(--accent);font-weight:700}
+  .mr-scrim{position:fixed;inset:0;background:rgba(10,16,28,.35);display:none;z-index:88}
+  .mr-scrim.open{display:block}
+  .mr-sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:var(--r-sheet) var(--r-sheet) 0 0;box-shadow:0 -8px 30px rgba(10,16,28,.25);padding:14px 16px calc(26px + env(safe-area-inset-bottom));z-index:89;transform:translateY(110%);transition:transform .22s;box-sizing:border-box}
+  .mr-sheet.open{transform:translateY(0)}
+  .mr-sheet .grab{width:44px;height:4px;border-radius:999px;background:var(--line);margin:0 auto 12px}
+  .mr-sheet .ttl{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead)}
+  .mr-sheet .acts{display:flex;gap:8px;margin-top:16px}
+  .mr-sheet .acts button{flex:1;font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);border-radius:999px;padding:11px 0;border:1px solid var(--line);cursor:pointer}
+  .mr-sheet .save{background:var(--accent-fill);color:#fff;border-color:var(--accent-fill)}
+  .mr-sheet .def{background:var(--card);color:var(--muted)}
+  .mr-empty{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);padding:34px 18px;text-align:center;margin-top:8px}
+  .mr-empty .big{font-size:34px;color:var(--fav)}
+  .mr-empty .t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);margin-top:8px}
+  .mr-empty .s{font-size:var(--fs-meta);color:var(--muted);margin-top:6px;line-height:1.5}
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
 <script>
@@ -1756,30 +1832,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   </header>
 
 
-  <div class="help-scrim alerts-scrim" id="alertsScrim" hidden style="z-index:88;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
-  <div class="alerts-pop" id="alertsPop" hidden style="z-index:89">
-    <div class="help-grab"></div>
-    <div class="ap-head">
-      <div class="ap-title">⚑ Alerts<button class="ap-info" id="alertsInfoBtn" type="button" aria-label="How alerts work" title="How alerts work"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="1.5" fill="currentColor"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button></div>
-      <div class="toggle" id="notifToggle"><span class="switch"></span><span>Notifications</span></div>
-    </div>
-    <div class="ap-default">
-      <div class="ap-rule">
-        <span class="ap-lead">Default rule</span>
-        <div class="fld">
-          <span>notify when wait is</span>
-          <select id="dir"><option value="below">below</option><option value="above">above</option></select>
-          <select id="thresh" class="thr-sel"></select>
-          <span class="u">min</span>
-        </div>
-      </div>
-      <div class="toggle" id="scopeToggle"><span class="switch"></span><span>Apply to all rides</span></div>
-    </div>
-    <div id="alertList"></div>
-    <div class="alert-note">Each starred ride uses the default rule unless you give it its own. It pings once when the wait
-      first drops past your threshold, then stays quiet — re-arming only if you change its rule or the ride goes down and comes back. With notifications on, alerts reach you even when the app is closed.</div>
-  </div>
-
+  <!-- 0719w: the alerts sheet retired into MY RIDES -->
   <div class="help-scrim alerts-scrim" id="setScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="setPop" hidden style="z-index:91">
     <div class="help-grab"></div>
@@ -1793,7 +1846,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1868,16 +1921,15 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="banners"></div>
   <div id="searchResults" hidden></div>
   <div id="wrapView" class="pw-view" hidden></div>
-  <div id="pgFav" class="pg-fav" hidden></div>
+  <div id="pgMyRides" class="pg-myrides" hidden></div>
   <div id="pgPulse" class="pg-pulse" hidden></div>
 </div>
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
 <nav id="appNav" class="appnav" aria-label="Sections">
   <button class="it on" data-pg="live" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg><span>LIVE</span></button>
-  <button class="it" data-pg="fav" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>FAVORITES</span></button>
   <button class="it" data-pg="pulse" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg><span>PLAN</span></button>
+  <button class="it" data-pg="myrides" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>MY RIDES</span><span class="nbadge" id="navAlertBadge"></span></button>
   <button class="it" data-pg="wrap" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="17" y2="7"/><line x1="7" y1="17" x2="5.3" y2="18.7"/></svg><span>WRAP</span></button>
-  <button class="it" data-pg="alerts" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="21" x2="6" y2="3.5"/><path d="M6 4h11.5l-3 4 3 4H6"/></svg><span>ALERTS</span><span class="nbadge" id="navAlertBadge"></span></button>
 </nav>
 
 <div class="toasts" id="toasts"></div>
@@ -1976,9 +2028,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var reopen=store.get("reopen",{})||{};   /* ride ids flagged "tell me when it's back up" */
   var reopenOnly=store.get("reopenOnly",{})||{}; /* watches created solely by "Notify me" -> auto-remove after the back-up alert */
   var resolved=store.get("resolved",{})||{};     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
-var armed=store.get("armed",{})||{};           /* id -> standing threshold alert (the ⚑). Favorites (watch) are quiet and never alert. */
+var armed=store.get("armed",{})||{};           /* id -> standing threshold rule (the bell). Stars (watch) are quiet unless armed. */
 function saveArmed(){store.set("armed",armed);}
-/* every ride the ⚑ sheet + badge care about: armed thresholds, reopen flags, transients, parked back-ups */
+/* every ride the badge cares about: armed thresholds, reopen flags, transients, parked back-ups */
 function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function(m){Object.keys(m).forEach(function(id){if(roster[id])s[id]=1;});});return Object.keys(s);}
   var rebreak={};                                 /* in-memory only: parked rides seen DOWN once, awaiting 2nd-poll confirmation */
   function logAlertEv(id,ev){try{var L=store.get("alertLog",[])||[];L.push({t:Date.now(),id:id,ev:ev});if(L.length>40)L=L.slice(-40);store.set("alertLog",L);}catch(e){}}
@@ -1990,7 +2042,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var f={type:store.get("f_type","all"),cat:store.get("f_cat","all"),status:store.get("f_status","all"),
     band:store.get("f_band","all"),ll:store.get("f_ll",false),sr:store.get("f_sr",false),
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
-  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false)};
+  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false),dnup:store.get("dnup",false)};
   settings.thresh=snap5(settings.thresh);
   var lastUpdated=null,nextRefreshAt=0,timer=null;
 
@@ -2000,7 +2052,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
 
   $("dir").value=settings.dir;$("thresh").innerHTML=threshOptions(settings.thresh);
   $("type").value=f.type;$("cat").value=f.cat;$("status").value=f.status;$("band").value=f.band;$("sort").value=f.sort;
-  setOn($("scopeToggle"),settings.all);setOn($("notifToggle"),settings.notif&&notifGranted());
   setOn($("llChip"),f.ll);setOn($("srChip"),f.sr);setOn($("watchChip"),f.watched);
   function notifGranted(){return typeof Notification!=="undefined"&&Notification.permission==="granted";}
   function setOn(el,on){el.classList[on?"add":"remove"]("on");}
@@ -2014,24 +2065,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     $("filterbar").classList.toggle("open",open);
   });
 
-  /* ---- alerts popover ---- */
-  /* ---- alerts bottom sheet + status glance popover ----
-     One thing open at a time; tap-out / scrim / tab-switch closes; the page
-     itself never gets pushed around. Sheet reuses the proven help-sheet
-     skeleton (help stacks above it at z-90 when opened from inside). */
-  function alertsOpenNow(){return !$("alertsPop").hasAttribute("hidden");}
+  /* ---- status glance popover ---- */
   function closeStatusPop(){var p=$("statusPop");if(p.hasAttribute("hidden"))return;
     p.setAttribute("hidden","");$("statusPill").classList.remove("active");}
-  function closeAlertsSheet(){var p=$("alertsPop"),sc=$("alertsScrim");if(p.hasAttribute("hidden"))return;
-    p.classList.remove("show");sc.classList.remove("show");
-    setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
-    document.body.classList.remove("alerts-open");} /* 0710t: header door retired — its active-state ref went with it */
-  function openAlertsSheet(){closeStatusPop();
-    var p=$("alertsPop"),sc=$("alertsScrim");
-    p.removeAttribute("hidden");sc.removeAttribute("hidden");
-    requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
-    document.body.classList.add("alerts-open");renderAlertList();} /* 0710t: header door retired */
-  $("alertsScrim").addEventListener("click",closeAlertsSheet);
+  /* 0719w: the alerts sheet's open/close pair retired with its DOM */
   /* Swipe-down-to-dismiss for bottom sheets: the grab handle promises the
      native gesture, so honor it everywhere it appears. Drag engages only when
      the sheet is scrolled to its top and the finger moves downward; inner
@@ -2087,9 +2124,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     sh.addEventListener("touchend",endDrag,{passive:true});
     sh.addEventListener("touchcancel",endDrag,{passive:true});
   }
-  sheetDragDismiss($("alertsPop"),$("alertsScrim"),function(){
-    document.body.classList.remove("alerts-open");
-  });
   sheetDragDismiss($("helpSheet"),$("helpScrim"),function(){
     document.body.classList.remove("help-open");
   });
@@ -2121,7 +2155,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     p.classList.remove("show");sc.classList.remove("show");
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
     document.body.classList.remove("set-open");$("setBtn").classList.remove("active");}
-  function openSetSheet(){closeStatusPop();closeAlertsSheet();
+  function openSetSheet(){closeStatusPop();
     var p=$("setPop"),sc=$("setScrim");
     p.removeAttribute("hidden");sc.removeAttribute("hidden");
     requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
@@ -2194,7 +2228,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   $("statusPill").addEventListener("click",function(e){
     e.stopPropagation();
     var p=$("statusPop"),open=p.hasAttribute("hidden");
-    closeAlertsSheet();
     if(open){
       var r=this.getBoundingClientRect();
       p.style.top=Math.round(r.bottom+8)+"px";
@@ -2260,8 +2293,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function countdownText(ts){var r=Math.max(0,ts-Date.now()),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);return m+":"+(s<10?"0":"")+s;}
 
   /* ---- events ---- */
-  bindSel("dir","dir",function(v){settings.dir=v;resetAlerts();renderAlertList();});
-  $("thresh").addEventListener("change",function(){settings.thresh=Math.max(0,+this.value||0);store.set("thresh",settings.thresh);resetAlerts();renderAlertList();});
+  /* 0719w: the default-rule selects moved home — MY RIDES binds mrDir/mrThr */
   bindSel("type","f_type",function(v){f.type=v;});
   bindSel("cat","f_cat",function(v){f.cat=v;});
   bindSel("status","f_status",function(v){f.status=v;});
@@ -2276,37 +2308,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   bindChip("srChip","f_sr",function(v){f.sr=v;});
   bindChip("watchChip","f_watched",function(v){f.watched=v;});
   $("clearF").addEventListener("click",clearFilters);
-  $("scopeToggle").addEventListener("click",function(){settings.all=!settings.all;store.set("all",settings.all);setOn(this,settings.all);resetAlerts();render();});
-  (function(){var ib=$("alertsInfoBtn"),sc=$("helpScrim"),sh=$("helpSheet");if(!ib||!sc||!sh)return;
-    function openHelp(){sc.removeAttribute("hidden");sh.removeAttribute("hidden");document.body.classList.add("help-open");requestAnimationFrame(function(){sc.classList.add("show");sh.classList.add("show");});}
-    function closeHelp(){sc.classList.remove("show");sh.classList.remove("show");document.body.classList.remove("help-open");setTimeout(function(){sc.setAttribute("hidden","");sh.setAttribute("hidden","");},300);}
-    ib.addEventListener("click",openHelp);sc.addEventListener("click",closeHelp);
-    Array.prototype.forEach.call(sh.querySelectorAll("[data-help-close]"),function(b){b.addEventListener("click",closeHelp);});
-    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!sh.hasAttribute("hidden"))closeHelp();});
-  })();
-  $("notifToggle").addEventListener("click",function(){
-    var self=this;
-    /* turn OFF */
-    if(self.classList.contains("on")){
-      settings.notif=false;store.set("notif",false);setOn(self,false);
-      disablePush();pushSub=null;return;
-    }
-    /* turn ON */
-    if(typeof Notification==="undefined"){pushToast("Not supported","This browser can't show notifications.");return;}
-    if(pushSupported()){
-      enablePush().then(function(ok){
-        if(ok){settings.notif=true;store.set("notif",true);setOn(self,true);
-          pushToast("Alerts on","You'll get alerts even when the app is closed.");}
-        else{pushToast("Notifications blocked","Allow them in your device's settings to get alerts.");}
-      });
-      return;
-    }
-    /* fallback: page-open notifications only (browser has no background push) */
-    if(Notification.permission==="granted"){settings.notif=true;store.set("notif",true);setOn(self,true);}
-    else{Notification.requestPermission().then(function(p){
-      if(p==="granted"){settings.notif=true;store.set("notif",true);setOn(self,true);}
-      else{pushToast("Notifications blocked","Allow them in your browser's site settings to get alerts.");}});}
-  });
+  /* 0719w: the sheet's info-door wiring retired with its button */
+  /* 0719w: the notifications master switch moved home — its permission ladder rides mrNotifTap whole */
   function bindSel(id,key,fn){$(id).addEventListener("change",function(){fn(this.value);store.set(key,this.value);render();});}
   function bindChip(id,key,fn){$(id).addEventListener("click",function(){var on=!this.classList.contains("on");setOn(this,on);fn(on);store.set(key,on);render();});}
   function resetAlerts(){alertState={};saveAlertState();}
@@ -2329,7 +2332,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
       usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();render();checkAlerts(); /* 0718s: the lightning feed rides the poll, self-throttled */
-      if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
+      if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
     }).catch(function(err){
       setPulse("error");
       elStatusText.textContent=usingFallback?"Lineup":"Offline";
@@ -2438,8 +2441,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           updateAlertBadge();logAlertEv(id,"rebreak-confirmed");
         }else{rebreak[id]=Date.now();logAlertEv(id,"rebreak-pending");}
       }else if(rebreak[id]){delete rebreak[id];logAlertEv(id,"rebreak-cleared");}
-      /* a watched ride that just went down auto-arms its back-up alert (so you're told when it returns) */
-      if(armed[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;saveReopen();}
+      /* the head switch (dnup): a STARRED ride that just went down fires the down ping and
+         auto-arms its back-up — the switch is the only writer of the reopen channel now.
+         Unarmed stars park under BACK UP on return (reopenOnly); armed rides re-arm quietly. */
+      if(settings.dnup&&watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;saveReopen();saveReopenOnly();fireDown(r);}
       /* reopen: a watched, reopen-flagged ride that is now operating has come back.
          Park it either way (so it lands in Back up, not Watched) — even if the flip
          happened while the app was closed. Only re-fire the in-app ping if we
@@ -2465,7 +2470,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
          changing its rule, removing/re-adding it, or a back-up (down->up) event re-arms it */
     });
     saveAlertState();
-    if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();
+    if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
   }
   function ruleMet(id,lv){if(!lv||lv.status!=="OPERATING"||lv.wait===null)return false;
     var ru=ruleFor(id);return ru.dir==="below"?lv.wait<ru.thresh:lv.wait>ru.thresh;}
@@ -2478,13 +2483,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function fireAlert(r,lv){
     var ru=ruleFor(r.id);
     var body=(ru.dir==="below"?"dropped to":"climbed to")+" "+lv.wait+" min · "+r.park;
-    pushToast(r.name,body);
-    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("⚑ "+r.name,{body:body,tag:r.id});}catch(e){}}
+    pushToast(r.name,body);logAlertEv(r.id,"hit");
+    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("🔔 "+r.name,{body:body,tag:r.id});}catch(e){}}
   }
   function fireReopen(r){
     var body="is back up · "+r.park;
-    pushToast(r.name,body);
-    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("⚑ "+r.name,{body:body,tag:r.id+":reopen"});}catch(e){}}
+    pushToast(r.name,body);logAlertEv(r.id,"reopen");
+    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("🔔 "+r.name,{body:body,tag:r.id+":reopen"});}catch(e){}}
+  }
+  function fireDown(r){
+    var body="is down · "+r.park;
+    pushToast(r.name,body);logAlertEv(r.id,"down");
+    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("🔔 "+r.name,{body:body,tag:r.id+":down"});}catch(e){}}
   }
   function pushToast(t,b){
     var box=$("toasts"),el=document.createElement("div");el.className="toast";
@@ -2509,46 +2519,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
   function saveResolved(){store.set("resolved",resolved);}
   function updateAlertBadge(){var n=alertIds().length;["navAlertBadge"].forEach(function(id){var b=$(id);if(!b)return;b.textContent=n;b.classList.toggle("show",n>0);});} /* 0710t: one writer, one badge — the dock is the sole door; new badges join this list, never a second writer */
-  function renderAlertList(){
-    var box=$("alertList");if(!box)return;
-    var ids=alertIds();
-    if(!ids.length){box.innerHTML='<div class="al-empty">No alerts yet. Tap ⚑ on any ride for a heads-up.</div>';return;}
-    var backUp=[],down=[],watched=[];
-    ids.forEach(function(id){
-      var lv=liveById[id];
-      if(resolved[id])backUp.push(id);
-      else if(lv&&lv.status==="DOWN")down.push(id);
-      else watched.push(id);
-    });
-    var byName=function(a,b){return roster[a].name.localeCompare(roster[b].name);};
-    backUp.sort(function(a,b){return (resolved[b]||0)-(resolved[a]||0);}); /* most recent first */
-    var waitVal=function(id){var lv=liveById[id];return lv&&typeof lv.wait==="number"?lv.wait:null;};
-    var byWait=function(a,b){var wa=waitVal(a),wb=waitVal(b);
-      if(wa===null&&wb===null)return byName(a,b);
-      if(wa===null)return 1;if(wb===null)return -1;   /* no live wait sinks to the bottom */
-      if(wa!==wb)return wa-wb;return byName(a,b);};    /* shortest first, alpha tiebreak */
-    down.sort(byName);
-    /* Watched rides split: armed (no trigger yet) on top, then alerted (already
-       hit). Each sorted by current wait, shortest first so what's rideable now floats up. */
-    var pending=watched.filter(function(id){return !alertState[id];}).sort(byWait);
-    var alerted=watched.filter(function(id){return !!alertState[id];}).sort(byWait);
-    var html="";
-    if(backUp.length){
-      html+='<div class="ap-list-head up"><span class="hd-dot"></span>Back up <span class="ct">('+backUp.length+')</span>'+
-        '<button class="al-clearup" data-clearup="1">Clear</button></div>'+backUp.map(rowBackUp).join("");
-    }
-    if(down.length){
-      html+='<div class="ap-list-head down"><span class="hd-dot"></span>Down <span class="ct">('+down.length+')</span></div>'+down.map(rowDown).join("");
-    }
-    if(pending.length){
-      html+='<div class="ap-list-head">Still watching <span class="ct">('+pending.length+')</span></div>'+pending.map(rowWatched).join("");
-    }
-    if(alerted.length){
-      html+='<div class="ap-list-head">Alerted <span class="ct">('+alerted.length+')</span></div>'+alerted.map(rowWatched).join("");
-    }
-    box.innerHTML=html+'<div class="al-hint">Add alerts by tapping ⚑ on any ride.</div>';
-    bindAlertList(box);
-  }
+  /* 0719w: the sheet's list renderer retired — MY RIDES renders the room */
   function rowBackUp(id){
     var r=roster[id],lv=liveById[id],tier=tierOf(lv);
     var waitHTML=(lv&&lv.status==="OPERATING"&&lv.wait!==null)?lv.wait+'<small>min</small>':'<small>'+statusLabel(lv)+'</small>';
@@ -2590,25 +2561,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<button class="al-x" data-x="'+esc(id)+'" title="Remove alert">✕</button></div>';
   }
 
-  function bindAlertList(box){
-    function each(sel,ev,fn){Array.prototype.forEach.call(box.querySelectorAll(sel),function(el){el.addEventListener(ev,function(){fn(el);});});}
-    each("[data-custom]","click",function(el){var id=el.getAttribute("data-custom");overrides[id]={dir:settings.dir,thresh:settings.thresh};delete reopenOnly[id];saveOverrides();saveReopenOnly();delete alertState[id];saveAlertState();renderAlertList();});
-    each("[data-default]","click",function(el){var id=el.getAttribute("data-default");delete overrides[id];saveOverrides();delete alertState[id];saveAlertState();renderAlertList();});
-    each("[data-dir]","change",function(el){var id=el.getAttribute("data-dir");if(overrides[id]){overrides[id].dir=el.value;saveOverrides();delete alertState[id];saveAlertState();}});
-    each("[data-thresh]","change",function(el){var id=el.getAttribute("data-thresh");if(overrides[id]){overrides[id].thresh=Math.max(0,+el.value||0);saveOverrides();delete alertState[id];saveAlertState();}});
-    each("[data-reopen]","click",function(el){var id=el.getAttribute("data-reopen");
-      if(reopen[id]){delete reopen[id];if(reopenOnly[id]){delete reopenOnly[id];saveReopenOnly();}updateAlertBadge();}
-      else{reopen[id]=true;prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
-      saveReopen();renderAlertList();});
-    each("[data-gotit]","click",function(el){var id=el.getAttribute("data-gotit");
-      delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];
-      saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
-    each("[data-clearup]","click",function(){Object.keys(resolved).forEach(function(id){
-        delete resolved[id];delete reopen[id];delete reopenOnly[id];delete overrides[id];delete alertState[id];});
-      saveResolved();saveReopen();saveReopenOnly();saveOverrides();saveAlertState();updateAlertBadge();renderAlertList();render();});
-    each("[data-x]","click",function(el){var id=el.getAttribute("data-x");delete armed[id];delete overrides[id];delete reopen[id];delete reopenOnly[id];delete resolved[id];delete alertState[id];
-      saveArmed();saveOverrides();saveReopen();saveReopenOnly();saveResolved();saveAlertState();updateAlertBadge();renderAlertList();render();});
-  }
+  /* 0719w: the sheet's list binder retired — bindMyRides binds the room */
 
   /* ---- stats helpers ---- */
   function scopeWaits(parkKey){
@@ -3251,18 +3204,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     });
     return items;
   }
-  function fcRowHTML(it){
-    var w=(it.wait===null)?'<span class="fc-w dash">\u2014</span>'
-      :'<span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>';
-    var st=it.st?'<span class="fc-st '+it.st+'">'+it.lbl+'</span>':'';
-    var ht=alertState[it.id]?fmtClock(alertState[it.id]):null; /* 0710t: the sheet's exact Hit latch + clock, surfaced in the row. PAINT-ONLY by design — the dock is the door; a tappable pill would be a second door in the one-door experiment. */
-    var mid=ht?'<span class="fc-mid"><span class="fc-nm">'+esc(it.nm)+'</span><span class="hitline"><span class="up-pill">✓ Hit · '+ht+'</span></span></span>'
-      :'<span class="fc-nm">'+esc(it.nm)+'</span>';
-    return '<div class="fc-row'+(it.st==="cl"?' cl':'')+'">'+w+mid+
-      '<span class="fc-pk">'+it.pk+'</span>'+st+
-      '<button class="flagbtn'+((armed[it.id]||reopen[it.id])?' on':'')+'" data-id="'+esc(it.id)+'" title="Alerts">\u2691</button>'+
-      '<button class="star on" data-id="'+esc(it.id)+'" title="Favorite">\u2605</button></div>';
-  }
+  /* 0719w: fcRowHTML retired with the Favorites page (teaser builds its own line) */
   /* FAVC-END */
   /* Phase 2 (0710p): the teaser — Live's one-line Favorites glance. Facts from the same
      favModel the page uses: watched count, shortest open wait, downs. Routes via a
@@ -3281,40 +3223,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(down)s+=' \u00b7 <b class="dn">'+down+' down</b>';
     }
     el.innerHTML='<button class="fc-teaser" type="button"><span class="fs">\u2605</span>'+
-      '<span class="t">FAVORITES</span><span class="s">'+s+'</span><span class="chev">\u203a</span></button>';
+      '<span class="t">MY RIDES</span><span class="s">'+s+'</span><span class="chev">\u203a</span></button>';
   }
-  /* Phase 2 (0710p): the Favorites PAGE — the card's anatomy promoted to a full surface.
-     Painted before render()'s away-guard, so polls refresh it on any tab; star/flag handlers
-     end in render(), so edits made on this page repaint this page. Shows ALL rows: the 5-row
-     fold was Live real estate; a dedicated page folds nothing (the fold state retired with
-     the card). Rules door: same sheet, second door — the header \u2691 stays for now; the loser
-     retires post-trip on usage evidence. Scope chips: session-only favScope, ported verbatim. */
-  function renderFavPage(){
-    var el=$("pgFav");if(!el)return;
-    var items=favModel();
-    var head='<div class="pg-h"><h3><span class="fs">\u2605</span> Favorites</h3></div>'; /* 0710t: page door retired — the dock \u2691 is the sole alerts entry */
-    var chips="",body;
-    if(!items.length){
-      body='<div class="fc-empty">No favorites yet. Tap \u2606 on any ride on Live to pin it here.</div>';
-    }else{
-      chips='<div class="pg-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
-        return '<button class="'+(favScope===k?'on':'')+'" data-scope="'+esc(k)+'" type="button">'+
-          (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
-      var mono=BANNER_MONO[favScope]||favScope;
-      var scoped=favScope==="all"?items:items.filter(function(it){return it.pk===mono;});
-      if(!scoped.length){
-        body='<div class="fc-empty">No favorites at '+esc(favScope)+' yet. Tap \u2606 on any '+esc(mono)+' ride to pin it here.</div>';
-      }else{
-        body=scoped.map(fcRowHTML).join("");
-      }
-    }
-    el.innerHTML='<div class="pg-stick">'+head+chips+'</div><div class="favcard pg-list">'+body+'</div>';
-    updateAlertBadge(); /* 0710t: keeps the dock badge honest on every page paint */
-    el.querySelectorAll(".pg-seg button").forEach(function(b){b.addEventListener("click",function(){
-      favScope=b.getAttribute("data-scope");renderFavPage();});});
-    bindStars(el); /* page rows speak the exact ride-row pair: same classes, same handlers */
-  }
-
+  /* 0719w: the Favorites page retired into MY RIDES — the teaser routes there now */
   /* ===== Hot-lines board (C2, 0709k → Pulse page 0710s). Lens: session-only, Longest default. Scope: PERSISTED, now page-level clothing — OWNER NOTE (Jul 10): re-evaluate once the callout feed shares the page; session-only is a two-line change. Rows inert. ===== */
   var hlLens="long";
   var hlScope=store.get("hlScope","all");
@@ -6115,7 +6026,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
 
   function render(){
     /* renderDownFlow() retired — L-32 Cut 3 (0718h): the card-banner is absorbed into the hero’s down door. The function body and #dnFlow stay for one build as the reverse path; removal in a later sweep. */
-    renderFavPage(); /* Phase 2 (0710p): before the away-guard — polls refresh the Favorites page on any tab */
+    renderMyRidesPage(); /* Cut 3 (0719w): before the away-guard — polls refresh MY RIDES on any tab; the room skips repaints while its rule sheet is open */
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
     renderUpNext(); /* L-32 Cut 1: the board refreshes on any tab \u2014 the favPage rule */
     renderRead(); /* L-32 Cut 2: the read refreshes with the board — same rule */
@@ -7040,40 +6951,216 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div></div>'+
-      '<button class="flagbtn'+((armed[r.id]||reopen[r.id])?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">⚑</button>'+
+      '<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>'+
 '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
   function bindStars(scope){
-/* ★ collects (quiet favorite) · ⚑ interrupts (context-aware alert). Fully orthogonal (0709e). */
+/* Cut 3 (0719w) — two channels, one grammar: ★ collects (the container), the bell arms the
+   threshold rule INSIDE it. Un-starring removes the rule with the star (breadcrumbed, undoable);
+   the bell on an unstarred ride stars + arms in one gesture (mrBellTap owns that path). */
 Array.prototype.forEach.call(scope.querySelectorAll(".star"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
 var adding=!watch[id];var r=roster[id],nm=r?r.name:"Ride";
-if(adding)watch[id]=true;else delete watch[id];
-store.set("watch",Object.keys(watch));
-/* favorites are quiet: alert state (armed/reopen/rules) is untouched either way */
-if(adding)pushToast("★ Added to Favorites",nm+" — tap ⚑ for alerts");
-else pushUndoToast("Removed from Favorites",nm+((armed[id]||reopen[id])?" — alert kept, manage under ⚑":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));pushToast("★ Back in Favorites",nm);render();});
+if(adding){watch[id]=true;store.set("watch",Object.keys(watch));pushToast("★ Starred",nm+" — seated in MY RIDES");render();return;}
+var hadRule=!!armed[id];
+delete watch[id];store.set("watch",Object.keys(watch));
+if(hadRule){delete armed[id];delete alertState[id];saveArmed();saveAlertState();logAlertEv(id,"unstar-disarmed");}
+updateAlertBadge();
+pushUndoToast("Removed from My Rides",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(hadRule){armed[id]=true;saveArmed();}updateAlertBadge();pushToast("★ Back in My Rides",nm);render();});
 render();});});
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
-btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
-var r=roster[id],nm=r?r.name:"Ride",lv=liveById[id];
-if(lv&&lv.status==="DOWN"){
-var on=!reopen[id];
-if(on){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;
-prevStatus[id]=(lv&&lv.status)||prevStatus[id]||"DOWN";
-pushToast("⚑ Alert set",nm+" — we'll ping when it reopens");}
-else{delete reopen[id];delete reopenOnly[id];pushToast("Alert removed",nm);}
-saveReopen();saveReopenOnly();
-}else{
-var on=!armed[id];
-if(on){armed[id]=true;delete alertState[id];saveAlertState();
-var o=overrides[id],rl=o?(o.dir+" "+o.thresh+"m"):(settings.dir+" "+settings.thresh+"m (default)");
-pushToast("⚑ Alert set",nm+" — "+rl+" · customize under ⚑");}
-else{delete armed[id];delete alertState[id];saveAlertState();pushToast("Alert removed",nm);}
-saveArmed();
+btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
 }
-updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();render();});});
-}
+
+  /* ===== MY RIDES (Cut 3, 0719w) — the merge made physical. The Favorites page and the
+     alerts sheet retire; one room holds the stars, the shelf, the rules, and the log.
+     Two channels, locked grammar: the bell is a threshold rule living INSIDE a star;
+     down & back-up is ONE head switch over all stars (dnup, landing OFF) — the Worker
+     still speaks v3.16, collectRules translates. Mock of record: my-rides-mock-v12,
+     Stage-1 slice (pulse + park chips ride Stage 2; freshness/teaching ride Stage 3). */
+  var navTab="live"; /* hoisted from the nav module (0719w): the engine guards read it, navGo writes it */
+  var MR_BELL='<svg width="17" height="17" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
+  var mrShId=null,mrLogOpen=false,mrRulesOpen=false;
+  function mrW(n){var w=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];return n<=10?w[n]:String(n);}
+  function mrClk(t){var d=new Date(t),h=d.getHours(),m=d.getMinutes();return ((h%12)||12)+":"+(m<10?"0":"")+m+" "+(h>=12?"PM":"AM");}
+  function mrStars(){return Object.keys(watch).filter(function(id){return roster[id];});}
+  function mrHeroHTML(ids){
+    var run=0,down=0;
+    ids.forEach(function(id){var lv=liveById[id];if(lv&&lv.status==="OPERATING")run++;else if(lv&&lv.status==="DOWN")down++;});
+    var back=Object.keys(resolved).filter(function(id){return roster[id];}).length;
+    var bells=ids.filter(function(id){return armed[id];}).length;
+    var sub='<b>'+run+' running</b>'+(down?' · '+down+' down':'')+(back?' · '+back+' back up':'')+' · bells on '+bells;
+    return '<div class="pwh mr-hero"><div class="eb">My Rides · Live</div><h2>Your '+mrW(ids.length)+' <span class="fs">★</span></h2><div class="sub">'+sub+'</div></div>';
+  }
+  function mrWaitHTML(lv){
+    if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="mr-w t-'+tierOf(lv)+'">'+lv.wait+'<small> MIN</small></span>';
+    var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:(lv&&lv.status==="REFURBISHMENT")?["refurb","REFURB"]:["closed","CLOSED"];
+    return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
+  }
+  function mrRuleLine(id){
+    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off">rule off</div>';
+    var o=overrides[id];
+    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><b>'+esc(o.dir)+' '+o.thresh+' · custom</b></div>';
+    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default">'+esc(settings.dir)+' '+settings.thresh+' · default</div>';
+  }
+  function mrRowHTML(id){
+    var r=roster[id],lv=liveById[id];
+    return '<div class="mr-rw"><span class="st">★</span>'+
+      '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id)+'</div>'+
+      mrWaitHTML(lv)+
+      '<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>'+
+      '</div>';
+  }
+  function mrGroupsHTML(ids){
+    return PARK_DEF.map(function(p){
+      var here=ids.filter(function(id){return roster[id].park===p.key;});
+      if(!here.length)return "";
+      return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(mrRowHTML).join("")+'</div>';
+    }).join("");
+  }
+  function mrShelfHTML(){
+    var ids=Object.keys(resolved).filter(function(id){return roster[id];});
+    if(!ids.length)return "";
+    var rows=ids.map(function(id){
+      return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div>'+
+        '<div class="sub">Reopened at '+mrClk(resolved[id])+' — parked here till you clear it.</div></div>'+
+        '<button class="mr-clear" data-id="'+esc(id)+'" type="button">Clear</button></div>';
+    }).join("");
+    return '<div class="mr-bk"><div class="cap">BACK UP</div>'+rows+'</div>';
+  }
+  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star"};
+  function mrLogHTML(){
+    var L=(store.get("alertLog",[])||[]).slice().reverse();
+    if(!L.length)return "";
+    var lis=L.map(function(e){
+      if(e.ev==="moved-home")return '<div class="li">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
+      var r=roster[e.id];
+      return '<div class="li"><b>'+esc(r?r.name:"Ride")+'</b> '+(mrEvWord[e.ev]||esc(e.ev))+' · '+mrClk(e.t)+'</div>';
+    }).join("");
+    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><span class="t">Recent alerts</span><span class="n">'+L.length+'</span></div><div class="body">'+lis+'</div></div>';
+  }
+  function mrReadout(){
+    if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
+    var cust=Object.keys(overrides).filter(function(id){return armed[id];}).length;
+    return "<b>"+settings.dir+" "+settings.thresh+"</b> · down & back-up "+(settings.dnup?"on":"off")+(cust?" · "+cust+" custom":"");
+  }
+  function mrRulesHTML(){
+    return '<div class="mr-rh'+(mrRulesOpen?' open':'')+'">'+
+      '<div class="rhhd"><span class="cap">Your rules</span><span class="ro">'+mrReadout()+'</span><span class="chv">›</span></div>'+
+      '<div class="body">'+
+        '<div class="sent">notify when wait is '+
+          '<select id="mrDir"><option value="below"'+(settings.dir==="below"?" selected":"")+'>below</option><option value="above"'+(settings.dir==="above"?" selected":"")+'>above</option></select> '+
+          '<select id="mrThr">'+threshOptions(settings.thresh)+'</select> <span>min</span></div>'+
+        '<div class="sw"><div><div>Down &amp; back-up alerts</div><div class="d">One ping when a starred ride goes down, one when it returns — returns park above till you clear them.</div></div><span class="tog'+(settings.dnup?' on':'')+'" id="mrDnup"></span></div>'+
+        '<div class="sw"><div><div>Notifications</div><div class="d">Master switch — off means total silence.</div></div><span class="tog'+(settings.notif&&notifGranted()?' on':'')+'" id="mrNotif"></span></div>'+
+      '</div></div>';
+  }
+  function mrPlanDoorHTML(){return '<div class="mr-door"><span class="nm">Plan with your stars ›</span><span class="chev">›</span></div>';}
+  function mrEmptyHTML(){return '<div class="mr-empty"><div class="big">☆</div><div class="t">Star rides to build MY RIDES</div><div class="s">Tap ★ on any ride — it seats here with its live wait, its alerts, and its own rule.</div></div>';}
+  function mrSheetHTML(){
+    return '<div class="mr-scrim" id="mrScrim"></div>'+
+      '<div class="mr-sheet" id="mrSheet"><div class="grab"></div><div class="ttl" id="mrShTtl"></div>'+
+      '<div class="sent">notify when wait is '+
+        '<select id="mrShDir"><option value="below">below</option><option value="above">above</option></select> '+
+        '<select id="mrShThr"></select> <span>min</span></div>'+
+      '<div class="acts"><button class="def" id="mrShDef" type="button">Use default rule</button><button class="save" id="mrShSave" type="button">Save</button></div></div>';
+  }
+  function mrPageHTML(){
+    var ids=mrStars();
+    if(!ids.length&&!Object.keys(resolved).length)return mrEmptyHTML();
+    return mrHeroHTML(ids)+mrShelfHTML()+mrGroupsHTML(ids)+mrLogHTML()+mrRulesHTML()+mrPlanDoorHTML()+mrSheetHTML();
+  }
+  function mrBellTap(id){
+    var r=roster[id],nm=r?r.name:"Ride";
+    if(!armed[id]){
+      if(!watch[id]){watch[id]=true;store.set("watch",Object.keys(watch));logAlertEv(id,"star-armed");}
+      armed[id]=true;delete alertState[id];saveAlertState();saveArmed();
+      var o=overrides[id],rl=o?(o.dir+" "+o.thresh+"m"):(settings.dir+" "+settings.thresh+"m (default)");
+      pushToast("🔔 Alert set",nm+" — "+rl);
+    }else{
+      delete armed[id];delete alertState[id];saveAlertState();saveArmed();
+      pushToast("Alert removed",nm+" — still starred");
+    }
+    updateAlertBadge();render();
+    if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
+  }
+  /* Cut 3 one-time migration — the alerts sheet's state moves home whole. Any armed ride
+     that was never starred gets its star (the rule survives the move); the retired
+     per-ride reopen flags are wiped — from here the head switch (dnup, landing OFF)
+     is the only writer of that channel. Runs once, breadcrumbed into the log. */
+  (function(){
+    if(store.get("mrMig",0))return;
+    var n=0;
+    Object.keys(armed).forEach(function(id){if(!watch[id]){watch[id]=true;n++;logAlertEv(id,"orphan-starred");}});
+    if(n)store.set("watch",Object.keys(watch));
+    if(n||Object.keys(reopen).length||Object.keys(armed).length)logAlertEv("sys","moved-home");
+    reopen={};reopenOnly={};saveReopen();saveReopenOnly();
+    store.set("mrMig",1);
+  })();
+  function renderMyRidesPage(){
+    var el=$("pgMyRides");if(!el)return;
+    if(mrShId)return; /* the rule sheet is open — polls wait; save/close repaints */
+    el.innerHTML=mrPageHTML();
+    bindMyRides(el);
+  }
+  function bindMyRides(el){
+    function each(sel,fn){Array.prototype.forEach.call(el.querySelectorAll(sel),fn);}
+    each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
+    each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
+    each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});});
+    var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
+    var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
+    var dr=el.querySelector("#mrDir");if(dr)dr.addEventListener("change",function(){settings.dir=this.value;store.set("dir",this.value);resetAlerts();renderMyRidesPage();});
+    var th=el.querySelector("#mrThr");if(th)th.addEventListener("change",function(){settings.thresh=Math.max(0,+this.value||0);store.set("thresh",settings.thresh);resetAlerts();renderMyRidesPage();});
+    var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);renderMyRidesPage();});
+    var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
+    var sc=el.querySelector("#mrScrim");if(sc)sc.addEventListener("click",mrCloseSheet);
+    var sd=el.querySelector("#mrShDef");if(sd)sd.addEventListener("click",function(){var id=mrShId;if(id){delete overrides[id];saveOverrides();delete alertState[id];saveAlertState();}mrCloseSheet();renderMyRidesPage();});
+    var sv=el.querySelector("#mrShSave");if(sv)sv.addEventListener("click",function(){var id=mrShId;
+      if(id){var d=el.querySelector("#mrShDir"),t=el.querySelector("#mrShThr");
+        overrides[id]={dir:(d?d.value:settings.dir),thresh:Math.max(5,+(t&&t.value)||settings.thresh)};saveOverrides();
+        if(!armed[id]){armed[id]=true;saveArmed();}
+        delete alertState[id];saveAlertState();updateAlertBadge();}
+      mrCloseSheet();renderMyRidesPage();});
+  }
+  function mrOpenSheet(id){
+    var el=$("pgMyRides");if(!el||!roster[id])return;
+    mrShId=id;
+    var t=el.querySelector("#mrShTtl");if(t)t.textContent=roster[id].name;
+    var o=overrides[id],d=el.querySelector("#mrShDir"),th=el.querySelector("#mrShThr");
+    if(d)d.value=o?o.dir:settings.dir;
+    if(th)th.innerHTML=threshOptions(o?o.thresh:settings.thresh);
+    var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
+    if(sh)sh.classList.add("open");if(sc)sc.classList.add("open");
+  }
+  function mrCloseSheet(){
+    var el=$("pgMyRides");mrShId=null;if(!el)return;
+    var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
+    if(sh)sh.classList.remove("open");if(sc)sc.classList.remove("open");
+  }
+  function mrNotifTap(el){
+    /* Ported whole from the retired sheet's notifToggle binding: same permission
+       ladder, same copy; setOn aims at the mr master switch now. */
+    if(el.classList.contains("on")){
+      settings.notif=false;store.set("notif",false);setOn(el,false);
+      disablePush();pushSub=null;renderMyRidesPage();return;
+    }
+    if(typeof Notification==="undefined"){pushToast("Not supported","This browser can't show notifications.");return;}
+    if(pushSupported()){
+      enablePush().then(function(ok){
+        if(ok){settings.notif=true;store.set("notif",true);setOn(el,true);
+          pushToast("Alerts on","You'll get alerts even when the app is closed.");}
+        else{pushToast("Notifications blocked","Allow them in your device's settings to get alerts.");}
+        renderMyRidesPage();
+      });
+      return;
+    }
+    if(Notification.permission==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);renderMyRidesPage();}
+    else{Notification.requestPermission().then(function(p){
+      if(p==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);}
+      else{pushToast("Notifications blocked","Allow them in your browser's site settings to get alerts.");}
+      renderMyRidesPage();});}
+  }
 
   function clearFilters(){
     f.type="all";f.cat="all";f.status="all";f.band="all";f.ll=false;f.sr=false;f.watched=false;
@@ -7127,15 +7214,15 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
      deployed Worker's /save expects. overrides may be empty -> send {}. */
   function collectRules(){
     return {
-      watch:(function(){var w={},k;for(k in armed)w[k]=true;for(k in reopen)w[k]=true;return w;})(),
-      /* 0709t HOTFIX: the worker's cron scans Object.keys(watch) ONLY, so a pure "notify me when it
-         reopens" flag (reopen without armed) has been invisible to background push since 0709e sent
-         watch:armed — the app's lifecycle looked perfect while zero pings left the worker. Union puts
-         reopen flags back in the scan set; reopenOnly still fences them out of threshold pings.
-         Quiet favorites still never leave the phone. Worker-side spec-true fix queued for next deploy. */
+      watch:(function(){var w={},k;for(k in armed)w[k]=true;if(settings.dnup)for(k in watch)w[k]=true;return w;})(),
+      /* Cut 3 (0719w): the head switch is translated HERE for the v3.16 worker — no worker deploy.
+         Scan set = armed rules ∪ (switch on ? every star : nothing). The wire's reopen/reopenOnly
+         maps derive from the stars + the switch; the retired per-ride flags never cross again.
+         Quiet stars still never leave the phone while the switch is off. The payload stays
+         v3.16-shaped — dnup itself is a phone-side fact the worker never sees. */
       overrides:overrides||{},
-      reopen:reopen,
-      reopenOnly:reopenOnly||{},
+      reopen:(function(){var m={},k;if(settings.dnup)for(k in watch)m[k]=true;return m;})(),
+      reopenOnly:(function(){var m={},k;if(settings.dnup)for(k in watch)if(!armed[k])m[k]=true;return m;})(),
       resolved:resolved||{},
       settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
@@ -7191,7 +7278,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var wt=+wa[id];if(!wt||wt<1e12)return;   /* must be a real ms timestamp, not a stray flag */
       if(!alertState[id]||wt<alertState[id]){alertState[id]=wt;changed=true;}
     });
-    if(changed){saveAlertState();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();}
+    if(changed){saveAlertState();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
   }
 
   /* Same idea for the "Came back · TIME" reopen pill: adopt the Worker's real
@@ -7206,7 +7293,7 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var wt=+wr[id];if(!wt||wt<1e12)return;   /* skip legacy boolean flags / non-timestamps */
       if(!resolved[id]||wt<resolved[id]){resolved[id]=wt;changed=true;}
     });
-    if(changed){saveResolved();updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();}
+    if(changed){saveResolved();updateAlertBadge();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
   }
 
   /* Push the current rules to the backend, acquiring the subscription first if
@@ -7242,8 +7329,8 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
      / apply-all edit without touching the individual handlers. Debounced so a
      burst of edits collapses into one /save. Only fires once subscribed. */
   (function(){
-    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1};
-    /* 0711d: armed was missing since the ⚑/star split — saveArmed() writes a key this
+    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1,dnup:1};
+    /* 0711d: armed was missing since the bell/star split — saveArmed() writes a key this
        chokepoint never watched, so a fresh threshold arm never scheduled its own sync and
        only reached the Worker by hitchhiking on boot / return / listed-key edits. Both
        testers' "sporadic threshold" days trace here; collectRules() has shipped the armed
@@ -7352,7 +7439,6 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
     function setMode(toWrap){
       active=toWrap;window.__pwActive=toWrap;
       if(typeof closeStatusPop==="function")closeStatusPop();
-      if(typeof closeAlertsSheet==="function")closeAlertsSheet();
       var banners=$id("banners"),sr=$id("searchResults"),wv=$id("wrapView"),cw=document.querySelector(".controls-wrap");
       var dnf=$id("dnFlow");
       var sL=$id("pwSegLive"),sW=$id("pwSegWrap");
@@ -10311,34 +10397,32 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
        Re-tapping the current tab scrolls to top; per-tab scroll memory
        is Phase 4. The retired Live/Wrap seg's null-guarded lines inside
        setMode stay by design (keeps the function byte-identical). */
-    var navTab="live";
+    /* navTab hoisted to app scope (0719w) — the engine guards read it; this module writes it */
     function navSync(k){
       var its=document.querySelectorAll("#appNav .it");
       for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
-      document.body.classList.toggle("tab-fav",k==="fav"); /* page-scoped body hook (0710t: the \u2691-yield rule retired with the header door) */
-      document.body.classList.toggle("pane-open",k==="fav"||k==="pulse"||k==="wrap"); /* 0711r: Wrap joins the 0711e paint gate — it swaps via __pwActive, not a pane class, so the pill haunted exactly one foreign tab */ /* 0711e: paint gate for .bk2top — navGo hides banners but not the Live list on these panes, so offsetParent stays truthy and the IO honestly reports "header below fold". Gate the paint, keep the IO sole writer. */
+      document.body.classList.toggle("tab-myrides",k==="myrides"); /* page-scoped body hook (0710t: the flag-yield rule retired with the header door) */
+      document.body.classList.toggle("pane-open",k==="myrides"||k==="pulse"||k==="wrap"); /* 0711r: Wrap joins the 0711e paint gate — it swaps via __pwActive, not a pane class, so the pill haunted exactly one foreign tab */ /* 0711e: paint gate for .bk2top — navGo hides banners but not the Live list on these panes, so offsetParent stays truthy and the IO honestly reports "header below fold". Gate the paint, keep the IO sole writer. */
     }
     function navGo(k){
-      if(k==="alerts"){openAlertsSheet();return;} /* 0710t: an overlay door in dock clothes — never becomes navTab; documented grammar exception (four siblings navigate, this one opens the sheet). Revert = this line + the dock button + nbadge CSS + the badge id. */
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
       navTab=k;
       if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");} /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
-      var pf=$id("pgFav"),pp=$id("pgPulse");
-      if(pf)pf.hidden=(k!=="fav");
+      var pm=$id("pgMyRides"),pp=$id("pgPulse");
+      if(pm)pm.hidden=(k!=="myrides");
       if(pp)pp.hidden=(k!=="pulse");
       if(k==="live"||k==="wrap"){
         setMode(k==="wrap");
       }else{
         window.__pwActive=true;
         if(typeof closeStatusPop==="function")closeStatusPop();
-        if(typeof closeAlertsSheet==="function")closeAlertsSheet();
         var banners=$id("banners"),sr=$id("searchResults"),wv=$id("wrapView"),cw=document.querySelector(".controls-wrap"),dnf=$id("dnFlow");
         if(banners)banners.hidden=true;
         if(dnf)dnf.hidden=true;
         if(sr)sr.hidden=true;
         if(cw)cw.style.display="none";
         if(wv)wv.hidden=true;
-        if(k==="fav"&&typeof renderFavPage==="function")renderFavPage(); /* 0710p: fresh paint on entry */
+        if(k==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage(); /* 0710p: fresh paint on entry */
         if(k==="pulse"&&typeof renderPulsePage==="function")renderPulsePage(); /* Phase 3a (0710s): fresh paint on entry */
       }
       navSync(k);
@@ -10348,9 +10432,11 @@ updateAlertBadge();if(!$("alertsPop").hasAttribute("hidden"))renderAlertList();r
       var its=document.querySelectorAll("#appNav .it");
       for(var i=0;i<its.length;i++){(function(b){b.addEventListener("click",function(){navGo(b.getAttribute("data-pg"));});})(its[i]);}
     })();
-    document.addEventListener("click",function(e){ /* 0710p: teaser tap routes to the Favorites page; delegated so re-renders keep it */
+    document.addEventListener("click",function(e){ /* 0719w: teaser + plan-door taps route via delegation; re-renders keep them */
       var t=e.target&&e.target.closest?e.target.closest(".fc-teaser"):null;
-      if(t)navGo("fav");});
+      if(t)navGo("myrides");
+      var d=e.target&&e.target.closest?e.target.closest(".mr-door"):null;
+      if(d)navGo("pulse");});
   })();
 
 
