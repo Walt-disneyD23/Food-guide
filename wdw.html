@@ -1817,6 +1817,8 @@
   .mr-prow .w{font:700 22px var(--font-display)}
   .mr-prow .w small{font:700 10px;color:var(--muted-2);letter-spacing:.06em}
   .mr-pulse .rest{font-size:var(--fs-meta);color:var(--muted);padding:10px 14px;border-top:1px solid var(--line)}
+  .mr-rl .hitF{color:var(--short);font-weight:700}
+  .mr-rl .hitS{color:var(--muted-2);font-weight:600}
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
 <script>
@@ -1866,7 +1868,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7017,25 +7019,36 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:(lv&&lv.status==="REFURBISHMENT")?["refurb","REFURB"]:["closed","CLOSED"];
     return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
   }
-  function mrRuleLine(id){
-    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off">rule off</div>';
+  function mrRuleLine(id,teach){
+    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off">'+(teach?'rule off · tap the bell to arm':'rule off')+'</div>';
+    if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
+      var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
+      if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="hitF">✓ Hit '+mrClk(alertState[id])+' · '+esc(ru.dir)+' '+ru.thresh+' — still '+(ru.dir==="below"?"under":"over")+' it</span></div>';
+      return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="hitS">Hit '+mrClk(alertState[id])+' · '+esc(ru.dir)+' '+ru.thresh+' · moved back out</span></div>';
+    }
     var o=overrides[id];
     if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><b>'+esc(o.dir)+' '+o.thresh+' · custom</b></div>';
     return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default">'+esc(settings.dir)+' '+settings.thresh+' · default</div>';
   }
-  function mrRowHTML(id){
+  function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
     return '<div class="mr-rw"><span class="st">★</span>'+
-      '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id)+'</div>'+
+      '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
       mrWaitHTML(lv)+
       '<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>'+
       '</div>';
   }
   function mrGroupsHTML(ids){
+    var taught=false; /* INSTRUCTION ONCE IS TEACHING, THRICE IS NOISE — the first unarmed row on the page carries the line */
     return PARK_DEF.map(function(p){
       var here=ids.filter(function(id){return roster[id].park===p.key;});
       if(!here.length)return "";
-      return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(mrRowHTML).join("")+'</div>';
+      var dn=here.filter(function(id){var lv=liveById[id];return lv&&lv.status==="DOWN";});
+      here=dn.concat(here.filter(function(id){var lv=liveById[id];return !(lv&&lv.status==="DOWN");})); /* down-first, stable — honest ordering, no control */
+      return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(function(id){
+        var teach=!taught&&!armed[id];if(teach)taught=true;
+        return mrRowHTML(id,teach);
+      }).join("")+'</div>';
     }).join("");
   }
   function mrShelfHTML(){
@@ -7175,7 +7188,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
     each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
     each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
-    each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});});
+    each(".mr-rl",function(l){l.addEventListener("click",function(){var k=l.getAttribute("data-rule");if(k==="default"||k==="custom")mrOpenSheet(l.getAttribute("data-id"));});});
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
     var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
     var dr=el.querySelector("#mrDir");if(dr)dr.addEventListener("change",function(){settings.dir=this.value;store.set("dir",this.value);resetAlerts();renderMyRidesPage();});
