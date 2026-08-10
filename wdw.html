@@ -1846,7 +1846,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7030,7 +7030,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star"};
   function mrLogHTML(){
-    var L=(store.get("alertLog",[])||[]).slice().reverse();
+    var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice().reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
     if(!L.length)return "";
     var lis=L.map(function(e){
       if(e.ev==="moved-home")return '<div class="li">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
