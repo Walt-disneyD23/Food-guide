@@ -254,6 +254,9 @@
   .ux-pks button,.ux-typ button{flex:1;border:0;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.08em;border-radius:999px;padding:8px 0;background:var(--card-2);color:var(--muted)}
   .ux-typ button{font-size:10.5px;padding:7px 0}
   .ux-pks button.on,.ux-typ button.on{background:rgba(79,70,229,.20);color:var(--accent)} /* 0718m: .13→.20, smaller seats read lighter (owner) · 0718l: the rail's own voice (pg-seg .on, owner pick B) — one selected-chip grammar across surfaces */
+  .cp-seg{margin:2px 0 6px} /* Cut 2 (0719u): the section's chips - the ux family, card furniture */
+  .cp-seg button.dim{opacity:.45}
+  #cpCard{scroll-margin-top:74px} /* the readout glide clears the sticky toolbar - the banner's own stop */
   .ux-rows{margin-top:4px}
   .ux-row{display:flex;align-items:center;gap:10px;padding:9px 0}
   .ux-row+.ux-row{border-top:1px solid var(--line)}
@@ -1790,7 +1793,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2741,6 +2744,28 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span>'+
       '<div class="tx"><b>'+esc(g.nm)+'</b> is <b class="rd-go">'+Math.round(g.delta)+' under</b> typical — the discount of the moment.</div></div>';
   }
+  function rdPulseClause(){ /* Cut 2 (0719u), owner picked C: the go-now clause grows into the
+     CROWD PULSE readout row. A resident readout, not an exception clause -
+     quiet is a valid state and it says so (the folded line is a readout,
+     never a mystery). Busy speaks the section's own top card, renderer-ready
+     channel - one number family, the row and the card beneath it can never
+     disagree. A DOOR: the \u266a scroll-glide pattern, section-sized. No base,
+     no clause, never a fake one (nobase/thin/closed render nothing - the
+     hero already carries the day-state). Copy is mock-draft - owner wordsmiths. */
+    if(typeof pfCallouts!=="function")return null;
+    var m=pfCallouts("all");
+    if(!m||m.state==="nobase"||m.state==="thin"||m.state==="closed")return null;
+    var tx;
+    if(m.state==="quiet")tx='<b>Crowd Pulse</b> \u2014 nothing unusual right now.';
+    else{
+      var n=m.cards.length+(m.moreN||0),c=m.cards[0];
+      var frag=c.kind==="go"?'<b>'+esc(rdClampNm(c.nm))+'</b> <b class="rd-go">'+c.delta+' under</b>'
+        :c.kind==="rough"?'<b>'+esc(rdClampNm(c.nm))+'</b> <b>'+c.delta+' over</b>'
+        :'<b>'+esc(rdClampNm(c.nm))+'</b> just reopened';
+      tx='<b>Crowd Pulse</b> \u2014 '+n+' callout'+(n===1?'':'s')+' \u00b7 '+frag;
+    }
+    return '<div class="rd-row rd-door" id="rdCpDoor"><span class="ic"><span class="dot" style="background:var(--accent-tint)"></span></span><div class="tx">'+tx+'</div><span class="chev">\u25b8</span></div>';
+  }
   function rdClampNm(n){ /* 0718u (parked 0718d): ♪ titles clamp word-safe at 30 + ellipsis; one token to retune */
     n=String(n||"");if(n.length<=30)return n;
     var c=n.slice(0,29).replace(/\s+\S*$/,"");return (c||n.slice(0,29))+"\u2026";
@@ -2964,7 +2989,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var dn=rdDownClause(rdDownState());
     var h=vdLine(vdVerdict()); /* L-32 Cut 4 (0718i): the verdict takes the read's top seat */
     h+=dn?dn.door+dn.list:"";
-    h+=[rdGoClause(),rdTonightClause(),rdLtgClause(),rdShowClause()].filter(Boolean).join(""); /* 0718n: the tonight seat, clause 4 · 0718s: lightning, clause 5 */
+    h+=[rdPulseClause(),rdTonightClause(),rdLtgClause(),rdShowClause()].filter(Boolean).join(""); /* 0718n: the tonight seat, clause 4 · 0718s: lightning, clause 5 */
     el.innerHTML=h;
     var door=document.getElementById("rdDnDoor"),list=document.getElementById("rdDnList");
     if(door&&list){
@@ -2990,6 +3015,42 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var d=document.getElementById("rdShowDoor");
     if(d)d.addEventListener("click",function(ev){ev.stopPropagation();
       var b=document.getElementById("upNextCard");if(b)b.scrollIntoView({behavior:"smooth",block:"center"});});
+    var cp=document.getElementById("rdCpDoor");
+    if(cp)cp.addEventListener("click",function(ev){ev.stopPropagation(); /* Cut 2 (0719u): the readout's glide - the \u266a pattern, section-sized */
+      var b2=document.getElementById("cpCard");if(b2)b2.scrollIntoView({behavior:"smooth",block:"start"});});
+  }
+  /* ===== CROWD PULSE - the LIVE section (Boards-And-Doors Cut 2, 0719u).
+     The Now room's organs re-seat whole: the callout feed + Hot lines, one
+     section after the last park hero, before Up Next - the day, the parks,
+     the pulse, what's playing, yours. The delight mandate: elevated (zero
+     taps + the hero readout door), never buried. The seg demotes from sticky
+     page chrome to card furniture (ux-pks family, owner picked chips-on); on
+     the transient no-base beat it rides the Hot lines head so scope never
+     vanishes. hlScope keeps its persisted life (the Jul-10 re-feel note
+     stands - session-only remains a two-line change). */
+  function renderCrowdPulse(){
+    var el=document.getElementById("cpCard");if(!el)return;
+    if(typeof pfEnsureBase==="function")pfEnsureBase();
+    var items=hlModel(hlScope,hlLens);
+    var seg='<div class="ux-pks cp-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
+      var closed=k!=="all"&&isOpenNow(parkInfo[k])===false;
+      return '<button type="button" class="'+(hlScope===k?'on':'')+(closed?' dim':'')+'" data-cpscope="'+esc(k)+'">'+(k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
+    var tabs='<span class="hl-tabs'+(items.length?'':' dim')+'">'+
+      '<button class="hl-tab'+(hlLens!=="short"?' on':'')+'" data-lens="long" type="button">\u25b2 Longest</button>'+
+      '<button class="hl-tab'+(hlLens==="short"?' on':'')+'" data-lens="short" type="button">\u25bd Shortest</button></span>';
+    var body=items.length?items.map(function(it){
+      return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
+        '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
+    }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
+    var feed=pfFeedHTML(hlScope,seg);
+    el.innerHTML=feed+'<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+(feed?'':seg)+body+'</div>';
+    el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
+      hlLens=b.getAttribute("data-lens");renderCrowdPulse();});});
+    el.querySelectorAll("[data-cpscope]").forEach(function(b){b.addEventListener("click",function(){ /* scoped binder - the 0719r lesson; hlScope keeps its name + persistence */
+      hlScope=b.getAttribute("data-cpscope");store.set("hlScope",hlScope);renderCrowdPulse();});});
+    el.querySelectorAll(".pf-shr").forEach(function(b){b.addEventListener("click",function(){ /* 0711f: story door */
+      var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
+    var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
   }
   /* ===== UP NEXT \u2014 the live-experience board (L-32 Cut 1, 0718e).
      One row per SHOW-kind entity = its next posted start today; the data
@@ -3125,6 +3186,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     });
     var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
     (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);var sb=ar&&ar.querySelector(".rb-share");if(sb)sb.addEventListener("click",function(ev){ev.stopPropagation();rbShareCard();});})(); /* door B (RB-Spec): the glyph is the only door; the hero stays a pure read (0718k) */ /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
+    var cpm=document.createElement("div");cpm.id="cpCard";elBanners.appendChild(cpm); /* Cut 2 (0719u): the CROWD PULSE section - after the last park hero, before Up Next: the day, the parks, the pulse, what's playing, yours */
     var uxm=document.createElement("div");uxm.id="upNextCard";elBanners.appendChild(uxm); /* L-32 Cut 1: the Up Next board — after the last park hero, before Favorites (the day, the parks, what’s playing, yours, everything) */
     var fav=document.createElement("div");fav.id="favCard";elBanners.appendChild(fav); /* Favorites card (Cut 2): below the last hero, hides with #banners for free */
   }
@@ -3333,17 +3395,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return {state:((res.length+shown.length)?"cards":(eligible===0?"thin":"quiet")), /* cards outrank thin: a reopen is observation, not baseline math */
       cards:res.concat(shown),moreN:earned-shown.length,days:pfBase.days};
   }
-  function pfFeedHTML(scope){
+  function pfFeedHTML(scope,seg){
+    seg=seg||""; /* Cut 2 (0719u): the section's park chips seat inside the card, after the head, in every carded state */
     var m=pfCallouts(scope);
     if(m.state==="nobase")return "";
     var clock=fmtClock(new Date().toISOString())||"";
-    var head='<div class="fc-head"><span class="sec-lab">Right now</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
-    if(m.state==="closed")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.</div></div>';
+    var head='<div class="fc-head"><span class="sec-lab">Crowd Pulse</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
+    if(m.state==="closed")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.</div></div>';
     var basis=m.moreN>0
       ?'<div class="pf-basis">Showing the biggest departures from typical · last '+m.days+' days</div>'
       :'<div class="pf-basis">Typical = this half-hour over the last '+m.days+' days'+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>';
-    if(m.state==="thin")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
-    if(m.state==="quiet")return '<div class="favcard pg-list">'+head+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
+    if(m.state==="thin")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
+    if(m.state==="quiet")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
     pfLastShare={cards:m.cards,days:m.days||0,moreN:m.moreN||0,scope:scope}; /* 0711g: the surface door reads scope+moreN too */
     var body=m.cards.map(function(c,ci){
       var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':'<span class="pf-kick re">Just reopened</span>';
@@ -3359,7 +3422,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var more=m.moreN>0?'<div class="pf-more">+ '+m.moreN+' more running unusual right now</div>':"";
     var shareBtn='<button class="pw-share pf-share-park" type="button">'+ /* 0711g: surface door — cards state only */
       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this pulse</button>';
-    return '<div class="favcard pg-list">'+head+body+more+basis+shareBtn+'</div>';
+    return '<div class="favcard pg-list">'+head+seg+body+more+basis+shareBtn+'</div>';
   }
   /* ===== 0711f: V1 share card pipeline — the story door's payload. emitCard-family plumbing
      (fonts.ready → toBlob → canShare/download), PW_CARD_ALT jewel palette, model/paint/emit
@@ -5806,8 +5869,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
      plan-landing-mock.html grammar on the shipped face: one hero promise, then
      calm self-explaining cards (A MENU FOR TOOLS, A BOARD FOR THE WORLD). Pure
      re-homing: every door lands on an existing room; zero engine changes. The
-     Crowd Pulse door is Cut-2-mortal - it retires the day Now's content
-     migrates to LIVE as the named Crowd Pulse section. */
+     Crowd Pulse door retired on schedule (Cut 2, 0719u) - Now's content
+     lives on LIVE as the named CROWD PULSE section. */
   var PL_TOOL={board:"Rope Drop Board",hours:"My park day",compare:"Compare rides"};
   function plPickHTML(){ /* the park rung - a per-park tool asks its one question, then lands you inside */
     var rows=PARK_DEF.map(function(p){
@@ -5822,7 +5885,6 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '<div class="sub">Every number below is the banked record \u2014 history, never a promise.</div></div>'+
       '<button class="rp-door rd-door pl-door" data-pl="trip" type="button"><span class="pl-ic">\ud83d\uddd3\ufe0f</span><span class="m"><span class="nm">Trip planner</span><span class="sub">Pick days like you\u2019ve been before \u2014 rank your months, map your dates.</span></span><span class="chev">\u203a</span></button>'+
       '<button class="rp-door rd-door pl-door" data-pl="hours" type="button"><span class="pl-ic">\ud83c\udfa2</span><span class="m"><span class="nm">My park day</span><span class="sub">Pick a park, pick your hours \u2014 morning or evening, built from your stars.</span></span><span class="chev">\u203a</span></button>'+
-      '<button class="rp-door rd-door pl-door" data-pl="now" type="button"><span class="pl-ic">\ud83d\udcca</span><span class="m"><span class="nm">Crowd Pulse</span><span class="sub">Callouts and hot lines \u2014 the parks right now.</span></span><span class="chev">\u203a</span></button>'+
       '<div class="pl-grid">'+
       '<button class="pl-cell" data-pl="board" type="button"><span class="nm">Rope Drop Board</span><span class="sub">Best bets for the first hour, park by park.</span><span class="go">Open \u203a</span></button>'+
       '<button class="pl-cell" data-pl="compare" type="button"><span class="nm">Compare rides</span><span class="sub">Pick 2 or 3 \u00b7 side by side on one scale.</span><span class="go">Open \u203a</span></button>'+
@@ -5840,30 +5902,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var el=$("pgPulse");if(!el)return;
     if(rpWin==="trip"&&!tpLensTrip())rpWin="all"; /* 0715d: one guard — the Trip-days window lives only while the session’s doored trip does (covers deletion + the rail’s fold) */
     pfEnsureBase(); /* 0711b: non-blocking; re-renders this page on arrival */
-    var items=hlModel(hlScope,hlLens);
-    var seg='<div class="pg-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
-      var closed=k!=="all"&&isOpenNow(parkInfo[k])===false;
-      return '<button class="'+(hlScope===k?'on':'')+(closed?' dim':'')+'" data-scope="'+esc(k)+'" type="button">'+
-        (k==="all"?"ALL":esc(BANNER_MONO[k]||k))+'</button>';}).join("")+'</div>';
-    var tabs='<span class="hl-tabs'+(items.length?'':' dim')+'">'+
-      '<button class="hl-tab'+(hlLens!=="short"?' on':'')+'" data-lens="long" type="button">\u25b2 Longest</button>'+
-      '<button class="hl-tab'+(hlLens==="short"?' on':'')+'" data-lens="short" type="button">\u25bd Shortest</button></span>';
-    var body=items.length?items.map(function(it){
-      return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
-        '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
-    }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
-    if(rpView==="plan"){el.innerHTML=plLandingHTML();} /* 0719r (Cut 1): the landing IS the tab's front door - the rail retires; rooms keep their ladders */
+        if(rpView==="plan"){el.innerHTML=plLandingHTML();} /* 0719r (Cut 1): the landing IS the tab's front door - the rail retires; rooms keep their ladders */
     else if(rpView==="trip"){rpEnsureDigs();tpEnsureSched();el.innerHTML=tpPageHTML();} /* L-29 (0714u): the trip rung - a new entry path feeds itself (Learning 45): digs + months ensured here */
     else if(rpView==="attr"){el.innerHTML=((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rpSub==="evening"?meEveningHTML():rpSub==="hours"?mdLandingHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter - they leave with it \u00b7 0713r: the ride rung \u00b7 0714a: the board rung */
-    else el.innerHTML=rpBackBtn("Plan","plx")+'<div class="rp-crumb">Plan \u203a <b>Crowd Pulse</b></div>'+'<div class="pg-stick">'+seg+'</div>'+ /* 0719r: Crowd Pulse keeps its whole room behind its door - Cut 2 walks it to LIVE */
-      pfFeedHTML(hlScope)+ /* 0711b: callout feed - owner picked feed-above-board (D1), G1 grammar */
-      '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
-    el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
-      hlLens=b.getAttribute("data-lens");renderPulsePage();});});
+    else{rpView="plan";el.innerHTML=plLandingHTML();} /* Cut 2 (0719u): the Now room retired to LIVE as the CROWD PULSE section - a stray view value lands home, never blank */
     el.querySelectorAll("[data-pl]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the landing's doors - each re-homes an existing room; resets mirror the retired rail's leave semantics */
       var v=b.getAttribute("data-pl");
       if(v==="trip"||v==="wswg"){rpView="trip";rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpOpen=null;tdReset();if(v==="wswg"&&!tfOpen)tfOpen=true;renderPulsePage();rpTop();return;} /* the funnel keeps its place if it was mid-screen (playground law) */
-      if(v==="now"){rpView="now";rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();return;}
       if(v==="census"){rpView="attr";tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();return;}
       rpDest=v;renderPulsePage();rpTop();});}); /* board / hours / compare - the park rung asks the one question the tool needs */
     el.querySelectorAll("[data-plpk]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the rung's answer lands you inside the tool (0714p: the door path feeds itself) */
@@ -5872,11 +5917,6 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       renderPulsePage();rpTop();});});
     el.querySelectorAll(".plx").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: every room's homeward pill - leaving folds the lens (0715d) and the trip selection, rail semantics preserved */
       rpView="plan";rpDest=null;rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();});});
-    el.querySelectorAll(".pg-seg:not(.rp-rail) button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the rail wears pg-seg clothing — keep the scope writer off it */
-      hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderPulsePage();});});
-    el.querySelectorAll(".pf-shr").forEach(function(b){b.addEventListener("click",function(){ /* 0711f: story door */
-      var c=pfLastShare.cards[+b.getAttribute("data-ci")];if(c)pfShareCallout(c,pfLastShare.days);});});
-    var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll("[data-tdshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tdShareCard(b.getAttribute("data-tdshare"));});});
     el.querySelectorAll("[data-tpshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tpShareCard();});}); /* 0717v: the trip door - same family, stopPropagation keeps the head card quiet */ /* 0717o: the day-card door - the tap must not toggle the day beneath it */
     el.querySelectorAll(".rp-park[data-rpk]").forEach(function(b){b.addEventListener("click",function(){
@@ -6080,6 +6120,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
     renderUpNext(); /* L-32 Cut 1: the board refreshes on any tab \u2014 the favPage rule */
     renderRead(); /* L-32 Cut 2: the read refreshes with the board — same rule */
+    renderCrowdPulse(); /* Cut 2 (0719u): the section refreshes on any tab - the favPage rule */
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
