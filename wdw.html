@@ -366,6 +366,14 @@
   .rp-park .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
   .rp-back{display:inline-flex;align-items:center;gap:7px;background:rgba(79,70,229,.12);border:0;border-radius:var(--r-pill);padding:10px 18px 10px 13px;font:600 var(--fs-title) var(--font-body);color:var(--accent);cursor:pointer;margin:2px 0 12px} .rp-back svg{width:16px;height:16px} /* 0714c rider: one return pill, app-wide — the Wrap chrome verbatim */
   .rp-crumb{font-size:var(--fs-meta);color:var(--muted-2);margin:0 2px 10px}
+  /* ===== 0719r - THE PLAN LANDING (Boards-And-Doors Cut 1) - mock-of-record grammar on the shipped face ===== */
+  .pl-door .sub{white-space:normal;overflow:visible;text-overflow:clip}
+  .pl-ic{flex:none;width:40px;height:40px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:17px}
+  .pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+  .pl-cell{display:flex;flex-direction:column;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:14px;box-shadow:var(--sh-soft);cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent}
+  .pl-cell .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title);letter-spacing:-.01em;color:var(--ink)}
+  .pl-cell .sub{font-size:var(--fs-meta);color:var(--muted);line-height:1.5;margin-top:4px}
+  .pl-cell .go{font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);color:var(--accent);margin-top:auto;padding-top:10px}
   .rp-crumb b{color:var(--muted);font-weight:600}
   .fc-w.rp-w{width:auto;text-align:right;font-size:var(--fs-lead)} .fc-w.rp-w small{display:inline;font-size:.6em;letter-spacing:0} .rp-go .fc-nm{font-size:var(--fs-body)} /* 0714b: the ride ladder slims — one door card per ride, the weight moves up-rung */
   /* ===== 0713r: the ride profile (rp-) — navy pwh hero + Wrap-vocabulary card
@@ -1782,7 +1790,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1864,7 +1872,7 @@ document.documentElement.classList.add("dark");}catch(e){}
 <nav id="appNav" class="appnav" aria-label="Sections">
   <button class="it on" data-pg="live" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg><span>LIVE</span></button>
   <button class="it" data-pg="fav" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/></svg><span>FAVORITES</span></button>
-  <button class="it" data-pg="pulse" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg><span>PULSE</span></button>
+  <button class="it" data-pg="pulse" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg><span>PLAN</span></button>
   <button class="it" data-pg="wrap" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="2.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21.5" y2="12"/><line x1="5.3" y1="5.3" x2="7" y2="7"/><line x1="17" y1="17" x2="18.7" y2="18.7"/><line x1="18.7" y1="5.3" x2="17" y2="7"/><line x1="7" y1="17" x2="5.3" y2="18.7"/></svg><span>WRAP</span></button>
   <button class="it" data-pg="alerts" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="21" x2="6" y2="3.5"/><path d="M6 4h11.5l-3 4 3 4H6"/></svg><span>ALERTS</span><span class="nbadge" id="navAlertBadge"></span></button>
 </nav>
@@ -3611,7 +3619,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      /baseline) — trails, transports and walkthroughs typed ATTRACTION upstream
      never post standby, so they never bank, so they never list. The Wrap's
      realRides() rule, browse-shaped: read-time, no curation list to maintain. ===== */
-  var rpView="now",rpPark=null,rpRide=null,rpSub=null,rcIds=null,rcPk=false,rcPkA=false,rcSel=null,rcFoc=null,rcLens="day"; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
+  var rpView="plan",rpDest=null,rpPark=null,rpRide=null,rpSub=null,rcIds=null,rcPk=false,rcPkA=false,rcSel=null,rcFoc=null,rcLens="day"; /* 0713r: the profile rung · 0714a: rpSub, the park’s planning rung (board) */
   function rpMed(a){var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;if(!n)return null;return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;}
   function rpTypical(rid){ /* median of bucket day-medians; buckets under 10 days hidden (the n-floor law); 6+ qualifying buckets required to claim a day shape */
     if(!pfBase||!pfBase.rides)return null;
@@ -3896,7 +3904,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"}; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
     var crumb=rpBackBtn(esc(rpPark||"parks"))+
-      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a <b>'+esc(r.name||"")+'</b></div>';
+      '<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark||"")+' \u203a <b>'+esc(r.name||"")+'</b></div>';
     var hero='<div class="rp-hero"><div class="eb">Ride profile \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(r.name||"")+(watch[rpRide]?' <span class="fs">\u2605</span>':'')+'</h2>'+
       '<div class="rc-hrow"><div class="sub">'+esc(rpPark||r.park||"")+'</div><button class="rc-pill" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4L3 8l4 4M3 8h13M17 20l4-4-4-4M21 16H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Compare</button></div>'+ /* 0714i: the compare door \u2014 quiet, in the hero */
@@ -3932,8 +3940,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!RP_CURATED){RP_CURATED={};for(var i=0;i<PARK_DEF.length;i++){var p=PARK_DEF[i],s2={},j;for(j=0;j<p.rides.length;j++)s2[normName(p.rides[j])]=1;RP_CURATED[p.key]=s2;}}
     var m=RP_CURATED[r.park];return !!(m&&m[normName(r.name)]);
   }
-  function rpBackBtn(lb){ /* 0714c rider: the app's one return pill \u2014 the Wrap arrow + wording */
-    return '<button class="rp-back" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+lb+'</button>';
+  function rpBackBtn(lb,x){ /* 0714c rider: the app's one return pill \u2014 the Wrap arrow + wording */
+    return '<button class="rp-back'+(x?" "+x:"")+'" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+lb+'</button>';
   }
   /* ===== 0714a \u00b7 THE ROPE DROP BOARD (L-28 cut 1) ============================
      Sections fall straight out of rpWinCurve's own fields \u2014 never-easy (front
@@ -3990,8 +3998,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function rdBoardHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
-    var crumb=rpBackBtn(esc(rpPark))+
-      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>Rope drop</b></div>';
+    var crumb=rpBackBtn(rpDest?"parks":esc(rpPark))+
+      '<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>Rope drop</b></div>';
     var loading=!rpDigs||!pfBase||!pfBase.rides,C=loading?null:rdClassify(rpWin);
     var hero='<div class="rp-hero"><div class="eb">Rope Drop Board \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+'</h2>'+
@@ -4083,7 +4091,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
     var stars=rmStars(),loading=!rpDigs||!pfBase||!pfBase.rides;
-    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My morning</b></div>';
+    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>My morning</b></div>';
     var hero='<div class="rp-hero"><div class="eb">My Morning \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
       '<div class="sub">Built from your starred rides\u2019 typical mornings.</div></div>';
@@ -4189,7 +4197,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
     var stars=rmStars(),loading=!rpDigs||!pfBase||!pfBase.rides;
-    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My evening</b></div>';
+    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>My evening</b></div>';
     var hero='<div class="rp-hero"><div class="eb">My Evening \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
       '<div class="sub">Built from your starred rides\u2019 typical evenings.</div></div>';
@@ -4221,7 +4229,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return crumb+hero+lens+plan+meLanesHTML(ord,win)+rmOuts(outs);
   }
   function mdLandingHTML(){
-    var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark)+' \u203a <b>My day</b></div>';
+    var crumb=rpBackBtn(rpDest?"parks":esc(rpPark))+'<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>My day</b></div>';
     var tn=meTonight(),cl=tn.cl;
     var _fact=(cl===null)?'Built':(tn.closed?('Closed for the night'+(tn.nx!==null?' \u00b7 back at '+rpClk(tn.nx)+' tomorrow':'')+' \u00b7 built'):('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 built'));
     var hero='<div class="tph md-tph"><div class="eb">'+esc(rpPark)+' \u00b7 My day</div>'+
@@ -4449,7 +4457,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(i=0;i<rcIds.length;i++){var rr=roster[rcIds[i]]||{};
       its.push({id:rcIds[i],nm:rr.name||"",cv:rpWinCurve(rcIds[i],rpWin),rel:rpRel(rcIds[i],rpWin)});}
     var crumb=rpBackBtn(org?esc(org.name||""):esc(rpPark||""))+ /* the pill names its destination \u2014 the profile or the park you came from (0714o) */
-      '<div class="rp-crumb">Pulse \u203a Attractions \u203a '+esc(rpPark||"")+' \u203a '+(org?esc(org.name||"")+' \u203a ':'')+'<b>Compare</b></div>';
+      '<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark||"")+' \u203a '+(org?esc(org.name||"")+' \u203a ':'')+'<b>Compare</b></div>';
     var chips='';
     for(i=0;i<its.length;i++){var f=rcFoc===its[i].id;
       chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span>'+rcNowChip(its[i].id)+'</button>'; /* 0714m: live wears the hero (N1, ratified) */}
@@ -4469,7 +4477,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
     var TLa=tpLensTrip(); /* 0715e: doored in, the ladder\u2019s bottom rung is the trip board \u2014 pill and crumb both say so */
     var crumb=(TLa?rpBackBtn(esc(TLa.n||"My trip")):rpBackBtn("parks")) /* 0714d: the pill names its destination */+
-      '<div class="rp-crumb">'+(TLa?'Pulse \u203a Trip \u203a '+esc(TLa.n||"My trip")+' \u203a <b>'+esc(rpPark)+'</b>':'Pulse \u203a Attractions \u203a <b>'+esc(rpPark)+'</b>')+'</div>';
+      '<div class="rp-crumb">'+(TLa?'Plan \u203a Trip \u203a '+esc(TLa.n||"My trip")+' \u203a <b>'+esc(rpPark)+'</b>':'Plan \u203a Parks \u203a <b>'+esc(rpPark)+'</b>')+'</div>';
     if(!pfBase||!pfBase.rides){ /* 0713q: honest pre-baseline state; pfEnsureBase re-renders on arrival */
       return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 28 days of banked waits \u2014 one moment.</div></div>';
     }
@@ -5517,7 +5525,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
-    var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Pulse \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
+    var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Plan \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
     var head=lad+'<div class="rpc tp-head"><button class="td-shg tp-shg" data-tpshare type="button" aria-label="Share this trip"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="tp-edit" type="button">Edit</button>'+
       '<div class="tp-eb">'+esc(tpEyebrow(t,today))+'</div>'+
       '<div class="tp-tt">'+esc(t.n||"My trip")+'</div>'+
@@ -5768,7 +5776,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return h;
   }
   function tpHomeHTML(){ /* 0717d: the planner's HOMEPAGE (owner pick A1) \u2014 the jewel hero + twin doors; both landing states wear it, and it moves whole to the dedicated tab in polish week */
-    return '<div class="tph"><div class="eb">Trip planner</div><h2>Pick days like you\u2019ve been before.</h2><div class="sub">Every number is the banked record \u2014 never a guess. Rank your months, see any week up close, and walk in with a plan.</div></div>'+
+    return rpBackBtn("Plan","plx")+'<div class="rp-crumb">Plan \u203a <b>Trip planner</b></div>'+'<div class="tph"><div class="eb">Trip planner</div><h2>Pick days like you\u2019ve been before.</h2><div class="sub">Every number is the banked record \u2014 never a guess. Rank your months, see any week up close, and walk in with a plan.</div></div>'+
       '<div class="tp-doors">'+
       '<div class="tp-door" data-tfdoor="1" role="button" tabindex="0"><i>When should we go?</i><p>The advisor ranks your months from the record.</p><span class="ch">Plan it \u203a</span></div>'+
       '<div class="tp-door" data-tfnew="1" role="button" tabindex="0"><i>I have dates</i><p>Map the days \u2014 the board fills the rest.</p><span class="ch">Start \u203a</span></div>'+
@@ -5793,6 +5801,34 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(tpSel){var t=tpCurTrip();if(t)return tpBoardHTML(t);}
     return tpListHTML(ts);
   }
+  /* ===== 0719r - THE PLAN LANDING (Boards-And-Doors Cut 1) ==================
+     plan-landing-mock.html grammar on the shipped face: one hero promise, then
+     calm self-explaining cards (A MENU FOR TOOLS, A BOARD FOR THE WORLD). Pure
+     re-homing: every door lands on an existing room; zero engine changes. The
+     Crowd Pulse door is Cut-2-mortal - it retires the day Now's content
+     migrates to LIVE as the named Crowd Pulse section. */
+  var PL_TOOL={board:"Rope Drop Board",hours:"My park day",compare:"Compare rides"};
+  function plPickHTML(){ /* the park rung - a per-park tool asks its one question, then lands you inside */
+    var rows=PARK_DEF.map(function(p){
+      return '<button class="rp-park rp-door" data-plpk="'+esc(p.key)+'" type="button"><span class="nm">'+esc(p.key)+'</span><span class="chev">\u203a</span></button>';}).join("");
+    return rpBackBtn("Plan","plx")+'<div class="rp-crumb">Plan \u203a <b>'+esc(PL_TOOL[rpDest]||"")+'</b></div>'+
+      '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">'+esc(PL_TOOL[rpDest]||"")+' \u00b7 pick your park</span></div>'+rows;
+  }
+  function plLandingHTML(){
+    if(rpDest)return plPickHTML();
+    return '<div class="tph pl-tph"><div class="eb">Walt Disney World \u00b7 Plan</div>'+
+      '<h2>Plan it like you\u2019ve been before.</h2>'+
+      '<div class="sub">Every number below is the banked record \u2014 history, never a promise.</div></div>'+
+      '<button class="rp-door rd-door pl-door" data-pl="trip" type="button"><span class="pl-ic">\ud83d\uddd3\ufe0f</span><span class="m"><span class="nm">Trip planner</span><span class="sub">Pick days like you\u2019ve been before \u2014 rank your months, map your dates.</span></span><span class="chev">\u203a</span></button>'+
+      '<button class="rp-door rd-door pl-door" data-pl="hours" type="button"><span class="pl-ic">\ud83c\udfa2</span><span class="m"><span class="nm">My park day</span><span class="sub">Pick a park, pick your hours \u2014 morning or evening, built from your stars.</span></span><span class="chev">\u203a</span></button>'+
+      '<button class="rp-door rd-door pl-door" data-pl="now" type="button"><span class="pl-ic">\ud83d\udcca</span><span class="m"><span class="nm">Crowd Pulse</span><span class="sub">Callouts and hot lines \u2014 the parks right now.</span></span><span class="chev">\u203a</span></button>'+
+      '<div class="pl-grid">'+
+      '<button class="pl-cell" data-pl="board" type="button"><span class="nm">Rope Drop Board</span><span class="sub">Best bets for the first hour, park by park.</span><span class="go">Open \u203a</span></button>'+
+      '<button class="pl-cell" data-pl="compare" type="button"><span class="nm">Compare rides</span><span class="sub">Pick 2 or 3 \u00b7 side by side on one scale.</span><span class="go">Open \u203a</span></button>'+
+      '<button class="pl-cell" data-pl="wswg" type="button"><span class="nm">When should we go?</span><span class="sub">The advisor ranks your months from the record.</span><span class="go">Open \u203a</span></button>'+
+      '<button class="pl-cell" data-pl="census" type="button"><span class="nm">Ride profiles</span><span class="sub">Every ride\u2019s typical day \u2014 the shape of the line.</span><span class="go">Open \u203a</span></button>'+
+      '</div>';
+  }
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
        away-guard so polls refresh it on any tab; navGo fresh-paints on entry. Page grammar
@@ -5804,11 +5840,6 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(rpWin==="trip"&&!tpLensTrip())rpWin="all"; /* 0715d: one guard — the Trip-days window lives only while the session’s doored trip does (covers deletion + the rail’s fold) */
     pfEnsureBase(); /* 0711b: non-blocking; re-renders this page on arrival */
     var items=hlModel(hlScope,hlLens);
-    var head='<div class="pg-h"><h3><span class="ps"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="20" x2="5" y2="12"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="19" y1="20" x2="19" y2="9"/></svg></span> Pulse</h3></div>';
-    var rail='<div class="pg-seg rp-rail">'+ /* 0713p: two pills — WEATHER joins when L-17 gives it content */
-      '<button class="'+(rpView==="now"?'on':'')+'" data-rpv="now" type="button">NOW</button>'+
-      '<button class="'+(rpView==="attr"?'on':'')+'" data-rpv="attr" type="button">ATTRACTIONS</button>'+
-      '<button class="'+(rpView==="trip"?'on':'')+'" data-rpv="trip" type="button">TRIP</button></div>'; /* L-29 (0714u): the trip pill — always present; empty = the creator */
     var seg='<div class="pg-seg">'+["all"].concat(PARK_DEF.map(function(p){return p.key;})).map(function(k){
       var closed=k!=="all"&&isOpenNow(parkInfo[k])===false;
       return '<button class="'+(hlScope===k?'on':'')+(closed?' dim':'')+'" data-scope="'+esc(k)+'" type="button">'+
@@ -5820,13 +5851,26 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
         '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
-    if(rpView==="trip"){rpEnsureDigs();tpEnsureSched();el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+tpPageHTML();} /* L-29 (0714u): the trip rung — a new entry path feeds itself (Learning 45): digs + months ensured here */
-    else if(rpView==="attr"){el.innerHTML='<div class="pg-stick">'+head+rail+'</div>'+((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rpSub==="evening"?meEveningHTML():rpSub==="hours"?mdLandingHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter — they leave with it · 0713r: the ride rung · 0714a: the board rung */
-    else el.innerHTML='<div class="pg-stick">'+head+rail+seg+'</div>'+
-      pfFeedHTML(hlScope)+ /* 0711b: callout feed — owner picked feed-above-board (D1), G1 grammar */
+    if(rpView==="plan"){el.innerHTML=plLandingHTML();} /* 0719r (Cut 1): the landing IS the tab's front door - the rail retires; rooms keep their ladders */
+    else if(rpView==="trip"){rpEnsureDigs();tpEnsureSched();el.innerHTML=tpPageHTML();} /* L-29 (0714u): the trip rung - a new entry path feeds itself (Learning 45): digs + months ensured here */
+    else if(rpView==="attr"){el.innerHTML=((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rpSub==="evening"?meEveningHTML():rpSub==="hours"?mdLandingHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter - they leave with it \u00b7 0713r: the ride rung \u00b7 0714a: the board rung */
+    else el.innerHTML=rpBackBtn("Plan","plx")+'<div class="rp-crumb">Plan \u203a <b>Crowd Pulse</b></div>'+'<div class="pg-stick">'+seg+'</div>'+ /* 0719r: Crowd Pulse keeps its whole room behind its door - Cut 2 walks it to LIVE */
+      pfFeedHTML(hlScope)+ /* 0711b: callout feed - owner picked feed-above-board (D1), G1 grammar */
       '<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+body+'</div>';
     el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
       hlLens=b.getAttribute("data-lens");renderPulsePage();});});
+    el.querySelectorAll("[data-pl]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the landing's doors - each re-homes an existing room; resets mirror the retired rail's leave semantics */
+      var v=b.getAttribute("data-pl");
+      if(v==="trip"||v==="wswg"){rpView="trip";rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpOpen=null;tdReset();if(v==="wswg"&&!tfOpen)tfOpen=true;renderPulsePage();rpTop();return;} /* the funnel keeps its place if it was mid-screen (playground law) */
+      if(v==="now"){rpView="now";rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();return;}
+      if(v==="census"){rpView="attr";tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();return;}
+      rpDest=v;renderPulsePage();rpTop();});}); /* board / hours / compare - the park rung asks the one question the tool needs */
+    el.querySelectorAll("[data-plpk]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the rung's answer lands you inside the tool (0714p: the door path feeds itself) */
+      rpPark=b.getAttribute("data-plpk");rpView="attr";rpRide=null;rcIds=null;rcFoc=null;tpEdit=false;tpNew=false;tpSel=null;tdReset();
+      if(rpDest==="compare"){rpSub=null;rcPk=true;rcSel=[];rcPkA=true;rpEnsureDigs();}else{rcPk=false;rpSub=(rpDest==="hours")?"hours":"board";}
+      renderPulsePage();rpTop();});});
+    el.querySelectorAll(".plx").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: every room's homeward pill - leaving folds the lens (0715d) and the trip selection, rail semantics preserved */
+      rpView="plan";rpDest=null;rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();});});
     el.querySelectorAll(".pg-seg:not(.rp-rail) button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the rail wears pg-seg clothing — keep the scope writer off it */
       hlScope=b.getAttribute("data-scope");store.set("hlScope",hlScope);renderPulsePage();});});
     el.querySelectorAll(".pf-shr").forEach(function(b){b.addEventListener("click",function(){ /* 0711f: story door */
@@ -5834,15 +5878,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var sp=el.querySelector(".pf-share-park");if(sp)sp.addEventListener("click",function(){pfSharePark();}); /* 0711g: surface door */
     el.querySelectorAll("[data-tdshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tdShareCard(b.getAttribute("data-tdshare"));});});
     el.querySelectorAll("[data-tpshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tpShareCard();});}); /* 0717v: the trip door - same family, stopPropagation keeps the head card quiet */ /* 0717o: the day-card door - the tap must not toggle the day beneath it */
-    el.querySelectorAll(".rp-rail button").forEach(function(b){b.addEventListener("click",function(){ /* 0713p: the reports rail */
-      var v=b.getAttribute("data-rpv");if(v===rpView)return;rpView=v;if(rpView!=="attr"){rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;}if(rpView!=="trip"){tpEdit=false;tpNew=false;tpSel=null;}else{tpOpen=null;}tdReset();renderPulsePage();rpTop();});});
-    el.querySelectorAll(".rp-park").forEach(function(b){b.addEventListener("click",function(){
+    el.querySelectorAll(".rp-park[data-rpk]").forEach(function(b){b.addEventListener("click",function(){
       rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
-    var rpb=el.querySelector(".rp-back");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub)rpSub=(rpSub==="morning"||rpSub==="evening")?"hours":null; /* 0719l: the hours rooms pop to their landing; the board keeps its park-page door */else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware · 0714a: the board rung */
+    var rpb=el.querySelector(".rp-back:not(.plx)");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub){if(rpSub==="morning"||rpSub==="evening")rpSub="hours";else if(rpDest){rpView="plan";rpSub=null;rpPark=null;rcPk=false;}else rpSub=null;} /* 0719l: the hours rooms pop to their landing; the board keeps its park-page door \u00b7 0719r: a rung-doored tool pops to its park pick */else if(rpDest){rpView="plan";rpPark=null;rcPk=false;rcFoc=null;} /* 0719r: the compare-doored park page pops to the rung */else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware \u00b7 0714a: the board rung \u00b7 0719r: plx pills carry their own homeward binder */
     el.querySelectorAll(".rp-go").forEach(function(b){b.addEventListener("click",function(){
       rpRide=b.getAttribute("data-rid");rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-rpsub]").forEach(function(b){b.addEventListener("click",function(){ /* 0714a: the planning doors */
-      rpSub=b.getAttribute("data-rpsub");renderPulsePage();rpTop();});});
+      rpSub=b.getAttribute("data-rpsub");if(rpSub==="board"||rpSub==="hours")rpDest=null;renderPulsePage();rpTop();});});
     var rcp=el.querySelector(".rc-pill");if(rcp)rcp.addEventListener("click",function(){ /* 0714i: the compare door opens the picker */
       rcPk=true;rcSel=[rpRide];rcPkA=true;renderPulsePage();});
     var rcd=el.querySelector("[data-rcopen]");if(rcd)rcd.addEventListener("click",function(){ /* 0714o: the landing door \u2014 unanchored picker, seats fill in pick order */
