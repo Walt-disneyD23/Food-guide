@@ -1790,7 +1790,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0719r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0719s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4473,7 +4473,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         var n=0,id;if(pfBase&&pfBase.rides){for(id in roster){if(roster[id].kind==="ride"&&roster[id].park===p.key&&pfBase.rides[id])n++;}}
         return '<button class="rp-park rp-door" data-rpk="'+esc(p.key)+'" type="button"><span class="nm">'+esc(p.key)+'</span><span class="ct">'+((pfBase&&pfBase.rides)?n+' rides':'\u2013')+'</span><span class="chev">\u203a</span></button>';
       }).join("");
-      return '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">Browse by park</span></div>'+rows;
+      return rpBackBtn("Plan","plx")+'<div class="rp-crumb">Plan \u203a <b>Ride profiles</b></div>'+ /* 0719s: the rail once sat above this room; retired, the browse root earns its own homeward rung (owner-caught dead end) */
+        '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">Browse by park</span></div>'+rows;
     }
     var TLa=tpLensTrip(); /* 0715e: doored in, the ladder\u2019s bottom rung is the trip board \u2014 pill and crumb both say so */
     var crumb=(TLa?rpBackBtn(esc(TLa.n||"My trip")):rpBackBtn("parks")) /* 0714d: the pill names its destination */+
