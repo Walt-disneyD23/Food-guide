@@ -1901,7 +1901,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6083,6 +6083,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
 
   function render(){
     /* renderDownFlow() retired — L-32 Cut 3 (0718h): the card-banner is absorbed into the hero’s down door. The function body and #dnFlow stay for one build as the reverse path; removal in a later sweep. */
+    if(typeof tyPollTick==="function")tyPollTick(); /* 0720i: the gate ticks on POLLS only - renders between polls never advance it (the 2-tick family) */
     if(typeof renderTodayPage==="function"&&!(navTab==="today"&&(tdPk||tdPin!==null)))renderTodayPage(); /* 0720b: TODAY drinks the same poll - waits and tiers refresh on any tab; an open sheet on-screen is never stomped */
     renderMyRidesPage(); /* Cut 3 (0719w): before the away-guard — polls refresh MY RIDES on any tab; the room skips repaints while its rule sheet is open */
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
@@ -7164,6 +7165,71 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return '<button class="ty-back" data-tyback type="button">\u2039 All parks</button>'+
       '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+'</div>';
   }
+  /* ===== 0720i (TY): THE CROSS-REFERENCE CUT \u2014 the earned promotion + the bell line.
+     Ratified \u00a78 + today-mock-3 (Aug 8): CONFIRMED (two polls \u2014 the 2-tick family) \u00b7
+     SINGULAR (one promotion, the deepest under) \u00b7 EXPLAINED (provenance on the row);
+     tick-1 restraint VISIBLE; demotion equally confirmed. Pins never move \u2014 the
+     promotion slides to the top of the UNPINNED order. DOWN rows speak the alerts'
+     truth: no return promised, ever; the \uD83D\uDD14 clause only when a rule is armed
+     (MY RIDES cooperating, never duplicating). The gate lives OUTSIDE the walker
+     (\u00a78's own build shape); its state is in-memory only \u2014 the rebreak precedent. */
+  var tyPollN=0,tyProPoll=-1,tyPro=null;
+  function tyPollTick(){tyPollN++;}
+  function tyGoCards(T,ds){ /* my board's eligible GO NOW cards \u2014 deepest under first, name-tiebroken */
+    if(typeof pfCallouts!=="function")return [];
+    var m=pfCallouts("all");if(!m||m.state!=="cards")return [];
+    var ids=tdRides(T,ds),set={},i;for(i=0;i<ids.length;i++)set[ids[i]]=1;
+    var dn=tdDoneList(T,ds),dset={};for(i=0;i<dn.length;i++)dset[dn[i]]=1;
+    var pns=tdPins(T,ds),out=[];
+    for(i=0;i<(m.cards||[]).length;i++){var c=m.cards[i];
+      if(c.kind!=="go"||!set[c.id]||dset[c.id]||pns[c.id])continue;
+      var lv=liveById[c.id];if(!lv||lv.status!=="OPERATING")continue;
+      out.push(c);}
+    out.sort(function(a,b){return (b.delta-a.delta)||String(a.nm).localeCompare(String(b.nm));});
+    return out;
+  }
+  function tyProEval(cards){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
+    if(tyProPoll===tyPollN)return tyPro;
+    tyProPoll=tyPollN;
+    var top=cards.length?cards[0]:null,i,still=null;
+    if(tyPro&&tyPro.on){ /* demotion equally confirmed \u2014 two clean polls send it home */
+      for(i=0;i<cards.length;i++)if(cards[i].id===tyPro.id){still=cards[i];break;}
+      if(still){tyPro.miss=0;tyPro.typ=still.typ;tyPro.delta=still.delta;}
+      else{tyPro.miss=(tyPro.miss||0)+1;if(tyPro.miss>=2)tyPro=null;}
+      return tyPro;
+    }
+    if(!top){tyPro=null;return null;}
+    if(tyPro&&tyPro.id===top.id){tyPro.ticks++;tyPro.typ=top.typ;tyPro.delta=top.delta;if(tyPro.ticks>=2){tyPro.on=true;tyPro.miss=0;}}
+    else tyPro={id:top.id,ticks:1,on:false,typ:top.typ,delta:top.delta};
+    return tyPro;
+  }
+  function tyCrossRefs(el,T,ds){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
+    var dn=tdDoneList(T,ds),dset={},i;for(i=0;i<dn.length;i++)dset[dn[i]]=1;
+    var pro=tyProEval(tyGoCards(T,ds));
+    var rows=[].slice.call(el.querySelectorAll(".td-sl")),proRow=null;
+    rows.forEach(function(row){
+      var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
+      if(!why||!rid)return;
+      if(lv&&lv.status==="DOWN"&&!dset[rid]){ /* clause-earned: the bell clause only when a rule is armed */
+        why.textContent="Down right now \u00b7 no return promised"+((typeof armed!=="undefined"&&armed&&armed[rid])?" \u2014 your \uD83D\uDD14 will ping when it\u2019s back.":".");
+        return;
+      }
+      if(pro&&pro.id===rid&&!dset[rid]&&!(lv&&lv.status==="DOWN")){
+        var mine=(tdLens==="mine"); /* 0720j: TWO ORDERS law (\u00a78) \u2014 live SPEAKS in both, it STEERS only in App's */
+        if(pro.on){
+          if(mine)why.textContent="Riding the moment \u2014 "+pro.delta+" under typical, two polls running \u00b7 your order stands.";
+          else{why.textContent="\u2191 Riding the moment \u2014 "+pro.delta+" under typical, two polls running. Back to its seat when the window closes.";proRow=row;}
+        }
+        else if(!mine)why.textContent=pro.delta+" under its typical \u2014 one poll so far; the order waits for the second."; /* tick-1 narrates the ORDER waiting \u2014 in My order no order waits, so it says nothing */
+      }
+    });
+    if(proRow){ /* SINGULAR: before the first digit-seated row; pins hold their anchors */
+      var first=null;
+      for(i=0;i<rows.length;i++){var sn=rows[i].querySelector(".td-sn");if(sn&&/^\d+$/.test(sn.textContent)){first=rows[i];break;}}
+      if(first&&first!==proRow)first.parentNode.insertBefore(proRow,first);
+      var k=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(sn){if(/^\d+$/.test(sn.textContent))sn.textContent=String(++k);});
+    }
+  }
   function tyChipOn(pk){ /* a chip takes the tap on the same terms as its landing row */
     var inf=parkInfo[pk]||null,open=isOpenNow(inf);
     if(open===true)return true;
@@ -7275,6 +7341,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var T=tr||tyT();
     var sec=tdSecHTML(T,tyDs()).replace('<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>',''); /* 0720f: the hop rows retire (dead doors, owner-caught) \u2014 hopping rides the All-parks pill; the section sheds its trip-facing tail label render-side, the walker untouched */
     el.innerHTML=tyHeadHTML(pk,tr,T)+tyChipsHTML(pk)+sec;
+    tyCrossRefs(el,T,tyDs());
     tyBindWalker(el,pk,tr);
   }
 
@@ -10790,7 +10857,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(wv)wv.hidden=true;
         if(k==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage(); /* 0710p: fresh paint on entry */
         if(k==="pulse"&&typeof renderPulsePage==="function")renderPulsePage(); /* Phase 3a (0710s): fresh paint on entry */
-        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();rpEnsureDigs();tyEnsureSched();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F) */
+        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();rpEnsureDigs();tyEnsureSched();if(typeof pfEnsureBase==="function")pfEnsureBase();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F); 0720i: the baseline warms for the earned promotion */
       }
       navSync(k);
       window.scrollTo(0,0);
