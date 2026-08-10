@@ -1896,7 +1896,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7055,7 +7055,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyT(){ /* the virtual trip — a pure read, never mutates the store */
     var o=tyRec(),ds=o.ds,c=o.park?tyCellRead(o,o.park):{rides:null,done:[],pins:{}};
-    var T={id:"__today",a:ds,b:ds,plan:{},rides:{},done:{},pins:{}}; /* 0720f: a one-DAY trip by birth \u2014 tpDays/tpWdSet walk a..b, and without them every curve died ("No banked tape" on every row, owner-caught on glass) */
+    var T={id:"__today",a:tpAddD(ds,-6),b:ds,plan:{},rides:{},done:{},pins:{}}; /* 0720g: a SEVEN-day arc ending today \u2014 THE FLOOR EATS THE THIN ARC: rpCurveOf seats a bucket only at n>=10, and the 42-day pool holds just 6 of any one weekday, so a one-day arc starved every curve ("No banked tape", twice owner-caught). Seven weekdays saturate tpWdSet, the arc pool reaches n=42, and the weekday-first law still wins whenever it qualifies (tdCurve tries wd before arc); the basis speaks its own ratified arc voice \u2014 "all seven weekdays" (0715f). Proven in-sandbox both directions before this cut. */
     if(o.park)T.plan[ds]=o.park;
     T.rides[ds]=c.rides||[];T.done[ds]=c.done||[];T.pins[ds]=c.pins||{};
     return T;
