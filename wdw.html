@@ -1785,6 +1785,13 @@
   .mr-grp .hd{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);padding:11px 14px 4px}
   .mr-rw{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
   .mr-rw:first-of-type{border-top:0}
+  .mr-rw.hitf{border-left:4px solid var(--short);padding-left:10px;background:rgba(21,163,107,.07)} /* 0720x (1B): the fresh hit lights its row - the house edge dialect */
+  html.dark .mr-rw.hitf{background:rgba(21,163,107,.12)}
+  .mr-cz{color:var(--accent);font-weight:600} /* the July sheet's own door word, restored */
+  .mr-sheet .fldlab{font:700 10.5px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:12px 2px 6px}
+  .mr-seg{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px}
+  .mr-seg b{flex:1;text-align:center;font:700 12px var(--font-display);color:var(--muted);padding:8px 0;border-radius:999px;cursor:pointer}
+  .mr-seg b.on{background:var(--accent-soft);color:var(--accent)}
   .mr-rw .st{color:var(--fav);font-size:15px;flex:none}
   .mr-rw .m{flex:1;min-width:0}
   .mr-rw .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
@@ -1910,7 +1917,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2511,7 +2518,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       /* the head switch (dnup): a STARRED ride that just went down fires the down ping and
          auto-arms its back-up — the switch is the only writer of the reopen channel now.
          Unarmed stars park under BACK UP on return (reopenOnly); armed rides re-arm quietly. */
-      if(settings.dnup&&watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;saveReopen();saveReopenOnly();fireDown(r);}
+      if(mrDnupFor(id)&&watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;saveReopen();saveReopenOnly();fireDown(r);}
       /* reopen: a watched, reopen-flagged ride that is now operating has come back.
          Park it either way (so it lands in Back up, not Watched) — even if the flip
          happened while the app was closed. Only re-fire the in-app ping if we
@@ -7468,6 +7475,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:(lv&&lv.status==="REFURBISHMENT")?["refurb","REFURB"]:["closed","CLOSED"];
     return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
   }
+  function mrDnupFor(id){ /* 0720x: per-ride down & back-up - default follows the master; On/Off pins the ride (the threshold grammar) */
+    var o=overrides[id];return (o&&o.dnup)?o.dnup==="on":!!settings.dnup;
+  }
   function mrRuleLine(id,teach){
     if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off">'+(teach?'rule off · tap the bell to arm':'rule off')+'</div>';
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
@@ -7476,12 +7486,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="hitS">Hit '+mrClk(alertState[id])+' · '+esc(ru.dir)+' '+ru.thresh+' · moved back out</span></div>';
     }
     var o=overrides[id];
-    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><b>'+esc(o.dir)+' '+o.thresh+' · custom</b></div>';
-    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default">'+esc(settings.dir)+' '+settings.thresh+' · default</div>';
+    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><b>'+esc(o.dir)+' '+o.thresh+' · custom</b> · <span class="mr-cz">Customize</span></div>';
+    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default">'+esc(settings.dir)+' '+settings.thresh+' · default · <span class="mr-cz">Customize</span></div>';
   }
   function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
-    return '<div class="mr-rw"><span class="st">★</span>'+
+    var hitF=!!(armed[id]&&alertState[id]&&ruleMet(id,lv)); /* 0720x (1B, owner-lettered): a fresh hit lights its whole row; stale keeps the quiet line */
+    return '<div class="mr-rw'+(hitF?' hitf':'')+'"><span class="st">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
       mrWaitHTML(lv)+
       '<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>'+
@@ -7545,6 +7556,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       '<div class="sent">notify when wait is '+
         '<select id="mrShDir"><option value="below">below</option><option value="above">above</option></select> '+
         '<select id="mrShThr"></select> <span>min</span></div>'+
+      '<div class="fldlab">Down &amp; back up</div><div class="mr-seg" id="mrShDn"><b data-dn="def">Default</b><b data-dn="on">On</b><b data-dn="off">Off</b></div>'+ /* 0720x: the per-ride switch, the threshold grammar */
       '<div class="acts"><button class="def" id="mrShDef" type="button">Use default rule</button><button class="save" id="mrShSave" type="button">Save</button></div></div>';
   }
   function mrPageHTML(){
@@ -7663,10 +7675,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);renderMyRidesPage();});
     var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
     var sc=el.querySelector("#mrScrim");if(sc)sc.addEventListener("click",mrCloseSheet);
+    var dnw2=el.querySelector("#mrShDn");if(dnw2)dnw2.addEventListener("click",function(ev2){var b=ev2.target&&ev2.target.closest?ev2.target.closest("[data-dn]"):null;if(!b)return;Array.prototype.forEach.call(dnw2.children,function(x){x.classList.remove("on");});b.classList.add("on");});
     var sd=el.querySelector("#mrShDef");if(sd)sd.addEventListener("click",function(){var id=mrShId;if(id){delete overrides[id];saveOverrides();delete alertState[id];saveAlertState();}mrCloseSheet();renderMyRidesPage();});
     var sv=el.querySelector("#mrShSave");if(sv)sv.addEventListener("click",function(){var id=mrShId;
       if(id){var d=el.querySelector("#mrShDir"),t=el.querySelector("#mrShThr");
-        overrides[id]={dir:(d?d.value:settings.dir),thresh:Math.max(5,+(t&&t.value)||settings.thresh)};saveOverrides();
+        var dnSel=(function(){var w2=el.querySelector("#mrShDn .on");return w2?w2.getAttribute("data-dn"):"def";})();
+        overrides[id]={dir:(d?d.value:settings.dir),thresh:Math.max(5,+(t&&t.value)||settings.thresh)};if(dnSel!=="def")overrides[id].dnup=dnSel;saveOverrides(); /* 0720x: Default stores nothing - the master keeps ruling */
         if(!armed[id]){armed[id]=true;saveArmed();}
         delete alertState[id];saveAlertState();updateAlertBadge();}
       mrCloseSheet();renderMyRidesPage();});
@@ -7678,6 +7692,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var o=overrides[id],d=el.querySelector("#mrShDir"),th=el.querySelector("#mrShThr");
     if(d)d.value=o?o.dir:settings.dir;
     if(th)th.innerHTML=threshOptions(o?o.thresh:settings.thresh);
+    var dnw=el.querySelector("#mrShDn");if(dnw){var dcur=(o&&o.dnup)||"def";Array.prototype.forEach.call(dnw.children,function(b){b.classList.toggle("on",b.getAttribute("data-dn")===dcur);});}
     var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
     if(sh)sh.classList.add("open");if(sc)sc.classList.add("open");
   }
@@ -7762,15 +7777,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      deployed Worker's /save expects. overrides may be empty -> send {}. */
   function collectRules(){
     return {
-      watch:(function(){var w={},k;for(k in armed)w[k]=true;if(settings.dnup)for(k in watch)w[k]=true;return w;})(),
+      watch:(function(){var w={},k;for(k in armed)w[k]=true;for(k in watch)if(mrDnupFor(k))w[k]=true;return w;})(),
       /* Cut 3 (0719w): the head switch is translated HERE for the v3.16 worker — no worker deploy.
          Scan set = armed rules ∪ (switch on ? every star : nothing). The wire's reopen/reopenOnly
          maps derive from the stars + the switch; the retired per-ride flags never cross again.
          Quiet stars still never leave the phone while the switch is off. The payload stays
          v3.16-shaped — dnup itself is a phone-side fact the worker never sees. */
       overrides:overrides||{},
-      reopen:(function(){var m={},k;if(settings.dnup)for(k in watch)m[k]=true;return m;})(),
-      reopenOnly:(function(){var m={},k;if(settings.dnup)for(k in watch)if(!armed[k])m[k]=true;return m;})(),
+      reopen:(function(){var m={},k;for(k in watch)if(mrDnupFor(k))m[k]=true;return m;})(),
+      reopenOnly:(function(){var m={},k;for(k in watch)if(mrDnupFor(k)&&!armed[k])m[k]=true;return m;})(),
       resolved:resolved||{},
       settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
