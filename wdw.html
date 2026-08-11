@@ -1743,7 +1743,7 @@
   .ty-sub .tw.c3,.ty-hl .n.c3{color:var(--long)}
   .ty-sub.closed{color:var(--muted-2)}
   .ty-eel{margin-top:4px;font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720s (C): the morning credential line */
-  .ty-eel .win{color:var(--accent);font-weight:700}
+  .ty-eel .win,.ty-sub .win{color:var(--accent);font-weight:700}
   .ty-pgl{margin-top:8px;font-size:var(--fs-body);color:var(--pwh-sub);font-weight:600}
   .ty-pgl .dn{color:var(--pwh-key)}
   .ty-pgl.win{color:var(--pwh-key)}
@@ -1907,7 +1907,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5241,6 +5241,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var allArc=(cvN>0&&arcN===cvN),mixed=(arcN>0&&arcN<cvN); /* 0715f: three window states — the basis frames each honestly */
       var pns=tdPins(t,ds),np=0;ids.forEach(function(rid){if(pns[rid])np++;});
       if(tdLeaveMin(tdLeave)!==null&&tdLeaveMin(tdLeave)<=sm)tdLeave="cl"; /* 0719h: a leave the start has passed snaps to Close on glass \u2014 never a silent clamp */
+      var swp2=(today&&typeof tySweep==="function")?tySweep(pk):null;if(swp2)hrs={o:hrs.o,c:swp2.c}; /* 0720u (S5b): the sweep extends the published close; trip days inert by construction */
       var lvM=tdLeaveMin(tdLeave),ct2=(lvM===null)?hrs.c:((hrs.c===null)?lvM:Math.min(hrs.c,lvM)),lvOn=(lvM!==null&&(hrs.c===null||ct2<hrs.c));
       var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,hrs.c),n=0,ridden="",rdn=0;
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
@@ -7052,6 +7053,22 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      banked for a later stage (owner note, Aug 10). */
   var tyHome=false; /* transient; 0720p (owner ruling, 10:35 PM): THE TAB LANDS HOME - navGo raises this on every TODAY entry, so the landing is the tab's front page; per-park plans + check-offs persist untouched. Originally: the back pill shows the landing without unsticking the pick */
   function tyDs(){return tpToday();}
+  function tySweep(pk){ /* 0720u (S5b): THE SWEEP IS THE CREDENTIAL CHECK - past the published close, a live-day window whose close is still ahead extends the plan. Fires AT the sweep; null before the close (windows are information only there). */
+    var inf=parkInfo[pk]||null;if(!inf||!inf.close||!inf.extras||!inf.extras.length)return null;
+    var now=rcEtMin(new Date()),c=rcEtMin(new Date(inf.close));
+    if(c<360)c+=1440;if(now<360)now+=1440; /* the after-midnight carry rides both sides */
+    if(now<=c)return null;
+    var best=null,i;
+    for(i=0;i<inf.extras.length;i++){var x=inf.extras[i];if(!x.close)continue;
+      var xc=rcEtMin(new Date(x.close));if(xc<360)xc+=1440;
+      if(xc>now&&xc>c&&(best===null||xc>best.c))best={c:xc,d:x.desc||""};}
+    if(!best)return null;
+    var ev=tyEvParty(pk),party=!!ev&&/ticketed/i.test(best.d);
+    best.word=party?"Party":(best.d||"Tonight\u2019s window");
+    best.em=party?((ev&&ev.em)||""):(/extended evening/i.test(best.d)?"\ud83c\udf19":"\ud83c\udf9f"); /* the party wears the event's own emblem - never a guessed costume */
+    best.cred=party?"Party guests":(/extended evening/i.test(best.d)?"Deluxe Resort guests":"Ticketed guests");
+    return best;
+  }
   function tyRaw(){var o=store.get("ppToday",null);return (o&&o.ds===tyDs())?o:null;}
   function tySave(o){o.ds=tyDs();store.set("ppToday",o);}
   function tyRec(){return tyRaw()||{ds:tyDs(),park:null,byPark:{}};}
@@ -7131,7 +7148,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tc=tr?(tr.level>=3?"c3":tr.level===2?"c2":"c1"):"";
       var tw=tr?'<b class="tw '+tc+'">'+tr.label+'</b> \u00b7 ':'';
       var pw=tyEvParty(pk)?' \u00b7 party':'';
-      body='<div class="ty-sub">'+tw+(cl?('till '+cl):'open now')+pw+' \u00b7 '+(dn>0?(dn+' down'):'all running')+'</div>';
+      var swp=tySweep(pk); /* 0720u (S5b): the row never claims a close that already passed - the window word leads */
+      body='<div class="ty-sub">'+(swp?((swp.em?swp.em+' ':'')+'<b class="win">'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)+' \u00b7 '+tw):(tw+(cl?('till '+cl):'open now')+pw+' \u00b7 '))+(dn>0?(dn+' down'):'all running')+'</div>';
       if(inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){ /* 0720s (C, owner-lettered): the morning credential - a row never claims open-for-all before the published open */
         var ee=null,ei;for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&ex.close&&Date.now()>=new Date(ex.open).getTime()&&Date.now()<=new Date(ex.close).getTime()){ee=ex;break;}}
         if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
@@ -7169,7 +7187,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var ds=tyDs(),inf=parkInfo[pk]||null,open=isOpenNow(inf);
     var d0=tpAsD(ds),wd=d0.toLocaleDateString("en-US",{weekday:"long"});
     var bits=[];
-    if(open===true&&inf.close)bits.push('Open till '+tyClkIso(inf.close));
+    var swp=tySweep(pk); /* 0720u (S5b): after the sweep, the sub's own close clause IS the window truth */
+    if(swp)bits.push((swp.em?swp.em+' ':'')+'<b>'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)); /* >=1440: midnight is 12 AM, never 12 PM (rpClk(1440) trap) */
+    else if(open===true&&inf.close)bits.push('Open till '+tyClkIso(inf.close));
     var t2=tyTier(pk);if(open===true&&t2)bits.push('crowd '+t2.label+' \u00b7 est.');
     var sub=bits.join(' \u00b7 ')||'';
     if(tr)sub+=(sub?' \u00b7 ':'')+'Walking your trip\u2019s plan \u2014 one day, one truth.';
@@ -7180,7 +7200,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       else pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 from now</div>';
     }
     var ev=tyEvParty(pk),pl='';
-    if(ev&&open===true&&inf.close)pl='<div class="ty-pline">'+(ev.em?ev.em+' ':'')+'<b>Party tonight</b> \u2014 day guests till '+tyClkIso(inf.close)+'; the plan runs to your close.</div>';
+    if(swp)pl='<div class="ty-pline">'+esc(swp.cred)+' \u2014 the plan runs to '+(swp.c===1440?'midnight':rpClk(swp.c>1440?swp.c-1440:swp.c))+'.</div>'; /* 0720u (S5b): anyone still inside passed the sweep - the credential named, the stale day-guest tense retired */
+    else if(ev&&open===true&&inf.close)pl='<div class="ty-pline">'+(ev.em?ev.em+' ':'')+'<b>Party tonight</b> \u2014 day guests till '+tyClkIso(inf.close)+'; the plan runs to your close.</div>';
     return '<button class="ty-back" data-tyback type="button">\u2039 All parks</button>'+
       '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+pl+'</div>';
   }
