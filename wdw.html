@@ -1793,6 +1793,14 @@
   .mr-seg b{flex:1;text-align:center;font:700 12px var(--font-display);color:var(--muted);padding:8px 0;border-radius:999px;cursor:pointer}
   .mr-seg b.on{background:var(--accent-soft);color:var(--accent)}
   .mr-fine{font-size:11px;color:var(--muted-2);line-height:1.5;margin:8px 2px 0} /* 0720y */
+  .mr-rl{margin-top:4px;cursor:pointer}
+  .mr-p{display:inline-flex;align-items:center;gap:4px;font:600 12px var(--font-body);padding:3px 11px;border-radius:99px} /* 0720z: the pill lane */
+  .mr-p.poff{background:var(--card-2);border:1px solid var(--line);color:var(--muted-2)}
+  .mr-p.prule{background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .mr-p.phit{background:var(--short);color:#fff;font-weight:700}
+  .mr-p.pstale{border:1.5px solid var(--short);color:var(--short);background:transparent;font-weight:700}
+  .mr-p .d{width:5px;height:5px;border-radius:99px;background:currentColor;opacity:.75}
+  .mr-teach{font-size:11px;color:var(--muted-2)}
   .mr-rw .st{color:var(--fav);font-size:15px;flex:none}
   .mr-rw .m{flex:1;min-width:0}
   .mr-rw .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
@@ -1918,7 +1926,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7479,16 +7487,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrDnupFor(id){ /* 0720x: per-ride down & back-up - default follows the master; On/Off pins the ride (the threshold grammar) */
     var o=overrides[id];return (o&&o.dnup)?o.dnup==="on":!!settings.dnup;
   }
-  function mrRuleLine(id,teach){
-    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off">'+(teach?'rule off · tap the bell to arm':'rule off')+'</div>';
+  function mrRuleLine(id,teach){ /* 0720z (owner-lettered, V3): THE PILL LANE - loudness by fill, never size. Grey whisper (off) / accent tint (armed) / solid mint (fresh hit, the only filled pill on the page) / mint outline (stale). Every pill is a door; the Customize word additionally labels the quiet armed rows. */
+    var cap=function(w){return w?w.charAt(0).toUpperCase()+w.slice(1):w;};
+    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off"><span class="mr-p poff">Rule off</span>'+(teach?'<span class="mr-teach"> · tap the bell to arm</span>':'')+'</div>';
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
       var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
-      if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="hitF">✓ Hit '+mrClk(alertState[id])+' · '+esc(ru.dir)+' '+ru.thresh+' — still '+(ru.dir==="below"?"under":"over")+' it</span></div>';
-      return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="hitS">Hit '+mrClk(alertState[id])+' · '+esc(ru.dir)+' '+ru.thresh+' · moved back out</span></div>';
+      if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="mr-p phit">✓ Hit '+mrClk(alertState[id])+' · '+(ru.dir==="below"?"under":"over")+' '+ru.thresh+'</span></div>';
+      return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+' · moved back out</span></div>';
     }
     var o=overrides[id];
-    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><b>'+esc(o.dir)+' '+o.thresh+' · custom</b> · <span class="mr-cz">Customize</span></div>';
-    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default">'+esc(settings.dir)+' '+settings.thresh+' · default · <span class="mr-cz">Customize</span></div>';
+    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+cap(esc(o.dir))+' '+o.thresh+' <i class="d"></i></span> <span class="mr-cz">Customize</span></div>';
+    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default"><span class="mr-p prule">'+cap(esc(settings.dir))+' '+settings.thresh+'</span> <span class="mr-cz">Customize</span></div>';
   }
   function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
@@ -7668,7 +7677,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
     each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
     each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
-    each(".mr-rl",function(l){l.addEventListener("click",function(){var k=l.getAttribute("data-rule");if(k==="default"||k==="custom")mrOpenSheet(l.getAttribute("data-id"));});});
+    each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});}); /* 0720z: every pill is a door - the hit-row gap dies for all states; the off pill is a second arm path (Save arms) */
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
     var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
     var dr=el.querySelector("#mrDir");if(dr)dr.addEventListener("change",function(){settings.dir=this.value;store.set("dir",this.value);resetAlerts();renderMyRidesPage();});
