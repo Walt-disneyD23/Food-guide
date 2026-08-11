@@ -1905,7 +1905,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2486,6 +2486,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   /* ---- alerts ---- */
   function ruleFor(id){var o=overrides[id];return o?{dir:o.dir,thresh:o.thresh}:{dir:settings.dir,thresh:settings.thresh};}
   function checkAlerts(){
+    alertsDayGate(); /* 0720r: the roll gates every poll - midnight while open */
     Object.keys(roster).forEach(function(id){
       var r=roster[id];if(r.kind!=="ride")return;var lv=liveById[id];if(!lv)return;
       var cur=lv.status;
@@ -7554,6 +7555,23 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     reopen={};reopenOnly={};saveReopen();saveReopenOnly();
     store.set("mrMig",1);
   })();
+  /* 0720r (owner-ratified B): THE DAY ROLL CLEARS THE SHELF - alerts are
+     day-creatures; stars and thresholds persist. A missing or stale day stamp
+     = the roll (the legacy first boot clears the standing orphan species
+     whole). resolved rides the roll too: the hand-clear law governs the day,
+     the day roll clears the shelf. Breadcrumbed when it takes anything. */
+  function alertsDayGate(){
+    var ds=tpToday();
+    if(store.get("alertsDs",null)===ds)return;
+    var had=Object.keys(armed).length+Object.keys(alertState).length+Object.keys(reopen).length+Object.keys(reopenOnly).length;
+    armed={};alertState={};reopen={};reopenOnly={};
+    saveArmed();saveAlertState();saveReopen();saveReopenOnly();
+    had+=Object.keys(resolved).length;resolved={};saveResolved(); /* 0720r: the shelf op - one-line reversible */
+    store.set("alertsDs",ds);
+    if(had)logAlertEv("sys","day-roll-clear");
+    updateAlertBadge();
+  }
+  alertsDayGate(); /* boot: the roll gates the first paint */
   function renderMyRidesPage(){
     var el=$("pgMyRides");if(!el)return;
     if(mrShId)return; /* the rule sheet is open — polls wait; save/close repaints */
