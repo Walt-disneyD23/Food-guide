@@ -990,16 +990,16 @@
      Phase 1 of the bottom-nav arc: Live/Wrap route through setMode; Favorites/Pulse are shell panes
      until their phases land. Always visible; sheets (z88+) slide over it and their scrims dim it;
      content clearance lives in the body padding; .bk2top and .toasts are lifted above it. ===== */
-  .appnav{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:25;
+  .appnav{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:25;
     display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
-    padding:7px;box-shadow:var(--shadow)}
-  .appnav .it{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
-    border:0;background:none;color:var(--muted-2);padding:9px 13px;border-radius:var(--r-pill);font-family:var(--font-body)}
-  .appnav .it svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-  .appnav .it span{font:700 9px var(--font-body);letter-spacing:.05em;white-space:nowrap}
+    padding:8px;box-shadow:var(--shadow)}
+  .appnav .it{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
+    border:0;background:none;color:var(--muted-2);padding:11px 0;border-radius:var(--r-pill);font-family:var(--font-body);flex:1}
+  .appnav .it svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .appnav .it span{font:700 10px var(--font-body);letter-spacing:.05em;white-space:nowrap}
   .appnav .it.on{background:var(--accent-soft);color:var(--accent)}
   .appnav .it{position:relative} /* 0710t: badge anchor for the dock door */
-  .appnav .it .nbadge{position:absolute;top:2px;right:8px;min-width:16px;height:16px;border-radius:var(--r-pill);background:var(--packed);color:#fff;font:800 9.5px var(--font-body);display:none;place-items:center;padding:0 4px}
+  .appnav .it .nbadge{position:absolute;top:2px;right:50%;margin-right:-26px;min-width:16px;height:16px;border-radius:var(--r-pill);background:var(--packed);color:#fff;font:800 9.5px var(--font-body);display:none;place-items:center;padding:0 4px}
   .appnav .it .nbadge.show{display:grid}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
   /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
@@ -1905,7 +1905,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7045,7 +7045,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      never bleeds one park's record into another; hop back and your morning's
      checks still stand. Party attendees running past the day-guest close =
      banked for a later stage (owner note, Aug 10). */
-  var tyHome=false; /* transient: the back pill shows the landing without unsticking the pick */
+  var tyHome=false; /* transient; 0720p (owner ruling, 10:35 PM): THE TAB LANDS HOME - navGo raises this on every TODAY entry, so the landing is the tab's front page; per-park plans + check-offs persist untouched. Originally: the back pill shows the landing without unsticking the pick */
   function tyDs(){return tpToday();}
   function tyRaw(){var o=store.get("ppToday",null);return (o&&o.ds===tyDs())?o:null;}
   function tySave(o){o.ds=tyDs();store.set("ppToday",o);}
@@ -7147,7 +7147,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var wd=d0.toLocaleDateString("en-US",{weekday:"long"}),md=tpMD(ds);
     var nOpen=0;PARK_DEF.forEach(function(p){if(isOpenNow(parkInfo[p.key])===true)nOpen++;});
     var rt=tyTier("all");
-    var sub=(nOpen?('<b>'+nOpen+' of 4 parks open</b>'+(rt?(' \u00b7 resort crowd <b>'+rt.label+'</b> \u00b7 est.'):'')+' \u00b7 '):'')+'your pick sticks for the day \u2014 hop any time.';
+    var sub=(nOpen?('<b>'+nOpen+' of 4 parks open</b>'+(rt?(' \u00b7 resort crowd <b>'+rt.label+'</b> \u00b7 est.'):'')+' \u00b7 '):'')+'each park keeps today\u2019s plan \u2014 hop any time.';
     var pline='',pi2;
     for(pi2=0;pi2<TP_PARKS.length;pi2++){var ev2=tyEvParty(TP_PARKS[pi2][0]);
       if(ev2){var inf2=parkInfo[TP_PARKS[pi2][0]]||null,cl2=inf2?tyClkIso(inf2.close):null;
@@ -10881,7 +10881,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(wv)wv.hidden=true;
         if(k==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage(); /* 0710p: fresh paint on entry */
         if(k==="pulse"&&typeof renderPulsePage==="function")renderPulsePage(); /* Phase 3a (0710s): fresh paint on entry */
-        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();rpEnsureDigs();tyEnsureSched();if(typeof pfEnsureBase==="function")pfEnsureBase();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F); 0720i: the baseline warms for the earned promotion */
+        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();tyHome=true;rpEnsureDigs();tyEnsureSched();if(typeof pfEnsureBase==="function")pfEnsureBase();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F); 0720i: the baseline warms for the earned promotion */
       }
       navSync(k);
       window.scrollTo(0,0);
