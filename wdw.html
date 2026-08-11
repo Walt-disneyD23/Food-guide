@@ -992,7 +992,8 @@
      content clearance lives in the body padding; .bk2top and .toasts are lifted above it. ===== */
   .appnav{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:25;
     display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
-    padding:8px;box-shadow:var(--shadow)}
+    padding:8px;box-shadow:var(--shadow);transition:transform .2s ease,opacity .2s ease}
+  .appnav.kbhide{transform:translateY(calc(100% + 20px + env(safe-area-inset-bottom)));opacity:0;pointer-events:none} /* 0721a: the bar yields to the keyboard */
   .appnav .it{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
     border:0;background:none;color:var(--muted-2);padding:11px 0;border-radius:var(--r-pill);font-family:var(--font-body);flex:1}
   .appnav .it svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -1926,7 +1927,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6192,6 +6193,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     },{passive:true});
     var se=$("search");
     if(se)se.addEventListener("blur",function(){setTimeout(repin,60);});
+    var nv=document.getElementById("appNav"),kb=false;
+    function kbJudge(){ /* 0721a: THE BAR YIELDS TO THE KEYBOARD - while typing, fixed chrome floats against the layout viewport; the bar steps aside and returns on the settle (the repin below catches the landing) */
+      if(!nv||!window.visualViewport)return;
+      var open=(window.innerHeight-window.visualViewport.height)>140;
+      if(open!==kb){kb=open;nv.classList.toggle("kbhide",open);}
+    }
+    if(window.visualViewport)window.visualViewport.addEventListener("resize",kbJudge);
+    kbJudge();
     if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){
       var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA");
       if(!typing&&window.visualViewport.scale===1)setTimeout(repin,60);
