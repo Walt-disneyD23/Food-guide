@@ -1929,7 +1929,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2112,7 +2112,9 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   Object.keys(overrides).forEach(function(id){if(overrides[id]&&typeof overrides[id].thresh==="number")overrides[id].thresh=snap5(overrides[id].thresh);});
   var reopen=store.get("reopen",{})||{};   /* ride ids flagged "tell me when it's back up" */
   var reopenOnly=store.get("reopenOnly",{})||{}; /* watches created solely by "Notify me" -> auto-remove after the back-up alert */
-  var resolved=store.get("resolved",{})||{};     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
+  var resolved=store.get("resolved",{})||{};
+  var clearedTs=store.get("clearedTs",{})||{}; /* 0721g: id -> ms the user dismissed a reopen; A CLEAR IS AN ANSWER and the merge honors it */
+  function saveClearedTs(){store.set("clearedTs",clearedTs);}     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
 var armed=store.get("armed",{})||{};           /* id -> standing threshold rule (the bell). Stars (watch) are quiet unless armed. */
 function saveArmed(){store.set("armed",armed);}
 /* every ride the badge cares about: armed thresholds, reopen flags, transients, parked back-ups */
@@ -7675,7 +7677,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var had=Object.keys(armed).length+Object.keys(alertState).length+Object.keys(reopen).length+Object.keys(reopenOnly).length;
     armed={};alertState={};reopen={};reopenOnly={};
     saveArmed();saveAlertState();saveReopen();saveReopenOnly();
-    had+=Object.keys(resolved).length;resolved={};saveResolved(); /* 0720r: the shelf op - one-line reversible */
+    had+=Object.keys(resolved).length;resolved={};saveResolved();clearedTs={};saveClearedTs(); /* 0721g: tombstones are news too - they die at the roll */ /* 0720r: the shelf op - one-line reversible */
     store.set("alertsDs",ds);
     if(had)logAlertEv("sys","day-roll-clear");
     updateAlertBadge();
@@ -7692,8 +7694,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function each(sel,fn){Array.prototype.forEach.call(el.querySelectorAll(sel),fn);}
     each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
     each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
-    each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
-    var ca=el.querySelector("[data-clrall]");if(ca)ca.addEventListener("click",function(ev){ev.stopPropagation();resolved={};saveResolved();updateAlertBadge();renderMyRidesPage();}); /* 0721e: still the hand-clear law - just the whole hand */
+    each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");clearedTs[id]=Date.now();saveClearedTs();delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
+    var ca=el.querySelector("[data-clrall]");if(ca)ca.addEventListener("click",function(ev){ev.stopPropagation();var nw=Date.now();Object.keys(resolved).forEach(function(id){clearedTs[id]=nw;});saveClearedTs();resolved={};saveResolved();updateAlertBadge();renderMyRidesPage();}); /* 0721e: still the hand-clear law - just the whole hand */
     each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});}); /* 0720z: every pill is a door - the hit-row gap dies for all states; the off pill is a second arm path (Save arms) */
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
     var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
@@ -7881,6 +7883,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var changed=false;
     Object.keys(wr||{}).forEach(function(id){
       var wt=+wr[id];if(!wt||wt<1e12)return;   /* skip legacy boolean flags / non-timestamps */
+      if(clearedTs[id]&&wt<=clearedTs[id])return; /* 0721g: the user dismissed this reopen - only NEWER news re-parks */
       if(!resolved[id]||wt<resolved[id]){resolved[id]=wt;changed=true;}
     });
     if(changed){saveResolved();updateAlertBadge();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
