@@ -1905,7 +1905,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7025,10 +7025,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAtt
 var adding=!watch[id];var r=roster[id],nm=r?r.name:"Ride";
 if(adding){watch[id]=true;store.set("watch",Object.keys(watch));pushToast("★ Starred",nm+" — seated in MY RIDES");render();return;}
 var hadRule=!!armed[id];
+var hadWatch=!!reopen[id],hadOnly=!!reopenOnly[id]; /* 0720q (S4x): capture before the take - a transition-born watch cannot re-derive itself */
 delete watch[id];store.set("watch",Object.keys(watch));
 if(hadRule){delete armed[id];delete alertState[id];saveArmed();saveAlertState();logAlertEv(id,"unstar-disarmed");}
+if(hadWatch||hadOnly){delete reopen[id];delete reopenOnly[id];saveReopen();saveReopenOnly();logAlertEv(id,"unstar-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
 updateAlertBadge();
-pushUndoToast("Removed from My Rides",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(hadRule){armed[id]=true;saveArmed();}updateAlertBadge();pushToast("★ Back in My Rides",nm);render();});
+pushUndoToast("Removed from My Rides",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(hadRule){armed[id]=true;saveArmed();}if(hadWatch){reopen[id]=true;saveReopen();}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Back in My Rides",nm);render();});
 render();});});
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
@@ -7533,6 +7535,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       pushToast("🔔 Alert set",nm+" — "+rl);
     }else{
       delete armed[id];delete alertState[id];saveAlertState();saveArmed();
+      if(reopen[id]||reopenOnly[id]){delete reopen[id];delete reopenOnly[id];saveReopen();saveReopenOnly();logAlertEv(id,"bell-off-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
       pushToast("Alert removed",nm+" — still starred");
     }
     updateAlertBadge();render();
