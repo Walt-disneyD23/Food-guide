@@ -1927,7 +1927,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7153,7 +7153,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return T;
   }
   function tyMut(fn){var o=tyRec();fn(o);tySave(o);}
-  function tyPick(pk){tyMut(function(o){o.park=pk;var c=tyCell(o,pk);if(c.rides===null)c.rides=tySeed(pk);});tyHome=false;}
+  function tyPick(pk){tyMut(function(o){o.park=pk;var c=tyCell(o,pk);if(c.rides===null){var sd=tySeed(pk);if(sd.length)c.rides=sd;}});tyHome=false;} /* 0721d: THE EMPTY SEED NEVER PLANTS - a seed that finds no stars leaves the cell unseeded so the next visit asks again; a user's emptying (tyRemove to zero) writes a real [] and stands */
   function tyMark(rid){tyMut(function(o){var c=tyCell(o,o.park);if(c.done.indexOf(rid)<0)c.done.push(rid);});}
   function tyUnmark(rid){tyMut(function(o){var c=tyCell(o,o.park),i=c.done.indexOf(rid);if(i>=0)c.done.splice(i,1);});}
   function tyAdd(rid){tyMut(function(o){var c=tyCell(o,o.park);if(!c.rides)c.rides=[];if(c.rides.indexOf(rid)<0)c.rides.push(rid);});}
