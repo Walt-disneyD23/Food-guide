@@ -1744,6 +1744,9 @@
   .ty-sub.closed{color:var(--muted-2)}
   .ty-eel{margin-top:4px;font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720s (C): the morning credential line */
   .ty-eel .win,.ty-sub .win{color:var(--accent);font-weight:700}
+  .ty-donec{margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card);box-shadow:var(--sh-soft);font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720w: the done card */
+  .ty-wrapdoor{display:flex;align-items:center;gap:6px;margin-top:10px;padding:10px 14px;border:0;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);font:700 var(--fs-small) var(--font-display);cursor:pointer}
+  .ty-wrapdoor .chev{font-size:var(--fs-title)}
   .ty-pgl{margin-top:8px;font-size:var(--fs-body);color:var(--pwh-sub);font-weight:600}
   .ty-pgl .dn{color:var(--pwh-key)}
   .ty-pgl.win{color:var(--pwh-key)}
@@ -1907,7 +1910,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7087,6 +7090,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     best.cred=/extended evening/i.test(best.d)?"Deluxe Resort guests":"Ticketed guests";
     return best;
   }
+  function tyDone(pk){ /* 0720w (S3 Cut 3): the day is truly done - past the close with no live window (the sweep already yielded) */
+    var inf=parkInfo[pk]||null;if(!inf||!inf.close)return false;
+    var now=rcEtMin(new Date()),c=rcEtMin(new Date(inf.close));
+    if(c<360)c+=1440;if(now<360)now+=1440;
+    return now>c&&!tySweep(pk);
+  }
   function tyClkPair(a,b){ /* "9 to 11 PM" - the shared meridiem folds */
     var ra=rpClk(a>=1440?a-1440:a),rb=rpClk(b>=1440?b-1440:b);
     if(ra.slice(-2)===rb.slice(-2))ra=ra.slice(0,-3);
@@ -7211,15 +7220,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var ds=tyDs(),inf=parkInfo[pk]||null,open=isOpenNow(inf);
     var d0=tpAsD(ds),wd=d0.toLocaleDateString("en-US",{weekday:"long"});
     var bits=[];
-    var swp=tySweep(pk); /* 0720u (S5b): after the sweep, the sub's own close clause IS the window truth */
-    if(swp)bits.push((swp.em?swp.em+' ':'')+'<b>'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)); /* >=1440: midnight is 12 AM, never 12 PM (rpClk(1440) trap) */
+    var dn0=tyDone(pk),swp=dn0?null:tySweep(pk); /* 0720u (S5b): after the sweep, the sub's own close clause IS the window truth \u00b7 0720w: the done day speaks past tense */
+    if(dn0&&inf&&inf.close)bits.push('Gates closed at '+tyClkIso(inf.close));
+    else if(swp)bits.push((swp.em?swp.em+' ':'')+'<b>'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)); /* >=1440: midnight is 12 AM, never 12 PM (rpClk(1440) trap) */
     else if(open===true&&inf.close)bits.push('Open till '+tyClkIso(inf.close));
+    else if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime())bits.push('Gates at '+tyClkIso(inf.open)); /* 0720w: the pre-open edge - the board still plans, the head names the gates */
     var t2=tyTier(pk);if(open===true&&t2)bits.push('crowd '+t2.label+' \u00b7 est.');
     var sub=bits.join(' \u00b7 ')||'';
     if(tr)sub+=(sub?' \u00b7 ':'')+'Walking your trip\u2019s plan \u2014 one day, one truth.';
     var nD=tdDoneList(T,ds).length,nT=tdRides(T,ds).length,togo=nT-nD,pg='';
     if(nT>0){
       if(nD>=nT)pg='<div class="ty-pgl win">All ridden. Victory lap?</div>';
+      else if(dn0)pg=(nD>0)?'<div class="ty-pgl">'+nD+' ridden today <span class="dn">\u00b7 '+togo+' for next time</span></div>':''; /* 0720w: past tense on the done day - never a stale "to go" */
       else if(nD>0)pg='<div class="ty-pgl">'+togo+' to go <span class="dn">\u00b7 '+nD+' ridden</span></div>';
       else pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 from now</div>';
     }
@@ -7419,6 +7431,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var pk=o.park,tr=tyBridge(pk);
     var T=tr||tyT();
     var sec=tdSecHTML(T,tyDs()).replace('<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>',''); /* 0720f: the hop rows retire (dead doors, owner-caught) \u2014 hopping rides the All-parks pill; the section sheds its trip-facing tail label render-side, the walker untouched */
+    if(tyDone(pk)){ /* 0720w (S3 Cut 3): tense flips whole - the done day points at Wrap, never a stale plan; the walker stays untouched, the composition declines to seat it */
+      el.innerHTML=tyHeadHTML(pk,tr,T)+tyChipsHTML(pk)+
+        '<div class="ty-donec">That\u2019s the day at '+esc(pk)+'.<button class="ty-wrapdoor" data-tywrap type="button">See today\u2019s Wrap <span class="chev">\u203a</span></button></div>';
+      tyBindWalker(el,pk,tr);
+      var wd0=el.querySelector("[data-tywrap]");if(wd0)wd0.addEventListener("click",function(){navGo("wrap");});
+      return;
+    }
     el.innerHTML=tyHeadHTML(pk,tr,T)+tyChipsHTML(pk)+sec;
     tyCrossRefs(el,T,tyDs());
     tyBindWalker(el,pk,tr);
