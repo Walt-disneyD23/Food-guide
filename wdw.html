@@ -1735,13 +1735,15 @@
   .ty-prow.long{border-left-color:var(--long)}
   .ty-prow.off{opacity:.62;cursor:default}
   .ty-prow .m{flex:1;min-width:0}
-  .ty-prow .nm{font:700 var(--fs-lead) var(--font-display);letter-spacing:-.01em}
+  .ty-prow .nm{font:700 19px var(--font-display);letter-spacing:-.01em} /* 0720s: the landing has the room - owner call, live-retunable */
   .ty-sub{color:var(--muted);font-size:var(--fs-meta);margin-top:3px;line-height:1.5}
   .ty-sub .tw{font-weight:700}
   .ty-sub .tw.c1,.ty-hl .n.c1{color:var(--short)}
   .ty-sub .tw.c2,.ty-hl .n.c2{color:var(--medium)}
   .ty-sub .tw.c3,.ty-hl .n.c3{color:var(--long)}
   .ty-sub.closed{color:var(--muted-2)}
+  .ty-eel{margin-top:4px;font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720s (C): the morning credential line */
+  .ty-eel .win{color:var(--accent);font-weight:700}
   .ty-pgl{margin-top:8px;font-size:var(--fs-body);color:var(--pwh-sub);font-weight:600}
   .ty-pgl .dn{color:var(--pwh-key)}
   .ty-pgl.win{color:var(--pwh-key)}
@@ -1754,7 +1756,7 @@
   .ty-pline b{color:var(--pwh-sub);font-weight:600}
   .pg-today .td-nvr>span:first-child{font:700 var(--fs-wait) var(--font-display);letter-spacing:-.01em} /* ONE WAIT-SIZE FAMILY (§8: live pills) — TODAY-scoped; the trip room retrofits in Arc B */
   .pg-today .td-nvr .td-dnc,.pg-today .td-nvr .td-clc{font:700 var(--fs-small) var(--font-body)} /* status words sit a step smaller so numbers stay the loudest truth */
-  .ty-hl{flex:none;text-align:right}
+  .ty-hl{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end} /* 0720s: mock-6's stat stack restored - number over its label */
   .ty-hl .n{font:700 22px var(--font-display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
   .ty-hl .n small{font-size:11px}
   .ty-hl .l{font-size:var(--fs-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin-top:1px}
@@ -1905,7 +1907,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7130,6 +7132,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tw=tr?'<b class="tw '+tc+'">'+tr.label+'</b> \u00b7 ':'';
       var pw=tyEvParty(pk)?' \u00b7 party':'';
       body='<div class="ty-sub">'+tw+(cl?('till '+cl):'open now')+pw+' \u00b7 '+(dn>0?(dn+' down'):'all running')+'</div>';
+      if(inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){ /* 0720s (C, owner-lettered): the morning credential - a row never claims open-for-all before the published open */
+        var ee=null,ei;for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&ex.close&&Date.now()>=new Date(ex.open).getTime()&&Date.now()<=new Date(ex.close).getTime()){ee=ex;break;}}
+        if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
+      }
       if(av!==null)hl='<span class="ty-hl"><span class="n '+tc+'">'+av+'<small>m</small></span><span class="l">Headliners</span></span>';
     }else if(open===false){
       var nowMs=Date.now();
