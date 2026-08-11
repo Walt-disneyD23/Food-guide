@@ -1929,7 +1929,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3246,8 +3246,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function bannerStats(key){
     var waits=scopeWaits(key);
     var avg=waits.length?Math.round(waits.reduce(function(a,b){return a+b;},0)/waits.length):null;
-    var isOpen=key==="all"?PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])===true;})
-                          :isOpenNow(parkInfo[key]);
+    var isOpen=key==="all"?PARK_DEF.some(function(p){var oA=isOpenNow(parkInfo[p.key]);return oA===true||(oA===false&&typeof tySweep==="function"&&!!tySweep(p.key));})
+                          :(function(){var oP=isOpenNow(parkInfo[key]);return (oP===false&&typeof tySweep==="function"&&tySweep(key))?true:oP;})(); /* 0721i: the last unlit door rides the sweep */
+    var sweepWord=null;if(key!=="all"&&isOpen===true&&isOpenNow(parkInfo[key])===false&&typeof tySweep==="function"){var swH=tySweep(key);if(swH)sweepWord=(swH.em?swH.em+" ":"")+swH.word;} /* the hero states its measure - the window word, never an Open costume */
     var busiest=null,headAvg=null;
     if(key==="all"){
       var best=-1,hsum=0,hn=0;
@@ -3262,7 +3263,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var longCount=waits.filter(function(w){return w>45;}).length; /* 45+ band, matches Wait Spread bar */
     return {avg:avg,headAvg:headAvg,open:waits.length,min:waits.length?Math.min.apply(null,waits):null,
       max:waits.length?Math.max.apply(null,waits):null,
-      isOpen:isOpen,crowd:crowdLevel(avg,waits.length,longCount,key),busiest:busiest};
+      isOpen:isOpen,sweepWord:sweepWord||null,crowd:crowdLevel(avg,waits.length,longCount,key),busiest:busiest};
   }
 
   /* ===== Favorites card (Cut 2, 0709g). ★ collects; this is where the collection lives.
@@ -6134,7 +6135,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         /* A+ banner (0709a): live subline + labeled stat; aura color = s.crowd.color (one source), tier class = ramp depth only */
         var pc=key==="all"?bkParksClause():null; /* 0718p: the hero states its measure */
         var sub=[pc?'<i class="dot'+(pc.open?' open':'')+'"></i><span class="cwu">'+esc(pc.txt)+'</span>' /* 0718q: the clause wears its no-break unit — 0709r, wrap BEFORE a clause, never inside (on-glass catch) */
-                   :'<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?"Open":s.isOpen===false?"Closed":"Live")];
+                   :'<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?(s.sweepWord||"Open"):s.isOpen===false?"Closed":"Live")];
         if(s.open)sub.push('<span class="cwu">'+s.open+' rides open</span>'); /* 0709s law, noun restored (0718p) */
         if(s.crowd)sub.push('<span class="cwu">crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est.</span>'); /* 0709r: est. never separates from the value it qualifies \u2014 narrow viewports wrap BEFORE the clause, never inside */
         el.sub.innerHTML=pc?sub[0]+'<br>'+sub.slice(1).join('<span class="sep">\u00b7</span>')
