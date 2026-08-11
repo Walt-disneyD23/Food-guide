@@ -1907,7 +1907,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7069,6 +7069,29 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     best.cred=party?"Party guests":(/extended evening/i.test(best.d)?"Deluxe Resort guests":"Ticketed guests");
     return best;
   }
+  function tyTonight(pk){ /* 0720v (S5b Cut 2): tonight's credentialed window, before the sweep - information only */
+    var inf=parkInfo[pk]||null;if(!inf||!inf.close||!inf.extras||!inf.extras.length)return null;
+    var now=rcEtMin(new Date()),c=rcEtMin(new Date(inf.close));
+    if(c<360)c+=1440;if(now<360)now+=1440;
+    if(now>c)return null; /* past the close the sweep speaks */
+    var ev=tyEvParty(pk),best=null,i;
+    for(i=0;i<inf.extras.length;i++){var x=inf.extras[i];if(!x.open||!x.close)continue;
+      var xc=rcEtMin(new Date(x.close));if(xc<360)xc+=1440;
+      if(xc<=c)continue; /* morning windows never speak the evening line */
+      if(ev&&/ticketed/i.test(x.desc||""))continue; /* the party's voices are its own */
+      var xo=rcEtMin(new Date(x.open));if(xo<360&&xc>1440)xo+=1440;
+      if(best===null||xc>best.c)best={o:xo,c:xc,d:x.desc||""};}
+    if(!best)return null;
+    best.word=best.d||"Tonight\u2019s window";
+    best.em=/extended evening/i.test(best.d)?"\ud83c\udf19":"\ud83c\udf9f";
+    best.cred=/extended evening/i.test(best.d)?"Deluxe Resort guests":"Ticketed guests";
+    return best;
+  }
+  function tyClkPair(a,b){ /* "9 to 11 PM" - the shared meridiem folds */
+    var ra=rpClk(a>=1440?a-1440:a),rb=rpClk(b>=1440?b-1440:b);
+    if(ra.slice(-2)===rb.slice(-2))ra=ra.slice(0,-3);
+    return ra+' to '+rb;
+  }
   function tyRaw(){var o=store.get("ppToday",null);return (o&&o.ds===tyDs())?o:null;}
   function tySave(o){o.ds=tyDs();store.set("ppToday",o);}
   function tyRec(){return tyRaw()||{ds:tyDs(),park:null,byPark:{}};}
@@ -7154,6 +7177,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var ee=null,ei;for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&ex.close&&Date.now()>=new Date(ex.open).getTime()&&Date.now()<=new Date(ex.close).getTime()){ee=ex;break;}}
         if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
       }
+      else if(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()){var tn3=tyTonight(pk);if(tn3)body+='<div class="ty-eel">'+(tn3.em?tn3.em+' ':'')+'<b class="win">'+esc(tn3.word)+' tonight</b> \u2014 '+tyClkPair(tn3.o,tn3.c)+'.</div>';} /* 0720v (S5b Cut 2): the evening sibling of the morning credential line - one grammar, both ends of the day */
       if(av!==null)hl='<span class="ty-hl"><span class="n '+tc+'">'+av+'<small>m</small></span><span class="l">Headliners</span></span>';
     }else if(open===false){
       var nowMs=Date.now();
@@ -7202,6 +7226,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var ev=tyEvParty(pk),pl='';
     if(swp)pl='<div class="ty-pline">'+esc(swp.cred)+' \u2014 the plan runs to '+(swp.c===1440?'midnight':rpClk(swp.c>1440?swp.c-1440:swp.c))+'.</div>'; /* 0720u (S5b): anyone still inside passed the sweep - the credential named, the stale day-guest tense retired */
     else if(ev&&open===true&&inf.close)pl='<div class="ty-pline">'+(ev.em?ev.em+' ':'')+'<b>Party tonight</b> \u2014 day guests till '+tyClkIso(inf.close)+'; the plan runs to your close.</div>';
+    else if(open===true){var tn2=tyTonight(pk);if(tn2)pl='<div class="ty-pline">'+(tn2.em?tn2.em+' ':'')+'<b>'+esc(tn2.word)+' tonight</b> \u2014 '+tyClkPair(tn2.o,tn2.c)+', '+esc(tn2.cred)+'.</div>';} /* 0720v (S5b Cut 2): the info line announces the night - credential named, the plan holds the published close */
     return '<button class="ty-back" data-tyback type="button">\u2039 All parks</button>'+
       '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+pl+'</div>';
   }
