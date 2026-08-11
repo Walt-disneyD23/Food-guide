@@ -1929,7 +1929,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3237,7 +3237,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      status now states its measure: N of 4 parks open (green dot while any
      park is open); "Parks closed" only when every park is KNOWN closed;
      "Live" while schedules are unknown — never a closed claim on a guess. */
-    var st=PARK_DEF.map(function(p){return isOpenNow(parkInfo[p.key]);});
+    var st=PARK_DEF.map(function(p){var o9=isOpenNow(parkInfo[p.key]);return (o9===false&&typeof tySweep==="function"&&tySweep(p.key))?true:o9;}); /* 0721h: the sweep holds this door too */
     var n=st.filter(function(v){return v===true;}).length;
     if(n>0)return {open:true,txt:n+" of "+PARK_DEF.length+" parks open"};
     if(st.every(function(v){return v===false;}))return {open:false,txt:"Parks closed"};
@@ -7206,6 +7206,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyHeadAvg(pk){return headlinerAvgFrom(scopeWaits(pk));} /* ONE NUMBER FAMILY \u2014 the same top-8 rank LIVE speaks */
   function tyRowHTML(p){ /* pick-state C park row \u2014 mock-6 of record: colored tier word \u00b7 till X \u00b7 down count; the headliner avg holds the right edge; est. speaks once, in the hero's resort line */
     var pk=p.key,inf=parkInfo[pk]||null,open=isOpenNow(inf);
+    if(open===false&&typeof tySweep==="function"&&tySweep(pk))open=true; /* 0721h: THE SWEEP HOLDS EVERY DOOR - a ticketed window keeps the card alive; the open face's window-word lead speaks the party voice */
     var edge="",body="",tap=true,hl="";
     if(open===true){
       var tr=tyTier(pk),cl=tyClkIso(inf.close),dn=tyDown(pk),av=tyHeadAvg(pk);
@@ -7238,7 +7239,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyLandingHTML(){
     var ds=tyDs(),d0=tpAsD(ds);
     var wd=d0.toLocaleDateString("en-US",{weekday:"long"}),md=tpMD(ds);
-    var nOpen=0;PARK_DEF.forEach(function(p){if(isOpenNow(parkInfo[p.key])===true)nOpen++;});
+    var nOpen=0;PARK_DEF.forEach(function(p){var o8=isOpenNow(parkInfo[p.key]);if(o8===true||(o8===false&&typeof tySweep==="function"&&tySweep(p.key)))nOpen++;}); /* 0721h */
     var rt=tyTier("all");
     var sub=(nOpen?('<b>'+nOpen+' of 4 parks open</b>'+(rt?(' \u00b7 resort crowd <b>'+rt.label+'</b> \u00b7 est.'):'')+' \u00b7 '):'')+'each park keeps today\u2019s plan \u2014 hop any time.';
     var pline='',pi2;
