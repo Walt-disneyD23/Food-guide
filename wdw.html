@@ -1901,7 +1901,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720j</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2388,7 +2388,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     setPulse("ok");
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
-      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();render();checkAlerts(); /* 0718s: the lightning feed rides the poll, self-throttled */
+      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts(); /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
     }).catch(function(err){
       setPulse("error");
@@ -3315,7 +3315,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(pfBase||(pfBaseAt&&Date.now()-pfBaseAt<10*60*1000))return;
     pfBaseAt=Date.now();
     fetch(PUSH.WORKER_URL+"/baseline").then(function(r){return r.json();}).then(function(j){
-      if(j&&j.ok&&j.rides){pfBase={days:j.days,rides:j.rides};renderPulsePage();if(typeof renderMyRidesPage==="function")renderMyRidesPage();}
+      if(j&&j.ok&&j.rides){pfBase={days:j.days,rides:j.rides};renderPulsePage();if(typeof renderMyRidesPage==="function")renderMyRidesPage();if(typeof render==="function")render(); /* 0720l: the LIVE feed listens too */}
     }).catch(function(){});
   }
   function pfTick(){ /* once per poll, beside checkAlerts(): park-wide down→up, 2-poll-confirmed runs */
@@ -3745,7 +3745,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     rpDigsAt=Date.now();
     var days=RP_POOL; /* 0713x: the pool is the lens's own — the baseline keeps its 28 for the Pulse callouts */
     fetch(PUSH.WORKER_URL+"/digest?from="+rpDate(days)+"&to="+rpDate(1)).then(function(r){return r.json();}).then(function(j){
-      if(j&&j.ok&&j.digests){rpDigs=j.digests;if((rpView==="attr"&&(rpRide||rpSub||rcPk||rcIds))||rpView==="trip")renderPulsePage(); /* 0714p: the picker and compare listen for digest arrival too */}
+      if(j&&j.ok&&j.digests){rpDigs=j.digests;if((rpView==="attr"&&(rpRide||rpSub||rcPk||rcIds))||rpView==="trip")renderPulsePage(); /* 0714p: the picker and compare listen for digest arrival too */if(navTab==="today"&&typeof renderTodayPage==="function")renderTodayPage(); /* 0720k: TODAY listens too */}
     })["catch"](function(){});
   }
   function rpRel(rid,pre){ /* per-day reliability from the digest atoms, 0713v window-scoped. A day counts
@@ -6083,7 +6083,6 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
 
   function render(){
     /* renderDownFlow() retired — L-32 Cut 3 (0718h): the card-banner is absorbed into the hero’s down door. The function body and #dnFlow stay for one build as the reverse path; removal in a later sweep. */
-    if(typeof tyPollTick==="function")tyPollTick(); /* 0720i: the gate ticks on POLLS only - renders between polls never advance it (the 2-tick family) */
     if(typeof renderTodayPage==="function"&&!(navTab==="today"&&(tdPk||tdPin!==null)))renderTodayPage(); /* 0720b: TODAY drinks the same poll - waits and tiers refresh on any tab; an open sheet on-screen is never stomped */
     renderMyRidesPage(); /* Cut 3 (0719w): before the away-guard — polls refresh MY RIDES on any tab; the room skips repaints while its rule sheet is open */
     renderPulsePage(); /* Phase 3a (0710s): same rule — the Pulse page refreshes on any tab */
