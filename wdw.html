@@ -1750,6 +1750,10 @@
   .ty-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:var(--r-pill);padding:8px 0;cursor:pointer}
   .ty-chip.on{background:var(--accent-soft);color:var(--accent)}
   .ty-chip.dim{opacity:.45;cursor:default}
+  .ty-pline{margin-top:11px;padding-top:10px;border-top:1px solid var(--pwh-line);font-size:var(--fs-meta);color:var(--pwh-muted);line-height:1.5}
+  .ty-pline b{color:var(--pwh-sub);font-weight:600}
+  .pg-today .td-nvr>span:first-child{font:700 var(--fs-wait) var(--font-display);letter-spacing:-.01em} /* ONE WAIT-SIZE FAMILY (§8: live pills) — TODAY-scoped; the trip room retrofits in Arc B */
+  .pg-today .td-nvr .td-dnc,.pg-today .td-nvr .td-clc{font:700 var(--fs-small) var(--font-body)} /* status words sit a step smaller so numbers stay the loudest truth */
   .ty-hl{flex:none;text-align:right}
   .ty-hl .n{font:700 22px var(--font-display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
   .ty-hl .n small{font-size:11px}
@@ -1901,7 +1905,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0720l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0720n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3745,7 +3749,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     rpDigsAt=Date.now();
     var days=RP_POOL; /* 0713x: the pool is the lens's own — the baseline keeps its 28 for the Pulse callouts */
     fetch(PUSH.WORKER_URL+"/digest?from="+rpDate(days)+"&to="+rpDate(1)).then(function(r){return r.json();}).then(function(j){
-      if(j&&j.ok&&j.digests){rpDigs=j.digests;if((rpView==="attr"&&(rpRide||rpSub||rcPk||rcIds))||rpView==="trip")renderPulsePage(); /* 0714p: the picker and compare listen for digest arrival too */if(navTab==="today"&&typeof renderTodayPage==="function")renderTodayPage(); /* 0720k: TODAY listens too */}
+      if(j&&j.ok&&j.digests){rpDigs=j.digests;if((rpView==="attr"&&(rpRide||rpSub||rcPk||rcIds))||rpView==="trip")renderPulsePage(); /* 0714p: the picker and compare listen for digest arrival too */if(navTab==="today"&&typeof renderTodayPage==="function"&&!(tdPk||tdPin!==null))renderTodayPage(); /* 0720k: TODAY listens too; 0720m: sheet-guarded */}
     })["catch"](function(){});
   }
   function rpRel(rid,pre){ /* per-day reliability from the digest atoms, 0713v window-scoped. A day counts
@@ -7099,7 +7103,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           else if(s.openingTime&&s.closingTime)e.ext.push({k:tpExtK(s),o:s.openingTime});});
         out[p.short]=m;
       }).catch(function(){});
-    })).then(function(){tpSched[mo]=out;if(navTab==="today")renderTodayPage();});
+    })).then(function(){tpSched[mo]=out;if(navTab==="today"&&!(tdPk||tdPin!==null))renderTodayPage();}); /* 0720m: the sheet guard rides every door - an arrival never eats an open picker's caret */
   }
   function tyClkIso(iso){if(!iso)return null;var m=rcEtMin(new Date(iso));return isNaN(m)?null:rpClk(m);}
   function tyTier(pk){ /* the LIVE crowd family — an ESTIMATE, always labeled est. */
@@ -7121,7 +7125,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       edge=tr?(tr.level>=3?"long":tr.level===2?"medium":"short"):"";
       var tc=tr?(tr.level>=3?"c3":tr.level===2?"c2":"c1"):"";
       var tw=tr?'<b class="tw '+tc+'">'+tr.label+'</b> \u00b7 ':'';
-      body='<div class="ty-sub">'+tw+(cl?('till '+cl):'open now')+' \u00b7 '+(dn>0?(dn+' down'):'all running')+'</div>';
+      var pw=tyEvParty(pk)?' \u00b7 party':'';
+      body='<div class="ty-sub">'+tw+(cl?('till '+cl):'open now')+pw+' \u00b7 '+(dn>0?(dn+' down'):'all running')+'</div>';
       if(av!==null)hl='<span class="ty-hl"><span class="n '+tc+'">'+av+'<small>m</small></span><span class="l">Headliners</span></span>';
     }else if(open===false){
       var nowMs=Date.now();
@@ -7143,8 +7148,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var nOpen=0;PARK_DEF.forEach(function(p){if(isOpenNow(parkInfo[p.key])===true)nOpen++;});
     var rt=tyTier("all");
     var sub=(nOpen?('<b>'+nOpen+' of 4 parks open</b>'+(rt?(' \u00b7 resort crowd <b>'+rt.label+'</b> \u00b7 est.'):'')+' \u00b7 '):'')+'your pick sticks for the day \u2014 hop any time.';
+    var pline='',pi2;
+    for(pi2=0;pi2<TP_PARKS.length;pi2++){var ev2=tyEvParty(TP_PARKS[pi2][0]);
+      if(ev2){var inf2=parkInfo[TP_PARKS[pi2][0]]||null,cl2=inf2?tyClkIso(inf2.close):null;
+        pline='<div class="ty-pline">'+(ev2.em?ev2.em+' ':'')+'<b>'+TP_PARKS[pi2][1]+' party tonight</b>'+(cl2?' \u2014 day guests till '+cl2+'.':'.')+'</div>';break;}}
     return '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+md+'</div>'+
-      '<h2>Where are you today?</h2><div class="sub">'+sub+'</div></div>'+
+      '<h2>Where are you today?</h2><div class="sub">'+sub+'</div>'+pline+'</div>'+
       PARK_DEF.map(tyRowHTML).join("");
   }
   function tyHeadHTML(pk,tr,T){ /* Option A (owner, Aug 10): the place leads \u2014 the park holds the h2, the date the eyebrow, and the count speaks one quiet line in mock-6's own words */
@@ -7161,8 +7170,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       else if(nD>0)pg='<div class="ty-pgl">'+togo+' to go <span class="dn">\u00b7 '+nD+' ridden</span></div>';
       else pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 from now</div>';
     }
+    var ev=tyEvParty(pk),pl='';
+    if(ev&&open===true&&inf.close)pl='<div class="ty-pline">'+(ev.em?ev.em+' ':'')+'<b>Party tonight</b> \u2014 day guests till '+tyClkIso(inf.close)+'; the plan runs to your close.</div>';
     return '<button class="ty-back" data-tyback type="button">\u2039 All parks</button>'+
-      '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+'</div>';
+      '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+tpMD(ds)+'</div><h2>'+esc(pk)+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+pg+pl+'</div>';
   }
   /* ===== 0720i (TY): THE CROSS-REFERENCE CUT \u2014 the earned promotion + the bell line.
      Ratified \u00a78 + today-mock-3 (Aug 8): CONFIRMED (two polls \u2014 the 2-tick family) \u00b7
@@ -7228,6 +7239,20 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(first&&first!==proRow)first.parentNode.insertBefore(proRow,first);
       var k=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(sn){if(/^\d+$/.test(sn.textContent))sn.textContent=String(++k);});
     }
+  }
+  function tyEvParty(pk){ /* 0720n: tonight's ticketed party AT the picked park \u2014 nights truth resolved through
+     verified windows (the tfPartyEm walk), the event's own park field gating the claim. An unmatched verified
+     night names no park, so it earns no park-claimed clause \u2014 never a guessed costume. */
+    if(typeof tfPartyWins!=="function"||!window.__pwEvN||!window.__pwEvN.dates)return null;
+    var ds=tyDs();if(!window.__pwEvN.dates[ds])return null;
+    var short=null,i;for(i=0;i<TP_PARKS.length;i++)if(TP_PARKS[i][0]===pk)short=TP_PARKS[i][1];
+    var wins=tfPartyWins(),T=window.__pwEvT;
+    for(i=0;i<wins.length;i++){if(wins[i].f<=ds&&ds<=wins[i].t){
+      var ev=null,j;if(T&&T.events)for(j=0;j<T.events.length;j++)if(T.events[j].id===wins[i].id)ev=T.events[j];
+      if(ev&&ev.park&&ev.park!==short)return null;
+      return {em:(typeof TF_PARTY_EM!=="undefined"&&TF_PARTY_EM[wins[i].id])||""};
+    }}
+    return null;
   }
   function tyChipOn(pk){ /* a chip takes the tap on the same terms as its landing row */
     var inf=parkInfo[pk]||null,open=isOpenNow(inf);
