@@ -1927,7 +1927,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6192,14 +6192,18 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(a&&a.tagName==="INPUT"&&!(e.target&&e.target.closest&&e.target.closest(".search-box")))a.blur();
     },{passive:true});
     var se=$("search");
-    if(se)se.addEventListener("blur",function(){setTimeout(repin,60);});
+    if(se)se.addEventListener("blur",function(){setTimeout(repin,60);setTimeout(kbJudge,90);}); /* 0721c */
     var nv=document.getElementById("appNav"),kb=false;
     function kbJudge(){ /* 0721a: THE BAR YIELDS TO THE KEYBOARD - while typing, fixed chrome floats against the layout viewport; the bar steps aside and returns on the settle (the repin below catches the landing) */
       if(!nv||!window.visualViewport)return;
-      var open=(window.innerHeight-window.visualViewport.height)>140;
+      var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA");
+      var open=typing&&(window.innerHeight-window.visualViewport.height)>140; /* 0721c: hiding requires the keyboard's OWNER - a stale resume height alone can never take the bar; unhiding stays unconditional */
       if(open!==kb){kb=open;nv.classList.toggle("kbhide",open);}
     }
     if(window.visualViewport)window.visualViewport.addEventListener("resize",kbJudge);
+    document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(kbJudge,80);}); /* 0721c: every way an app wakes re-judges - the dropped-event resume can never strand the bar */
+    window.addEventListener("pageshow",function(){setTimeout(kbJudge,80);});
+    window.addEventListener("focus",function(){setTimeout(kbJudge,80);});
     kbJudge();
     if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){
       var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA");
