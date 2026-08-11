@@ -1794,6 +1794,8 @@
   .mr-seg b{flex:1;text-align:center;font:700 12px var(--font-display);color:var(--muted);padding:8px 0;border-radius:999px;cursor:pointer}
   .mr-seg b.on{background:var(--accent-soft);color:var(--accent)}
   .mr-fine{font-size:11px;color:var(--muted-2);line-height:1.5;margin:8px 2px 0} /* 0720y */
+  .mr-bk .cap{display:flex;align-items:center;justify-content:space-between}
+  .mr-clrall{border:0;background:none;color:var(--accent);font:700 12px var(--font-display);cursor:pointer;padding:2px 4px;letter-spacing:0;text-transform:none} /* 0721e */
   .mr-rl{margin-top:4px;cursor:pointer}
   .mr-p{display:inline-flex;align-items:center;gap:4px;font:600 12px var(--font-body);padding:3px 11px;border-radius:99px} /* 0720z: the pill lane */
   .mr-p.poff{background:var(--card-2);border:1px solid var(--line);color:var(--muted-2)}
@@ -1927,7 +1929,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7537,12 +7539,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrShelfHTML(){
     var ids=Object.keys(resolved).filter(function(id){return roster[id];});
     if(!ids.length)return "";
+    ids.sort(function(a,b){return (resolved[a]||0)-(resolved[b]||0);}); /* 0721e: the story reads oldest first */
     var rows=ids.map(function(id){
       return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div>'+
         '<div class="sub">Reopened at '+mrClk(resolved[id])+' — parked here till you clear it.</div></div>'+
         '<button class="mr-clear" data-id="'+esc(id)+'" type="button">Clear</button></div>';
     }).join("");
-    return '<div class="mr-bk"><div class="cap">BACK UP</div>'+rows+'</div>';
+    return '<div class="mr-bk"><div class="cap">BACK UP'+(ids.length>1?'<button class="mr-clrall" data-clrall type="button">Clear all</button>':'')+'</div>'+rows+'</div>'; /* 0721e: the July header's own word returns - only at 2+ rows */
   }
   var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star"};
   function mrLogHTML(){
@@ -7690,6 +7693,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
     each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
     each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
+    var ca=el.querySelector("[data-clrall]");if(ca)ca.addEventListener("click",function(ev){ev.stopPropagation();resolved={};saveResolved();updateAlertBadge();renderMyRidesPage();}); /* 0721e: still the hand-clear law - just the whole hand */
     each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});}); /* 0720z: every pill is a door - the hit-row gap dies for all states; the off pill is a second arm path (Save arms) */
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
     var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
