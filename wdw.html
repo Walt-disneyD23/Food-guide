@@ -671,10 +671,10 @@
   .tp-plc{height:30px;border-radius:var(--r-el-sm);border:1px dashed var(--line);background:var(--card-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font:700 var(--fs-micro) var(--font-body);letter-spacing:.06em;color:var(--muted-2);-webkit-tap-highlight-color:transparent}
   .tp-plc.sel{border:1px solid var(--accent-fill);background:var(--accent-fill);color:#fff}
   .rp-hmpre{display:flex;gap:14px;flex-wrap:wrap;padding:0 0 10px}
-  .rp-hm{display:grid;gap:2.5px;padding:2px 0}
+  .rp-hm{display:grid;gap:3px;padding:2px 0}
   .rp-hm .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--muted-2);text-align:center;text-transform:uppercase;font-style:normal;padding-bottom:2px}
-  .rp-hm .gt{font:600 var(--fs-micro) var(--font-body);color:var(--muted-2);font-style:normal;display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
-  .rp-hmc{display:flex;align-items:center;justify-content:center;height:19px;border-radius:4px;background:var(--card-2);position:relative;cursor:pointer;font:600 var(--fs-micro) var(--font-display);font-variant-numeric:tabular-nums}
+  .rp-hm .gt{font:600 var(--fs-meta) var(--font-display);color:var(--muted);font-style:normal;display:flex;align-items:center;justify-content:flex-start}
+  .rp-hmc{display:flex;align-items:center;justify-content:center;height:24px;border-radius:5px;background:var(--card-2);position:relative;cursor:pointer;font:600 var(--fs-micro) var(--font-display);font-variant-numeric:tabular-nums}
   .rp-hmc.s0{background:var(--hm0);color:var(--hmt0)}
   .rp-hmc.s1{background:var(--hm1);color:var(--hmt1)}
   .rp-hmc.s2{background:var(--hm2);color:var(--hmt2)}
@@ -1936,7 +1936,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3888,7 +3888,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var RP_WD=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   var RP_WDL=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]; /* the readout speaks full words — "4 Mons" is not a measure */
   function rpHmWd(d){var g=new Date(d+"T12:00:00Z").getUTCDay();return (g+6)%7;} /* 0=Mon..6=Sun */
-  function rpHmHr(h){return h===12?"12P":h<12?h+"A":(h-12)+"P";} /* axis micro-label; the readout speaks rpClk */
   function rpHmDays(rid){ /* the ride's banked half-hour days, ascending — gv:2 rows only, gv:1 can't crash it */
     if(!rpDigs||!rpDigs.length)return [];
     var out=[],i,g,r;
@@ -3975,11 +3974,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     ns.sort(function(x,y){return x-y;});
     var nMed=ns.length?ns[Math.floor(ns.length/2)]:0;
     
-    var grid='<div class="rp-hm" style="grid-template-columns:30px repeat('+cols.length+',1fr)"><i class="gt"></i>';
-    for(i=0;i<cols.length;i++)grid+='<i class="gh">'+colLab[i]+'</i>';
-    for(h=h0;h<=h1;h++){
-      grid+='<i class="gt">'+(h%2===0?rpHmHr(h):"")+'</i>';
-      for(i=0;i<cols.length;i++){k=cols[i]+"-"+h;c=P[k];
+    var grid='<div class="rp-hm" style="grid-template-columns:36px repeat('+(h1-h0+1)+',1fr)"><i class="gt"></i>'; /* 0721l: the transpose — the mock-of-record geometry; keys stay col-hour so every consumer is orientation-blind */
+    for(h=h0;h<=h1;h++)grid+='<i class="gh">'+(((h+11)%12)+1)+'</i>';
+    for(i=0;i<cols.length;i++){
+      grid+='<i class="gt">'+colLab[i]+'</i>';
+      for(h=h0;h<=h1;h++){k=cols[i]+"-"+h;c=P[k];
         if(!c){grid+='<b class="rp-hmc" data-k="'+k+'"></b>';continue;}
         a=c.s/c.n; /* 0713u carried: thin cells stay faint but tappable */
         var thin=(!diary&&c.n<3&&nMed>=3);
