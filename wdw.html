@@ -438,6 +438,7 @@
   .rp-shwrap{position:relative;touch-action:pan-y}
   .rp-shflt{position:absolute;transform:translate(-50%,calc(-100% - 4px));font:700 var(--fs-small) var(--font-display);background:var(--ink);color:var(--card);border-radius:10px;padding:3px 10px;pointer-events:none;white-space:nowrap;text-align:center;line-height:1.25}
   .rp-shflt small{display:block;font:600 var(--fs-micro) var(--font-body);opacity:.72;letter-spacing:.02em}
+  .pw-stamp{display:inline-block;font:600 var(--fs-micro) var(--font-display);letter-spacing:.05em;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:1px 8px;vertical-align:1px;white-space:nowrap}
   .rp-ddcap{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 6px}
   .rp-ddcap b{color:var(--ink);font-weight:700}
   .rp-tiles{margin:2px 0 9px}
@@ -1956,7 +1957,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721q</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721r</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -11080,6 +11081,26 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function relCls(r){return (r.uptimePct==null||r.uptimePct>=98)?"pw-s":(r.uptimePct>=85?"pw-m":"pw-p");}
     function findRide(park,rid){var pk=computePark(lastData,park);for(var i=0;i<pk.rides.length;i++){if(pk.rides[i].id===rid)return pk.rides[i];}return null;}
 
+    function pwLowStamp(rid,park,su){ /* 0721r: A' circumstance stamp for the Lowest tile — every word
+         earned by the day's own record. rope drop = the low inside the ride's
+         first operating hour; near close = within an hour of the PARK's
+         PUBLISHED close (never the ride's last tick); party hours = a verified
+         party night AND the low after the published close — wearing the party's
+         own glyph when identity resolves (tfPartyEm/TF_PARTY_EM), the bare word
+         on an unmatched verified night. No base, no clause. */
+      if(!su||su.lowAt==null||!lastData||lastTab==="week")return null;
+      var wls=pwWaitSeries(rid);if(!wls||!wls.ts||!wls.ts.length)return null;
+      var lo=su.lowAt;
+      if(lo-wls.ts[0]<=60)return {w:"rope drop",em:""};
+      var cMin=null;
+      try{var pd=lastData.parksByDate&&lastData.dates&&lastData.parksByDate[lastData.dates[0]],pi=pd&&pd[park];
+        if(pi&&pi.close){var cm=String(pi.close).match(/T(\d{2}):(\d{2})/),om=pi.open&&String(pi.open).match(/T(\d{2}):(\d{2})/);
+          if(cm){cMin=(+cm[1])*60+(+cm[2]);if(om&&cMin<=((+om[1])*60+(+om[2])))cMin+=1440;}}}catch(e){}
+      if(cMin===null)return null;
+      if(lo>cMin){var em=tfPartyEm(lastData.dates[0]);if(em)return {w:"party hours",em:(em==="ring"?"":em)};}
+      if(lo>=cMin-60)return {w:"near close",em:""};
+      return null;
+    }
     function showRide(rid,park){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       var isWeek=(lastTab==="week");
@@ -11110,7 +11131,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<div class="pw-grid">';
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
-      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")));
+      var lst=(su&&!isWeek)?pwLowStamp(r.id,park,su):null; /* 0721r: A' — stamps only where a single day's circumstance exists */
+      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)+(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")));
       html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
       html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
