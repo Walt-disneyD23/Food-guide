@@ -13,6 +13,8 @@
     --sh-soft:0 4px 12px -4px rgba(25,26,46,.16); /* 0713w: the door's lift — one tier under the favcard */
     --ink:#191a2e; --muted:#6b6f8c; --muted-2:#9fa3c0;
     --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff;
+    --hm0:#eef0fd; --hm1:#d3d5f8; --hm2:#a8a9f0; --hm3:#7c74e9; --hm4:#4f46e5;
+    --hmt0:#191a2e; --hmt1:#191a2e; --hmt2:#191a2e; --hmt3:#ffffff; --hmt4:#ffffff;
     --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6;
     --t1:#93e2ba; --t2:#cbdba3; --t3:#f8d38f; --t4:#ffb197; --ringc:#3b32c8; /* Cut C (C-2): Soft tier fills + the plan-ring color \u2014 TRIP-BOARD-SCOPED (owner, Aug 2); the app-wide retune is shelved */
     /* radius scale (0708a): dot 3 / el-sm 8 / el 10 / tile 14 / card 16 / hero 22 / sheet 24 / pill */
@@ -415,6 +417,7 @@
   .rp-dtx{display:flex;justify-content:space-between;padding:3px 2px 2px;font:700 var(--fs-micro) var(--font-body);color:var(--muted-2)}
   .rp-dtread{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 4px;min-height:18px}
   .rp-dtread b{color:var(--ink);font-weight:700}
+  .rp-hmdd{display:inline-block;font:600 var(--fs-micro) var(--font-display);letter-spacing:.04em;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:2px 9px;margin:4px 5px 0 0;cursor:pointer}
   .rp-ddcap{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 6px}
   .rp-ddcap b{color:var(--ink);font-weight:700}
   .rp-tiles{margin:2px 0 9px}
@@ -671,13 +674,14 @@
   .rp-hm{display:grid;gap:2.5px;padding:2px 0}
   .rp-hm .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--muted-2);text-align:center;text-transform:uppercase;font-style:normal;padding-bottom:2px}
   .rp-hm .gt{font:600 var(--fs-micro) var(--font-body);color:var(--muted-2);font-style:normal;display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
-  .rp-hmc{display:block;height:19px;border-radius:4px;background:var(--card-2);position:relative;cursor:pointer}
-  .rp-hmc.f{background-image:linear-gradient(rgba(255,255,255,var(--a)),rgba(255,255,255,var(--a)))}
+  .rp-hmc{display:flex;align-items:center;justify-content:center;height:19px;border-radius:4px;background:var(--card-2);position:relative;cursor:pointer;font:600 var(--fs-micro) var(--font-display);font-variant-numeric:tabular-nums}
+  .rp-hmc.s0{background:var(--hm0);color:var(--hmt0)}
+  .rp-hmc.s1{background:var(--hm1);color:var(--hmt1)}
+  .rp-hmc.s2{background:var(--hm2);color:var(--hmt2)}
+  .rp-hmc.s3{background:var(--hm3);color:var(--hmt3)}
+  .rp-hmc.s4{background:var(--hm4);color:var(--hmt4)}
   .rp-hmc.thin{opacity:.32}
   .rp-hmc.on{outline:2px solid var(--accent);outline-offset:1px}
-  .rp-hmc .xl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 8.5px var(--font-display);color:#fff;pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,.35),0 0 3px rgba(0,0,0,.35)}
-  .rp-hmc .xl.ink{color:var(--ink);text-shadow:none}
-  html.dark .rp-hmc .xl.ink{text-shadow:0 0 3px rgba(0,0,0,.5),0 0 3px rgba(0,0,0,.5)} /* 0713u: near-white ink over a light veil — the 0713n halo, Harbor only */
   /* ===== 0714a: the Rope Drop Board (L-28 cut 1) — A Ledger on the ratified sections ===== */
   .rp-door.rd-door{padding:15px 16px;border-radius:var(--r-card)} /* 0718m: scoped — rd- meant rope-drop here before it meant read; unscoped, this leaked padding+radius onto the hero read's doors (the drift + curved hairlines, owner-caught) */ .rd-door .m{flex:1;min-width:0} .rd-door .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)} .rd-door .sub{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* 0714b: the marquee — a door that previews its destination; My Morning inherits this chrome */
   .rd-door .ct{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted-2);font-variant-numeric:tabular-nums}
@@ -1122,6 +1126,8 @@
     --sh-soft:0 4px 12px -4px rgba(0,0,0,.42); /* 0713w: Harbor's door-read is the border — the lift is garnish */
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5;
+    --hm0:#1c2440; --hm1:#2a3163; --hm2:#3c3f96; --hm3:#5a52cf; --hm4:#8b87ff;
+    --hmt0:#9db0c0; --hmt1:#9db0c0; --hmt2:#0a141d; --hmt3:#0a141d; --hmt4:#0a141d;
     --t1:#2c8f61; --t2:#78904e; --t3:#b3893c; --t4:#bd674c; --ringc:#b4b0ff; /* Cut C (C-2): soft dark \u2014 dimmer, not paler; ringc needs LIGHTER in dark */
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
     --cmp-p1:#8b87ff; --cmp-p2:#22d3ee; --cmp-p3:#e879f9; /* 0714i: dark identity */
@@ -1930,7 +1936,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721j</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3830,7 +3836,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(cv){
     if(cv.allday)s=OP+(OP?"typically":"Typically")+" a walk-on all day \u2014 <b>"+cv.typ+" minutes</b> overall";
     else{
-      s=OP+(OP?"typically":"Typically")+" ran <b>"+cv.typ+" minutes</b>, cresting near <b>"+cv.pk+"m</b> "+rpRange(cv.crest[0],cv.crest[1]);
+      s=OP+(OP?"typically":"Typically")+" ran <b>"+cv.typ+" minutes</b>, peaking near <b>"+cv.pk+"m</b> "+rpRange(cv.crest[0],cv.crest[1]);
       if(cv.front!==null)s+=", shortest before <b>"+rpClk(cv.front)+"</b>"+(cv.back!==null?" and after <b>"+rpClk(cv.back)+"</b>":"");
       else if(cv.back!==null)s+=", shortest after <b>"+rpClk(cv.back)+"</b>";
     }
@@ -3879,7 +3885,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      thinner than their own grid's norm, so a uniform-thin board can never wash
      out. "Week" stays the Weekly Wrap's word (fixed Mon-Sun); trailing windows
      say their unit. Selection is render-mortal, like the downtime strip's. */
-  var RP_HM_LO={short:0,medium:20,long:45,packed:70},RP_HM_HI={short:20,medium:45,long:70,packed:120};
   var RP_WD=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   var RP_WDL=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]; /* the readout speaks full words — "4 Mons" is not a measure */
   function rpHmWd(d){var g=new Date(d+"T12:00:00Z").getUTCDay();return (g+6)%7;} /* 0=Mon..6=Sun */
@@ -3923,13 +3928,24 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(j=0;j<x.hm.length;j++){v=x.hm[j];if(v===null)continue;
         h=Math.floor((x.hs+j)/2);k=c+"-"+h;
         if(!m[k])m[k]={s:0,n:0,days:{}};
-        m[k].s+=v;m[k].n++;m[k].days[x.d]=1;}}
+        m[k].s+=v;m[k].n++;var dk=m[k].days[x.d];if(!dk)dk=m[k].days[x.d]={s:0,n:0};dk.s+=v;dk.n++;}}
     return m;
   }
-  function rpHmVeil(a){ /* within-tier depth -> white-veil alpha (0 at the tier's ceiling) */
-    var t=rpTierCls(Math.round(a)),lo=RP_HM_LO[t],hi=RP_HM_HI[t];
-    var depth=Math.max(0,Math.min(1,(a-lo)/(hi-lo)));
-    return {t:t,depth:depth,alpha:+((1-depth)*0.55).toFixed(2)};
+  function rpHmStep(v){return v<15?0:v<30?1:v<45?2:v<60?3:4;} /* 0721k ONE BAND VOCABULARY — the ramp quantizes on the app’s tier thresholds; the printed number is the second channel (COLOR NEVER CARRIES ALONE) */
+  function rpHmDayAvgs(c){ /* per-day slot averages out of the pool’s day ledger, calm → hard */
+    var out=[],d,e;for(d in c.days){e=c.days[d];out.push({d:d,a:e.s/e.n});}
+    out.sort(function(x,y){return x.a-y.a;});return out;
+  }
+  function rpHmChips(a){ /* door chips — data-hmvd carries the banked date */
+    var h="",i;for(i=0;i<a.length;i++)h+='<span class="rp-hmdd" data-hmvd="'+a[i][1]+'">'+a[i][0]+' \u00b7 '+rpDay(a[i][1])+' \u203a</span>';
+    return h;
+  }
+  function rpHmReceipt(c){ /* 0721k: the receipt behind the number — the range earns its slot at 2+ distinct day-averages (no fake range on a tie); the poles door to their days */
+    var v=rpHmDayAvgs(c);
+    if(!v.length)return "";
+    if(v.length===1)return rpHmChips([["its day",v[0].d]]);
+    var lo=Math.round(v[0].a),hi=Math.round(v[v.length-1].a);
+    return (lo===hi?"":" \u00b7 ranged "+lo+"\u2013"+hi)+rpHmChips([["calmest",v[0].d],["hardest",v[v.length-1].d]]);
   }
   function rpHmRead(k){ /* tap readout — recomputed fresh, the rp-dt pattern */
     var all=rpHmDays(rpRide),diary=(rpWin==="last7"),days=rpHmWindow(all,rpWin),P=rpHmPool(days,diary);
@@ -3937,8 +3953,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var who=diary?(days[w]?RP_WD[rpHmWd(days[w].d)]+" "+rpDay(days[w].d):"\u2013"):RP_WD[w];
     if(!c)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 no banked samples here';
     var a=c.s/c.n,av=Math.round(a*10)/10,nd=0,dd;for(dd in c.days)nd++;
-    if(diary)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' half-hour medians that day';
-    return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' across '+nd+' '+RP_WDL[w]+(nd===1?'':'s')+(c.n<3?' \u00b7 thin \u2014 read gently':'');
+    if(diary)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' half-hour medians that day'+(days[w]?rpHmChips([["open this day",days[w].d]]):'');
+    return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' across '+nd+' '+RP_WDL[w]+(nd===1?'':'s')+(c.n<3?' \u00b7 thin \u2014 read gently':'')+rpHmReceipt(c);
   }
   function rpHmHTML(){
     if(!rpDigs)return '<div class="rpc"><div class="lbl">By hour &amp; weekday</div><div class="fc-empty">The hour grid loads from the day ledger \u2014 one moment.</div></div>';
@@ -3958,25 +3974,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(k in P)ns.push(P[k].n);
     ns.sort(function(x,y){return x-y;});
     var nMed=ns.length?ns[Math.floor(ns.length/2)]:0;
-    var mn=null,mx=null,mnK=null,mxK=null;
-    for(k in P){c=P[k];if(!diary&&c.n<3&&nMed>=3)continue; /* 0713u: blips never take the crown — thin cells stay painted and tappable but hold no superlative */
-      a=c.s/c.n;
-      if(mn===null||a<mn){mn=a;mnK=k;}if(mx===null||a>mx){mx=a;mxK=k;}}
+    
     var grid='<div class="rp-hm" style="grid-template-columns:30px repeat('+cols.length+',1fr)"><i class="gt"></i>';
     for(i=0;i<cols.length;i++)grid+='<i class="gh">'+colLab[i]+'</i>';
     for(h=h0;h<=h1;h++){
       grid+='<i class="gt">'+(h%2===0?rpHmHr(h):"")+'</i>';
       for(i=0;i<cols.length;i++){k=cols[i]+"-"+h;c=P[k];
         if(!c){grid+='<b class="rp-hmc" data-k="'+k+'"></b>';continue;}
-        a=c.s/c.n;var vl=rpHmVeil(a);
+        a=c.s/c.n; /* 0713u carried: thin cells stay faint but tappable */
         var thin=(!diary&&c.n<3&&nMed>=3);
-        var lab="";if(k===mnK||k===mxK)lab='<span class="xl'+(vl.depth>0.45?'':' ink')+'">'+Math.round(a)+'m</span>';
-        grid+='<b class="rp-hmc f'+(thin?' thin':'')+'" data-k="'+k+'" style="--a:'+vl.alpha+';background-color:var(--'+vl.t+')">'+lab+'</b>';}}
+        grid+='<b class="rp-hmc s'+rpHmStep(a)+(thin?' thin':'')+'" data-k="'+k+'">'+Math.round(a)+'</b>';}}
     grid+='</div>';
     var span=rpDay(days[0].d)+' \u2013 '+rpDay(days[days.length-1].d);
     var basis;
     if(diary)basis='The week itself, day by day \u2014 not a pattern \u00b7 '+span+' \u00b7 each cell one day\u2019s hour (n\u22482 half-hour medians)';
-    else basis=({all:'Last 28 days',month:'This month',wkend:'Weekends \u2014 Saturdays &amp; Sundays only',trip:tpLensPhrase()})[rpWin]+' \u00b7 '+span+' \u00b7 '+days.length+' days \u00b7 typical cell n\u2248'+nMed+' half-hour day-medians \u00b7 faint = thinner than this grid\u2019s norm \u00b7 lightest &amp; busiest labeled';
+    else basis=({all:'Last 28 days',month:'This month',wkend:'Weekends \u2014 Saturdays &amp; Sundays only',trip:tpLensPhrase()})[rpWin]+' \u00b7 '+span+' \u00b7 '+days.length+' days \u00b7 typical cell n\u2248'+nMed+' half-hour day-medians \u00b7 faint = thinner than this grid\u2019s norm';
     return '<div class="rpc"><div class="lbl">'+head+'</div>'+grid+
       '<div class="rp-dtread" id="rpHmRead">Tap a cell for the exact average</div>'+
       '<div class="pf-basis">'+basis+'</div></div>';
@@ -6127,6 +6139,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var prev=hmw.querySelector(".rp-hmc.on");if(prev)prev.classList.remove("on");c.classList.add("on");
       var out2=$("rpHmRead");if(out2)out2.innerHTML=rpHmRead(c.getAttribute("data-k"));
     });
+    var hmr=$("rpHmRead"); /* 0721k: the chip doors — scoped on the readout, render-mortal like the cell tap’s */
+    if(hmr)hmr.addEventListener("click",function(e){
+      var b=e.target&&e.target.closest?e.target.closest("[data-hmvd]"):null;if(!b)return;
+      if(window.__ppVisitRideDay)window.__ppVisitRideDay(b.getAttribute("data-hmvd"),rpRide,(roster[rpRide]||{}).park);
+    });
     el.querySelectorAll(".rp-hmpre button").forEach(function(b){b.addEventListener("click",function(){ /* 0713t: lookback lens — session-sticky */
       var p=b.getAttribute("data-hmp");if(p===rpWin)return;rpWin=p;renderPulsePage();
     });});
@@ -8270,6 +8287,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     window.__ppGoAlmMonth=function(ym){ /* 0716o: the ribbon-door's destination \u2014 a door may not lead nowhere; reuses the real nav path */
       var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
       loadTab("month");pwMonthCursor=ym;pwLoadMonth();};
+    window.__ppVisitRideDay=function(ds,rid,park){ /* 0721k: the profile chip door — a door lands where it points; reuses the real nav path (0716o) */
+      var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
+      curTab="profile";
+      function land(d){renderWrap(d,"visit:profile:"+ds);if(rid)showRide(rid,park);}
+      if(pwDayCache[ds]){land(pwDayCache[ds]);return;}
+      var wv=$id("wrapView");if(wv){wv.innerHTML=tabsHTML("profile")+'<div class="pw-msg">Loading the day\u2026</div>';wireTabs();}
+      fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}).then(function(d){
+        pwCleanData(d);
+        pwDayCache[ds]=d;
+        if(active&&curTab==="profile")land(d);
+      })["catch"](function(){
+        var w2=$id("wrapView");
+        if(active&&curTab==="profile"&&w2){w2.innerHTML=tabsHTML("profile")+'<div class="pw-msg">Couldn\u2019t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
+      });
+    };
     var PW_MONTH_MIN="2021-07"; /* 0715w: archive floor \u2014 the vault begins Jul 2021 */
     function pwMonthLabel(){return asDate(etDate(0)).toLocaleDateString("en-US",{month:"long"});}
     function pwMonthName(cur){var a=cur.split("-");return new Date(+a[0],+a[1]-1,1).toLocaleDateString("en-US",{month:"long",year:"numeric"});}
@@ -9413,7 +9445,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
       var c=compute(d);
       var html=tabsHTML(isVisit?vFrom:tab);
-      if(isVisit)html+='<div class="pw-nav"><button class="pw-back" type="button" id="pwVisitBack"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+(vFrom==="month"?esc(pwMonthName(pwMonthCursor||etDate(0).slice(0,7))):"this week")+'</button></div>';
+      if(isVisit)html+='<div class="pw-nav"><button class="pw-back" type="button" id="pwVisitBack"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+(vFrom==="profile"?"the profile":vFrom==="month"?esc(pwMonthName(pwMonthCursor||etDate(0).slice(0,7))):"this week")+'</button></div>';
 
       var dLine=isWeek?fmtRange((d.week&&[d.week.mon,d.week.sun])||d.dates):fmtDate(dateStr);
       var dSub=isWeek?"Walt Disney World · this week":"Walt Disney World";
@@ -9479,7 +9511,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<button class="pw-share" id="pwShare" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(tab==="week"?"Share this week":"Share this Wrap")+'</button>';
       html+='<div class="pw-foot">Numbers are real, logged every 2 min · live data from ThemeParks.wiki</div>';
       wv.innerHTML=html;wireTabs();wireRows();wireGoTiles();
-      var vb=$id("pwVisitBack");if(vb)vb.addEventListener("click",function(){loadTab(vFrom);});
+      var vb=$id("pwVisitBack");if(vb)vb.addEventListener("click",function(){if(vFrom==="profile"){var pb=document.querySelector('#appNav .it[data-pg="pulse"]');if(pb)pb.click();}else loadTab(vFrom);});
       if(isWeek){ /* 0713j: strip cells visit their days; the live cell jumps to Today */
         var wcs=wv.querySelectorAll(".pw-wkc[data-d]");
         for(var wi=0;wi<wcs.length;wi++){(function(cell){var dd=cell.getAttribute("data-d");
