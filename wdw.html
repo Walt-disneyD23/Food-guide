@@ -417,7 +417,9 @@
   .rp-dtx{display:flex;justify-content:space-between;padding:3px 2px 2px;font:700 var(--fs-micro) var(--font-body);color:var(--muted-2)}
   .rp-dtread{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 4px;min-height:18px}
   .rp-dtread b{color:var(--ink);font-weight:700}
-  .rp-hmdd{display:inline-block;font:600 var(--fs-micro) var(--font-display);letter-spacing:.04em;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:2px 9px;margin:4px 5px 0 0;cursor:pointer}
+  .rp-dtread .rp-hmlead{font-size:var(--fs-body);line-height:1.6}
+  .rp-dtread .rp-hmsub{font-size:var(--fs-small);line-height:1.55;color:var(--muted-2);margin-top:3px}
+  .rp-hmdd{display:inline-block;font:600 var(--fs-small) var(--font-display);letter-spacing:.03em;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:5px 13px;margin:10px 8px 0 0;cursor:pointer}
   .rp-ddcap{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 6px}
   .rp-ddcap b{color:var(--ink);font-weight:700}
   .rp-tiles{margin:2px 0 9px}
@@ -671,7 +673,7 @@
   .tp-plc{height:30px;border-radius:var(--r-el-sm);border:1px dashed var(--line);background:var(--card-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font:700 var(--fs-micro) var(--font-body);letter-spacing:.06em;color:var(--muted-2);-webkit-tap-highlight-color:transparent}
   .tp-plc.sel{border:1px solid var(--accent-fill);background:var(--accent-fill);color:#fff}
   .rp-hmpre{display:flex;gap:14px;flex-wrap:wrap;padding:0 0 10px}
-  .rp-hm{display:grid;gap:3px;padding:2px 0}
+  .rp-hm{display:grid;gap:3px;padding:2px 0 14px}
   .rp-hm .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--muted-2);text-align:center;text-transform:uppercase;font-style:normal;padding-bottom:2px}
   .rp-hm .gt{font:600 var(--fs-meta) var(--font-display);color:var(--muted);font-style:normal;display:flex;align-items:center;justify-content:flex-start}
   .rp-hmc{display:flex;align-items:center;justify-content:center;height:24px;border-radius:5px;background:var(--card-2);position:relative;cursor:pointer;font:600 var(--fs-micro) var(--font-display);font-variant-numeric:tabular-nums}
@@ -1936,7 +1938,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3939,21 +3941,23 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var h="",i;for(i=0;i<a.length;i++)h+='<span class="rp-hmdd" data-hmvd="'+a[i][1]+'">'+a[i][0]+' \u00b7 '+rpDay(a[i][1])+' \u203a</span>';
     return h;
   }
-  function rpHmReceipt(c){ /* 0721k: the receipt behind the number — the range earns its slot at 2+ distinct day-averages (no fake range on a tie); the poles door to their days */
-    var v=rpHmDayAvgs(c);
-    if(!v.length)return "";
-    if(v.length===1)return rpHmChips([["its day",v[0].d]]);
-    var lo=Math.round(v[0].a),hi=Math.round(v[v.length-1].a);
-    return (lo===hi?"":" \u00b7 ranged "+lo+"\u2013"+hi)+rpHmChips([["calmest",v[0].d],["hardest",v[v.length-1].d]]);
-  }
-  function rpHmRead(k){ /* tap readout — recomputed fresh, the rp-dt pattern */
+  function rpHmRead(k){ /* tap read — 0721m two beats: the number leads, the receipts whisper
+       (the run-on becomes beats); recomputed fresh, the rp-dt pattern */
     var all=rpHmDays(rpRide),diary=(rpWin==="last7"),days=rpHmWindow(all,rpWin),P=rpHmPool(days,diary);
     var p=k.split("-"),w=+p[0],h=+p[1],c=P[k];
     var who=diary?(days[w]?RP_WD[rpHmWd(days[w].d)]+" "+rpDay(days[w].d):"\u2013"):RP_WD[w];
-    if(!c)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 no banked samples here';
-    var a=c.s/c.n,av=Math.round(a*10)/10,nd=0,dd;for(dd in c.days)nd++;
-    if(diary)return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' half-hour medians that day'+(days[w]?rpHmChips([["open this day",days[w].d]]):'');
-    return '<b>'+who+' \u00b7 '+rpClk(h*60)+'</b> \u2014 avg <b>'+av+'m</b> \u00b7 n='+c.n+' across '+nd+' '+RP_WDL[w]+(nd===1?'':'s')+(c.n<3?' \u00b7 thin \u2014 read gently':'')+rpHmReceipt(c);
+    var head='<b>'+who+' \u00b7 '+rpClk(h*60)+'</b>';
+    if(!c)return '<div class="rp-hmlead">'+head+' \u2014 no banked samples here</div>';
+    var a=c.s/c.n,av=Math.round(a);
+    var lead='<div class="rp-hmlead">'+head+' \u2014 about <b>'+av+'m</b></div>';
+    if(diary)return lead+'<div class="rp-hmsub">this one day\u2019s banked hours</div>'+(days[w]?rpHmChips([["open this day",days[w].d]]):'');
+    var v=rpHmDayAvgs(c),nd=v.length,lo=Math.round(v[0].a),hi=Math.round(v[nd-1].a);
+    var sub='read from '+(nd===1?'one':nd)+' banked '+RP_WDL[w]+(nd===1?'':'s');
+    if(nd===1)sub+=' \u2014 it ran '+lo+'m';
+    else if(lo!==hi)sub+=' \u2014 they ran '+lo+'\u2013'+hi+' at this hour';
+    if(c.n<3)sub+=' \u2014 thin, read gently';
+    var chips=nd===1?rpHmChips([["its day",v[0].d]]):rpHmChips([["calmest",v[0].d],["hardest",v[nd-1].d]]);
+    return lead+'<div class="rp-hmsub">'+sub+'</div>'+chips;
   }
   function rpHmHTML(){
     if(!rpDigs)return '<div class="rpc"><div class="lbl">By hour &amp; weekday</div><div class="fc-empty">The hour grid loads from the day ledger \u2014 one moment.</div></div>';
