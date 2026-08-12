@@ -1957,7 +1957,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -11132,7 +11132,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
       var lst=(su&&!isWeek)?pwLowStamp(r.id,park,su):null; /* 0721r: A' — stamps only where a single day's circumstance exists */
-      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)+(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")));
+      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")),(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')); /* 0721s: the stamp rides tileV's NOTE slot (raw-HTML by design) — ctx is escaped (owner-caught) */
       html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
       html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
