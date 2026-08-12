@@ -420,6 +420,18 @@
   .rp-dtread .rp-hmlead{font-size:var(--fs-body);line-height:1.6}
   .rp-dtread .rp-hmsub{font-size:var(--fs-small);line-height:1.55;color:var(--muted-2);margin-top:3px}
   .rp-hmdd{display:inline-block;font:600 var(--fs-small) var(--font-display);letter-spacing:.03em;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:5px 13px;margin:10px 8px 0 0;cursor:pointer}
+  .rp-rrow{display:flex;align-items:center;gap:10px;padding:11px 2px;border-top:1px solid var(--line);cursor:pointer}
+  .rp-rrow.f{border-top:0}
+  .rp-rrow .l{flex:1;min-width:0}
+  .rp-rrow .d{font:700 var(--fs-body) var(--font-display)}
+  .rp-rrow .m{font-size:var(--fs-small);color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .rp-rrow .m b{color:var(--ink);font-weight:600}
+  .rp-rrow .chev{flex:0 0 auto;color:var(--muted-2);font-size:18px}
+  .rp-reclive{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--short);margin-left:6px;vertical-align:1px}
+  .rp-recdn{display:inline-block;font:600 var(--fs-micro) var(--font-display);letter-spacing:.05em;background:rgba(226,59,84,.11);color:var(--packed);border-radius:var(--r-pill);padding:1px 8px;margin-left:6px;vertical-align:1px}
+  .rp-recspark{flex:0 0 118px;width:118px;height:30px;display:block}
+  .rp-recfoot{display:block;width:100%;font:600 var(--fs-meta) var(--font-display);color:var(--accent);background:none;border:0;border-top:1px solid var(--line);padding:10px 0 6px;text-align:center;cursor:pointer}
+  .rp-recfp{margin-top:10px;font-size:var(--fs-micro);color:var(--muted-2);line-height:1.45}
   .rp-ddcap{font-size:var(--fs-meta);color:var(--muted);padding:2px 2px 6px}
   .rp-ddcap b{color:var(--ink);font-weight:700}
   .rp-tiles{margin:2px 0 9px}
@@ -1938,7 +1950,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3996,6 +4008,70 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="rp-dtread" id="rpHmRead">Tap a cell for the exact average</div>'+
       '<div class="pf-basis">'+basis+'</div></div>';
   }
+  var rpRecOpen=false,rpRecFor=null; /* 0721n: the record's fold — per-ride mortal */
+  var rpToday=null,rpTodayAt=0; /* the live head's read, 10-min fresh window */
+  function rpRecDay(d){return RP_WD[rpHmWd(d)]+", "+rpDay(d);}
+  function rpRecRows(rid,pre){ /* the banked record — newest first, lens-windowed (D1). A day
+       rides the record iff it operated, had real downtime, or sat in refurb
+       (scheduled absence stays VISIBLE, never counted — the Wrap's law). */
+    if(!rpDigs||!rpDigs.length)return null;
+    var W=rpWinDs(pre||"all"),out=[],i,g,r;
+    for(i=0;i<rpDigs.length;i++){g=rpDigs[i];if(W.has[g.d]!==1)continue;r=g.rides&&g.rides[rid];if(!r)continue;
+      if(!((r.sm||0)>0||(r.dm||0)>0||(r.rm||0)>0))continue;
+      out.push({d:g.d,su:r.su||null,dm:r.dm||0,rm:r.rm||0,om:r.om||0});}
+    out.sort(function(a,b){return a.d<b.d?1:-1;});
+    return out;
+  }
+  function rpRecRow(x){ /* one banked row — four honest faces; the storm clause waits for the
+       Worker rider (digest atoms carry minutes, not windows — no overlap, no clause) */
+    var tag=x.dm>0?'<span class="rp-recdn">down '+rpDtFmt(x.dm)+'</span>':'';
+    var m;
+    if(x.su)m='crest <b>'+x.su.pk+'m</b> \u00b7 '+rpClk(x.su.pkAt)+' &nbsp;\u00b7&nbsp; low <b>'+x.su.lo+'m</b> \u00b7 '+rpClk(x.su.loAt);
+    else if(x.rm>0&&!((x.om||0)>0))m='in refurbishment \u2014 scheduled absence';
+    else if(x.dm>0)m='no sustained read that day';
+    else m='ran thin \u2014 no sustained read';
+    return '<div class="rp-rrow" data-recd="'+x.d+'" role="button" tabindex="0"><div class="l"><div class="d">'+rpRecDay(x.d)+tag+'</div><div class="m">'+m+'</div></div><span class="chev">\u203a</span></div>';
+  }
+  function rpRecSpark(t){ /* the live head's line — accent + now-dot, 118x30 */
+    var ts=t.ts,vs=t.vs,nn=vs.length,i,mx=1;
+    for(i=0;i<nn;i++)if(vs[i]>mx)mx=vs[i];
+    var t0=ts[0],sp=(ts[nn-1]-t0)||1,pts="";
+    for(i=0;i<nn;i++)pts+=(i?" ":"")+(3+((ts[i]-t0)/sp)*112).toFixed(1)+","+(27-(Math.max(0,vs[i])/mx)*24).toFixed(1);
+    var ly=(27-(Math.max(0,vs[nn-1])/mx)*24).toFixed(1);
+    return '<svg class="rp-recspark" viewBox="0 0 118 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="var(--accent)" stroke-width="1.6"/><circle cx="115.0" cy="'+ly+'" r="2.4" fill="var(--accent)"/></svg>';
+  }
+  function rpRecTodayRow(){ /* today rides first — the sparkline's whole job, absorbed */
+    var t=(rpToday&&rpToday.rid===rpRide)?rpToday.t:null,loading=!(rpToday&&rpToday.rid===rpRide);
+    var body;
+    if(t&&t.su)body='building \u2014 crest so far <b>'+t.su.peak+'m</b> \u00b7 '+rpClk(t.su.peakAt);
+    else if(t)body='building \u2014 no sustained read yet';
+    else if(loading)body='reading today\u2026';
+    else body='no samples yet today';
+    var spark=(t&&t.ts&&t.ts.length>1)?rpRecSpark(t):'';
+    return '<div class="rp-rrow f" data-recd="'+rpDate(0)+'" role="button" tabindex="0"><div class="l"><div class="d">Today \u00b7 so far<span class="rp-reclive"></span></div><div class="m">'+body+'</div></div>'+spark+'<span class="chev">\u203a</span></div>';
+  }
+  function rpEnsureToday(){ /* the rpEnsureDigs pattern — one read per ride per 10 min */
+    if(rpToday&&rpToday.rid===rpRide&&Date.now()-rpTodayAt<10*60*1000)return;
+    if(!window.__ppTodayRide)return;
+    rpTodayAt=Date.now();
+    var rid=rpRide;
+    window.__ppTodayRide(rid,function(t){rpToday={rid:rid,t:t};if(rpRide===rid)renderPulsePage();});
+  }
+  function rpRecordHTML(){ /* 0721n: THE RECORD — the ride's banked days, newest first; today rides
+       first (the living head is not a banked row, so it renders in every lens);
+       every row is a door through 0721k's bridge. */
+    if(rpRecFor!==rpRide){rpRecOpen=false;rpRecFor=rpRide;}
+    rpEnsureToday();
+    var h='<div class="rpc"><div class="lbl">The record</div>'+rpRecTodayRow();
+    if(!rpDigs)return h+'<div class="fc-empty">The record loads from the day ledger \u2014 one moment.</div></div>';
+    var rows=rpRecRows(rpRide,rpWin)||[];
+    var CAP=8,open=rpRecOpen||rows.length<=CAP,show=open?rows:rows.slice(0,CAP),i;
+    for(i=0;i<show.length;i++)h+=rpRecRow(show[i]);
+    if(!rows.length)h+='<div class="fc-empty">No banked days for this ride in this window yet.</div>';
+    if(!open){var nm=rows.length-CAP;h+='<button class="rp-recfoot" data-recmore type="button">\u2026and '+nm+' more day'+(nm===1?'':'s')+' ride the record</button>';}
+    h+='<div class="rp-recfp">Crest &amp; low speak the sustained family with their clock times \u2014 the same numbers the Wrap detail shows for that day. A row opens that exact room.</div></div>';
+    return h;
+  }
   function rpProfileHTML(){
     var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),dc=loading?null:rpDayCrest(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"}; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
@@ -4028,7 +4104,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(TL9&&tpLensDay&&(TL9.plan||{})[tpLensDay]===rpPark&&tpDays(TL9).indexOf(tpLensDay)>=0&&rpRide){
       var in9=tdRides(TL9,tpLensDay).indexOf(rpRide)>=0,wd9=tpAsD(tpLensDay).toLocaleDateString("en-US",{weekday:"short"})+", "+tpMD(tpLensDay);
       tdp='<button class="td-addr td-prof" data-tdprof type="button">'+(in9?'\u2713 In '+wd9+' \u2014 tap to remove':'+ Add to '+wd9)+'</button>';}
-    return crumb+hero+tdp+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
+    return crumb+hero+tdp+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+rpRecordHTML()+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
   }
   var RP_CURATED=null; /* 0714k \u00b7 W-23/L-10: park -> set of normalized curated ride names, built once from PARK_DEF */
   function rpCuratedRide(r){ /* planning surfaces walk the OWNER's ride list, never the feed's typing \u2014 read-time, one-fragment reversible (add a name to PARK_DEF.rides and it seats instantly) */
@@ -6147,6 +6223,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var b=e.target&&e.target.closest?e.target.closest("[data-hmvd]"):null;if(!b)return;
       if(window.__ppVisitRideDay)window.__ppVisitRideDay(b.getAttribute("data-hmvd"),rpRide,(roster[rpRide]||{}).park);
     });
+    el.querySelectorAll("[data-recd]").forEach(function(rw){ /* 0721n: record rows door through 0721k’s bridge; scoped, render-mortal */
+      function go(){if(window.__ppVisitRideDay)window.__ppVisitRideDay(rw.getAttribute("data-recd"),rpRide,(roster[rpRide]||{}).park);}
+      rw.addEventListener("click",go);
+      rw.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
+    });
+    var rf=el.querySelector("[data-recmore]");
+    if(rf)rf.addEventListener("click",function(){rpRecOpen=true;renderPulsePage();});
     el.querySelectorAll(".rp-hmpre button").forEach(function(b){b.addEventListener("click",function(){ /* 0713t: lookback lens — session-sticky */
       var p=b.getAttribute("data-hmp");if(p===rpWin)return;rpWin=p;renderPulsePage();
     });});
@@ -8290,6 +8373,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     window.__ppGoAlmMonth=function(ym){ /* 0716o: the ribbon-door's destination \u2014 a door may not lead nowhere; reuses the real nav path */
       var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
       loadTab("month");pwMonthCursor=ym;pwLoadMonth();};
+    window.__ppTodayRide=function(rid,cb){ /* 0721n: the record’s live head — today’s series +
+       sustained-so-far via the REAL engines (never re-implemented). Reuses the
+       Wrap’s today cache only while FRESH (5 min) and never writes it. */
+      function go(d){var sr=pwWaitSeries(rid,d);cb(sr?{ts:sr.ts,vs:sr.vs,su:pwSustained(rid,d)}:null);}
+      var c=cache["today"];
+      if(c&&cacheAt["today"]&&Date.now()-cacheAt["today"]<5*60*1000){go(c);return;}
+      fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();}).then(function(d){
+        pwCleanData(d);go(d);
+      })["catch"](function(){cb(null);});
+    };
     window.__ppVisitRideDay=function(ds,rid,park){ /* 0721k: the profile chip door — a door lands where it points; reuses the real nav path (0716o) */
       var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
       curTab="profile";
