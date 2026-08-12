@@ -1540,7 +1540,7 @@
   .pw-flag.mild{color:var(--medium);background:rgba(220,138,6,.12)}
   .pw-flag.refb{color:var(--muted);background:rgba(122,136,170,.16)}
   .pw-flag.warn{color:var(--packed);background:rgba(226,59,84,.1)}
-  .pw-nav{display:flex;align-items:center;padding:2px 0 6px}
+  .pw-nav{display:flex;align-items:center;gap:8px;padding:2px 0 6px}
   .pw-back{display:inline-flex;align-items:center;gap:7px;background:rgba(79,70,229,.12);color:var(--accent);font-family:var(--font-body);font-weight:600;font-size:var(--fs-title);border:0;border-radius:var(--r-pill);padding:10px 18px 10px 13px;cursor:pointer}
   .pw-back svg{width:16px;height:16px}
   .pw-share{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;background:var(--accent-fill);color:#fff;border:0;border-radius:var(--r-tile);padding:14px;font-family:var(--font-body);font-weight:600;font-size:var(--fs-title);cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.7)}
@@ -1950,7 +1950,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3879,10 +3879,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var sN=rel.sinceN,sTail=(pre==="last7"?" outage"+(sN===1?"":"s")+" in the last 7 days":" "+WW+"outage"+(sN===1?"":"s")); /* 0713w: outage inflects — "1 outages" is not a measure */
     var sEp=(W.list.length&&W.list[0]<RP_LTG_EPOCH)?" \u00b7 since Jul 13":""; /* disclosure follows the data: the epoch stamp prints only where it truncates the window */
     var tiles='<div class="pw-grid rp-tiles">'+
-      '<div class="pw-tile"><div class="lbl">Outages</div><div class="v pw-l">'+rel.outN+'<span class="u">\u00d7</span></div></div>'+
-      '<div class="pw-tile"><div class="lbl">Hours down</div><div class="v pw-p">'+rel.hours+'<span class="u">h</span></div></div>'+
-      '<div class="pw-tile"><div class="lbl">Most down in a day</div><div class="v pw-p">'+rpDtFmt(rel.worst.dm)+'</div><div class="ctx">'+rel.worst.lab+'</div></div>'+
-      '<div class="pw-tile"><div class="lbl">On strike days</div><div class="v rp-a">'+rel.onStrike+'</div><div class="ctx">of '+rel.sinceN+sTail+sEp+'</div></div></div>';
+      '<div class="pw-tile"><div class="lbl">Outages</div><div class="v">'+rel.outN+'<span class="u">\u00d7</span></div></div>'+
+      '<div class="pw-tile"><div class="lbl">Hours down</div><div class="v">'+rel.hours+'<span class="u">h</span></div></div>'+
+      '<div class="pw-tile"><div class="lbl">Most down in a day</div><div class="v">'+rpDtFmt(rel.worst.dm)+'</div><div class="ctx">'+rel.worst.lab+'</div></div>'+
+      '<div class="pw-tile"><div class="lbl">On strike days</div><div class="v">'+rel.onStrike+'</div><div class="ctx">of '+rel.sinceN+sTail+sEp+'</div></div></div>';
     return '<div class="rpc"><div class="lbl">Downtime by day</div>'+
       '<div class="rp-dt">'+strip+'</div>'+
       '<div class="rp-dtx"><span>'+s[0].lab+'</span><span>'+s[s.length-1].lab+'</span></div>'+
@@ -4072,6 +4072,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     h+='<div class="rp-recfp">Crest &amp; low speak the sustained family with their clock times \u2014 the same numbers the Wrap detail shows for that day. A row opens that exact room.</div></div>';
     return h;
   }
+  function rpOpenProfileFrom(rid){ /* 0721o: the reverse door's landing — one home each, doors both
+       ways; walks the real nav path (0716o) and resets the profile state family. */
+    var r=roster[rid];if(!r)return;
+    var nb=document.querySelector('#appNav .it[data-pg="pulse"]');if(nb)nb.click();
+    rpView="attr";rpDest=null;rpPark=r.park;rpRide=rid;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;
+    renderPulsePage();rpTop();
+  }
   function rpProfileHTML(){
     var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),dc=loading?null:rpDayCrest(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"}; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
@@ -4122,12 +4129,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      easy all day. Curveless rides sit out cause-neutral: the window ran too
      thin for a day shape \u2014 the board never guesses why. The lens is the
      profile's own window authority; edges describe typical days, never today. */
-  function rdDoorHTML(){
-    var sub='How mornings typically ran \u2014 not a forecast.';
-    if(rpDigs&&pfBase&&pfBase.rides){var C=rdClassify(rpWin);
-      sub='How mornings typically ran \u00b7 '+C.until.length+' windows \u00b7 '+C.never.length+' never easy \u00b7 '+C.allday.length+' easy all day';}
-    return '<button class="rp-door rd-door" data-rpsub="board" type="button"><span class="m"><span class="nm">Rope drop board</span><span class="sub">'+sub+'</span></span><span class="chev">\u203a</span></button>'; /* 0714b: the sub speaks counts once digs are banked this session */
-  }
   function rdClassify(win){
     var out={never:[],until:[],allday:[],flat:[],out:[]},id,r,cv;
     for(id in roster){r=roster[id];
@@ -4235,9 +4236,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       out.push({id:id,nm:r.name});}
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
-  }
-  function rmDoorHTML(){ /* 0719l (IA-B, owner-ratified): one door, the landing behind it — morning and evening stand as siblings inside */
-    return '<button class="rp-door rd-door" data-rpsub="hours" type="button"><span class="m"><span class="nm">My day</span><span class="sub">Pick your hours · morning or evening</span></span><span class="chev">›</span></button>';
   }
   function rmOuts(outs){
     if(!outs.length)return "";
@@ -4437,9 +4435,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       out.push({id:id,nm:r.name,cv:rpWinCurve(id,rpWin)});}
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
-  }
-  function rcDoorHTML(){ /* 0714o: Compare graduated into a planning destination \u2014 destinations get doors (owner-raised, brother-validated) */
-    return '<button class="rp-door rd-door" data-rcopen type="button"><span class="m"><span class="nm">Compare rides</span><span class="sub">Pick 2 or 3 \u00b7 side by side on one scale</span></span><span class="chev">\u203a</span></button>';
   }
   function rcSheetHTML(){ /* Variant B \u2014 headliner shelf: each chip seats one; identity follows the seat */
     var all=rcTyps(),by={},i;for(i=0;i<all.length;i++)by[all[i].id]=all[i];
@@ -4661,7 +4656,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var list=items.length?items.map(function(it){
       return '<div class="rp-go rp-door" data-rid="'+esc(it.id)+'"><span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-w rp-w '+rpTierCls(it.ty)+'">'+(it.ty===null?'\u2013':it.ty+'<small>m</small>')+'</span><span class="chev">\u203a</span></div>';
     }).join(""):'<div class="fc-empty">No rides banked yet for this park.</div>';
-    return crumb+rpEvRaceLine()+rdDoorHTML()+rmDoorHTML()+rcDoorHTML()+ /* 0714a: the park's planning shelf, then its census \u00b7 0716o: the ribbon-door seats above (resort-scope, all four parks) */
+    return crumb+rpEvRaceLine()+ /* 0721o: the planning shelf retired — the PLAN landing owns those doors now (the old ghost) · 0716o: the ribbon-door seats above (resort-scope, all four parks) */
       '<div class="fc-head" style="padding:4px 4px 6px"><span class="sec-lab">'+esc(rpPark)+' \u00b7 '+items.length+' rides</span><span class="sec-lab" style="padding-right:6px">Typical</span></div>'+list+
       '<div class="pf-basis" style="border-top:0;padding:2px 6px 0">Typical = the 28-day median while operating \u00b7 dash = not enough banked data</div>'+(rcPk?rcSheetHTML():""); /* 0714o: the landing carries the picker too */
   }
@@ -11066,7 +11061,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         ?(r.operatingMinutes===0?(isWeek?"Down all week.":live?"Down since park open.":"Down all day."):"No wait data.")
         :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":" "+pwDayWord((lastData&&lastData.dates&&lastData.dates[0])||etDate(0))+".")); /* 0713o */
       if(r._refurb)line=(isWeek?"In refurbishment this week.":live?"In refurbishment today.":"In refurbishment.");
-      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button></div>';
+      var hasProf=!!(typeof roster!=="undefined"&&roster[rid]&&(typeof rpCuratedRide!=="function"||rpCuratedRide(roster[rid]))); /* 0721o: the reverse door — only where a profile home exists */
+      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button>'+(hasProf?'<button class="pw-back" type="button" id="pwFullRec">Full record \u203a</button>':'')+'</div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause)))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su):"";
@@ -11084,6 +11080,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       wv.innerHTML=html;topw();
       var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
+      var fr=$id("pwFullRec");if(fr)fr.addEventListener("click",function(){rpOpenProfileFrom(rid);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
       var rl=$id("pwRLane");if(rl)rl.addEventListener("click",function(){rl.classList.toggle("lbl");pwStripGuard(rl);}); /* 0713l: same gesture as the Sky strip — tap reveals counts, guard handles the crowd */
       /* Peak / Lowest tiles jump the scrub lens to their sustained moment */
