@@ -391,6 +391,7 @@
   .rp-hero .sub{color:var(--pwh-muted);font-size:var(--fs-body);margin-top:5px}
   .rp-hero .fs{color:var(--fav)}
   .rp-hero .hstats{display:flex;gap:26px;margin-top:16px;padding-top:13px;border-top:1px solid var(--pwh-line)}
+  .rp-hero .rp-hfine{margin-top:12px;font-size:var(--fs-micro);color:var(--pwh-dim);letter-spacing:.02em;line-height:1.5}
   .rp-hero .hstat .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--pwh-dim)}
   .rp-hero .hstat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;margin-top:2px}
   .rp-hero .hstat .v small{font-size:var(--fs-small);font-weight:500;color:var(--pwh-sub)}
@@ -1929,7 +1930,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3780,6 +3781,23 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(j&&j.ok&&j.digests){rpDigs=j.digests;if((rpView==="attr"&&(rpRide||rpSub||rcPk||rcIds))||rpView==="trip")renderPulsePage(); /* 0714p: the picker and compare listen for digest arrival too */if(navTab==="today"&&typeof renderTodayPage==="function"&&!(tdPk||tdPin!==null))renderTodayPage(); /* 0720k: TODAY listens too; 0720m: sheet-guarded */}
     })["catch"](function(){});
   }
+  function rpDayCrest(rid,pre){ /* CUT 1 (0721j): the Day crest \u2014 median of banked-day sustained
+       crests, 0713v window-scoped. A day qualifies iff the digest banked a
+       sustained peak for the ride (su.pk); TWO VOICES: whole-day numbers,
+       never averaged into the curve. No base -> null, never a fake. */
+    if(!rpDigs||!rpDigs.length)return null;
+    var W=rpWinDs(pre||"all"),cr=[],i,g,r;
+    for(i=0;i<rpDigs.length;i++){g=rpDigs[i];if(W.has[g.d]!==1)continue;r=g.rides&&g.rides[rid];if(!r||!r.su||r.su.pk==null)continue;cr.push(r.su.pk);}
+    if(!cr.length)return null;
+    cr.sort(function(x,y){return x-y;});
+    return {md:Math.round(rpMed(cr)),lo:cr[0],hi:cr[cr.length-1],n:cr.length};
+  }
+  function rpCrestFine(dc){ /* the crest\u2019s fine print \u2014 renders only with a base (no base, no
+       clause); the plural range earns its slot at n>=2, one day speaks singular. */
+    if(!dc)return "";
+    var r=dc.n>1?"its banked days crested "+dc.lo+"\u2013"+dc.hi:"its banked day crested "+dc.lo;
+    return '<div class="rp-hfine">Day crest = the median banked day\u2019s hardest stretch (sustained). The typicals read the curve; the crest reads whole days \u2014 '+r+'.</div>';
+  }
   function rpRel(rid,pre){ /* per-day reliability from the digest atoms, 0713v window-scoped. A day counts
        iff the ride operated (sm>0) or had real downtime (dn>0) — the Wrap's
        realRides rule, day-shaped; full-refurb and non-operating days never
@@ -3964,7 +3982,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="pf-basis">'+basis+'</div></div>';
   }
   function rpProfileHTML(){
-    var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
+    var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),dc=loading?null:rpDayCrest(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
     var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"}; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
     var crumb=rpBackBtn(esc(rpPark||"parks"))+
       '<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark||"")+' \u203a <b>'+esc(r.name||"")+'</b></div>';
@@ -3972,8 +3990,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<h2>'+esc(r.name||"")+(watch[rpRide]?' <span class="fs">\u2605</span>':'')+'</h2>'+
       '<div class="rc-hrow"><div class="sub">'+esc(rpPark||r.park||"")+'</div><button class="rc-pill" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4L3 8l4 4M3 8h13M17 20l4-4-4-4M21 16H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Compare</button></div>'+ /* 0714i: the compare door \u2014 quiet, in the hero */
       '<div class="hstats"><div class="hstat"><div class="k">Typical wait</div><div class="v">'+(cv?cv.typ+'<small>m</small>':'\u2013')+'</div></div>'+
-      '<div class="hstat"><div class="k">Typical peak</div><div class="v">'+(cv?cv.pk+'<small>m</small>':'\u2013')+'</div></div>'+
-      '<div class="hstat"><div class="k">Clean days</div><div class="v">'+(rel?rel.clean+'<small>/'+rel.n+'</small>':'\u2013')+'</div></div></div></div>';
+      '<div class="hstat"><div class="k">Day crest</div><div class="v">'+(dc?dc.md+'<small>m</small>':'\u2013')+'</div></div>'+
+      '<div class="hstat"><div class="k">Clean days</div><div class="v">'+(rel?rel.clean+'<small>/'+rel.n+'</small>':'\u2013')+'</div></div></div>'+rpCrestFine(dc)+'</div>';
     var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>'; /* 0713v: D1 — one lens under the hero, windowing the entire profile */
     var shape;
