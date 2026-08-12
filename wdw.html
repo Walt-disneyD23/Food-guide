@@ -411,7 +411,8 @@
      the takeaway card. ===== */
   .rp-take{font-size:var(--fs-body);color:var(--ink);line-height:1.55}
   .rp-take b{font-weight:700}
-  .rp-dt{display:flex;align-items:flex-end;gap:2.5px;height:58px;padding:2px 0 2px;touch-action:pan-y}
+  .rp-dt{display:flex;align-items:flex-end;gap:2.5px;height:58px;padding:2px 0 2px}
+  .rp-dtcard{touch-action:pan-y}
   .rp-dt i{flex:1;position:relative;height:100%;cursor:pointer}
   .rp-dt i::after{content:"";position:absolute;bottom:0;left:0;right:0;height:var(--h);min-height:4px;background:var(--c);border-radius:2.5px 2.5px 0 0}
   .rp-dt i.cl::after{opacity:.45}
@@ -1955,7 +1956,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3888,7 +3889,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="pw-tile"><div class="lbl">Hours down</div><div class="v">'+rel.hours+'<span class="u">h</span></div></div>'+
       '<div class="pw-tile"><div class="lbl">Most down in a day</div><div class="v">'+rpDtFmt(rel.worst.dm)+'</div><div class="ctx">'+rel.worst.lab+'</div></div>'+
       '<div class="pw-tile"><div class="lbl">On strike days</div><div class="v">'+rel.onStrike+'</div><div class="ctx">of '+rel.sinceN+sTail+sEp+'</div></div></div>';
-    return '<div class="rpc"><div class="lbl">Downtime by day</div>'+
+    return '<div class="rpc rp-dtcard"><div class="lbl">Downtime by day</div>'+
       '<div class="rp-dt">'+strip+'</div>'+
       '<div class="rp-dtx"><span>'+s[0].lab+'</span><span>'+s[s.length-1].lab+'</span></div>'+
       '<div class="rp-dtread" id="rpDtRead">Tap a day for the detail</div>'+
@@ -6244,15 +6245,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       shw.addEventListener("pointermove",function(e){if(down)show(e.clientX);});
       ["pointerup","pointercancel","pointerleave"].forEach(function(ev){shw.addEventListener(ev,function(){down=false;});});
     })();
-    if(dts)(function(){ /* 0721p: the strip scrub — lanes + slide; a tap is a one-point scrub, so the
-         drag drives the EXISTING tap logic by index (never re-implemented) */
+    var dtc=el.querySelector(".rp-dtcard"); /* 0721q: the whole card is the touchpad — slide anywhere in
+         the box; x maps to the STRIP’s geometry so days stay under the finger (owner verdict) */
+    if(dts&&dtc)(function(){ /* 0721p: the strip scrub — a tap is a one-point scrub; the drag drives the
+         EXISTING tap logic by index (never re-implemented) */
       var down=false,last=null;
-      function at(x){var nb=dts.children.length;if(!nb)return;var r=dts.getBoundingClientRect();
+      function at(x){var nb=dts.children.length;if(!nb)return;var r=dts.getBoundingClientRect();if(!r.width)return;
         var k=Math.max(0,Math.min(nb-1,Math.floor((x-r.left)/r.width*nb)));
         var c=dts.children[k];if(c&&c!==last){last=c;c.click();}}
-      dts.addEventListener("pointerdown",function(e){down=true;last=null;at(e.clientX);});
-      dts.addEventListener("pointermove",function(e){if(down)at(e.clientX);});
-      ["pointerup","pointercancel","pointerleave"].forEach(function(ev){dts.addEventListener(ev,function(){down=false;});});
+      dtc.addEventListener("pointerdown",function(e){down=true;last=null;at(e.clientX);});
+      dtc.addEventListener("pointermove",function(e){if(down)at(e.clientX);});
+      ["pointerup","pointercancel","pointerleave"].forEach(function(ev){dtc.addEventListener(ev,function(){down=false;});});
     })();
     el.querySelectorAll("[data-recd]").forEach(function(rw){ /* 0721n: record rows door through 0721k’s bridge; scoped, render-mortal */
       function go(){if(window.__ppVisitRideDay)window.__ppVisitRideDay(rw.getAttribute("data-recd"),rpRide,(roster[rpRide]||{}).park);}
