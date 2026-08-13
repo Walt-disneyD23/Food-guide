@@ -1029,22 +1029,12 @@
   .appnav .it .nbadge{position:absolute;top:2px;right:50%;margin-right:-26px;min-width:16px;height:16px;border-radius:var(--r-pill);background:var(--packed);color:#fff;font:800 9.5px var(--font-body);display:none;place-items:center;padding:0 4px}
   .appnav .it .nbadge.show{display:grid}
   .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
-  /* ===== T1 (0710c): park cards become ticket stubs — Option 1 from live-wildcards D2.
-     Hero, panel, engines untouched. --stubw is the ONE geometry token: the stub's flex-basis
-     AND the mask cut both read it; the card's 1px border and the dash half-width cancel, so
-     `at right var(--stubw)` lands dead on the perforation center. Notches are TRUE mask cutouts
-     (the page backdrop shows through, both themes). The shadow rides .bnr-wrap's drop-shadow so
-     it traces the die-cut — a mask on the card itself would clip its own box-shadow away. */
+  /* ===== T1 (0710c) ticket die-cut: RETIRED 0721z with its stub — the board's hairline rows
+     carry the collapsed duty now (Live-Board-Spec Cut 1); .bnr-wrap survives for the expanded card only. */
   .bnr-wrap{filter:var(--shadow-tk);margin-bottom:14px}
   .bnr-wrap>.banner{margin-bottom:0}
-  .banner.lt{--stubw:96px;--notch:9px;box-shadow:none;
-    -webkit-mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000),radial-gradient(circle var(--notch) at right var(--stubw) bottom 0,#0000 98%,#000);
-    -webkit-mask-composite:source-in;
-    mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000),radial-gradient(circle var(--notch) at right var(--stubw) bottom 0,#0000 98%,#000);
-    mask-composite:intersect}
-  .banner.lt.expanded{box-shadow:none;
-    -webkit-mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000);
-    mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000)} /* open state: a bottom punch would land mid-card — top punch keeps the ticket, the dash runs into the wash-band hairline */
+  .banner.lt{box-shadow:none} /* 0721z: the die-cut mask died with its stub — the furniture will completed (on-glass catch: the punch floated on the expanded card) */
+  .banner.lt.expanded{box-shadow:none}
   .banner.lt .banner-art{display:flex;align-items:stretch;padding:0;overflow:hidden} /* T3 (0710e): mono stays inside the header band — no bleed past the wash-band seam when open */
   .banner.lt .banner-head{flex:1;min-width:0;width:auto;padding:15px 16px;align-items:center}
   .banner.lt .banner-stat{flex:1;margin-left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:9px 6px 3px 2px;text-align:center} /* T4 (0710g): 3px optical drop — the ▾ line box carries dead space under its ink, so a true flex center reads high; top/bottom pads are THE vertical knob (was 6/6) */
@@ -1071,7 +1061,7 @@
   .pb-tx{background:transparent}
   .pb-m{flex:1;min-width:0}
   .pb-nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
-  .pb-sub{font-size:var(--fs-meta);margin-top:3px;color:var(--muted)}
+  .pb-sub{font-size:var(--fs-meta);margin-top:3px;color:var(--muted);line-height:1.4;min-height:2.8em} /* 0721z: ONE HEIGHT FOR THE BOARD — a tail row never stands taller than its neighbors (owner call) */
   .pb-sub b{font-weight:700}
   .pb-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
   .pb-sub .dot.open{background:var(--open)}
@@ -1984,7 +1974,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3276,7 +3266,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(var i=0;i<inf.extras.length;i++){var ex=inf.extras[i];
         if(ex.open&&ex.close&&now>=new Date(ex.open).getTime()&&now<=new Date(ex.close).getTime()){word=ex.desc||"Early Entry";break;}}}
     if(!word)word=s.sweepWord||null;
-    var parts=['<i class="dot open"></i>'+esc(word||"Open")];
+    var parts=['<span class="cwu"><i class="dot open"></i>'+esc(word||"Open")+'</span>']; /* 0721z: the dot never orphans (on-glass catch) */
     if(s.crowd)parts.push('<span class="cwu"><b style="color:'+s.crowd.color+'">'+esc(s.crowd.label)+'</b></span>'); /* L-ii: the word the tick matches; est. speaks once, in the hero */
     if(s.open)parts.push('<span class="cwu">'+s.open+' open</span>'); /* S1-r: the row retired the noun (owner-lettered); the hero keeps it */
     var closeTxt=null;
@@ -3288,7 +3278,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(closeTxt)parts.push('<span class="cwu">to '+closeTxt+'</span>');
     var tail=pbEveTail(inf,now);
     if(tail&&closeTxt)parts.push('<span class="cwu">'+esc(tail.kind)+' '+pbStripAm(fmtClock(tail.iso),closeTxt)+'</span>'); /* S4-b: completes the early-close claim */
-    return parts.join('<span class="sep">\u00b7</span>');
+    return parts.join(' <span class="sep">\u00b7</span> '); /* 0721z: breathable seps — wraps land BETWEEN clauses (0709r) */
   }
   function pbClosedSub(inf,now){ /* S3-A: the hero dialect in board compression; bare Closed is the honest floor */
     inf=inf||{};
@@ -3346,7 +3336,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           (key==="all"?'<div class="banner-eb">Walt Disney World \u00b7 Live</div><button type="button" class="rb-share" aria-label="Share the board">\u21e7</button>':'')+
           (def.img?'<div class="banner-scrim"></div>':(BANNER_MONO[key]?'<div class="banner-mono">'+esc(BANNER_MONO[key])+'</div>':''))+
           '<div class="banner-head"><div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
-          '<div class="banner-sub"></div></div>'+statHTML+'</div>'+'</div>'+
+          '<div class="banner-sub"></div></div>'+(key==="all"?statHTML+'</div>':'')+'</div>'+ /* 0721z: the stat is hero-only — the avg speaks on the row and in the fine print */
         '</div>'+
         (key==="all"?'':'<div class="banner-panel" hidden></div>'); /* 0718u: the hero never expands (0718k) — no panel */
       if(key!=="all")root.querySelector(".banner-art").addEventListener("click",function(){pbToggle(key,root);}); /* the expanded card's art is the collapse door — tap wiring unchanged (E1-a) */
@@ -6407,7 +6397,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(s.crowd)sub.push('<span class="cwu">crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est.</span>'); /* 0709r: est. never separates from the value it qualifies \u2014 narrow viewports wrap BEFORE the clause, never inside */
         el.sub.innerHTML=pc?sub[0]+'<br>'+sub.slice(1).join('<span class="sep">\u00b7</span>')
                           :sub.join('<span class="sep">\u00b7</span>'); /* 0718r (owner layout): the hero sub breaks after the parks clause — two short lines; the single line was colliding with the stat label on-glass */
-        el.statV.innerHTML=(s.headAvg!==null?s.headAvg+'<span class="u">m</span>':'\u2013');
+        if(el.statV)el.statV.innerHTML=(s.headAvg!==null?s.headAvg+'<span class="u">m</span>':'\u2013'); /* 0721z: parks' head lost its stat */
         el.root.classList.remove("tier-1","tier-2","tier-3","tier-4");
         if(s.crowd){el.root.classList.add("tier-"+s.crowd.level);el.root.style.setProperty("--cl",s.crowd.color);}
         if(key!=="all"&&bannerEls[key]&&bannerEls[key].row){ /* PB (0721y): the row face — the expanded card's own sub above keeps the ticket clauses verbatim */
