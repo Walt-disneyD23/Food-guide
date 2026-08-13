@@ -1768,21 +1768,18 @@
   .pg-today .td-tabs{background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px;margin:7px 0 11px} /* segment-A ratified — the pg-seg face; the trip view retrofits in the cohesion cut */
   .pg-today .td-tabs .hl-tab{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);text-align:center}
   .pg-today .td-tabs .hl-tab.on{background:rgba(79,70,229,.13);color:var(--accent)}
-  .ty-prow{display:flex;align-items:center;gap:12px;width:100%;min-height:96px;box-sizing:border-box; /* 0720t: one height for the board - the three-line height, owner call, retunable */text-align:left;margin:0 0 8px;padding:14px;border:1px solid var(--line);border-left:4px solid var(--medium);border-radius:var(--r-card);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;box-shadow:var(--sh-soft)}
-  .ty-prow.short{border-left-color:var(--short)}
-  .ty-prow.medium{border-left-color:var(--medium)}
-  .ty-prow.long{border-left-color:var(--long)}
-  .ty-prow.off{opacity:.62;cursor:default}
-  .ty-prow .m{flex:1;min-width:0}
-  .ty-prow .nm{font:700 19px var(--font-display);letter-spacing:-.01em} /* 0720s: the landing has the room - owner call, live-retunable */
   .ty-sub{color:var(--muted);font-size:var(--fs-meta);margin-top:3px;line-height:1.5}
   .ty-sub .tw{font-weight:700}
-  .ty-sub .tw.c1,.ty-hl .n.c1{color:var(--short)}
-  .ty-sub .tw.c2,.ty-hl .n.c2{color:var(--medium)}
-  .ty-sub .tw.c3,.ty-hl .n.c3{color:var(--long)}
   .ty-sub.closed{color:var(--muted-2)}
   .ty-eel{margin-top:4px;font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720s (C): the morning credential line */
   .ty-eel .win,.ty-sub .win{color:var(--accent);font-weight:700}
+  /* ===== TY-BOARD (0722e): Today's rows in the family dress — pb bones, Today's words.
+     One height survives: min-height:96px is 0720t's own credential-row floor (P4-b). */
+  .ty-board{margin:10px 0}
+  .ty-board .pb-row{font:inherit;text-align:left;width:100%;background:none;color:var(--ink);border:0;border-top:1px solid var(--line);min-height:96px;box-sizing:border-box}
+  .ty-board .pb-row.off{opacity:.62;cursor:default}
+  .ty-board .pb-nm{font:700 19px var(--font-display);letter-spacing:-.01em} /* 0720s owner call survives in the family dress */
+  .ty-board .ty-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
   .ty-donec{margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card);box-shadow:var(--sh-soft);font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720w: the done card */
   .ty-wrapdoor{display:flex;align-items:center;gap:6px;margin-top:10px;padding:10px 14px;border:0;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);font:700 var(--fs-small) var(--font-display);cursor:pointer}
   .ty-wrapdoor .chev{font-size:var(--fs-title)}
@@ -1798,10 +1795,6 @@
   .ty-pline b{color:var(--pwh-sub);font-weight:600}
   .pg-today .td-nvr>span:first-child{font:700 var(--fs-wait) var(--font-display);letter-spacing:-.01em} /* ONE WAIT-SIZE FAMILY (§8: live pills) — TODAY-scoped; the trip room retrofits in Arc B */
   .pg-today .td-nvr .td-dnc,.pg-today .td-nvr .td-clc{font:700 var(--fs-small) var(--font-body)} /* status words sit a step smaller so numbers stay the loudest truth */
-  .ty-hl{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end} /* 0720s: mock-6's stat stack restored - number over its label */
-  .ty-hl .n{font:700 22px var(--font-display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-  .ty-hl .n small{font-size:11px}
-  .ty-hl .l{font-size:var(--fs-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin-top:1px}
   /* ===== MY RIDES (Cut 3, 0719w) — mock of record: my-rides-mock-v12, Stage-1 slice.
      The hero keeps the mock's dark jewel literally in both themes (share-card precedent);
      everything else consumes the app vars so Harbor gets it free. */
@@ -1974,7 +1967,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7473,37 +7466,31 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return n;
   }
   function tyHeadAvg(pk){return headlinerAvgFrom(scopeWaits(pk));} /* ONE NUMBER FAMILY \u2014 the same top-8 rank LIVE speaks */
-  function tyRowHTML(p){ /* pick-state C park row \u2014 mock-6 of record: colored tier word \u00b7 till X \u00b7 down count; the headliner avg holds the right edge; est. speaks once, in the hero's resort line */
+  function tyRowHTML(p){ /* 0722e: mock-6's words in the family dress (pb bones) — tick+word wear the crowd family's ONE SOURCE (0722d law); closed voices speak pbClosedSub (SAME QUESTION, SAME SENTENCE); P1-a: the close claims the full clock */
     var pk=p.key,inf=parkInfo[pk]||null,open=isOpenNow(inf);
     if(open===false&&typeof tySweep==="function"&&tySweep(pk))open=true; /* 0721h: THE SWEEP HOLDS EVERY DOOR - a ticketed window keeps the card alive; the open face's window-word lead speaks the party voice */
-    var edge="",body="",tap=true,hl="";
+    var tk="",body="",tap=true,hl="";
     if(open===true){
-      var tr=tyTier(pk),cl=tyClkIso(inf.close),dn=tyDown(pk),av=tyHeadAvg(pk);
-      edge=tr?(tr.level>=3?"long":tr.level===2?"medium":"short"):"";
-      var tc=tr?(tr.level>=3?"c3":tr.level===2?"c2":"c1"):"";
-      var tw=tr?'<b class="tw '+tc+'">'+tr.label+'</b> \u00b7 ':'';
+      var tr=tyTier(pk),cl=(inf&&inf.close)?fmtClock(inf.close):null,dn=tyDown(pk),av=tyHeadAvg(pk);
+      tk=tr?tr.color:""; /* ONE PHENOMENON, ONE PALETTE: the tick wears the word's exact constant */
+      var tw=tr?'<b class="tw" style="color:'+tr.color+'">'+tr.label+'</b> \u00b7 ':'';
       var pw=tyEvParty(pk)?' \u00b7 party':'';
       var swp=tySweep(pk); /* 0720u (S5b): the row never claims a close that already passed - the window word leads */
-      body='<div class="ty-sub">'+(swp?((swp.em?swp.em+' ':'')+'<b class="win">'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)+' \u00b7 '+tw):(tw+(cl?('till '+cl):'open now')+pw+' \u00b7 '))+(dn>0?(dn+' down'):'all running')+'</div>';
+      body='<div class="ty-sub">'+(swp?((swp.em?swp.em+' ':'')+'<b class="win">'+esc(swp.word)+'</b> to '+rpClk(swp.c>=1440?swp.c-1440:swp.c)+' \u00b7 '+tw):(tw+(cl?('to '+cl):'open now')+pw+' \u00b7 '))+(dn>0?(dn+' down'):'all running')+'</div>';
       if(inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){ /* 0720s (C, owner-lettered): the morning credential - a row never claims open-for-all before the published open */
         var ee=null,ei;for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&ex.close&&Date.now()>=new Date(ex.open).getTime()&&Date.now()<=new Date(ex.close).getTime()){ee=ex;break;}}
         if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
       }
       else if(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()){var tn3=tyTonight(pk);if(tn3)body+='<div class="ty-eel">'+(tn3.em?tn3.em+' ':'')+'<b class="win">'+esc(tn3.word)+' tonight</b> \u2014 '+tyClkPair(tn3.o,tn3.c)+'.</div>';} /* 0720v (S5b Cut 2): the evening sibling of the morning credential line - one grammar, both ends of the day */
-      if(av!==null)hl='<span class="ty-hl"><span class="n '+tc+'">'+av+'<small>m</small></span><span class="l">Headliners</span></span>';
+      if(av!==null)hl='<span class="pb-rr"><span class="pb-avg">'+av+'<span class="u">m</span></span></span>'; /* 0722e: ink; the label seats once in the header (LABELS MOVE WITH VALUES) */
     }else if(open===false){
-      var nowMs=Date.now();
-      if(inf&&inf.open&&nowMs<new Date(inf.open).getTime()){
-        body='<div class="ty-sub">Opens at '+tyClkIso(inf.open)+'</div>';
-      }else if(inf&&inf.nextOpen){
-        body='<div class="ty-sub closed">Closed for the day \u00b7 back at '+tyClkIso(inf.nextOpen)+' tomorrow</div>';tap=false;
-      }else{
-        body='<div class="ty-sub closed">Closed today</div>';tap=false;
-      }
+      var nowMs=Date.now(),pre=!!(inf&&inf.open&&nowMs<new Date(inf.open).getTime());
+      body='<div class="ty-sub'+(pre?'':' closed')+'"><i class="dot"></i>'+pbClosedSub(inf||{},nowMs)+'</div>'; /* 0722e: S3-A on every surface — "Opens at", "Closed for the day \u00b7 back at" and "Closed today" retired with honor */
+      tap=pre; /* pre-open invites; a done day closes its door */
     }else{
       body='<div class="ty-sub">\u2014</div>'; /* no schedule yet \u2014 the row waits honestly, no fake state */
     }
-    return '<button class="ty-prow'+(edge?' '+edge:'')+(tap?'':' off')+'" data-typk="'+esc(pk)+'" type="button"'+(tap?'':' disabled')+'><span class="m"><span class="nm">'+esc(pk)+'</span>'+body+'</span>'+hl+'</button>';
+    return '<button class="pb-row'+(tap?'':' off')+'" data-typk="'+esc(pk)+'" type="button"'+(tap?'':' disabled')+'><span class="pb-tick"'+(tk?' style="background:'+tk+'"':'')+'></span><span class="pb-m m"><span class="pb-nm">'+esc(pk)+'</span>'+body+'</span>'+hl+'<span class="pb-chv">\u203a</span></button>';
   }
   function tyLandingHTML(){
     var ds=tyDs(),d0=tpAsD(ds);
@@ -7517,7 +7504,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         pline='<div class="ty-pline">'+(ev2.em?ev2.em+' ':'')+'<b>'+TP_PARKS[pi2][1]+' party tonight</b>'+(cl2?' \u2014 day guests till '+cl2+'.':'.')+'</div>';break;}}
     return '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+md+'</div>'+
       '<h2>Where are you today?</h2><div class="sub">'+sub+'</div>'+pline+'</div>'+
-      PARK_DEF.map(tyRowHTML).join("");
+      '<div class="pb-board ty-board"><div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliner avg</span></div>'+PARK_DEF.map(tyRowHTML).join("")+'</div>'; /* 0722e: one board, both tabs */
   }
   function tyHeadHTML(pk,tr,T){ /* Option A (owner, Aug 10): the place leads \u2014 the park holds the h2, the date the eyebrow, and the count speaks one quiet line in mock-6's own words */
     var ds=tyDs(),inf=parkInfo[pk]||null,open=isOpenNow(inf);
