@@ -1057,7 +1057,7 @@
   .pb-k{font-size:var(--fs-caps);font-weight:600;letter-spacing:.08em;color:var(--muted-2);text-transform:uppercase}
   .pb-row{display:flex;align-items:center;gap:12px;padding:13px 14px 13px 0;min-height:48px;box-sizing:border-box;cursor:pointer;border-top:1px solid var(--line)}
   .pb-tick{flex:none;width:4px;align-self:stretch;border-radius:0 3px 3px 0;background:transparent}
-  .pb-t1{background:var(--short)}.pb-t2{background:var(--medium)}.pb-t3{background:var(--long)}.pb-t4{background:var(--packed)}
+  /* 0722d: pb-t1..4 are semantic markers only — the tick's paint arrives inline from s.crowd.color, the crowd family's ONE SOURCE (aura lineage). Two palettes on one phenomenon was owner-caught on glass; band tokens stay for ride tiers. */
   .pb-tx{background:transparent}
   .pb-m{flex:1;min-width:0}
   .pb-nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
@@ -1974,7 +1974,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6407,6 +6407,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
             :'<i class="dot"></i>Live'; /* no schedule yet — the row waits honestly, no fake state */
           el2.rowAvg.innerHTML=(s.isOpen===true&&s.headAvg!==null)?s.headAvg+'<span class="u">m</span>':'\u2013';
           el2.rowTick.className='pb-tick '+((s.isOpen===true&&s.crowd)?'pb-t'+s.crowd.level:'pb-tx'); /* COLOR NEVER CARRIES ALONE: the word rides beside it */
+          el2.rowTick.style.background=(s.isOpen===true&&s.crowd)?s.crowd.color:''; /* 0722d: ONE SOURCE — the exact constant the word wears; they cannot drift */
           el2.row.classList.toggle("closed",s.isOpen!==true);
         }
       var isExp=expanded===key;
