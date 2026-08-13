@@ -704,7 +704,7 @@
   .rp-hmc.thin{opacity:.32}
   .rp-hmc.on{outline:2px solid var(--accent);outline-offset:1px}
   /* ===== 0714a: the Rope Drop Board (L-28 cut 1) — A Ledger on the ratified sections ===== */
-  .rp-door.rd-door{padding:15px 16px;border-radius:var(--r-card)} /* 0718m: scoped — rd- meant rope-drop here before it meant read; unscoped, this leaked padding+radius onto the hero read's doors (the drift + curved hairlines, owner-caught) */ .rd-door .m{flex:1;min-width:0} .rd-door .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)} .rd-door .sub{display:block;font-size:var(--fs-meta);color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* 0714b: the marquee — a door that previews its destination; My Morning inherits this chrome */
+  .rp-door.rd-door{padding:15px 16px;border-radius:var(--r-card);min-height:100px} /* 0721w: even card heights */ /* 0718m: scoped — rd- meant rope-drop here before it meant read; unscoped, this leaked padding+radius onto the hero read's doors (the drift + curved hairlines, owner-caught) */ .rd-door .m{flex:1;min-width:0} .rd-door .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)} .rd-door .sub{display:-webkit-box;font-size:var(--fs-meta);color:var(--muted);margin-top:2px;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal;overflow:hidden} /* 0721w: 2-line clamp, full text shows */ /* 0714b: the marquee — a door that previews its destination; My Morning inherits this chrome */
   .rd-door .ct{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted-2);font-variant-numeric:tabular-nums}
   .rp-door.rd-door .chev{flex:none;color:var(--muted-2);font-weight:700;font-size:var(--fs-title)} /* 0718m: scoped with its family */
   .rd-sechead{font-size:var(--fs-meta);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin:16px 2px 2px}
@@ -940,6 +940,7 @@
   .hl-tabs.dim .hl-tab.on{color:var(--muted-2);border-bottom-color:var(--line)} /* lens is moot with no rows: quiet, still tappable */
   .hl-empty{padding:12px 2px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:var(--fs-body)}
   .hl-empty b{color:var(--ink);font-weight:600}
+  .hl-rr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none} /* 0721t: Hot Lines right rail — park over number, the Crowd Pulse rhyme minus the share seat */
 
   .state{text-align:center;padding:54px 20px;color:var(--muted)}
   .state h3{font-family:var(--font-display);color:var(--ink);font-size:var(--fs-head);margin-bottom:8px}
@@ -1850,8 +1851,15 @@
   .mr-log .hd2 .n{font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px}
   .mr-log .body{display:none}
   .mr-log.open .body{display:block}
-  .mr-log .li{font-size:var(--fs-meta);color:var(--muted);padding:9px 14px;border-top:1px solid var(--line);line-height:1.5}
+  .mr-log .li{font-size:var(--fs-small);color:var(--muted);padding:9px 14px;border-top:1px solid var(--line);line-height:1.5} /* 0721u R1: the banked "bit small" note — fs-meta grew to fs-small */
   .mr-log .li b{color:var(--ink)}
+  .mr-dayhd{display:flex;align-items:center;gap:6px;padding:11px 14px 8px;border-top:1px solid var(--line);font-family:var(--font-body);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)} /* 0721u pick B: the day header — Today / Yesterday / Wed · Aug 5 */
+  .mr-dayhd .cnt{margin-left:auto;letter-spacing:0}
+  .mr-dayhd .chv{transition:transform .15s}
+  .mr-dayhd.fold{cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+  .mr-day.closed .li{display:none}
+  .mr-day.closed .chv{transform:rotate(-90deg)}
+  .mr-vd{color:var(--long);font-weight:600}.mr-vu{color:var(--short);font-weight:600}.mr-vh{color:var(--accent);font-weight:600} /* 0721u R2: verb tint — color seconds the words, never carries alone */
   .mr-rh{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);margin-bottom:10px;padding:0 14px}
   .mr-rh .rhhd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;cursor:pointer}
   .mr-rh .cap{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
@@ -1957,7 +1965,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3108,8 +3116,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<button class="hl-tab'+(hlLens!=="short"?' on':'')+'" data-lens="long" type="button">\u25b2 Longest</button>'+
       '<button class="hl-tab'+(hlLens==="short"?' on':'')+'" data-lens="short" type="button">\u25bd Shortest</button></span>';
     var body=items.length?items.map(function(it){
-      return '<div class="fc-row"><span class="fc-w '+it.tier+'">'+it.wait+'<small>MIN</small></span>'+
-        '<span class="fc-nm">'+esc(it.nm)+'</span><span class="fc-pk">'+it.pk+'</span></div>';
+      return '<div class="fc-row"><span class="fc-nm">'+esc(it.nm)+'</span><span class="hl-rr"><span class="pf-pk">'+it.pk+'</span>'+
+        '<span class="pf-now '+it.tier+'">'+it.wait+'<small> MIN</small></span></span></div>'; /* 0721t: the right rail rhymes with Crowd Pulse (owner pick B) — pf-now/pf-pk faces verbatim, share seat omitted (no card behind it) */
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
     var feed=pfFeedHTML(hlScope,seg);
     el.innerHTML=feed+'<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+(feed?'':seg)+body+'</div>';
@@ -7646,12 +7654,26 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrW(n){var w=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];return n<=10?w[n]:String(n);}
   function mrClk(t){var d=new Date(t),h=d.getHours(),m=d.getMinutes();return ((h%12)||12)+":"+(m<10?"0":"")+m+" "+(h>=12?"PM":"AM");}
   function mrStars(){return Object.keys(watch).filter(function(id){return roster[id];});}
-  function mrHeroHTML(ids){
-    var run=0,down=0;
-    ids.forEach(function(id){var lv=liveById[id];if(lv&&lv.status==="OPERATING")run++;else if(lv&&lv.status==="DOWN")down++;});
+  function mrHeroHTML(ids){ /* 0721v: Voice A recap — "Watching your starred rides live —" + the situation */
+    var run=0,down=0,downIds=[];
+    ids.forEach(function(id){var lv=liveById[id];if(lv&&lv.status==="OPERATING")run++;else if(lv&&lv.status==="DOWN"){down++;downIds.push(id);}});
     var back=Object.keys(resolved).filter(function(id){return roster[id];}).length;
+    var closed=ids.length-run-down-back;
     var bells=ids.filter(function(id){return armed[id];}).length;
-    var sub='<b>'+run+' running</b>'+(down?' · '+down+' down':'')+(back?' · '+back+' back up':'')+' · bells on '+bells;
+    var sub="Watching your starred rides live — ";
+    if(run===0&&down===0&&back===0&&closed>0){ /* all closed */
+      sub+="all "+ids.length+" closed right now. They wake up when the parks do.";
+    } else if(down===0&&back===0&&closed===0&&run>0){ /* all running */
+      sub+="<b>all "+run+" running</b>";
+      if(bells>0)sub+=". Bells armed on <b>"+bells+"</b>, listening for their moment.";else sub+=". No bells armed yet.";
+    } else { /* mixed */
+      sub+="<b>"+run+" running</b>";
+      if(down===1){sub+=", <b>"+esc(roster[downIds[0]].name)+"</b> is down";}else if(down>1){sub+=", <b>"+down+"</b> down";}
+      if(back>0){sub+=", and <b>"+back+"</b> back up waiting for you below";}
+      if(closed>0){if(down===1&&back===0)sub+=", the other "+closed+" closed";else sub+=", "+closed+" closed";}
+      sub+=". ";
+      if(bells>0)sub+="Bells armed on <b>"+bells+"</b>.";else sub+="No bells armed yet.";
+    }
     return '<div class="pwh mr-hero"><div class="eb">My Rides · Live</div><h2>Your '+mrW(ids.length)+' <span class="fs">★</span></h2><div class="sub">'+sub+'</div></div>';
   }
   function mrWaitHTML(lv){
@@ -7708,15 +7730,34 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return '<div class="mr-bk"><div class="cap">BACK UP'+(ids.length>1?'<button class="mr-clrall" data-clrall type="button">Clear all</button>':'')+'</div>'+rows+'</div>'; /* 0721e: the July header's own word returns - only at 2+ rows */
   }
   var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star"};
+  var mrLogDaysOpen={}; /* 0721u: session-mortal fold state — survives poll rebuilds, dies with the tab */
+  function mrDayKey(t){var d=new Date(t);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
+  function mrDayWord(t){ /* the header's word — device-local, the same dialect mrClk speaks */
+    var now=new Date();
+    if(mrDayKey(t)===mrDayKey(now.getTime()))return "Today";
+    var y=new Date(now.getTime());y.setDate(y.getDate()-1);
+    if(mrDayKey(t)===mrDayKey(y.getTime()))return "Yesterday";
+    var d=new Date(t);
+    return d.toLocaleDateString("en-US",{weekday:"short"})+" \u00b7 "+d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+  }
+  var mrEvTint={hit:"mr-vh",down:"mr-vd",reopen:"mr-vu"}; /* 0721u R2: only the three alert verbs tint; housekeeping breadcrumbs stay plain */
   function mrLogHTML(){
     var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice().reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
     if(!L.length)return "";
-    var lis=L.map(function(e){
-      if(e.ev==="moved-home")return '<div class="li">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
-      var r=roster[e.id];
-      return '<div class="li"><b>'+esc(r?r.name:"Ride")+'</b> '+(mrEvWord[e.ev]||esc(e.ev))+' · '+mrClk(e.t)+'</div>';
+    var days=[],cur=null,i;
+    for(i=0;i<L.length;i++){var k=mrDayKey(L[i].t);if(!cur||cur.k!==k){cur={k:k,w:mrDayWord(L[i].t),rows:[]};days.push(cur);}cur.rows.push(L[i]);}
+    var body=days.map(function(g,gi){ /* 0721u pick B: newest day open, Today never wears a fold */
+      var today=(g.w==="Today");
+      var open=today?true:((g.k in mrLogDaysOpen)?mrLogDaysOpen[g.k]:gi===0);
+      var rows=g.rows.map(function(e){
+        if(e.ev==="moved-home")return '<div class="li">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
+        var r=roster[e.id],tc=mrEvTint[e.ev];
+        var vb=tc?('<span class="'+tc+'">'+mrEvWord[e.ev]+'</span>'):(mrEvWord[e.ev]||esc(e.ev));
+        return '<div class="li"><b>'+esc(r?r.name:"Ride")+'</b> '+vb+' · '+mrClk(e.t)+'</div>';
+      }).join("");
+      return '<div class="mr-day'+(open?'':' closed')+'" data-dk="'+esc(g.k)+'"><div class="mr-dayhd'+(today?'':' fold')+'">'+esc(g.w)+'<span class="cnt">'+g.rows.length+'</span>'+(today?'':'<span class="chv">\u25be</span>')+'</div>'+rows+'</div>';
     }).join("");
-    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><span class="t">Recent alerts</span><span class="n">'+L.length+'</span></div><div class="body">'+lis+'</div></div>';
+    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><span class="t">Recent alerts</span><span class="n">'+L.length+'</span></div><div class="body">'+body+'</div></div>';
   }
   function mrReadout(){
     if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
@@ -7856,6 +7897,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var ca=el.querySelector("[data-clrall]");if(ca)ca.addEventListener("click",function(ev){ev.stopPropagation();var nw=Date.now();Object.keys(resolved).forEach(function(id){clearedTs[id]=nw;});saveClearedTs();resolved={};saveResolved();updateAlertBadge();renderMyRidesPage();}); /* 0721e: still the hand-clear law - just the whole hand */
     each(".mr-rl",function(l){l.addEventListener("click",function(){mrOpenSheet(l.getAttribute("data-id"));});}); /* 0720z: every pill is a door - the hit-row gap dies for all states; the off pill is a second arm path (Save arms) */
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
+    if(lg)lg.querySelectorAll(".mr-dayhd.fold").forEach(function(h){h.addEventListener("click",function(){ /* 0721u pick B: tap a day header to fold/unfold; state keyed by date, poll-rebuild safe */
+      var d=h.parentElement,k=d.getAttribute("data-dk"),isOpen=!d.classList.contains("closed");
+      mrLogDaysOpen[k]=!isOpen;d.classList.toggle("closed",isOpen);});});
     var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
     var dr=el.querySelector("#mrDir");if(dr)dr.addEventListener("change",function(){settings.dir=this.value;store.set("dir",this.value);resetAlerts();renderMyRidesPage();});
     var th=el.querySelector("#mrThr");if(th)th.addEventListener("change",function(){settings.thresh=Math.max(0,+this.value||0);store.set("thresh",settings.thresh);resetAlerts();renderMyRidesPage();});
