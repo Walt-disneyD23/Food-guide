@@ -992,7 +992,6 @@
   .banner.lt .bs-v{color:var(--ink)}
   .banner.lt .bs-v .u{color:var(--muted-2)}
   .banner.lt .bs-k{color:var(--muted-2)}
-  .banner.lt .banner-chev{color:var(--muted-2)}
   .banner.lt .banner-mono{color:var(--accent-tint);opacity:.12;font-size:82px;right:-4px;bottom:-18px}
   .banner.lt.tier-1::after,.banner.lt.tier-2::after,.banner.lt.tier-3::after,.banner.lt.tier-4::after{box-shadow:none}
   /* T5 (0710k): expanded head adopts the All-Parks hero gradient — the family already reads dark = "the headline card"; the 0709i card-2 wash was too quiet to find mid-scroll. Stub stays light accent-soft so the die-cut perforation carries the ticket read. Pure CSS on .expanded — engines untouched. */
@@ -1048,11 +1047,8 @@
     mask:radial-gradient(circle var(--notch) at right var(--stubw) top 0,#0000 98%,#000)} /* open state: a bottom punch would land mid-card — top punch keeps the ticket, the dash runs into the wash-band hairline */
   .banner.lt .banner-art{display:flex;align-items:stretch;padding:0;overflow:hidden} /* T3 (0710e): mono stays inside the header band — no bleed past the wash-band seam when open */
   .banner.lt .banner-head{flex:1;min-width:0;width:auto;padding:15px 16px;align-items:center}
-  .tk-stub{flex:0 0 var(--stubw);background:var(--accent-soft);border-left:2px dashed var(--muted-2);display:flex;align-items:stretch}
-  .tk-admit{flex:none;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;font-size:7px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);font-weight:700;padding:6px 1px 6px 4px}
   .banner.lt .banner-stat{flex:1;margin-left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:9px 6px 3px 2px;text-align:center} /* T4 (0710g): 3px optical drop — the ▾ line box carries dead space under its ink, so a true flex center reads high; top/bottom pads are THE vertical knob (was 6/6) */
   .banner.lt .banner-stat .bs-k{font-size:8px;line-height:1;letter-spacing:.06em;white-space:nowrap;margin-top:0} /* T2 (0710d): one line — the 2-line wrap drove the 90px stub */
-  .banner.lt .banner-chev{margin-left:0;margin-top:1px}
   .banner.lt .banner-mono{font-size:64px;right:calc(var(--stubw) + 14px);bottom:-8px}
   .banner-mono{position:absolute;right:-6px;bottom:-22px;font-family:var(--font-display);font-weight:700;
     font-size:96px;letter-spacing:-.04em;color:rgba(255,255,255,.06);line-height:1;pointer-events:none;user-select:none}
@@ -1062,6 +1058,31 @@
   .banner-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
   .banner-sub .dot.open{background:var(--open)}
   .banner-sub .sep{opacity:.45;margin:0 4px}
+  /* ===== PB: the four-park board (0721y) — hairline rows on the light card; the tick wears
+     the crowd family (L-ii, the aura's meaning at 4px, s.crowd one source); the word beside it
+     carries the estimate in words; est. speaks once, in the hero (mock-6 mechanism). ===== */
+  .pb-board{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:0 0 10px}
+  .pb-hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 10px}
+  .pb-eb{font-family:var(--font-display);font-weight:600;font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .pb-k{font-size:var(--fs-caps);font-weight:600;letter-spacing:.08em;color:var(--muted-2);text-transform:uppercase}
+  .pb-row{display:flex;align-items:center;gap:12px;padding:13px 14px 13px 0;min-height:48px;box-sizing:border-box;cursor:pointer;border-top:1px solid var(--line)}
+  .pb-tick{flex:none;width:4px;align-self:stretch;border-radius:0 3px 3px 0;background:transparent}
+  .pb-t1{background:var(--short)}.pb-t2{background:var(--medium)}.pb-t3{background:var(--long)}.pb-t4{background:var(--packed)}
+  .pb-tx{background:transparent}
+  .pb-m{flex:1;min-width:0}
+  .pb-nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
+  .pb-sub{font-size:var(--fs-meta);margin-top:3px;color:var(--muted)}
+  .pb-sub b{font-weight:700}
+  .pb-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
+  .pb-sub .dot.open{background:var(--open)}
+  .pb-sub .sep{opacity:.45;margin:0 4px}
+  .pb-rr{flex:none;display:flex;align-items:baseline;gap:2px}
+  .pb-avg{font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .pb-avg .u{font-size:var(--fs-caps);font-weight:600;color:var(--muted-2)}
+  .pb-chv{flex:none;font-size:12px;margin-left:8px;color:var(--muted-2);transition:transform .2s}
+  .pb-row.closed .pb-nm{color:var(--muted)}
+  .pb-row.closed .pb-avg{color:var(--muted-2);font-size:19px}
+  .pb-xwrap{margin:0 0 10px}
   .banner-stat{margin-left:auto;text-align:right;flex:none}
   .banner-stat .bs-v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1;
     font-variant-numeric:tabular-nums;color:#fff}
@@ -1086,8 +1107,6 @@
   .banner-id{flex:1;min-width:0}
   .banner-name{font-family:var(--font-display);font-weight:700;font-size:clamp(19px,3.6vw,27px);
     letter-spacing:-.02em;line-height:1.05;color:#fff}
-  .banner-chev{flex:none;font-size:var(--fs-stat);color:#fff;transition:transform .2s;margin-left:2px}
-  .banner.expanded .banner-chev{transform:rotate(180deg)}
   .banner-panel{padding:16px 18px 18px;background:var(--card)}
   .banner-panel[hidden]{display:none}
 .info-note{margin:10px 2px 2px;padding:9px 12px;border-radius:var(--r-el);background:rgba(79,70,229,.08);color:var(--accent-deep);font-size:var(--fs-meta);line-height:1.45}
@@ -1965,7 +1984,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0721x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0721y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3230,37 +3249,121 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var mo=el.querySelector(".ux-more");if(mo)mo.addEventListener("click",function(){uxState.open=!uxState.open;renderUpNext();});
   }
 
+  /* ===== PB: THE FOUR-PARK BOARD (0721y) — Live-Board-Spec.md Cut 1.
+     Voices: S1-a open sub amended L-ii (tier word rides the row, matching the tick),
+     S1-r (the row count drops its noun; the hero keeps "rides open"),
+     S3-A closed voice (hero dialect: opens/reopens, kind stamps, shared-AM strip),
+     S4-b evening tail (self-gating on a same-day post-close window; retires once live),
+     and the morning credential worn inline: the row never claims Open before the
+     published open (0720s law). est. never rides a row — it speaks once, in the hero. ===== */
+  var pbSegA=null,pbSegB=null,pbWrapX=null;
+  function pbStripAm(t,anchor){ /* typography, not honesty: when two times share a meridiem, the anchor's carries both */
+    if(!t||!anchor)return t;
+    var a=t.slice(-3),b=anchor.slice(-3);
+    return (a===b&&(a===" AM"||a===" PM"))?t.slice(0,-3):t;
+  }
+  function pbEveTail(inf,now){ /* S4-b: earliest same-day window opening at/after the published close; null once live */
+    if(!inf||!inf.close||!inf.extras)return null;
+    var c=new Date(inf.close).getTime(),best=null;
+    inf.extras.forEach(function(e){if(!e.open)return;var t=new Date(e.open).getTime();
+      if(t>=c&&now<t&&(!best||t<best.t))best={t:t,iso:e.open,kind:e.desc};});
+    return best;
+  }
+  function pbOpenSub(s,inf,sw,now){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
+    function ck(mn){mn=((mn%1440)+1440)%1440;var h=Math.floor(mn/60),m2=mn%60,ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(m2<10?"0":"")+m2+" "+ap;}
+    var word=null;
+    if(inf&&inf.open&&now<new Date(inf.open).getTime()&&inf.extras){ /* the morning credential, worn inline (0720s): before the published open the window word leads */
+      for(var i=0;i<inf.extras.length;i++){var ex=inf.extras[i];
+        if(ex.open&&ex.close&&now>=new Date(ex.open).getTime()&&now<=new Date(ex.close).getTime()){word=ex.desc||"Early Entry";break;}}}
+    if(!word)word=s.sweepWord||null;
+    var parts=['<i class="dot open"></i>'+esc(word||"Open")];
+    if(s.crowd)parts.push('<span class="cwu"><b style="color:'+s.crowd.color+'">'+esc(s.crowd.label)+'</b></span>'); /* L-ii: the word the tick matches; est. speaks once, in the hero */
+    if(s.open)parts.push('<span class="cwu">'+s.open+' open</span>'); /* S1-r: the row retired the noun (owner-lettered); the hero keeps it */
+    var closeTxt=null;
+    if(inf&&inf.close){
+      var cms=new Date(inf.close).getTime();
+      if(now>cms&&sw&&sw.c!=null)closeTxt=ck(sw.c); /* the row never claims a passed close — the window's close speaks (0720u mirror) */
+      else closeTxt=fmtClock(inf.close);
+    }else if(sw&&sw.c!=null)closeTxt=ck(sw.c);
+    if(closeTxt)parts.push('<span class="cwu">to '+closeTxt+'</span>');
+    var tail=pbEveTail(inf,now);
+    if(tail&&closeTxt)parts.push('<span class="cwu">'+esc(tail.kind)+' '+pbStripAm(fmtClock(tail.iso),closeTxt)+'</span>'); /* S4-b: completes the early-close claim */
+    return parts.join('<span class="sep">\u00b7</span>');
+  }
+  function pbClosedSub(inf,now){ /* S3-A: the hero dialect in board compression; bare Closed is the honest floor */
+    inf=inf||{};
+    var eext=null;
+    if(inf.extras)inf.extras.forEach(function(e){if(!e.open)return;var t=new Date(e.open).getTime();
+      if(t>now&&(!eext||t<eext.t))eext={t:t,iso:e.open,kind:e.desc};});
+    if(inf.open&&now<new Date(inf.open).getTime()){
+      var oT=fmtClock(inf.open),line="Closed \u00b7 opens "+oT;
+      if(eext&&eext.t<new Date(inf.open).getTime())line+=" \u00b7 "+eext.kind+" "+pbStripAm(fmtClock(eext.iso),oT);
+      return line;
+    }
+    if(eext)return "Closed \u00b7 "+eext.kind+" "+fmtClock(eext.iso); /* the gap voice: a later window today */
+    if(inf.nextOpen&&new Date(inf.nextOpen).getTime()>now){
+      var nT=fmtClock(inf.nextOpen),l2="Closed \u00b7 reopens "+nT; /* after the close the verb flips (hero tense) */
+      if(inf.nextExtraOpen&&inf.nextExtraKind&&new Date(inf.nextExtraOpen).getTime()>now)
+        l2+=" \u00b7 "+inf.nextExtraKind+" "+pbStripAm(fmtClock(inf.nextExtraOpen),nT);
+      return l2;
+    }
+    return "Closed";
+  }
+  function pbRegroup(){ /* E1-a: the board splits around the expanded park; rows keep their listeners across moves */
+    if(!pbSegA)return;
+    var hit=false;
+    BANNERS.forEach(function(def){var key=def.key;if(key==="all")return;var el=bannerEls[key];if(!el||!el.row)return;
+      if(expanded===key){hit=true;
+        if(el.row.parentNode)el.row.parentNode.removeChild(el.row);
+        if(el.root.parentNode!==pbWrapX){pbWrapX.innerHTML="";pbWrapX.appendChild(el.root);}
+      }else{
+        if(el.root.parentNode===pbWrapX)pbWrapX.removeChild(el.root);
+        (hit?pbSegB:pbSegA).appendChild(el.row);
+      }});
+    pbWrapX.hidden=!hit;
+    if(!hit)pbWrapX.innerHTML="";
+    pbSegB.hidden=!(pbSegB.children.length>0);
+  }
   var bannerEls={};
 
   function buildBanners(){
     elBanners.innerHTML="";bannerEls={};
+    function pbToggle(key,root){ /* PB (0721y): the sole expanded writer — rows and the expanded card's art share this one door */
+      expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
+      if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
+    }
+    pbSegA=document.createElement("div");pbSegA.className="pb-board";
+    pbSegA.innerHTML='<div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliner avg</span></div>'; /* S2-a eyebrow; LABELS MOVE WITH VALUES — the column label seats once; its \u24d8 explainer stays in the expanded fine print */
+    pbWrapX=document.createElement("div");pbWrapX.className="bnr-wrap pb-xwrap";pbWrapX.hidden=true; /* E1-a: the die-cut shadow survives ONLY on the expanded card */
+    pbSegB=document.createElement("div");pbSegB.className="pb-board pb-cont";pbSegB.hidden=true;
     BANNERS.forEach(function(def){
       var key=def.key;
-      var root=document.createElement("div");root.className=(key==="all")?"banner":"banner lt";root.setAttribute("data-key",key); /* L1 (0709h): parks go light */
-      var iconHTML=""; /* park icons hidden on banners for now — restore the def.icon/def.emblem line to bring them back */
+      var root=document.createElement("div");root.className=(key==="all")?"banner":"banner lt";root.setAttribute("data-key",key); /* the park root is now ONLY the expanded card (T5 face) */
       var bg=def.img?"background-image:url('"+def.img+"')":"";
-      var statHTML='<div class="banner-stat"><div class="bs-v">\u2013</div><div class="bs-k">Headliner avg</div>'; /* T1 (0710c): shared stat open — hero closes it plain in the head; parks tuck the chevron inside it, out in the stub */
+      var statHTML='<div class="banner-stat"><div class="bs-v">\u2013</div><div class="bs-k">Headliner avg</div>';
       root.innerHTML=
         '<div class="banner-art'+(def.img?'':(key==="all"?' bnr-ed':' bnr-lt'))+'" style="'+bg+'">'+
           (key==="all"?'<div class="banner-eb">Walt Disney World \u00b7 Live</div><button type="button" class="rb-share" aria-label="Share the board">\u21e7</button>':'')+
           (def.img?'<div class="banner-scrim"></div>':(BANNER_MONO[key]?'<div class="banner-mono">'+esc(BANNER_MONO[key])+'</div>':''))+
-          '<div class="banner-head">'+iconHTML+
-            '<div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
-            '<div class="banner-sub"></div></div>'+
-            (key==="all"
-              ?statHTML+'</div>'+'</div>' /* 0718k: no chevron — the hero no longer expands */
-              :'</div>'+'<div class="tk-stub"><div class="tk-admit">ParkPulse</div>'+statHTML+'<div class="banner-chev">\u25be</div></div></div>')+
+          '<div class="banner-head"><div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
+          '<div class="banner-sub"></div></div>'+statHTML+'</div>'+'</div>'+
         '</div>'+
         (key==="all"?'':'<div class="banner-panel" hidden></div>'); /* 0718u: the hero never expands (0718k) — no panel */
-      if(key!=="all")root.querySelector(".banner-art").addEventListener("click",function(){ /* 0718k: the All-list retires — the hero is the read, one card one job; parks keep the full lifecycle */
-        expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
-        if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
-      });
-      var mnt=root;
-      if(key!=="all"){mnt=document.createElement("div");mnt.className="bnr-wrap";mnt.appendChild(root);} /* T1: the die-cut shadow lives on this wrapper — drop-shadow traces the mask; box-shadow on the masked card would be clipped away */
-      elBanners.appendChild(mnt);
-      bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v")};
+      if(key!=="all")root.querySelector(".banner-art").addEventListener("click",function(){pbToggle(key,root);}); /* the expanded card's art is the collapse door — tap wiring unchanged (E1-a) */
+      var row=null;
+      if(key==="all"){elBanners.appendChild(root);} /* the hero mounts as ever; park roots stay detached until their row opens */
+      else{
+        row=document.createElement("div");row.className="pb-row";row.setAttribute("data-key",key);
+        row.innerHTML='<span class="pb-tick pb-tx"></span><div class="pb-m"><div class="pb-nm">'+esc(key)+'</div>'+
+          '<div class="pb-sub"><i class="dot"></i>Live</div></div>'+
+          '<div class="pb-rr"><span class="pb-avg">\u2013</span></div><span class="pb-chv">\u25be</span>'; /* CARDS ARE DOORS, HAIRLINES ARE READOUTS */
+        row.addEventListener("click",function(){pbToggle(key,root);});
+        pbSegA.appendChild(row);
+      }
+      bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v"),
+        row:row,rowSub:row&&row.querySelector(".pb-sub"),rowAvg:row&&row.querySelector(".pb-avg"),rowTick:row&&row.querySelector(".pb-tick")};
     });
+    elBanners.appendChild(pbSegA);elBanners.appendChild(pbWrapX);elBanners.appendChild(pbSegB);
     var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
     (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);var sb=ar&&ar.querySelector(".rb-share");if(sb)sb.addEventListener("click",function(ev){ev.stopPropagation();rbShareCard();});})(); /* door B (RB-Spec): the glyph is the only door; the hero stays a pure read (0718k) */ /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
     var cpm=document.createElement("div");cpm.id="cpCard";elBanners.appendChild(cpm); /* Cut 2 (0719u): the CROWD PULSE section - after the last park hero, before Up Next: the day, the parks, the pulse, what's playing, yours */
@@ -6307,11 +6410,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         el.statV.innerHTML=(s.headAvg!==null?s.headAvg+'<span class="u">m</span>':'\u2013');
         el.root.classList.remove("tier-1","tier-2","tier-3","tier-4");
         if(s.crowd){el.root.classList.add("tier-"+s.crowd.level);el.root.style.setProperty("--cl",s.crowd.color);}
+        if(key!=="all"&&bannerEls[key]&&bannerEls[key].row){ /* PB (0721y): the row face — the expanded card's own sub above keeps the ticket clauses verbatim */
+          var el2=bannerEls[key],inf2=parkInfo[key]||null,sw2=(typeof tySweep==="function")?tySweep(key):null,nw2=Date.now();
+          el2.rowSub.innerHTML=(s.isOpen===true)?pbOpenSub(s,inf2,sw2,nw2)
+            :(s.isOpen===false)?'<i class="dot"></i>'+pbClosedSub(inf2||{},nw2)
+            :'<i class="dot"></i>Live'; /* no schedule yet — the row waits honestly, no fake state */
+          el2.rowAvg.innerHTML=(s.isOpen===true&&s.headAvg!==null)?s.headAvg+'<span class="u">m</span>':'\u2013';
+          el2.rowTick.className='pb-tick '+((s.isOpen===true&&s.crowd)?'pb-t'+s.crowd.level:'pb-tx'); /* COLOR NEVER CARRIES ALONE: the word rides beside it */
+          el2.row.classList.toggle("closed",s.isOpen!==true);
+        }
       var isExp=expanded===key;
       el.root.classList.toggle("expanded",isExp);
       if(isExp){el.panel.hidden=false;renderPanel(key,el.panel);}
       else if(el.panel){el.panel.hidden=true;el.panel.innerHTML="";} /* 0718u: the hero has no panel — guard the collapse path */
     });
+    pbRegroup(); /* E1-a: the board splits around the expanded park */
     renderFavTeaser();
     bk2Sync(); /* P1 (0710l): return pill tracks the expanded header */
   }
