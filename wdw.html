@@ -1974,7 +1974,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3256,7 +3256,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!inf||!inf.close||!inf.extras)return null;
     var c=new Date(inf.close).getTime(),best=null;
     inf.extras.forEach(function(e){if(!e.open)return;var t=new Date(e.open).getTime();
-      if(t>=c&&now<t&&(!best||t<best.t))best={t:t,iso:e.open,kind:e.desc};});
+      if(t>=c&&now<t&&(!best||t<best.t))best={t:t,iso:e.open,close:e.close||null,kind:e.desc};});
     return best;
   }
   function pbOpenSub(s,inf,sw,now){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
@@ -3277,7 +3277,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }else if(sw&&sw.c!=null)closeTxt=ck(sw.c);
     if(closeTxt)parts.push('<span class="cwu">to '+closeTxt+'</span>');
     var tail=pbEveTail(inf,now);
-    if(tail&&closeTxt)parts.push('<span class="cwu">'+esc(tail.kind)+' '+pbStripAm(fmtClock(tail.iso),closeTxt)+'</span>'); /* S4-b: completes the early-close claim */
+    if(tail&&closeTxt)parts.push('<span class="cwu">'+esc(tail.kind)+' '+fmtClock(tail.iso)+(tail.close?'\u2013'+fmtClock(tail.close):'')+'</span>'); /* 0722c: the tail speaks the Hours-tile pair dialect (owner call) — both clocks full, en dash; start alone when no close is recorded */
     return parts.join(' <span class="sep">\u00b7</span> '); /* 0721z: breathable seps — wraps land BETWEEN clauses (0709r) */
   }
   function pbClosedSub(inf,now){ /* S3-A: the hero dialect in board compression; bare Closed is the honest floor */
