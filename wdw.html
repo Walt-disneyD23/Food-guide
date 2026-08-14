@@ -1812,6 +1812,16 @@
   .mr-bk .m{display:flex;align-items:center;gap:10px;margin-top:6px}
   .mr-bk .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title)}
   .mr-bk .sub{font-size:var(--fs-meta);color:var(--muted);margin-top:2px}
+.mr-room{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);overflow:hidden;margin-bottom:10px}
+.mr-room .mr-roomhd{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.14em;color:var(--ink);padding:12px 14px 9px;border-bottom:1px solid var(--line)}
+.mr-room .mr-zone{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;padding:11px 14px 2px;display:flex;align-items:center;justify-content:space-between}
+.mr-room .mr-zone.zd{color:var(--packed)}
+.mr-room .mr-zone.zb{color:var(--short)}
+.mr-room .mr-zone.zt{border-top:1px solid var(--line);margin-top:8px}
+.mr-room .m{display:flex;align-items:center;gap:10px;padding:9px 14px}
+.mr-room .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title)}
+.mr-room .sub{font-size:var(--fs-meta);color:var(--muted);margin-top:2px;line-height:1.45}
+.mr-dnlead{color:var(--accent);font-weight:700}
   .mr-clear{font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);background:var(--accent-fill);color:#fff;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;flex:none}
   .mr-grp{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);overflow:hidden;margin-bottom:10px}
   .mr-grp .hd{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);padding:11px 14px 4px}
@@ -1967,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2644,7 +2654,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function saveReopen(){store.set("reopen",reopen);}
   function saveReopenOnly(){store.set("reopenOnly",reopenOnly);}
   function saveResolved(){store.set("resolved",resolved);}
-  function updateAlertBadge(){var n=alertIds().length;["navAlertBadge"].forEach(function(id){var b=$(id);if(!b)return;b.textContent=n;b.classList.toggle("show",n>0);});} /* 0710t: one writer, one badge — the dock is the sole door; new badges join this list, never a second writer */
+  function updateAlertBadge(){var n=Object.keys(resolved).filter(function(id){return roster[id];}).length;["navAlertBadge"].forEach(function(id){var b=$(id);if(!b)return;b.textContent=n;b.classList.toggle("show",n>0);});} /* 0710t: one writer, one badge — the dock is the sole door; new badges join this list, never a second writer. 0722i D3-a (owner-ratified): the count is parked back-ups only — the one state that needs the owner's hand; it empties when the Clears are done. alertIds() is retired from the badge (it summed four meanings into one number). */
   /* 0719w: the sheet's list renderer retired — MY RIDES renders the room */
   function rowBackUp(id){
     var r=roster[id],lv=liveById[id],tier=tierOf(lv);
@@ -2880,7 +2890,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       ? '<b>'+n+' ride'+(n===1?'':'s')+' down</b> at '+esc(BANNER_MONO[s.down[0].park]||s.down[0].park)+'.'
       : '<b>'+n+' rides down</b> across '+P+' parks.';
     var rows=s.down.map(function(r){
-      var on=!!reopen[r.id];
+      var on=!!(reopen[r.id]||(watch[r.id]&&mrDnupFor(r.id))); /* 0722g: the button answers "will I be told?" — coverage, not just the local map (owner-ratified D1-a) */
       return '<div class="rd-dn-row"><span class="rdot2"></span>'+
         '<span class="nm2">'+esc(r.name)+'</span>'+
         '<span class="pk2">'+esc(BANNER_MONO[r.park]||r.park)+'</span>'+
@@ -3080,13 +3090,16 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       Array.prototype.forEach.call(list.querySelectorAll("[data-rdwatch]"),function(btn){
         btn.addEventListener("click",function(ev){ev.stopPropagation();
           /* the banner\u2019s watch handler, verbatim \u2014 the alerts lifecycle is not edited */
-          var id=btn.getAttribute("data-rdwatch"),on=!reopen[id];
+          var id=btn.getAttribute("data-rdwatch");
+          if(!reopen[id]&&watch[id]&&mrDnupFor(id)){pushToast(roster[id]?roster[id].name:"Covered","Watched by its down & back-up setting \u2014 manage it in My Rides.");return;} /* 0722g T-a (owner-ratified): a tap on switch-coverage explains, never destroys */
+          var on=!reopen[id];
           if(on){reopen[id]=true;
             if(!armed[id])reopenOnly[id]=true;   /* transient unless a standing threshold alert exists */
             prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
           else{delete reopen[id];delete reopenOnly[id];}
           saveReopen();saveReopenOnly();
-          btn.classList.toggle("on",on);btn.textContent=on?"\u2713 Alert set":"Notify me";
+          var lit=!!(reopen[id]||(watch[id]&&mrDnupFor(id))); /* 0722g: the repaint reads the same coverage truth as the face */
+          btn.classList.toggle("on",lit);btn.textContent=lit?"\u2713 Alert set":"Notify me";
           updateAlertBadge();render();
         });
       });
@@ -7775,8 +7788,20 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrDnupFor(id){ /* 0720x: per-ride down & back-up - default follows the master; On/Off pins the ride (the threshold grammar) */
     var o=overrides[id];return (o&&o.dnup)?o.dnup==="on":!!settings.dnup;
   }
+  function mrLastDownEv(id){ /* 0722h: the latest logged down-transition for a ride — clocks and re-arm stories are clause-earned from the log, never invented */
+    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id===id&&(e.ev==="down"||e.ev==="rebreak-confirmed"))return e;}}catch(e){}
+    return null;
+  }
   function mrRuleLine(id,teach){ /* 0720z (owner-lettered, V3): THE PILL LANE - loudness by fill, never size. Grey whisper (off) / accent tint (armed) / solid mint (fresh hit, the only filled pill on the page) / mint outline (stale). Every pill is a door; the Customize word additionally labels the quiet armed rows. */
     var cap=function(w){return w?w.charAt(0).toUpperCase()+w.slice(1):w;};
+    var lvI=liveById[id]; /* 0722h THE INCIDENT LEADS (owner-ratified, composed3): while a ride is down, the row opens with the same words its LIVE button wears, then the durable tail — one dialect across LIVE, the roster, and the room. The clause dies with the incident; running rides keep the pill lane below untouched. */
+    if(lvI&&lvI.status==="DOWN"){
+      var covI=!!(reopen[id]||(watch[id]&&mrDnupFor(id)));
+      if(!covI)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="dncold">not watching — tap it on the Live board</div>';
+      var evI=mrLastDownEv(id),ruI=ruleFor(id);
+      var tailI=(watch[id]&&mrDnupFor(id))?'watching down & back-up':((evI&&evI.ev==="rebreak-confirmed")?'re-armed for you':(armed[id]?('bell '+esc(ruI.dir)+' '+ruI.thresh):'this down only'));
+      return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="dn"><span class="mr-dnlead">✓ Alert set</span> · '+tailI+'</div>';
+    }
     if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off"><span class="mr-p poff">Rule off</span>'+(teach?'<span class="mr-teach"> · tap the bell to arm</span>':'')+'</div>';
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
       var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
@@ -7809,18 +7834,31 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }).join("")+'</div>';
     }).join("");
   }
-  function mrShelfHTML(){
-    var ids=Object.keys(resolved).filter(function(id){return roster[id];});
-    if(!ids.length)return "";
-    ids.sort(function(a,b){return (resolved[a]||0)-(resolved[b]||0);}); /* 0721e: the story reads oldest first */
-    var rows=ids.map(function(id){
-      return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div>'+
-        '<div class="sub">Reopened at '+mrClk(resolved[id])+' — parked here till you clear it.</div></div>'+
-        '<button class="mr-clear" data-id="'+esc(id)+'" type="button">Clear</button></div>';
-    }).join("");
-    return '<div class="mr-bk"><div class="cap">BACK UP'+(ids.length>1?'<button class="mr-clrall" data-clrall type="button">Clear all</button>':'')+'</div>'+rows+'</div>'; /* 0721e: the July header's own word returns - only at 2+ rows */
+  function mrShelfHTML(){ /* 0722h THE ROOM (owner-ratified N-b/S-a/L-a, D2-b Model 2): DOWN & BACK UP — one card, two self-gating zones. DOWN NOW is STATUS: every starred ride currently down, covered or not; the ping promise is a clause coverage must earn, and clocks are log-earned (an unwitnessed down stays clockless). BACK UP stays alert-parking — a reopen never pinged needs no Clear. Sentences only; Clear is the room's one control. Supersedes the 0721e shelf; its sentence and hooks (.mr-clear, data-clrall, oldest-first) live on in the BACK UP zone. */
+    var dn=Object.keys(watch).filter(function(id){var r=roster[id],lv=liveById[id];return r&&r.kind==="ride"&&lv&&lv.status==="DOWN";});
+    var bk=Object.keys(resolved).filter(function(id){return roster[id];});
+    if(!dn.length&&!bk.length)return "";
+    dn.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);});
+    bk.sort(function(a,b){return (resolved[a]||0)-(resolved[b]||0);}); /* 0721e: the story reads oldest first */
+    var h='<div class="mr-room"><div class="mr-roomhd">DOWN &amp; BACK UP</div>';
+    if(dn.length){
+      h+='<div class="mr-zone zd">DOWN NOW</div>'+dn.map(function(id){
+        var cov=!!(reopen[id]||(watch[id]&&mrDnupFor(id)));
+        var ev=mrLastDownEv(id),sub;
+        if(ev&&ev.ev==="rebreak-confirmed")sub='Down again at '+mrClk(ev.t)+' — re-armed for you.';
+        else if(cov)sub='Down '+(ev?('since '+mrClk(ev.t)):'right now')+' — you’ll get the ping when it’s back.';
+        else sub='Down right now.';
+        return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div><div class="sub">'+sub+'</div></div></div>';
+      }).join("");
+    }
+    if(bk.length){
+      h+='<div class="mr-zone zb'+(dn.length?' zt':'')+'">BACK UP'+(bk.length>1?'<button class="mr-clrall" data-clrall type="button">Clear all</button>':'')+'</div>'+bk.map(function(id){
+        return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div><div class="sub">Reopened at '+mrClk(resolved[id])+' — parked here till you clear it.</div></div><button class="mr-clear" data-id="'+esc(id)+'" type="button">Clear</button></div>';
+      }).join("");
+    }
+    return h+'</div>';
   }
-  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star"};
+  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star","rebreak-confirmed":"down again — re-armed"};
   var mrLogDaysOpen={}; /* 0721u: session-mortal fold state — survives poll rebuilds, dies with the tab */
   function mrDayKey(t){var d=new Date(t);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
   function mrDayWord(t){ /* the header's word — device-local, the same dialect mrClk speaks */
