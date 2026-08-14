@@ -1967,7 +1967,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8099,15 +8099,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      deployed Worker's /save expects. overrides may be empty -> send {}. */
   function collectRules(){
     return {
-      watch:(function(){var w={},k;for(k in armed)w[k]=true;for(k in watch)if(mrDnupFor(k))w[k]=true;return w;})(),
-      /* Cut 3 (0719w): the head switch is translated HERE for the v3.16 worker — no worker deploy.
-         Scan set = armed rules ∪ (switch on ? every star : nothing). The wire's reopen/reopenOnly
-         maps derive from the stars + the switch; the retired per-ride flags never cross again.
-         Quiet stars still never leave the phone while the switch is off. The payload stays
-         v3.16-shaped — dnup itself is a phone-side fact the worker never sees. */
+      watch:(function(){var w={},k;for(k in armed)w[k]=true;for(k in watch)if(mrDnupFor(k))w[k]=true;for(k in reopen)w[k]=true;return w;})(),
+      /* Cut 3 (0719w) + 0722f THE TAP MUST CROSS THE WIRE: the head switch is translated HERE
+         for the v3.16 worker — no worker deploy. Scan set = armed rules ∪ dnup-covered stars
+         ∪ every LOCAL one-shot (hand-taps + re-break re-arms) — the 0719w translation silently
+         discarded the one-shots, so "Notify me" on an uncovered ride never pushed (client defers
+         to the worker via !pushActive(), and the worker was never told). The wire reopen/reopenOnly
+         maps are the same union. Hand beats pin-Off: a local entry crosses without consulting
+         mrDnupFor — the tap is the owner's explicit ask for THIS incident, the pin keeps silencing
+         the automatic coverage. Quiet stars still never leave the phone: only what a thumb or the
+         switch asked for crosses. The payload stays v3.16-shaped — dnup itself never crosses. */
       overrides:overrides||{},
-      reopen:(function(){var m={},k;for(k in watch)if(mrDnupFor(k))m[k]=true;return m;})(),
-      reopenOnly:(function(){var m={},k;for(k in watch)if(mrDnupFor(k)&&!armed[k])m[k]=true;return m;})(),
+      reopen:(function(){var m={},k;for(k in watch)if(mrDnupFor(k))m[k]=true;for(k in reopen)m[k]=true;return m;})(),
+      reopenOnly:(function(){var m={},k;for(k in watch)if(mrDnupFor(k)&&!armed[k])m[k]=true;for(k in reopenOnly)m[k]=true;return m;})(),
       resolved:resolved||{},
       settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
