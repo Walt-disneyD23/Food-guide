@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2572,7 +2572,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
          park (the old line deleted resolved AND watch on one tick). (0705d) */
       if(resolved[id]&&cur==="DOWN"){
         if(rebreak[id]){
-          delete rebreak[id];delete resolved[id];saveResolved();
+          delete rebreak[id];clearedTs[id]=Date.now();saveClearedTs();delete resolved[id];saveResolved(); /* 0722j: a confirmed re-break ANSWERS the old reopen — tombstone it like a hand-clear, or mergeWorkerReopens resurrects the parking from the worker's mirror (the Test Track double-seat, field-found). Only NEWER reopens re-park. */
           reopen[id]=true;reopenOnly[id]=true;saveReopen();saveReopenOnly();
           updateAlertBadge();logAlertEv(id,"rebreak-confirmed");
         }else{rebreak[id]=Date.now();logAlertEv(id,"rebreak-pending");}
@@ -8117,8 +8117,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      pill picks up the exact time of any push the worker sent while we were away. */
   function refreshIfStale(){ if(!lastUpdated||(Date.now()-lastUpdated)>30000)load(false); }
   function syncOnReturn(){ if(settings.notif&&pushSupported()&&Notification.permission==="granted")syncPush(); }
-  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"){refreshIfStale();syncOnReturn();} });
-  window.addEventListener("pageshow",function(e){ if(e&&e.persisted){refreshIfStale();syncOnReturn();} });
+  function fossilCheck(){ /* 0722k THE RESUME CHECKS THE STAMP: iOS can restore a stale page snapshot (field specimen: a July 0711d fossil waking in August). The marker is the newest build this device has run; a page older than the marker is a fossil and reloads itself once. One source — the stamp itself. */
+    try{
+      var el=document.getElementById("setBuild");var b=el?String(el.textContent||"").replace("build ","").trim():"";if(!b)return;
+      var nb=store.get("ppNewestBuild","")||"";
+      if(b>nb){store.set("ppNewestBuild",b);return;}
+      if(b<nb&&!sessionStorage.getItem("ppFossilReload")){sessionStorage.setItem("ppFossilReload","1");location.reload();}
+    }catch(e){}
+  }
+  fossilCheck(); /* boot: stamp the marker forward the moment a newer build runs */
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"){fossilCheck();refreshIfStale();syncOnReturn();} });
+  window.addEventListener("pageshow",function(e){ if(e&&e.persisted){fossilCheck();refreshIfStale();syncOnReturn();} });
 
   /* ===========================================================
      PHASE 2 — BACKGROUND PUSH (Cloudflare Worker backend)
