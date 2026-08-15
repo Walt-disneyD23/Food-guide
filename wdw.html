@@ -1901,7 +1901,7 @@
   .mr-sheet .acts{display:flex;gap:8px;margin-top:16px}
   .mr-sheet .acts button{flex:1;font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);border-radius:999px;padding:11px 0;border:1px solid var(--line);cursor:pointer}
   .mr-sheet .save{background:var(--accent-fill);color:#fff;border-color:var(--accent-fill)}
-  .mr-sheet .def{background:var(--card);color:var(--muted)}
+  .mr-sheet .def{background:var(--card);color:var(--muted)}.def[disabled]{opacity:.38;cursor:default} /* 0722o U1-b */
   .mr-empty{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);padding:34px 18px;text-align:center;margin-top:8px}
   .mr-empty .big{font-size:34px;color:var(--fav)}
   .mr-empty .t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);margin-top:8px}
@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7917,7 +7917,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         '<select id="mrShDir"><option value="below">below</option><option value="above">above</option></select> '+
         '<select id="mrShThr"></select> <span>min</span></div>'+
       '<div class="fldlab">Down &amp; back up alerts</div><div class="mr-seg" id="mrShDn"><b data-dn="def">Default</b><b data-dn="on">On</b><b data-dn="off">Off</b></div><div class="mr-fine">Pings when this ride goes down and when it returns. Default follows the blanket \u2014 currently '+(settings.dnup?'on':'off')+'.</div>'+ /* 0720y (B, owner-lettered): the label names the species; the fine print answers the one word a new user can\u2019t guess */
-      '<div class="acts"><button class="def" id="mrShDef" type="button">Use default rule</button><button class="save" id="mrShSave" type="button">Save</button></div></div>';
+      '<div class="acts"><button class="def" id="mrShDef" type="button">Reset to defaults</button><button class="save" id="mrShSave" type="button">Save</button></div></div>';
   }
   function mrPageHTML(){
     var all=mrStars();
@@ -8046,7 +8046,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
     var sc=el.querySelector("#mrScrim");if(sc)sc.addEventListener("click",mrCloseSheet);
     var dnw2=el.querySelector("#mrShDn");if(dnw2)dnw2.addEventListener("click",function(ev2){var b=ev2.target&&ev2.target.closest?ev2.target.closest("[data-dn]"):null;if(!b)return;Array.prototype.forEach.call(dnw2.children,function(x){x.classList.remove("on");});b.classList.add("on");});
-    var sd=el.querySelector("#mrShDef");if(sd)sd.addEventListener("click",function(){var id=mrShId;if(id){delete overrides[id];saveOverrides();delete alertState[id];saveAlertState();}mrCloseSheet();renderMyRidesPage();});
+    var sd=el.querySelector("#mrShDef");if(sd)sd.addEventListener("click",function(){var id=mrShId;if(!id||!overrides[id])return; /* 0722o U1-b: the button cannot lie - inert when nothing is custom */ delete overrides[id];saveOverrides();delete alertState[id];saveAlertState();pushToast(roster[id]?roster[id].name:"Ride","back to your defaults.");mrCloseSheet();renderMyRidesPage();});
     var sv=el.querySelector("#mrShSave");if(sv)sv.addEventListener("click",function(){var id=mrShId;
       if(id){var d=el.querySelector("#mrShDir"),t=el.querySelector("#mrShThr");
         var dnSel=(function(){var w2=el.querySelector("#mrShDn .on");return w2?w2.getAttribute("data-dn"):"def";})();
@@ -8062,6 +8062,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var o=overrides[id],d=el.querySelector("#mrShDir"),th=el.querySelector("#mrShThr");
     if(d)d.value=o?o.dir:settings.dir;
     if(th)th.innerHTML=threshOptions(o?o.thresh:settings.thresh);
+    var sdb=el.querySelector("#mrShDef");if(sdb){if(o)sdb.removeAttribute("disabled");else sdb.setAttribute("disabled","");} /* 0722o U1-b: dimmed and asleep when the ride is already at defaults */
     var dnw=el.querySelector("#mrShDn");if(dnw){var dcur=(o&&o.dnup)||"def";Array.prototype.forEach.call(dnw.children,function(b){b.classList.toggle("on",b.getAttribute("data-dn")===dcur);});}
     var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
     if(sh)sh.classList.add("open");if(sc)sc.classList.add("open");
