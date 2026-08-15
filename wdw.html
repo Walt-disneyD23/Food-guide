@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2164,13 +2164,21 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var handArm=store.get("handArm",{})||{}; /* 0722l: id -> ms the owner hand-tapped Notify me — THE MASTER SILENCES ONLY ITS OWN VOICE must know whose voice armed it */
   function saveHandArm(){store.set("handArm",handArm);}
   var clearedTs=store.get("clearedTs",{})||{}; /* 0721g: id -> ms the user dismissed a reopen; A CLEAR IS AN ANSWER and the merge honors it */
-  function saveClearedTs(){store.set("clearedTs",clearedTs);}     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
+  function saveClearedTs(){store.set("clearedTs",clearedTs);}
+  var echoWm=+store.get("echoWm",0)||0; /* 0722t watermark: the newest worker fire clock already folded — echoes at or before it never re-log (one global scalar, O(1), eviction-proof) */
+  function saveEchoWm(){store.set("echoWm",echoWm);}     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
 var armed=store.get("armed",{})||{};           /* id -> standing threshold rule (the bell). Stars (watch) are quiet unless armed. */
 function saveArmed(){store.set("armed",armed);}
 /* every ride the badge cares about: armed thresholds, reopen flags, transients, parked back-ups */
 function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function(m){Object.keys(m).forEach(function(id){if(roster[id])s[id]=1;});});return Object.keys(s);}
   var rebreak={};                                 /* in-memory only: parked rides seen DOWN once, awaiting 2nd-poll confirmation */
-  function logAlertEv(id,ev){try{var L=store.get("alertLog",[])||[];L.push({t:Date.now(),id:id,ev:ev});if(L.length>40)L=L.slice(-40);store.set("alertLog",L);}catch(e){}}
+  function logIncident(id,ev,ts,echo){try{var L=store.get("alertLog",[])||[]; /* 0722t THE WORKER'S PINGS ECHO BACK: one writer for the diary. Local lanes pass now; worker echoes pass the true fire clock. */
+    if(echo){var fam=(ev==="reopen")?{reopen:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1};var hit=null,i; /* T'-A THE TRUE CLOCK WINS: fold the echo into the earliest same-family witness line at/after the fire (60s skew grace) — the witness never leads the worker (field: PeopleMover 9:59 vs 10:16, Test Track 7:00 vs 7:54) */
+      for(i=0;i<L.length;i++){var e=L[i];if(e.id===id&&fam[e.ev]&&e.t>=ts-60000&&(!hit||e.t<hit.t))hit=e;}
+      if(hit){if(hit.t!==ts){hit.t=ts;L.sort(function(a,b){return a.t-b.t;});store.set("alertLog",L);}return;}}
+    L.push({t:ts,id:id,ev:ev});if(echo)L.sort(function(a,b){return a.t-b.t;}); /* a truly new echo (Frozen 8:54) seats in clock order */
+    if(L.length>200)L=L.slice(-200);store.set("alertLog",L);}catch(e){}} /* cap B: store 200, render 40 */
+  function logAlertEv(id,ev){logIncident(id,ev,Date.now(),false);}
   var BACKUP_FADE_MS=3*60*60*1000;               /* (parked) auto-fade window for back-up rows — currently off; re-add to the clear check to enable */
   var prevStatus={};                        /* last-seen status per ride (in-memory, for transition detection) */
   var alertState=store.get("alerts",{})||{};   /* id -> fire timestamp; persisted so one-shot survives reload */
@@ -2572,6 +2580,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
          DOWN polls: the Jul 5 autopsy showed the bank's reopens were clean, so a
          single DOWN read here can be a lagged/flappy fetch and must never erase the
          park (the old line deleted resolved AND watch on one tick). (0705d) */
+      var wasParked=!!(resolved[id]||rebreak[id]); /* 0722t ONE INCIDENT ONE LINE: remember the park before the rebreak lane mutates it — a parked ride's only voice is the rebreak lane (field double: Test Track 5:48, SE 10:41) */
       if(resolved[id]&&cur==="DOWN"){
         if(rebreak[id]){
           delete rebreak[id];clearedTs[id]=Date.now();saveClearedTs();delete resolved[id];saveResolved(); /* 0722j: a confirmed re-break ANSWERS the old reopen — tombstone it like a hand-clear, or mergeWorkerReopens resurrects the parking from the worker's mirror (the Test Track double-seat, field-found). Only NEWER reopens re-park. */
@@ -2584,14 +2593,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       /* the head switch (dnup): a STARRED ride that just went down fires the down ping and
          auto-arms its back-up — the switch is the only writer of the reopen channel now.
          Unarmed stars park under BACK UP on return (reopenOnly); armed rides re-arm quietly. */
-      if(mrDnupFor(id)&&watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;saveReopen();saveReopenOnly();fireDown(r);}
+      if(mrDnupFor(id)&&watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]&&!wasParked){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;saveReopen();saveReopenOnly();fireDown(r);}
       /* reopen: a watched, reopen-flagged ride that is now operating has come back.
          Park it either way (so it lands in Back up, not Watched) — even if the flip
          happened while the app was closed. Only re-fire the in-app ping if we
          witnessed the live DOWN->OPERATING flip, so we don't double-ping when the
          Worker already pushed it in the background. */
       if(reopen[id]&&cur==="OPERATING"){   /* matches the worker: reopen stands on its own, no favorite required */
-        if(prevStatus[id]==="DOWN")fireReopen(r);
+        if(prevStatus[id]==="DOWN")fireReopen(r);else logAlertEv(id,"reopen"); /* 0722t: the quiet park still writes its line — the ping stays skipped (the worker already buzzed), the echo will bring the true clock */
         delete reopen[id];delete alertState[id];saveAlertState();delete handArm[id];saveHandArm(); /* 0722l: the hand asked for THIS incident; the fire consumes the ask */
         /* intent-based parking: only a pure "notify me when it reopens" ride parks
            (one-shot). A starred ride is a standing order — it keeps watching, so it
@@ -7801,7 +7810,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var o=overrides[id];return (o&&o.dnup)?o.dnup==="on":!!settings.dnup;
   }
   function mrLastDownEv(id){ /* 0722h: the latest logged down-transition for a ride — clocks and re-arm stories are clause-earned from the log, never invented */
-    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id===id&&(e.ev==="down"||e.ev==="rebreak-confirmed"))return e;}}catch(e){}
+    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id===id&&(e.ev==="down"||e.ev==="rebreak-confirmed"||e.ev==="rebreak-cold"))return e;}}catch(e){}
     return null;
   }
   function mrRuleLine(id,teach){ /* 0720z (owner-lettered, V3): THE PILL LANE - loudness by fill, never size. Grey whisper (off) / accent tint (armed) / solid mint (fresh hit, the only filled pill on the page) / mint outline (stale). Every pill is a door; the Customize word additionally labels the quiet armed rows. */
@@ -7883,7 +7892,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   var mrEvTint={hit:"mr-vh",down:"mr-vd",reopen:"mr-vu"}; /* 0721u R2: only the three alert verbs tint; housekeeping breadcrumbs stay plain */
   function mrLogHTML(){
-    var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice().reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
+    var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice(-40).reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
     if(!L.length)return "";
     var days=[],cur=null,i;
     for(i=0;i<L.length;i++){var k=mrDayKey(L[i].t);if(!cur||cur.k!==k){cur={k:k,w:mrDayWord(L[i].t),rows:[]};days.push(cur);}cur.rows.push(L[i]);}
@@ -8246,10 +8255,31 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var changed=false;
     Object.keys(wr||{}).forEach(function(id){
       var wt=+wr[id];if(!wt||wt<1e12)return;   /* skip legacy boolean flags / non-timestamps */
+      if(wt>echoWm)logIncident(id,"reopen",wt,true); /* 0722t: the echo writes the diary (Frozen 8:54) — history is history, even past a tombstone */
       if(clearedTs[id]&&wt<=clearedTs[id])return; /* 0721g: the user dismissed this reopen - only NEWER news re-parks */
       if(!resolved[id]||wt<resolved[id]){resolved[id]=wt;changed=true;}
     });
     if(changed){saveResolved();updateAlertBadge();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
+  }
+
+  /* 0722t THE WORKER'S PINGS ECHO BACK, frontend half: the /save echo's down
+     clocks write the diary with the worker's own fire times. Furniture stays
+     untouched — downs move no shelf state; the room's "Down since" reads the
+     diary (R-A). downsRb marks a worker-confirmed re-break: the same words the
+     local cold lane speaks ("down again"), no re-arm promised — the echo arms
+     nothing. WHAT THE WORKER SPEAKS, THE PHONE REMEMBERS. */
+  function mergeWorkerDowns(wd,wrb){
+    var changed=false;
+    Object.keys(wd||{}).forEach(function(id){
+      var wt=+wd[id];if(!wt||wt<1e12)return;
+      if(wt<=echoWm)return;
+      logIncident(id,(wrb&&wrb[id])?"rebreak-cold":"down",wt,true);changed=true;
+    });
+    if(changed&&navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
+  }
+  function bumpEchoWm(d){ /* one global newest-folded worker clock; the merges run first, the bump seals the batch */
+    var m=echoWm;[d&&d.downs,d&&d.reopens].forEach(function(o){Object.keys(o||{}).forEach(function(id){var t=+o[id];if(t>1e12&&t>m)m=t;});});
+    if(m>echoWm){echoWm=m;saveEchoWm();}
   }
 
   /* Push the current rules to the backend, acquiring the subscription first if
@@ -8265,7 +8295,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         body:JSON.stringify({subscription:sub.toJSON(),rules:collectRules()})
       }).then(function(r){return r.json();}).then(function(d){
         if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
+        if(d&&d.downs)mergeWorkerDowns(d.downs,d.downsRb);
         if(d&&d.reopens)mergeWorkerReopens(d.reopens);
+        bumpEchoWm(d);
       }).catch(function(e){console.error("syncPush failed",e);});
     });
   }
