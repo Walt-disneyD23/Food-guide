@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2161,6 +2161,8 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   var reopen=store.get("reopen",{})||{};   /* ride ids flagged "tell me when it's back up" */
   var reopenOnly=store.get("reopenOnly",{})||{}; /* watches created solely by "Notify me" -> auto-remove after the back-up alert */
   var resolved=store.get("resolved",{})||{};
+  var handArm=store.get("handArm",{})||{}; /* 0722l: id -> ms the owner hand-tapped Notify me — THE MASTER SILENCES ONLY ITS OWN VOICE must know whose voice armed it */
+  function saveHandArm(){store.set("handArm",handArm);}
   var clearedTs=store.get("clearedTs",{})||{}; /* 0721g: id -> ms the user dismissed a reopen; A CLEAR IS AN ANSWER and the merge honors it */
   function saveClearedTs(){store.set("clearedTs",clearedTs);}     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
 var armed=store.get("armed",{})||{};           /* id -> standing threshold rule (the bell). Stars (watch) are quiet unless armed. */
@@ -2573,8 +2575,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(resolved[id]&&cur==="DOWN"){
         if(rebreak[id]){
           delete rebreak[id];clearedTs[id]=Date.now();saveClearedTs();delete resolved[id];saveResolved(); /* 0722j: a confirmed re-break ANSWERS the old reopen — tombstone it like a hand-clear, or mergeWorkerReopens resurrects the parking from the worker's mirror (the Test Track double-seat, field-found). Only NEWER reopens re-park. */
+          if(handArm[id]||(watch[id]&&mrDnupFor(id))){ /* 0722l THE MASTER SILENCES ONLY ITS OWN VOICE */
           reopen[id]=true;reopenOnly[id]=true;saveReopen();saveReopenOnly();
           updateAlertBadge();logAlertEv(id,"rebreak-confirmed");
+          }else{updateAlertBadge();logAlertEv(id,"rebreak-cold");} /* unparked because it is true — but no promise is made */
         }else{rebreak[id]=Date.now();logAlertEv(id,"rebreak-pending");}
       }else if(rebreak[id]){delete rebreak[id];logAlertEv(id,"rebreak-cleared");}
       /* the head switch (dnup): a STARRED ride that just went down fires the down ping and
@@ -2588,7 +2592,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
          Worker already pushed it in the background. */
       if(reopen[id]&&cur==="OPERATING"){   /* matches the worker: reopen stands on its own, no favorite required */
         if(prevStatus[id]==="DOWN")fireReopen(r);
-        delete reopen[id];delete alertState[id];saveAlertState();
+        delete reopen[id];delete alertState[id];saveAlertState();delete handArm[id];saveHandArm(); /* 0722l: the hand asked for THIS incident; the fire consumes the ask */
         /* intent-based parking: only a pure "notify me when it reopens" ride parks
            (one-shot). A starred ride is a standing order — it keeps watching, so it
            never parks; its threshold one-shot just re-armed above (delete alertState). */
@@ -3093,10 +3097,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           var id=btn.getAttribute("data-rdwatch");
           if(!reopen[id]&&watch[id]&&mrDnupFor(id)){pushToast(roster[id]?roster[id].name:"Covered","Watched by its down & back-up setting \u2014 manage it in My Rides.");return;} /* 0722g T-a (owner-ratified): a tap on switch-coverage explains, never destroys */
           var on=!reopen[id];
-          if(on){reopen[id]=true;
+          if(on){reopen[id]=true;handArm[id]=Date.now();saveHandArm(); /* 0722l: the hand’s signature */
             if(!armed[id])reopenOnly[id]=true;   /* transient unless a standing threshold alert exists */
             prevStatus[id]=(liveById[id]&&liveById[id].status)||prevStatus[id]||"DOWN";}
-          else{delete reopen[id];delete reopenOnly[id];}
+          else{delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();}
           saveReopen();saveReopenOnly();
           var lit=!!(reopen[id]||(watch[id]&&mrDnupFor(id))); /* 0722g: the repaint reads the same coverage truth as the face */
           btn.classList.toggle("on",lit);btn.textContent=lit?"\u2713 Alert set":"Notify me";
@@ -7340,12 +7344,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAtt
 var adding=!watch[id];var r=roster[id],nm=r?r.name:"Ride";
 if(adding){watch[id]=true;store.set("watch",Object.keys(watch));pushToast("★ Starred",nm+" — seated in MY RIDES");render();return;}
 var hadRule=!!armed[id];
-var hadWatch=!!reopen[id],hadOnly=!!reopenOnly[id]; /* 0720q (S4x): capture before the take - a transition-born watch cannot re-derive itself */
+var hadWatch=!!reopen[id],hadOnly=!!reopenOnly[id],hadHand=!!handArm[id]; /* 0720q (S4x): capture before the take - a transition-born watch cannot re-derive itself */
 delete watch[id];store.set("watch",Object.keys(watch));
 if(hadRule){delete armed[id];delete alertState[id];saveArmed();saveAlertState();logAlertEv(id,"unstar-disarmed");}
-if(hadWatch||hadOnly){delete reopen[id];delete reopenOnly[id];saveReopen();saveReopenOnly();logAlertEv(id,"unstar-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
+if(hadWatch||hadOnly){delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();saveReopen();saveReopenOnly();logAlertEv(id,"unstar-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
 updateAlertBadge();
-pushUndoToast("Removed from My Rides",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(hadRule){armed[id]=true;saveArmed();}if(hadWatch){reopen[id]=true;saveReopen();}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Back in My Rides",nm);render();});
+pushUndoToast("Removed from My Rides",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(hadRule){armed[id]=true;saveArmed();}if(hadWatch){reopen[id]=true;saveReopen();if(hadHand){handArm[id]=Date.now();saveHandArm();}}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Back in My Rides",nm);render();});
 render();});});
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
@@ -7858,7 +7862,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     return h+'</div>';
   }
-  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star","rebreak-confirmed":"down again — re-armed"};
+  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star","rebreak-confirmed":"down again — re-armed","rebreak-cold":"down again"};
   var mrLogDaysOpen={}; /* 0721u: session-mortal fold state — survives poll rebuilds, dies with the tab */
   function mrDayKey(t){var d=new Date(t);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
   function mrDayWord(t){ /* the header's word — device-local, the same dialect mrClk speaks */
@@ -7900,7 +7904,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         '<div class="sent">notify when wait is '+
           '<select id="mrDir"><option value="below"'+(settings.dir==="below"?" selected":"")+'>below</option><option value="above"'+(settings.dir==="above"?" selected":"")+'>above</option></select> '+
           '<select id="mrThr">'+threshOptions(settings.thresh)+'</select> <span>min</span></div>'+
-        '<div class="sw"><div><div>Down &amp; back-up alerts</div><div class="d">One ping when a starred ride goes down, one when it returns — returns park above till you clear them.</div></div><span class="tog'+(settings.dnup?' on':'')+'" id="mrDnup"></span></div>'+
+        '<div class="sw"><div><div>Down &amp; back-up alerts</div><div class="d">'+(settings.dnup?'Blanket pings for every starred ride — one when it goes down, one when it returns; returns park above till you clear them.':'Blanket off — rides with their own down &amp; back-up setting, and Notify me taps, still alert.')+'</div></div><span class="tog'+(settings.dnup?' on':'')+'" id="mrDnup"></span></div>'+
         '<div class="sw"><div><div>Notifications</div><div class="d">Master switch — off means total silence.</div></div><span class="tog'+(settings.notif&&notifGranted()?' on':'')+'" id="mrNotif"></span></div>'+
       '</div></div>';
   }
@@ -7975,7 +7979,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       pushToast("🔔 Alert set",nm+" — "+rl);
     }else{
       delete armed[id];delete alertState[id];saveAlertState();saveArmed();
-      if(reopen[id]||reopenOnly[id]){delete reopen[id];delete reopenOnly[id];saveReopen();saveReopenOnly();logAlertEv(id,"bell-off-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
+      if(reopen[id]||reopenOnly[id]){delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();saveReopen();saveReopenOnly();logAlertEv(id,"bell-off-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
       pushToast("Alert removed",nm+" — still starred");
     }
     updateAlertBadge();render();
@@ -7999,12 +8003,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      = the roll (the legacy first boot clears the standing orphan species
      whole). resolved rides the roll too: the hand-clear law governs the day,
      the day roll clears the shelf. Breadcrumbed when it takes anything. */
+  function mrBlanketOff(){ /* 0722l: the master silences only its own voice — arms with a hand signature or standing per-ride coverage survive; the blanket’s own work does not */
+    var nCl=0;
+    Object.keys(reopen).forEach(function(id){if(!handArm[id]&&!mrDnupFor(id)){delete reopen[id];delete reopenOnly[id];nCl++;}});
+    if(nCl){saveReopen();saveReopenOnly();updateAlertBadge();pushToast("Down & back-up","Blanket alerts cleared for "+nCl+(nCl===1?" ride":" rides")+" — per-ride settings and hand-set alerts kept.");}
+    return nCl;
+  }
   function alertsDayGate(){
     var ds=tpToday();
     if(store.get("alertsDs",null)===ds)return;
     var had=Object.keys(armed).length+Object.keys(alertState).length+Object.keys(reopen).length+Object.keys(reopenOnly).length;
-    armed={};alertState={};reopen={};reopenOnly={};
-    saveArmed();saveAlertState();saveReopen();saveReopenOnly();
+    armed={};alertState={};reopen={};reopenOnly={};handArm={};
+    saveArmed();saveAlertState();saveReopen();saveReopenOnly();saveHandArm();
     had+=Object.keys(resolved).length;resolved={};saveResolved();clearedTs={};saveClearedTs(); /* 0721g: tombstones are news too - they die at the roll */ /* 0720r: the shelf op - one-line reversible */
     store.set("alertsDs",ds);
     if(had)logAlertEv("sys","day-roll-clear");
@@ -8032,7 +8042,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var rh=el.querySelector(".mr-rh");if(rh)rh.querySelector(".rhhd").addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest("select,.tog"))return;mrRulesOpen=!mrRulesOpen;rh.classList.toggle("open",mrRulesOpen);});
     var dr=el.querySelector("#mrDir");if(dr)dr.addEventListener("change",function(){settings.dir=this.value;store.set("dir",this.value);resetAlerts();renderMyRidesPage();});
     var th=el.querySelector("#mrThr");if(th)th.addEventListener("change",function(){settings.thresh=Math.max(0,+this.value||0);store.set("thresh",settings.thresh);resetAlerts();renderMyRidesPage();});
-    var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);renderMyRidesPage();});
+    var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);if(!settings.dnup)mrBlanketOff();renderMyRidesPage();});
     var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
     var sc=el.querySelector("#mrScrim");if(sc)sc.addEventListener("click",mrCloseSheet);
     var dnw2=el.querySelector("#mrShDn");if(dnw2)dnw2.addEventListener("click",function(ev2){var b=ev2.target&&ev2.target.closest?ev2.target.closest("[data-dn]"):null;if(!b)return;Array.prototype.forEach.call(dnw2.children,function(x){x.classList.remove("on");});b.classList.add("on");});
