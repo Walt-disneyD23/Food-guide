@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -1998,8 +1998,8 @@ document.documentElement.classList.add("dark");}catch(e){}
       <div class="help-desc">Uses your default rule for every ride in the parks, not just the ones you've starred. Can get chatty.</div></div>
 
     <div class="help-sec">Setting your alerts</div>
-    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Default rule</span><span class="hc-pill">below</span><span class="hc-pill">30</span><span class="hc-min">min</span></div>
-      <div class="help-desc">Your baseline — ping me when a wait drops below (or rises above) the minutes you choose. Every starred ride uses this unless you give it its own.</div></div>
+    <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Default rule</span><span class="hc-pill">30</span><span class="hc-min">min</span><span class="hc-pill">or less</span></div>
+      <div class="help-desc">Your baseline — ping me when a wait is your number or less (or, flipped, your number or more). Every starred ride uses this unless you give it its own.</div></div>
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Custom rule</span><span class="hc-link">Customize</span></div>
       <div class="help-desc">Tap Customize on any ride to give just that ride its own number.</div></div>
     <div class="help-row"><div class="help-rowtop"><span class="help-lbl">Star a ride</span><span class="hc-star">★</span></div>
@@ -2638,7 +2638,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
   }
   function ruleMet(id,lv){if(!lv||lv.status!=="OPERATING"||lv.wait===null)return false;
-    var ru=ruleFor(id);return ru.dir==="below"?lv.wait<ru.thresh:lv.wait>ru.thresh;}
+    var ru=ruleFor(id);return ru.dir==="below"?lv.wait<=ru.thresh:lv.wait>=ru.thresh;} /* 0722y S-B (owner-ratified; field: Tiana's at exactly 30): the threshold includes its own number — waits are quantized upstream, intent is inclusive. Wire dir stays below/above. */
   /* True when the Worker is actively delivering lock-screen pushes for this
      device. When it is, the app skips its OWN system notification to avoid a
      duplicate banner — the instant in-app toast still fires. If push isn't
@@ -2712,10 +2712,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hit=ht?'<div class="al-hit"><span class="up-pill">✓ Hit · '+ht+'</span></div>':'';   /* fired its threshold; one-shot, stays put */
     if(o){
       rule='<div class="al-edit-on">'+
-        '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>below</option>'+
-          '<option value="above"'+(o.dir==="above"?" selected":"")+'>above</option></select>'+
         '<select class="al-mini al-num" data-thresh="'+esc(id)+'">'+threshOptions(o.thresh)+'</select>'+
-        '<span class="u">min</span><button class="al-link" data-default="'+esc(id)+'">Use default</button></div>';
+        '<span class="u">min</span>'+
+        '<select class="al-mini" data-dir="'+esc(id)+'"><option value="below"'+(o.dir==="below"?" selected":"")+'>or less</option>'+
+          '<option value="above"'+(o.dir==="above"?" selected":"")+'>or more</option></select>'+
+        '<button class="al-link" data-default="'+esc(id)+'">Use default</button></div>';
     }else{
       rule='<div class="al-edit-off">Using default ('+esc(settings.dir)+' '+settings.thresh+'m) · '+
         '<button class="al-link" data-custom="'+esc(id)+'">Customize</button></div>';
@@ -7836,18 +7837,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var covI=!!(reopen[id]||(watch[id]&&mrDnupFor(id)));
       if(!covI)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="dncold">not watching — tap it on the Live board</div>';
       var evI=mrLastDownEv(id),ruI=ruleFor(id);
-      var tailI=(watch[id]&&mrDnupFor(id))?'watching down & back-up':((evI&&evI.ev==="rebreak-confirmed")?'re-armed for you':(armed[id]?('bell '+esc(ruI.dir)+' '+ruI.thresh):'this down only'));
+      var tailI=(watch[id]&&mrDnupFor(id))?'watching down & back-up':((evI&&evI.ev==="rebreak-confirmed")?'re-armed for you':(armed[id]?('bell '+ruI.thresh+(ruI.dir==="below"?" or less":" or more")):'this down only'));
       return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="dn"><span class="mr-dnlead">✓ Alert set</span> · '+tailI+'</div>';
     }
     if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off"><span class="mr-p poff">Rule off</span>'+(teach?'<span class="mr-teach"> · tap the bell to arm</span>':'')+'</div>';
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
       var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
-      if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="mr-p phit">✓ Hit '+mrClk(alertState[id])+' · '+(ru.dir==="below"?"under":"over")+' '+ru.thresh+'</span></div>';
+      if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="mr-p phit">✓ Hit '+mrClk(alertState[id])+' · '+'at '+ru.thresh+(ru.dir==="below"?" or less":" or more")+'</span></div>';
       return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+' · moved back out</span></div>';
     }
     var o=overrides[id];
-    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+cap(esc(o.dir))+' '+o.thresh+' <i class="d"></i></span> <span class="mr-cz">Customize</span></div>';
-    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default"><span class="mr-p prule">'+cap(esc(settings.dir))+' '+settings.thresh+'</span> <span class="mr-cz">Customize</span></div>';
+    if(o)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+o.thresh+(o.dir==="below"?" or less":" or more")+' <i class="d"></i></span> <span class="mr-cz">Customize</span></div>';
+    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default"><span class="mr-p prule">'+settings.thresh+(settings.dir==="below"?" or less":" or more")+'</span> <span class="mr-cz">Customize</span></div>';
   }
   function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
@@ -7928,15 +7929,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrReadout(){
     if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
     var cust=Object.keys(overrides).filter(function(id){return armed[id];}).length;
-    return "<b>"+settings.dir+" "+settings.thresh+"</b> · down & back-up "+(settings.dnup?"on":"off")+(cust?" · "+cust+" custom":"");
+    return "<b>"+settings.thresh+(settings.dir==="below"?" or less":" or more")+"</b> · down & back-up "+(settings.dnup?"on":"off")+(cust?" · "+cust+" custom":"");
   }
   function mrRulesHTML(){
     return '<div class="mr-rh'+(mrRulesOpen?' open':'')+'">'+
       '<div class="rhhd"><span class="cap">Your rules</span><span class="ro">'+mrReadout()+'</span><span class="chv">›</span></div>'+
       '<div class="body">'+
         '<div class="sent">notify when wait is '+
-          '<select id="mrDir"><option value="below"'+(settings.dir==="below"?" selected":"")+'>below</option><option value="above"'+(settings.dir==="above"?" selected":"")+'>above</option></select> '+
-          '<select id="mrThr">'+threshOptions(settings.thresh)+'</select> <span>min</span></div>'+
+          '<select id="mrThr">'+threshOptions(settings.thresh)+'</select> <span>min</span> '+
+          '<select id="mrDir"><option value="below"'+(settings.dir==="below"?" selected":"")+'>or less</option><option value="above"'+(settings.dir==="above"?" selected":"")+'>or more</option></select></div>'+
         '<div class="sw"><div><div>Down &amp; back-up alerts</div><div class="d">'+(settings.dnup?'Blanket pings for every starred ride — one when it goes down, one when it returns; returns park above till you clear them.':'Blanket off — rides with their own down &amp; back-up setting, and Notify me taps, still alert.')+'</div></div><span class="tog'+(settings.dnup?' on':'')+'" id="mrDnup"></span></div>'+
         '<div class="sw"><div><div>Notifications</div><div class="d">Master switch — off means total silence.</div></div><span class="tog'+(settings.notif&&notifGranted()?' on':'')+'" id="mrNotif"></span></div>'+
       '</div></div>';
@@ -7947,8 +7948,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return '<div class="mr-scrim" id="mrScrim"></div>'+
       '<div class="mr-sheet" id="mrSheet"><div class="grab"></div><div class="ttl" id="mrShTtl"></div>'+
       '<div class="sent">notify when wait is '+
-        '<select id="mrShDir"><option value="below">below</option><option value="above">above</option></select> '+
-        '<select id="mrShThr"></select> <span>min</span></div>'+
+        '<select id="mrShThr"></select> <span>min</span> '+
+        '<select id="mrShDir"><option value="below">or less</option><option value="above">or more</option></select></div>'+
       '<div class="fldlab">Down &amp; back up alerts</div><div class="mr-seg" id="mrShDn"><b data-dn="def">Default</b><b data-dn="on">On</b><b data-dn="off">Off</b></div><div class="mr-fine">Pings when this ride goes down and when it returns. Default follows the blanket \u2014 currently '+(settings.dnup?'on':'off')+'.</div>'+ /* 0720y (B, owner-lettered): the label names the species; the fine print answers the one word a new user can\u2019t guess */
       '<div class="acts"><button class="def" id="mrShDef" type="button">Reset to defaults</button><button class="save" id="mrShSave" type="button">Save</button></div></div>';
   }
