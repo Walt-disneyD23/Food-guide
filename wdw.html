@@ -20,7 +20,7 @@
     /* radius scale (0708a): dot 3 / el-sm 8 / el 10 / tile 14 / card 16 / hero 22 / sheet 24 / pill */
     --r-dot:3px; --r-el-sm:8px; --r-el:10px; --r-tile:14px; --r-card:16px; --r-hero:22px; --r-sheet:24px; --r-pill:999px;
     /* type ladder (0708b): micro 9.5 / caps 10.5 / meta 11.5 / small 12.5 / body 13.5 / title 15 / lead 17 / head 19 / stat 22 / stat-lg 24 / swing 26 / wait 29 / emblem 33 */
-    --fs-micro:9.5px; --fs-caps:10.5px; --fs-meta:11.5px; --fs-small:12.5px; --fs-body:13.5px; --fs-title:15px; --fs-lead:17px; --fs-head:19px; --fs-stat:22px; --fs-stat-lg:24px; --fs-swing:26px; --fs-wait:29px; --fs-emblem:33px;
+    --fs-micro:9.5px; --fs-fine:11px; /* 0722n F1-c (owner-ratified): the fine-print family\u2019s one size \u2014 settings sub-lines + sheet fine print read the same token */ --fs-caps:10.5px; --fs-meta:11.5px; --fs-small:12.5px; --fs-body:13.5px; --fs-title:15px; --fs-lead:17px; --fs-head:19px; --fs-stat:22px; --fs-stat-lg:24px; --fs-swing:26px; --fs-wait:29px; --fs-emblem:33px;
     /* color tokens (0708c): paired light/dark + theme-invariant pw-hero family + semantic aliases */
     --track:#dfe1ee; --dot-idle:#c9cde0; --accent-deep:#3c38a0; --emblem-plate:#fff; --accent-tint:#96a1f2; --open:#37e0a0;
     --down:var(--packed); --heat:var(--medium); --fav:#dfa000;
@@ -1834,7 +1834,7 @@
   .mr-seg{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px}
   .mr-seg b{flex:1;text-align:center;font:700 12px var(--font-display);color:var(--muted);padding:8px 0;border-radius:999px;cursor:pointer}
   .mr-seg b.on{background:var(--accent-soft);color:var(--accent)}
-  .mr-fine{font-size:11px;color:var(--muted-2);line-height:1.5;margin:8px 2px 0} /* 0720y */
+  .mr-fine{font-size:var(--fs-fine);color:var(--muted);line-height:1.55;margin:8px 2px 0} /* 0722n F1-c: one family, one token */ /* 0720y */
   .mr-bk .cap{display:flex;align-items:center;justify-content:space-between}
   .mr-clrall{border:0;background:none;color:var(--accent);font:700 12px var(--font-display);cursor:pointer;padding:2px 4px;letter-spacing:0;text-transform:none} /* 0721e */
   .mr-rl{margin-top:4px;cursor:pointer}
@@ -1884,7 +1884,7 @@
   .mr-rh .sent,.mr-sheet .sent{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;font-size:var(--fs-body);color:var(--muted)}
   .mr-rh select,.mr-sheet select{font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);color:var(--accent);background:var(--accent-soft);border:1px solid rgba(139,135,255,.45);border-radius:999px;padding:5px 10px;-webkit-appearance:none;appearance:none}
   .mr-rh .sw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:var(--fs-body)}
-  .mr-rh .sw .d{font-size:var(--fs-micro);color:var(--muted-2);margin-top:2px}
+  .mr-rh .sw .d{font-size:var(--fs-fine);color:var(--muted);line-height:1.55;margin-top:2px} /* 0722n F1-c: the fine print earns its ink */
   .mr-rh .tog{width:40px;height:24px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;flex:none;-webkit-tap-highlight-color:transparent}
   .mr-rh .tog::after{content:"";position:absolute;top:2.5px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
   .mr-rh .tog.on{background:var(--accent-fill)}
@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
