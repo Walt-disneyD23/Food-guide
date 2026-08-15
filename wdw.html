@@ -1853,7 +1853,7 @@
   .mr-w{font-family:var(--font-display);font-weight:700;font-size:22px;min-width:56px;text-align:right;flex:none}
   .mr-w small{font-weight:700;font-size:10px;color:var(--muted-2);letter-spacing:.06em}
   .mr-w.word{font-size:var(--fs-title);letter-spacing:.04em}
-  .pg-myrides .t-short{color:var(--short)}.pg-myrides .t-medium{color:var(--medium)}.pg-myrides .t-long{color:var(--long)}.pg-myrides .t-packed{color:var(--packed)}.pg-myrides .t-down{color:var(--packed)}.pg-myrides .t-closed{color:var(--closed)}.pg-myrides .t-refurb{color:var(--closed)}
+  .pg-myrides .t-short{color:var(--short)}.pg-myrides .t-medium{color:var(--medium)}.pg-myrides .t-long{color:var(--long)}.pg-myrides .t-packed{color:var(--packed)}.pg-myrides .t-down{color:var(--packed)}.pg-myrides .t-closed{color:var(--closed)}.pg-myrides .t-open{color:var(--short)} /* 0722p V1-a: open-dot green, status language only */.pg-myrides .t-refurb{color:var(--closed)}
   .mr-bell{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card-2);border:1px solid var(--line);flex:none;-webkit-tap-highlight-color:transparent}
   .mr-bell svg{stroke:var(--muted-2);fill:none}
   .mr-bell.on{background:var(--accent-soft);border-color:rgba(139,135,255,.45)}
@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7762,9 +7762,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrW(n){var w=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];return n<=10?w[n]:String(n);}
   function mrClk(t){var d=new Date(t),h=d.getHours(),m=d.getMinutes();return ((h%12)||12)+":"+(m<10?"0":"")+m+" "+(h>=12?"PM":"AM");}
   function mrStars(){return Object.keys(watch).filter(function(id){return roster[id];});}
+  function mrOpNow(id){ /* 0722p V1-a: THE ONE OPERATING PREDICATE - hero and rows read the same room; park closed per schedule reads closed, same rule as groupOf/favModel */
+    var lv=liveById[id],r=roster[id];
+    if(!lv||lv.status!=="OPERATING")return false;
+    if(r&&isOpenNow(parkInfo[r.park])===false)return false;
+    return true;
+  }
   function mrHeroHTML(ids){ /* 0721v: Voice A recap — "Watching your starred rides live —" + the situation */
     var run=0,down=0,downIds=[];
-    ids.forEach(function(id){var lv=liveById[id];if(lv&&lv.status==="OPERATING")run++;else if(lv&&lv.status==="DOWN"){down++;downIds.push(id);}});
+    ids.forEach(function(id){var lv=liveById[id];if(mrOpNow(id))run++;else if(lv&&lv.status==="DOWN"){down++;downIds.push(id);}}); /* 0722p: run counted through mrOpNow */
     var back=Object.keys(resolved).filter(function(id){return roster[id];}).length;
     var closed=ids.length-run-down-back;
     var bells=ids.filter(function(id){return armed[id];}).length;
@@ -7784,8 +7790,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     return '<div class="pwh mr-hero"><div class="eb">My Rides · Live</div><h2>Your '+mrW(ids.length)+' <span class="fs">★</span></h2><div class="sub">'+sub+'</div></div>';
   }
-  function mrWaitHTML(lv){
-    if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="mr-w t-'+tierOf(lv)+'">'+lv.wait+'<small> MIN</small></span>';
+  function mrWaitHTML(lv,opNow){ /* 0722p V1-a (owner-ratified): an open ride never reads CLOSED - the OPEN chip joins the word family (LIVE board + Wrap card dialect); a stale OPERATING while the park is closed falls to CLOSED, honest to the schedule */
+    if(opNow===undefined)opNow=!!(lv&&lv.status==="OPERATING");
+    if(opNow&&lv.wait!==null)return '<span class="mr-w t-'+tierOf(lv)+'">'+lv.wait+'<small> MIN</small></span>';
+    if(opNow)return '<span class="mr-w word t-open">OPEN</span>';
     var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:(lv&&lv.status==="REFURBISHMENT")?["refurb","REFURB"]:["closed","CLOSED"];
     return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
   }
@@ -7821,7 +7829,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var hitF=!!(armed[id]&&alertState[id]&&ruleMet(id,lv)); /* 0720x (1B, owner-lettered): a fresh hit lights its whole row; stale keeps the quiet line */
     return '<div class="mr-rw'+(hitF?' hitf':'')+'"><span class="st">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
-      mrWaitHTML(lv)+
+      mrWaitHTML(lv,mrOpNow(id))+
       '<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>'+
       '</div>';
   }
