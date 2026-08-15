@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0722v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2172,11 +2172,22 @@ function saveArmed(){store.set("armed",armed);}
 /* every ride the badge cares about: armed thresholds, reopen flags, transients, parked back-ups */
 function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function(m){Object.keys(m).forEach(function(id){if(roster[id])s[id]=1;});});return Object.keys(s);}
   var rebreak={};                                 /* in-memory only: parked rides seen DOWN once, awaiting 2nd-poll confirmation */
+  var lastOpSeen={},lastDownSeen={};              /* 0722v in-memory sighting maps: the phone's own eyes, consulted by the fold-back wall */
   function logIncident(id,ev,ts,echo){try{var L=store.get("alertLog",[])||[]; /* 0722t THE WORKER'S PINGS ECHO BACK: one writer for the diary. Local lanes pass now; worker echoes pass the true fire clock. */
-    if(echo){var fam=(ev==="reopen")?{reopen:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1};var hit=null,i; /* T'-A THE TRUE CLOCK WINS: fold the echo into the earliest same-family witness line at/after the fire (60s skew grace) — the witness never leads the worker (field: PeopleMover 9:59 vs 10:16, Test Track 7:00 vs 7:54) */
-      for(i=0;i<L.length;i++){var e=L[i];if(e.id===id&&fam[e.ev]&&e.t>=ts-60000&&(!hit||e.t<hit.t))hit=e;}
-      if(hit){if(hit.t!==ts){hit.t=ts;L.sort(function(a,b){return a.t-b.t;});store.set("alertLog",L);}return;}}
-    L.push({t:ts,id:id,ev:ev});if(echo)L.sort(function(a,b){return a.t-b.t;}); /* a truly new echo (Frozen 8:54) seats in clock order */
+    var fam=(ev==="reopen")?{reopen:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1};var i,e;
+    if(echo){var hit=null; /* T'-A THE TRUE CLOCK WINS: fold the echo into the earliest same-family witness line at/after the fire (60s skew grace) — the witness never leads the worker (field: PeopleMover 9:59 vs 10:16, Test Track 7:00 vs 7:54) */
+      for(i=0;i<L.length;i++){e=L[i];if(e.id===id&&fam[e.ev]&&e.t>=ts-60000&&(!hit||e.t<hit.t))hit=e;}
+      if(hit){if(hit.t!==ts){hit.t=ts;L.sort(function(a,b){return a.t-b.t;});store.set("alertLog",L);}return;}
+      L.push({t:ts,id:id,ev:ev,w:1});L.sort(function(a,b){return a.t-b.t;}); /* a truly new echo (Frozen 8:54) seats in clock order, marked echo-born */
+    }else{ /* 0722u THE WORKER KEEPS THE CLOCK, THE PHONE KEEPS THE WORDS (field: SE 1:38/1:39): when the echo won the race, the local write folds back — nearest same-ride line decides. Same-family echo-born within 15 min folds (true clock kept, local word adopted); anything else — an opposite-family wall or a stale line — is a new incident. */
+      var fb=null;
+      for(i=L.length-1;i>=0;i--){e=L[i];if(e.id!==id)continue;
+        var contra=(ev==="reopen")?lastDownSeen[id]:lastOpSeen[id]; /* 0722v THE PHONE'S EYES ARE ALSO A WALL: a contrary sighting after the echo's clock proves a different incident — rapid down-up-down stays two lines even when the reopen between them left no line */
+        if(fam[e.ev]&&e.w&&ts-e.t<=900000&&!(contra>e.t))fb=e;
+        break;}
+      if(fb){if(fb.ev!==ev){fb.ev=ev;store.set("alertLog",L);}return;}
+      L.push({t:ts,id:id,ev:ev});
+    }
     if(L.length>200)L=L.slice(-200);store.set("alertLog",L);}catch(e){}} /* cap B: store 200, render 40 */
   function logAlertEv(id,ev){logIncident(id,ev,Date.now(),false);}
   var BACKUP_FADE_MS=3*60*60*1000;               /* (parked) auto-fade window for back-up rows — currently off; re-add to the clear check to enable */
@@ -2574,6 +2585,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     Object.keys(roster).forEach(function(id){
       var r=roster[id];if(r.kind!=="ride")return;var lv=liveById[id];if(!lv)return;
       var cur=lv.status;
+      if(cur==="OPERATING")lastOpSeen[id]=Date.now();else if(cur==="DOWN")lastDownSeen[id]=Date.now(); /* 0722v: sightings are evidence */
       var firstSeen=(prevStatus[id]===undefined);   /* first poll after launch: catch up state, don't re-ping */
       /* a parked "Back up" ride that breaks AGAIN re-arms — back to the Down group
          with its reopen restored — instead of vanishing. And only on two CONSECUTIVE
