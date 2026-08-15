@@ -1977,7 +1977,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0722z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2174,11 +2174,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var rebreak={};                                 /* in-memory only: parked rides seen DOWN once, awaiting 2nd-poll confirmation */
   var lastOpSeen={},lastDownSeen={};              /* 0722v in-memory sighting maps: the phone's own eyes, consulted by the fold-back wall */
   function logIncident(id,ev,ts,echo){try{var L=store.get("alertLog",[])||[]; /* 0722t THE WORKER'S PINGS ECHO BACK: one writer for the diary. Local lanes pass now; worker echoes pass the true fire clock. */
-    var fam=(ev==="reopen")?{reopen:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1};var i,e;
+    var fam=(ev==="reopen")?{reopen:1}:(ev==="hit")?{hit:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1}; /* 0723a: hits fold only with hits — and a hit line walls down-folds, because a hit proves the ride was running */var i,e;
     if(echo){var hit=null; /* T'-A THE TRUE CLOCK WINS: fold the echo into the earliest same-family witness line at/after the fire (60s skew grace) — the witness never leads the worker (field: PeopleMover 9:59 vs 10:16, Test Track 7:00 vs 7:54) */
       for(i=0;i<L.length;i++){e=L[i];if(e.id===id&&fam[e.ev]&&e.t>=ts-60000&&(!hit||e.t<hit.t))hit=e;}
       if(hit){if(hit.t!==ts){hit.t=ts;L.sort(function(a,b){return a.t-b.t;});store.set("alertLog",L);}return;}
-      var contraE=(ev==="reopen")?lastDownSeen[id]:lastOpSeen[id]; /* 0722x THE EARLIEST WITNESS WINS (field: SE 2:01/2:08): the worker can also be late — an echo trailing an open same-family witness line is the same incident; absorb it, the earliest credible clock stands, the witness word stays. The 0722v eyes-wall applies unchanged: a contrary sighting after the line's clock means the incident closed. */
+      var contraE=(ev==="reopen"||ev==="hit")?lastDownSeen[id]:lastOpSeen[id]; /* 0722x THE EARLIEST WITNESS WINS (field: SE 2:01/2:08): the worker can also be late — an echo trailing an open same-family witness line is the same incident; absorb it, the earliest credible clock stands, the witness word stays. The 0722v eyes-wall applies unchanged: a contrary sighting after the line's clock means the incident closed. */
       for(i=L.length-1;i>=0;i--){e=L[i];if(e.id!==id)continue;
         if(fam[e.ev]&&ts-e.t<=900000&&!(contraE>e.t))return;
         break;}
@@ -2186,7 +2186,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }else{ /* 0722u THE WORKER KEEPS THE CLOCK, THE PHONE KEEPS THE WORDS (field: SE 1:38/1:39): when the echo won the race, the local write folds back — nearest same-ride line decides. Same-family echo-born within 15 min folds (true clock kept, local word adopted); anything else — an opposite-family wall or a stale line — is a new incident. */
       var fb=null;
       for(i=L.length-1;i>=0;i--){e=L[i];if(e.id!==id)continue;
-        var contra=(ev==="reopen")?lastDownSeen[id]:lastOpSeen[id]; /* 0722v THE PHONE'S EYES ARE ALSO A WALL: a contrary sighting after the echo's clock proves a different incident — rapid down-up-down stays two lines even when the reopen between them left no line */
+        var contra=(ev==="reopen"||ev==="hit")?lastDownSeen[id]:lastOpSeen[id]; /* 0722v THE PHONE'S EYES ARE ALSO A WALL: a contrary sighting after the echo's clock proves a different incident — rapid down-up-down stays two lines even when the reopen between them left no line */
         if(fam[e.ev]&&e.w&&ts-e.t<=5400000&&!(contra>e.t))fb=e; /* 0722z THE NAP IS NOT A WALL (field: RnRC 2:44/3:00, a 16-min resume race): 90 min — the real walls are the opposite line and the contrary sighting; the clock only blocks stale quiet-end lines */
         break;}
       if(fb){if(fb.ev!==ev){fb.ev=ev;store.set("alertLog",L);}return;}
@@ -8257,6 +8257,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var changed=false;
     Object.keys(wa||{}).forEach(function(id){
       var wt=+wa[id];if(!wt||wt<1e12)return;   /* must be a real ms timestamp, not a stray flag */
+      if(wt>echoWm)logIncident(id,"hit",wt,true); /* 0723a THE HIT ECHO WRITES THE DIARY: the pill had the true clock, the log now has the line */
       if(!alertState[id]||wt<alertState[id]){alertState[id]=wt;changed=true;}
     });
     if(changed){saveAlertState();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
@@ -8295,7 +8296,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(changed&&navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
   }
   function bumpEchoWm(d){ /* one global newest-folded worker clock; the merges run first, the bump seals the batch */
-    var m=echoWm;[d&&d.downs,d&&d.reopens].forEach(function(o){Object.keys(o||{}).forEach(function(id){var t=+o[id];if(t>1e12&&t>m)m=t;});});
+    var m=echoWm;[d&&d.downs,d&&d.reopens,d&&d.alerts].forEach(function(o){Object.keys(o||{}).forEach(function(id){var t=+o[id];if(t>1e12&&t>m)m=t;});});
     if(m>echoWm){echoWm=m;saveEchoWm();}
   }
 
