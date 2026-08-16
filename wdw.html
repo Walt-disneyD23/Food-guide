@@ -1837,6 +1837,7 @@
   .mr-sheet .fldlab{font:700 10.5px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:12px 2px 6px}
   .mr-sheet .shz{padding:2px 0 14px} .mr-sheet .shz+.shz{border-top:1px solid var(--line);padding-top:12px} /* 0723b F: two rooms, one hairline */
   .mr-sheet .shz .fldlab{margin-top:0}
+  .mr-rh .fldlab{font:700 10.5px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:0 2px 6px}
   .mr-sheet .setr{width:100%;margin-top:12px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);border-radius:999px;padding:11px 0;border:1px solid var(--accent-fill);background:var(--accent-fill);color:#fff;cursor:pointer}
   .mr-sheet .setr[disabled]{background:var(--card-2);color:var(--muted-2);border-color:var(--line);cursor:default} /* the self-gate dress (U1-b family) */
   .mr-breath{margin-left:8px;font:700 11.5px var(--font-body);letter-spacing:.08em;color:var(--short);opacity:0;transition:opacity .2s} /* 0723c: sun-readable - the caps ride in from the fldlab */
@@ -1987,7 +1988,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7855,7 +7856,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
       var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
       if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="mr-p phit">✓ Hit '+mrClk(alertState[id])+' · '+'at '+ru.thresh+(ru.dir==="below"?" or less":" or more")+'</span></div>';
-      return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+' · moved back out</span></div>';
+      return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+' · back '+(ru.dir==="below"?"above":"below")+' '+ru.thresh+'</span></div>';
     }
     var o=overrides[id];
     if(o&&(o.dir||o.thresh)){var ruC=ruleFor(id);return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+ruC.thresh+(ruC.dir==="below"?" or less":" or more")+' <i class="d"></i></span>'+mrDnPill(id)+'</div>';} /* 0723c B: the pill is the door - Customize retired */ /* 0723b M3: ONE PILL BOTH FACTS - the tail rides inside; the custom seat asks for a RULE field (a dnup-only override is not a custom rule) */
@@ -7946,9 +7947,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return '<div class="mr-rh'+(mrRulesOpen?' open':'')+'">'+
       '<div class="rhhd"><span class="cap">Your rules</span><span class="ro">'+mrReadout()+'</span><span class="chv">›</span></div>'+
       '<div class="body">'+
+        '<div class="fldlab">Default wait rule</div>'+ /* 0723d: the room borrows the sheet's dress - one grammar */
         '<div class="sent">notify when wait is '+
           '<select id="mrThr">'+threshOptions(settings.thresh)+'</select> <span>min</span> '+
           '<select id="mrDir"><option value="below"'+(settings.dir==="below"?" selected":"")+'>or less</option><option value="above"'+(settings.dir==="above"?" selected":"")+'>or more</option></select></div>'+
+        '<div class="mr-fine">Bell taps arm with this rule. Rides without their own rule follow it.</div>'+ /* 0723d X-a (owner-ratified): both facts, plainest words */
         '<div class="sw"><div><div>Down &amp; back-up alerts</div><div class="d">'+(settings.dnup?'Blanket pings for every starred ride — one when it goes down, one when it returns; returns park above till you clear them.':'Blanket off — rides with their own down &amp; back-up setting, and Notify me taps, still alert.')+'</div></div><span class="tog'+(settings.dnup?' on':'')+'" id="mrDnup"></span></div>'+
         '<div class="sw"><div><div>Notifications</div><div class="d">Master switch — off means total silence.</div></div><span class="tog'+(settings.notif&&notifGranted()?' on':'')+'" id="mrNotif"></span></div>'+
       '</div></div>';
