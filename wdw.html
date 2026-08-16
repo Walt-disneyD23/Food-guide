@@ -1833,13 +1833,13 @@
   .mr-rw:first-of-type{border-top:0}
   .mr-rw.hitf{border-left:4px solid var(--short);padding-left:10px;background:rgba(21,163,107,.07)} /* 0720x (1B): the fresh hit lights its row - the house edge dialect */
   html.dark .mr-rw.hitf{background:rgba(21,163,107,.12)}
-  .mr-cz{color:var(--accent);font-weight:600} /* the July sheet's own door word, restored */
+  .mr-p+.mr-p{margin-left:6px} /* 0723c B: two pills, one per fact - the house gap */ /* the July sheet's own door word, restored */
   .mr-sheet .fldlab{font:700 10.5px var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:12px 2px 6px}
   .mr-sheet .shz{padding:2px 0 14px} .mr-sheet .shz+.shz{border-top:1px solid var(--line);padding-top:12px} /* 0723b F: two rooms, one hairline */
   .mr-sheet .shz .fldlab{margin-top:0}
   .mr-sheet .setr{width:100%;margin-top:12px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);border-radius:999px;padding:11px 0;border:1px solid var(--accent-fill);background:var(--accent-fill);color:#fff;cursor:pointer}
   .mr-sheet .setr[disabled]{background:var(--card-2);color:var(--muted-2);border-color:var(--line);cursor:default} /* the self-gate dress (U1-b family) */
-  .mr-breath{margin-left:8px;font:600 11px var(--font-body);color:var(--short);opacity:0;transition:opacity .2s;text-transform:none;letter-spacing:0}
+  .mr-breath{margin-left:8px;font:700 11.5px var(--font-body);letter-spacing:.08em;color:var(--short);opacity:0;transition:opacity .2s} /* 0723c: sun-readable - the caps ride in from the fldlab */
   .mr-breath.show{opacity:1}
   .mr-seg{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px}
   .mr-seg b{flex:1;text-align:center;font:700 12px var(--font-display);color:var(--muted);padding:8px 0;border-radius:999px;cursor:pointer}
@@ -1987,7 +1987,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7842,7 +7842,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function mrRuleLine(id,teach){ /* 0720z (owner-lettered, V3): THE PILL LANE - loudness by fill, never size. Grey whisper (off) / accent tint (armed) / solid mint (fresh hit, the only filled pill on the page) / mint outline (stale). Every pill is a door; the Customize word additionally labels the quiet armed rows. */
     var cap=function(w){return w?w.charAt(0).toUpperCase()+w.slice(1):w;};
-    var mrDnTail=function(id2){var o2=overrides[id2];return (o2&&o2.dnup)?' \u00b7 down & back-up '+(o2.dnup==="on"?"on":"off"):"";}; /* 0723b M3: ONE PILL BOTH FACTS - the Your-rules vocabulary (ONE BAND VOCABULARY); local like cap, its only caller lives here */
+    var mrDnPill=function(id2){var o2=overrides[id2];return (o2&&o2.dnup)?'<span class="mr-p poff">down & back-up '+(o2.dnup==="on"?"on":"off")+'</span>':"";}; /* 0723c B (owner-ratified): TWO PILLS ONE PER FACT - the pin keeps the Your-rules vocabulary in its own whisper; local like cap */
     var lvI=liveById[id]; /* 0722h THE INCIDENT LEADS (owner-ratified, composed3): while a ride is down, the row opens with the same words its LIVE button wears, then the durable tail — one dialect across LIVE, the roster, and the room. The clause dies with the incident; running rides keep the pill lane below untouched. */
     if(lvI&&lvI.status==="DOWN"){
       var covI=!!(reopen[id]||(watch[id]&&mrDnupFor(id)));
@@ -7851,15 +7851,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tailI=(watch[id]&&mrDnupFor(id))?'watching down & back-up':((evI&&evI.ev==="rebreak-confirmed")?'re-armed for you':(armed[id]?('bell '+ruI.thresh+(ruI.dir==="below"?" or less":" or more")):'this down only'));
       return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="dn"><span class="mr-dnlead">✓ Alert set</span> · '+tailI+'</div>';
     }
-    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off"><span class="mr-p poff">Rule off'+mrDnTail(id)+'</span>'+(teach?'<span class="mr-teach"> · tap the bell to arm</span>':'')+'</div>';
+    if(!armed[id])return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="off"><span class="mr-p poff">Rule off</span>'+mrDnPill(id)+(teach?'<span class="mr-teach"> · tap the bell to arm</span>':'')+'</div>';
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
       var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
       if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="mr-p phit">✓ Hit '+mrClk(alertState[id])+' · '+'at '+ru.thresh+(ru.dir==="below"?" or less":" or more")+'</span></div>';
       return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+' · moved back out</span></div>';
     }
     var o=overrides[id];
-    if(o&&(o.dir||o.thresh)){var ruC=ruleFor(id);return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+ruC.thresh+(ruC.dir==="below"?" or less":" or more")+mrDnTail(id)+' <i class="d"></i></span> <span class="mr-cz">Customize</span></div>';} /* 0723b M3: ONE PILL BOTH FACTS - the tail rides inside; the custom seat asks for a RULE field (a dnup-only override is not a custom rule) */
-    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default"><span class="mr-p prule">'+settings.thresh+(settings.dir==="below"?" or less":" or more")+mrDnTail(id)+'</span> <span class="mr-cz">Customize</span></div>';
+    if(o&&(o.dir||o.thresh)){var ruC=ruleFor(id);return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+ruC.thresh+(ruC.dir==="below"?" or less":" or more")+' <i class="d"></i></span>'+mrDnPill(id)+'</div>';} /* 0723c B: the pill is the door - Customize retired */ /* 0723b M3: ONE PILL BOTH FACTS - the tail rides inside; the custom seat asks for a RULE field (a dnup-only override is not a custom rule) */
+    return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default"><span class="mr-p prule">'+settings.thresh+(settings.dir==="below"?" or less":" or more")+'</span>'+mrDnPill(id)+'</div>';
   }
   function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
@@ -8093,6 +8093,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);if(!settings.dnup)mrBlanketOff();renderMyRidesPage();});
     var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
     var sc=el.querySelector("#mrScrim");if(sc)sc.addEventListener("click",function(){mrCloseSheet();renderMyRidesPage();}); /* 0723b F: the board repaints at the door - the segment may have committed while the sheet was up */
+    var shd=el.querySelector("#mrSheet");if(shd){var dgY=null; /* 0723c: the grab tab keeps its promise - the sheet drags to dismiss; controls stay out of the gesture */
+      shd.addEventListener("touchstart",function(ev3){if(ev3.target&&ev3.target.closest&&ev3.target.closest("select,button,.mr-seg"))return;dgY=ev3.touches[0].clientY;},{passive:true});
+      shd.addEventListener("touchmove",function(ev3){if(dgY===null)return;var dy3=ev3.touches[0].clientY-dgY;if(dy3>0){shd.style.transition="none";shd.style.transform="translateY("+dy3+"px)";ev3.preventDefault();}},{passive:false});
+      shd.addEventListener("touchend",function(ev3){if(dgY===null)return;var dy3=ev3.changedTouches[0].clientY-dgY;dgY=null;shd.style.transition="";shd.style.transform="";if(dy3>80){mrCloseSheet();renderMyRidesPage();} /* past the threshold the door; short of it the spring */});
+    }
     var dnw2=el.querySelector("#mrShDn");if(dnw2)dnw2.addEventListener("click",function(ev2){var b=ev2.target&&ev2.target.closest?ev2.target.closest("[data-dn]"):null;if(!b)return;var id=mrShId;if(!id)return;Array.prototype.forEach.call(dnw2.children,function(x){x.classList.remove("on");});b.classList.add("on");
       var v=b.getAttribute("data-dn"),o=overrides[id]||{},prev=o.dnup||"def";if(v===prev)return; /* 0723b F: EACH ROOM KEEPS ITS OWN CLOCK - the segment commits on tap, the clock its species keeps in Your rules; it writes dnup and NOTHING else */
       if(v==="def")delete o.dnup;else o.dnup=v;
