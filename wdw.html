@@ -393,6 +393,7 @@
   .rp-hero .sub{color:var(--pwh-muted);font-size:var(--fs-body);margin-top:5px}
   .rp-hero .fs{color:var(--fav)}
   .rp-hero .hstats{display:flex;gap:26px;margin-top:16px;padding-top:13px;border-top:1px solid var(--pwh-line)}
+  .hstats .hstat{flex:1} /* 0723e: equal-width seats - the house geometry fills the strip */
   .rp-hero .rp-hfine{margin-top:12px;font-size:var(--fs-micro);color:var(--pwh-dim);letter-spacing:.02em;line-height:1.5}
   .rp-hero .hstat .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--pwh-dim)}
   .rp-hero .hstat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;margin-top:2px}
@@ -412,7 +413,7 @@
   .rp-take{font-size:var(--fs-body);color:var(--ink);line-height:1.55}
   .rp-take b{font-weight:700}
   .rp-dt{display:flex;align-items:flex-end;gap:2.5px;height:58px;padding:2px 0 2px}
-  .rp-dtcard{touch-action:pan-y}
+  .rp-dtcard{touch-action:none} /* 0723e: same lock - the whole card is the touchpad (0721q) and stays one */
   .rp-dt i{flex:1;position:relative;height:100%;cursor:pointer}
   .rp-dt i::after{content:"";position:absolute;bottom:0;left:0;right:0;height:var(--h);min-height:4px;background:var(--c);border-radius:2.5px 2.5px 0 0}
   .rp-dt i.cl::after{opacity:.45}
@@ -435,7 +436,7 @@
   .rp-recspark{flex:0 0 118px;width:118px;height:30px;display:block}
   .rp-recfoot{display:block;width:100%;font:600 var(--fs-meta) var(--font-display);color:var(--accent);background:none;border:0;border-top:1px solid var(--line);padding:10px 0 6px;text-align:center;cursor:pointer}
   .rp-recfp{margin-top:10px;font-size:var(--fs-micro);color:var(--muted-2);line-height:1.45}
-  .rp-shwrap{position:relative;touch-action:pan-y}
+  .rp-shwrap{position:relative;touch-action:none} /* 0723e: pan-y was the killer - it enrolled Safari's pan on vertical drift */
   .rp-shflt{position:absolute;transform:translate(-50%,calc(-100% - 4px));font:700 var(--fs-small) var(--font-display);background:var(--ink);color:var(--card);border-radius:10px;padding:3px 10px;pointer-events:none;white-space:nowrap;text-align:center;line-height:1.25}
   .rp-shflt small{display:block;font:600 var(--fs-micro) var(--font-body);opacity:.72;letter-spacing:.02em}
   .pw-stamp{display:inline-block;font:600 var(--fs-micro) var(--font-display);letter-spacing:.05em;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:1px 8px;vertical-align:1px;white-space:nowrap}
@@ -1885,6 +1886,7 @@
   .mr-vd{color:var(--long);font-weight:600}.mr-vu{color:var(--short);font-weight:600}.mr-vh{color:var(--accent);font-weight:600} /* 0721u R2: verb tint — color seconds the words, never carries alone */
   .mr-rh{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);margin-bottom:10px;padding:0 14px}
   .mr-rh .rhhd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;cursor:pointer}
+  .mr-rh.open .rhhd{border-bottom:1px solid var(--line)} /* 0723e: the hairline is earned by the open body - closed, the header is the card */
   .mr-rh .cap{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .mr-rh .ro{flex:1;font-size:var(--fs-meta);color:var(--muted);text-align:right}
   .mr-rh .ro b{color:var(--ink)}
@@ -1988,7 +1990,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6390,6 +6392,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         var mx2=40,q2;for(q2=0;q2<N;q2++)if(bs[q2].hi+8>mx2)mx2=bs[q2].hi+8;
         flt.style.top=Math.max(9,(104-(104-16)*bs[i2].med/mx2)/128*100).toFixed(1)+"%";
       }
+      shw.addEventListener("touchmove",function(te2){te2.preventDefault();},{passive:false}); /* 0723e: veto the pan before Safari enrolls it - the funnel's lesson (touch-action alone loses the down-drag race) */
       shw.addEventListener("pointerdown",function(e){down=true;show(e.clientX);});
       shw.addEventListener("pointermove",function(e){if(down)show(e.clientX);});
       ["pointerup","pointercancel","pointerleave"].forEach(function(ev){shw.addEventListener(ev,function(){down=false;});});
@@ -6402,6 +6405,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       function at(x){var nb=dts.children.length;if(!nb)return;var r=dts.getBoundingClientRect();if(!r.width)return;
         var k=Math.max(0,Math.min(nb-1,Math.floor((x-r.left)/r.width*nb)));
         var c=dts.children[k];if(c&&c!==last){last=c;c.click();}}
+      dtc.addEventListener("touchmove",function(te2){te2.preventDefault();},{passive:false}); /* 0723e: same veto - a vertical drift must not kill the scrub */
       dtc.addEventListener("pointerdown",function(e){down=true;last=null;at(e.clientX);});
       dtc.addEventListener("pointermove",function(e){if(down)at(e.clientX);});
       ["pointerup","pointercancel","pointerleave"].forEach(function(ev){dtc.addEventListener(ev,function(){down=false;});});
