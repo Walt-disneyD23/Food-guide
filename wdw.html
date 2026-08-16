@@ -1991,7 +1991,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7843,7 +7843,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var o=overrides[id];return (o&&o.dnup)?o.dnup==="on":!!settings.dnup;
   }
   function mrLastDownEv(id){ /* 0722h: the latest logged down-transition for a ride — clocks and re-arm stories are clause-earned from the log, never invented */
-    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id===id&&(e.ev==="down"||e.ev==="rebreak-confirmed"||e.ev==="rebreak-cold"))return e;}}catch(e){}
+    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id===id&&(e.ev==="down"||e.ev==="rebreak-confirmed"||e.ev==="rebreak-cold"))return (new Date(e.t).toDateString()===new Date().toDateString())?e:null; /* 0723g THE DAY FENCE: a clock from yesterday was never earned by this incident (the SE 4:28 specimen) */}}catch(e){}
     return null;
   }
   function mrRuleLine(id,teach){ /* 0720z (owner-lettered, V3): THE PILL LANE - loudness by fill, never size. Grey whisper (off) / accent tint (armed) / solid mint (fresh hit, the only filled pill on the page) / mint outline (stale). Every pill is a door; the Customize word additionally labels the quiet armed rows. */
@@ -7902,7 +7902,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var ev=mrLastDownEv(id),sub;
         if(ev&&ev.ev==="rebreak-confirmed")sub='Down again at '+mrClk(ev.t)+' — re-armed for you.';
         else if(cov)sub='Down '+(ev?('since '+mrClk(ev.t)):'right now')+' — you’ll get the ping when it’s back.';
-        else sub='Down right now.';
+        else sub='Down right now \u2014 not watching.'; /* 0723g: SAME QUESTION SAME SENTENCE - the room's cold line and the group row's speak the same fact */
         return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div><div class="sub">'+sub+'</div></div></div>';
       }).join("");
     }
