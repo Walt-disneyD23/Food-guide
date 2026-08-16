@@ -947,7 +947,7 @@
   .state{text-align:center;padding:54px 20px;color:var(--muted)}
   .state h3{font-family:var(--font-display);color:var(--ink);font-size:var(--fs-head);margin-bottom:8px}
 
-  .toasts{position:fixed;left:14px;right:14px;bottom:calc(96px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:8px;z-index:50}
+  .toasts{position:fixed;left:14px;right:14px;bottom:calc(96px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:8px;z-index:120} /* 0723h: above the sheet (89) - the Set toast must be seen from inside it */
   .toast{display:flex;align-items:flex-start;gap:11px;width:100%;max-width:372px;background:var(--toast-glass);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 14px;box-shadow:var(--shadow);animation:toastin .45s cubic-bezier(.34,1.45,.64,1)} /* 0723b T-B: THE FROSTED CARD - the side-bar retires, the glass carries */
   @keyframes toastin{from{transform:translateY(14px) scale(.92);opacity:0}to{transform:none;opacity:1}}
   @keyframes toastout{to{transform:translateY(10px) scale(.95);opacity:0}}
@@ -1991,7 +1991,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7900,9 +7900,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       h+='<div class="mr-zone zd">DOWN NOW</div>'+dn.map(function(id){
         var cov=!!(reopen[id]||(watch[id]&&mrDnupFor(id)));
         var ev=mrLastDownEv(id),sub;
-        if(ev&&ev.ev==="rebreak-confirmed")sub='Down again at '+mrClk(ev.t)+' — re-armed for you.';
+        if(ev&&(ev.ev==="rebreak-confirmed"||ev.ev==="rebreak-cold"))sub='Down again at '+mrClk(ev.t)+' — re-armed for you.'; /* 0723h: the worker's mirrored re-arm earned the clause for the cold kind too */
         else if(cov)sub='Down '+(ev?('since '+mrClk(ev.t)):'right now')+' — you’ll get the ping when it’s back.';
-        else sub='Down right now \u2014 not watching.'; /* 0723g: SAME QUESTION SAME SENTENCE - the room's cold line and the group row's speak the same fact */
+        else sub='Down '+(ev?('since '+mrClk(ev.t)):'right now')+' \u2014 not watching.'; /* 0723g confession + 0723h: the clock is log-earned INDEPENDENT of coverage - fact and reason together (the observer lane feeds the log for quiet stars) */
         return '<div class="m"><div style="flex:1"><div class="nm">'+esc(roster[id].name)+'</div><div class="sub">'+sub+'</div></div></div>';
       }).join("");
     }
@@ -8123,6 +8123,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       saveOverrides();if(!armed[id]){armed[id]=true;saveArmed();} /* the named side effect: setting the rule arms the bell (the fine print says so) */
       delete alertState[id];saveAlertState();updateAlertBadge();
       var sd3=el.querySelector("#mrShDef");if(sd3){if(overrides[id])sd3.removeAttribute("disabled");else sd3.setAttribute("disabled","");}
+      pushToast("🔔 Alert set",esc(roster[id].name)+" — "+nd+" "+nt+"m"+((overrides[id]&&(overrides[id].dir||overrides[id].thresh))?"":" (default)")); /* 0723h: SAME QUESTION SAME SENTENCE - the bell's voice; the sleep alone felt like nothing happened (owner) */
       mrShGate(el);});
     var chg=function(){mrShGate(el);};var d3=el.querySelector("#mrShDir");if(d3)d3.addEventListener("change",chg);var t3=el.querySelector("#mrShThr");if(t3)t3.addEventListener("change",chg);
   }
@@ -8245,11 +8246,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
          to the worker via !pushActive(), and the worker was never told). The wire reopen/reopenOnly
          maps are the same union. Hand beats pin-Off: a local entry crosses without consulting
          mrDnupFor — the tap is the owner's explicit ask for THIS incident, the pin keeps silencing
-         the automatic coverage. Quiet stars still never leave the phone: only what a thumb or the
-         switch asked for crosses. The payload stays v3.16-shaped — dnup itself never crosses. */
+         the automatic coverage. Quiet stars now cross for OBSERVATION only (0723h, owner-ratified Aug 16: the worker's
+         historian job earned the seat) — the obs lane banks their down clocks and can never
+         push; every push in the worker's loop is gated on maps obs ids never join.
+         dnup itself still never crosses. */
       overrides:overrides||{},
       reopen:(function(){var m={},k;for(k in watch)if(mrDnupFor(k))m[k]=true;for(k in reopen)m[k]=true;return m;})(),
       reopenOnly:(function(){var m={},k;for(k in watch)if(mrDnupFor(k)&&!armed[k])m[k]=true;for(k in reopenOnly)m[k]=true;return m;})(),
+      obs:(function(){var m={},k;for(k in watch)if(!armed[k]&&!mrDnupFor(k)&&!reopen[k])m[k]=true;return m;})(), /* 0723h THE OBSERVER LANE: quiet stars, observation only (worker v3.21 banks, never pushes) */
       resolved:resolved||{},
       settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
