@@ -1991,7 +1991,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723j</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723k</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6511,7 +6511,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
      layout viewport to re-sync. */
   (function(){
     document.addEventListener("gesturestart",function(e){e.preventDefault();},{passive:false});
-    function repin(){try{window.scrollTo(window.pageXOffset,window.pageYOffset);}catch(_){}}
+    function repin(){try{var x=window.pageXOffset,y=window.pageYOffset;window.scrollTo(x,y+1);window.scrollTo(x,y);}catch(_){}} /* 0723k: THE NUDGE MUST MOVE - a same-position scrollTo is a no-op WebKit may skip */
     document.addEventListener("touchmove",function(e){
       var a=document.activeElement;
       if(a&&a.tagName==="INPUT"&&!(e.target&&e.target.closest&&e.target.closest(".search-box")))a.blur();
@@ -6521,7 +6521,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var nv=document.getElementById("appNav"),kb=false;
     function kbJudge(){ /* 0721a: THE BAR YIELDS TO THE KEYBOARD - while typing, fixed chrome floats against the layout viewport; the bar steps aside and returns on the settle (the repin below catches the landing) */
       if(!nv||!window.visualViewport)return;
-      var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA");
+      var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA"||a.tagName==="SELECT"); /* 0723k: the sheet\u2019s threshold wheel focused a SELECT the judge never counted */
       var open=typing&&(window.innerHeight-window.visualViewport.height)>140; /* 0721c: hiding requires the keyboard's OWNER - a stale resume height alone can never take the bar; unhiding stays unconditional */
       if(open!==kb){kb=open;nv.classList.toggle("kbhide",open);}
     }
@@ -6531,9 +6531,16 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     window.addEventListener("focus",function(){setTimeout(kbJudge,80);});
     kbJudge();
     if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){
-      var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA");
+      var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA"||a.tagName==="SELECT");
       if(!typing&&window.visualViewport.scale===1)setTimeout(repin,60);
     });
+    if(window.visualViewport)window.visualViewport.addEventListener("scroll",function(){ /* 0723k: offsetTop>0 at scale 1 with nothing focused IS the strand signature - normal page scroll keeps it 0, so this listener idles until the bar is actually adrift */
+      var a=document.activeElement,typing=a&&(a.tagName==="INPUT"||a.tagName==="TEXTAREA"||a.tagName==="SELECT");
+      if(!typing&&window.visualViewport.scale===1&&window.visualViewport.offsetTop>0)setTimeout(repin,60);
+    });
+    document.addEventListener("focusout",function(e){var t=e.target; /* 0723k: every field\u2019s departure re-pins + re-judges - the 0721c search heal, generalized to the sheet\u2019s pickers */
+      if(t&&(t.tagName==="SELECT"||t.tagName==="INPUT"||t.tagName==="TEXTAREA")){setTimeout(repin,60);setTimeout(kbJudge,90);}
+    },true);
   })();
 
   /* Global search: one flat, grouped results list across all four parks,
