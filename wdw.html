@@ -256,7 +256,7 @@
   .ux-pks button,.ux-typ button{flex:1;border:0;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.08em;border-radius:999px;padding:8px 0;background:var(--card-2);color:var(--muted)}
   .ux-typ button{font-size:10.5px;padding:7px 0}
   .ux-pks button.on,.ux-typ button.on{background:rgba(79,70,229,.20);color:var(--accent)} /* 0718m: .13→.20, smaller seats read lighter (owner) · 0718l: the rail's own voice (pg-seg .on, owner pick B) — one selected-chip grammar across surfaces */
-  .cp-seg{margin:2px 0 6px} /* Cut 2 (0719u): the section's chips - the ux family, card furniture */
+  .cp-seg{margin:9px 0 6px} /* Cut 2 (0719u): the section's chips - the ux family, card furniture */
   .cp-seg button.dim{opacity:.45}
   #cpCard{scroll-margin-top:74px} /* the readout glide clears the sticky toolbar - the banner's own stop */
   .ux-rows{margin-top:4px}
@@ -795,7 +795,7 @@
   .td-sl:first-of-type{margin-top:2px}
   .td-sn{flex:none;width:18px;font:700 16px var(--font-display);color:var(--muted-2);text-align:center}
   .td-sm{flex:1;min-width:0}
-  .td-snm{font-weight:650;font-size:var(--fs-title);letter-spacing:-.01em}
+  .td-snm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
   .td-srx{font-size:var(--fs-small);color:var(--muted);line-height:1.45;margin-top:.5px;min-height:36px}
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
@@ -1787,7 +1787,7 @@
      One height survives: min-height:96px is 0720t's own credential-row floor (P4-b). */
   .ty-board{margin:10px 0}
   .ty-board .pb-row{font:inherit;text-align:left;width:100%;background:none;color:var(--ink);border:0;border-top:1px solid var(--line);min-height:96px;box-sizing:border-box}
-  .ty-board .pb-row.off{opacity:.62;cursor:default}
+  .ty-board .pb-row.off{opacity:.62}
   .ty-board .pb-nm{font:700 19px var(--font-display);letter-spacing:-.01em} /* 0720s owner call survives in the family dress */
   .ty-board .ty-sub .dot{width:8px;height:8px;border-radius:50%;background:var(--dot-idle);display:inline-block;margin-right:4px}
   .ty-donec{margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card);box-shadow:var(--sh-soft);font-size:var(--fs-meta);color:var(--muted);line-height:1.5} /* 0720w: the done card */
@@ -1803,8 +1803,10 @@
   .ty-chip.dim{opacity:.45;cursor:default}
   .ty-pline{margin-top:11px;padding-top:10px;border-top:1px solid var(--pwh-line);font-size:var(--fs-meta);color:var(--pwh-muted);line-height:1.5}
   .ty-pline b{color:var(--pwh-sub);font-weight:600}
-  .pg-today .td-nvr>span:first-child{font:700 var(--fs-wait) var(--font-display);letter-spacing:-.01em} /* ONE WAIT-SIZE FAMILY (§8: live pills) — TODAY-scoped; the trip room retrofits in Arc B */
+  .pg-today .td-nvr>span:first-child:not(.td-dnc):not(.td-clc):not(.td-op){font:700 var(--fs-wait) var(--font-display);letter-spacing:-.01em} /* ONE WAIT-SIZE FAMILY (§8: live pills) — TODAY-scoped; the trip room retrofits in Arc B */
   .pg-today .td-nvr .td-dnc,.pg-today .td-nvr .td-clc{font:700 var(--fs-small) var(--font-body)} /* status words sit a step smaller so numbers stay the loudest truth */
+  .td-op{font:700 var(--fs-lead) var(--font-display);letter-spacing:-.01em} /* 0723m: the pre-start clock - lead face, never the wait size */
+  .td-op.ee,.td-nvr small.ee{color:var(--accent)} /* the EE clock + credential wear the accent (both themes free via the var) */ /* status words sit a step smaller so numbers stay the loudest truth */
   /* ===== MY RIDES (Cut 3, 0719w) — mock of record: my-rides-mock-v12, Stage-1 slice.
      The hero keeps the mock's dark jewel literally in both themes (share-card precedent);
      everything else consumes the app vars so Harbor gets it free. */
@@ -1995,7 +1997,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5354,10 +5356,22 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!a.length)delete ts[i].done[ds];
       store.set("ppTrips",ts);return;}
   }
-  function tdNvRail(rid){ /* the live rail - status truth on the right edge; DOWN never resequences (Compare's ruling) */
+  function tdNvRail(rid,ts){ /* the live rail - status truth on the right edge; DOWN never resequences (Compare's ruling) */
     var lv=liveById[rid];
     if(lv&&lv.status==="DOWN")return '<span class="td-nvr"><span class="td-dnc">DOWN</span><small>now</small></span>';
     if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="td-nvr"><span class="t-'+rpTierCls(lv.wait)+'">'+lv.wait+'m</span><small>now</small></span>';
+    if(!lv||lv.status==="CLOSED"){ /* 0723m THE CLOCK WEARS ITS VERB: before the ride's start the rail speaks the next truth. Clocks are schedule-fed (clause-earned); the banked tape only picks the window - a tape that starts before the gate earns the morning window's clock + credential. CLOSED keeps its seat for mid-day closures. */
+      var r0=roster[rid],inf0=r0&&parkInfo[r0.park];
+      if(inf0&&inf0.open){
+        var nw0=Date.now(),opT=new Date(inf0.open).getTime(),ee0=null,ei0;
+        if(ts!==undefined&&ts!==null&&ts<rcEtMin(new Date(inf0.open))&&inf0.extras){for(ei0=0;ei0<inf0.extras.length;ei0++){var ex0=inf0.extras[ei0];
+          if(ex0.open&&new Date(ex0.open).getTime()<opT){ee0=ex0;break;}}} /* a morning window only - the tape's pre-gate start is the earn */
+        var stT=ee0?new Date(ee0.open).getTime():opT;
+        if(nw0<stT)return ee0
+          ?'<span class="td-nvr"><span class="td-op ee">'+fmtClock(ee0.open)+'</span><small>opens</small><small class="ee">'+esc(ee0.desc||"Early Entry")+'</small></span>'
+          :'<span class="td-nvr"><span class="td-op">'+fmtClock(inf0.open)+'</span><small>opens</small></span>';
+      }
+    }
     if(lv)return '<span class="td-nvr"><span class="td-clc">CLOSED</span><small>now</small></span>';
     return '<span class="td-nvr"><span class="dash">\u2013</span><small>now</small></span>';
   }
@@ -5433,6 +5447,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     else if(it.k==="A"){
       if(it.f2!==null)p.push("typically a walk-on until "+rpClk(it.f2));
       else if(startMin===0)p.push("typically "+it.base+"m at "+((openMin!==null&&Math.abs(cv.bs[0].t-openMin)<=30)?"the "+rpClk(openMin)+" open":"its "+rpClk(it.st0)+" start"));
+      else if(it.lateStart)p.push("typically "+it.base+"m"); /* 0723m TENSE REPAIR: before the ride's start the day voice speaks - the lateStart prefix carries the clock; from-here waits until here is real (owner field-caught pre-open Aug 16) */
       else p.push("near its remaining low from here \u2014 typically "+it.base+"m");
       if(!cv.allday&&cv.crest&&cv.crest[0]>=it.st0)p.push("crests near "+cv.pk+"m by "+rpClk(cv.crest[0]));
       else p.push("typically climbs toward ~"+it.mx+"m by "+rpClk(it.tmx));
@@ -5520,15 +5535,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
     if(tdLens==="mine"){
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
+      var cvT={};if(today)ids.forEach(function(r9){var c9=tdCurve(r9,rpHmWd(ds),tpWdSet(t));cvT[r9]=(c9&&c9.cv.bs.length)?c9.cv.bs[0].t:null;}); /* 0723m: the rail's tape start - one answer in both lenses */
       body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid]; /* 0715h: done stays exactly where YOU put it - 0715j: drag reorders from the grip, so every row stays a door */
         _cr.push({seat:dnf?'\u2713':String(i+1),pin:!!pn,badge:pn?tdPinTxt(pn):'',nm:tdNmShort(r.name||rid),sub:''}); /* 0717n: the card drinks the same rows (mine lens carries no sub, honestly) */
-        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(r.name||rid))+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
+        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(r.name||rid))+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid,cvT[rid]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
       basis='Your order, exactly as you set it \u2014 drag \u2261 to reorder \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
       var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),wdn=tpWDn(ds),arcN=0,cvN=0;
       var nowT=today?tdNow():null,stKey=tdStart||(today?"now":"rd");if(stKey==="now"&&!today)stKey="rd"; /* 0715h: the day's natural start - From now when you're standing in it */
       var isNow=(stKey==="now"),sm=isNow?(nowT-(nowT%30)):tdStartMin(stKey);
       var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds);if(cx){cvN++;if(cx.arc)arcN++;}return {id:rid,nm:r.name||rid,cvx:cx};});
+      var cvT={};rows.forEach(function(r9){cvT[r9.id]=(r9.cvx&&r9.cvx.cv.bs.length)?r9.cvx.cv.bs[0].t:null;}); /* 0723m: every row hands the rail its tape start - pins and outs included */
       var allArc=(cvN>0&&arcN===cvN),mixed=(arcN>0&&arcN<cvN); /* 0715f: three window states — the basis frames each honestly */
       var pns=tdPins(t,ds),np=0;ids.forEach(function(rid){if(pns[rid])np++;});
       if(tdLeaveMin(tdLeave)!==null&&tdLeaveMin(tdLeave)<=sm)tdLeave="cl"; /* 0719h: a leave the start has passed snaps to Close on glass \u2014 never a silent clamp */
@@ -5540,7 +5557,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n))); /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else body+=slA(it,false);});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
@@ -7539,7 +7556,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyRowHTML(p){ /* 0722e: mock-6's words in the family dress (pb bones) — tick+word wear the crowd family's ONE SOURCE (0722d law); closed voices speak pbClosedSub (SAME QUESTION, SAME SENTENCE); P1-a: the close claims the full clock */
     var pk=p.key,inf=parkInfo[pk]||null,open=isOpenNow(inf);
     if(open===false&&typeof tySweep==="function"&&tySweep(pk))open=true; /* 0721h: THE SWEEP HOLDS EVERY DOOR - a ticketed window keeps the card alive; the open face's window-word lead speaks the party voice */
-    var tk="",body="",tap=true,hl="";
+    var tk="",body="",dim=false,hl="";
     if(open===true){
       var tr=tyTier(pk),cl=(inf&&inf.close)?fmtClock(inf.close):null,dn=tyDown(pk),av=tyHeadAvg(pk);
       tk=tr?tr.color:""; /* ONE PHENOMENON, ONE PALETTE: the tick wears the word's exact constant */
@@ -7556,11 +7573,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }else if(open===false){
       var nowMs=Date.now(),pre=!!(inf&&inf.open&&nowMs<new Date(inf.open).getTime());
       body='<div class="ty-sub'+(pre?'':' closed')+'"><i class="dot"></i>'+pbClosedSub(inf||{},nowMs)+'</div>'; /* 0722e: S3-A on every surface — "Opens at", "Closed for the day \u00b7 back at" and "Closed today" retired with honor */
-      tap=pre; /* pre-open invites; a done day closes its door */
+      if(!pre)dim=true; /* 0723m DOOR UNLOCK: dim is quiet, never dead - the done day's door opens to the room that already exists (0720w tense-edges) */
     }else{
       body='<div class="ty-sub">\u2014</div>'; /* no schedule yet \u2014 the row waits honestly, no fake state */
     }
-    return '<button class="pb-row'+(tap?'':' off')+'" data-typk="'+esc(pk)+'" type="button"'+(tap?'':' disabled')+'><span class="pb-tick"'+(tk?' style="background:'+tk+'"':'')+'></span><span class="pb-m m"><span class="pb-nm">'+esc(pk)+'</span>'+body+'</span>'+hl+'<span class="pb-chv">\u203a</span></button>';
+    return '<button class="pb-row'+(dim?' off':'')+'" data-typk="'+esc(pk)+'" type="button"><span class="pb-tick"'+(tk?' style="background:'+tk+'"':'')+'></span><span class="pb-m m"><span class="pb-nm">'+esc(pk)+'</span>'+body+'</span>'+hl+'<span class="pb-chv">\u203a</span></button>';
   }
   function tyLandingHTML(){
     var ds=tyDs(),d0=tpAsD(ds);
