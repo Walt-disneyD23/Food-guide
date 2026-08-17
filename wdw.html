@@ -1991,7 +1991,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7816,19 +7816,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var back=Object.keys(resolved).filter(function(id){return roster[id];}).length;
     var closed=ids.length-run-down; /* 0722r STATS ARE NOT STATUSES (owner-ratified): a parked ride RUNS; the back-up clause is an annotation and eats no seat - statuses alone sum to the star count */
     var bells=ids.filter(function(id){return armed[id];}).length;
+    var dnc=ids.filter(function(id){return mrDnupFor(id);}).length; /* 0723j: the second species - counted per-ride (pin wins, else master), never the toggle\u2019s word */
+    var dnS=dnc>0?" Down &amp; back-up alerts on for <b>"+(dnc===ids.length?"all "+dnc:(settings.dnup?dnc+" of "+ids.length:""+dnc))+"</b>.":""; /* THE HERO\u2019S COUNTS WEAR THE STAR (owner-carved 0723j): silent at zero - the readout owns the off fact */
     var sub="Watching your starred rides live — ";
     if(run===0&&down===0&&back===0&&closed>0){ /* all closed */
       sub+="all "+ids.length+" closed right now. They wake up when the parks do.";
     } else if(down===0&&back===0&&closed===0&&run>0){ /* all running */
       sub+="<b>all "+run+" running</b>";
-      if(bells>0)sub+=". Bells armed on <b>"+bells+"</b>, listening for their moment.";else sub+=". No bells armed yet.";
+      if(bells>0)sub+=". Bells armed on <b>"+bells+"</b>, listening for their moment.";else sub+=". No bells armed yet.";sub+=dnS;
     } else { /* mixed */
       sub+="<b>"+run+" running</b>";
       if(down===1){sub+=", <b>"+esc(roster[downIds[0]].name)+"</b> is down";}else if(down>1){sub+=", <b>"+down+"</b> down";}
       if(back>0){sub+=", and <b>"+back+"</b> back up waiting for you below";}
       if(closed>0){if(down===1&&back===0)sub+=", the other "+closed+" closed";else sub+=", "+closed+" closed";}
       sub+=". ";
-      if(bells>0)sub+="Bells armed on <b>"+bells+"</b>.";else sub+="No bells armed yet.";
+      if(bells>0)sub+="Bells armed on <b>"+bells+"</b>.";else sub+="No bells armed yet.";sub+=dnS;
     }
     return '<div class="pwh mr-hero"><div class="eb">My Rides · Live</div><h2>Your '+mrW(ids.length)+' <span class="fs">★</span></h2><div class="sub">'+sub+'</div></div>';
   }
