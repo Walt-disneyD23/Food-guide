@@ -2000,7 +2000,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7443,13 +7443,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyDs(){return tpToday();}
   function tySweep(pk){ /* 0720u (S5b): THE SWEEP IS THE CREDENTIAL CHECK - past the published close, a live-day window whose close is still ahead extends the plan. Fires AT the sweep; null before the close (windows are information only there). */
     var inf=parkInfo[pk]||null;if(!inf||!inf.close||!inf.extras||!inf.extras.length)return null;
-    var now=rcEtMin(new Date()),c=rcEtMin(new Date(inf.close));
-    if(c<360)c+=1440;if(now<360)now+=1440; /* the after-midnight carry rides both sides */
+    var now=Date.now(),c=new Date(inf.close).getTime(); /* 0723u THE DAY FENCE: absolute epoch \u2014 the fold retired; the .c minute below is display-only fuel for rpClk */
     if(now<=c)return null;
-    var best=null,i;
+    var best=null,bt=null,i;
     for(i=0;i<inf.extras.length;i++){var x=inf.extras[i];if(!x.close)continue;
-      var xc=rcEtMin(new Date(x.close));if(xc<360)xc+=1440;
-      if(xc>now&&xc>c&&(best===null||xc>best.c))best={c:xc,d:x.desc||""};}
+      var xt=new Date(x.close).getTime();
+      if(xt>now&&xt>c&&(bt===null||xt>bt)){bt=xt;var xc=rcEtMin(new Date(x.close));if(xc<360)xc+=1440;best={c:xc,d:x.desc||""};}}
     if(!best)return null;
     var ev=tyEvParty(pk),party=!!ev&&/ticketed/i.test(best.d);
     best.word=party?"Party":(best.d||"Tonight\u2019s window");
@@ -7459,9 +7458,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyTonight(pk){ /* 0720v (S5b Cut 2): tonight's credentialed window, before the sweep - information only */
     var inf=parkInfo[pk]||null;if(!inf||!inf.close||!inf.extras||!inf.extras.length)return null;
-    var now=rcEtMin(new Date()),c=rcEtMin(new Date(inf.close));
-    if(c<360)c+=1440;if(now<360)now+=1440;
-    if(now>c)return null; /* past the close the sweep speaks */
+    var c=rcEtMin(new Date(inf.close));if(c<360)c+=1440; /* 0723u THE DAY FENCE: display fuel only \u2014 the gate below is absolute, one law for the whole done family */
+    if(Date.now()>new Date(inf.close).getTime())return null; /* past the close the sweep speaks */
     var ev=tyEvParty(pk),best=null,i;
     for(i=0;i<inf.extras.length;i++){var x=inf.extras[i];if(!x.open||!x.close)continue;
       var xc=rcEtMin(new Date(x.close));if(xc<360)xc+=1440;
@@ -7475,11 +7473,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     best.cred=/extended evening/i.test(best.d)?"Deluxe Resort guests":"Ticketed guests";
     return best;
   }
-  function tyDone(pk){ /* 0720w (S3 Cut 3): the day is truly done - past the close with no live window (the sweep already yielded) */
+  function tyDone(pk){ /* 0720w (S3 Cut 3): the day is truly done - past the close with no live window (the sweep already yielded). 0723u THE DAY FENCE REACHES THE DONE (owner wild specimen Aug 19, 12:30 AM): absolute epoch clocks, never minute-folds \u2014 after midnight the rolled schedule\u2019s close is tonight\u2019s FUTURE, and a day never reads done before it begins. */
     var inf=parkInfo[pk]||null;if(!inf||!inf.close)return false;
-    var now=rcEtMin(new Date()),c=rcEtMin(new Date(inf.close));
-    if(c<360)c+=1440;if(now<360)now+=1440;
-    return now>c&&!tySweep(pk);
+    return Date.now()>new Date(inf.close).getTime()&&!tySweep(pk);
   }
   function tyClkPair(a,b){ /* "9 to 11 PM" - the shared meridiem folds */
     var ra=rpClk(a>=1440?a-1440:a),rb=rpClk(b>=1440?b-1440:b);
@@ -7623,7 +7619,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var d0=tpAsD(ds),wd=d0.toLocaleDateString("en-US",{weekday:"long"});
     var bits=[];
     var dn0=tyDone(pk),swp=dn0?null:tySweep(pk); /* 0720u (S5b): after the sweep, the sub's own close clause IS the window truth \u00b7 0720w: the done day speaks past tense */
-    if(dn0&&inf&&inf.close)bits.push('Gates closed at '+tyClkIso(inf.close)+' \u2014 that\u2019s the day.'); /* 0723s P-A (owner, Aug 18): the hero owns the ending; the card below sells the Wrap */
+    if(dn0&&inf&&inf.close){var fc9=inf.close,ft9=new Date(inf.close).getTime(),xi9; /* 0723u: the day\u2019s FINAL close \u2014 a party or Extended Evening night ends when its last window ends, never at the day-guest line (owner specimen: \u201c6 PM\u201d on a party night) */
+      if(inf.extras)for(xi9=0;xi9<inf.extras.length;xi9++){var xx9=inf.extras[xi9];if(xx9&&xx9.close){var xt9=new Date(xx9.close).getTime();if(xt9>ft9){ft9=xt9;fc9=xx9.close;}}}
+      bits.push('Gates closed at '+tyClkIso(fc9)+' \u2014 that\u2019s the day.');} /* 0723s P-A (owner, Aug 18): the hero owns the ending; the card below sells the Wrap */
     else if(swp)bits.push((swp.em?swp.em+' ':'')+'<b>'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)); /* >=1440: midnight is 12 AM, never 12 PM (rpClk(1440) trap) */
     else if(open===true&&inf.close)bits.push('Open till '+tyClkIso(inf.close));
     else if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime())bits.push('Gates at '+tyClkIso(inf.open)); /* 0720w: the pre-open edge - the board still plans, the head names the gates */
