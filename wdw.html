@@ -2000,7 +2000,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5359,7 +5359,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!a.length)delete ts[i].done[ds];
       store.set("ppTrips",ts);return;}
   }
-  function tdNvRail(rid,ts){ /* the live rail - status truth on the right edge; DOWN never resequences (Compare's ruling) */
+  function tdNvRail(rid,ts){ /* the live rail - status truth on the right edge. DOWN-SINK ruling (owner, Aug 17) OVERTURNS Compare's "DOWN never resequences" for the App's Order lens ONLY: a 2-tick-confirmed DOWN sinks below every operating board ride (outs included), relative tape order preserved among the sunk; reopen restores the tape seat at one tick; pins hold their seats (HAND BEATS THE SINK); My Order never resequences; DOWN only \u2014 CLOSED/REFURB/pre-open keep their seats. The sink lives in tyCrossRefs on the promotion's own tyPollN heartbeat. */
     var lv=liveById[rid];
     if(lv&&lv.status==="DOWN")return '<span class="td-nvr"><span class="td-dnc">DOWN</span><small>now</small></span>';
     if(lv&&lv.status==="OPERATING"&&lv.wait!==null)return '<span class="td-nvr"><span class="t-'+rpTierCls(lv.wait)+'">'+lv.wait+'m</span><small>now</small></span>';
@@ -7602,6 +7602,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(store.get("ppFactDis",null)===ds)return null; /* the \u2715 kills facts for the DAY, not just the current one */
     var dn=tdDoneList(T,ds),dset={},i;for(i=0;i<dn.length;i++)dset[dn[i]]=1;
     var sq=(typeof tdSecHTML==="function"&&tdSecHTML.seq)||[],rid=null; /* typeof: a hero rendered without the walk plants nothing, never throws */
+    if(typeof tyPro!=="undefined"&&tyPro&&tyPro.on&&(typeof tdLens==="undefined"||tdLens!=="mine")&&sq.indexOf(tyPro.id)>=0)sq=[tyPro.id].concat(sq); /* 0723p: the promotion IS card #1 while it rides \u2014 Option A follows the glass, not just the tape (the sink needs no twin here: any DOWN already silences the fact) */
     for(i=0;i<sq.length;i++){if(!dset[sq[i]]&&TY_FACTS[sq[i]]){rid=sq[i];break;}} /* fact-less rides pass the podium to the next unridden \u2014 THE EMPTY SEED NEVER PLANTS */
     if(!rid)return null;
     var f=TY_FACTS[rid];
@@ -7674,6 +7675,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      (\u00a78's own build shape); its state is in-memory only \u2014 the rebreak precedent. */
   var tyPollN=0,tyProPoll=-1,tyPro=null;
   function tyPollTick(){tyPollN++;}
+  var tySinkPoll=-1,tySink={}; /* 0723p DOWN-SINK: in-memory only \u2014 the rebreak precedent; the map holds ONLY rides currently seen DOWN */
+  function tySinkEval(T,ds){ /* 0723p DOWN-SINK ruling (owner, Aug 17): 2-tick-confirmed DOWN \u2014 rides the promotion's own tyPollN heartbeat (renders between polls never tick). Reopen restores at one tick: the ride simply leaves the map. DOWN only \u2014 CLOSED/REFURB/pre-open never enter. */
+    if(tySinkPoll===tyPollN)return tySink;
+    tySinkPoll=tyPollN;
+    var ids=tdRides(T,ds),nx={},i;
+    for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid];
+      if(lv&&lv.status==="DOWN"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:tk>=2};}} /* THE THRESHOLD INCLUDES ITS OWN NUMBER: on at the second consecutive poll */
+    tySink=nx;return tySink;
+  }
   function tyGoCards(T,ds){ /* my board's eligible GO NOW cards \u2014 deepest under first, name-tiebroken */
     if(typeof pfCallouts!=="function")return [];
     var m=pfCallouts("all");if(!m||m.state!=="cards")return [];
@@ -7704,13 +7714,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyCrossRefs(el,T,ds){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
     var dn=tdDoneList(T,ds),dset={},i;for(i=0;i<dn.length;i++)dset[dn[i]]=1;
+    var snk=tySinkEval(T,ds); /* 0723p: the sink's clock ticks in every lens \u2014 only App's moves rows (state tracks the sky; the glass picks its manners) */
     var pro=tyProEval(tyGoCards(T,ds));
     var rows=[].slice.call(el.querySelectorAll(".td-sl")),proRow=null;
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
       if(!why||!rid)return;
       if(lv&&lv.status==="DOWN"&&!dset[rid]){ /* clause-earned: the bell clause only when a rule is armed */
-        why.textContent="Down right now \u00b7 no return promised"+((typeof armed!=="undefined"&&armed&&armed[rid])?" \u2014 your \uD83D\uDD14 will ping when it\u2019s back.":".");
+        var skC=""; /* 0723p DOWN-SINK: tick-1 restraint VISIBLE \u2014 the promotion's own grammar; pins and My Order hold their seats, so they narrate nothing extra */
+        if(tdLens!=="mine"&&!row.classList.contains("pin")&&snk[rid])skC=snk[rid].on?" Sunk below the running \u2014 its seat returns on reopen.":" One poll so far \u2014 the order holds for the second.";
+        why.textContent="Down right now \u00b7 no return promised"+((typeof armed!=="undefined"&&armed&&armed[rid])?" \u2014 your \uD83D\uDD14 will ping when it\u2019s back.":".")+skC;
         return;
       }
       if(pro&&pro.id===rid&&!dset[rid]&&!(lv&&lv.status==="DOWN")){
@@ -7727,6 +7740,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(i=0;i<rows.length;i++){var sn=rows[i].querySelector(".td-sn");if(sn&&/^\d+$/.test(sn.textContent)){first=rows[i];break;}}
       if(first&&first!==proRow)first.parentNode.insertBefore(proRow,first);
       var k=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(sn){if(/^\d+$/.test(sn.textContent))sn.textContent=String(++k);});
+    }
+    if(tdLens!=="mine"){ /* 0723p DOWN-SINK (owner, Aug 17) \u2014 App's Order only; the full overturn is recorded on tdNvRail's header */
+      var sunk=[];
+      rows.forEach(function(row){var rid=row.getAttribute("data-tdpd");
+        if(!rid||dset[rid]||row.classList.contains("pin"))return; /* HAND BEATS THE SINK \u2014 a pinned seat never moves */
+        if(snk[rid]&&snk[rid].on)sunk.push(row);});
+      if(sunk.length){var anc=el.querySelector(".td-ridlab")||el.querySelector("[data-tdadd]");
+        if(anc){sunk.forEach(function(row){var s9=row.querySelector(".td-sn");if(s9)s9.textContent="\u00b7";anc.parentNode.insertBefore(row,anc);}); /* glass order walks top-down \u2014 relative tape order preserved among the sunk; below the outs, above the ridden */
+          var k9=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s9){if(/^\d+$/.test(s9.textContent))s9.textContent=String(++k9);});}}
     }
   }
   function tyEvParty(pk){ /* 0720n: tonight's ticketed party AT the picked park \u2014 nights truth resolved through
