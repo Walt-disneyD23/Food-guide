@@ -2000,7 +2000,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3049,30 +3049,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       }}
     return null;
   }
-  function rdTnEE(best,names){ /* 0718o (owner pick B): the Extended Evening suffix.
-     Fires ONLY when another park's EE close reaches or beats the longest
-     PUBLISHED close — the one case where the published-close law would
-     mislead. Label from the feed's own desc (never Early Entry); the named
-     parks exclude themselves; capability-honest — names the program, claims
-     nothing about who qualifies. Equal -> "matches it"; later -> "runs past
-     it to <clock>" (the stronger truth alone when both somehow occur). */
-    var eq=[],bt=[],btBest=0,btIso=null,k,i;
-    for(k in parkInfo){
-      if(names.indexOf(k)>=0)continue;
-      var xs=(parkInfo[k]&&parkInfo[k].extras)||[];
-      for(i=0;i<xs.length;i++){var x=xs[i];
-        if(!x||!x.close||!/extended evening/i.test(x.desc||""))continue;
-        var c=new Date(x.close).getTime();
-        if(c===best)eq.push(BANNER_MONO[k]||k);
-        else if(c>best){bt.push(BANNER_MONO[k]||k);if(c>btBest){btBest=c;btIso=x.close;}}
-      }
-    }
-    function j(a){return a.length===1?a[0]:a.slice(0,-1).join(", ")+" and "+a[a.length-1];}
-    var out="";
-    if(eq.length&&!bt.length)out=' <b>'+esc(j(eq))+'</b> match'+(eq.length===1?"es":"")+' it for <b>Extended Evening</b> guests.';
-    else if(bt.length)out=' <b>'+esc(j(bt))+'</b> run'+(bt.length===1?"s":"")+' past it to <b>'+esc(fmtClock(btIso)||"")+'</b> for <b>Extended Evening</b> guests.';
-    return out;
-  }
+  /* rdTnEE retired 0723x \u2014 THE CROWN WEARS THE FINAL CLOSE absorbed 0718o\u2019s other-park suffix into the crown itself; the blind spot it never covered was the crown holder\u2019s own window (owner wild specimen, Aug 19) */
   function rdTonightClause(){
     if(usingFallback)return "";
     var ds=(typeof tpToday==="function")?tpToday():null;if(!ds)return "";
@@ -3082,15 +3059,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       ?'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend \u2014 these weekends <b>have run quieter than typical</b>, not busier.</div></div>'
       :'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend across the resort.</div></div>';
     if(h)return h; /* the hours line yields its seat to any earned event */
-    var bestIso=null,best=0,names=[],now=Date.now(),k;
+    var bestIso=null,best=0,names=[],creds=[],now=Date.now(),k; /* 0723x THE CROWN WEARS THE FINAL CLOSE (owner, Aug 19): the longest day is judged AND spoken by each park\u2019s LAST window \u2014 published or extra \u2014 never the published clock alone; 0718o\u2019s blind spot was the crown holder\u2019s OWN later window. The program supplying the final close is named \u2014 capability-honest, claims nothing about who qualifies. */
     for(k in parkInfo){var inf=parkInfo[k];if(!inf||!inf.close)continue;
-      var c=new Date(inf.close).getTime();if(!(c>now))continue;
-      if(!bestIso||c>best){best=c;bestIso=inf.close;names=[k];}
-      else if(c===best)names.push(k);}
+      var fc=new Date(inf.close).getTime(),fi=inf.close,cd=null,xi;
+      if(inf.extras)for(xi=0;xi<inf.extras.length;xi++){var x=inf.extras[xi];if(x&&x.close){var xt=new Date(x.close).getTime();if(xt>fc){fc=xt;fi=x.close;cd=x.desc||null;}}}
+      if(!(fc>now))continue;
+      if(!bestIso||fc>best){best=fc;bestIso=fi;names=[k];creds=[cd];}
+      else if(fc===best){names.push(k);creds.push(cd);}}
     if(!bestIso)return ""; /* after the last close (or pre-hours) the seat is empty */
     var monos=names.map(function(n){return BANNER_MONO[n]||n;});
     var who=monos.length===1?monos[0]:monos.slice(0,-1).join(", ")+" and "+monos[monos.length-1];
-    return '<div class="rd-row"><span class="ic">\uD83C\uDF19</span><div class="tx"><b>'+esc(who)+'</b> '+(names.length===1?"runs":"run")+' to <b>'+esc(fmtClock(bestIso)||"")+'</b> tonight \u2014 the resort\u2019s longest day.'+rdTnEE(best,names)+'</div></div>';
+    var cset=[],ci;for(ci=0;ci<creds.length;ci++)if(creds[ci]&&cset.indexOf(creds[ci])<0)cset.push(creds[ci]);
+    var tail=".";
+    if(cset.length){var allSame=true;for(ci=0;ci<creds.length;ci++)if(creds[ci]!==cset[0])allSame=false;
+      tail=allSame?(' (<b>'+esc(cset[0])+'</b>).'):(' ('+names.map(function(n,i2){return creds[i2]?'<b>'+esc(BANNER_MONO[n]||n)+'</b> by <b>'+esc(creds[i2])+'</b>':null;}).filter(Boolean).join(", ")+').');} /* one program crowning alone earns the plain credential; a mixed crown names who rides what; published-only crowns add nothing */
+    return '<div class="rd-row"><span class="ic">\uD83C\uDF19</span><div class="tx"><b>'+esc(who)+'</b> '+(names.length===1?"runs":"run")+' to <b>'+esc(fmtClock(bestIso)||"")+'</b> tonight \u2014 the resort\u2019s longest day'+tail+'</div></div>';
   }
   /* ===== LIGHTNING (rdLtg-, L-32 5b, 0718s) — clause 5 of the read, the
      observed channel wired to Live at last (deferred honestly in 0718f).
@@ -7698,7 +7681,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     tySinkPoll=tyPollN;
     if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;}
     var ids=tdRides(T,ds),nx={},i;
-    for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv&&lv.status;
+    for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv?lv.status:"CLOSED"; /* 0723x ONE CLOSED (owner wild specimen Aug 19, 9:10 AM): the rail has read ABSENCE as CLOSED since 0714s — the sink speaks the same predicate; the park-open gate and two ticks still guard the move */
       if(s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:tk>=2,st:s9};}} /* THE THRESHOLD INCLUDES ITS OWN NUMBER: on at the second consecutive poll */
     tySink=nx;return tySink;
   }
@@ -7738,7 +7721,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
       if(!why||!rid)return;
-      var st9=lv&&lv.status,skC=""; /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
+      var st9=lv?lv.status:"CLOSED",skC=""; /* 0723x ONE CLOSED: absence speaks too (the rail’s own predicate) */ /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
       if((st9==="DOWN"||st9==="CLOSED"||st9==="REFURBISHMENT")&&!dset[rid]&&tdLens!=="mine"&&!row.classList.contains("pin")&&snk[rid])skC=snk[rid].on?(" Sunk below the running"+(st9==="REFURBISHMENT"?".":" \u2014 its seat returns on reopen.")):" One poll so far \u2014 the order holds for the second.";
       if(st9==="DOWN"&&!dset[rid]){ /* clause-earned: the bell clause only when a rule is armed */
         why.textContent="Down right now \u00b7 no return promised"+((typeof armed!=="undefined"&&armed&&armed[rid])?" \u2014 your \uD83D\uDD14 will ping when it\u2019s back.":".")+skC;
