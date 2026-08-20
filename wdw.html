@@ -2006,7 +2006,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5458,8 +5458,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!cv.allday&&cv.crest&&cv.crest[0]>=it.st0)p.push("crests near "+cv.pk+"m by "+rpClk(cv.crest[0]));
       else p.push("typically climbs toward ~"+it.mx+"m by "+rpClk(it.tmx));
     }else{
-      if(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1])p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
-      p.push("typically eases to ~"+it.mn+"m"+(it.tm!==null?(it.near?(it.lvw?" near your leave":" near close"):" by "+rpClk(it.tm)):""));
+      var atc=(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1]),anc=(!atc&&startMin>0&&!it.lateStart); /* 0724e THE PRESENT ANCHOR (owner-blessed): the future-opening face now opens where the rider stands \u2014 assurance, never a verdict (the bridge stays the only judge). Tense-gated on the A-class's own logic: day-voice and pre-start faces never anchor (0723m stands); the crest face already speaks the present. */
+      if(atc)p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
+      else if(anc)p.push("typically ~"+it.base+"m through here");
+      p.push((anc?"eases to ~":"typically eases to ~")+it.mn+"m"+(it.tm!==null?(it.near?(it.lvw?" near your leave":" near close"):" by "+rpClk(it.tm)):"")); /* the anchor carries the word for both \u2014 never a double "typically" */
     }
     if(it.lateStart)p.unshift("from its "+rpClk(it.st0)+" start");
     var w=p.join(" \u2014 ");w=w.charAt(0).toUpperCase()+w.slice(1)+".";
