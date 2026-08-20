@@ -2006,7 +2006,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2520,7 +2520,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     setPulse("ok");
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
-      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();updateAlertBadge(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
+      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
     }).catch(function(err){
       setPulse("error");
@@ -8311,7 +8311,24 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
   /* ---- freshness ---- */
   function setPulse(state){liveState=state;elPill.className="status-pill "+(state==="error"?"error":state==="stale"?"stale":"ok");}
-  function scheduleNext(){if(timer)clearTimeout(timer);nextRefreshAt=Date.now()+REFRESH_MS;timer=setTimeout(function(){load(false);},REFRESH_MS);}
+  function refreshDelay(){ /* 0724c THE 3-MINUTE BASELINE (owner-lettered): faster only for someone actually looking during operating hours \u2014 a calm 5 stays the ceiling; courteous to the free API */
+    var vis=(typeof document!=="undefined"&&document.visibilityState==="visible"),op=false,k9;
+    if(vis&&typeof isOpenNow==="function"){for(k9 in parkInfo){if(isOpenNow(parkInfo[k9])===true){op=true;break;}}}
+    return (vis&&op)?3*60*1000:REFRESH_MS;
+  }
+  var confirmT=null;
+  function tyConfirmPending(){ /* 0724c P-B: a 2-tick confirmation mid-flight \u2014 the sink's or the promotion's tick-1 (the board states a watcher stares at) */
+    if(typeof tyPro!=="undefined"&&tyPro&&!tyPro.on)return true;
+    if(typeof tySink!=="undefined"){var q9;for(q9 in tySink)if(!tySink[q9].on)return true;}
+    return false;
+  }
+  function scheduleConfirm(){ /* 0724c P-B FAST CONFIRM (owner-lettered): one slot, ~75s, visible only, never stacking; the confirm is a REAL poll so every 2-tick family resolves by the same clock. The in-memory reset law stands \u2014 this shortens the wait, never persists the state. */
+    if(confirmT){clearTimeout(confirmT);confirmT=null;}
+    if(typeof document!=="undefined"&&document.visibilityState!=="visible")return;
+    if(!tyConfirmPending())return;
+    confirmT=setTimeout(function(){confirmT=null;load(false);},75000);
+  }
+  function scheduleNext(){if(timer)clearTimeout(timer);var d9=refreshDelay();nextRefreshAt=Date.now()+d9;timer=setTimeout(function(){load(false);},d9);}
   function tick(){
     if(lastUpdated&&liveState!=="error"){
       var secs=Math.round((Date.now()-lastUpdated)/1000);
