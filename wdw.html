@@ -2006,7 +2006,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2609,7 +2609,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       }).catch(function(){});
     }));
   }
-  function fmtClock(iso){try{return new Date(iso).toLocaleTimeString("en-US",{timeZone:TZ,hour:"numeric",minute:"2-digit"});}catch(e){return null;}}
+  function fmtClock(iso){try{var m9=rcEtMin(new Date(iso));return isNaN(m9)?null:rpClk(m9);}catch(e){return null;}} /* 0724b 6A ONE CLOCK DIALECT (owner-lettered): bare hour on the hour, minutes only when real \u2014 tyClkIso\u2019s exact recipe, one dialect everywhere */
 
   /* ---- alerts ---- */
   function ruleFor(id){var o=overrides[id];return {dir:(o&&o.dir)||settings.dir,thresh:(o&&o.thresh)||settings.thresh};} /* 0723b F: partial overrides are legal - every field falls back (a dnup-only override must never blank the rule) */
@@ -4317,7 +4317,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }else{
       right='<div class="rd-edge allday"><b>'+it.val+'m</b><small>all day</small></div>';
     }
-    var cx=(kind==="allday")?((it.fk==="held")?"one typical number at every hour":"walk-on at every hour"):rdCtx(it.cv); /* 0714h: timing-invariant rows say so plainly */
+    var cx=(kind==="allday")?((it.fk==="held")?"one typical number at every hour":"walk-on at every hour"):rdCtx(it.cv);
+    if(kind==="never"){var bs7=it.cv.bs,mn7=1e9,mt7=null,q7;for(q7=0;q7<bs7.length;q7++)if(bs7[q7].med<mn7){mn7=bs7[q7].med;mt7=bs7[q7].t;}
+      if(mt7!==null&&mt7>bs7[0].t&&mn7<it.open)cx+=" \u00b7 cheapest near "+rpClk(mt7);} /* 0724b item 5 (TRON specimen, clause-earned): when the low lands after the open, the row corrects the section cap with its own clock \u2014 the open was NOT this ride\u2019s discount */ /* 0714h: timing-invariant rows say so plainly */
     return '<div class="rd-item"><div class="rd-row"><div class="rd-m"><div class="rd-nm">'+esc(it.nm)+'</div><div class="rd-ctx">'+cx+'</div></div>'+right+'</div></div>';
   }
   function rdSec(title,cap,rows){
@@ -7597,7 +7599,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var pline='',pi2;
     for(pi2=0;pi2<TP_PARKS.length;pi2++){var ev2=tyEvParty(TP_PARKS[pi2][0]);
       if(ev2){var inf2=parkInfo[TP_PARKS[pi2][0]]||null,cl2=inf2?tyClkIso(inf2.close):null;
-        pline='<div class="ty-pline">'+(ev2.em?ev2.em+' ':'')+'<b>'+TP_PARKS[pi2][1]+' party tonight</b>'+(cl2?' \u2014 day guests till '+cl2+'.':'.')+'</div>';break;}}
+        var pv2=(inf2&&inf2.close&&Date.now()>new Date(inf2.close).getTime()),sw2=(pv2&&typeof tySweep==="function")?tySweep(TP_PARKS[pi2][0]):null; /* 0724b item 1: past the day-guest close the credential is dead information \u2014 tense flips whole (the hero flipped at 6; the landing now flips with it) */
+        pline='<div class="ty-pline">'+(ev2.em?ev2.em+' ':'')+(pv2?('<b>'+TP_PARKS[pi2][1]+' party on now</b>'+(sw2&&sw2.c!=null?' \u2014 till '+rpClk(sw2.c>=1440?sw2.c-1440:sw2.c)+'.':'.')):('<b>'+TP_PARKS[pi2][1]+' party tonight</b>'+(cl2?' \u2014 day guests till '+cl2+'.':'.')))+'</div>';break;}}
     return '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+md+'</div>'+
       '<h2>'+(night?'The parks are asleep.':'Where are you today?')+'</h2><div class="sub">'+sub+'</div>'+pline+(night?'<button class="ty-wrapdoor" data-tywrap type="button">See today\u2019s Wrap <span class="chev">\u203a</span></button>':'')+'</div>'+ /* 0723t rider (owner, Aug 18): the hero both names and opens the door \u2014 .ty-wrapdoor rides the 0723r delegation anywhere */
       '<div class="pb-board ty-board"><div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliner avg</span></div>'+PARK_DEF.map(tyRowHTML).join("")+'</div>'; /* 0722e: one board, both tabs */
@@ -7622,7 +7625,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var dn0=tyDone(pk),swp=dn0?null:tySweep(pk); /* 0720u (S5b): after the sweep, the sub's own close clause IS the window truth \u00b7 0720w: the done day speaks past tense */
     if(dn0&&inf&&inf.close){var fc9=inf.close,ft9=new Date(inf.close).getTime(),xi9; /* 0723u: the day\u2019s FINAL close \u2014 a party or Extended Evening night ends when its last window ends, never at the day-guest line (owner specimen: \u201c6 PM\u201d on a party night) */
       if(inf.extras)for(xi9=0;xi9<inf.extras.length;xi9++){var xx9=inf.extras[xi9];if(xx9&&xx9.close){var xt9=new Date(xx9.close).getTime();if(xt9>ft9){ft9=xt9;fc9=xx9.close;}}}
-      bits.push('Gates closed at '+tyClkIso(fc9)+' \u2014 that\u2019s the day.');} /* 0723s P-A (owner, Aug 18): the hero owns the ending; the card below sells the Wrap */
+      var nm9=rcEtMin(new Date()),lx9=Date.now()-((nm9>=360?nm9-360:nm9+1080)*60000); /* 0724b 2A THE DAY FENCE ON THE DONE LINE (owner pre-dawn specimen): the line speaks only a close from the CURRENT service day \u2014 one that landed after the most recent 6 AM changeover. The evening done face and the midnight done line stand untouched; a stale yesterday-close after 6 AM holds its tongue until the refetch seats the fresh day (the Wrap owns finished days). */
+      if(ft9>=lx9)bits.push('Gates closed at '+tyClkIso(fc9)+' \u2014 that\u2019s the day.');} /* 0723s P-A (owner, Aug 18): the hero owns the ending; the card below sells the Wrap */
     else if(swp)bits.push((swp.em?swp.em+' ':'')+'<b>'+esc(swp.word)+'</b> till '+rpClk(swp.c>=1440?swp.c-1440:swp.c)); /* >=1440: midnight is 12 AM, never 12 PM (rpClk(1440) trap) */
     else if(open===true&&inf.close)bits.push('Open till '+tyClkIso(inf.close));
     else if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime())bits.push('Gates at '+tyClkIso(inf.open)); /* 0720w: the pre-open edge - the board still plans, the head names the gates */
@@ -7943,10 +7947,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       sub+="<b>all "+run+" running</b>";
       if(bells>0)sub+=". Bells armed on <b>"+bells+"</b>, listening for their moment.";else sub+=". No bells armed yet.";sub+=dnS;
     } else { /* mixed */
-      sub+="<b>"+run+" running</b>";
-      if(down===1){sub+=", <b>"+esc(roster[downIds[0]].name)+"</b> is down";}else if(down>1){sub+=", <b>"+down+"</b> down";}
-      if(back>0){sub+=", and <b>"+back+"</b> back up waiting for you below";}
-      if(closed>0){if(down===1&&back===0)sub+=", the other "+closed+" closed";else sub+=", "+closed+" closed";}
+      sub+="<b>"+run+" running</b>"; /* 0724b 3A (owner-lettered): the middot board grammar \u2014 a readout, never a sentence with a dead "waiting" clause */
+      if(down===1){sub+=" \u00b7 <b>"+esc(roster[downIds[0]].name)+"</b> down";}else if(down>1){sub+=" \u00b7 <b>"+down+"</b> down";}
+      if(back>0){sub+=" \u00b7 <b>"+back+"</b> back up";}
+      if(closed>0){sub+=" \u00b7 "+closed+" closed";}
       sub+=". ";
       if(bells>0)sub+="Bells armed on <b>"+bells+"</b>.";else sub+="No bells armed yet.";sub+=dnS;
     }
