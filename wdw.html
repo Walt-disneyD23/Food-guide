@@ -802,6 +802,7 @@
   .td-fl{flex:1 0 100%;display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--line);margin:10px -13px -13px;padding:7px 13px 8px}
   .td-fl span{font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .td-fl b{font:700 var(--fs-small) var(--font-body);font-variant-numeric:tabular-nums;color:var(--accent)}
+  .td-brg{color:var(--accent);font-weight:700} /* 0724a: the bridge wears the accent \u2014 the live-voice ink, same as the promotion family */
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
   .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
@@ -2005,7 +2006,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5407,9 +5408,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var f=0;while(f<rem.length&&rem[f].med<=10)f++;
       if(remL.length&&mn>10){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=10){lt=remL[q].t;break;}}
         if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
-      var ch5=mn+5,dqA=-1;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
-      var dl9=(dqA>=0)?rem[dqA].t+30:null;if(dl9!==null&&ct!==null&&dl9>ct)dl9=ct; /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
-      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,dl:dl9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
+      var ch5=mn+5,dqA=-1,ws9=null;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){ws9=rem[q].t;dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
+      var dl9=(dqA>=0)?rem[dqA].t+30:null,dlw9=false;if(dl9!==null&&ct!==null&&dl9>=ct){dlw9=true;if(dl9>ct)dl9=ct;} /* 0724a W-B: ws = the cheap window's own open; dlw = the run reached the wall, so the footer says the word close, never a clock past it */ /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
+      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,dl:dl9,ws:ws9,dlw:dlw9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
         f2:(f>0&&f<rem.length)?rem[f-1].t+30:null,wk:(f===rem.length),
         lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
         near:(ct!==null&&tm!==null&&tm>=ct-45),lvw:clmp}; /* 0719i: the clause knows which end of the window it names */
@@ -5558,9 +5559,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
       chips+='<div class="tp-asn td-asn"><span class="tp-acap">Leaving by \u2014</span>'+TD_LEAVES.map(function(x){var xm=tdLeaveMin(x[0]),dis=(xm!==null&&xm<=sm);return '<span class="tp-ac'+(tdLeave===x[0]?' sel':'')+(dis?' dis':'')+'" data-tdlv="'+x[0]+'"'+(dis?'':' role="button"')+'>'+x[1]+'</span>';}).join("")+'</div>'; /* 0719h: the mirror row \u2014 chips the start has passed dim, Close always stands */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
-        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf); /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
+        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&it.cv){var _tb=it.cv.bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>Window closes</span><b>~'+rpClk(it.dl)+'</b></div>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else{_sq.push(it.id);body+=slA(it,false);}});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
@@ -7746,6 +7747,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           else{why.textContent="\u2191 Riding the moment \u2014 "+pro.delta+" under typical, two polls running. Back to its seat when the window closes.";proRow=row;}
         }
         else if(!mine)why.textContent=pro.delta+" under its typical \u2014 one poll so far; the order waits for the second."; /* tick-1 narrates the ORDER waiting \u2014 in My order no order waits, so it says nothing */
+      }
+      /* 0724a THE BRIDGE (S-A, owner-blessed): absorbs the hold hint + the Aug-11 Disagreement Clause + crest-beside-green \u2014 ONE PHENOMENON ONE PALETTE. Clause-earned at >=25% AND >=5m from the row's own typical-now; the promotion voice always outranks; ridden rows never bridge; the down/closed branches returned above. A span, created once and updated \u2014 never appended twice across ticks. Silence is the default face. */
+      if(!(pro&&pro.id===rid)&&!dset[rid]&&lv&&lv.status==="OPERATING"&&lv.wait!==null){
+        var ty7=row.getAttribute("data-tdty"),br7=why.querySelector(".td-brg"),sp7=null;
+        if(ty7!==null&&ty7!==""){ty7=+ty7;
+          if(ty7>0&&Math.abs(lv.wait-ty7)>=5&&Math.abs(lv.wait-ty7)/ty7>=0.25)sp7=(lv.wait<ty7)?"under":"above";}
+        if(sp7){if(!br7){br7=row.ownerDocument.createElement("span");br7.className="td-brg";why.appendChild(br7);}
+          br7.textContent=" Today\u2019s running "+sp7+" typical.";}
+        else if(br7)br7.parentNode.removeChild(br7);
       }
     });
     if(proRow){ /* SINGULAR: before the first digit-seated row; pins hold their anchors */
