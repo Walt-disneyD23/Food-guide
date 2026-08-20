@@ -797,6 +797,8 @@
   .td-sm{flex:1;min-width:0}
   .td-snm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
   .td-srx{font-size:var(--fs-small);color:var(--muted);line-height:1.45;margin-top:.5px;min-height:36px}
+  .td-dl{flex:none;margin-left:auto;text-align:right;white-space:nowrap;align-self:center;font:700 var(--fs-small) var(--font-body);font-variant-numeric:tabular-nums;color:var(--accent);padding-left:6px}
+  .td-dl small{display:block;font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-top:1px}
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
   .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
@@ -2000,7 +2002,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5402,7 +5404,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var f=0;while(f<rem.length&&rem[f].med<=10)f++;
       if(remL.length&&mn>10){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=10){lt=remL[q].t;break;}}
         if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
-      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
+      var ch5=mn+5,dqA=-1;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
+      var dl9=(dqA>=0)?rem[dqA].t+30:null;if(dl9!==null&&ct!==null&&dl9>ct)dl9=ct; /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
+      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,dl:dl9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
         f2:(f>0&&f<rem.length)?rem[f-1].t+30:null,wk:(f===rem.length),
         lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
         near:(ct!==null&&tm!==null&&tm>=ct-45),lvw:clmp}; /* 0719i: the clause knows which end of the window it names */
@@ -5411,15 +5415,15 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       else if(base<=mn+3){it.k="A";A.push(it);}
       else{it.k="B";B.push(it);}
     }
-    A.sort(function(x,y){return ((y.mx-y.base)-(x.mx-x.base))||x.nm.localeCompare(y.nm);}); /* biggest climb = most perishable low */
-    B.sort(function(x,y){return ((x.tm||0)-(y.tm||0))||x.nm.localeCompare(y.nm);}); /* whose low lands first */
+    var AB=A.concat(B); /* 0723y A2 ONE DEADLINE AXIS (owner-blessed Aug 19; spec a2-order-preview.html): the whole flexible pool seats in the order its cheap window closes; climb breaks ties, then name. Classes and their copy hold \u2014 the axis re-seats, never re-classes; C-tail, pins, My Order untouched. */
+    AB.sort(function(x,y){return ((x.dl==null?1e9:x.dl)-(y.dl==null?1e9:y.dl))||((y.mx-y.base)-(x.mx-x.base))||x.nm.localeCompare(y.nm);});
     var zk=function(id){var z9=geo&&TD_ZONES[id];return z9?(((z9-1)-geo.a+geo.Z)%geo.Z):1e9;},swept=false; /* 0723v G1+G3 THE SWEEP: the rotated walk orders the anytime family, gate outward; a ride missing from the table seats after, by name — the empty seed never plants a zone */
     if(geo){for(i=0;i<C.length;i++)if(TD_ZONES[C[i].id]){swept=true;break;}if(!swept)for(i=0;i<N.length;i++)if(TD_ZONES[N[i].id]){swept=true;break;}}
     C.sort(function(x,y){return (zk(x.id)-zk(y.id))||x.nm.localeCompare(y.nm);});
     N.sort(function(x,y){return (zk(x.id)-zk(y.id))||x.nm.localeCompare(y.nm);}); /* N joins C's sweep — no clock either (Geo-Order-Spec \u00a72) */
     D.sort(function(x,y){return (x.anchor-y.anchor)||x.nm.localeCompare(y.nm);}); /* unreachable pins seat first, dimmed - never pretend */
     P.sort(function(x,y){return (x.anchor-y.anchor)||x.nm.localeCompare(y.nm);});
-    var Fx=A.concat(B,C),M=[],pi=0,fj=0;
+    var Fx=AB.concat(C),M=[],pi=0,fj=0;
     function fref(z){return z.k==="A"?z.st0:(z.k==="B"?z.tm:1e9);} /* flexible reference clocks: A=start, B=when the low lands, C=tail */
     while(pi<P.length||fj<Fx.length){
       if(fj>=Fx.length||(pi<P.length&&P[pi].anchor<=fref(Fx[fj])))M.push(P[pi++]);
@@ -5553,7 +5557,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n))); /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf?'<span class="td-dl">~'+rpClk(it.dl)+'<small>window closes</small></span>':'')+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else{_sq.push(it.id);body+=slA(it,false);}});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
