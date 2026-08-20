@@ -796,9 +796,12 @@
   .td-sn{flex:none;width:18px;font:700 16px var(--font-display);color:var(--muted-2);text-align:center}
   .td-sm{flex:1;min-width:0}
   .td-snm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
+  .td-sl .td-snm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden} /* 0723z: same-height ruling \u2014 the 3-line wrap from the owner's 5:56 AM capture retires. A SCOPED rule: the shared name recipe above stays byte-exact (ty G NAMES / Aug 8 TYPE SCALE law) \u2014 the clamp is layout, never type. */
   .td-srx{font-size:var(--fs-small);color:var(--muted);line-height:1.45;margin-top:.5px;min-height:36px}
-  .td-dl{flex:none;margin-left:auto;text-align:right;white-space:nowrap;align-self:center;font:700 var(--fs-small) var(--font-body);font-variant-numeric:tabular-nums;color:var(--accent);padding-left:6px}
-  .td-dl small{display:block;font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-top:1px}
+  .td-sl.dlx{flex-wrap:wrap} /* 0723z L-C: the footer child wraps to its own full-width line */
+  .td-fl{flex:1 0 100%;display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--line);margin:10px -13px -13px;padding:7px 13px 8px}
+  .td-fl span{font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
+  .td-fl b{font:700 var(--fs-small) var(--font-body);font-variant-numeric:tabular-nums;color:var(--accent)}
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
   .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
@@ -2002,7 +2005,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0723y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0723z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5555,9 +5558,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       chips='<div class="tp-asn td-asn"><span class="tp-acap">Starting \u2014</span>'+(today?[["now","From now"]]:[]).concat(TD_STARTS).map(function(x){return '<span class="tp-ac'+(stKey===x[0]?' sel':'')+(x[0]==="now"?' now':'')+'" data-tdst="'+x[0]+'" role="button">'+x[1]+'</span>';}).join("")+'</div>';
       chips+='<div class="tp-asn td-asn"><span class="tp-acap">Leaving by \u2014</span>'+TD_LEAVES.map(function(x){var xm=tdLeaveMin(x[0]),dis=(xm!==null&&xm<=sm);return '<span class="tp-ac'+(tdLeave===x[0]?' sel':'')+(dis?' dis':'')+'" data-tdlv="'+x[0]+'"'+(dis?'':' role="button"')+'>'+x[1]+'</span>';}).join("")+'</div>'; /* 0719h: the mirror row \u2014 chips the start has passed dim, Close always stands */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
-        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n))); /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
+        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf); /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf?'<span class="td-dl">~'+rpClk(it.dl)+'<small>window closes</small></span>':'')+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'" role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>Window closes</span><b>~'+rpClk(it.dl)+'</b></div>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else{_sq.push(it.id);body+=slA(it,false);}});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
