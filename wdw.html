@@ -1791,6 +1791,8 @@
   .td-fi span{display:block;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .td-fi b{display:block;font:700 var(--fs-title) var(--font-display);color:var(--accent);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .td-fi select{position:absolute;inset:0;width:100%;height:100%;opacity:0;-webkit-appearance:none;appearance:none;border:0;font-size:16px} /* each cell one grown native seat — the Sort pill's trick, field-sized */
+  .td-lane{display:flex;align-items:baseline;justify-content:space-between;margin:14px 3px 7px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--muted-2)} /* 0724j B-2: the lanes — the WINDOW-CLOSES caps grammar, one hairline per seam */
+  .td-lane b{font:700 var(--fs-caps) var(--font-body);letter-spacing:.08em;color:var(--muted)}
   .ty-echo{white-space:nowrap}
   .ty-sub{color:var(--muted);font-size:var(--fs-meta);margin-top:3px;line-height:1.5}
   .ty-sub .tw{font-weight:700}
@@ -2013,7 +2015,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5430,20 +5432,24 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       else{it.k="B";B.push(it);}
     }
     var AB=A.concat(B); /* 0723y A2 ONE DEADLINE AXIS (owner-blessed Aug 19; spec a2-order-preview.html): the whole flexible pool seats in the order its cheap window closes; climb breaks ties, then name. Classes and their copy hold \u2014 the axis re-seats, never re-classes; C-tail, pins, My Order untouched. */
-    AB.sort(function(x,y){return ((x.dl==null?1e9:x.dl)-(y.dl==null?1e9:y.dl))||((y.mx-y.base)-(x.mx-x.base))||x.nm.localeCompare(y.nm);});
+    var OPEN=[],FUT=[];for(i=0;i<AB.length;i++){var w8=AB[i]; /* 0724j THE B CUT (owner-ruled B-2): a cheap window not yet open at your start leaves the axis — walking there now buys nothing; it seats BELOW the sweep by ARRIVAL (A2 amendment: an unopened window seats by its open). Open windows keep the shipped axis on top. Tiers are stamps, never re-classes. */
+      if(w8.k==="B"&&w8.ws!==null&&w8.ws>startMin+30){w8.tier=3;FUT.push(w8);}else{w8.tier=1;OPEN.push(w8);}}
+    OPEN.sort(function(x,y){return ((x.dl==null?1e9:x.dl)-(y.dl==null?1e9:y.dl))||((y.mx-y.base)-(x.mx-x.base))||x.nm.localeCompare(y.nm);});
+    FUT.sort(function(x,y){return (x.ws-y.ws)||((y.mx-y.base)-(x.mx-x.base))||x.nm.localeCompare(y.nm);});
     var zk=function(id){var z9=geo&&TD_ZONES[id];return z9?(((z9-1)-geo.a+geo.Z)%geo.Z):1e9;},swept=false; /* 0723v G1+G3 THE SWEEP: the rotated walk orders the anytime family, gate outward; a ride missing from the table seats after, by name — the empty seed never plants a zone */
     if(geo){for(i=0;i<C.length;i++)if(TD_ZONES[C[i].id]){swept=true;break;}if(!swept)for(i=0;i<N.length;i++)if(TD_ZONES[N[i].id]){swept=true;break;}}
     C.sort(function(x,y){return (zk(x.id)-zk(y.id))||x.nm.localeCompare(y.nm);});
     N.sort(function(x,y){return (zk(x.id)-zk(y.id))||x.nm.localeCompare(y.nm);}); /* N joins C's sweep — no clock either (Geo-Order-Spec \u00a72) */
     D.sort(function(x,y){return (x.anchor-y.anchor)||x.nm.localeCompare(y.nm);}); /* unreachable pins seat first, dimmed - never pretend */
     P.sort(function(x,y){return (x.anchor-y.anchor)||x.nm.localeCompare(y.nm);});
-    var Fx=AB.concat(C),M=[],pi=0,fj=0;
+    for(i=0;i<C.length;i++)C[i].tier=2;for(i=0;i<N.length;i++)N[i].tier=2; /* 0724j: the sweep is tier 2; the lanes read the stamps */
+    var Fx=OPEN.concat(C).concat(FUT),M=[],pi=0,fj=0;
     function fref(z){return z.k==="A"?z.st0:(z.k==="B"?z.tm:1e9);} /* flexible reference clocks: A=start, B=when the low lands, C=tail */
     while(pi<P.length||fj<Fx.length){
       if(fj>=Fx.length||(pi<P.length&&P[pi].anchor<=fref(Fx[fj])))M.push(P[pi++]);
       else M.push(Fx[fj++]);
     }
-    return {ord:D.concat(M),outs:L.concat(N),swept:swept};
+    return {ord:D.concat(M),outs:L.concat(N),swept:swept,fw:(FUT.length?FUT[0].ws:null)}; /* 0724j: the first future arrival — the evening lane's own clock */
   }
   var TD_ZONES={"24cf863c-b6ba-4826-a056-0b698989cbf7":1,"7a5af3b7-9bc1-4962-92d0-3ea9c9ce35f0":1,"32e01181-9a5f-4936-8a77-0dace1de836c":2,"4f391f0e-52be-4f9d-99d6-b3ae0373b43c":2,"64a6915f-a835-4226-ba5c-8389fc4cade3":3,"d58d9262-ec95-4161-80a0-07ca43b2f5f3":3,"55c531b6-3ce2-4c47-a8a1-0dc9107d825b":4,"1627c724-112c-4361-aeba-dae80082c90d":4,"480fde8f-fe58-4bfb-b3ab-052a39d4db7c":1,"75449e85-c410-4cef-a368-9d2ea5d52b58":2,"8f353879-d6ac-4211-9352-4029efb47c18":2,"81b15dfd-cf6a-466f-be59-3dd65d2a2807":2,"fb076275-0570-4d62-b2a9-4d6515130fa3":2,"1e735ffb-4868-47f1-b2cd-2ac1156cd5f0":3,"8d7ccdb1-a22b-4e26-8dc8-65b1938ed5f0":4,"22f48b73-01df-460e-8969-9eb2b4ae836c":4,"e3549451-b284-453d-9c31-e3b1207abd79":5,"5b6475ad-4e9a-4793-b841-501aa382c9c0":5,"37ae57c5-feaf-4e47-8f27-4b385be200f0":5,"6e118e37-5002-408d-9d88-0b5d9cdb5d14":1,"e516f303-e82d-4fd3-8fbf-8e6ab624cf89":2,"6f6998e8-a629-412c-b964-2cb06af8e26b":2,"3b290419-8ca2-44bc-a710-a6c83fca76ec":3,"34c4916b-989b-4ff1-a7e3-a6a846a3484f":4,"1a2e70d9-50d5-4140-b69e-799e950f7d18":4,"d56506e2-6ad3-443a-8065-fea37987248d":5,"399aa0a1-98e2-4d2b-b297-2b451e9665e1":5,"20b5daa8-e1ea-436f-830c-2d7d18d929b5":5,"e39b831b-7731-49bb-815b-289b4f49a9fd":1,"796b0a25-c51e-456e-9bb8-50a324e301b3":2,"352feb94-e52e-45eb-9c92-e4b44c6b1a9d":2,"96455de6-f4f1-403c-9391-bf8396979149":2,"de3309ca-97d5-4211-bffe-739fed47e92f":3,"73cb9445-0695-47a3-87ce-d08ae36b5f3c":3,"06c599f9-1ddf-4d47-9157-a992acafc96b":3,"2551a77d-023f-4ab1-9a19-8afec0190f39":4,"f5aad2d4-a419-4384-bd9a-42f86385c750":5,"86a41273-5f15-4b54-93b6-829f140e5161":5,"e76c93df-31af-49a5-8e2f-752c76c937c9":6,"273ddb8d-e7b5-4e34-8657-1113f49262a5":6,"9d4d5229-7142-44b6-b4fb-528920969a2c":6,"0d94ad60-72f0-4551-83a6-ebaecdd89737":6,"3cba0cb4-e2a6-402c-93ee-c11ffcb127ef":6,"890fa430-89c0-4a3f-96c9-11597888005e":7,"0aae716c-af13-4439-b638-d75fb1649df3":7,"924a3b2c-6b4b-49e5-99d3-e9dc3f2e8a48":7,"e40ac396-cbac-43f4-8752-764ed60ccceb":7,"d9d12438-d999-4482-894b-8955fdb20ccf":8,"72c7343a-f7fb-4f66-95df-c91016de7338":8,"b2260923-9315-40fd-9c6b-44dd811dbe64":8,"f163ddcd-43e1-488d-8276-2381c1db0a39":8,"ffcfeaa2-1416-4920-a1ed-543c1a1695c4":8,"5a43d1a7-ad53-4d25-abfe-25625f0da304":8}; /* 0723v Z1: zone-table-v1-FINAL.csv, owner-verified Aug 18 — uuid \u2192 sweep index, gate outward; curated zones, never coordinates; MK is an 8-stop sweep (three-zone Fantasyland split, owner-ruled); Railroad stations zone to their OWN land — boarding the nearest station is the feature; DinoLand rows inert insurance (owner: closed for good) */
   var TD_ZLEN={"Magic Kingdom":8,"EPCOT":5,"Hollywood Studios":5,"Animal Kingdom":4}; /* the loop length per park — the rotation's modulus */
@@ -5621,7 +5627,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&it.cv){var _tb=it.cv.bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
         return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
-      eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else{_sq.push(it.id);body+=slA(it,false);}});
+      var _lt=0; /* 0724j THE B CUT (B-2, ratified wording from option-b-mock.html): thin lanes at the tier seams — labels render at BOUNDARIES only, so an all-anytime board stays bare and a leave that outruns every future window never shows the evening lane (its absence is information). Pins are lane-neutral; done rides ride to their tail untouched. */
+      eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);return;}
+        var t9=it.pin?0:(it.tier||0);
+        if(t9&&_lt&&t9!==_lt){
+          if(t9===2)body+='<div class="td-lane"><span>Ride now</span><b>anytime</b></div>';
+          else if(t9===3)body+='<div class="td-lane"><span>Your evening windows</span><b>from ~'+rpClk(eng.fw)+'</b></div>';}
+        if(t9)_lt=t9;
+        _sq.push(it.id);body+=slA(it,false);});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
         :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
