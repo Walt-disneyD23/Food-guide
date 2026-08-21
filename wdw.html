@@ -1786,8 +1786,11 @@
   .td-spanrow .chev{color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
   .td-spanrow select{position:absolute;top:0;bottom:0;opacity:0;-webkit-appearance:none;appearance:none;border:0;font-size:16px;width:auto} /* the Sort pill's own trick — 16px kills the iOS focus-zoom */
   .td-spanrow select.td-selF{left:0;right:0} /* today: ONE seat, the WHOLE hairline is the thumb's target (owner ask) */
-  .td-spanrow select.td-selL{left:0;right:50%} /* trip: the left half opens Starting… */
-  .td-spanrow select.td-selR{left:50%;right:0} /* …the right half opens Leaving by */
+  .td-fields{display:flex;gap:8px;border-top:1px solid var(--line);padding:10px 9px 11px} /* 0724h THE FIELDS (owner-ruled T-B): the trip editor's own field grammar — even and tidy, the house geometry */
+  .td-fi{position:relative;flex:1;border:1px solid var(--line);border-radius:var(--r-el);background:var(--card-2);padding:9px 11px}
+  .td-fi span{display:block;font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
+  .td-fi b{display:block;font:700 var(--fs-title) var(--font-display);color:var(--accent);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .td-fi select{position:absolute;inset:0;width:100%;height:100%;opacity:0;-webkit-appearance:none;appearance:none;border:0;font-size:16px} /* each cell one grown native seat — the Sort pill's trick, field-sized */
   .ty-echo{white-space:nowrap}
   .ty-sub{color:var(--muted);font-size:var(--fs-meta);margin-top:3px;line-height:1.5}
   .ty-sub .tw{font-weight:700}
@@ -2010,7 +2013,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5226,7 +5229,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
             if(!s||!s.date||s.date.slice(0,7)!==mo)return;
             var e=m[s.date]||(m[s.date]={open:null,close:null,ext:[]});
             if(s.type==="OPERATING"){e.open=s.openingTime;e.close=s.closingTime;}
-            else if(s.openingTime&&s.closingTime)e.ext.push({k:tpExtK(s),o:s.openingTime});});
+            else if(s.openingTime&&s.closingTime)e.ext.push({k:tpExtK(s),o:s.openingTime,c:s.closingTime}); /* 0724h: the window's END joins the bank — the stamped hours need it */});
           out[p.short]=m;
         }).catch(function(){});
       })).then(function(){tpSched[mo]=out;if(rpView==="trip")renderPulsePage();});
@@ -5378,7 +5381,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!d||!d.open)return {o:null,c:null};
     var o=rcEtMin(new Date(d.open)),c=d.close?rcEtMin(new Date(d.close)):null;
     if(c!==null&&c<360)c+=1440;
-    return {o:o,c:c};
+    var xs=[],j;for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];if(!x.o)continue; /* 0724h: the windows ride out — kind + minutes, after-midnight closes carry */
+      var xo=rcEtMin(new Date(x.o)),xc=x.c?rcEtMin(new Date(x.c)):null;if(xc!==null&&xc<360)xc+=1440;
+      xs.push({k:x.k,o:xo,c:xc});}
+    return {o:o,c:c,x:xs};
   }
   function tdStartMin(k){return /^\d+$/.test(k)?+k:0;} /* 0724f THE WHEELS: minutes are the store; "rd"/"" fall to 0 — rope drop = the whole tape; it begins at open */
   function tdLeaveMin(k){return /^\d+$/.test(k)?+k:null;} /* 0724f THE WHEELS: minutes are the store; null = the published close carries */
@@ -5531,21 +5537,33 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(sm>=720&&sm<=810&&lm!==null&&lm<=990)return "afternoon";
     if(sm>=1020)return "evening";
     return "";}
-  function tdSeatOpts(kind,ds,pk,today){ /* 0724g THE SEATS (owner-ruled B): the option lists the native picker serves — the wheels' own half-hour law, re-clothed. Today's leave starts at the next half-hour after now (clamped past open+30); trip starts top with Rope drop; Close ends every leave list and holds the default (zero silent shifts). Post-11:30 PM half-hours yield to the Close anchor — MIDNIGHT IS 12 AM. */
-    var hrs=tdHours(ds,pk),o="",i;
+  function tdSeatKindWord(k,ds){ /* 0724h: the stamp speaks its window's kind — clause-earned: "Party" only when the events table confirms the night (rdTnParty); an unconfirmed ticketed window says "Event", never an over-claim */
+    if(k==="EE")return "Early Entry";
+    if(k==="EEH")return "Ext. Evening";
+    return (typeof rdTnParty==="function"&&rdTnParty(ds))?"Party":"Event";
+  }
+  function tdSeatOpts(kind,ds,pk,today){ /* 0724g THE SEATS + 0724h THE STAMPED HOURS (P-2, owner-ratified): half-hour lists for the native picker. Close keeps its sentinel job AND its chronological seat; the after-hours half-hours follow it, each wearing its window's stamp — the day guest reads why those hours exist, the ticket holder gets their night. Rope drop tops trip starts; the EE half-hours seat between Rope drop and the ordinary hours, stamped. Today's leave floor honors a live EE window. MIDNIGHT IS 12 AM — rpClk folds the after-midnight clocks. */
+    var hrs=tdHours(ds,pk),xw=hrs.x||[],o="",i,j,w;
     function op(v,l,sel){return '<option value="'+v+'"'+(sel?' selected':'')+'>'+l+'</option>';}
     if(kind==="st"){
       var so=(hrs.o!=null?hrs.o:540),sHi=(hrs.c!=null?Math.min(hrs.c-30,1380):1380),stSel=(/^\d+$/.test(tdStart))?+tdStart:null;
       o+=op("rd","Rope drop",stSel===null);
+      for(j=0;j<xw.length;j++){w=xw[j];if(w.k!=="EE"||hrs.o===null||!(w.o<hrs.o))continue; /* the morning credential's own half-hours */
+        for(i=Math.ceil(w.o/30)*30;i<hrs.o;i+=30)o+=op(String(i),rpClk(i)+" \u00b7 "+tdSeatKindWord("EE",ds),stSel===i);}
       for(i=so;i<=sHi;i+=30)o+=op(String(i),rpClk(i),stSel===i);
       return o;
     }
-    var lo=(today?(tdNow()-(tdNow()%30)+30):((hrs.o!=null?hrs.o:540)+30));if(hrs.o!=null&&lo<hrs.o+30)lo=hrs.o+30;
+    var eo=hrs.o;for(j=0;j<xw.length;j++){w=xw[j];if(w.k==="EE"&&w.o!==null&&(eo===null||w.o<eo))eo=w.o;} /* the earliest door of the morning */
+    var lo=(today?(tdNow()-(tdNow()%30)+30):((hrs.o!=null?hrs.o:540)+30));if(eo!=null&&lo<eo+30)lo=eo+30;
     var hi=(hrs.c!=null?Math.min(hrs.c,1440):1410);
-    var lvSel=(/^\d+$/.test(tdLeave))?+tdLeave:null,hit=false;
-    for(i=lo;i<hi;i+=30){var on9=(lvSel===i);if(on9)hit=true;o+=op(String(i),rpClk(i),on9);}
-    o+=op("cl","Close",!hit);
-    return o;
+    var lvSel=(/^\d+$/.test(tdLeave))?+tdLeave:null,hit=false,pre="";
+    for(i=lo;i<hi;i+=30){var on9=(lvSel===i);if(on9)hit=true;pre+=op(String(i),rpClk(i)+(hrs.o!=null&&i<hrs.o?" \u00b7 "+tdSeatKindWord("EE",ds):""),on9);}
+    var tail=[];for(j=0;j<xw.length;j++){w=xw[j]; /* the after-hours windows: open at/past the day close, close known */
+      if(w.c===null||hrs.c===null||!(w.o>=hrs.c-30))continue;
+      for(i=Math.max(Math.ceil(w.o/30)*30,hrs.c+30);i<=w.c;i+=30)tail.push([i,rpClk(i)+" \u00b7 "+tdSeatKindWord(w.k,ds)]);}
+    tail.sort(function(a,b){return a[0]-b[0];});
+    var tl="";for(j=0;j<tail.length;j++){var on8=(lvSel===tail[j][0]);if(on8)hit=true;tl+=op(String(tail[j][0]),tail[j][1],on8);}
+    return pre+op("cl","Close",!hit)+tl;
   }
   function tdBindSpan(el,rr){ /* 0724g: ONE binder, both rooms — the native pickers ARE the door; no sheet, no custom physics, commit lands on Apple's own Done */
     el.querySelectorAll("[data-tdsel]").forEach(function(sl){sl.addEventListener("change",function(){
@@ -5570,14 +5588,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var spT9=(tdLeaveMin(tdLeave)!==null)?("~"+rpClk(tdLeaveMin(tdLeave))):"close"; /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
     var stK9=tdStart||(today?"now":"rd");if(stK9==="now"&&!today)stK9="rd";
     var spF9=(stK9==="now")?"from now":((stK9==="rd")?"from rope drop":("from "+rpClk(tdStartMin(stK9))));
-    var sel9=(today?'':'<select class="td-selL" data-tdsel="st" aria-label="Starting">'+tdSeatOpts("st",ds,pk,today)+'</select>')+'<select class="'+(today?'td-selF':'td-selR')+'" data-tdsel="lv" aria-label="Leaving by">'+tdSeatOpts("lv",ds,pk,today)+'</select>'; /* 0724g THE SEATS (owner-ruled B): invisible natives over the row — today one full-row seat (the whole hairline is the thumb's target), trip two half-row seats */
-    var fuse9='<div class="td-fuse">'+tabs+'<div class="td-spanrow"><span class="t">Your day \u2014 '+(today?'<b>'+spF9+'</b>':'<span class="td-seat"><b>'+spF9+'</b></span>')+' till <span class="td-seat"><b>'+spT9+'</b></span></span><span class="chev">\u203a</span>'+sel9+'</div></div>'; /* the fused control stack (D) stands; the span writes through Apple's own picker now */
+    var fuse9;
+    if(today){fuse9='<div class="td-fuse">'+tabs+'<div class="td-spanrow"><span class="t">Your day \u2014 <b>'+spF9+'</b> till <span class="td-seat"><b>'+spT9+'</b></span></span><span class="chev">\u203a</span><select class="td-selF" data-tdsel="lv" aria-label="Leaving by">'+tdSeatOpts("lv",ds,pk,today)+'</select></div></div>';} /* today keeps the ratified sentence — the whole hairline was already one native seat */
+    else{fuse9='<div class="td-fuse">'+tabs+'<div class="td-fields"><div class="td-fi"><span>Starting</span><b>'+spF9.replace(/^from /,"").replace(/^r/,"R")+'</b><select data-tdsel="st" aria-label="Starting">'+tdSeatOpts("st",ds,pk,today)+'</select></div><div class="td-fi"><span>Leaving by</span><b>'+((spT9==="close")?"Close":spT9)+'</b><select data-tdsel="lv" aria-label="Leaving by">'+tdSeatOpts("lv",ds,pk,today)+'</select></div></div></div>';} /* 0724h THE FIELDS (owner-ruled T-B): the trip editor's own field grammar — equal-width seats, caps over the value, each cell one grown native seat */
     if(tdLens==="mine"){
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
       var cvT={};if(today)ids.forEach(function(r9){var c9=tdCurve(r9,rpHmWd(ds),tpWdSet(t));cvT[r9]=(c9&&c9.cv.bs.length)?c9.cv.bs[0].t:null;}); /* 0723m: the rail's tape start - one answer in both lenses */
       body=ids.map(function(rid,i){var r=roster[rid]||{},pn=pnm[rid],dnf=!!dset[rid];if(!dnf)_sq.push(rid); /* 0715h: done stays exactly where YOU put it - 0715j: drag reorders from the grip, so every row stays a door */
         _cr.push({seat:dnf?'\u2713':String(i+1),pin:!!pn,badge:pn?tdPinTxt(pn):'',nm:tdNmShort(r.name||rid),sub:''}); /* 0717n: the card drinks the same rows (mine lens carries no sub, honestly) */
-        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(r.name||rid))+(pn?tdPinBadge(rid,pn):'')+'</div></div>'+(today?tdNvRail(rid,cvT[rid]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
+        return '<div class="td-sl'+(pn?' pin':'')+(dnf?' done':'')+'" data-tdsl="'+i+'" data-tdpd="'+esc(rid)+'"><span class="td-sn'+(dnf?' ck':'')+'">'+(dnf?'\u2713':(i+1))+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(r.name||rid))+'</div>'+(pn?tdPinBadge(rid,pn):'')+'</div>'+(today?tdNvRail(rid,cvT[rid]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(rid)+'" type="button">\u2713</button>':'')+'<span class="td-grip" data-tdgrip="'+esc(rid)+'" role="button">\u2261</span></div>';}).join("");
       basis='Your order, exactly as you set it \u2014 drag \u2261 to reorder \u00b7 the App\u2019s order tab re-drafts from the tape anytime.';
     }else{
       var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),wdn=tpWDn(ds),arcN=0,cvN=0;
@@ -5589,12 +5608,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var pns=tdPins(t,ds),np=0;ids.forEach(function(rid){if(pns[rid])np++;});
       if(tdLeaveMin(tdLeave)!==null&&tdLeaveMin(tdLeave)<=sm)tdLeave="cl"; /* 0719h: a leave the start has passed snaps to Close on glass \u2014 never a silent clamp */
       var swp2=(today&&typeof tySweep==="function")?tySweep(pk):null;if(swp2)hrs={o:hrs.o,c:swp2.c}; /* 0720u (S5b): the sweep extends the published close; trip days inert by construction */
-      var lvM=tdLeaveMin(tdLeave),ct2=(lvM===null)?hrs.c:((hrs.c===null)?lvM:Math.min(hrs.c,lvM)),lvOn=(lvM!==null&&(hrs.c===null||ct2<hrs.c));
-      var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,hrs.c,(today?tdGeo(pk,t,ds):null)),n=0,ridden="",rdn=0; /* 0723v: the map rides only the living day */
+      var fc9=hrs.c,_x9;if(hrs.x)for(_x9=0;_x9<hrs.x.length;_x9++){var _w9=hrs.x[_x9];if(_w9.c!==null&&(fc9===null||_w9.c>fc9))fc9=_w9.c;} /* 0724h: the day's FINAL close — min(published, leave) silently collapsed a 10 PM party pick to 6 PM (caught in review) */
+      var lvM=tdLeaveMin(tdLeave),ct2=(lvM===null)?hrs.c:((fc9===null)?lvM:Math.min(fc9,lvM));
+      var fcx=(ct2!==null&&hrs.c!==null&&ct2>hrs.c)?fc9:hrs.c; /* the close the plan honestly runs toward: the day-guest close by default, the final close only when the pick rides past it */
+      var lvOn=(lvM!==null&&(fcx===null||ct2<fcx));
+      var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,fcx,(today?tdGeo(pk,t,ds):null)),n=0,ridden="",rdn=0; /* 0723v: the map rides only the living day */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&it.cv){var _tb=it.cv.bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+(it.pin?tdPinBadge(it.id,it.pin):'')+'</div><div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);}else{_sq.push(it.id);body+=slA(it,false);}});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
@@ -7566,7 +7588,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           if(!s||!s.date||s.date.slice(0,7)!==mo)return;
           var e=m[s.date]||(m[s.date]={open:null,close:null,ext:[]});
           if(s.type==="OPERATING"){e.open=s.openingTime;e.close=s.closingTime;}
-          else if(s.openingTime&&s.closingTime)e.ext.push({k:tpExtK(s),o:s.openingTime});});
+          else if(s.openingTime&&s.closingTime)e.ext.push({k:tpExtK(s),o:s.openingTime,c:s.closingTime}); /* 0724h: the window's END joins the bank — the stamped hours need it */});
         out[p.short]=m;
       }).catch(function(){});
     })).then(function(){tpSched[mo]=out;if(navTab==="today"&&!(tdPk||tdPin!==null))renderTodayPage();}); /* 0720m: the sheet guard rides every door - an arrival never eats an open picker's caret */
