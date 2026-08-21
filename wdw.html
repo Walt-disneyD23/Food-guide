@@ -1779,27 +1779,15 @@
   .td-fuse .td-tabs{display:flex;background:var(--card-2);border-radius:var(--r-pill);padding:3px;gap:2px;margin:9px 9px 8px}
   .td-fuse .td-tabs .hl-tab{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);text-align:center;margin:0}
   .td-fuse .td-tabs .hl-tab.on{background:rgba(79,70,229,.13);color:var(--accent)}
-  .td-spanrow{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:12px 15px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .td-spanrow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:12px 15px;-webkit-tap-highlight-color:transparent} /* 0724g THE SEATS: the row hosts the invisible natives — relative anchors them */
   .td-spanrow .t{font-size:var(--fs-small);color:var(--muted)}
   .td-spanrow .t b{color:var(--ink);font-family:var(--font-display)}
-  .td-spanrow .chev{color:var(--muted-2);font-weight:700;font-size:var(--fs-title);transition:transform .18s}
-  .td-spanrow.open .chev{transform:rotate(90deg)}
-  .td-wsheet{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 14px 12px;margin:-5px 0 11px;box-shadow:var(--shadow-sm)}
-  .td-wsheet .cols{display:flex;gap:10px}
-  .td-wsheet .cols.one{max-width:250px;margin:0 auto}
-  .td-wsheet .col{flex:1;text-align:center}
-  .td-wsheet .cap{font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-bottom:6px}
-  .td-whw{position:relative;height:150px;border-radius:var(--r-el);overflow:hidden}
-  .td-wh{height:150px;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .td-wh::-webkit-scrollbar{display:none}
-  .td-wh:before,.td-wh:after{content:"";display:block;height:60px} /* spacers ride INSIDE the scroller — the global border-box would eat scroller padding (mock spin autopsy) */
-  .td-wh div{height:30px;line-height:30px;scroll-snap-align:center;font:600 var(--fs-body) var(--font-display);color:var(--muted-2);font-variant-numeric:tabular-nums}
-  .td-wh div.onx{color:var(--accent);font-weight:800}
-  .td-whw:before,.td-whw:after{content:"";position:absolute;left:0;right:0;height:58px;pointer-events:none;z-index:2}
-  .td-whw:before{top:0;background:linear-gradient(var(--card),transparent)}
-  .td-whw:after{bottom:0;background:linear-gradient(transparent,var(--card))}
-  .td-whw .band{position:absolute;left:6px;right:6px;top:60px;height:30px;border-radius:8px;background:var(--accent-soft);z-index:1;pointer-events:none}
-  .td-wdone{display:block;width:100%;margin-top:12px;font:700 var(--fs-body) var(--font-display);background:var(--accent-fill);color:#fff;border:none;border-radius:var(--r-el);padding:11px 0;cursor:pointer}
+  .td-seat b{color:var(--accent);border-bottom:1.5px dotted var(--accent)} /* the editable value wears the accent — the finger knows the door */
+  .td-spanrow .chev{color:var(--muted-2);font-weight:700;font-size:var(--fs-title)}
+  .td-spanrow select{position:absolute;top:0;bottom:0;opacity:0;-webkit-appearance:none;appearance:none;border:0;font-size:16px;width:auto} /* the Sort pill's own trick — 16px kills the iOS focus-zoom */
+  .td-spanrow select.td-selF{left:0;right:0} /* today: ONE seat, the WHOLE hairline is the thumb's target (owner ask) */
+  .td-spanrow select.td-selL{left:0;right:50%} /* trip: the left half opens Starting… */
+  .td-spanrow select.td-selR{left:50%;right:0} /* …the right half opens Leaving by */
   .ty-echo{white-space:nowrap}
   .ty-sub{color:var(--muted);font-size:var(--fs-meta);margin-top:3px;line-height:1.5}
   .ty-sub .tw{font-weight:700}
@@ -2022,7 +2010,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3950,7 +3938,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
-  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdLeave="cl",tdSpanOpen=false,tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null,tpClrT=null,tpDelT=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
+  var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdLeave="cl",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null,tpClrT=null,tpDelT=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
@@ -5291,7 +5279,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      (t.plan's exact shape, one-read store law); one list, two lenses (App's order · My order);
      one start-aware engine — seat rides near their lows, receipts clause-earned at their own
      thresholds; quick-add picker (A + stars, owner-picked Jul 29); history, never a promise. ===== */
-  function tdReset(){tdLens="app";tdStart="";tdLeave="cl";tdSpanOpen=false;tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;tpClrArm=null;}
+  function tdReset(){tdLens="app";tdStart="";tdLeave="cl";tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;tpClrArm=null;}
   function tdRides(t,ds){return (t&&t.rides||{})[ds]||[];}
   function tdAdd(id,ds,rid){ /* one-read store law: mutate inside a single tpTrips() read */
     var ts=tpTrips(),i;
@@ -5543,47 +5531,28 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(sm>=720&&sm<=810&&lm!==null&&lm<=990)return "afternoon";
     if(sm>=1020)return "evening";
     return "";}
-  function tdSheetHTML(ds,pk,today){ /* 0724f THE WHEELS (owner-ruled D-2): today = ONE wheel (Leaving by) — now is the only start today can honestly claim; trip days = both wheels, Rope drop topping the start, Close ending the leave and holding the default. Half-hours between; options the day has passed never render — the 0719h snap at the render seam stays the law's on-glass voice. Post-11:30 PM half-hours yield to the Close anchor (MIDNIGHT IS 12 AM). */
-    var hrs=tdHours(ds,pk),i;
-    var stK=tdStart||(today?"now":"rd");if(stK==="now"&&!today)stK="rd";
-    function itm(k,lbl,sel){return '<div data-k="'+k+'"'+(sel?' class="onx"':'')+'>'+lbl+'</div>';}
+  function tdSeatOpts(kind,ds,pk,today){ /* 0724g THE SEATS (owner-ruled B): the option lists the native picker serves — the wheels' own half-hour law, re-clothed. Today's leave starts at the next half-hour after now (clamped past open+30); trip starts top with Rope drop; Close ends every leave list and holds the default (zero silent shifts). Post-11:30 PM half-hours yield to the Close anchor — MIDNIGHT IS 12 AM. */
+    var hrs=tdHours(ds,pk),o="",i;
+    function op(v,l,sel){return '<option value="'+v+'"'+(sel?' selected':'')+'>'+l+'</option>';}
+    if(kind==="st"){
+      var so=(hrs.o!=null?hrs.o:540),sHi=(hrs.c!=null?Math.min(hrs.c-30,1380):1380),stSel=(/^\d+$/.test(tdStart))?+tdStart:null;
+      o+=op("rd","Rope drop",stSel===null);
+      for(i=so;i<=sHi;i+=30)o+=op(String(i),rpClk(i),stSel===i);
+      return o;
+    }
     var lo=(today?(tdNow()-(tdNow()%30)+30):((hrs.o!=null?hrs.o:540)+30));if(hrs.o!=null&&lo<hrs.o+30)lo=hrs.o+30;
     var hi=(hrs.c!=null?Math.min(hrs.c,1440):1410);
-    var lvSel=(/^\d+$/.test(tdLeave))?+tdLeave:null,lvHit=false,lvH="";
-    for(i=lo;i<hi;i+=30){var on9=(lvSel===i);if(on9)lvHit=true;lvH+=itm(String(i),rpClk(i),on9);}
-    lvH+=itm("cl","Close",!lvHit); /* Close ends the wheel and holds the default — never a silent shift */
-    var cols;
-    if(today){cols='<div class="cols one"><div class="col"><div class="cap">Leaving by</div><div class="td-whw"><div class="band"></div><div class="td-wh" data-tdwh="lv">'+lvH+'</div></div></div></div>';}
-    else{
-      var so=(hrs.o!=null?hrs.o:540),sHi=(hrs.c!=null?Math.min(hrs.c-30,1380):1380),stSel=(/^\d+$/.test(tdStart))?+tdStart:null,stH=itm("rd","Rope drop",stK==="rd");
-      for(i=so;i<=sHi;i+=30)stH+=itm(String(i),rpClk(i),stSel===i);
-      cols='<div class="cols"><div class="col"><div class="cap">Starting</div><div class="td-whw"><div class="band"></div><div class="td-wh" data-tdwh="st">'+stH+'</div></div></div><div class="col"><div class="cap">Leaving by</div><div class="td-whw"><div class="band"></div><div class="td-wh" data-tdwh="lv">'+lvH+'</div></div></div></div>';
-    }
-    return '<div class="td-wsheet">'+cols+'<button class="td-wdone" data-tdwdone type="button">Done</button></div>';
+    var lvSel=(/^\d+$/.test(tdLeave))?+tdLeave:null,hit=false;
+    for(i=lo;i<hi;i+=30){var on9=(lvSel===i);if(on9)hit=true;o+=op(String(i),rpClk(i),on9);}
+    o+=op("cl","Close",!hit);
+    return o;
   }
-  function tdWhPaint(w){var ks=w.children,best=null,bd9=1e9,i,c9,d9;for(i=0;i<ks.length;i++){c9=ks[i].offsetTop+15;d9=Math.abs(c9-(w.scrollTop+75));if(d9<bd9){bd9=d9;best=ks[i];}}for(i=0;i<ks.length;i++)ks[i].classList.toggle("onx",ks[i]===best);return best;} /* native scroll-snap owns the motion — this only reads the center */
-  function tdWhPick(w){var b=tdWhPaint(w);return b?b.getAttribute("data-k"):null;}
-  function tdSpanSpeak(el,ws){ /* the live sentence during the spin — the store commits only on Done */
-    var sp=el.querySelector("[data-tdspan] .t");if(!sp)return;
-    var a=ws.st?tdWhPaint(ws.st):null,b=ws.lv?tdWhPaint(ws.lv):null;
-    var f=a?((a.getAttribute("data-k")==="rd")?"from rope drop":("from "+a.textContent)):"from now";
-    var t9=(b&&b.getAttribute("data-k")!=="cl")?("~"+b.textContent):"close";
-    sp.innerHTML="Your day \u2014 <b>"+f+"</b> till <b>"+t9+"</b>";
-    var ec=document.querySelector(".ty-echo");if(ec)ec.textContent="from now till "+t9; /* the hero echo follows the spin — TODAY's hero only; the trip room has no echo node and stays honestly silent */
-  }
-  function tdBindSpan(el,rr){ /* 0724f: ONE binder, both rooms (the house delegation kin) */
-    var d9=el.querySelector("[data-tdspan]");if(d9)d9.addEventListener("click",function(){tdSpanOpen=!tdSpanOpen;rr();});
-    var sh=el.querySelector(".td-wsheet");if(!sh)return;
-    var ws={},whs=sh.querySelectorAll("[data-tdwh]"),i;
-    for(i=0;i<whs.length;i++)(function(w){ws[w.getAttribute("data-tdwh")]=w;
-      var on=w.querySelector(".onx");if(on&&on.offsetTop)w.scrollTop=on.offsetTop-60; /* the sheet opens on the committed value */
-      w.addEventListener("scroll",function(){requestAnimationFrame(function(){tdSpanSpeak(el,ws);});});})(whs[i]);
-    var dn=sh.querySelector("[data-tdwdone]");
-    if(dn)dn.addEventListener("click",function(){
-      var a=ws.st?tdWhPick(ws.st):null,b=ws.lv?tdWhPick(ws.lv):null;
-      if(a!==null)tdStart=(a==="rd")?"":a; /* rope drop = the wake-state seed — THE EMPTY SEED NEVER PLANTS a number */
-      if(b!==null)tdLeave=b;
-      tdSpanOpen=false;rr();});
+  function tdBindSpan(el,rr){ /* 0724g: ONE binder, both rooms — the native pickers ARE the door; no sheet, no custom physics, commit lands on Apple's own Done */
+    el.querySelectorAll("[data-tdsel]").forEach(function(sl){sl.addEventListener("change",function(){
+      var v=sl.value;
+      if(sl.getAttribute("data-tdsel")==="st")tdStart=(v==="rd")?"":v; /* rope drop = the wake-state seed — THE EMPTY SEED NEVER PLANTS a number */
+      else tdLeave=v;
+      rr();});});
   }
     function tdSecHTML(t,ds){ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
     var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
@@ -5601,8 +5570,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var spT9=(tdLeaveMin(tdLeave)!==null)?("~"+rpClk(tdLeaveMin(tdLeave))):"close"; /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
     var stK9=tdStart||(today?"now":"rd");if(stK9==="now"&&!today)stK9="rd";
     var spF9=(stK9==="now")?"from now":((stK9==="rd")?"from rope drop":("from "+rpClk(tdStartMin(stK9))));
-    var fuse9='<div class="td-fuse">'+tabs+'<div class="td-spanrow'+(tdSpanOpen?' open':'')+'" data-tdspan role="button"><span class="t">Your day \u2014 <b>'+spF9+'</b> till <b>'+spT9+'</b></span><span class="chev">\u203a</span></div></div>'; /* the fused control stack (owner-ruled D): the lens reads the plan, the span writes it — one house; the chip strips retire */
-    var sheet9=tdSpanOpen?tdSheetHTML(ds,pk,today):"";
+    var sel9=(today?'':'<select class="td-selL" data-tdsel="st" aria-label="Starting">'+tdSeatOpts("st",ds,pk,today)+'</select>')+'<select class="'+(today?'td-selF':'td-selR')+'" data-tdsel="lv" aria-label="Leaving by">'+tdSeatOpts("lv",ds,pk,today)+'</select>'; /* 0724g THE SEATS (owner-ruled B): invisible natives over the row — today one full-row seat (the whole hairline is the thumb's target), trip two half-row seats */
+    var fuse9='<div class="td-fuse">'+tabs+'<div class="td-spanrow"><span class="t">Your day \u2014 '+(today?'<b>'+spF9+'</b>':'<span class="td-seat"><b>'+spF9+'</b></span>')+' till <span class="td-seat"><b>'+spT9+'</b></span></span><span class="chev">\u203a</span>'+sel9+'</div></div>'; /* the fused control stack (D) stands; the span writes through Apple's own picker now */
     if(tdLens==="mine"){
       var pnm=tdPins(t,ds); /* 0715g: the badge + accent edge wear in BOTH lenses; only App's order moves them */
       var cvT={};if(today)ids.forEach(function(r9){var c9=tdCurve(r9,rpHmWd(ds),tpWdSet(t));cvT[r9]=(c9&&c9.cv.bs.length)?c9.cv.bs[0].t:null;}); /* 0723m: the rail's tape start - one answer in both lenses */
@@ -5633,7 +5602,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       basis=(hrs.c===null?'<b>Hours not published yet</b> \u00b7 ':'')+(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+(eng.swept?' \u00b7 anytime rides grouped by walk':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>=1440?hrs.c-1440:hrs.c)+(swp2?'':' published'):''); /* 0723w MIDNIGHT IS 12 AM (owner Harbor specimen): >= springs the rpClk(1440) trap the hero already guards; and on sweep-extended nights the close is the WINDOW\u2019s, not the published \u2014 the false word comes off (labels state their measure) */
     }
     tdSecHTML.rows=_cr;tdSecHTML.seq=_sq; /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
-    return head+fuse9+sheet9+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
+    return head+fuse9+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
   }
   function tdStrip(t,model,ds){ /* 0717n (D-1 ratified): one chip per trip day - planned park's tier when planned, else the day's leading tier, neutral when thin; ring = the card's day */
     var days=tpDays(t),out=[],i;
@@ -6077,7 +6046,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k,s){tfCurM=m;tfCurK=k;tfAnchor=(s!=null&&!isNaN(s))?Math.max(1,Math.min(s,tfDim(tfYFor(m),m)-tfLen+1)):tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";} /* L2 (K1): a tapped card hands its OWN pre-seated run to the calendar; anchor cards hand their window\u2019s start */
-  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdspan],[data-tdwdone],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
+  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare]'; /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
   document.addEventListener("click",function(e){ /* 0717g: flash-then-commit, delegated \u2014 the tap is intercepted at capture, the element lights, and the SAME click re-dispatches after 150ms so every existing handler runs unchanged. The picker chips (tp-acr) keep their own Cut C flash and stay out of this list. A second tap inside the window is swallowed \u2014 the free double-tap guard. */
     if(e.__pp)return;
     var t=e.target&&e.target.closest?e.target.closest(PP_TAP):null;
