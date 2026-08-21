@@ -2013,7 +2013,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5565,12 +5565,16 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var tl="";for(j=0;j<tail.length;j++){var on8=(lvSel===tail[j][0]);if(on8)hit=true;tl+=op(String(tail[j][0]),tail[j][1],on8);}
     return pre+op("cl","Close",!hit)+tl;
   }
-  function tdBindSpan(el,rr){ /* 0724g: ONE binder, both rooms — the native pickers ARE the door; no sheet, no custom physics, commit lands on Apple's own Done */
+  function tdBindSpan(el,rr,today){ /* 0724g: ONE binder, both rooms — the native pickers ARE the door; no sheet, no custom physics, commit lands on Apple's own Done · 0724i THE DAY REMEMBERS: a TODAY commit writes the day's memory */
     el.querySelectorAll("[data-tdsel]").forEach(function(sl){sl.addEventListener("change",function(){
       var v=sl.value;
       if(sl.getAttribute("data-tdsel")==="st")tdStart=(v==="rd")?"":v; /* rope drop = the wake-state seed — THE EMPTY SEED NEVER PLANTS a number */
-      else tdLeave=v;
+      else{tdLeave=v;if(today)tdDayWrite();} /* the pick sticks for the day — the stamp is the expiry */
       rr();});});
+  }
+  function tdDayWrite(){ /* 0724i: one writer — the day-stamped memory {d, lv}; lv only when a real clock was picked (Close is the wake-state, never stored as a pick) */
+    var d9=(typeof tpToday==="function")?tpToday():null;if(!d9)return;
+    store.set("tdDay",{d:d9,lv:(/^\d+$/.test(tdLeave)?tdLeave:null)});
   }
     function tdSecHTML(t,ds){ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
     var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
@@ -6298,7 +6302,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){ /* 0715e: the day page's lens — flips the reading, never the data */
       var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;renderPulsePage();});});
-    tdBindSpan(el,function(){renderPulsePage();}); /* 0724f THE WHEELS: the span door + wheels sheet replace the chip binders — the two inputs only the user knows, one door */
+    tdBindSpan(el,function(){renderPulsePage();},false); /* 0724f THE WHEELS: the span door + wheels sheet replace the chip binders — the two inputs only the user knows, one door; trip rooms never write the day's memory (0724i) */
     el.querySelectorAll("[data-tdgrip]").forEach(function(g){ /* 0715j: handle-scoped drag (owner-ratified A, reorder-mock.html of record) - whole-row drag stays banned; the page scrolls everywhere but the grip */
       g.addEventListener("click",function(e2){e2.stopPropagation();}); /* a bare grip tap stays inert - never a pin door */
       g.addEventListener("touchstart",function(te){te.preventDefault();},{passive:false}); /* iOS: veto the pan before Safari enrolls it - touch-action alone loses the down-drag race (owner-caught on mock v1) */
@@ -7558,7 +7562,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return T;
   }
   function tyMut(fn){var o=tyRec();fn(o);tySave(o);}
-  function tyPick(pk){tyMut(function(o){o.park=pk;var c=tyCell(o,pk);if(c.rides===null){var sd=tySeed(pk);if(sd.length)c.rides=sd;}});tyHome=false;} /* 0721d: THE EMPTY SEED NEVER PLANTS - a seed that finds no stars leaves the cell unseeded so the next visit asks again; a user's emptying (tyRemove to zero) writes a real [] and stands */
+  function tyPick(pk){tyMut(function(o){o.park=pk;var c=tyCell(o,pk);if(c.rides===null){var sd=tySeed(pk);if(sd.length)c.rides=sd;}});tyHome=false;if(typeof tdDayWrite==="function")tdDayWrite();} /* 0724i: picking a park stamps the day — the return lands on this board till the fold */ /* 0721d: THE EMPTY SEED NEVER PLANTS - a seed that finds no stars leaves the cell unseeded so the next visit asks again; a user's emptying (tyRemove to zero) writes a real [] and stands */
   function tyMark(rid){tyMut(function(o){var c=tyCell(o,o.park);if(c.done.indexOf(rid)<0)c.done.push(rid);});}
   function tyUnmark(rid){tyMut(function(o){var c=tyCell(o,o.park),i=c.done.indexOf(rid);if(i>=0)c.done.splice(i,1);});}
   function tyAdd(rid){tyMut(function(o){var c=tyCell(o,o.park);if(!c.rides)c.rides=[];if(c.rides.indexOf(rid)<0)c.rides.push(rid);});}
@@ -7867,7 +7871,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var tfx=el.querySelector("[data-tyfx]");if(tfx)tfx.addEventListener("click",function(e2){e2.stopPropagation();store.set("ppFactDis",tyDs());renderTodayPage();}); /* 0723n: the \u2715 kills facts for the DAY (in-memory fallback returns on hard reload \u2014 accepted) */
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){
       var v=b.getAttribute("data-tdlens")==="mine"?"mine":"app";if(v===tdLens)return;tdLens=v;renderTodayPage();});});
-    tdBindSpan(el,function(){renderTodayPage();}); /* 0724f: the same binder in the walker\u2019s room */
+    tdBindSpan(el,function(){renderTodayPage();},true); /* 0724f: the same binder in the walker\u2019s room — 0724i: this is the room the day remembers */
     el.querySelectorAll("[data-tdck]").forEach(function(b){b.addEventListener("click",function(e2){
       e2.stopPropagation();var rid=b.getAttribute("data-tdck");
       (tdDoneList(tr||tyT(),ds).indexOf(rid)>=0?tyRUnmark:tyRMark)(tid,ds,rid);renderTodayPage();});});
@@ -11719,7 +11723,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(wv)wv.hidden=true;
         if(k==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage(); /* 0710p: fresh paint on entry */
         if(k==="pulse"&&typeof renderPulsePage==="function")renderPulsePage(); /* Phase 3a (0710s): fresh paint on entry */
-        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();tyHome=true;rpEnsureDigs();tyEnsureSched();if(typeof pfEnsureBase==="function")pfEnsureBase();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F); 0720i: the baseline warms for the earned promotion */
+        if(k==="today"&&typeof renderTodayPage==="function"){tdReset();tyHome=true;
+          var sv9=store.get("tdDay",null); /* 0724i THE DAY REMEMBERS (scopes 0720p): a pick made TODAY — the app's own 6 AM-folded day — lands the return on the board with the plan standing; a stale stamp is ignored and swept, so the fresh-day slate returns by itself */
+          if(sv9&&typeof tpToday==="function"&&sv9.d===tpToday()){if(sv9.lv&&/^\d+$/.test(sv9.lv))tdLeave=sv9.lv;tyHome=false;}
+          else if(sv9)store.set("tdDay",null);
+          rpEnsureDigs();tyEnsureSched();if(typeof pfEnsureBase==="function")pfEnsureBase();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F); 0720i: the baseline warms for the earned promotion */
       }
       navSync(k);
       window.scrollTo(0,0);
