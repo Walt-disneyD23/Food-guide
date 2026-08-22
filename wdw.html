@@ -2016,7 +2016,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5596,7 +5596,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var body="",basis,hint="",_cr=[],_sq=[]; /* 0717n: the rows side-channel - the card reads what the sheet shows, one walk */
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
-    var spT9=(tdLeaveMin(tdLeave)!==null)?("~"+rpClk(tdLeaveMin(tdLeave))):"close"; /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
+    var spL9=tdLeaveMin(tdLeave),spT9=(spL9!==null)?("~"+rpClk(spL9>=1440?spL9-1440:spL9)):"close"; /* 0724l: the fuse folds midnight — 0723w’s rpClk(1440) trap sprung on the span (owner glass Aug 21: a midnight leave wearing 12 PM) */ /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
     var stK9=tdStart||(today?"now":"rd");if(stK9==="now"&&!today)stK9="rd";
     var spF9=(stK9==="now")?"from now":((stK9==="rd")?"from rope drop":("from "+rpClk(tdStartMin(stK9))));
     var fuse9;
@@ -7870,14 +7870,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       relRows.sort(function(a9,b9){return b9.delta-a9.delta;});
       var lns9=[].slice.call(el.querySelectorAll(".td-lane")),anc8=null;
       for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("Ride now")>=0){anc8=lns9[i];break;}
-      if(!anc8&&lns9.length)anc8=lns9[0]; /* no anytime pool: the evening lane itself is the seam */
       var rs9={};relRows.forEach(function(x9){rs9[x9.row.getAttribute("data-tdpd")]=1;});
+      if(!anc8){for(i=0;i<rows.length;i++){var p8=rows[i];if(p8.getAttribute("data-tdtr")==="2"&&!p8.classList.contains("pin")){anc8=p8;break;}}} /* 0724l THE TAIL FINDS ITS SEAT (owner wild specimen Aug 21, 7:59 PM): when tier 1 is empty the Ride-now lane never renders (boundary-only labels) — tier 1’s tail is the sweep’s HEAD, never the evening seam; the risen rows parked at the sweep’s tail on glass */
+      if(!anc8&&lns9.length)anc8=lns9[0]; /* a tier1+tier3 board: the evening lane is the seam */
       if(!anc8){for(i=0;i<rows.length;i++){var q8=rows[i];if(q8.getAttribute("data-tdtr")==="3"&&!rs9[q8.getAttribute("data-tdpd")]){anc8=q8;break;}}} /* an all-future board has no lane — the tail is the first unrisen future row */
       if(anc8)relRows.forEach(function(x9){anc8.parentNode.insertBefore(x9.row,anc8);});
       var lnE=null;for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("evening windows")>=0){lnE=lns9[i];break;}
       if(lnE){var rw9=null; /* LABELS MOVE WITH VALUES: the lane’s clock follows the earliest UNRISEN future window; an emptied room hides its label — absence is information (B-2’s own word) */
         rows.forEach(function(q9){var id9=q9.getAttribute("data-tdpd");
           if(q9.getAttribute("data-tdtr")!=="3"||rs9[id9]||dset[id9])return;
+          if(pro&&pro.on&&pro.id===id9)return; /* 0724l: the crown left the room while it rides — the lane names only who stayed */
           if(snk[id9]&&snk[id9].on)return;
           var w9=parseInt(q9.getAttribute("data-tdws"),10);if(!isNaN(w9)&&(rw9===null||w9<rw9))rw9=w9;});
         if(rw9===null)lnE.style.display="none";
