@@ -2016,7 +2016,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7762,9 +7762,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyPollTick(){tyPollN++;}
   var tySinkPoll=-1,tySink={}; /* 0723q C1: in-memory only \u2014 the rebreak precedent; the map holds ONLY rides currently seen not-operating (DOWN, CLOSED, REFURBISHMENT) */
   function tySinkEval(T,ds,pk){ /* 0723q C1 THE RUNNING SEAT FIRST (owner, Aug 18): the sink generalizes to ANY 2-tick-confirmed not-operating status \u2014 DOWN, CLOSED, REFURBISHMENT \u2014 rides the promotion's own tyPollN heartbeat (renders between polls never tick). PARK-OPEN ONLY, the gate the DOWN sink never needed: pre-open everything is CLOSED and nothing may sink \u2014 proven-open or nothing, a null schedule sinks no one. Ticks carry across not-operating re-labels (owner: the seat question is operating-or-not; the copy speaks the current status). Reopen restores at one tick: the ride simply leaves the map. */
-    if(tySinkPoll===tyPollN)return tySink;
-    if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;} /* 0724o THE ARRIVAL DESERVES A READ (owner boot specimen Aug 21, 9:29 PM): an unproven park returns empty WITHOUT consuming the generation — boot lands in stages, and the schedule’s arrival render gets a real read instead of this guard’s stale empty; a genuinely closed park just re-reads {} each render, harmless */
-    tySinkPoll=tyPollN;
+    if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;} /* 0724p THE MISS IS THE ONLY CLOCK: under P-3 the sink is idempotent — on from first sight, reopen = absence — so it reads the sky EVERY render; a picker-added DOWN ride sinks on its own render (owner specimen, 9:46 PM). ticks is a cosmetic counter now, per-render. */ /* 0724o THE ARRIVAL DESERVES A READ (owner boot specimen Aug 21, 9:29 PM): an unproven park returns empty WITHOUT consuming the generation — boot lands in stages, and the schedule’s arrival render gets a real read instead of this guard’s stale empty; a genuinely closed park just re-reads {} each render, harmless */
     var ids=tdRides(T,ds),nx={},i;
     for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv?lv.status:"CLOSED"; /* 0723x ONE CLOSED (owner wild specimen Aug 19, 9:10 AM): the rail has read ABSENCE as CLOSED since 0714s — the sink speaks the same predicate; the park-open gate and two ticks still guard the move */
       if(s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
@@ -7786,14 +7784,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyProEval(cards){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
     if(cards===null)return tyPro; /* 0724o: an absent model consumes nothing — the arrival render deserves the real read */
-    if(tyProPoll===tyPollN)return tyPro;
-    tyProPoll=tyPollN;
+    var fr9=(tyProPoll!==tyPollN);if(fr9)tyProPoll=tyPollN; /* 0724p THE MISS IS THE ONLY CLOCK: membership moves at render speed — a picker add crowns on its own render — while the walk home rides the poll heartbeat alone, so a re-render can never double-count an absence */
     var top=cards.length?cards[0]:null,i,still=null;
     if(tyPro&&tyPro.on){ /* demotion equally confirmed \u2014 two clean polls send it home */
       for(i=0;i<cards.length;i++)if(cards[i].id===tyPro.id){still=cards[i];break;}
       if(still){tyPro.miss=0;tyPro.typ=still.typ;tyPro.delta=still.delta;}
-      else{tyPro.miss=(tyPro.miss||0)+1;if(tyPro.miss>=2)tyPro=null;}
-      return tyPro;
+      else if(fr9){tyPro.miss=(tyPro.miss||0)+1;if(tyPro.miss>=2)tyPro=null;}
+      if(tyPro)return tyPro; /* 0724p: a completed walk home falls through — the successor crowns in the same read */
     }
     if(!top){tyPro=null;return null;}
     tyPro={id:top.id,ticks:1,on:true,miss:0,typ:top.typ,delta:top.delta}; /* 0724n P-3: the crown seats at FIRST sight — instant-on; the demotion branch above keeps the two-clean-poll walk home (damped-off), so flap can never oscillate the seat */
@@ -7802,16 +7799,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   var tyRelPoll=-1,tyRel={}; /* 0724k L-1b THE EARLY WINDOW (owner-ruled Aug 21): per-card confirmation for every OTHER GO card — the crown’s discipline, plural (two polls up, two clean polls back); in-memory only — the rebreak precedent. pf’s GO gate is snapshot math (read from the bytes first, the handoff’s own check), so this second gate earns its seat; the crown’s tyProEval stays crown-only, untouched. */
   function tyRelEval(cards){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
     if(cards===null)return tyRel; /* 0724o: the absent model consumes nothing here either */
-    if(tyRelPoll===tyPollN)return tyRel;
-    tyRelPoll=tyPollN;
+    var fr8=(tyRelPoll!==tyPollN);if(fr8)tyRelPoll=tyPollN; /* 0724p THE MISS IS THE ONLY CLOCK — the release splits the same way as the crown */
     var seen={},i;
     for(i=0;i<cards.length;i++){var c=cards[i];seen[c.id]=1;
       var e=tyRel[c.id];
-      if(e){e.ticks++;e.typ=c.typ;e.delta=c.delta;e.miss=0;}
+      if(e){if(fr8)e.ticks++;e.typ=c.typ;e.delta=c.delta;e.miss=0;}
       else tyRel[c.id]={ticks:1,on:true,miss:0,typ:c.typ,delta:c.delta};} /* 0724n P-3: instant-on — the whisper retires; the GO gate’s own floors (band, 5m, ratio) are the restraint now */
-    Object.keys(tyRel).forEach(function(id){if(seen[id])return;
+    if(fr8)Object.keys(tyRel).forEach(function(id){if(seen[id])return;
       var e2=tyRel[id];
-      e2.miss=(e2.miss||0)+1;if(e2.miss>=2)delete tyRel[id];}); /* 0724n P-3: every entry is on from birth — only the two-clean-poll walk home remains (damped-off) */
+      e2.miss=(e2.miss||0)+1;if(e2.miss>=2)delete tyRel[id];}); /* 0724n P-3 · 0724p: absence counts once per POLL, never per render — only the two-clean-poll walk home remains (damped-off) */
     return tyRel;
   }
   function tyCrossRefs(el,T,ds,pk){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
