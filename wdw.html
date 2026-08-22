@@ -2016,7 +2016,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7767,7 +7767,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;}
     var ids=tdRides(T,ds),nx={},i;
     for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv?lv.status:"CLOSED"; /* 0723x ONE CLOSED (owner wild specimen Aug 19, 9:10 AM): the rail has read ABSENCE as CLOSED since 0714s — the sink speaks the same predicate; the park-open gate and two ticks still guard the move */
-      if(s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:tk>=2,st:s9};}} /* THE THRESHOLD INCLUDES ITS OWN NUMBER: on at the second consecutive poll */
+      if(s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
     tySink=nx;return tySink;
   }
   function tyGoCards(T,ds){ /* my board's eligible GO NOW cards \u2014 deepest under first, name-tiebroken */
@@ -7794,8 +7794,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       return tyPro;
     }
     if(!top){tyPro=null;return null;}
-    if(tyPro&&tyPro.id===top.id){tyPro.ticks++;tyPro.typ=top.typ;tyPro.delta=top.delta;if(tyPro.ticks>=2){tyPro.on=true;tyPro.miss=0;}}
-    else tyPro={id:top.id,ticks:1,on:false,typ:top.typ,delta:top.delta};
+    tyPro={id:top.id,ticks:1,on:true,miss:0,typ:top.typ,delta:top.delta}; /* 0724n P-3: the crown seats at FIRST sight — instant-on; the demotion branch above keeps the two-clean-poll walk home (damped-off), so flap can never oscillate the seat */
     return tyPro;
   }
   var tyRelPoll=-1,tyRel={}; /* 0724k L-1b THE EARLY WINDOW (owner-ruled Aug 21): per-card confirmation for every OTHER GO card — the crown’s discipline, plural (two polls up, two clean polls back); in-memory only — the rebreak precedent. pf’s GO gate is snapshot math (read from the bytes first, the handoff’s own check), so this second gate earns its seat; the crown’s tyProEval stays crown-only, untouched. */
@@ -7805,12 +7804,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var seen={},i;
     for(i=0;i<cards.length;i++){var c=cards[i];seen[c.id]=1;
       var e=tyRel[c.id];
-      if(e){e.ticks++;e.typ=c.typ;e.delta=c.delta;if(e.ticks>=2){e.on=true;e.miss=0;}}
-      else tyRel[c.id]={ticks:1,on:false,typ:c.typ,delta:c.delta};}
+      if(e){e.ticks++;e.typ=c.typ;e.delta=c.delta;e.miss=0;}
+      else tyRel[c.id]={ticks:1,on:true,miss:0,typ:c.typ,delta:c.delta};} /* 0724n P-3: instant-on — the whisper retires; the GO gate’s own floors (band, 5m, ratio) are the restraint now */
     Object.keys(tyRel).forEach(function(id){if(seen[id])return;
       var e2=tyRel[id];
-      if(e2.on){e2.miss=(e2.miss||0)+1;if(e2.miss>=2)delete tyRel[id];}
-      else delete tyRel[id];}); /* an unconfirmed absence restarts \u2014 the whisper owed nothing */
+      e2.miss=(e2.miss||0)+1;if(e2.miss>=2)delete tyRel[id];}); /* 0724n P-3: every entry is on from birth — only the two-clean-poll walk home remains (damped-off) */
     return tyRel;
   }
   function tyCrossRefs(el,T,ds,pk){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
@@ -7822,7 +7820,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
       if(!why||!rid)return;
       var st9=lv?lv.status:"CLOSED",skC=""; /* 0723x ONE CLOSED: absence speaks too (the rail’s own predicate) */ /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
-      if((st9==="DOWN"||st9==="CLOSED"||st9==="REFURBISHMENT")&&!dset[rid]&&tdLens!=="mine"&&!row.classList.contains("pin")&&snk[rid])skC=snk[rid].on?(" Sunk below the running"+(st9==="REFURBISHMENT"?".":" \u2014 its seat returns on reopen.")):" One poll so far \u2014 the order holds for the second.";
+      if((st9==="DOWN"||st9==="CLOSED"||st9==="REFURBISHMENT")&&!dset[rid]&&tdLens!=="mine"&&!row.classList.contains("pin")&&snk[rid])skC=" Sunk below the running"+(st9==="REFURBISHMENT"?".":" \u2014 its seat returns on reopen."); /* 0724n P-3: on from birth — the restraint narration retires with the wait */
       if(snk[rid]&&snk[rid].on){var fl9=row.querySelector(".td-fl b");if(fl9&&fl9.textContent.indexOf("if it reopens")<0)fl9.textContent+=" \u00b7 if it reopens";} /* 0724d S-C (owner-lettered, the five-sighting morning): a confirmed sink flips the footer\u2019s tense \u2014 the window clock stays (the one thing a waiting rider wants) but concedes the outage. Tick-1 stays bare: the seat holds, the footer holds with it. Idempotent by the guard; every render rebuilds the row fresh anyway. */
       if(st9==="DOWN"&&!dset[rid]){ /* clause-earned: the bell clause only when a rule is armed */
         why.textContent="Down right now \u00b7 no return promised"+((typeof armed!=="undefined"&&armed&&armed[rid])?" \u2014 your \uD83D\uDD14 will ping when it\u2019s back.":".")+skC;
@@ -7836,14 +7834,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(pro&&pro.id===rid&&!dset[rid]&&!(lv&&lv.status==="DOWN")){
         var mine=(tdLens==="mine"); /* 0720j: TWO ORDERS law (\u00a78) \u2014 live SPEAKS in both, it STEERS only in App's */
         if(pro.on){
-          if(mine)why.textContent="Riding the moment \u2014 "+pro.delta+" under typical, two polls running \u00b7 your order stands.";
-          else{why.textContent="\u2191 Riding the moment \u2014 "+pro.delta+" under typical, two polls running. Back to its seat when the window closes.";proRow=row;}
+          if(mine)why.textContent="Riding the moment \u2014 "+pro.delta+" under typical right now \u00b7 your order stands.";
+          else{why.textContent="\u2191 Riding the moment \u2014 "+pro.delta+" under typical right now. Back to its seat when the window closes.";proRow=row; /* 0724n: the clause follows the law — no wait, no wait-claim */}
         }
-        else if(!mine&&!(rel[rid]&&rel[rid].on))why.textContent=pro.delta+" under its typical \u2014 one poll so far; the order waits for the second."; /* tick-1 narrates the ORDER waiting \u2014 in My order no order waits, so it says nothing */
       }
       /* 0724a THE BRIDGE (S-A, owner-blessed): absorbs the hold hint + the Aug-11 Disagreement Clause + crest-beside-green \u2014 ONE PHENOMENON ONE PALETTE. Clause-earned at >=25% AND >=5m from the row's own typical-now; the promotion voice always outranks; ridden rows never bridge; the down/closed branches returned above. A span, created once and updated \u2014 never appended twice across ticks. Silence is the default face. */
       var rl9=(!dset[rid]&&lv&&lv.status==="OPERATING")?rel[rid]:null; /* 0724k L-1b THE GO VOICE (owner-ruled C + H-1): the whisper holds until the second poll */
-      if(rl9&&!rl9.on)rl9=null;
       if(rl9&&pro&&pro.id===rid&&pro.on)rl9=null; /* the crown speaks its own sentence \u2014 singular, unchanged */
       if(rl9&&row.getAttribute("data-tdtr")==="3"&&tdLens!=="mine"&&!row.classList.contains("pin")){ /* THE EARLY WINDOW: a mis-tier correction, never promotion \u2014 the seat rises to tier 1\u2019s tail */
         why.textContent="\u2191 "; /* 0724m V-1 (owner-ruled): ONE PHENOMENON ONE PALETTE — the voice fragment wears the same green on risen and held seats; the arrow alone carries the motion */
@@ -8438,9 +8434,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return (vis&&op)?3*60*1000:REFRESH_MS;
   }
   var confirmT=null;
-  function tyConfirmPending(){ /* 0724c P-B: a 2-tick confirmation mid-flight \u2014 the sink's or the promotion's tick-1 (the board states a watcher stares at) */
-    if(typeof tyPro!=="undefined"&&tyPro&&!tyPro.on)return true;
-    if(typeof tySink!=="undefined"){var q9;for(q9 in tySink)if(!tySink[q9].on)return true;}
+  function tyConfirmPending(){ /* 0724c P-B, re-aimed by 0724n P-3: instant-on retired the entry’s tick-1, so the pending state a watcher stares at is now the EXIT mid-walk — a crown or release at one clean poll, waiting for its second; the ~75s fast confirm resolves settle-backs, never seatings (the sink enters and leaves at one tick, so it never pends) */
+    if(typeof tyPro!=="undefined"&&tyPro&&tyPro.miss)return true;
+    if(typeof tyRel!=="undefined"){var q8;for(q8 in tyRel)if(tyRel[q8].miss)return true;}
     return false;
   }
   function scheduleConfirm(){ /* 0724c P-B FAST CONFIRM (owner-lettered): one slot, ~75s, visible only, never stacking; the confirm is a REAL poll so every 2-tick family resolves by the same clock. The in-memory reset law stands \u2014 this shortens the wait, never persists the state. */
