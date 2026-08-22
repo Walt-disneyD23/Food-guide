@@ -33,7 +33,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5;
-    min-height:100vh;padding:0 0 calc(110px + env(safe-area-inset-bottom));letter-spacing:-.005em;-webkit-font-smoothing:antialiased;touch-action:manipulation}
+    min-height:100vh;min-height:100dvh;padding:0 0 calc(110px + env(safe-area-inset-bottom)); /* 0724v: dvh never moves when iOS collapses its chrome mid-rubber-band — the vh re-layout under a pinned thumb WAS the bounce (owner glass Aug 22, predating the recent cuts); vh stays as the old-engine fallback */letter-spacing:-.005em;-webkit-font-smoothing:antialiased;touch-action:manipulation}
   .wrap{max-width:1180px;margin:0 auto;padding:0 12px}
 
   header.board-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:26px 0 16px}
@@ -2046,7 +2046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
