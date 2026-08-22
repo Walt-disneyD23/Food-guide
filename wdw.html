@@ -798,7 +798,10 @@
   .td-fl span{font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .td-fl b{font:700 var(--fs-small) var(--font-body);font-variant-numeric:tabular-nums;color:var(--accent)}
   .td-brg{color:var(--accent);font-weight:700} /* 0724a: the bridge wears the accent \u2014 the live-voice ink, same as the promotion family */
-  .td-brg.gv{color:var(--short)} /* 0724k L-1b: the GO voice wears the Pulse’s own green — ONE PHENOMENON ONE PALETTE; the words carry it (COLOR NEVER CARRIES ALONE) */
+  .td-brg.gv{color:var(--short)}
+  .ig-p{font-size:13px;color:var(--muted);line-height:1.55;margin:2px 2px 12px} .ig-p b{color:var(--ink)}
+  .ig-row{display:flex;gap:9px;align-items:flex-start;margin:0 2px 10px;font-size:12.5px;color:var(--muted);line-height:1.45} .ig-row b{color:var(--ink)}
+  .ig-key{flex:none;font:700 10px var(--font-body);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 9px;margin-top:1px;background:var(--accent-soft);color:var(--accent);white-space:nowrap} /* 0724q: the guide wears the app's own vars — both themes for free; the GO example reuses the board's real .td-brg.gv dress (SAME QUESTION SAME SENTENCE, even in the manual) */ /* 0724k L-1b: the GO voice wears the Pulse’s own green — ONE PHENOMENON ONE PALETTE; the words carry it (COLOR NEVER CARRIES ALONE) */
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
   .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
@@ -1997,12 +2000,37 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
     <div class="topbar-actions">
       <div class="status-pill ok" id="statusPill"><i class="dot"></i><span id="statusText">Connecting…</span></div>
+      <button class="icon-btn" id="igBtn" title="About this tab" aria-label="About this tab" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><line x1="12" y1="10.8" x2="12" y2="16.6"/><circle cx="12" cy="7.4" r="0.55" fill="currentColor" stroke="none"/></svg></button>
       <button class="icon-btn" id="setBtn" title="Settings" aria-label="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.12-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09A1.7 1.7 0 0 0 10.13 3V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51.87z"/></svg></button>
     </div>
   </header>
 
 
   <!-- 0719w: the alerts sheet retired into MY RIDES -->
+  <div class="help-scrim alerts-scrim" id="igScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
+  <div class="alerts-pop" id="igPop" hidden style="z-index:91">
+    <div class="help-grab"></div>
+    <div class="ap-head"><div class="ap-title"><svg width="16" height="16" style="vertical-align:-2.5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><line x1="12" y1="10.8" x2="12" y2="16.6"/><circle cx="12" cy="7.4" r="0.55" fill="currentColor" stroke="none"/></svg> The Today board</div></div>
+    <div class="ig-p"><b>History builds the board. Live moves the pieces.</b> Your favorites are already here — set when you're leaving, and the plan rebuilds itself all day.</div>
+    <div class="set-lab">The three rooms</div>
+    <div class="ig-row"><span class="ig-key">Windows</span><span><b>Rides whose easy hour is open now</b> and dies at a clock time — soonest deadline first. The footer names the clock.</span></div>
+    <div class="ig-row"><span class="ig-key">Ride now</span><span><b>Never bad from where you are</b> — no deadline, ordered as a natural walk through the park.</span></div>
+    <div class="ig-row"><span class="ig-key">Tonight</span><span><b>Their easy hour comes later.</b> Waiting below, earliest window first.</span></div>
+    <div class="set-lab">What live can do</div>
+    <div class="ig-row"><span class="ig-key">↑ Crown</span><span>The single best gift in the park right now rises to <b>#1</b>. One crown, always.</span></div>
+    <div class="ig-row"><span class="ig-key">↑ Early</span><span>A tonight-ride whose easy hour <b>arrived early</b> rises above the walk.</span></div>
+    <div class="ig-row"><span class="ig-key">Sink</span><span><b>Broken rides drop below</b> everything running — back the moment they reopen.</span></div>
+    <div class="ig-row"><span class="ig-key">Voice</span><span><span class="td-brg gv">GO NOW — 16 under typical.</span> A confirmed gift on a ride already well-seated just says so.</span></div>
+    <div class="set-lab">Reading a row</div>
+    <div class="ig-p">↑ means live moved it · <span class="td-brg gv">green</span> means go · <b style="color:var(--accent)">blue</b> is a quiet heads-up · a dim row doesn't fit the day you set · the <b>WINDOW</b> footer is that ride's own clock.</div>
+    <div class="ig-p">Everything enters the board <b>instantly</b>; everything leaves only after <b>two clean reads</b> — one glitchy signal can never shake your plan.</div>
+    <div class="set-lab">Never asked</div>
+    <div class="ig-p"><b>No walking speeds. No itineraries. No re-entering reservations. No refresh ritual.</b> Open it, set your leave time, go.</div>
+    <div class="set-lab">Try this</div>
+    <div class="ig-p">Leaving early? <b>Tap the underlined time</b> — the whole board rebuilds around your day.</div>
+    <div class="ig-p">Hopping parks? <b>One tap up top</b> — every window re-reads for that park's hours.</div>
+    <div class="ig-p" style="font-size:11px;color:var(--muted-2)">Live waits: ThemeParks.wiki · history, never a promise.</div>
+  </div>
   <div class="help-scrim alerts-scrim" id="setScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="setPop" hidden style="z-index:91">
     <div class="help-grab"></div>
@@ -2016,7 +2044,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2354,7 +2382,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     p.classList.remove("show");sc.classList.remove("show");
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
     document.body.classList.remove("set-open");$("setBtn").classList.remove("active");}
-  function openSetSheet(){closeStatusPop();
+  function openSetSheet(){closeStatusPop();closeIgSheet(); /* 0724q: one sheet at a time — the shared set-open lock stays honest */
     var p=$("setPop"),sc=$("setScrim");
     p.removeAttribute("hidden");sc.removeAttribute("hidden");
     requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
@@ -2364,6 +2392,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   $("setScrim").addEventListener("click",closeSetSheet);
   sheetDragDismiss($("setPop"),$("setScrim"),function(){
     document.body.classList.remove("set-open");$("setBtn").classList.remove("active");});
+  /* 0724q THE DOOR TO THE GUIDE: the ⓘ mirrors setBtn's whole lifecycle — open, scrim, drag-dismiss, the set-open lock — so the guide inherits every sheet behavior the app already trusts */
+  function closeIgSheet(){var p=$("igPop"),sc=$("igScrim");if(!p||p.hasAttribute("hidden"))return;
+    p.classList.remove("show");sc.classList.remove("show");
+    setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
+    document.body.classList.remove("set-open");$("igBtn").classList.remove("active");}
+  function openIgSheet(){closeStatusPop();closeSetSheet();
+    var p=$("igPop"),sc=$("igScrim");
+    p.removeAttribute("hidden");sc.removeAttribute("hidden");
+    requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
+    document.body.classList.add("set-open");$("igBtn").classList.add("active");}
+  $("igBtn").addEventListener("click",function(){
+    $("igPop").hasAttribute("hidden")?openIgSheet():closeIgSheet();});
+  $("igScrim").addEventListener("click",closeIgSheet);
+  sheetDragDismiss($("igPop"),$("igScrim"),function(){
+    document.body.classList.remove("set-open");$("igBtn").classList.remove("active");});
   applyTheme();
 
   /* ===== pull-to-refresh (ships alongside ↻; the button retires only
@@ -11764,11 +11807,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
       document.body.classList.toggle("tab-myrides",k==="myrides"); /* page-scoped body hook (0710t: the flag-yield rule retired with the header door) */
       document.body.classList.toggle("pane-open",k==="myrides"||k==="pulse"||k==="wrap"); /* 0711r: Wrap joins the 0711e paint gate — it swaps via __pwActive, not a pane class, so the pill haunted exactly one foreign tab */ /* 0711e: paint gate for .bk2top — navGo hides banners but not the Live list on these panes, so offsetParent stays truthy and the IO honestly reports "header below fold". Gate the paint, keep the IO sole writer. */
+      var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"); /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
     }
     function navGo(k){
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
       navTab=k;
-      if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");} /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
+      if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");}
+      if(k!=="today"&&typeof closeIgSheet==="function")closeIgSheet(); /* 0724q: the guide never outlives its tab */ /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
       var pm=$id("pgMyRides"),pp=$id("pgPulse"),pt=$id("pgToday");
       if(pm)pm.hidden=(k!=="myrides");
       if(pp)pp.hidden=(k!=="pulse");
