@@ -2016,7 +2016,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5596,7 +5596,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var body="",basis,hint="",_cr=[],_sq=[]; /* 0717n: the rows side-channel - the card reads what the sheet shows, one walk */
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
-    var spL9=tdLeaveMin(tdLeave),spT9=(spL9!==null)?("~"+rpClk(spL9>=1440?spL9-1440:spL9)):"close"; /* 0724l: the fuse folds midnight — 0723w’s rpClk(1440) trap sprung on the span (owner glass Aug 21: a midnight leave wearing 12 PM) */ /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
+    var spL9=tdLeaveMin(tdLeave),spC9=null; /* 0724m E: the day’s FINAL close, read once for the seat AND the echo — mirrors 0724h’s fc9 walk (sweep first, extras max); the walker’s own clamp below is untouched */
+    {var _h9=tdHours(ds,pk),_sw9=(today&&typeof tySweep==="function")?tySweep(pk):null;spC9=_sw9?_sw9.c:_h9.c;if(_h9.x)for(var _xk9=0;_xk9<_h9.x.length;_xk9++){var _wx9=_h9.x[_xk9];if(_wx9.c!==null&&(spC9===null||_wx9.c>spC9))spC9=_wx9.c;}}
+    var spE9=(spL9!==null&&(spC9===null||spL9<spC9)); /* the pick cuts the day (lvOn’s twin) — a leave that outruns the park speaks close: THE WINDOW MUST FIT YOUR DAY (owner EPCOT specimen Aug 21, a 9 PM park claiming midnight) */
+    tdSecHTML.end={c:spE9?spL9:spC9,lv:spE9}; /* THE HORIZON HAS ONE HOME — published for the hero echo, fresh every walk */
+    var spT9=spE9?("~"+rpClk(spL9>=1440?spL9-1440:spL9)):"close"; /* 0724l: the fuse folds midnight — 0723w’s rpClk(1440) trap sprung on the span (owner glass Aug 21: a midnight leave wearing 12 PM) */ /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
     var stK9=tdStart||(today?"now":"rd");if(stK9==="now"&&!today)stK9="rd";
     var spF9=(stK9==="now")?"from now":((stK9==="rd")?"from rope drop":("from "+rpClk(tdStartMin(stK9))));
     var fuse9;
@@ -7702,7 +7706,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var sub=bits.join(' \u00b7 ')||'';
     if(tr)sub+=(sub?' \u00b7 ':'')+'Walking your trip\u2019s plan \u2014 one day, one truth.';
     var nD=tdDoneList(T,ds).length,nT=tdRides(T,ds).length,togo=nT-nD,pg='';
-    var lvE=(typeof tdLeaveMin==="function"&&typeof tdLeave!=="undefined")?tdLeaveMin(tdLeave):null; /* 0724f: the echo reads the committed leave */
+    var lvE=null;if(typeof tdSecHTML==="function"&&tdSecHTML.end&&tdSecHTML.end.lv)lvE=tdSecHTML.end.c; /* 0724m E: the echo drinks the walker’s published horizon (the section composes FIRST in renderTodayPage, so the read is fresh every render); a leave that outruns the park speaks close — the raw day-level pick never over-claims another park’s night (0724f’s raw read retired) */
     var gIds=tdRides(T,ds),gd=null,gSm='',g; /* 0723n (A3+R): the guide reads the live board once \u2014 the pool is the unridden set (a ridden ride's DOWN never earns the line); renders only while the park is open */
     if(open===true&&nT>0){
       var gDnL=tdDoneList(T,ds),gDs={};for(g=0;g<gDnL.length;g++)gDs[gDnL[g]]=1;
@@ -7842,7 +7846,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(rl9&&!rl9.on)rl9=null;
       if(rl9&&pro&&pro.id===rid&&pro.on)rl9=null; /* the crown speaks its own sentence \u2014 singular, unchanged */
       if(rl9&&row.getAttribute("data-tdtr")==="3"&&tdLens!=="mine"&&!row.classList.contains("pin")){ /* THE EARLY WINDOW: a mis-tier correction, never promotion \u2014 the seat rises to tier 1\u2019s tail */
-        why.textContent="\u2191 GO NOW \u2014 "+rl9.delta+" under typical. Its evening window came early.";
+        why.textContent="\u2191 "; /* 0724m V-1 (owner-ruled): ONE PHENOMENON ONE PALETTE — the voice fragment wears the same green on risen and held seats; the arrow alone carries the motion */
+        var gvr=row.ownerDocument.createElement("span");gvr.className="td-brg gv";gvr.textContent="GO NOW \u2014 "+rl9.delta+" under typical.";why.appendChild(gvr);
+        why.appendChild(row.ownerDocument.createTextNode(" Its evening window came early."));
         relRows.push({row:row,delta:rl9.delta});
       }
       else if(rl9){ /* H-1: the voice joins the receipt in the bridge\u2019s own seat \u2014 SAME QUESTION SAME SENTENCE with Pulse; the anytime receipt still explains the order */
