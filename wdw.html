@@ -2012,10 +2012,10 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div class="help-scrim alerts-scrim" id="igScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="igPop" hidden style="z-index:91">
     <div class="help-grab"></div>
-    <div class="ap-head"><div class="ap-title"><svg width="16" height="16" style="vertical-align:-2.5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><line x1="12" y1="10.8" x2="12" y2="16.6"/><circle cx="12" cy="7.4" r="0.55" fill="currentColor" stroke="none"/></svg> The Today board</div></div>
+    <div class="ap-head"><div class="ap-title"><svg width="16" height="16" style="vertical-align:-2.5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><line x1="12" y1="10.8" x2="12" y2="16.6"/><circle cx="12" cy="7.4" r="0.55" fill="currentColor" stroke="none"/></svg><span style="display:inline-block;width:7px"></span>The Today board</div></div>
     <div class="ig-p"><b>History builds the board. Live moves the pieces.</b> Your favorites are already here — set when you're leaving, and the plan rebuilds itself all day.</div>
     <div class="set-lab">The three rooms</div>
-    <div class="ig-row"><span class="ig-key">Windows</span><span><b>Rides whose easy hour is open now</b> and dies at a clock time — soonest deadline first. The footer names the clock.</span></div>
+    <div class="ig-row"><span class="ig-key">Windows</span><span><b>Rides whose easy hour is open now</b> and dies at a clock time — soonest deadline first. The footer names the clock. <b>These lead the board</b> — no banner needed; the footers are the sign.</span></div>
     <div class="ig-row"><span class="ig-key">Ride now</span><span><b>Never bad from where you are</b> — no deadline, ordered as a natural walk through the park.</span></div>
     <div class="ig-row"><span class="ig-key">Tonight</span><span><b>Their easy hour comes later.</b> Waiting below, earliest window first.</span></div>
     <div class="set-lab">What live can do</div>
@@ -2046,7 +2046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2409,6 +2409,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   $("igScrim").addEventListener("click",closeIgSheet);
   sheetDragDismiss($("igPop"),$("igScrim"),function(){
     document.body.classList.remove("set-open");$("igBtn").classList.remove("active");});
+  (function(){ /* 0724t THE BAR RE-PINS (owner field bug, recurring): iOS visual-viewport shrink/restore (banner, keyboard, sheet) can leave position:fixed elements pinned to the OLD bottom until a repaint \u2014 the owner's app-switch was that repaint. Nudge the nav on every viewport restore and page return. Sandbox can't stage iOS viewport mechanics; the glass rules. */
+    function rp9(){var tb=document.getElementById("appNav");if(!tb)return;tb.style.display="none";void tb.offsetHeight;tb.style.display="";}
+    if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){requestAnimationFrame(rp9);});
+    window.addEventListener("pageshow",rp9);
+    document.addEventListener("visibilitychange",function(){if(!document.hidden)rp9();});
+  })();
   applyTheme();
 
   /* ===== pull-to-refresh (ships alongside ↻; the button retires only
@@ -5676,7 +5682,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&it.cv){var _tb=it.cv.bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(it.tier?' data-tdtr="'+it.tier+'"':'')+(it.tier===3?' data-tdws="'+it.ws+'"':'')+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(it.tier?' data-tdtr="'+it.tier+'"':'')+(it.tier===3?' data-tdws="'+it.ws+'"':'')+(it.tier===1&&it.dl!=null?' data-tddl="'+it.dl+'"':'')+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
       var _lt=0; /* 0724j THE B CUT (B-2, ratified wording from option-b-mock.html): thin lanes at the tier seams — labels render at BOUNDARIES only, so an all-anytime board stays bare and a leave that outruns every future window never shows the evening lane (its absence is information). Pins are lane-neutral; done rides ride to their tail untouched. */
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);return;}
         var t9=it.pin?0:(it.tier||0);
@@ -7863,6 +7869,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
       if(!why||!rid)return;
+      if(row.classList.contains("dlx")&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15){ /* 0724t J-1 (owner-ruled Aug 22, the four-corner specimens): a dissolved ride that is EASY right now says so \u2014 the sentence and the wait seat stop arguing; <=15m is the walk-on-grade bar the tape drew */
+        why.appendChild(row.ownerDocument.createTextNode(" But today\u2019s line is already easy \u2014 "+lv.wait+"m right now."));
+      }
       var st9=lv?lv.status:"CLOSED",skC=""; /* 0723x ONE CLOSED: absence speaks too (the rail’s own predicate) */ /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
       if((st9==="DOWN"||st9==="CLOSED"||st9==="REFURBISHMENT")&&!dset[rid]&&tdLens!=="mine"&&!row.classList.contains("pin")&&snk[rid])skC=" Sunk below the running"+(st9==="REFURBISHMENT"?".":" \u2014 its seat returns on reopen."); /* 0724n P-3: on from birth — the restraint narration retires with the wait */
       if(snk[rid]&&snk[rid].on){var fl9=row.querySelector(".td-fl b");if(fl9&&fl9.textContent.indexOf("if it reopens")<0)fl9.textContent+=" \u00b7 if it reopens";} /* 0724d S-C (owner-lettered, the five-sighting morning): a confirmed sink flips the footer\u2019s tense \u2014 the window clock stays (the one thing a waiting rider wants) but concedes the outage. Tick-1 stays bare: the seat holds, the footer holds with it. Idempotent by the guard; every render rebuilds the row fresh anyway. */
@@ -7918,7 +7927,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("Ride now")>=0){anc8=lns9[i];break;}
       var rs9={};relRows.forEach(function(x9){rs9[x9.row.getAttribute("data-tdpd")]=1;});
       if(!anc8){for(i=0;i<rows.length;i++){var p8=rows[i];if(p8.getAttribute("data-tdtr")==="2"&&!p8.classList.contains("pin")){anc8=p8;break;}}} /* 0724l THE TAIL FINDS ITS SEAT (owner wild specimen Aug 21, 7:59 PM): when tier 1 is empty the Ride-now lane never renders (boundary-only labels) — tier 1’s tail is the sweep’s HEAD, never the evening seam; the risen rows parked at the sweep’s tail on glass */
-      if(!anc8&&lns9.length)anc8=lns9[0]; /* a tier1+tier3 board: the evening lane is the seam */
+      if(!anc8)for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("evening windows")>=0){anc8=lns9[i];break;} /* 0724t: the seam is NAMED, never assumed \u2014 a future top lane must never become the anchor (assumptions get named or removed) */
       if(!anc8){for(i=0;i<rows.length;i++){var q8=rows[i];if(q8.getAttribute("data-tdtr")==="3"&&!rs9[q8.getAttribute("data-tdpd")]){anc8=q8;break;}}} /* an all-future board has no lane — the tail is the first unrisen future row */
       if(anc8)relRows.forEach(function(x9){anc8.parentNode.insertBefore(x9.row,anc8);});
       var lnE=null;for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("evening windows")>=0){lnE=lns9[i];break;}
@@ -7931,6 +7940,29 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(rw9===null)lnE.style.display="none";
         else{var lb9=lnE.querySelector("b");if(lb9)lb9.textContent="from ~"+rpClk(rw9);}}
       var k8=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s8){if(/^\d+$/.test(s8.textContent))s8.textContent=String(++k8);});
+    }
+    if(tdLens!=="mine"){ /* 0724t W-1 (owner-ruled Aug 22; the 9:13 AM Tiana/BTM cross + the HS equal-deadline trio): within tier 1, a CONFIRMED GO row rises above any row FAILING whisper-grade above typical (the whisper's own 25%+5m bar \u2014 ONE BAND VOCABULARY); deadline still rules the neutral, and inside an equal-clock group the confirmed GO leads. Neutral rows never move; a failing row with no GO around it stands (W-2's revocation stays shelved). Pins hold their slots; the crown is already above it all; My Order untouched. */
+      var w9r=[],w9s=[];
+      for(i=0;i<rows.length;i++){var wr=rows[i];
+        if(wr.getAttribute("data-tdtr")!=="1")continue;
+        if(wr.classList.contains("pin")||wr.classList.contains("dlx"))continue;
+        var wid=wr.getAttribute("data-tdpd");
+        if(dset[wid])continue;
+        if(pro&&pro.on&&pro.id===wid)continue;
+        if(snk[wid]&&snk[wid].on)continue;
+        var wlv=liveById[wid],wty=parseInt(wr.getAttribute("data-tdty"),10),wdl=parseInt(wr.getAttribute("data-tddl"),10);
+        var wgo=!!(rel[wid]&&rel[wid].on);
+        var wfl=!!(wlv&&wlv.status==="OPERATING"&&wlv.wait!==null&&!isNaN(wty)&&wty>0&&(wlv.wait-wty)>=5&&(wlv.wait-wty)/wty>=0.25);
+        w9r.push({row:wr,go:wgo,fail:wfl,dl:isNaN(wdl)?1e9:wdl,ix:w9r.length});w9s.push(wr);}
+      if(w9r.length>1){
+        w9r.sort(function(a,b){return (a.dl-b.dl)||((b.go?1:0)-(a.go?1:0))||(a.ix-b.ix);}); /* the deadline axis; equal clocks \u2014 the confirmed GO leads */
+        var mv9=true;while(mv9){mv9=false;for(i=1;i<w9r.length;i++){if(w9r[i].go&&w9r[i-1].fail&&!w9r[i-1].go){var tp9=w9r[i-1];w9r[i-1]=w9r[i];w9r[i]=tp9;mv9=true;}}} /* the GO bubbles past the FAILING, never past the neutral */
+        var wch=false;for(i=0;i<w9r.length;i++)if(w9r[i].row!==w9s[i]){wch=true;break;}
+        if(wch){var mk9=w9s.map(function(x9){var c9=el.ownerDocument.createComment("w1");x9.parentNode.insertBefore(c9,x9);return c9;}); /* markers hold the SLOTS \u2014 pins and lanes never move */
+          for(i=0;i<w9r.length;i++)mk9[i].parentNode.insertBefore(w9r[i].row,mk9[i]);
+          mk9.forEach(function(c9){c9.parentNode.removeChild(c9);});
+          var k7=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s7){if(/^\d+$/.test(s7.textContent))s7.textContent=String(++k7);});}
+      }
     }
     if(tdLens!=="mine"){ /* 0723p DOWN-SINK (owner, Aug 17) \u2014 App's Order only; the full overturn is recorded on tdNvRail's header */
       var sunk=[];
