@@ -2046,7 +2046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2410,9 +2410,16 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   sheetDragDismiss($("igPop"),$("igScrim"),function(){
     document.body.classList.remove("set-open");$("igBtn").classList.remove("active");});
   (function(){ /* 0724t THE BAR RE-PINS (owner field bug, recurring): iOS visual-viewport shrink/restore (banner, keyboard, sheet) can leave position:fixed elements pinned to the OLD bottom until a repaint \u2014 the owner's app-switch was that repaint. Nudge the nav on every viewport restore and page return. Sandbox can't stage iOS viewport mechanics; the glass rules. */
-    function rp9(){var tb=document.getElementById("appNav");if(!tb)return;tb.style.display="none";void tb.offsetHeight;tb.style.display="";}
-    if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){requestAnimationFrame(rp9);});
-    window.addEventListener("pageshow",rp9);
+    var tch9=false; /* 0724u THE NUDGE LEARNS RESTRAINT (owner glass 6:18 PM): rubber-band overscroll fires visualViewport.resize on iOS, and the 0724t repaint answered every elastic frame \u2014 a feedback loop that bounced the page. Three restraints: never mid-touch, never on a healthy bar, never a layout-shocking display toggle. */
+    document.addEventListener("touchstart",function(){tch9=true;},{passive:true});
+    document.addEventListener("touchend",function(){tch9=false;},{passive:true});
+    document.addEventListener("touchcancel",function(){tch9=false;},{passive:true});
+    function rp9(){var tb=document.getElementById("appNav");if(!tb)return;
+      var vv9=window.visualViewport;
+      if(vv9){var r9=tb.getBoundingClientRect();if(Math.abs((vv9.height+vv9.offsetTop)-r9.bottom)<2)return;} /* pinned right \u2014 a healthy bar is never touched (touching it WAS the glitch) */
+      tb.style.visibility="hidden";void tb.offsetHeight;tb.style.visibility="";}
+    if(window.visualViewport)window.visualViewport.addEventListener("resize",function(){if(tch9)return;requestAnimationFrame(function(){if(!tch9)rp9();});});
+    window.addEventListener("pageshow",function(){rp9();});
     document.addEventListener("visibilitychange",function(){if(!document.hidden)rp9();});
   })();
   applyTheme();
