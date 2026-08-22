@@ -2016,7 +2016,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7763,8 +7763,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   var tySinkPoll=-1,tySink={}; /* 0723q C1: in-memory only \u2014 the rebreak precedent; the map holds ONLY rides currently seen not-operating (DOWN, CLOSED, REFURBISHMENT) */
   function tySinkEval(T,ds,pk){ /* 0723q C1 THE RUNNING SEAT FIRST (owner, Aug 18): the sink generalizes to ANY 2-tick-confirmed not-operating status \u2014 DOWN, CLOSED, REFURBISHMENT \u2014 rides the promotion's own tyPollN heartbeat (renders between polls never tick). PARK-OPEN ONLY, the gate the DOWN sink never needed: pre-open everything is CLOSED and nothing may sink \u2014 proven-open or nothing, a null schedule sinks no one. Ticks carry across not-operating re-labels (owner: the seat question is operating-or-not; the copy speaks the current status). Reopen restores at one tick: the ride simply leaves the map. */
     if(tySinkPoll===tyPollN)return tySink;
+    if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;} /* 0724o THE ARRIVAL DESERVES A READ (owner boot specimen Aug 21, 9:29 PM): an unproven park returns empty WITHOUT consuming the generation — boot lands in stages, and the schedule’s arrival render gets a real read instead of this guard’s stale empty; a genuinely closed park just re-reads {} each render, harmless */
     tySinkPoll=tyPollN;
-    if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;}
     var ids=tdRides(T,ds),nx={},i;
     for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv?lv.status:"CLOSED"; /* 0723x ONE CLOSED (owner wild specimen Aug 19, 9:10 AM): the rail has read ABSENCE as CLOSED since 0714s — the sink speaks the same predicate; the park-open gate and two ticks still guard the move */
       if(s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
@@ -7772,7 +7772,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyGoCards(T,ds){ /* my board's eligible GO NOW cards \u2014 deepest under first, name-tiebroken */
     if(typeof pfCallouts!=="function")return [];
-    var m=pfCallouts("all");if(!m||m.state!=="cards")return [];
+    var m=pfCallouts("all");if(!m||m.state==="nobase")return null; /* 0724o: no baseline yet — the model is ABSENT, not quiet; the gates skip the read without consuming */
+    if(m.state!=="cards")return [];
     var ids=tdRides(T,ds),set={},i;for(i=0;i<ids.length;i++)set[ids[i]]=1;
     var dn=tdDoneList(T,ds),dset={};for(i=0;i<dn.length;i++)dset[dn[i]]=1;
     var pns=tdPins(T,ds),out=[];
@@ -7784,6 +7785,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return out;
   }
   function tyProEval(cards){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
+    if(cards===null)return tyPro; /* 0724o: an absent model consumes nothing — the arrival render deserves the real read */
     if(tyProPoll===tyPollN)return tyPro;
     tyProPoll=tyPollN;
     var top=cards.length?cards[0]:null,i,still=null;
@@ -7799,6 +7801,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   var tyRelPoll=-1,tyRel={}; /* 0724k L-1b THE EARLY WINDOW (owner-ruled Aug 21): per-card confirmation for every OTHER GO card — the crown’s discipline, plural (two polls up, two clean polls back); in-memory only — the rebreak precedent. pf’s GO gate is snapshot math (read from the bytes first, the handoff’s own check), so this second gate earns its seat; the crown’s tyProEval stays crown-only, untouched. */
   function tyRelEval(cards){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
+    if(cards===null)return tyRel; /* 0724o: the absent model consumes nothing here either */
     if(tyRelPoll===tyPollN)return tyRel;
     tyRelPoll=tyPollN;
     var seen={},i;
@@ -7814,7 +7817,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyCrossRefs(el,T,ds,pk){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
     var dn=tdDoneList(T,ds),dset={},i;for(i=0;i<dn.length;i++)dset[dn[i]]=1;
     var snk=tySinkEval(T,ds,pk); /* 0723q C1: the sink's clock ticks in every lens \u2014 only App's moves rows (state tracks the sky; the glass picks its manners) */
-    var cds9=tyGoCards(T,ds),pro=tyProEval(cds9),rel=tyRelEval(cds9),relRows=[]; /* 0724k L-1b: one card read feeds both gates */
+    var cds9=tyGoCards(T,ds),pro=tyProEval(cds9),rel=tyRelEval(cds9),relRows=[]; /* 0724k L-1b: one card read feeds both gates */ /* 0724o: cds9 may be null pre-baseline — both gates return their standing state untouched */
     var rows=[].slice.call(el.querySelectorAll(".td-sl")),proRow=null;
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
