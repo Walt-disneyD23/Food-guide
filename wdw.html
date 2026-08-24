@@ -31,8 +31,8 @@
     --hero-text:#ffffff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
-  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5;
+  html{-webkit-text-size-adjust:100%;overscroll-behavior-y:none} /* 0724z: escalation step 2 (dvh alone failed on glass Aug 24) \u2014 the page edge never rubber-bands; PTR is custom so nothing is lost, sheets keep their own -y:contain */
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5;overscroll-behavior-y:none;
     min-height:100vh;min-height:100dvh;padding:0 0 calc(110px + env(safe-area-inset-bottom)); /* 0724v: dvh never moves when iOS collapses its chrome mid-rubber-band — the vh re-layout under a pinned thumb WAS the bounce (owner glass Aug 22, predating the recent cuts); vh stays as the old-engine fallback */letter-spacing:-.005em;-webkit-font-smoothing:antialiased;touch-action:manipulation}
   .wrap{max-width:1180px;margin:0 auto;padding:0 12px}
 
@@ -2046,7 +2046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7880,7 +7880,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
       if(!why||!rid)return;
-      if(row.classList.contains("dlx")&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15){ /* 0724t J-1 (owner-ruled Aug 22, the four-corner specimens; K-1 owner-ruled Aug 23 keeps the accidental wider law \u2014 dlx = deadline rows by birth, tier-1 wild specimens): a windowed ride that is EASY right now says so \u2014 the sentence and the wait seat stop arguing; <=15m is the walk-on-grade bar the tape drew */
+      if((row.classList.contains("dlx")||row.classList.contains("pdead"))&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15){ /* 0724y J-2a THE CLAUSE COMES HOME (owner-ruled Aug 24; birth pair Jungle 10m/30m): the dissolved room was J-1's original target \u2014 the dlx accident skipped it, K-1 kept the accident, this cut finally serves the room at the SAME bar. Voice only \u2014 the wheel beats the wait, the room never moves. */ /* 0724t J-1 (owner-ruled Aug 22, the four-corner specimens; K-1 owner-ruled Aug 23 keeps the accidental wider law \u2014 dlx = deadline rows by birth, tier-1 wild specimens): a windowed ride that is EASY right now says so \u2014 the sentence and the wait seat stop arguing; <=15m is the walk-on-grade bar the tape drew */
         why.appendChild(row.ownerDocument.createTextNode(" But today\u2019s line is already easy \u2014 "+lv.wait+"m right now."));
       }
       var st9=lv?lv.status:"CLOSED",skC=""; /* 0723x ONE CLOSED: absence speaks too (the rail’s own predicate) */ /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
