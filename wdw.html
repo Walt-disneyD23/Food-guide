@@ -2046,7 +2046,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0724v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0724x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5434,6 +5434,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           :'<span class="td-nvr"><span class="td-op">'+fmtClock(inf0.open)+'</span><small>opens</small></span>';
       }
     }
+    if(lv&&lv.status==="OPERATING")return '<span class="td-nvr"><span class="dash">\u2013</span><small>now</small></span>'; /* 0724x D-2 THE CHIP STOPS LYING (owner-ruled, rider 1; the BTMR 8:01 frame): a present OPERATING ride with no posted wait wears the honest dash \u2014 a missing NUMBER is never converted into a status. ONE CLOSED (0723x) stands untouched: a missing RIDE still reads CLOSED in the sink\u2019s s9 predicate, and a true CLOSED status keeps its chip below. STATS AREN\u2019T STATUSES, both directions. */
     if(lv)return '<span class="td-nvr"><span class="td-clc">CLOSED</span><small>now</small></span>';
     return '<span class="td-nvr"><span class="dash">\u2013</span><small>now</small></span>';
   }
@@ -7818,12 +7819,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      (\u00a78's own build shape); its state is in-memory only \u2014 the rebreak precedent. */
   var tyPollN=0,tyProPoll=-1,tyPro=null;
   function tyPollTick(){tyPollN++;}
-  var tySinkPoll=-1,tySink={}; /* 0723q C1: in-memory only \u2014 the rebreak precedent; the map holds ONLY rides currently seen not-operating (DOWN, CLOSED, REFURBISHMENT) */
+  var tySinkPoll=-1,tySink={};var tySeenOp={},tySeenDs=""; /* 0724x D-1: rides seen OPERATING this park-day \u2014 in-memory (the rebreak precedent), day-fenced below (rider 2) */ /* 0723q C1: in-memory only \u2014 the rebreak precedent; the map holds ONLY rides currently seen not-operating (DOWN, CLOSED, REFURBISHMENT) */
   function tySinkEval(T,ds,pk){ /* 0723q C1 THE RUNNING SEAT FIRST (owner, Aug 18): the sink generalizes to ANY 2-tick-confirmed not-operating status \u2014 DOWN, CLOSED, REFURBISHMENT \u2014 rides the promotion's own tyPollN heartbeat (renders between polls never tick). PARK-OPEN ONLY, the gate the DOWN sink never needed: pre-open everything is CLOSED and nothing may sink \u2014 proven-open or nothing, a null schedule sinks no one. Ticks carry across not-operating re-labels (owner: the seat question is operating-or-not; the copy speaks the current status). Reopen restores at one tick: the ride simply leaves the map. */
     if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;} /* 0724p THE MISS IS THE ONLY CLOCK: under P-3 the sink is idempotent — on from first sight, reopen = absence — so it reads the sky EVERY render; a picker-added DOWN ride sinks on its own render (owner specimen, 9:46 PM). ticks is a cosmetic counter now, per-render. */ /* 0724o THE ARRIVAL DESERVES A READ (owner boot specimen Aug 21, 9:29 PM): an unproven park returns empty WITHOUT consuming the generation — boot lands in stages, and the schedule’s arrival render gets a real read instead of this guard’s stale empty; a genuinely closed park just re-reads {} each render, harmless */
     var ids=tdRides(T,ds),nx={},i;
+    var ds0=tpToday();if(tySeenDs!==ds0){tySeenDs=ds0;tySeenOp={};} /* 0724x D-1 rider 2 (owner): the seen memory wears THE DAY FENCE, third application (0723g / 0724b / 0724w) — a fact from a prior park-day was never earned by this one */
+    var inf1=parkInfo[pk],due1=!!(inf1&&inf1.open&&Date.now()>=new Date(inf1.open).getTime()); /* 0724x D-1 THE RIDE'S OWN GATE (owner-ruled Aug 23; the AK 7:50 pre-gate pair): isOpenNow opens at Early Entry by design, so the park gate alone let never-opened rides sink wearing a reopen promise — a ride is DUE only past the PUBLISHED open, or once seen OPERATING this park-day */
     for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv?lv.status:"CLOSED"; /* 0723x ONE CLOSED (owner wild specimen Aug 19, 9:10 AM): the rail has read ABSENCE as CLOSED since 0714s — the sink speaks the same predicate; the park-open gate and two ticks still guard the move */
-      if(s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT"){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
+      if(s9==="OPERATING")tySeenOp[rid]=1; /* 0724x: the sighting is the ride's own proof — a mid-EE breakdown still earns its sink */
+      if((s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT")&&(due1||tySeenOp[rid])){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
     tySink=nx;return tySink;
   }
   function tyGoCards(T,ds){ /* my board's eligible GO NOW cards \u2014 deepest under first, name-tiebroken */
@@ -7876,7 +7880,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
       if(!why||!rid)return;
-      if(row.classList.contains("dlx")&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15){ /* 0724t J-1 (owner-ruled Aug 22, the four-corner specimens): a dissolved ride that is EASY right now says so \u2014 the sentence and the wait seat stop arguing; <=15m is the walk-on-grade bar the tape drew */
+      if(row.classList.contains("dlx")&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15){ /* 0724t J-1 (owner-ruled Aug 22, the four-corner specimens; K-1 owner-ruled Aug 23 keeps the accidental wider law \u2014 dlx = deadline rows by birth, tier-1 wild specimens): a windowed ride that is EASY right now says so \u2014 the sentence and the wait seat stop arguing; <=15m is the walk-on-grade bar the tape drew */
         why.appendChild(row.ownerDocument.createTextNode(" But today\u2019s line is already easy \u2014 "+lv.wait+"m right now."));
       }
       var st9=lv?lv.status:"CLOSED",skC=""; /* 0723x ONE CLOSED: absence speaks too (the rail’s own predicate) */ /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
@@ -8666,6 +8670,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var wt=+wr[id];if(!wt||wt<1e12)return;   /* skip legacy boolean flags / non-timestamps */
       if(wt>echoWm)logIncident(id,"reopen",wt,true); /* 0722t: the echo writes the diary (Frozen 8:54) — history is history, even past a tombstone */
       if(clearedTs[id]&&wt<=clearedTs[id])return; /* 0721g: the user dismissed this reopen - only NEWER news re-parks */
+      if(new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(wt))!==tpToday())return; /* 0724w THE MIRROR OBEYS THE ROLL (the parked dead rise, owner pair Aug 23-24): the midnight roll buries the shelf and the worker's mirror never forgets \u2014 a reopen clock from a prior park-day never parks. Same calendar as the roll (tpToday); the diary line above stays \u2014 history is history (0722t). */
       if(!resolved[id]||wt<resolved[id]){resolved[id]=wt;changed=true;}
     });
     if(changed){saveResolved();updateAlertBadge();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
