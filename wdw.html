@@ -2116,7 +2116,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725p</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725q</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -11962,7 +11962,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"&&k!=="myrides"); /* 0725j: the second guide is written \u2014 the 0724q comment kept its promise */ /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
     }
     function navGo(k){
-      if(k===navTab){try{window.ppShl().scrollTo({top:0,behavior:"smooth"});}catch(_){window.ppShl().scrollTo(0,0);}return;}
+      if(k===navTab){ /* 0725q THE SECOND TAP PRESSES HOME (owner-ruled T-1A): the tap presses the room\u2019s own homeward doors until home \u2014 Wrap\u2019s crumb backs, Plan\u2019s plx rungs + ladder-aware rp-back, Today\u2019s tyback \u2014 so every reset recipe lives in ONE place: the door. Live & My Rides are owner-declared drill-free (no door, pure top). Cross-tab return memory untouched. */
+      var hd9,cap9=5;while(cap9-->0){hd9=(k==="wrap")?document.querySelector("#wrapView .pw-back"):(k==="pulse")?(document.querySelector("#pgPulse .plx")||document.querySelector("#pgPulse .rp-back")):(k==="today")?document.querySelector("#pgToday [data-tyback]"):null;if(!hd9)break;hd9.click();}
+      try{window.ppShl().scrollTo({top:0,behavior:"smooth"});}catch(_){window.ppShl().scrollTo(0,0);}return;}
       navTab=k;
       if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");}
       if(k!=="today"&&typeof closeIgSheet==="function")closeIgSheet(); /* 0724q: the guide never outlives its tab */ /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
