@@ -819,9 +819,9 @@
   .td-prof{margin:2px 0 12px}
   .td-ttl{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
   .td-cnt{flex:none;font:700 var(--fs-meta) var(--font-body);color:var(--accent);font-variant-numeric:tabular-nums}
-  .td-rrow{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .td-rrow{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0725t: the row breathes with its grown seat */
   .td-roster .td-rrow:last-child{border-bottom:none}
-  .td-ck{flex:none;width:19px;height:19px;border-radius:6px;border:1.5px solid var(--muted-2);display:flex;align-items:center;justify-content:center;font:800 12px var(--font-body);color:transparent}
+  .td-ck{flex:none;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--muted-2);display:flex;align-items:center;justify-content:center;font:800 14px var(--font-body);color:transparent} /* 0725t THE ONE SEAT (mock-of-record picker-unify-mock.html): 19→24 — the thumb test in the park; the compare redress inherits this seat next session */
   .td-rrow.on .td-ck{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff}
   .td-rrow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .td-rrow.on .nm{font-weight:600}
@@ -2116,7 +2116,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6397,12 +6397,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
        session-only is a two-line change if a parked scope reads wrong on a fuller page.
        Lens stays board furniture: hl-tabs beside the HOT LINES label (owner picked keep). */
     var el=$("pgPulse");if(!el)return;
+    var shR=el.querySelector(".rc-sheet"),stR=shR?shR.scrollTop:0; /* 0725s THE SEAT LAW REACHES COMPARE: the 0715q idiom, function-side \u2014 td-sheet kept its seat, rc-sheet never did (every pick bounced the list to top; owner glass memory, Aug 26). Function-side covers every caller, including ones not yet born. */
     if(rpWin==="trip"&&!tpLensTrip())rpWin="all"; /* 0715d: one guard — the Trip-days window lives only while the session’s doored trip does (covers deletion + the rail’s fold) */
     pfEnsureBase(); /* 0711b: non-blocking; re-renders this page on arrival */
         if(rpView==="plan"){el.innerHTML=plLandingHTML();} /* 0719r (Cut 1): the landing IS the tab's front door - the rail retires; rooms keep their ladders */
     else if(rpView==="trip"){rpEnsureDigs();tpEnsureSched();el.innerHTML=tpPageHTML();} /* L-29 (0714u): the trip rung - a new entry path feeds itself (Learning 45): digs + months ensured here */
     else if(rpView==="attr"){el.innerHTML=((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rpSub==="evening"?meEveningHTML():rpSub==="hours"?mdLandingHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter - they leave with it \u00b7 0713r: the ride rung \u00b7 0714a: the board rung */
     else{rpView="plan";el.innerHTML=plLandingHTML();} /* Cut 2 (0719u): the Now room retired to LIVE as the CROWD PULSE section - a stray view value lands home, never blank */
+    var shR2=el.querySelector(".rc-sheet");if(shR2&&stR)shR2.scrollTop=stR; /* 0725s: the seat restored on the fresh sheet */
     el.querySelectorAll("[data-pl]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the landing's doors - each re-homes an existing room; resets mirror the retired rail's leave semantics */
       var v=b.getAttribute("data-pl");
       if(v==="trip"){rpView="trip";rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpOpen=null;tdReset();renderPulsePage();rpTop();return;} /* the funnel keeps its place if it was mid-screen (playground law) */
