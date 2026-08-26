@@ -2116,7 +2116,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5595,13 +5595,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tdWhy(it,startMin,openMin,mark){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
     var cv=it.cv,p=[];
     if(it.wk)p.push((startMin===0&&cv.allday)?"a walk-on most of the day \u2014 anytime":"a walk-on from here on typical days \u2014 anytime");
-    else if(it.easy)p.push("typically never tops ~"+it.mx+"m"+(startMin>0?" from here":"")+" \u2014 anytime");
+    else if(it.easy)p.push("typically stays under ~"+it.mx+"m"+(startMin>0?" from here":"")+" \u2014 anytime"); /* 0725p R2 (owner ruling 2B): a ceiling claim without the absolute \u2014 "typically" does the honest work beside a hot live chip */
     else if(it.k==="C")p.push("holds near "+it.base+"m from here \u2014 anytime");
     else if(it.k==="A"){
       if(it.f2!==null)p.push("typically a walk-on until "+rpClk(it.f2));
       else if(startMin===0)p.push("typically "+it.base+"m at "+((openMin!==null&&Math.abs(cv.bs[0].t-openMin)<=30)?"the "+rpClk(openMin)+" open":"its "+rpClk(it.st0)+" start"));
       else if(it.lateStart)p.push("typically "+it.base+"m"); /* 0723m TENSE REPAIR: before the ride's start the day voice speaks - the lateStart prefix carries the clock; from-here waits until here is real (owner field-caught pre-open Aug 16) */
-      else p.push("near its remaining low from here \u2014 typically "+it.base+"m");
+      else p.push((startMin===0?"near its daily low":"near its remaining low from here")+" \u2014 typically "+it.base+"m"); /* 0725p R1 (owner ruling 1A): nothing has elapsed at day start, so "remaining"/"from here" yield to the daily low \u2014 the walk-on voice one line up is the precedent */
       if(!cv.allday&&cv.crest&&cv.crest[0]>=it.st0)p.push("crests near "+cv.pk+"m by "+rpClk(cv.crest[0]));
       else p.push("typically climbs toward ~"+it.mx+"m by "+rpClk(it.tmx));
     }else{
@@ -7963,7 +7963,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       var st9=lv?lv.status:"CLOSED",skC=""; /* 0723x ONE CLOSED: absence speaks too (the rail’s own predicate) */ /* 0723q C1 THE RUNNING SEAT FIRST: one sunk grammar, hoisted \u2014 tick-1 restraint VISIBLE; pins and My Order hold their seats, so they narrate nothing extra; REFURB earns no reopen promise (owner 2A) */
       if((st9==="DOWN"||st9==="CLOSED"||st9==="REFURBISHMENT")&&!dset[rid]&&tdLens!=="mine"&&!row.classList.contains("pin")&&snk[rid])skC=" Sunk below the running"+(st9==="REFURBISHMENT"?".":" \u2014 its seat returns on reopen."); /* 0724n P-3: on from birth — the restraint narration retires with the wait */
-      if(snk[rid]&&snk[rid].on){var fl9=row.querySelector(".td-fl b");if(fl9&&fl9.textContent.indexOf("if it reopens")<0)fl9.textContent+=" \u00b7 if it reopens";} /* 0724d S-C (owner-lettered, the five-sighting morning): a confirmed sink flips the footer\u2019s tense \u2014 the window clock stays (the one thing a waiting rider wants) but concedes the outage. Tick-1 stays bare: the seat holds, the footer holds with it. Idempotent by the guard; every render rebuilds the row fresh anyway. */
+      if((snk[rid]&&snk[rid].on)||st9==="DOWN"){var fl9=row.querySelector(".td-fl b");if(fl9&&fl9.textContent.indexOf("if it reopens")<0)fl9.textContent+=" \u00b7 if it reopens";} /* 0724d S-C (owner-lettered, the five-sighting morning): a confirmed sink flips the footer\u2019s tense \u2014 the window clock stays (the one thing a waiting rider wants) but concedes the outage. 0725p (owner ruling 3A) widened the gate: any DOWN row wears the clause \u2014 tick-1 and pinned rows included; the bare promise under a trouble voice is retired. Idempotent by the guard; every render rebuilds the row fresh anyway. */
       if(st9==="DOWN"&&!dset[rid]){ /* clause-earned: the bell clause only when a rule is armed */
         why.textContent="Down right now \u00b7 no return promised"+((typeof armed!=="undefined"&&armed&&armed[rid])?" \u2014 your \uD83D\uDD14 will ping when it\u2019s back.":".")+skC;
         return;
