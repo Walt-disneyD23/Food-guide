@@ -2047,7 +2047,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8685,6 +8685,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     Object.keys(wa||{}).forEach(function(id){
       var wt=+wa[id];if(!wt||wt<1e12)return;   /* must be a real ms timestamp, not a stray flag */
       if(wt>echoWm)logIncident(id,"hit",wt,true); /* 0723a THE HIT ECHO WRITES THE DIARY: the pill had the true clock, the log now has the line */
+      if(new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(wt))!==tpToday())return; /* 0725i THE HIT MIRROR OBEYS THE ROLL (owner glass Aug 26, 7:07 AM: a week-old \u201cHit 9:14 AM\u201d resurrected the instant a bell armed \u2014 the roll and the arm wipe the latch, the worker\u2019s hit echo re-parked it). 0724w\u2019s reopen fence, applied to its unfenced sibling; THE DATE IS THE EXPIRY, fourth application. The diary line above stays \u2014 history is history. */
       if(!alertState[id]||wt<alertState[id]){alertState[id]=wt;changed=true;}
     });
     if(changed){saveAlertState();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
