@@ -31,9 +31,10 @@
     --hero-text:#ffffff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%;overscroll-behavior-y:none} /* 0724z: escalation step 2 (dvh alone failed on glass Aug 24) \u2014 the page edge never rubber-bands; PTR is custom so nothing is lost, sheets keep their own -y:contain */
+  html{height:100%;-webkit-text-size-adjust:100%;overscroll-behavior-y:none} /* 0724z: escalation step 2 (dvh alone failed on glass Aug 24) \u2014 the page edge never rubber-bands; PTR is custom so nothing is lost, sheets keep their own -y:contain */
   body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5;overscroll-behavior-y:none;
-    min-height:100vh;min-height:100dvh;padding:0 0 calc(110px + env(safe-area-inset-bottom)); /* 0724v: dvh never moves when iOS collapses its chrome mid-rubber-band — the vh re-layout under a pinned thumb WAS the bounce (owner glass Aug 22, predating the recent cuts); vh stays as the old-engine fallback */letter-spacing:-.005em;-webkit-font-smoothing:antialiased;touch-action:manipulation}
+    height:100%;overflow:hidden; /* 0725n Z-B THE SHELL: the body is locked — the shell below owns all scrolling */letter-spacing:-.005em;-webkit-font-smoothing:antialiased;touch-action:manipulation}
+  #shell{height:100vh;height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:0 0 calc(110px + env(safe-area-inset-bottom))} /* 0725n Z-B THE SHELL: one scroller owns the page — the spring lives here (contain: it never chains to the locked body); sticky toolbars stick to THIS root. /* 0724v: dvh never moves when iOS collapses its chrome mid-rubber-band — the vh re-layout under a pinned thumb WAS the bounce (owner glass Aug 22, predating the recent cuts); vh stays as the old-engine fallback */ */
   .wrap{max-width:1180px;margin:0 auto;padding:0 12px}
 
   header.board-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:26px 0 16px}
@@ -1990,6 +1991,7 @@ document.documentElement.classList.add("dark");}catch(e){}
 </script>
 </head>
 <body>
+<div id="shell">
 <div class="wrap">
   <header class="topbar">
     <div class="brand">
@@ -2114,7 +2116,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2193,6 +2195,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="pgPulse" class="pg-pulse" hidden></div>
   <div id="pgToday" class="pg-today" hidden></div>
 </div>
+</div><!-- /shell (0725n) -->
 <button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
 <nav id="appNav" class="appnav" aria-label="Sections">
   <button class="it on" data-pg="live" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg><span>LIVE</span></button>
@@ -2206,6 +2209,7 @@ document.documentElement.classList.add("dark");}catch(e){}
 <div id="ptr" aria-hidden="true"><span class="gl">↓</span></div>
 
 <script>
+window.ppShl=function(){var e=document.getElementById("shell")||document.scrollingElement||document.documentElement;if(e&&!e.scrollTo)e.scrollTo=function(a,b){e.scrollTop=(a&&typeof a==="object")?(a.top||0):(b||0);};return e;}; /* 0725n Z-B: the one scroll seat — every reader and caller asks the shell; the settle fallback covers engines without Element.scrollTo */
 (function(){
 "use strict";
 
@@ -2530,14 +2534,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
     document.addEventListener("touchstart",function(e){
       if(busy||sheetOpen())return;
-      if(window.scrollY>0)return;
+      if(window.ppShl().scrollTop>0)return;
       if(badTarget(e.target))return;
       startY=e.touches[0].clientY;pulling=true;armed=false;
     },{passive:true});
     document.addEventListener("touchmove",function(e){
       if(!pulling||busy)return;
       var dy=e.touches[0].clientY-startY;
-      if(dy<=0||window.scrollY>0){pulling=false;settle();return;}
+      if(dy<=0||window.ppShl().scrollTop>0){pulling=false;settle();return;}
       e.preventDefault();
       setPull(Math.min(dy*DAMP,MAX));
     },{passive:false});
@@ -2572,7 +2576,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       closeStatusPop();
     }
   },true);
-  window.addEventListener("scroll",closeStatusPop,{passive:true});
+  window.addEventListener("scroll",closeStatusPop,{passive:true});window.ppShl().addEventListener("scroll",closeStatusPop,{passive:true});
   function renderStatus(){renderStatusMeta();renderStatusCover();}
   function renderStatusMeta(){
     var dot=$("spDot"),word=$("spWord"),desc=$("spDesc"),up=$("spUpdated"),nx=$("spNext");
@@ -4075,7 +4079,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
   var RP_LTG_EPOCH="2026-07-13"; /* the sensor's first day — strike-day overlap starts here, forever */
-  function rpTop(){try{window.scrollTo(0,0);}catch(e){}} /* rp-local twin: topw lives in an inner scope (0713p–r called it across the boundary — silent ReferenceError, fixed here) */
+  function rpTop(){try{window.ppShl().scrollTo(0,0);}catch(e){}} /* rp-local twin: topw lives in an inner scope (0713p–r called it across the boundary — silent ReferenceError, fixed here) */
   function rpDate(off){ /* rp-local twin of etDate, byte-matched semantics */
     var d=new Date(Date.now()-(off||0)*86400000);
     var p=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
@@ -5086,7 +5090,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var q='.tp-drow[data-tpday="'+ds+'"]',el=document.querySelector(q),t0=el?el.getBoundingClientRect().top:null;
     renderPulsePage();
     var el2=document.querySelector(q);
-    if(el2&&t0!==null){var dd=el2.getBoundingClientRect().top-t0;if(dd)window.scrollBy(0,dd);}
+    if(el2&&t0!==null){var dd=el2.getBoundingClientRect().top-t0;if(dd)window.ppShl().scrollTop+=dd;}
   }
   function tpPlanClause(t,ds,model,wd){ /* Cut 2 (2b-ratified): acknowledged, never judged — history first, pick second; no tier claim under the day floor */
     var pk=(t&&t.plan||{})[ds];if(!pk)return "";
@@ -6739,7 +6743,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
      layout viewport to re-sync. */
   (function(){
     document.addEventListener("gesturestart",function(e){e.preventDefault();},{passive:false});
-    function repin(){try{var x=window.pageXOffset,y=window.pageYOffset;window.scrollTo(x,y+1);window.scrollTo(x,y);}catch(_){}} /* 0723k: THE NUDGE MUST MOVE - a same-position scrollTo is a no-op WebKit may skip */
+    function repin(){try{var sh=window.ppShl(),y=sh.scrollTop;sh.scrollTop=y+1;sh.scrollTop=y;}catch(_){}} /* 0723k: THE NUDGE MUST MOVE - a same-position scrollTo is a no-op WebKit may skip */
     document.addEventListener("touchmove",function(e){
       var a=document.activeElement;
       if(a&&a.tagName==="INPUT"&&!(e.target&&e.target.closest&&e.target.closest(".search-box")))a.blur();
@@ -8111,14 +8115,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function tyBindLanding(el){
     el.querySelectorAll("[data-typk]").forEach(function(b){b.addEventListener("click",function(){
-      tyPick(b.getAttribute("data-typk"));rpEnsureDigs();tyEnsureSched();renderTodayPage();window.scrollTo(0,0);});});
+      tyPick(b.getAttribute("data-typk"));rpEnsureDigs();tyEnsureSched();renderTodayPage();window.ppShl().scrollTo(0,0);});});
   }
   function tyBindWalker(el,pk,tr){
     var tid=tr?tr.id:"__today",ds=tyDs();
     el.querySelectorAll("[data-tychip]").forEach(function(b){b.addEventListener("click",function(){
       var p2=b.getAttribute("data-tychip");if(p2===pk)return;
-      tyPick(p2);tdPk=false;tdPin=null;rpEnsureDigs();tyEnsureSched();renderTodayPage();window.scrollTo(0,0);});});
-    var bk=el.querySelector("[data-tyback]");if(bk)bk.addEventListener("click",function(){tyHome=true;tdPk=false;tdPin=null;renderTodayPage();window.scrollTo(0,0);});
+      tyPick(p2);tdPk=false;tdPin=null;rpEnsureDigs();tyEnsureSched();renderTodayPage();window.ppShl().scrollTo(0,0);});});
+    var bk=el.querySelector("[data-tyback]");if(bk)bk.addEventListener("click",function(){tyHome=true;tdPk=false;tdPin=null;renderTodayPage();window.ppShl().scrollTo(0,0);});
     var tfx=el.querySelector("[data-tyfx]");if(tfx)tfx.addEventListener("click",function(e2){e2.stopPropagation();store.set("ppFactDis",tyDs());renderTodayPage();}); /* 0723n: the \u2715 kills facts for the DAY (in-memory fallback returns on hard reload \u2014 accepted) */
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){
       var v=b.getAttribute("data-tdlens")==="mine"?"mine":"app";if(v===tdLens)return;tdLens=v;renderTodayPage();});});
@@ -8888,7 +8892,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function $id(id){return document.getElementById(id);}
     function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
     function tier(m){return m>=45?"pw-p":m>=30?"pw-l":m>=15?"pw-m":"pw-s";}
-    function topw(){try{window.scrollTo(0,0);}catch(e){}}
+    function topw(){try{window.ppShl().scrollTo(0,0);}catch(e){}}
 
     function etDate(off){
       var d=new Date(Date.now()-(off||0)*86400000);
@@ -11958,7 +11962,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"&&k!=="myrides"); /* 0725j: the second guide is written \u2014 the 0724q comment kept its promise */ /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
     }
     function navGo(k){
-      if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
+      if(k===navTab){try{window.ppShl().scrollTo({top:0,behavior:"smooth"});}catch(_){window.ppShl().scrollTo(0,0);}return;}
       navTab=k;
       if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");}
       if(k!=="today"&&typeof closeIgSheet==="function")closeIgSheet(); /* 0724q: the guide never outlives its tab */ /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
@@ -11986,7 +11990,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           rpEnsureDigs();tyEnsureSched();if(typeof pfEnsureBase==="function")pfEnsureBase();renderTodayPage();} /* 0720b: fresh paint + a clean walker-view slate on entry - From now is the engine\u2019s own default when tdStart is empty (F); 0720i: the baseline warms for the earned promotion */
       }
       navSync(k);
-      window.scrollTo(0,0);
+      window.ppShl().scrollTo(0,0);
     }
     (function(){
       var its=document.querySelectorAll("#appNav .it");
