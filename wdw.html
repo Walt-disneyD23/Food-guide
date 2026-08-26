@@ -2125,7 +2125,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4910,9 +4910,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(it.edge<=3&&it.mxA-it.base<=8)p.push('holds near '+it.base+'m from here \u2014 the typical barely moves again today'); /* 0714r: "barely moves" is a RANGE claim \u2014 edge alone only looks downhill */
       else if(it.edge<=3)p.push('about as cheap as it gets \u2014 typically climbs toward ~'+it.mxA+'m by '+rpClk(it.tmx));
       else{
-        if(!it.cv.allday&&it.cv.crest&&nb>=it.cv.crest[0]&&nb<=it.cv.crest[1])p.push('at its '+rpRange(it.cv.crest[0],it.cv.crest[1])+' crest (typically '+it.cv.pk+'m)');
+        var atc9=(!it.cv.allday&&it.cv.crest&&nb>=it.cv.crest[0]&&nb<=it.cv.crest[1]);if(atc9)p.push('at its '+rpRange(it.cv.crest[0],it.cv.crest[1])+' crest (typically '+it.cv.pk+'m)'); /* 0725v W-1B: the crest face anchors here too */
         if(it.backAhead)p.push('a walk-on after '+rpClk(it.cv.back)+' on typical nights');
-        else p.push('typically easing to ~'+it.mn+'m'+(it.tm!==null?(it.near?' near close':' by '+rpClk(it.tm)):''));
+        else p.push((atc9?'easing to ~':'typically easing to ~')+it.mn+'m'+(it.tm!==null?(it.near?' near close':' by '+rpClk(it.tm)):'')); /* 0725v W-1B: the word yields when the crest spoke it */
       }
       if(it.lateStart)p.unshift('from its '+rpClk(it.st0)+' start'); /* 0714s: a tape that begins later says so */
       var why=p.join(' \u2014 ');why=why.charAt(0).toUpperCase()+why.slice(1)+'.';
@@ -5619,7 +5619,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var atc=(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1]),anc=(!atc&&startMin>0&&!it.lateStart); /* 0724e THE PRESENT ANCHOR (owner-blessed): the future-opening face now opens where the rider stands \u2014 assurance, never a verdict (the bridge stays the only judge). Tense-gated on the A-class's own logic: day-voice and pre-start faces never anchor (0723m stands); the crest face already speaks the present. */
       if(atc)p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
       else if(anc)p.push("typically ~"+it.base+"m through here");
-      p.push((anc?"eases to ~":"typically eases to ~")+it.mn+"m"+(it.tm!==null?(it.near?(it.lvw?" near your leave":" near close"):" by "+rpClk(it.tm)):"")); /* the anchor carries the word for both \u2014 never a double "typically" */
+      p.push(((anc||atc)?"eases to ~":"typically eases to ~")+it.mn+"m"+(it.tm!==null?(it.near?(it.lvw?" near your leave":" near close"):" by "+rpClk(it.tm)):"")); /* 0725v W-1B: the anchor carries the word for both \u2014 and the crest face IS an anchor (it already spoke "typically" in its parenthetical), so the claim "never a double" is now true as written */
     }
     if(it.lateStart)p.unshift("from its "+rpClk(it.st0)+" start");
     var w=p.join(" \u2014 ");w=w.charAt(0).toUpperCase()+w.slice(1)+".";
@@ -5787,7 +5787,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical tape \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are still too thin to read')
         :('A suggested order from your day\u2019s typical tape \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+' tapes read the trip\u2019s whole arc':''));
-      basis=(hrs.c===null?'<b>Hours not published yet</b> \u00b7 ':'')+(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+(eng.swept?' \u00b7 anytime rides grouped by walk':'')+' \u00b7 history, never a promise.'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>=1440?hrs.c-1440:hrs.c)+(swp2?'':' published'):''); /* 0723w MIDNIGHT IS 12 AM (owner Harbor specimen): >= springs the rpClk(1440) trap the hero already guards; and on sweep-extended nights the close is the WINDOW\u2019s, not the published \u2014 the false word comes off (labels state their measure) */
+      basis=(hrs.c===null?'<b>Hours not published yet</b> \u00b7 ':'')+(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+(eng.swept?' \u00b7 anytime rides grouped by walk':'')+' \u00b7 history, never a promise'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c>=1440?hrs.c-1440:hrs.c)+(swp2?'':' published'):''); /* 0723w MIDNIGHT IS 12 AM (owner Harbor specimen): >= springs the rpClk(1440) trap the hero already guards; and on sweep-extended nights the close is the WINDOW\u2019s, not the published \u2014 the false word comes off (labels state their measure) */
     }
     tdSecHTML.rows=_cr;tdSecHTML.seq=_sq; /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
     return head+fuse9+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
