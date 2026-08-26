@@ -759,27 +759,36 @@
   .rc-sheet.anim,.td-sheet.anim{animation:rcUp .28s cubic-bezier(.32,.72,0,1)}
   @keyframes rcUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .rc-grab{width:38px;height:4px;border-radius:999px;background:var(--muted-2);opacity:.5;margin:4px auto 12px}
-  .rc-title{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
+  .rc-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
+  .rc-title .cnt{flex:none;font:700 var(--fs-small) var(--font-body);color:var(--accent);white-space:nowrap} /* 0725u: the seat counter */
   .rc-sub{color:var(--muted);font-size:var(--fs-meta);margin:3px 0 12px}
-  .rc-seats{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
-  .rc-seat{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:var(--r-tile);padding:9px 12px;background:var(--card-2);font-size:var(--fs-body);color:var(--ink)}
-  .rc-seat .nm{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .rc-seat .typ{color:var(--muted);font-size:var(--fs-meta);margin-left:auto;flex:none}
-  .rc-seat .tag{flex:none;font:600 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin-left:10px}
-  .rc-seat .rc-x{flex:none;border:none;background:none;color:var(--muted-2);font-size:15px;line-height:1;margin-left:10px;padding:2px 4px;cursor:pointer}
-  .rc-seat.empty{border-style:dashed;background:transparent;color:var(--muted-2);font-size:var(--fs-meta)}
-  .rc-seat.empty .rc-dot{background:transparent;border:1.5px dashed var(--muted-2)}
+  .rc-seats{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:12px} /* 0725u ONE PICKER: three even seat-slots; minmax(0,1fr) is the long-name fence (mock-of-record picker-compare-mock2b.html) */
+  .rc-seat{border:1.5px dashed var(--line);border-radius:var(--r-tile);min-height:58px;padding:8px 9px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+  .rc-seat .ph{color:var(--muted-2);font-size:var(--fs-meta);text-align:center}
+  .rc-seat.take{border:1.5px solid var(--sc);background:var(--card-2);background:color-mix(in srgb,var(--sc) 9%,var(--card));cursor:pointer;-webkit-tap-highlight-color:transparent} /* fallback declaration first: color-mix is this file's first use */
+  .rc-seat.take .nm{font:700 var(--fs-small) var(--font-body);color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .rc-seat.take .rm{display:flex;align-items:center;gap:5px;font:600 var(--fs-meta) var(--font-body);color:var(--sc)}
+  .rc-seat.take .rm i{width:9px;height:9px;border-radius:50%;background:var(--sc);flex:none}
+  .rc-seat.take .tag{font:600 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .rc-plab{font:600 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
-  .rc-stars{display:block;width:100%;box-sizing:border-box;text-align:left;border:1px solid var(--line);border-radius:var(--r-tile);padding:10px 12px;background:var(--card-2);font:600 var(--fs-small) var(--font-body);color:var(--ink);cursor:pointer;margin:0 0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent}
+  .rc-qgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:13px} /* 0725u: the QUICK SEATS shelf, 2x2 even grid, cap 4 cells */
+  .rc-qc{min-width:0;border:1px solid var(--line);background:var(--card-2);border-radius:var(--r-tile);padding:9px 10px;display:flex;align-items:center;gap:7px;min-height:44px;font:600 var(--fs-small) var(--font-body);color:var(--ink);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .rc-qc .fs{flex:none;color:var(--fav);font-size:13px}
+  .rc-qc .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rc-qc small{flex:none;color:var(--muted);font-weight:500}
+  .rc-qc[disabled]{opacity:.4;cursor:default}
+  .rc-stars{display:block;width:100%;box-sizing:border-box;text-align:left;border:1px solid var(--line);border-radius:var(--r-tile);padding:10px 12px;background:var(--card-2);font:600 var(--fs-small) var(--font-body);color:var(--ink);cursor:pointer;margin:0 0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-tap-highlight-color:transparent} /* 0725u: worn only by the day picker's Add-your-stars banner (data-tdstars) — the Compare banner dissolved into the QUICK SEATS shelf */
   .rc-stars .fs{color:var(--fav)}
-  .rc-prow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
-  .rc-pchip{border:1px solid var(--line);border-radius:var(--r-pill);padding:7px 13px;font:600 var(--fs-small) var(--font-body);color:var(--ink);background:var(--card-2);cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .rc-pchip small{color:var(--muted);font-weight:500;margin-left:4px}
-  .rc-pchip.seated,.rc-pchip[disabled]{opacity:.4;cursor:default}
   .rc-srch,.td-srch{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:var(--r-pill);padding:9px 14px;font:400 var(--fs-body) var(--font-body);color:var(--ink);background:var(--card-2);margin-bottom:6px;outline:none;-webkit-appearance:none}
-  .rc-roster .rc-rrow{display:flex;align-items:center;gap:9px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer}
+  .rc-colhead{display:flex;justify-content:flex-end;font:600 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);padding:6px 2px 4px} /* 0725u: the TYPICAL column head (0715r grammar) */
+  .rc-roster .rc-rrow{display:flex;align-items:center;gap:12px;min-height:54px;padding:6px 4px;border-bottom:1px solid var(--line);font-size:var(--fs-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .rc-roster .rc-rrow:last-child{border-bottom:none}
-  .rc-rrow .typ{margin-left:auto;color:var(--muted);font-size:var(--fs-meta)}
+  .rc-chk{flex:none;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--muted-2);display:flex;align-items:center;justify-content:center;font:800 14px var(--font-body);color:transparent} /* 0725u: the A-seat; Compare fill = the ride's chart identity (the picker IS the legend) */
+  .rc-rrow.on .rc-chk{background:var(--sc);border-color:var(--sc);color:#fff}
+  .rc-rrow .nm{flex:1;min-width:0;font:600 var(--fs-title) var(--font-body);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rc-rrow.on .nm{color:var(--ink);font-weight:700}
+  .rc-rrow .typ{margin-left:auto;color:var(--muted-2);font-size:var(--fs-body);font-variant-numeric:tabular-nums}
+  .rc-rrow.on .typ{color:var(--ink)}
   .rc-rrow.dim{opacity:.38;cursor:default}
   .rc-cap{font-size:var(--fs-meta);color:var(--muted-2);margin:8px 0 0;text-align:center}
   .rc-go{display:block;width:100%;border:none;border-radius:var(--r-tile);background:var(--accent-fill);color:#fff;font:600 var(--fs-title) var(--font-body);padding:13px 0;margin-top:14px;text-align:center;cursor:pointer}
@@ -2116,7 +2125,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4735,32 +4744,34 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     out.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     return out;
   }
-  function rcSheetHTML(){ /* Variant B \u2014 headliner shelf: each chip seats one; identity follows the seat */
+  function rcSheetHTML(){ /* 0725u ONE PICKER \u2014 the Compare redress (mock-of-record picker-compare-mock2b.html): A-seats, three even slots, the QUICK SEATS shelf; identity follows the seat and the picker IS the legend */
     var all=rcTyps(),by={},i;for(i=0;i<all.length;i++)by[all[i].id]=all[i];
     var me=roster[rpRide]||{},cap=rcSel.length>=3;
     var seats='';
     for(i=0;i<rcSel.length;i++){var it=by[rcSel[i]]||{nm:(roster[rcSel[i]]||{}).name,cv:null};
-      seats+='<div class="rc-seat"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(it.nm||"")+'</span>'+
-        (it.cv?'<span class="typ">'+it.cv.typ+'m typical</span>':'')+
-        ((i===0&&rpRide)?'<span class="tag">Here now</span>':'<button class="rc-x" data-rcx="'+i+'" type="button">\u2715</button>')+'</div>';}
-    for(i=rcSel.length;i<3;i++)seats+='<div class="rc-seat empty"><span class="rc-dot"></span>'+(rcSel.length===0?(i===0?'Pick your first ride \u2014 it takes the indigo seat':'Then up to two more'):(rcSel.length<2?'Pick at least one more':'Pick one more \u2014 or compare these two'))+'</div>';
-    var heads=all.filter(function(x){return x.cv&&x.id!==rpRide;}).sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,4);
-    var chips=heads.map(function(x){var on=rcSel.indexOf(x.id)>=0;
-      return '<button class="rc-pchip'+(on?' seated':'')+'"'+((on||cap)?' disabled':' data-rcid="'+esc(x.id)+'"')+' type="button">'+esc(x.nm)+' <small>'+x.cv.typ+'m</small></button>';}).join("");
+      seats+='<div class="rc-seat take" style="--sc:var(--cmp-p'+(i+1)+')"'+((i===0&&rpRide)?'':' data-rcx="'+i+'"')+'><span class="nm">'+esc(it.nm||"")+'</span>'+
+        ((i===0&&rpRide)?'<span class="tag">Here now</span>':'<span class="rm"><i></i>tap to unseat</span>')+'</div>';} /* the \u2715 button's job moved onto the slot itself; the Here-now anchor keeps its tag and never unseats */
+    for(i=rcSel.length;i<3;i++)seats+='<div class="rc-seat"><span class="ph">'+(i===0?'Pick your first ride':'Then up to two more')+'</span></div>';
+    var stars=all.filter(function(x){return watch[x.id]&&x.id!==rpRide&&x.cv;}) /* 0714j kept: one symbol, one meaning \u2014 the \u2605 reads the Favorites stars; 0725u: the banner dissolved into the shelf */
+      .sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,3);
+    var heads=all.filter(function(x){return x.cv&&x.id!==rpRide;}).sort(function(a,b){return b.cv.typ-a.cv.typ;});
+    var cells=stars.slice();for(i=0;i<heads.length&&cells.length<4;i++)if(cells.indexOf(heads[i])<0)cells.push(heads[i]); /* stars lead (cap 3, matching the seats), headliners fill, starred headliners dedupe wearing the \u2605 \u2014 cap 4 cells */
+    var shelf='';
+    if(cells.length){var chips=cells.map(function(x){var on=rcSel.indexOf(x.id)>=0;
+        return '<button class="rc-qc"'+((on||cap)?' disabled':' data-rcid="'+esc(x.id)+'"')+' type="button">'+(watch[x.id]?'<span class="fs">\u2605</span>':'')+'<span class="nm">'+esc(x.nm)+'</span><small>'+x.cv.typ+'m</small></button>';}).join("");
+      shelf='<div class="rc-plab">Quick seats \u2014 '+(stars.length?'your stars, then the headliners':'this park\u2019s headliners')+'</div><div class="rc-qgrid">'+chips+'</div>';}
     var rows=all.map(function(x){var si=rcSel.indexOf(x.id),dis=x.id===rpRide||!x.cv||(cap&&si<0);
-      return '<div class="rc-rrow'+((dis&&si<0)?' dim':'')+'"'+((!dis&&si<0)?' data-rcid="'+esc(x.id)+'"':'')+'>'+
-        '<span class="rc-dot'+(si<0?' off':'')+'"'+(si>=0?' style="background:var(--cmp-p'+(si+1)+')"':'')+'></span>'+esc(x.nm)+
+      return '<div class="rc-rrow'+(si>=0?' on':'')+((dis&&si<0)?' dim':'')+'"'+(si>=0?' style="--sc:var(--cmp-p'+(si+1)+')"':'')+((!dis&&si<0)?' data-rcid="'+esc(x.id)+'"':'')+'>'+
+        '<span class="rc-chk">\u2713</span><span class="nm">'+esc(x.nm)+'</span>'+
         '<span class="typ">'+(x.cv?x.cv.typ+'m':'\u2013')+'</span></div>';}).join("");
-    var stars=all.filter(function(x){return watch[x.id]&&x.id!==rpRide&&x.cv&&rcSel.indexOf(x.id)<0;}) /* 0714j: one symbol, one meaning \u2014 the \u2605 shelf reads the Favorites stars */
-      .sort(function(a,b){return b.cv.typ-a.cv.typ;}).slice(0,3-rcSel.length);
-    var st=stars.length?'<button class="rc-stars" data-rcstars="'+esc(stars.map(function(x){return x.id;}).join("|"))+'" type="button"><span class="fs">\u2605</span> Seat your star'+(stars.length===1?'':'s')+' \u2014 '+stars.map(function(x){return esc(x.nm);}).join(" + ")+'</button>':'';
     return '<div class="rc-scrim"></div><div class="rc-sheet'+(rcPkA?' anim':'')+'"><div class="rc-grab"></div>'+
-      '<div class="rc-title">'+(rpRide?'Compare '+esc(me.name||"")+' with\u2026':'Compare '+esc(rpPark||"")+' rides')+'</div>'+
+      '<div class="rc-title"><span>'+(rpRide?'Compare '+esc(me.name||"")+' with\u2026':'Compare '+esc(rpPark||"")+' rides')+'</span><span class="cnt">'+rcSel.length+' of 3 seats</span></div>'+
       '<div class="rc-sub">'+esc(rpPark||"")+' only \u00b7 up to 3 rides \u00b7 the profile\u2019s window</div>'+
       '<div class="rc-seats">'+seats+'</div>'+
-      st+'<div class="rc-plab">This park\u2019s headliners</div><div class="rc-prow">'+chips+'</div>'+
+      shelf+
       '<input class="rc-srch" type="search" placeholder="Search '+esc(rpPark||"")+' rides" autocomplete="off"/>'+
-      ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from the last 28 days of banked waits \u2014 one moment</div>':'')+'<div class="rc-roster">'+rows+'</div>'+
+      ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from the last 28 days of banked waits \u2014 one moment</div>':'')+
+      '<div class="rc-colhead">Typical</div><div class="rc-roster">'+rows+'</div>'+
       (cap?'<div class="rc-cap">Three seats filled \u2014 remove a ride to swap</div>':'')+
       '<button class="rc-go" type="button"'+(rcSel.length<2?' disabled':'')+'>Compare '+rcSel.length+' ride'+(rcSel.length===1?'':'s')+'</button></div>';
   }
@@ -6435,8 +6446,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(rcSel.length>=3)return;var id=b.getAttribute("data-rcid");if(rcSel.indexOf(id)>=0)return;rcSel.push(id);renderPulsePage();});});
     el.querySelectorAll("[data-rcx]").forEach(function(b){b.addEventListener("click",function(){
       rcSel.splice(+b.getAttribute("data-rcx"),1);renderPulsePage();});});
-    el.querySelectorAll("[data-rcstars]").forEach(function(b){b.addEventListener("click",function(){ /* 0714j: one tap seats the named stars */
-      b.getAttribute("data-rcstars").split("|").forEach(function(id){if(rcSel.length<3&&rcSel.indexOf(id)<0)rcSel.push(id);});renderPulsePage();});});
+    /* 0725u: the data-rcstars banner retired \u2014 its job dissolved into the QUICK SEATS shelf, whose cells speak data-rcid (the picks handler above already seats them) */
     var rcg=el.querySelector(".rc-go");if(rcg)rcg.addEventListener("click",function(){
       if(rcSel.length<2)return;rcIds=rcSel.slice();rcPk=false;rcFoc=null;renderPulsePage();rpTop();});
     var rcq=el.querySelector(".rc-srch");if(rcq)rcq.addEventListener("input",function(){ /* in-place filter \u2014 no re-render, no caret loss */
