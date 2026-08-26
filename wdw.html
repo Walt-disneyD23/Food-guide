@@ -2041,7 +2041,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
     <div class="g-room">
     <div class="g-lane"><span>Not running</span><b>seats return on reopen</b></div>
-    <div class="g-body">Broken or closed rides wait here — <b>back the moment they reopen.</b></div>
+    <div class="g-body">Down or closed rides wait here — <b>back the moment they reopen.</b></div>
     </div>
     <div class="g-room">
     <div class="g-lane"><span>Ridden</span></div>
@@ -2076,7 +2076,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
     <div class="g-room">
     <div class="g-lane"><span>Your stars, by park</span><b>down-first</b></div>
-    <div class="g-body">Every starred ride with its live wait, its <b>rule line</b>, and its bell. Down rides lead their park. The park chips up top filter this whole page — <b>except DOWN &amp; BACK UP, which always shows every park’s news.</b></div>
+    <div class="g-body">Every starred ride with its live wait, its <b>rule line</b>, and its bell — <b>A to Z</b>, down rides leading their park. The park chips up top filter this whole page — <b>except DOWN &amp; BACK UP, which always shows every park’s news.</b></div>
     </div>
     <div class="g-room">
     <div class="g-lane"><span>Recent alerts</span></div>
@@ -2114,7 +2114,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8309,6 +8309,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return PARK_DEF.map(function(p){
       var here=ids.filter(function(id){return roster[id].park===p.key;});
       if(!here.length)return "";
+      here.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);}); /* 0725m O-a (owner-ruled Aug 26): A to Z within the park \u2014 a management surface wins on findability, and alphabetical is already the family\u2019s law (the shelf, the seed). The starred order was honest but unreadable \u2014 its own author couldn\u2019t decode it. Down-first below stays stable, so each half keeps its alphabet. */
       var dn=here.filter(function(id){var lv=liveById[id];return lv&&lv.status==="DOWN";});
       here=dn.concat(here.filter(function(id){var lv=liveById[id];return !(lv&&lv.status==="DOWN");})); /* down-first, stable — honest ordering, no control */
       return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(function(id){
