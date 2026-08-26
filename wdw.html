@@ -802,7 +802,14 @@
   .ig-p{font-size:13px;color:var(--muted);line-height:1.6;margin:2px 2px 14px} .ig-p b{color:var(--ink)}
   .ig-row{display:flex;gap:12px;align-items:flex-start;margin:0 2px 14px;font-size:12.5px;color:var(--muted);line-height:1.5} .ig-row b{color:var(--ink)}
   .ig-key{flex:none;width:104px; /* 0725h: ONE key width, re-sized for its longest tenant (PAST YOUR DAY spilled the 88px pill \u2014 owner glass Aug 25 evening); the 0724s law holds, the number moves */text-align:center;font:700 10px var(--font-body);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 0;margin-top:1px;background:var(--accent-soft);color:var(--accent);white-space:nowrap} /* 0724s: ONE key width — every sentence starts on the same line down the sheet (owner glass: the ragged column); even geometry is the house taste */
-  #igPop .set-lab{margin:18px 2px 11px} /* 0724q: the guide wears the app's own vars — both themes for free; the GO example reuses the board's real .td-brg.gv dress (SAME QUESTION SAME SENTENCE, even in the manual) */ /* 0724k L-1b: the GO voice wears the Pulse’s own green — ONE PHENOMENON ONE PALETTE; the words carry it (COLOR NEVER CARRIES ALONE) */
+  #igPop .set-lab{margin:22px 2px 12px} /* 0725j: the header's own breath separates it from the lanes below */
+  #igPop .g-room{border-top:1px solid var(--line);padding-top:14px;margin-top:16px} /* 0725j THE GUIDES GO LIVE: rooms wear the board's own lane furniture; hairline seams keep rooms reading as rooms (CARDS ARE DOORS, HAIRLINES ARE READOUTS) */
+  #igPop .set-lab + .g-room{border-top:none;padding-top:0;margin-top:0}
+  #igPop .g-lane{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 6px;font:700 var(--fs-caps) var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--muted-2)}
+  #igPop .g-lane b{font:700 var(--fs-caps) var(--font-body);letter-spacing:.11em;color:var(--muted-2)} /* one ink, one weight - the guide's even eye (unlike the board's lanes, whose slots sit far apart) */
+  #igPop .g-body{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0 2px 2px}
+  #igPop .g-body b{color:var(--ink)}
+  #igPop .ig-red{color:var(--packed);font-weight:700} /* 0724q: the guide wears the app's own vars — both themes for free; the GO example reuses the board's real .td-brg.gv dress (SAME QUESTION SAME SENTENCE, even in the manual) */ /* 0724k L-1b: the GO voice wears the Pulse’s own green — ONE PHENOMENON ONE PALETTE; the words carry it (COLOR NEVER CARRIES ALONE) */
   .td-grip{flex:none;align-self:center;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 10px;-webkit-tap-highlight-color:transparent}
   .td-sl.drag{opacity:.95;z-index:5;box-shadow:0 8px 22px -8px rgba(25,26,46,.35);border-radius:var(--r-el);background:var(--accent-soft);border-top-color:transparent}
   .td-sl.drag .td-grip{color:var(--accent);cursor:grabbing}
@@ -2012,27 +2019,87 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div class="help-scrim alerts-scrim" id="igScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="igPop" hidden style="z-index:91">
     <div class="help-grab"></div>
+    <div id="igTodayBody">
     <div class="ap-head"><div class="ap-title"><svg width="16" height="16" style="vertical-align:-2.5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2a8.8 8.8 0 1 1-4.6 16.3L4 21l1.6-3.3A8.8 8.8 0 0 1 12 3.2z"/><path d="M9.6 9.6a2.4 2.4 0 1 1 3.3 2.2c-.8.34-.9.9-.9 1.7"/><circle cx="12" cy="16.4" r="0.55" fill="currentColor" stroke="none"/></svg><span style="display:inline-block;width:7px"></span>The Today board</div></div>
-    <div class="ig-p"><b>History builds the board. Live moves the pieces.</b> Your favorites are already here — set when you're leaving, and the plan rebuilds itself all day.</div>
-    <div class="set-lab">The rooms</div>
-    <div class="ig-row"><span class="ig-key">Windows</span><span><b>Rides whose easy hour is open now</b> and dies at a clock time — soonest deadline first. The footer names the clock. <b>These lead the board</b> — no banner needed; the footers are the sign.</span></div>
-    <div class="ig-row"><span class="ig-key">Ride now</span><span><b>Never bad from where you are</b> — no deadline, ordered as a natural walk through the park.</span></div>
-    <div class="ig-row"><span class="ig-key">Tonight</span><span><b>Their easy hour comes later.</b> Waiting below, earliest window first.</span></div>
-    <div class="ig-row"><span class="ig-key">Past your day</span><span>Their easy hour comes <b>after you leave</b> — dimmed at the bottom, but still rideable at today’s line. Live can promote one (see below).</span></div>
-    <div class="ig-row"><span class="ig-key">Not running</span><span>Broken or closed rides wait here — <b>seats return on reopen.</b></span></div>
+    <div class="ig-p"><b>History builds the board. Live moves the pieces.</b> Your favorites are already here — set when you’re leaving, and the plan rebuilds itself all day.</div>
+    <div class="set-lab">The rooms — as they appear on the board</div>
+    <div class="g-room">
+    <div class="g-lane"><span>Windows</span></div>
+    <div class="g-body"><b>Rides whose easy hour is open now</b> and dies at a clock time. The footer names the clock. <b>These lead the board</b> — no lane needed; the footers are the sign.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Ride now</span><b>anytime</b></div>
+    <div class="g-body"><b>Never bad from where you are</b> — no deadline, ordered as a natural walk through the park.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Your evening windows</span><b>from ~9:30 PM</b></div>
+    <div class="g-body"><b>Their easy hour comes later.</b> Waiting below, earliest window first.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Past your day</span><b>easy after you leave</b></div>
+    <div class="g-body">Their easy hour comes <b>after you leave</b> — dimmed, but still rideable at today’s line. Live can promote one (see below).</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Not running</span><b>seats return on reopen</b></div>
+    <div class="g-body">Broken or closed rides wait here — <b>back the moment they reopen.</b></div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Ridden</span></div>
+    <div class="g-body"><b>Tap a ride’s circle when you’ve ridden it</b> — it crosses off and drops here, and the plan reorders around what’s left. Tap again to un-mark.</div>
+    </div>
     <div class="set-lab">What live can do</div>
     <div class="ig-row"><span class="ig-key">↑ Crown</span><span>The single best gift in the park right now rises to <b>#1</b>. One crown, always.</span></div>
     <div class="ig-row"><span class="ig-key">↑ Early</span><span>A later ride whose easy hour <b>arrived early</b> — tonight’s, or even one past your leave — rises above the walk until the deal fades.</span></div>
     <div class="ig-row"><span class="ig-key">Voice</span><span><span class="td-brg gv">GO NOW — 16 under typical.</span> A confirmed gift on a ride already well-seated just says so.</span></div>
     <div class="set-lab">Reading a row</div>
-    <div class="ig-p">↑ means live moved it · <span class="td-brg gv">green</span> means go · <b style="color:var(--accent)">blue</b> is a quiet heads-up · a dim row doesn't fit the day you set · the <b>WINDOW</b> footer is that ride's own clock. A dim row can still carry <span class="td-brg gv">green</span> — a rare deal doesn't wait for your schedule.</div>
+    <div class="ig-p">↑ means live moved it · <span class="td-brg gv">green</span> means go · <b style="color:var(--accent)">blue</b> is a quiet heads-up · a dim row doesn’t fit the day you set · the <b>WINDOW</b> footer is that ride’s own clock. A dim row can still carry <span class="td-brg gv">green</span> — a rare deal doesn’t wait for your schedule.</div>
     <div class="ig-p">Everything enters the board <b>instantly</b>; everything leaves only after <b>two clean reads</b> — one glitchy signal can never shake your plan.</div>
     <div class="set-lab">Never asked</div>
     <div class="ig-p"><b>No walking speeds. No itineraries. No re-entering reservations. No refresh ritual.</b> Open it, set your leave time, go.</div>
     <div class="set-lab">Try this</div>
     <div class="ig-p">Leaving early? <b>Tap the underlined time</b> — the whole board rebuilds around your day.</div>
-    <div class="ig-p">Hopping parks? <b>One tap up top</b> — every window re-reads for that park's hours.</div>
+    <div class="ig-p">Want your own order? <b>Tap MY ORDER up top</b> — your list holds still while the live voices keep speaking.</div>
+    <div class="ig-p">Hopping parks? <b>One tap up top</b> — every window re-reads for that park’s hours.</div>
     <div class="ig-p" style="font-size:11px;color:var(--muted-2)">Live waits: ThemeParks.wiki · history, never a promise.</div>
+    </div>
+    <div id="igMrBody" hidden>
+    <div class="ap-head"><div class="ap-title"><svg width="16" height="16" style="vertical-align:-2.5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2a8.8 8.8 0 1 1-4.6 16.3L4 21l1.6-3.3A8.8 8.8 0 0 1 12 3.2z"/><path d="M9.6 9.6a2.4 2.4 0 1 1 3.3 2.2c-.8.34-.9.9-.9 1.7"/><circle cx="12" cy="16.4" r="0.55" fill="currentColor" stroke="none"/></svg><span style="display:inline-block;width:7px"></span>My Rides</div></div>
+    <div class="ig-p"><b>Star what you care about. Bell what should wake your phone.</b> Your stars are watched live all day — pings work even with the app closed.</div>
+    <div class="set-lab">The rooms — as they appear on the tab</div>
+    <div class="g-room">
+    <div class="g-lane"><span>Down &amp; back up</span><b>clear by hand</b></div>
+    <div class="g-body"><b>Down rides show how long</b> (“Down since 8:32 AM”). When one reopens it <b>parks here till you clear it</b> — <b>Clear all</b> sweeps them once you’ve seen the news, and every new day starts it fresh.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Your pulse</span><b>your stars, right now</b></div>
+    <div class="g-body"><span class="td-brg gv">GO NOW</span> and <span class="ig-red">ROUGH RIGHT NOW</span> callouts on your starred rides only — each with its receipt (“typically 30 this half-hour · 15 under”). Quiet is a valid state: “Your other 15 are <b>running their usual lines</b>.”</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Your stars, by park</span><b>down-first</b></div>
+    <div class="g-body">Every starred ride with its live wait, its <b>rule line</b>, and its bell. Down rides lead their park. The park chips up top filter this whole page — <b>except DOWN &amp; BACK UP, which always shows every park’s news.</b></div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Recent alerts</span></div>
+    <div class="g-body">The pings you’ve received — downs, back-ups, and rule hits — newest first, the last 40.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Your rules</span></div>
+    <div class="g-body">Your one standing rule, folded to a single line (“below 30 · down &amp; back-up on”). <b>Every bell follows it</b> unless you give that ride its own rule. Tap to change it.</div>
+    </div>
+    <div class="set-lab">Star, bell, ping</div>
+    <div class="ig-row"><span class="ig-key">★ Star</span><span><b>Tap the ★ on any ride on the LIVE board</b> — it earns the ride a seat here and in your plans. A star alone is silent.</span></div>
+    <div class="ig-row"><span class="ig-key"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>Bell</span><span><b>Arm this ride’s wait-rule ping</b> — it fires when the line crosses your rule. <b>Un-starring disarms</b> — no ghost rules. Bells are for today: <b>each morning starts fresh.</b></span></div>
+    <div class="ig-row"><span class="ig-key">✓ Hit</span><span><b>Your rule fired</b> — the whole row lights <span class="td-brg gv">mint</span> with the time it hit.</span></div>
+    <div class="set-lab">Reading a row</div>
+    <div class="ig-p">The small pills under each name are that ride’s standing rule — <b>loudness by fill</b>: a grey whisper means the rule is off (“<b>tap the bell to arm</b>”), a tinted pill is your armed rule (“Below 30 · Default” or your Custom), and on a fresh hit <b>the whole row lights <span class="td-brg gv">mint</span></b> — pill filled, edge glowing — for as long as the wait still satisfies your rule, fading once the moment passes.</div>
+    <div class="ig-p"><b>Every pill is a door</b> — tap it to set the ride’s own rule, and to switch its <b>down &amp; back-up pings</b> on or off there too (they’re separate from the bell — a ride can watch for breakdowns without any wait rule).</div>
+    <div class="ig-p">Pings reach your lock screen <b>with the app closed</b>. A reopen pings once and parks; a ride seen breaking again re-arms itself only on <b>two clean reads</b> — one glitchy signal never costs you an alert.</div>
+    <div class="set-lab">Try this</div>
+    <div class="ig-p">Watching a rope-drop target? <b>Open its pill and switch down &amp; back-up on</b> — that setting keeps overnight, so if it breaks in the morning you’ll know before you’ve walked there.</div>
+    <div class="ig-p">Seen the reopens? <b>Clear all</b> under BACK UP just tidies this page — your stars, bells, and rules all stay.</div>
+    <div class="ig-p">Ready to plan? <b>Plan with your stars ›</b> at the bottom — the one door out.</div>
+    <div class="ig-p" style="font-size:11px;color:var(--muted-2)">Live waits: ThemeParks.wiki · history, never a promise.</div>
+    </div>
   </div>
   <div class="help-scrim alerts-scrim" id="setScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="setPop" hidden style="z-index:91">
@@ -2047,7 +2114,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2401,6 +2468,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
     document.body.classList.remove("set-open");$("igBtn").classList.remove("active");}
   function openIgSheet(){closeStatusPop();closeSetSheet();
+    var mr9=(navTab==="myrides");var tb9=$("igTodayBody"),mb9=$("igMrBody");if(tb9)tb9.hidden=mr9;if(mb9)mb9.hidden=!mr9; /* 0725j: one sheet, one door, the body follows the tab */
     var p=$("igPop"),sc=$("igScrim");
     p.removeAttribute("hidden");sc.removeAttribute("hidden");
     requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
@@ -11886,7 +11954,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
       document.body.classList.toggle("tab-myrides",k==="myrides"); /* page-scoped body hook (0710t: the flag-yield rule retired with the header door) */
       document.body.classList.toggle("pane-open",k==="myrides"||k==="pulse"||k==="wrap"); /* 0711r: Wrap joins the 0711e paint gate — it swaps via __pwActive, not a pane class, so the pill haunted exactly one foreign tab */ /* 0711e: paint gate for .bk2top — navGo hides banners but not the Live list on these panes, so offsetParent stays truthy and the IO honestly reports "header below fold". Gate the paint, keep the IO sole writer. */
-      var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"); /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
+      var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"&&k!=="myrides"); /* 0725j: the second guide is written \u2014 the 0724q comment kept its promise */ /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
     }
     function navGo(k){
       if(k===navTab){try{window.scrollTo({top:0,behavior:"smooth"});}catch(_){window.scrollTo(0,0);}return;}
