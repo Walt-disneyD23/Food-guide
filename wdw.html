@@ -646,7 +646,9 @@
   .tf-go{margin-top:12px;width:100%;border:0;background:var(--accent-fill);color:#fff;font:700 var(--fs-body) var(--font-body);border-radius:var(--r-el);padding:12px 0;cursor:pointer}
   .tf-go:disabled{opacity:.4}
   .tf-band{display:grid;gap:5px;align-items:end;margin-bottom:2px} /* 0716z: height AUTO (owner-caught) \u2014 December\u2019s real 54 overflowed the fixed 104px box; bottoms align by the grid, the tallest month sets the roof */ /* the thirds band (readout in D-2; taps ride S3) */
-  .tf-bseg{text-align:center}.tf-bseg i{display:block;width:100%;border-radius:6px 6px 3px 3px}
+  .tf-bseg{text-align:center}.tf-bseg i{display:block;width:100%;border-radius:6px 6px 3px 3px;position:relative}
+  .tf-bseg i.aw:before{content:"";position:absolute;left:5px;right:5px;top:3px;height:3.5px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* 0726c (a-A): the band's confession \u2014 the aw1 week-ribbon idiom, band-sized; the mark names the stretch, the color stays the crowd's */
+  .tf-wt .odq{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2)} /* 0726c (b-A): the ordinary card's measure, meta voice */
   .tf-bseg b{display:block;font:700 11px var(--font-display);margin-top:3px}
   .tf-bseg em{display:block;font:600 7.5px var(--font-body);text-transform:uppercase;letter-spacing:.03em;color:var(--muted-2);font-style:normal;line-height:1.25;margin-top:2px}
   .tf-wh{display:flex;align-items:center;gap:10px}
@@ -2125,7 +2127,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5202,7 +5204,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      same-weekday base \u00d7 that park\u2019s own measured lift. Held anchors render
      nothing, anywhere. The divergence line fires only where a park\u2019s measured
      direction breaks from the resort\u2019s \u2014 on sv:1 that is EPCOT, Labor Day. */
-  var TP_SL_TAG={thanksgiving:"Thanksgiving wk",xmasny:"Christmas\u2013NY",presidents:"Presidents wk",july4:"July 4th wk",laborday:"Labor Day wknd"};
+  var TP_SL_TAG={thanksgiving:"Thanksgiving wk",xmasny:"Christmas\u2013NY",presidents:"Presidents wk",july4:"July 4th wk",laborday:"Labor Day wknd",nyshoulder:"NY wind-down"};
   function tpSznOf(ds){ /* seated-anchor lookup \u2014 lift/dip with a served q only */
     var an=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(ds):null;
     return (an&&(an.a.kind==="lift"||an.a.kind==="dip")&&an.a.scopes&&an.a.scopes.resort&&an.a.scopes.resort.q!=null)?an:null;}
@@ -6141,6 +6143,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var L=(typeof window.__tfL==="function")?window.__tfL():null;if(!L)return null;
     var P=L.ordP(m+1);
     return (P&&P.all&&P.E&&P.M&&P.L)?P:null;}
+  function tfThirdMarked(y,m,k){ /* 0726c (a-A): does this third hold seated-anchor days? Same gate as the grown legend \u2014 lift/dip with a served resort q; held anchors render nothing (the L2 law) */
+    if(typeof window.__slAnchorOf!=="function")return false;
+    var last=new Date(Date.UTC(y,m+1,0)).getUTCDate(),a=k==="E"?1:k==="M"?11:21,b=k==="E"?10:k==="M"?20:last,d;
+    for(d=a;d<=b;d++){var an=window.__slAnchorOf(tfDate(y,m,d));
+      if(an&&(an.a.kind==="lift"||an.a.kind==="dip")&&an.a.scopes&&an.a.scopes.resort&&an.a.scopes.resort.q!=null)return true;}
+    return false;}
   function tfLean(P,g){var s=0,n=0,i,x;for(i=0;i<g.length;i++){x=P.d[g[i]];if(x&&x.n){s+=x.v*x.n;n+=x.n;}}return n?{v:s/n,n:n}:null;}
   function tfRunLean(y,m,s,len){ /* a run's own majority composition \u2014 Monday neutral; the lean words retire wherever composition can't tell them apart (a 7-day run is always 3v3) */
     var mw=0,we=0,i,js;
@@ -6288,10 +6296,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'');
     var pset={},pk;for(pk in pev)pset[pev[pk]]=1;
     var plg=(pset["\ud83c\udf83"]?'<span><i class="em">\ud83c\udf83</i>MK Halloween party night</span>':'')+(pset["\ud83c\udf84"]?'<span><i class="em">\ud83c\udf84</i>MK Christmas party night</span>':'')+(pset["ring"]?'<span><i class="pp"></i>MK party night</span>':'');
-    var ancs={},alg='',dl; /* L2 (F1): the grown legend \u2014 the swatch wears the actual bar; the entry names the anchor AND its direction, per month */
+    var ancs={},alg='',alg1=0,dl; /* L2 (F1): the grown legend \u2014 the swatch wears the actual bar; the entry names the anchor AND its direction, per month */
     for(dl=1;dl<=n;dl++){var al=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(tfDate(y,m,dl)):null;
       if(al&&(al.a.kind==="lift"||al.a.kind==="dip")&&al.a.scopes&&al.a.scopes.resort&&al.a.scopes.resort.q!=null&&!ancs[al.id]){
-        ancs[al.id]=1;alg+='<span><i class="awc"></i>'+esc(al.a.name)+' \u00b7 has run ~'+Math.round(Math.abs(al.a.scopes.resort.q-1)*100)+'% '+(al.a.scopes.resort.q>1?'over':'quieter than')+' nearby ordinary weeks</span>';}
+        ancs[al.id]=1;if(!alg1){alg1=1;alg+='<span><i class="awc"></i>a marked week \u00b7 priced by its own history</span>';}} /* 0726c (c-C): ONE mark, one meaning \u2014 identical swatches with different names is a broken key; the anchors' names and percents live on their own cards and the S1 read */
       var dsl=tfDate(y,m,dl); /* Cut 3 (C-A, widened): the legend names EVERY curated holiday with its date \u2014 real names, never a generic phrase (owner-confirmed) */
       if(HOLIDAYS[dsl]&&HOLIDAYS[dsl]!=="Christmas week")alg+='<span><i class="hh"></i>'+esc(HOLIDAYS[dsl])+' \u00b7 '+TF_MABs[m]+' '+dl+'</span>';}
     h+='<div class="tf-callg">'+alg+(marks.length?'<span><i class="rr"></i>race weekend</span>':'')+plg+'<span><i class="bb"></i>your dates \u2014 tap to move</span></div>';
@@ -6330,12 +6338,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var lbl=tfSel.length===1?TF_MFULL[tfSel[0]]:TF_MFULL[tfSel[0]]+" \u2013 "+TF_MFULL[tfSel[tfSel.length-1]];
     h+='<div class="rpc"><div class="lbl">Across '+lbl+'</div>';
     h+='<div class="tf-band" style="grid-template-columns:repeat('+(tfSel.length*3)+',1fr)">';
-    var i;for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);
+    var i,tfBandAw=0; /* 0726c (a-A): did any segment ribbon? the legend renders only then */for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);
       [["E","early"],["M","mid"],["L","late"]].forEach(function(t){
         var v=P?Math.round(P[t[0]].v):null;
-        h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i style="height:'+(v!=null?Math.max(8,Math.min(96,Math.round((v-20)*2.6))):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
-    h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+tfFactsHTML()+'</div>';
-    var top=tfWindows().slice(0,tfWindows.__cap||5),c,r;
+        var mk=tfThirdMarked(tfYFor(m),m,t[0]);if(mk)tfBandAw=1; /* 0726c (a-A): clause-earned */
+        h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i'+(mk?' class="aw"':'')+' style="height:'+(v!=null?Math.max(8,Math.min(96,Math.round((v-20)*2.6))):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
+    h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+(tfBandAw?'<div class="tf-callg"><span><i class="awc"></i>holds marked holiday-week days</span></div>':'')+tfFactsHTML()+'</div>'; /* 0726c (a-A): the band's legend \u2014 renders only when a ribbon rendered */
+    var allw=tfWindows(),top=allw.slice(0,tfWindows.__cap||5),c,r,ancM={};for(r=0;r<allw.length;r++)if(allw[r].anchor)ancM[allw[r].m]=1; /* 0726c (b-A): the months whose ordinary cards must state their measure \u2014 read pre-cap, so a crowded ranking never hides the qualifier */
     for(i=0;i<top.length;i++){c=top[i];
       if(c.anchor){ /* L2 (H2): the anchor's own named, ranked card \u2014 base \u00d7 q, receipt clause-earned, dates stated; amber = lift, green = dip */
         var dir=(c.kind==="dip")?'<b>Has run about '+c.pct+'% quieter</b> than nearby ordinary weeks':'<b class="h">Has run about '+c.pct+'% over</b> nearby ordinary weeks';
@@ -6343,7 +6352,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
           '<div class="tf-mfl">'+dir+' <span class="dts">\u00b7 '+tfSpan(c.f,c.tt)+' \u00b7 '+c.nyr+' prior year'+(c.nyr===1?'':'s')+'</span></div>'+
           '<span class="tp-chev">\u203a</span></div>';
       }else{
-        h+='<div class="rpc tp-trl" data-tfsee="'+c.m+'.'+c.k+'.'+c.s+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+(c.lean?' \u00b7 '+c.lean:'')+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
+        h+='<div class="rpc tp-trl" data-tfsee="'+c.m+'.'+c.k+'.'+c.s+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+(c.lean?' \u00b7 '+c.lean:'')+(ancM[c.m]?' <span class="odq">\u00b7 ordinary days</span>':'')+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
         tfChipsFor(c.m,c.t)+
         '<span class="tp-chev">\u203a</span></div>'; /* 0717a: ONE door per card \u2014 the calendar pre-seats the card's OWN run (K1), so trusting the ranking costs exactly one more tap and buys sight of the real dates */}}
     h+='<div class="tf-basis">Has run, never will run. Every number comes from real days the record has kept, the last three years of each month\u2019s ordinary days \u00b7 each card shows what its exact dates have really run \u00b7 a marked week wears its own history, lifted or eased by how it usually runs \u00b7 where the record runs thin, a card holds back rather than guess \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
