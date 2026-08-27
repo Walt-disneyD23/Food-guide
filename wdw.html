@@ -2125,7 +2125,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4624,8 +4624,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(q=0;q<bs.length;q++){if(bs[q].med<mn){mn=bs[q].med;tm=bs[q].t;}if(bs[q].med>mx)mx=bs[q].med;}
     for(q=0;q<bs.length;q++){if(bs[q].med<=10){wk=bs[q].t;break;}}
     return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>10)};}
-  function meXN(rid,t,pre){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v;
-    for(i=0;i<days.length;i++){idx=(t/30)-days[i].hs;if(idx<0||idx>=days[i].hm.length)continue;
+  function meXN(rid,t,pre){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v; /* 0725w: the odds drink ordinary days only (THE FILTER LAW) */
+    for(i=0;i<days.length;i++){if(!tdOrd(days[i].d))continue;idx=(t/30)-days[i].hs;if(idx<0||idx>=days[i].hm.length)continue;
       v=days[i].hm[idx];if(v===null)continue;n++;if(v<=10)x++;}
     return {x:x,n:n};}
   function mePlanOrder(evs){var ne=[],fd=[],i;
@@ -4647,12 +4647,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       else{hd=(fromStart?esc(it.nm)+" \u2014 easy from the start":"Then "+esc(it.nm)+(e.wk!==null?" \u2014 after "+rpClk(e.wk):""));
         why=fall+rc+".";}}
     return {hd:hd,why:why};}
-  function meCtx(items,pre){ /* T3-A: the clause seats only when a pooled date is a marked one */
-    if(typeof window.__slOrd!=="function"||!items.length)return "";
-    var seen={},i,j,ds;
-    for(i=0;i<items.length;i++){var days=rpHmWindow(rpHmDays(items[i].id),pre);
-      for(j=0;j<days.length;j++){ds=days[j].d;if(seen[ds])continue;seen[ds]=1;
-        if(!window.__slOrd(ds))return " \u00b7 a marked stretch sits in these days \u2014 typicals lean with it";}}
+  function meCtx(items,pre){ /* 0725w: T3-A RETIRED BY THE FILTER LAW \u2014 the clause guarded a polluted pool ("typicals lean with it"), and once the pool drinks ordinary its premise can never again be true. Its successor \u2014 the marked-TODAY clause, for guests walking the parks ON an anchor day while the tape honestly describes ordinary weeks \u2014 is the L3 seat, awaiting its own design round (ordering holds at anchors, \u03c1 0.96; levels speak in words there, per the Aug 5 study). Signature kept: three call sites, one epitaph. */
     return "";}
   function meAx(t){var h=Math.floor((t%1440)/60),mm=t%60,ap=h>=12?"P":"A";h=h%12;if(!h)h=12;return h+(mm?":30":"")+ap;}
   function meLanesHTML(ord,win){ /* 0719m: the evening strip \u2014 the morning's lane component over the evening window; green BEGINS where the edge does */
@@ -5534,9 +5529,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tdStartMin(k){return /^\d+$/.test(k)?+k:0;} /* 0724f THE WHEELS: minutes are the store; "rd"/"" fall to 0 — rope drop = the whole tape; it begins at open */
   function tdLeaveMin(k){return /^\d+$/.test(k)?+k:null;} /* 0724f THE WHEELS: minutes are the store; null = the published close carries */
+  function tdOrd(ds){ /* 0725w THE POOL DRINKS ORDINARY \u2014 THE FILTER LAW's walker half (contingent ruling Aug 5; evidence Aug 26: +7.8m mid-Jan hangover on the shipped tape, +0.5m filtered \u2014 control-grade). Forecast pools split on the ordinary-day predicate; measured lookbacks (profile lenses, hour grid, Wrap) NEVER filter. Fail-open is native: slAnchorOf answers null before /seasonal lands, so an unwarmed session drinks every day \u2014 exactly the old tape. */
+    var f=window.__slAnchorOf;if(typeof f!=="function")return true;
+    try{return !f(ds);}catch(e){return true;}
+  }
   function tdCurve(rid,wd,wds){ /* the day's window: its weekday first, the trip's whole arc when thin — rpCurveOf's floors intact */
     var days=rpHmDays(rid),a={},b={},i,j,x,v,k,g;
-    for(i=0;i<days.length;i++){x=days[i];g=rpHmWd(x.d);
+    for(i=0;i<days.length;i++){x=days[i];if(!tdOrd(x.d))continue;g=rpHmWd(x.d); /* 0725w: both tapes (weekday AND arc) drink ordinary days only */
       var inWd=(g===wd),inArc=(wds[(g+1)%7]===1); /* Mon-first -> getDay map, the rpWinDates("trip") idiom */
       if(!inWd&&!inArc)continue;
       for(j=0;j<x.hm.length;j++){v=x.hm[j];if(v===null)continue;k=x.hs+j;
@@ -5726,7 +5725,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var d9=(typeof tpToday==="function")?tpToday():null;if(!d9)return;
     store.set("tdDay",{d:d9,lv:(/^\d+$/.test(tdLeave)?tdLeave:null)});
   }
-    function tdSecHTML(t,ds){ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
+    function tdSecHTML(t,ds){
+    if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* 0725w: the Today board warms /seasonal so tdOrd can drink the calendar \u2014 the 6108 idiom verbatim (guard keeps the cached sync path from re-entering, 0719b; __slGo queues waiters, never drops) */ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
     var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
     var ids=tdRides(t,ds);
     var _pw=tdPartWord(),_wdn=tpWDn(ds),_dd=tpDays(t),_rep=0,_z;for(_z=0;_z<_dd.length;_z++)if(tpWDn(_dd[_z])===_wdn)_rep++; /* 0719l: the day names itself — the earned adjective seats only when the chip pair cleanly is one part; the date suffix only when the trip repeats the weekday */
