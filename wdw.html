@@ -2125,7 +2125,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0725z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8738,7 +8738,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!pushSupported()||Notification.permission!=="granted")return Promise.resolve(null);
     return navigator.serviceWorker.register("sw.js").then(function(reg){
       return reg.pushManager.getSubscription().then(function(existing){
-        if(existing)return existing;
+        if(existing){ /* 0725z THE SUBSCRIPTION FOLLOWS THE KEY: a sub is bound to the key that minted it \u2014 after a VAPID rotation the old sub is a dead letter (Apple rejects new-key signatures against it, silently; owner glass Aug 26: diary full, phone quiet). Compare the bound key to the current one; mismatch \u2192 unsubscribe \u2192 mint fresh. Unreadable bound key (older engines) keeps the sub \u2014 never unsubscribe what we can't verify. */
+          var want=urlB64ToUint8Array(PUSH.VAPID_PUBLIC_KEY),have=existing.options&&existing.options.applicationServerKey?new Uint8Array(existing.options.applicationServerKey):null,same=true,i9;
+          if(have){if(have.length!==want.length)same=false;else for(i9=0;i9<want.length;i9++)if(have[i9]!==want[i9]){same=false;break;}}
+          if(same)return existing;
+          return existing.unsubscribe().then(function(){return reg.pushManager.subscribe({
+            userVisibleOnly:true,
+            applicationServerKey:urlB64ToUint8Array(PUSH.VAPID_PUBLIC_KEY)
+          });});
+        }
         return reg.pushManager.subscribe({
           userVisibleOnly:true,
           applicationServerKey:urlB64ToUint8Array(PUSH.VAPID_PUBLIC_KEY)
