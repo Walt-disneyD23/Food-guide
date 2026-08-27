@@ -2125,7 +2125,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0725z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2354,7 +2354,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
   var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false),dnup:store.get("dnup",false)};
   settings.thresh=snap5(settings.thresh);
-  var lastUpdated=null,nextRefreshAt=0,timer=null;
+  var lastUpdated=null,nextRefreshAt=0,timer=null,schedDay=null,rollBusy=false; /* 0726a: schedDay = the park-day the schedule flatten served; rollBusy = one refetch per rollover */
 
   var $=function(id){return document.getElementById(id);};
   var elBanners=$("banners"),elPill=$("statusPill"),elStatusText=$("statusText");
@@ -2717,6 +2717,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function fetchSchedule(){
     var today=new Date().toLocaleDateString("en-CA",{timeZone:TZ});
+    schedDay=today; /* 0726a: the flatten stamps its own day \u2014 the rollover watchdog reads this */
     var tomorrow=new Date(Date.now()+864e5).toLocaleDateString("en-CA",{timeZone:TZ}); /* 0709k: for the after-close "reopens at" line */
     return Promise.all(parks.map(function(p){
       return fetch(API+"/entity/"+p.id+"/schedule").then(function(r){return r.json();}).then(function(d){
@@ -8662,6 +8663,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!$("statusPop").hasAttribute("hidden"))renderStatusMeta();
   }
   setInterval(tick,1000);
+  setInterval(rolloverCheck,60000); /* 0726a: a session left OPEN across the roll wakes within a minute \u2014 no resume event required */
 
   /* iOS freezes a backgrounded PWA's refresh timer, so on return the board can
      sit on stale data ("Catching up") until the limping timer fires. When the
@@ -8669,6 +8671,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      stale. Covers both a normal refocus (visibilitychange) and a bfcache
      restore (pageshow persisted). On return we also re-sync push so the "✓ Hit"
      pill picks up the exact time of any push the worker sent while we were away. */
+  function rolloverCheck(){ /* 0726a THE SESSION FOLLOWS THE PARK-DAY: an overnight-resumed session held yesterday's flattened closes, so the morning never arrived without a reboot (owner glass Aug 27, 7:16 AM). When the calendar rolls past the day the schedule served, refetch \u2014 fetchSchedule computes its own fresh "today", so the flatten heals by construction \u2014 then load(false) re-pulls live and re-renders. One refetch per rollover (rollBusy). */
+    if(!schedDay||rollBusy)return;
+    if(new Date().toLocaleDateString("en-CA",{timeZone:TZ})===schedDay)return;
+    rollBusy=true;
+    fetchSchedule().then(function(){rollBusy=false;load(false);},function(){rollBusy=false;});
+  }
   function refreshIfStale(){ if(!lastUpdated||(Date.now()-lastUpdated)>30000)load(false); }
   function syncOnReturn(){ if(settings.notif&&pushSupported()&&Notification.permission==="granted")syncPush(); }
   function fossilCheck(){ /* 0722k THE RESUME CHECKS THE STAMP: iOS can restore a stale page snapshot (field specimen: a July 0711d fossil waking in August). The marker is the newest build this device has run; a page older than the marker is a fossil and reloads itself once. One source — the stamp itself. */
@@ -8680,8 +8688,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }catch(e){}
   }
   fossilCheck(); /* boot: stamp the marker forward the moment a newer build runs */
-  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"){fossilCheck();refreshIfStale();syncOnReturn();} });
-  window.addEventListener("pageshow",function(e){ if(e&&e.persisted){fossilCheck();refreshIfStale();syncOnReturn();} });
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible"){fossilCheck();rolloverCheck();refreshIfStale();syncOnReturn();} });
+  window.addEventListener("pageshow",function(e){ if(e&&e.persisted){fossilCheck();rolloverCheck();refreshIfStale();syncOnReturn();} });
 
   /* ===========================================================
      PHASE 2 — BACKGROUND PUSH (Cloudflare Worker backend)
