@@ -2125,7 +2125,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8478,7 +8478,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!watch[id]){watch[id]=true;store.set("watch",Object.keys(watch));logAlertEv(id,"star-armed");}
       armed[id]=true;delete alertState[id];saveAlertState();saveArmed();
       var o=overrides[id],rl=((o&&o.dir)||settings.dir)+" "+((o&&o.thresh)||settings.thresh)+"m"+((o&&(o.dir||o.thresh))?"":" (default)"); /* 0723b F: per-field - a dnup-only override still speaks the default rule, tagged honestly; inline so the bell keeps its collaborator set */
-      pushToast("🔔 Alert set",nm+" — "+rl);
+      pushToast("Alert set",nm+" — "+rl) /* 0726b: the toast family speaks emoji-free */;
     }else{
       delete armed[id];delete alertState[id];saveAlertState();saveArmed();
       if(reopen[id]||reopenOnly[id]){delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();saveReopen();saveReopenOnly();logAlertEv(id,"bell-off-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
@@ -8569,7 +8569,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       saveOverrides();if(!armed[id]){armed[id]=true;saveArmed();} /* the named side effect: setting the rule arms the bell (the fine print says so) */
       delete alertState[id];saveAlertState();updateAlertBadge();
       var sd3=el.querySelector("#mrShDef");if(sd3){if(overrides[id])sd3.removeAttribute("disabled");else sd3.setAttribute("disabled","");}
-      pushToast("🔔 Alert set",esc(roster[id].name)+" — "+nd+" "+nt+"m"+((overrides[id]&&(overrides[id].dir||overrides[id].thresh))?"":" (default)")); /* 0723h: SAME QUESTION SAME SENTENCE - the bell's voice; the sleep alone felt like nothing happened (owner) */
+      pushToast("Alert set",roster[id].name+ /* 0726b: the sink is textContent — esc() here double-escaped (owner glass: Na&#39;vi); the ✓ icon carries the mark, the bell stays the push channel's */" — "+nd+" "+nt+"m"+((overrides[id]&&(overrides[id].dir||overrides[id].thresh))?"":" (default)")); /* 0723h: SAME QUESTION SAME SENTENCE - the bell's voice; the sleep alone felt like nothing happened (owner) */
       mrShGate(el);});
     var chg=function(){mrShGate(el);};var d3=el.querySelector("#mrShDir");if(d3)d3.addEventListener("change",chg);var t3=el.querySelector("#mrShThr");if(t3)t3.addEventListener("change",chg);
   }
