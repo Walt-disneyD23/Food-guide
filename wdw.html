@@ -2128,7 +2128,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726e</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726f</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3259,7 +3259,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var ds=(typeof tpToday==="function")?tpToday():null,fs=rdFestWalk(ds),i;
     for(i=0;i<fs.length;i++){if(fs[i].park&&(BANNER_MONO[key]||key)===fs[i].park){
       var nm=(typeof TF_FEST!=="undefined"&&TF_FEST[fs[i].id])||(window.__pwFestN&&window.__pwFestN[fs[i].id])||null;
-      if(nm)return ' <span class="sep">\u00b7</span><span class="pb-fest">'+esc(nm)+'</span>';}}
+      if(nm)return '<br><span class="pb-fest">'+esc(nm)+'</span>';}} /* 0726f: the resident takes its own line — the name never wraps mid-word (owner glass 1:18 PM; 0709r wrap-BEFORE law, row-side) */
     return '';}
   /* ===== LIGHTNING (rdLtg-, L-32 5b, 0718s) — clause 5 of the read, the
      observed channel wired to Live at last (deferred honestly in 0718f).
@@ -7233,7 +7233,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(e.type!=="festival"||!e.park)return;
         (e.windows||[]).forEach(function(w){
           if((w.v==="vv"||w.v==="v")&&w.from<=ds&&ds<=w.to){
-            var wd=(typeof TP_EV_WORD!=="undefined"&&TP_EV_WORD[e.id])||e.name||e.id;
+            var wd=(window.__pwFestN&&window.__pwFestN[e.id])||(typeof TP_EV_WORD!=="undefined"&&TP_EV_WORD[e.id])||e.name||e.id; /* 0726f: the pill speaks the short dialect first — the full table name ellipsized on glass */
             fest[e.park]=String(wd).replace(/&amp;/g,"&");
           }});
       });
