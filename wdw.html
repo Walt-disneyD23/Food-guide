@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2753,14 +2753,15 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           var single=(q.SINGLE_RIDER&&typeof q.SINGLE_RIDER.waitTime==="number")?q.SINGLE_RIDER.waitTime:null;
           var rt=q.RETURN_TIME||q.PAID_RETURN_TIME;
           var ll=(rt&&rt.state==="AVAILABLE"&&rt.returnStart)?fmtClock(rt.returnStart):null;
-          var nextShow=null,showsDone=false;
+          var nextShow=null,showsDone=false,winEnd=null;
           if(e.showtimes&&e.showtimes.length){
             var times=e.showtimes.map(function(s){return s.startTime;}).filter(Boolean).sort();
             var now=Date.now();
             for(var i=0;i<times.length;i++){if(new Date(times[i]).getTime()>=now){nextShow=fmtClock(times[i]);break;}}
-            if(!nextShow&&times.length)showsDone=true; /* 0726j C-B: the dead clock retires - a passed slate banks DONE, never the morning's first show re-worn */
+            if(!nextShow&&times.length){var prs=uxShowsOf(e),wE=null,x;if(prs)for(x=0;x<prs.length;x++){if(prs[x].s<=now&&prs[x].e!=null&&prs[x].e>now&&(wE==null||prs[x].e>wE))wE=prs[x].e;}
+            if(wE!=null)winEnd=fmtClock(new Date(wE).toISOString());else showsDone=true;} /* 0726m THE WINDOW ISN'T DONE (owner-ruled N-A): inside a still-open window speaks NOW until <end>; DONE means every window closed and every set passed */ /* 0726j C-B: the dead clock retires - a passed slate banks DONE, never the morning's first show re-worn */
           }
-          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow,showsDone:showsDone,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
+          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow,winEnd:winEnd,showsDone:showsDone,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
           if(e.entityType==="RESTAURANT")dineCapture(e,p.short); /* D1 0710b: dining rides the same poll — no new fetches */
         });
       }).catch(function(){});
@@ -7652,8 +7653,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null;
     var num,unit;
     if(hasWait){num=lv.wait;unit='<small>min</small>';}
-    else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span style="font-size:18px">—</span>';
-      unit='<small>'+(lv&&lv.nextShow?"next show":(lv&&lv.showsDone)?"for today":statusLabel(lv))+'</small>';}
+    else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.winEnd)?'<span style="font-size:15px">NOW</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span style="font-size:18px">—</span>';
+      unit='<small>'+(lv&&lv.nextShow?"next show":(lv&&lv.winEnd)?"until "+lv.winEnd:(lv&&lv.showsDone)?"for today":statusLabel(lv))+'</small>';}
     else{num='<span style="font-size:18px">—</span>';unit='<small>'+statusLabel(lv)+'</small>';}
     var cls=(show&&!hasWait)?"closed":tier;
     var sub='<span class="park">'+esc(r.park)+'</span>';
@@ -8353,6 +8354,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function sbCellHTML(r,lv){ /* 0726j W-A (owner-ruled): the cell speaks the show's one number - the Live card's own dialect; C-B: after the last slate the word is DONE. No invented numbers: a timeless meet wears the status word. */
     if(lv&&lv.nextShow)return '<span class="mr-w t-open" style="font-size:17px">'+esc(lv.nextShow)+'<span class="sb-nsu">next show</span></span>';
+    if(lv&&lv.winEnd)return '<span class="mr-w word t-open">NOW<span class="sb-nsu">until '+esc(lv.winEnd)+'</span></span>';
     if(lv&&lv.showsDone)return '<span class="mr-w word t-closed">DONE</span>';
     if(mrOpNow(r.id))return '<span class="mr-w word t-open">OPEN</span>';
     var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:["closed","CLOSED"];
