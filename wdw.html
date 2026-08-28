@@ -198,7 +198,7 @@
     overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
   .ride .info .sub{font-size:var(--fs-meta);color:var(--muted);margin-top:5px;display:flex;flex-wrap:wrap;gap:5px 8px;align-items:center}
   .ride .info .sub .park{color:var(--muted-2)}
-  .ride .info .sub .ll{color:var(--accent);font-weight:600}
+  .ride .info .ll-ln{color:var(--accent);font-weight:600;font-size:var(--fs-meta);margin-top:3px} /* 0726l: the sub .ll seat retires with its renderer */
   .ride .info .sub .cat{border:1px solid var(--line);border-radius:var(--r-pill);padding:2px 8px;color:var(--muted);background:var(--card-2)}
   .ride .info .sub .show{color:var(--medium);font-weight:600}
   .star{flex:none;cursor:pointer;width:32px;height:32px;border-radius:var(--r-el-sm);display:grid;place-items:center;
@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726k</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726l</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7661,10 +7661,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(meet)sub+='<span class="show">Character Experience</span>';
     else if(show)sub+='<span class="show">Show</span>';
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
-    if(lv&&lv.ll)sub+='<span class="ll">Next LL '+esc(lv.ll)+'</span>';
+    var llLn=(lv&&lv.ll)?'<div class="ll-ln">Next LL '+esc(lv.ll)+'</div>':''; /* 0726l THE LL TAKES ITS OWN LANE (owner-ruled): out of the sub's wrap, one line always */
     return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
-      '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div></div>'+
+      '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div>'+llLn+'</div>'+
       (r.kind==="ride"?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':'')+ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
 '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
