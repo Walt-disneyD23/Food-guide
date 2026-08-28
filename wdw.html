@@ -1918,6 +1918,9 @@
   .mr-w.word{font-size:var(--fs-title);letter-spacing:.04em}
   .pg-myrides .t-short{color:var(--short)}.pg-myrides .t-medium{color:var(--medium)}.pg-myrides .t-long{color:var(--long)}.pg-myrides .t-packed{color:var(--packed)}.pg-myrides .t-down{color:var(--packed)}.pg-myrides .t-closed{color:var(--closed)}.pg-myrides .t-open{color:var(--short)} /* 0722p V1-a: open-dot green, status language only */.pg-myrides .t-refurb{color:var(--closed)}
   .mr-bell{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card-2);border:1px solid var(--line);flex:none;-webkit-tap-highlight-color:transparent}
+  .mr-nobell{width:34px;flex:none} /* 0726j: the show row keeps the bell column's width so names align across kinds */
+  .sb-rl{font-size:var(--fs-meta);margin-top:2px} /* 0726j: mr-rl's dress without its door */
+  .sb-nsu{display:block;font-size:var(--fs-micro);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:2px}
   .mr-bell svg{stroke:var(--muted-2);fill:none}
   .mr-bell.on{background:var(--accent-soft);border-color:rgba(139,135,255,.45)}
   .mr-bell.on svg{stroke:var(--accent);fill:var(--accent)}
@@ -2128,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2673,7 +2676,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     setPulse("ok");
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
-      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
+      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();sbSweep();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
     }).catch(function(err){
       setPulse("error");
@@ -2750,14 +2753,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           var single=(q.SINGLE_RIDER&&typeof q.SINGLE_RIDER.waitTime==="number")?q.SINGLE_RIDER.waitTime:null;
           var rt=q.RETURN_TIME||q.PAID_RETURN_TIME;
           var ll=(rt&&rt.state==="AVAILABLE"&&rt.returnStart)?fmtClock(rt.returnStart):null;
-          var nextShow=null;
+          var nextShow=null,showsDone=false;
           if(e.showtimes&&e.showtimes.length){
             var times=e.showtimes.map(function(s){return s.startTime;}).filter(Boolean).sort();
             var now=Date.now();
             for(var i=0;i<times.length;i++){if(new Date(times[i]).getTime()>=now){nextShow=fmtClock(times[i]);break;}}
-            if(!nextShow&&times.length)nextShow=fmtClock(times[0]);
+            if(!nextShow&&times.length)showsDone=true; /* 0726j C-B: the dead clock retires - a passed slate banks DONE, never the morning's first show re-worn */
           }
-          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
+          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow,showsDone:showsDone,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
           if(e.entityType==="RESTAURANT")dineCapture(e,p.short); /* D1 0710b: dining rides the same poll — no new fetches */
         });
       }).catch(function(){});
@@ -7649,8 +7652,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null;
     var num,unit;
     if(hasWait){num=lv.wait;unit='<small>min</small>';}
-    else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':'<span style="font-size:18px">—</span>';
-      unit='<small>'+(lv&&lv.nextShow?"next show":statusLabel(lv))+'</small>';}
+    else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span style="font-size:18px">—</span>';
+      unit='<small>'+(lv&&lv.nextShow?"next show":(lv&&lv.showsDone)?"for today":statusLabel(lv))+'</small>';}
     else{num='<span style="font-size:18px">—</span>';unit='<small>'+statusLabel(lv)+'</small>';}
     var cls=(show&&!hasWait)?"closed":tier;
     var sub='<span class="park">'+esc(r.park)+'</span>';
@@ -7662,7 +7665,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div></div>'+
-      '<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>'+
+      (r.kind==="ride"?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':'')+ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
 '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
   function bindStars(scope){
@@ -8348,8 +8351,23 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(o&&(o.dir||o.thresh)){var ruC=ruleFor(id);return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="custom"><span class="mr-p prule">'+ruC.thresh+(ruC.dir==="below"?" or less":" or more")+' <i class="d"></i></span>'+mrDnPill(id)+'</div>';} /* 0723c B: the pill is the door - Customize retired */ /* 0723b M3: ONE PILL BOTH FACTS - the tail rides inside; the custom seat asks for a RULE field (a dnup-only override is not a custom rule) */
     return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="default"><span class="mr-p prule">'+settings.thresh+(settings.dir==="below"?" or less":" or more")+'</span>'+mrDnPill(id)+'</div>';
   }
+  function sbCellHTML(r,lv){ /* 0726j W-A (owner-ruled): the cell speaks the show's one number - the Live card's own dialect; C-B: after the last slate the word is DONE. No invented numbers: a timeless meet wears the status word. */
+    if(lv&&lv.nextShow)return '<span class="mr-w t-open" style="font-size:17px">'+esc(lv.nextShow)+'<span class="sb-nsu">next show</span></span>';
+    if(lv&&lv.showsDone)return '<span class="mr-w word t-closed">DONE</span>';
+    if(mrOpNow(r.id))return '<span class="mr-w word t-open">OPEN</span>';
+    var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:["closed","CLOSED"];
+    return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
+  }
+  function sbRowHTML(id,r,lv){ /* 0726j E-B (owner-ruled, Simple wins): the tag pill is the line in every state - no rule lane, no teach, no bell; sb-rl stays outside the .mr-rl sheet-door delegate by name */
+    return '<div class="mr-rw"><span class="st">★</span>'+
+      '<div class="m"><div class="nm">'+esc(r.name)+'</div><div class="sb-rl"><span class="mr-p poff">'+(isMeet(r)?'Character Experience':'Show')+'</span></div></div>'+
+      sbCellHTML(r,lv)+
+      '<span class="mr-nobell"></span>'+
+      '</div>';
+  }
   function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
+    if(r&&r.kind&&r.kind!=="ride")return sbRowHTML(id,r,lv); /* 0726j THE SHOW KEEPS ITS SEAT - a KNOWN show only; kindless keeps the ride path (benefit of the doubt) */
     var hitF=!!(armed[id]&&alertState[id]&&ruleMet(id,lv)); /* 0720x (1B, owner-lettered): a fresh hit lights its whole row; stale keeps the quiet line */
     return '<div class="mr-rw'+(hitF?' hitf':'')+'"><span class="st">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
@@ -8510,6 +8528,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function mrBellTap(id){
     var r=roster[id],nm=r?r.name:"Ride";
+    if(r&&r.kind&&r.kind!=="ride")return; /* 0726j: no bell renders on a KNOWN show; a stray tap arms nothing - kindless keeps the doubt */
     if(!armed[id]){
       if(!watch[id]){watch[id]=true;store.set("watch",Object.keys(watch));logAlertEv(id,"star-armed");}
       armed[id]=true;delete alertState[id];saveAlertState();saveArmed();
@@ -8742,9 +8761,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
   /* Snapshot the app's real state objects into the exact rules shape the
      deployed Worker's /save expects. overrides may be empty -> send {}. */
+  function sbRide(k){var rr=roster[k];return !rr||!rr.kind||rr.kind==="ride";} /* 0726j THE WIRE CARRIES RIDES: a KNOWN show never crosses - the worker's scan matches the local engine's rides-only law; unknown and kindless ids keep today's benefit of the doubt */
+  function sbSweep(){ /* 0726j one-time hygiene: bells armed on shows before the fence disarm with a breadcrumb - the star stays */
+    if(store.get("sbSweep",0)||usingFallback)return;
+    var n=0;Object.keys(armed).forEach(function(id){var rr=roster[id];if(rr&&rr.kind!=="ride"){delete armed[id];delete alertState[id];n++;logAlertEv(id,"show-disarmed");}});
+    if(n){saveArmed();saveAlertState();}
+    store.set("sbSweep",1);
+  }
   function collectRules(){
     return {
-      watch:(function(){var w={},k;for(k in armed)w[k]=true;for(k in watch)if(mrDnupFor(k))w[k]=true;for(k in reopen)w[k]=true;return w;})(),
+      watch:(function(){var w={},k;for(k in armed)if(sbRide(k))w[k]=true;for(k in watch)if(sbRide(k)&&mrDnupFor(k))w[k]=true;for(k in reopen)if(sbRide(k))w[k]=true;return w;})(),
       /* Cut 3 (0719w) + 0722f THE TAP MUST CROSS THE WIRE: the head switch is translated HERE
          for the v3.16 worker — no worker deploy. Scan set = armed rules ∪ dnup-covered stars
          ∪ every LOCAL one-shot (hand-taps + re-break re-arms) — the 0719w translation silently
@@ -8757,9 +8783,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
          push; every push in the worker's loop is gated on maps obs ids never join.
          dnup itself still never crosses. */
       overrides:overrides||{},
-      reopen:(function(){var m={},k;for(k in watch)if(mrDnupFor(k))m[k]=true;for(k in reopen)m[k]=true;return m;})(),
-      reopenOnly:(function(){var m={},k;for(k in watch)if(mrDnupFor(k)&&!armed[k])m[k]=true;for(k in reopenOnly)m[k]=true;return m;})(),
-      obs:(function(){var m={},k;for(k in watch)if(!armed[k]&&!mrDnupFor(k)&&!reopen[k])m[k]=true;return m;})(), /* 0723h THE OBSERVER LANE: quiet stars, observation only (worker v3.21 banks, never pushes) */
+      reopen:(function(){var m={},k;for(k in watch)if(sbRide(k)&&mrDnupFor(k))m[k]=true;for(k in reopen)if(sbRide(k))m[k]=true;return m;})(),
+      reopenOnly:(function(){var m={},k;for(k in watch)if(sbRide(k)&&mrDnupFor(k)&&!armed[k])m[k]=true;for(k in reopenOnly)if(sbRide(k))m[k]=true;return m;})(),
+      obs:(function(){var m={},k;for(k in watch)if(sbRide(k)&&!armed[k]&&!mrDnupFor(k)&&!reopen[k])m[k]=true;return m;})(), /* 0723h THE OBSERVER LANE: quiet stars, observation only (worker v3.21 banks, never pushes) */
       resolved:resolved||{},
       settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
