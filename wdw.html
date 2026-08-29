@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726o</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -11575,7 +11575,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       T("\u26a1"+ltot,(L+R)/2,330,SG("700",54),"#fbbf24","center");T("strikes \u00b7 10 mi",(L+R)/2,362,IN("600",20),C.muted,"center");
       T(fpk>=0?(S3[fpk].fF+"\u00b0"):"\u2014",R,330,SG("700",54),"#f97316","right");T("feels-like high",R,362,IN("600",20),C.muted,"right");
       /* lane geometry (B2): quiet headers, gaps 76 */
-      var hd1=416,pT=hd1+18,pB=pT+160,hd2=pB+76,sT=hd2+18,sB=sT+96,hd3=sB+76,fT=hd3+18,fB=fT+78;
+      var hd1=416,pT=hd1+18,pB=pT+160,hd2=pB+96,sT=hd2+18,sB=sT+96,hd3=sB+96,fT=hd3+18,fB=fT+78; /* 0726o B+air: gaps 76->96 - the onset tag seats in the first gap; the footer keeps 28px of floor (fy+66<=1314) */
       var ry=fB+24,rh=26,iy=ry+rh+54,axY=iy+40,legY=axY+44,fy=legY+36;
       /* event glow \u2014 dp>=8 runs from the series (0712r twin), anchored to the ribbon's top edge */
       var runs=[],cwn=null,i;
@@ -11592,7 +11592,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(i=0;i<evw.length;i++){if(evw[i].b-evw[i].a<10){evw[i].a=Math.max(T0,evw[i].a-5);evw[i].b=Math.min(T1,evw[i].b+5);}}
       var eg=ctx.createLinearGradient(0,ry+4,0,pT-6);eg.addColorStop(0,"rgba(99,102,241,0.18)");eg.addColorStop(1,"rgba(99,102,241,0.02)");
       for(i=0;i<evw.length;i++){ctx.fillStyle=eg;ctx.fillRect(TX(evw[i].a),pT-6,TX(evw[i].b)-TX(evw[i].a),(ry+4)-(pT-6));}
-      function laneHead(y,name,key){if(key){rr(L,y-14,26,5,2.5);ctx.fillStyle=key;ctx.fill();}T(name,key?L+38:L,y,IN("700",22),"#b6c2d4","left");ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+8);ctx.lineTo(R,y+8);ctx.stroke();} /* 0712x: V3 keyed dash (owner pick) \u2014 a swatch in the lane\u2019s own ink does the wayfinding; type lifts to 22/#b6c2d4 (~8:1) without owning the page */
+      function laneHead(y,name,key){if(key){rr(L,y-14,26,5,2.5);ctx.fillStyle=key;ctx.fill();}T(name,key?L+38:L,y,IN("700",22),"#b6c2d4","left");ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+8);ctx.lineTo(R,y+8);ctx.stroke();}
+      function laneStat(y,segs){var tw=0,si;for(si=0;si<segs.length;si++){ctx.font=segs[si][1];tw+=ctx.measureText(segs[si][0]).width;}var sx=R-tw;for(si=0;si<segs.length;si++){T(segs[si][0],sx,y,segs[si][1],segs[si][2],"left");ctx.font=segs[si][1];sx+=ctx.measureText(segs[si][0]).width;}} /* 0726o THE HEADER CARRIES THE NUMBER: the in-app Sky Timeline grammar dressed for canvas */ /* 0712x: V3 keyed dash (owner pick) \u2014 a swatch in the lane\u2019s own ink does the wayfinding; type lifts to 22/#b6c2d4 (~8:1) without owning the page */
       /* lane 1 \u2014 attractions down */
       laneHead(hd1,"ATTRACTIONS DOWN","#ff5d73");
       var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
@@ -11603,24 +11604,20 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       ctx.lineTo(TX(series[series.length-1][0]),DY(0));ctx.closePath();
       var ag=ctx.createLinearGradient(0,pT,0,pB);ag.addColorStop(0,"rgba(226,59,84,0.80)");ag.addColorStop(1,"rgba(226,59,84,0.05)");ctx.fillStyle=ag;ctx.fill();
       ctx.beginPath();for(i=s0c;i<series.length;i++){var lx=TX(series[i][0]),ly=DY(series[i][1]);if(i>s0c)ctx.lineTo(lx,ly);else ctx.moveTo(lx,ly);}ctx.strokeStyle="#ff5d73";ctx.lineWidth=4;ctx.lineJoin="round";ctx.stroke();
-      /* 0712w: annotation collision stack (owner call) \u2014 when onset and peak land within 160px,
-         they render as one two-line block above the higher dot instead of overprinting. */
+      /* dots + onset dashed line \u2014 the marks stay on the tape; their words moved to the header (0726o) */
       var ox=null,oy=null,qx=null,qy=null;
       if(x.onset){ox=TX(x.onset.t);oy=DY(x.onset.tot);ctx.strokeStyle="#818cf8";ctx.lineWidth=2.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,DY(0));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#818cf8";ctx.beginPath();ctx.arc(ox,oy,7,0,6.2832);ctx.fill();}
       if(x.peakPt){qx=TX(x.peakPt.t);qy=DY(x.peakPt.tot);ctx.fillStyle="#ff5d73";ctx.beginPath();ctx.arc(qx,qy,7,0,6.2832);ctx.fill();}
-      var onT=x.onset?(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held"):null;
-      var pkT=x.peakPt?(x.peakPt.tot+" down \u00b7 "+pwClk(x.peakPt.t)):null;
-      if(onT&&pkT&&Math.abs(ox-qx)<160){var ax=Math.max(Math.max(ox,qx)-14,L+330),ay=Math.max(Math.min(oy,qy)-44,pT+20);
-        T(pkT,ax,ay,SG("700",26),"#ff8195","right");T(onT,ax,ay+30,SG("700",24),"#a9b0f7","right");}
-      else{if(pkT)T(pkT,Math.max(qx-14,L+330),qy-14,SG("700",26),"#ff8195","right");
-        if(onT)T(onT,Math.max(ox-14,L+330),oy-14,SG("700",24),"#a9b0f7","right");}
+      var onT=x.onset?(pwClk(x.onset.t)+" \u00b7 "+pwPA(x.onset.park)+" held"):null; /* 0726o THE HEADER CARRIES THE NUMBER (owner-ruled B+air, Aug 29; mock-of-record card-air-mock.html): the 0712w in-plot collision stack retires \u2014 the dot marks the peak, the header names it, the onset tags its dashed line from the quiet gap below the baseline. The trace can no longer reach any words. */
+      if(x.peakPt)laneStat(hd1,[["peak ",IN("600",20),C.muted],[x.peakPt.tot+" \u00b7 "+pwClk(x.peakPt.t),SG("700",26),"#ff8195"]]);
+      if(onT)T(onT,Math.max(ox-6,L+280),pB+34,SG("700",22),"#a9b0f7","right");
       /* lane 2 \u2014 strikes, F2 sampled floor: a stub per banked window, bars from the same ground */
       laneHead(hd2,"LIGHTNING STRIKES \u00b7 10 MI","#fbbf24");
       var LM=0,LR2=0;for(lz=0;lz<LT.length;lz++){if(LT[lz].n>LM)LM=LT[lz].n;var rr3=LT[lz].n/(LT[lz].w||60);if(rr3>LR2)LR2=rr3;}
       for(lz=0;lz<LT.length;lz++){var wx1=Math.max(TX(LT[lz].t-(LT[lz].w||60)),L),wx2=TX(LT[lz].t); /* 0713d: clamp partial windows at the rail */
         rr(wx1+1,sB-4,Math.max(3,wx2-wx1-2),4,2);ctx.fillStyle="rgba(251,191,36,0.30)";ctx.fill();
         if(LT[lz].n>0){var bh2=Math.max(8,((LT[lz].n/(LT[lz].w||60))/(LR2||1))*86);rr(wx1+1,sB-bh2,Math.max(3,wx2-wx1-2),bh2,3);ctx.fillStyle="rgba(251,191,36,0.85)";ctx.fill();}} /* 0713g: W2 density \u2014 card twin */
-      if(ltot>0&&lmx)T(lmx.n+" \u00b7 "+pwW(lmx.w)+" ending "+pwClk(lmx.t),Math.max(TX(lmx.t-(lmx.w||60))-10,L+330),sT+22,SG("700",24),"#fbbf24","right"); /* 0712w: anchored to the bar\u2019s LEFT edge \u2014 the label may not stand on its own column */
+      if(ltot>0&&lmx)laneStat(hd2,[[""+ltot,SG("700",26),"#fbbf24"],[" \u00b7 peak "+lmx.n+", "+pwW(lmx.w)+" ending "+pwClk(lmx.t),IN("600",20),C.muted]]); /* 0726o: the total leads, the peak window follows */
       /* lane 3 \u2014 feels-like */
       laneHead(hd3,"FEELS-LIKE","#f97316");
       if(S3.length>1){var flo=1e9,fhi=-1e9;
@@ -11630,7 +11627,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         ctx.beginPath();for(lz=0;lz<S3.length;lz++){var fx=TX(S3[lz].t),fyv=FYf(S3[lz].fF);if(lz)ctx.lineTo(fx,fyv);else ctx.moveTo(fx,fyv);}
         ctx.strokeStyle="rgba(249,115,22,0.9)";ctx.lineWidth=3.5;ctx.lineJoin="round";ctx.stroke();
         ctx.fillStyle="#f97316";ctx.beginPath();ctx.arc(TX(S3[fpk].t),FYf(S3[fpk].fF),6.5,0,6.2832);ctx.fill();
-        T(S3[fpk].fF+"\u00b0 \u00b7 "+pwClk(S3[fpk].t),Math.max(TX(S3[fpk].t)-14,L+330),FYf(S3[fpk].fF)-14,SG("700",24),"#f97316","right");}
+        laneStat(hd3,[[S3[fpk].fF+"\u00b0 \u00b7 "+pwClk(S3[fpk].t),SG("700",26),"#f97316"]]);}
       /* the floor \u2014 sensor-upgraded icon ribbon (skyLanes twin) + sparse axis + in-use legend */
       function ltgAt2(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;}
       var segs=[],sm0=x.samples,s2;
