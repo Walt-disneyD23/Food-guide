@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726o</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5647,7 +5647,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       else if(it.lateStart)p.push("typically "+it.base+"m"); /* 0723m TENSE REPAIR: before the ride's start the day voice speaks - the lateStart prefix carries the clock; from-here waits until here is real (owner field-caught pre-open Aug 16) */
       else p.push((startMin===0?"near its daily low":"near its remaining low from here")+" \u2014 typically "+it.base+"m"); /* 0725p R1 (owner ruling 1A): nothing has elapsed at day start, so "remaining"/"from here" yield to the daily low \u2014 the walk-on voice one line up is the precedent */
       if(!cv.allday&&cv.crest&&cv.crest[0]>=it.st0)p.push("crests near "+cv.pk+"m by "+rpClk(cv.crest[0]));
-      else p.push("typically climbs toward ~"+it.mx+"m by "+rpClk(it.tmx));
+      else p.push("climbs toward ~"+it.mx+"m by "+rpClk(it.tmx)); /* 0726p 2-A MATCH THE TWIN (owner-ruled Aug 29; the FoP double-typically): the opener owns typicality \u2014 the crest twin set the verb. The mxA site keeps its word. */
     }else{
       var atc=(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1]),anc=(!atc&&startMin>0&&!it.lateStart); /* 0724e THE PRESENT ANCHOR (owner-blessed): the future-opening face now opens where the rider stands \u2014 assurance, never a verdict (the bridge stays the only judge). Tense-gated on the A-class's own logic: day-voice and pre-start faces never anchor (0723m stands); the crest face already speaks the present. */
       if(atc)p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
@@ -8068,7 +8068,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       else if(!(pro&&pro.id===rid)&&!dset[rid]&&lv&&lv.status==="OPERATING"&&lv.wait!==null){
         var ty7=row.getAttribute("data-tdty"),br7=why.querySelector(".td-brg"),sp7=null;
         if(ty7!==null&&ty7!==""){ty7=+ty7;
-          if(ty7>0&&Math.abs(lv.wait-ty7)>=5&&Math.abs(lv.wait-ty7)/ty7>=0.25)sp7=(lv.wait<ty7)?"under":"above";}
+          if(ty7>0&&Math.abs(lv.wait-ty7)>=5&&Math.abs(lv.wait-ty7)/ty7>=0.25){sp7=(lv.wait<ty7)?"under":"above";if(sp7==="above"&&lv.wait<=15)sp7=null;} /* 0726p 1-A THE EASY CEILING (owner-ruled Aug 29; the Soarin 9:05 specimen): the above face never speaks on a line the app itself calls easy (wait<=15, the dissolved room\u2019s own bar). The under face is untouched. */}
         if(sp7){if(!br7){br7=row.ownerDocument.createElement("span");br7.className="td-brg";why.appendChild(br7);}
           br7.textContent=" Today\u2019s running "+sp7+" typical.";}
         else if(br7)br7.parentNode.removeChild(br7);
