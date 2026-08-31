@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726r</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726s</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -2982,6 +2982,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(within(info.open,info.close))return true;
     /* also open during Early Entry / Extended Evening / Ticketed Event windows */
     if(info.extras&&info.extras.some(function(e){return within(e.open,e.close);}))return true;
+    /* 0726s THE PARTY BRIDGES THE GAP (owner-ruled A, Aug 30): past the published close, a same-day after-hours extra whose close is still ahead keeps the park open - the changeover between the day and its party is not a closure. Early Entry (opens before the day) never bridges. */
+    if(info.close&&now>new Date(info.close).getTime()&&info.extras&&info.extras.some(function(e){return e.open&&e.close&&now<new Date(e.close).getTime()&&new Date(e.open).getTime()>=new Date(info.close).getTime()-3600000;}))return true;
     if((info.open&&info.close)||(info.extras&&info.extras.length))return false;
     return null;
   }
@@ -5774,7 +5776,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
     var spL9=tdLeaveMin(tdLeave),spC9=null,spK9=null; /* 0724m E: the day’s FINAL close, read once for the seat AND the echo — mirrors 0724h’s fc9 walk (sweep first, extras max); the walker’s own clamp below is untouched */
-    {var _h9=tdHours(ds,pk),_sw9=(today&&typeof tySweep==="function")?tySweep(pk):null;spC9=_sw9?_sw9.c:_h9.c;if(_h9.x)for(var _xk9=0;_xk9<_h9.x.length;_xk9++){var _wx9=_h9.x[_xk9];if(_wx9.c!==null&&(spC9===null||_wx9.c>spC9)){spC9=_wx9.c;spK9=_wx9.k;}}} /* 0726r: the winning after-hours window names the night */
+    {var _h9=tdHours(ds,pk),_sw9=(today&&typeof tySweep==="function")?tySweep(pk):null;spC9=_sw9?_sw9.c:_h9.c;if(_h9.x)for(var _xk9=0;_xk9<_h9.x.length;_xk9++){var _wx9=_h9.x[_xk9];if(_wx9.c!==null&&(spC9===null||_wx9.c>spC9)){spC9=_wx9.c;spK9=_wx9.k;}}
+      if(spK9===null&&spC9!==null&&_h9.c!==null&&spC9>_h9.c&&_h9.x)for(var _xk8=0;_xk8<_h9.x.length;_xk8++)if(_h9.x[_xk8].c===spC9){spK9=_h9.x[_xk8].k;break;}} /* 0726r: the winning after-hours window names the night; 0726s: past the sweep the base already IS that window - the kind derives from the published close (owner glass Aug 30 8:49 PM: bare close during the party) */
     var spE9=(spL9!==null&&(spC9===null||spL9<spC9)); /* the pick cuts the day (lvOn’s twin) — a leave that outruns the park speaks close: THE WINDOW MUST FIT YOUR DAY (owner EPCOT specimen Aug 21, a 9 PM park claiming midnight) */
     var spT9=spE9?("~"+rpClk(spL9)):(spK9?("~"+rpClk(spC9)+" \u00b7 "+tdSeatKindWord(spK9,ds).toLowerCase()):"close"); /* 0726r A THE NIGHT NAMES ITSELF (owner-ruled Aug 31; mock two-closes-mock.html): bare "close" is reserved for the published close — the fine print’s own definition; a to-the-end leave on a party/event night speaks the picker’s dialect. */
     tdSecHTML.end={c:spE9?spL9:spC9,lv:spE9,tl:spT9}; /* THE HORIZON HAS ONE HOME — published for the hero echo, fresh every walk; tl carries the composed till-label so both surfaces speak one sentence (0726r) */ /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
