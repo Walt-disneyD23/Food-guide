@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8202,6 +8202,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       e2.stopPropagation();var rid=b.getAttribute("data-tdck");
       (tdDoneList(tr||tyT(),ds).indexOf(rid)>=0?tyRUnmark:tyRMark)(tid,ds,rid);renderTodayPage();});});
     var tda=el.querySelector("[data-tdadd]");if(tda)tda.addEventListener("click",function(){tdPk=true;tdPkA=true;tdQ="";rpEnsureDigs();renderTodayPage();});
+    var tsh=el.querySelector("[data-tyshare]");if(tsh)tsh.addEventListener("click",function(){tyShareCard();}); /* 0726y: the door's binder \u2014 the card reads the DOM this binder lives in */
     var tdsc=el.querySelector(".td-scrim");if(tdsc)tdsc.addEventListener("click",function(){tdPk=false;tdPin=null;renderTodayPage();});
     var tdsh=el.querySelector(".td-sheet");if(tdsh&&!tdsh.__dd){tdsh.__dd=1;sheetDragDismiss(tdsh,tdsc,function(){tdPk=false;tdPin=null;renderTodayPage();});}
     el.querySelectorAll("[data-tdid]").forEach(function(b){b.addEventListener("click",function(){
@@ -8275,6 +8276,110 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         g.addEventListener("pointermove",mv);g.addEventListener("pointerup",up);g.addEventListener("pointercancel",up);
       });});
   }
+  /* ===== TODAY BOARD SHARE CARD (0726y, owner-ruled Sep 1: letter C + door A + fine print M-A + ridden R-A; spec Today-Card-Spec.md;
+     mock of record today-card-mock.html). THE CARD READS THE GLASS: the model is a walk of the rendered board AFTER tyCrossRefs \u2014 the
+     waits, the receipts, the lanes, the crown and the sink all live in the DOM, never in the walker's rows side-channel (0717n predates the
+     live layer). Each tall row speaks its FIRST CLAUSE and the wait seat is the one number for its measure. FIVE SEATS, THE LAST ONE COUNTS:
+     the roll never crosses the 1190 hairline. Bright palette = the board's own field, theme-invariant like the jewels. ===== */
+  var TY_CARD={bg:"#e9ebf4",card:"#ffffff",line:"#e4e6f1",ink:"#191a2e",muted:"#6b6f8c",muted2:"#9fa3c0",accent:"#4f46e5",short:"#15a36b",medium:"#dc8a06",long:"#ef6c3b",packed:"#e23b54",hair:"#cfd3e6",rollhair:"#d9dceb",green:"#15a36b"};
+  function tyCardFirst(row){ /* \u00a74 THE FIRST CLAUSE \u2014 crown \u2192 GO receipt \u2192 status \u2192 window clock \u2192 the why's first sentence; no line on the card ends in a period */
+    var why=row.querySelector(".td-srx"),tx=why?String(why.textContent||"").replace(/\s+/g," ").trim():"",gv=row.querySelector(".td-brg.gv"),fl=row.querySelector(".td-fl"),m;
+    m=/^(\u2191 )?Riding the moment — (\d+) under typical/.exec(tx);if(m)return {t:(m[1]||"")+"Riding the moment — "+m[2]+" under typical",k:"pro"}; /* literal dash here: the ty module counts its two voice sites in the escape dialect */
+    if(gv){m=/GO NOW \u2014 (\d+) under typical/.exec(String(gv.textContent||""));if(m)return {t:(tx.charAt(0)==="\u2191"?"\u2191 ":"")+"GO NOW \u2014 "+m[1]+" under typical",k:"go"};} /* the " \u2014 Nm right now" clause drops: the wait seat carries the wait (ONE NUMBER FAMILY) */
+    if(row.querySelector(".td-nvr .td-dnc, .td-nvr .td-clc")){var s1=tx.split(".")[0].split(" \u2014 your")[0].trim();return {t:s1,k:"dn"};} /* the status sentence verbatim \u2014 cause-neutral, no return promised */
+    if(fl){var fs=fl.querySelector("span"),fb=fl.querySelector("b");if(fs&&fb)return {t:String(fs.textContent||"").trim()+" "+String(fb.textContent||"").trim(),k:"win"};}
+    return {t:tx.split(/\.(\s|$)/)[0].trim(),k:""};
+  }
+  function tyCardData(el,pk){ /* \u00a76 THE MODEL \u2014 document order, lanes and rows interleaved; the board's own order, never re-sorted (the hand's own order reaches the card by construction); ridden rows drop off and count in the roll's last seat (R-A) */
+    var inf=parkInfo[pk]||null,open=isOpenNow(inf),swp=tySweep(pk),t2=(open===true)?tyTier(pk):null,bits=[];
+    if(swp)bits.push(swp.word+" till "+rpClk(swp.c));else if(open===true&&inf&&inf.close)bits.push("Open till "+tyClkIso(inf.close)); /* the hero's own close clause \u2014 the two-closes law rides along */
+    if(t2)bits.push("crowd "+t2.label+" (est.)"); /* est. never dropped */
+    var ds=tyDs(),d0=tpAsD(ds),E=tdSecHTML.end||null,lvE=(E&&E.lv)?E.c:null,lvT=(E&&E.tl)||null; /* the horizon quoted from the walker's own seat \u2014 THE HORIZON HAS ONE HOME (0726w) */
+    var D={park:pk,clock:rpClk(rcEtMin(new Date())),stamp:d0.toLocaleDateString("en-US",{weekday:"short"}).toUpperCase()+" \u00b7 "+tpMD(ds).toUpperCase(),
+      sub:bits.join(" \u00b7 "),horizon:lvT||(lvE===null?"close":"~"+rpClk(lvE)),lens:(tdLens==="mine")?"mine":"app",rows:[],ridden:0};
+    D.basis=(D.lens==="mine"?"My order":"Ordered for my day")+" \u2014 till "+D.horizon+". Waits change every few minutes; the live board is in ParkPulse."; /* M-A: the tab's own name in the guest's lens */
+    var kids=[].slice.call(el.querySelectorAll(".td-lane, .td-sl")),lane="",i;
+    for(i=0;i<kids.length;i++){var k=kids[i];
+      if(k.classList.contains("td-lane")){var lb=k.querySelector("b");lane=lb?String(lb.textContent||"").trim():"";continue;}
+      if(k.classList.contains("done")){D.ridden++;continue;}
+      var sn=k.querySelector(".td-sn"),snm=k.querySelector(".td-snm"),nv=k.querySelector(".td-nvr>span:first-child"),fl=k.querySelector(".td-fl"),fst=tyCardFirst(k);
+      var w=null,tier="",st="",lab="NOW",cl=nv?String(nv.className||""):"",tm=/\bt-(short|medium|long|packed)\b/.exec(cl);
+      if(nv&&tm){w=String(nv.textContent||"").trim();tier=tm[1];}
+      else if(/td-dnc/.test(cl)){st="DOWN";tier="packed";}
+      else if(/td-clc/.test(cl)){st="CLOSED";tier="muted2";}
+      else if(/td-op/.test(cl)){st=String(nv.textContent||"").trim();tier="muted";lab="OPENS";}
+      var tag;
+      if(st==="DOWN")tag="DOWN \u00b7 no return promised"; /* THE INCIDENT LEADS: packed ink wherever it seats */
+      else if(st==="CLOSED")tag=fst.t;
+      else if(fl){var fs2=fl.querySelector("span"),fb2=fl.querySelector("b");tag=(fs2&&/closes/i.test(fs2.textContent)?"till ":"")+(fb2?String(fb2.textContent||"").trim():"");}
+      else tag=lane;
+      D.rows.push({seat:sn?String(sn.textContent||"").trim():"",name:snm?String(snm.textContent||"").trim():"",first:fst.t,kind:fst.k,wait:w,tier:tier,status:st,lab:lab,tag:tag,lane:lane,dead:k.classList.contains("pdead")});
+    }
+    return D;
+  }
+  function tyDrawCard(ctx,D){ /* \u00a73 the canvas \u2014 fixed 1080\u00d71350, single pass, the mock's R3 boxes seated by alphabetic baseline; nothing prints below 1314 */
+    var W=1080,H=1350,L=64,R=1016,C=TY_CARD,i;
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function ell(s,f,mw){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"\u2026",f)>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function HL(y,c){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke();}
+    function SP(s,x,y,f,c,sp,a){ /* tracked caps drawn per glyph \u2014 canvas letterSpacing is not in every Safari the family ships to */
+      var j,w=0,ws=[];for(j=0;j<s.length;j++){ws.push(MW(s.charAt(j),f));w+=ws[j]+sp;}w-=sp;var x0=(a==="right")?x-w:x;
+      for(j=0;j<s.length;j++){T(s.charAt(j),x0,y,f,c);x0+=ws[j]+sp;}}
+    function wrap(s,f,mw){var ws=String(s).split(" "),ln="",o=[],j;for(j=0;j<ws.length;j++){var t2=(ln?ln+" ":"")+ws[j];if(MW(t2,f)>mw&&ln){o.push(ln);ln=ws[j];}else ln=t2;}if(ln)o.push(ln);return o;}
+    ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+    SP("MY FAVORITES \u00b7 "+D.park.toUpperCase(),L,100,RB(800,30),C.accent,4);
+    T(D.clock,R,100,RB(700,28),C.ink,"right");SP(D.stamp,R,132,RB(600,22),C.muted,1,"right");
+    T("What I\u2019d hit next",L,204,RD(700,66),C.ink);
+    if(D.sub)T(D.sub,L,265,RB(500,30),C.muted);
+    var tall=D.rows.slice(0,3),rest=D.rows.slice(3),y0=318;
+    for(i=0;i<tall.length;i++){var r=tall[i],y=y0+i*176;
+      ctx.fillStyle=C.card;rr(L,y,R-L,160,26);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.stroke();
+      T(r.seat,L+34+26,y+100,RD(700,54),C.muted2,"center");
+      var wx=R-34,ww;
+      if(r.wait!==null){T(r.wait,wx,y+85,RD(700,88),C[r.tier]||C.ink,"right");SP(r.lab,wx,y+130,RB(700,23),C.muted2,3,"right");ww=Math.max(MW(r.wait,RD(700,88)),150);}
+      else{T(r.status,wx,y+96,RD(700,54),C[r.tier]||C.muted2,"right");ww=Math.max(MW(r.status,RD(700,54)),150);}
+      var nx=L+34+52+22,mw=wx-ww-22-nx,fs=48;while(fs>40&&MW(r.name,RD(700,fs))>mw)fs--; /* ONE-LINE NAMES: shrink to the 40 floor, then the family ell() */
+      T(ell(r.name,RD(700,fs),mw),nx,y+68,RD(700,fs),C.ink);
+      var fc=r.kind==="pro"?C.accent:r.kind==="go"?C.short:r.kind==="dn"?C.packed:C.muted,fw=(r.kind==="pro"||r.kind==="go"||r.kind==="dn")?700:500;
+      if(r.first)T(ell(r.first,RB(fw,29),mw),nx,y+113,RB(fw,29),fc);
+    }
+    var ry=318+tall.length*176-16+22; /* the roll opens 22 under the last tall row */
+    if(rest.length||D.ridden){
+      SP("ALSO ON MY BOARD",L+6,ry+20,RB(800,22),C.muted2,3);ry+=40;
+      var seats=(rest.length<=5)?rest:rest.slice(0,4),more=(rest.length>5)?rest.length-4:0; /* FIVE SEATS, THE LAST ONE COUNTS */
+      for(i=0;i<seats.length;i++){var q=seats[i],ty=ry+i*52,tagc=C.muted,tagw=600,dn=(q.status==="DOWN"||q.status==="CLOSED");
+        T(q.seat,L+12+17,ty+34,RD(700,28),C.muted2,"center");
+        if(q.wait!==null)T(q.wait,R-12,ty+34,RD(700,34),C[q.tier]||C.ink,"right");else T("\u2014",R-12,ty+34,RD(700,34),dn?C.packed:C.muted2,"right");
+        if(dn){tagc=(q.status==="DOWN")?C.packed:C.muted;tagw=700;}
+        var tx=R-12-90-16,tf=RB(tagw,24),tg=ell(q.tag||"",tf,420);T(tg,tx,ty+33,tf,tagc,"right");
+        var nx2=L+12+34+16,mw2=tx-MW(tg,tf)-16-nx2;T(ell(q.name,RB(600,31),mw2),nx2,ty+34,RB(600,31),C.ink);
+        HL(ty+50,C.rollhair);
+      }
+      var cy=ry+seats.length*52,cnt=(more?"+ "+more+" more":"")+(D.ridden?(more?" \u00b7 ":"")+D.ridden+" ridden":"");
+      if(cnt)T(cnt,L+12,cy+34,RB(700,28),C.muted); /* the count seat: the day's progress rides here, never a struck-through row (R-A) */
+    }
+    HL(1190,C.hair);
+    var bl=wrap(D.basis,RB(500,26),600);for(i=0;i<bl.length&&i<3;i++)T(bl[i],L,1234+i*34,RB(500,26),C.muted);
+    T("parkpulse.live",R,1274,RB(700,31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,1309,RB(500,25),C.muted2,"right");
+  }
+  function tyShareCard(){ /* \u00a78 the door's engine \u2014 the family lifecycle verbatim (tdShareCard): fonts.ready \u2192 toBlob \u2192 canShare/download */
+    var el=$("pgToday"),o=tyRec();if(!el||!o.park)return;
+    var D=tyCardData(el,o.park);
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var x=cv.getContext("2d");tyDrawCard(x,D);
+      cv.toBlob(function(blob){
+        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+        var slug=D.park.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"park";
+        var fname="parkpulse-today-"+slug+"-"+D.clock.replace(/[^0-9]/g,"")+".png",file=new File([blob],fname,{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:"ParkPulse \u2014 "+D.park+", "+D.clock})["catch"](function(){});}
+        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+      },"image/png");
+    });
+  }
   function renderTodayPage(){
     var el=$("pgToday");if(!el)return;
     var o=tyRec();
@@ -8282,6 +8387,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var pk=o.park,tr=tyBridge(pk);
     var T=tr||tyT();
     var sec=tdSecHTML(T,tyDs()).replace('<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>',''); /* 0720f: the hop rows retire (dead doors, owner-caught) \u2014 hopping rides the All-parks pill; the section sheds its trip-facing tail label render-side, the walker untouched */
+    if(tdRides(T,tyDs()).length>0&&isOpenNow(parkInfo[pk]||null)===true)sec=sec.replace('<div class="pf-basis">','<button class="pw-share ty-share" data-tyshare type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my board</button>'+'<div class="pf-basis">'); /* 0726y THE DOOR IS EARNED (owner-ruled A, Sep 1): the family's full-width share door seats after + Add or remove rides, before the fine print \u2014 rides on the board and the park open now; the empty seed, the pre-open board and the done day grow no door. Render-side like 0720f: the walker never learns the Today tab. */
     if(tyDone(pk)){ /* 0720w (S3 Cut 3): tense flips whole - the done day points at Wrap, never a stale plan; the walker stays untouched, the composition declines to seat it */
       el.innerHTML=tyHeadHTML(pk,tr,T)+tyChipsHTML(pk)+
         '<div class="ty-donec">The full story \u2014 waits, downtime, the day\u2019s superlatives \u2014 is in today\u2019s Wrap. Your plan wakes in the morning.<button class="ty-wrapdoor" data-tywrap type="button">See today\u2019s Wrap <span class="chev">\u203a</span></button></div>';
