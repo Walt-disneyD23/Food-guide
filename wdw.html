@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726y</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726z</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8282,13 +8282,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      live layer). Each tall row speaks its FIRST CLAUSE and the wait seat is the one number for its measure. FIVE SEATS, THE LAST ONE COUNTS:
      the roll never crosses the 1190 hairline. Bright palette = the board's own field, theme-invariant like the jewels. ===== */
   var TY_CARD={bg:"#e9ebf4",card:"#ffffff",line:"#e4e6f1",ink:"#191a2e",muted:"#6b6f8c",muted2:"#9fa3c0",accent:"#4f46e5",short:"#15a36b",medium:"#dc8a06",long:"#ef6c3b",packed:"#e23b54",hair:"#cfd3e6",rollhair:"#d9dceb",green:"#15a36b"};
+  var TY_NM_CARD={"expedition everest - legend of the forbidden mountain":"Expedition Everest","gran fiesta tour starring the three caballeros":"Gran Fiesta Tour","rock 'n' roller coaster starring aerosmith":"Rock \u2019n\u2019 Roller Coaster","rock 'n' roller coaster starring the muppets":"Rock \u2019n\u2019 Roller Coaster","guardians of the galaxy: cosmic rewind":"Cosmic Rewind","journey into imagination with figment":"Journey Into Imagination","star tours - the adventures continue":"Star Tours","mickey & minnie's runaway railway":"Runaway Railway","millennium falcon: smugglers run":"Smugglers Run","the twilight zone tower of terror":"Tower of Terror","star wars: rise of the resistance":"Rise of the Resistance","big thunder mountain railroad":"Big Thunder Mountain","the seas with nemo & friends":"The Seas with Nemo","tomorrowland transit authority peoplemover":"PeopleMover"}; /* 0726z THE CARD\u2019S SHORT NAME (owner-ruled N-A, Sep 1): card-only \u2014 the board wraps, the card cannot; 13 of 51 roster rides overrun the tall row at the 40 floor. Keys normalized (tyNmCard); the shrink-then-ell rule stays the net for anything unlisted. */
+  function tyNmCard(n){var k=String(n||"").replace(/[\u2122\u00ae]/g,"").replace(/[\u2018\u2019]/g,"'").replace(/[\u2013\u2014]/g,"-").replace(/\s+/g," ").trim().toLowerCase();return TY_NM_CARD[k]||String(n||"").replace(/\u2122/g,"").trim();} /* the \u2122 never prints on the card either way */
   function tyCardFirst(row){ /* \u00a74 THE FIRST CLAUSE \u2014 crown \u2192 GO receipt \u2192 status \u2192 window clock \u2192 the why's first sentence; no line on the card ends in a period */
     var why=row.querySelector(".td-srx"),tx=why?String(why.textContent||"").replace(/\s+/g," ").trim():"",gv=row.querySelector(".td-brg.gv"),fl=row.querySelector(".td-fl"),m;
     m=/^(\u2191 )?Riding the moment — (\d+) under typical/.exec(tx);if(m)return {t:(m[1]||"")+"Riding the moment — "+m[2]+" under typical",k:"pro"}; /* literal dash here: the ty module counts its two voice sites in the escape dialect */
     if(gv){m=/GO NOW \u2014 (\d+) under typical/.exec(String(gv.textContent||""));if(m)return {t:(tx.charAt(0)==="\u2191"?"\u2191 ":"")+"GO NOW \u2014 "+m[1]+" under typical",k:"go"};} /* the " \u2014 Nm right now" clause drops: the wait seat carries the wait (ONE NUMBER FAMILY) */
     if(row.querySelector(".td-nvr .td-dnc, .td-nvr .td-clc")){var s1=tx.split(".")[0].split(" \u2014 your")[0].trim();return {t:s1,k:"dn"};} /* the status sentence verbatim \u2014 cause-neutral, no return promised */
     if(fl){var fs=fl.querySelector("span"),fb=fl.querySelector("b");if(fs&&fb)return {t:String(fs.textContent||"").trim()+" "+String(fb.textContent||"").trim(),k:"win"};}
-    return {t:tx.split(/\.(\s|$)/)[0].trim(),k:""};
+    return {t:tx.split(/\.(\s|$)/)[0].split(" \u2014 ")[0].trim(),k:""}; /* 0726z: the first clause stops at the dash too \u2014 "\u2026 from here \u2014 anyti\u2026" (owner glass MK 5:53 PM) */
   }
   function tyCardData(el,pk){ /* \u00a76 THE MODEL \u2014 document order, lanes and rows interleaved; the board's own order, never re-sorted (the hand's own order reaches the card by construction); ridden rows drop off and count in the roll's last seat (R-A) */
     var inf=parkInfo[pk]||null,open=isOpenNow(inf),swp=tySweep(pk),t2=(open===true)?tyTier(pk):null,bits=[];
@@ -8312,8 +8314,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(st==="DOWN")tag="DOWN \u00b7 no return promised"; /* THE INCIDENT LEADS: packed ink wherever it seats */
       else if(st==="CLOSED")tag=fst.t;
       else if(fl){var fs2=fl.querySelector("span"),fb2=fl.querySelector("b");tag=(fs2&&/closes/i.test(fs2.textContent)?"till ":"")+(fb2?String(fb2.textContent||"").trim():"");}
-      else tag=lane;
-      D.rows.push({seat:sn?String(sn.textContent||"").trim():"",name:snm?String(snm.textContent||"").trim():"",first:fst.t,kind:fst.k,wait:w,tier:tier,status:st,lab:lab,tag:tag,lane:lane,dead:k.classList.contains("pdead")});
+      else tag=lane||((w!==null)?"anytime":""); /* 0726z THE UNLABELED ROOM IS THE ANYTIME ROOM: with tier 1 empty the walker draws no Ride-now lane (0724l, boundary-only labels) \u2014 a row before any lane with no footer and no status is the sweep\u2019s (owner glass MK 5:53 PM: Haunted Mansion, PeopleMover untagged) */
+      D.rows.push({seat:sn?String(sn.textContent||"").trim():"",name:tyNmCard(snm?String(snm.textContent||"").trim():""),first:fst.t,kind:fst.k,wait:w,tier:tier,status:st,lab:lab,tag:tag,lane:lane,dead:k.classList.contains("pdead")});
     }
     return D;
   }
@@ -8329,7 +8331,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(j=0;j<s.length;j++){T(s.charAt(j),x0,y,f,c);x0+=ws[j]+sp;}}
     function wrap(s,f,mw){var ws=String(s).split(" "),ln="",o=[],j;for(j=0;j<ws.length;j++){var t2=(ln?ln+" ":"")+ws[j];if(MW(t2,f)>mw&&ln){o.push(ln);ln=ws[j];}else ln=t2;}if(ln)o.push(ln);return o;}
     ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
-    SP("MY FAVORITES \u00b7 "+D.park.toUpperCase(),L,100,RB(800,30),C.accent,4);
+    SP("MY TODAY BOARD \u00b7 "+D.park.toUpperCase(),L,100,RB(800,30),C.accent,4); /* 0726z title G (owner-ruled Sep 1): the hook keeps the headline, the name moves to the label line \u2014 board, board, ParkPulse in reading order */
     T(D.clock,R,100,RB(700,28),C.ink,"right");SP(D.stamp,R,132,RB(600,22),C.muted,1,"right");
     T("What I\u2019d hit next",L,204,RD(700,66),C.ink);
     if(D.sub)T(D.sub,L,265,RB(500,30),C.muted);
