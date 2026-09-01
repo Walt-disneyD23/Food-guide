@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -7974,13 +7974,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     out.sort(function(a,b){return (b.delta-a.delta)||String(a.nm).localeCompare(String(b.nm));});
     return out;
   }
-  function tyProEval(cards,pk){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
+  function tyProEval(cards,pk,dead){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
     if(cards===null)return (tyPro[pk]||null); /* 0724o: an absent model consumes nothing — the arrival render deserves the real read */
     var pp=tyPro[pk]||null,fr9=(tyProPoll[pk]!==tyPollN);if(fr9)tyProPoll[pk]=tyPollN; /* 0724p THE MISS IS THE ONLY CLOCK: membership moves at render speed — a picker add crowns on its own render — while the walk home rides the poll heartbeat alone, so a re-render can never double-count an absence */
-    var top=cards.length?cards[0]:null,i,still=null;
+    var elig=cards,top,i,still=null;if(dead){elig=[];for(i=0;i<cards.length;i++)if(!dead[cards[i].id])elig.push(cards[i]);} /* 0726u THE VACANT SEAT (owner-ruled sub-rule, Aug 31): the crown never elects from the dissolved room - the render hands the engine who cannot seat */
+    top=elig.length?elig[0]:null;
+    if(pp&&pp.on&&dead&&dead[pp.id]){pp=null;tyPro[pk]=null;} /* 0726u: an incumbent that cannot seat is vacant, at render speed - a held crown nobody can see damps nothing, it only jails the room (Aug 30 11:27: Tiana held from the dissolved room while SDMT ran deeper) */
     if(pp&&pp.on){ /* demotion equally confirmed \u2014 two clean polls send it home */
       for(i=0;i<cards.length;i++)if(cards[i].id===pp.id){still=cards[i];break;}
-      if(still){pp.miss=0;pp.typ=still.typ;pp.delta=still.delta;}
+      if(still){pp.miss=0;pp.typ=still.typ;pp.delta=still.delta;
+        if(top&&top.id!==pp.id&&(top.delta-still.delta)>=5){if(fr9)pp.chal=(pp.chal&&pp.chal.id===top.id)?{id:top.id,n:pp.chal.n+1}:{id:top.id,n:1};if(pp.chal&&pp.chal.id===top.id&&pp.chal.n>=2){pp=null;tyPro[pk]=null;}} /* 0726u F THE CROWN PASSES (owner-ruled Aug 31; exhibit Aug 30 11:28 AM: SDMT 23-under seated fifth under a held 18-under crown): a challenger deeper by the house bar (5m, ONE BAND) on two consecutive FRESH polls takes the crown - the count ticks only on the poll heartbeat (THE MISS IS THE ONLY CLOCK, applied to the pass), a changed challenger or a lapsed margin restarts it, and the pass falls through so the successor crowns in the same read (0724p). The incumbent walks home to its receipt seat: rel is untouched, so it keeps its GO voice. Still one crown per park. */
+        else if(fr9)pp.chal=null;}
       else if(fr9){pp.miss=(pp.miss||0)+1;if(pp.miss>=2){pp=null;tyPro[pk]=null;}}
       if(pp)return pp; /* 0724p: a completed walk home falls through — the successor crowns in the same read */
     }
@@ -8005,7 +8009,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyCrossRefs(el,T,ds,pk){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
     var dn=tdDoneList(T,ds),dset={},i;for(i=0;i<dn.length;i++)dset[dn[i]]=1;
     var snk=tySinkEval(T,ds,pk); /* 0723q C1: the sink's clock ticks in every lens \u2014 only App's moves rows (state tracks the sky; the glass picks its manners) */
-    var cds9=tyGoCards(T,ds),pro=tyProEval(cds9,pk),rel=tyRelEval(cds9),relRows=[]; /* 0724k L-1b: one card read feeds both gates */ /* 0724o: cds9 may be null pre-baseline — both gates return their standing state untouched */
+    var dead9={};[].slice.call(el.querySelectorAll(".td-sl.pdead")).forEach(function(r9){dead9[r9.getAttribute("data-tdpd")]=1;}); /* 0726u THE VACANT SEAT: the dissolved room as the walker rendered it - read before W-2 sheds any pdead */
+    var cds9=tyGoCards(T,ds),pro=tyProEval(cds9,pk,dead9),rel=tyRelEval(cds9),relRows=[]; /* 0724k L-1b: one card read feeds both gates */ /* 0724o: cds9 may be null pre-baseline — both gates return their standing state untouched */
     var rows=[].slice.call(el.querySelectorAll(".td-sl")),proRow=null;
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
