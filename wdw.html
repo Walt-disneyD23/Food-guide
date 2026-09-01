@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726w</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726x</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8105,6 +8105,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!anc8)for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("Past your day")>=0){anc8=lns9[i];break;} /* 0725f THE TAIL STOPS AT THE ROOMS (owner glass Aug 25, 2:21 PM: seat 1, a room of dots, then seat 2 \u2014 0725e's last resort skipped the dissolved room): tier 1's tail ends where the named rooms begin \u2014 the dissolved lane, then any dissolved row, and only then the ridden label */
       if(!anc8){for(i=0;i<rows.length;i++){if(rows[i].classList.contains("pdead")){anc8=rows[i];break;}}}
       if(!anc8)anc8=el.querySelector(".td-ridlab"); /* 0725e: the last anchor \u2014 a board whose every live anchor is gone seats risers above the RIDDEN room, at the living tail */
+      if(proRow&&anc8&&(anc8===proRow||(proRow.compareDocumentPosition(anc8)&2)))anc8=proRow.nextSibling; /* 0726x THE CROWN LEADS (owner glass Sep 1 4:14 PM HS: MMRR risen to seat 1 above Tower of Terror's crown - the one park whose crown came from the anytime room; tier 1 empty means no Ride-now lane, so the ladder's rung 2 picked the crown row itself, and a hidden emptied lane above the crown would bite the same way). The riser tail begins AFTER the seated crown, always - the anchor clamps to the crown's next sibling whenever the ladder lands on or before it; every other frame (crown from tier 1, tier 1 occupied) already anchors below and is untouched. */
       if(anc8)relRows.forEach(function(x9){anc8.parentNode.insertBefore(x9.row,anc8);});
       var k8=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s8){if(/^\d+$/.test(s8.textContent))s8.textContent=String(++k8);});
     }
