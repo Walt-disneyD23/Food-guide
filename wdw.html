@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3152,7 +3152,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var fam=[],id;
       for(id in pfBase.rides){
         var r=roster[id];if(!r||r.park!==p.key)continue;
-        var arr=(pfBase.rides[id].b||{})[bkey];if(!arr||arr.length<5)continue;
+        var arr=(pfBase.rides[id].b||{})[bkey];if(!arr||arr.length<10)continue; /* 0726v ONE FLOOR: the LIVE headliner read drinks the same bar as pfCallouts and the walker (10 days) */
         fam.push({id:id,typ:pfQuartiles(arr).med});
       }
       fam.sort(function(a,b){return b.typ-a.typ;});
@@ -3736,7 +3736,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(scope!=="all"&&r.park!==scope)return;
       if(isOpenNow(parkInfo[r.park])===false)return;
       var lv=liveById[id];if(!lv||lv.status!=="OPERATING"||typeof lv.wait!=="number")return;
-      var arr=(pfBase.rides[id].b||{})[bkey];if(!arr||arr.length<5)return;
+      var arr=(pfBase.rides[id].b||{})[bkey];if(!arr||arr.length<10)return; /* 0726v ONE FLOOR (owner-ruled A, Sep 1; Aug 31 10:29 PM EPCOT: the row said "no wait history", the receipt said "20 under typical" - same half-hour slot, two floors): the Pulse asks the walker's question at the walker's bar, 10 days in the bucket (rpCurveOf's floor, crowned by the Aug 26 pool study). The receipt goes quiet wherever the board says no history; the crown cannot elect from a band the board will not show. */
       eligible++;
       var q=pfQuartiles(arr),w=lv.wait,typ=Math.round(q.med);
       if(w<=q.p25-5&&q.med>=20&&w<=0.65*q.med)go.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:typ-w,tier:tierOf(lv),kind:"go"});
