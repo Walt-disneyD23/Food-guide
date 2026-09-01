@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5565,6 +5565,16 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tdStartMin(k){return /^\d+$/.test(k)?+k:0;} /* 0724f THE WHEELS: minutes are the store; "rd"/"" fall to 0 — rope drop = the whole tape; it begins at open */
   function tdLeaveMin(k){return /^\d+$/.test(k)?+k:null;} /* 0724f THE WHEELS: minutes are the store; null = the published close carries */
+  function tdHorizon(lv,h9,sw9,ds){ /* 0726w THE LABEL FOLLOWS THE WALKER: the day's horizon for the span seat + the hero echo, composed once, from the same inputs the walker clamps on. Returns {c,lv,tl,k}. */
+    var i,base=sw9?sw9.c:h9.c,fin=base,fk=null; /* base = the walker's hrs.c (sweep-extended, 0720u); fin = the day's FINAL close over the after-hours windows (0724h) */
+    if(h9.x)for(i=0;i<h9.x.length;i++){var w9=h9.x[i];if(w9.c!==null&&(fin===null||w9.c>fin)){fin=w9.c;fk=w9.k;}}
+    var kindAt=function(c){var k=null,j;if(c!==null&&h9.c!==null&&c>h9.c&&h9.x)for(j=0;j<h9.x.length;j++)if(h9.x[j].c===c){k=h9.x[j].k;break;}return k;}; /* 0726s: past the published close the kind derives from the window that owns that clock */
+    if(fk===null)fk=kindAt(fin);
+    var word=function(c,k){return k?("~"+rpClk(c)+" \u00b7 "+tdSeatKindWord(k,ds).toLowerCase()):"close";}; /* 0726r A THE NIGHT NAMES ITSELF - bare "close" is reserved for the published close */
+    if(lv===null){var bk=kindAt(base);return {c:base,lv:false,tl:word(base,bk),k:bk};} /* Close: the walker runs to its base - a day guest's 6 PM before the party, the party's midnight once the sweep is live (owner glass Aug 30 8:49 PM) */
+    if(fin===null||lv<fin)return {c:lv,lv:true,tl:"~"+rpClk(lv),k:null}; /* the pick cuts the day (lvOn's twin) */
+    return {c:fin,lv:false,tl:word(fin,fk),k:fk}; /* a to-the-end pick: the night names itself; a 9 PM park never claims midnight (owner EPCOT specimen Aug 21) */
+  }
   function tdOrd(ds){ /* 0725w THE POOL DRINKS ORDINARY \u2014 THE FILTER LAW's walker half (contingent ruling Aug 5; evidence Aug 26: +7.8m mid-Jan hangover on the shipped tape, +0.5m filtered \u2014 control-grade). Forecast pools split on the ordinary-day predicate; measured lookbacks (profile lenses, hour grid, Wrap) NEVER filter. Fail-open is native: slAnchorOf answers null before /seasonal lands, so an unwarmed session drinks every day \u2014 exactly the old tape. */
     var f=window.__slAnchorOf;if(typeof f!=="function")return true;
     try{return !f(ds);}catch(e){return true;}
@@ -5775,12 +5785,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var body="",basis,hint="",_cr=[],_sq=[]; /* 0717n: the rows side-channel - the card reads what the sheet shows, one walk */
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
     for(di=0;di<dnl.length;di++)dset[dnl[di]]=1;
-    var spL9=tdLeaveMin(tdLeave),spC9=null,spK9=null; /* 0724m E: the day’s FINAL close, read once for the seat AND the echo — mirrors 0724h’s fc9 walk (sweep first, extras max); the walker’s own clamp below is untouched */
-    {var _h9=tdHours(ds,pk),_sw9=(today&&typeof tySweep==="function")?tySweep(pk):null;spC9=_sw9?_sw9.c:_h9.c;if(_h9.x)for(var _xk9=0;_xk9<_h9.x.length;_xk9++){var _wx9=_h9.x[_xk9];if(_wx9.c!==null&&(spC9===null||_wx9.c>spC9)){spC9=_wx9.c;spK9=_wx9.k;}}
-      if(spK9===null&&spC9!==null&&_h9.c!==null&&spC9>_h9.c&&_h9.x)for(var _xk8=0;_xk8<_h9.x.length;_xk8++)if(_h9.x[_xk8].c===spC9){spK9=_h9.x[_xk8].k;break;}} /* 0726r: the winning after-hours window names the night; 0726s: past the sweep the base already IS that window - the kind derives from the published close (owner glass Aug 30 8:49 PM: bare close during the party) */
-    var spE9=(spL9!==null&&(spC9===null||spL9<spC9)); /* the pick cuts the day (lvOn’s twin) — a leave that outruns the park speaks close: THE WINDOW MUST FIT YOUR DAY (owner EPCOT specimen Aug 21, a 9 PM park claiming midnight) */
-    var spT9=spE9?("~"+rpClk(spL9)):(spK9?("~"+rpClk(spC9)+" \u00b7 "+tdSeatKindWord(spK9,ds).toLowerCase()):"close"); /* 0726r A THE NIGHT NAMES ITSELF (owner-ruled Aug 31; mock two-closes-mock.html): bare "close" is reserved for the published close — the fine print’s own definition; a to-the-end leave on a party/event night speaks the picker’s dialect. */
-    tdSecHTML.end={c:spE9?spL9:spC9,lv:spE9,tl:spT9}; /* THE HORIZON HAS ONE HOME — published for the hero echo, fresh every walk; tl carries the composed till-label so both surfaces speak one sentence (0726r) */ /* 0724f THE WHEELS (D-2): the span's two words — Close is the wake-state default, the wheel only exists for the rider leaving early */
+    var spH9=tdHorizon(tdLeaveMin(tdLeave),tdHours(ds,pk),(today&&typeof tySweep==="function")?tySweep(pk):null,ds),spT9=spH9.tl; /* 0726w THE LABEL FOLLOWS THE WALKER (owner glass Sep 1 11:28 AM, party night, picker on Close: the hero and the span said "till ~12 AM \u00b7 party" while the walker below clamped the plan to the published 6 PM - the label announced a horizon the plan never used). The horizon composes in ONE function (THE CLOCK FOLDS AT ITS OWN DOOR kin) that mirrors the walker's own clamp: a null leave is the walker's base close - the published close, or the live sweep's once the ticketed window is on (0720u) - and speaks bare "close" (or the sweep's night, 0726s); the night names itself only on a PICK that rides to the end (0726r's own words: "a to-the-end leave"); a pick inside the day speaks its clock. */
+    tdSecHTML.end={c:spH9.c,lv:spH9.lv,tl:spT9}; /* THE HORIZON HAS ONE HOME - published for the hero echo, fresh every walk; tl carries the composed till-label so both surfaces speak one sentence (0726r); 0726w: the horizon is now the walker's own */
     var stK9=tdStart||(today?"now":"rd");if(stK9==="now"&&!today)stK9="rd";
     var spF9=(stK9==="now")?"from now":((stK9==="rd")?"from rope drop":("from "+rpClk(tdStartMin(stK9))));
     var fuse9;
