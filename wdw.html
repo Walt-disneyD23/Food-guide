@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726s</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0726t</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8095,8 +8095,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!anc8){for(i=0;i<rows.length;i++){if(rows[i].classList.contains("pdead")){anc8=rows[i];break;}}}
       if(!anc8)anc8=el.querySelector(".td-ridlab"); /* 0725e: the last anchor \u2014 a board whose every live anchor is gone seats risers above the RIDDEN room, at the living tail */
       if(anc8)relRows.forEach(function(x9){anc8.parentNode.insertBefore(x9.row,anc8);});
+      var k8=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s8){if(/^\d+$/.test(s8.textContent))s8.textContent=String(++k8);});
+    }
+    { /* 0726t THE ROOM HIDES ITS NAME (owner-ruled B, Aug 31; the EPCOT 3:25 PM Aug 30 glass: Soarin’ crowned out of a room it alone tenanted, no riser on the board, and YOUR EVENING WINDOWS · FROM ~5:30 PM stood over Test Track’s sink lane). The two lane guards (0724l evening lane, 0725d Past-your-day rider) lived inside the riser fence above and only ran when a GO-riser was on the board; hoisted here they run on every App’s-order pass — the crown, the sink, and the risers all count the same way (B-2’s word: no tenants, no lane; absence is information). The board rebuilds every pass, so a lane returns with its tenant. My Order: the app’s hands stay off — the render’s lanes stand. lns9/rs9 re-read here: the riser fence may not have run. */
+      var lns9=[].slice.call(el.querySelectorAll(".td-lane")),rs9={};relRows.forEach(function(x9){rs9[x9.row.getAttribute("data-tdpd")]=1;});
       var lnE=null;for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("evening windows")>=0){lnE=lns9[i];break;}
-      if(lnE){var rw9=null; /* LABELS MOVE WITH VALUES: the lane’s clock follows the earliest UNRISEN future window; an emptied room hides its label — absence is information (B-2’s own word) */
+      if(lnE&&tdLens!=="mine"){var rw9=null; /* LABELS MOVE WITH VALUES: the lane’s clock follows the earliest UNRISEN future window; an emptied room hides its label — absence is information (B-2’s own word) */
         rows.forEach(function(q9){var id9=q9.getAttribute("data-tdpd");
           if(q9.getAttribute("data-tdtr")!=="3"||rs9[id9]||dset[id9])return;
           if(pro&&pro.on&&pro.id===id9)return; /* 0724l: the crown left the room while it rides — the lane names only who stayed */
@@ -8105,8 +8109,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(rw9===null)lnE.style.display="none";
         else{var lb9=lnE.querySelector("b");if(lb9)lb9.textContent="from ~"+rpClk(rw9);}}
       var lnD=null;for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("Past your day")>=0){lnD=lns9[i];break;} /* 0725d W-2 rider: THE ORPHAN GUARD \u2014 a room whose every tenant rose hides its name (B-2's word: absence is information); risen rows shed pdead above, sunk tenants never count */
-      if(lnD){var pd9=0;rows.forEach(function(q9){var id7=q9.getAttribute("data-tdpd");if(q9.classList.contains("pdead")&&!(snk[id7]&&snk[id7].on))pd9++;});lnD.style.display=pd9?"":"none";}
-      var k8=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s8){if(/^\d+$/.test(s8.textContent))s8.textContent=String(++k8);});
+      if(lnD&&tdLens!=="mine"){var pd9=0;rows.forEach(function(q9){var id7=q9.getAttribute("data-tdpd");if(q9.classList.contains("pdead")&&!(snk[id7]&&snk[id7].on))pd9++;});lnD.style.display=pd9?"":"none";}
     }
     if(tdLens!=="mine"){ /* 0724t W-1 (owner-ruled Aug 22; the 9:13 AM Tiana/BTM cross + the HS equal-deadline trio): within tier 1, a CONFIRMED GO row rises above any row FAILING whisper-grade above typical (the whisper's own 25%+5m bar \u2014 ONE BAND VOCABULARY); deadline still rules the neutral, and inside an equal-clock group the confirmed GO leads. Neutral rows never move; a failing row with no GO around it stands (W-2's revocation stays shelved). Pins hold their slots; the crown is already above it all; My Order untouched. */
       var w9r=[],w9s=[];
