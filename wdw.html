@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6375,7 +6375,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
       if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
       return h+'<div class="rpc"><div class="lbl">The fits</div><div class="tf-read">Warming up the record\u2026</div></div>';}
-    var lbl=tfSel.length===1?TF_MFULL[tfSel[0]]:TF_MFULL[tfSel[0]]+" \u2013 "+TF_MFULL[tfSel[tfSel.length-1]];
+    var lbl=tfSel.length===1?TF_MFULL[tfSel[0]]:(tfSel.length===tfSel[tfSel.length-1]-tfSel[0]+1)?TF_MFULL[tfSel[0]]+" \u2013 "+TF_MFULL[tfSel[tfSel.length-1]]:tfSel.map(function(m){return TF_MFULL[m];}).join(" \u00b7 "); /* 0727c THE RANGE NAMES ITS MONTHS: the dash is a run, the dot is a list \u2014 the S1 selection line\u2019s own sentence; Jan + Dec read JANUARY \u2013 DECEMBER on the card (owner glass Sep 1) */
     h+='<div class="rpc"><div class="lbl">Across '+lbl+'</div>';
     h+='<div class="tf-band" style="grid-template-columns:repeat('+(tfSel.length*3)+',1fr)">';
     var i,tfBandAw=0; /* 0726c (a-A): did any segment ribbon? the legend renders only then */for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);
@@ -6436,7 +6436,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var n=D.band.length,sw=n?((R-L)+10)/n-10:0;
     for(i=0;i<n;i++){var b=D.band[i],bx=L+i*(sw+10),cx=bx+sw/2,bh=Math.max(10,Math.min(120,b.h));
       ctx.fillStyle=ink(b.tier);rr(bx,358-bh,sw,bh,10);ctx.fill();
-      if(b.aw){ctx.fillStyle="rgba(255,255,255,.92)";rr(bx+12,358-bh+8,sw-24,8,4);ctx.fill();} /* the band\u2019s confession rides along */
+      if(b.aw){ctx.fillStyle="rgba(255,255,255,.92)";rr(bx+12,358-bh+(bh<24?(bh-8)/2:8),sw-24,8,4);ctx.fill();} /* 0727c: the pill centers on a short bar (early Sep at 25 = 16px; owner glass Sep 1) */ /* the band\u2019s confession rides along */
       T(b.v==null?"\u2013":String(b.v),cx,387,RD(700,28),C.accent,"center");
       SP(b.l1,cx,409,RB(600,16),C.muted2,1,"center");SP(b.l2,cx,427,RB(600,16),C.muted2,1,"center");}
     var kf=19,drop=false,items=[];
