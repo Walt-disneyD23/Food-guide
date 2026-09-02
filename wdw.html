@@ -2138,7 +2138,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727d</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727e</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6617,7 +6617,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){ /* 0715e: the day page's lens — flips the reading, never the data */
       var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;renderPulsePage();});});
-    tdBindSpan(el,function(){renderPulsePage();},false); /* 0724f THE WHEELS: the span door + wheels sheet replace the chip binders — the two inputs only the user knows, one door; trip rooms never write the day's memory (0724i) */
+    tdBindSpan(el,function(){renderPulsePage();},(typeof tpToday==="function"&&tpOpen===tpToday())); /* 0727e THE DAY REMEMBERS ON BOTH DOORS (owner glass Sep 2): the opened day IS today \u2192 the pick writes the day stamp Today's binder writes; any other day stays exploratory */ /* 0724f THE WHEELS: the span door + wheels sheet replace the chip binders — the two inputs only the user knows, one door; trip rooms never write the day's memory (0724i) */
     el.querySelectorAll("[data-tdgrip]").forEach(function(g){ /* 0715j: handle-scoped drag (owner-ratified A, reorder-mock.html of record) - whole-row drag stays banned; the page scrolls everywhere but the grip */
       g.addEventListener("click",function(e2){e2.stopPropagation();}); /* a bare grip tap stays inert - never a pin door */
       g.addEventListener("touchstart",function(te){te.preventDefault();},{passive:false}); /* iOS: veto the pan before Safari enrolls it - touch-action alone loses the down-drag race (owner-caught on mock v1) */
@@ -8040,8 +8040,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(gd&&gd.k>0){
       if(gd.k===gd.n&&gd.n===1)gdn='<div class="ty-pline">Heads up \u2014 <b>'+esc((roster[gd.dn[0]]&&roster[gd.dn[0]].name)||'')+'</b> is down right now. The board will speak as it returns.</div>'; /* the singular board speaks singular */
       else if(gd.k===gd.n)gdn='<div class="ty-pline">Heads up \u2014 <b>all '+gd.n+'</b> are down right now. The board will speak as they return.</div>';
-      else if(gd.k===1)gdn='<div class="ty-pline">Heads up \u2014 <b>'+esc((roster[gd.dn[0]]&&roster[gd.dn[0]].name)||'')+'</b> is down right now. '+((nD>0)?'It\u2019s one of your '+gd.n+' to go.':((gd.ops===gd.n-1)?'Your other '+gd.ops+' are running.':gd.ops+' still running.'))+'</div>'; /* tail honesty: "Your other" only when ops equals set-minus-down */
-      else gdn='<div class="ty-pline">Heads up \u2014 <b>'+gd.k+' of your '+gd.n+'</b> are down right now. '+((gd.ops===gd.n-gd.k)?'Your other '+gd.ops+' are running.':gd.ops+' still running \u2014 the rows have the names.')+'</div>'; /* owner ruling (Aug 17): counts take over at 2+ \u2014 the full name rides only at 1 */
+      else if(gd.k===1)gdn='<div class="ty-pline">Heads up \u2014 <b>'+esc((roster[gd.dn[0]]&&roster[gd.dn[0]].name)||'')+'</b> is down right now. '+((nD>0)?'It\u2019s one of your '+gd.n+' to go.':((gd.ops===gd.n-1)?(gd.ops===1?'Your other one is running.':'Your other '+gd.ops+' are running.'):gd.ops+' still running.'))+'</div>'; /* tail honesty: "Your other" only when ops equals set-minus-down */
+      else gdn='<div class="ty-pline">Heads up \u2014 <b>'+gd.k+' of your '+gd.n+'</b> are down right now. '+((gd.ops===gd.n-gd.k)?(gd.ops===1?'Your other one is running.':'Your other '+gd.ops+' are running.'):gd.ops+' still running \u2014 the rows have the names.')+'</div>'; /* owner ruling (Aug 17): counts take over at 2+ \u2014 the full name rides only at 1 */
     }
     var eel=''; /* 0723n (B2): the park head's morning credential \u2014 pre-open only, retires at gate open; the resort-guests tail is Early Entry's alone */
     if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){
