@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727a</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727b</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6402,7 +6402,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tfCardData(el){ /* 0727a Plan-Card-Spec \u00a74 THE MODEL \u2014 a walk of the rendered S2 page (THE CARD READS THE GLASS): the .lbl range, the band\u2019s own bars and ribbons, the key\u2019s own words, the ranked cards in the page\u2019s order; nothing re-ranked, re-priced or re-tiered */
     var lb=el.querySelector(".rpc .lbl"),rg=lb?String(lb.textContent||"").replace(/^Across\s+/,"").trim():"";
     function tv(x){var m=/--(short|medium|long|packed|muted-2)/.exec(String(x||""));return m?(m[1]==="muted-2"?"muted2":m[1]):"muted2";} /* the segment\u2019s tier var \u2192 the card constant */
-    var d0=etDate(0),D={range:rg,stampDate:TF_MABs[+d0.slice(5,7)-1]+" "+(+d0.slice(8,10)),band:[],key:[],awKey:null,rows:[]};
+    var d0=tpToday(),D={range:rg,stampDate:TF_MABs[+d0.slice(5,7)-1]+" "+(+d0.slice(8,10)),band:[],key:[],awKey:null,rows:[]};
     [].slice.call(el.querySelectorAll(".tf-band .tf-bseg")).forEach(function(sg){var bi=sg.querySelector("i"),bb=sg.querySelector("b"),em=sg.querySelector("em"),st=bi?String(bi.getAttribute("style")||""):"",hm=/height:\s*(\d+)px/.exec(st),ls=em?String(em.innerHTML||"").split(/<br\s*\/?>/i):[];
       var vt=bb?String(bb.textContent||"").trim():"",v=/^\d+$/.test(vt)?+vt:null;
       D.band.push({v:v,h:Math.round((hm?+hm[1]:8)*1.25),tier:tv(st),aw:!!(bi&&bi.classList.contains("aw")),l1:String(ls[0]||"").replace(/<[^>]*>/g,"").trim().toUpperCase(),l2:String(ls[1]||"").replace(/<[^>]*>/g,"").trim().toUpperCase()});}); /* the bar is the page\u2019s own px \u00d7 1.25 \u2014 the law (v\u221220)\u00d72.6 is never re-derived */
