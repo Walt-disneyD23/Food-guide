@@ -2131,7 +2131,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0726z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6395,8 +6395,103 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         h+='<div class="rpc tp-trl" data-tfsee="'+c.m+'.'+c.k+'.'+c.s+'" role="button" tabindex="0"><div class="tf-wh"><span class="tf-wr">'+(i+1)+'</span><span class="tf-wt">'+c.t+' '+TF_MFULL[c.m]+(c.lean?' \u00b7 '+c.lean:'')+(mHasMark(c.m)?' <span class="odq">\u00b7 ordinary days</span>':'')+'</span><b class="tf-wv"'+(i===0?' style="color:var(--short)"':'')+'>'+c.est+' min</b></div>'+
         tfChipsFor(c.m,c.t)+
         '<span class="tp-chev">\u203a</span></div>'; /* 0717a: ONE door per card \u2014 the calendar pre-seats the card's OWN run (K1), so trusting the ranking costs exactly one more tap and buys sight of the real dates */}}
+    if(top.length)h+='<button class="pw-share tf-share" data-tfshare type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my plan</button>'; /* 0727a WHEN I\u2019D GO (owner-ruled letter A, Sep 1): the Plan share card\u2019s door \u2014 the Today grammar (after the list, above the fine print), earned by a rendered window; label (c) C-1 */
     h+='<div class="tf-basis">Has run, never will run. Every number comes from real days the record has kept, the last three years of each month\u2019s ordinary days \u00b7 each card shows what its exact dates have really run \u00b7 a holiday week wears its own history, lifted or eased by how it usually runs \u00b7 where the record runs thin, a card holds back rather than guess \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
     return h;
+  }
+  function tfCardData(el){ /* 0727a Plan-Card-Spec \u00a74 THE MODEL \u2014 a walk of the rendered S2 page (THE CARD READS THE GLASS): the .lbl range, the band\u2019s own bars and ribbons, the key\u2019s own words, the ranked cards in the page\u2019s order; nothing re-ranked, re-priced or re-tiered */
+    var lb=el.querySelector(".rpc .lbl"),rg=lb?String(lb.textContent||"").replace(/^Across\s+/,"").trim():"";
+    function tv(x){var m=/--(short|medium|long|packed|muted-2)/.exec(String(x||""));return m?(m[1]==="muted-2"?"muted2":m[1]):"muted2";} /* the segment\u2019s tier var \u2192 the card constant */
+    var d0=etDate(0),D={range:rg,stampDate:TF_MABs[+d0.slice(5,7)-1]+" "+(+d0.slice(8,10)),band:[],key:[],awKey:null,rows:[]};
+    [].slice.call(el.querySelectorAll(".tf-band .tf-bseg")).forEach(function(sg){var bi=sg.querySelector("i"),bb=sg.querySelector("b"),em=sg.querySelector("em"),st=bi?String(bi.getAttribute("style")||""):"",hm=/height:\s*(\d+)px/.exec(st),ls=em?String(em.innerHTML||"").split(/<br\s*\/?>/i):[];
+      var vt=bb?String(bb.textContent||"").trim():"",v=/^\d+$/.test(vt)?+vt:null;
+      D.band.push({v:v,h:Math.round((hm?+hm[1]:8)*1.25),tier:tv(st),aw:!!(bi&&bi.classList.contains("aw")),l1:String(ls[0]||"").replace(/<[^>]*>/g,"").trim().toUpperCase(),l2:String(ls[1]||"").replace(/<[^>]*>/g,"").trim().toUpperCase()});}); /* the bar is the page\u2019s own px \u00d7 1.25 \u2014 the law (v\u221220)\u00d72.6 is never re-derived */
+    [].slice.call(el.querySelectorAll(".pw-alm-key .kc")).forEach(function(k){var ki=k.querySelector("i"),kb=k.querySelector("b"),ke=k.querySelector("em");D.key.push({word:kb?String(kb.textContent||"").trim():"",range:ke?String(ke.textContent||"").trim():"",tier:tv(ki&&ki.getAttribute("style"))});}); /* (d) D-1: the key\u2019s own words \u2014 45 and up */
+    var awc=el.querySelector(".tf-callg i.awc");if(awc&&awc.parentNode)D.awKey=String(awc.parentNode.textContent||"").replace(/\s+/g," ").trim(); /* clause-earned like the page: holds holiday-week days */
+    function bw(t){var j;for(j=0;j<D.key.length;j++)if(D.key[j].tier===t)return D.key[j].word;return "";} /* the band word is the key\u2019s text (ONE BAND VOCABULARY) */
+    [].slice.call(el.querySelectorAll(".rpc.tp-trl[data-tfsee]")).forEach(function(c){var wr=c.querySelector(".tf-wr"),wt=c.querySelector(".tf-wt"),wv=c.querySelector(".tf-wv"),od=wt?wt.querySelector(".odq"):null,nm=wt?String(wt.textContent||""):"";
+      if(od)nm=nm.replace(String(od.textContent||""),"");nm=nm.replace(/\s+/g," ").trim();
+      var em2=/(\d+)/.exec(wv?String(wv.textContent||""):""),est=em2?+em2[1]:null,tier=(est!=null&&typeof window.__avTier==="function")?window.__avTier(est):"muted2",an=c.classList.contains("tf-anc");
+      var r={seat:wr?String(wr.textContent||"").trim():"",name:nm,odq:!!od,est:est,tier:tier,band:bw(tier),anchor:an,kind:an?(c.classList.contains("tf-dip")?"dip":"lift"):"",rec:"",dts:"",pct:null,nyr:null};
+      if(an){var mb=c.querySelector(".tf-mfl b"),md=c.querySelector(".tf-mfl .dts");r.rec=mb?String(mb.textContent||"").replace(/\s+/g," ").trim():"";r.dts=md?String(md.textContent||"").replace(/\s+/g," ").replace(/^\s*\u00b7\s*/,"").trim():"";var pm=/(\d+)%/.exec(r.rec),ym=/(\d+) prior year/.exec(r.dts);r.pct=pm?+pm[1]:null;r.nyr=ym?+ym[1]:null;} /* the anchor\u2019s receipt + dates, verbatim \u2014 dates stated (L2) */
+      D.rows.push(r);});
+    D.basis="Has run, never will run \u2014 three years of ordinary days; a holiday week wears its own history. The full record is in ParkPulse."; /* (e) E-1: the mock\u2019s 148-char line wrapped four lines past the 1314 floor; 126 chars at 640 wide holds three */
+    return D;
+  }
+  function tfDrawCard(ctx,D){ /* 0727a Plan-Card-Spec \u00a73 \u2014 fixed 1080\u00d71350, single pass; the mock\u2019s boxes shifted +49 for the band\u2019s full 120 slot; nothing prints below 1314 */
+    var W=1080,H=1350,L=64,R=1016,C=TY_CARD,i,j;
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function ell(s,f,mw){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"\u2026",f)>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function HL(y,c){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke();}
+    function SW(s,f,sp){var k,w=0;for(k=0;k<s.length;k++)w+=MW(s.charAt(k),f)+sp;return w-sp;}
+    function SP(s,x,y,f,c,sp,a){var k,x0=(a==="right")?x-SW(s,f,sp):(a==="center")?x-SW(s,f,sp)/2:x;for(k=0;k<s.length;k++){T(s.charAt(k),x0,y,f,c);x0+=MW(s.charAt(k),f)+sp;}} /* tracked caps per glyph \u2014 the family\u2019s Safari law */
+    function wrap(s,f,mw){var ws=String(s).split(" "),ln="",o=[],k;for(k=0;k<ws.length;k++){var t2=(ln?ln+" ":"")+ws[k];if(MW(t2,f)>mw&&ln){o.push(ln);ln=ws[k];}else ln=t2;}if(ln)o.push(ln);return o;}
+    function ink(t){return C[t]||C.muted2;}
+    ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+    SP("MY PLAN \u00b7 "+D.range.toUpperCase(),L,100,RB(800,30),C.accent,4); /* the kicker names the range; the product waits for the fine print (G logic) */
+    SP("3-YEAR RECORD",R,100,RB(700,26),C.ink,2,"right");T("as of "+D.stampDate,R,132,RB(600,22),C.muted,"right");
+    T("When I\u2019d go",L,214,RD(700,66),C.ink); /* (b) B-1: the door asks When should we go? \u2014 the card answers */
+    var n=D.band.length,sw=n?((R-L)+10)/n-10:0;
+    for(i=0;i<n;i++){var b=D.band[i],bx=L+i*(sw+10),cx=bx+sw/2,bh=Math.max(10,Math.min(120,b.h));
+      ctx.fillStyle=ink(b.tier);rr(bx,358-bh,sw,bh,10);ctx.fill();
+      if(b.aw){ctx.fillStyle="rgba(255,255,255,.92)";rr(bx+12,358-bh+8,sw-24,8,4);ctx.fill();} /* the band\u2019s confession rides along */
+      T(b.v==null?"\u2013":String(b.v),cx,387,RD(700,28),C.accent,"center");
+      SP(b.l1,cx,409,RB(600,16),C.muted2,1,"center");SP(b.l2,cx,427,RB(600,16),C.muted2,1,"center");}
+    var kf=19,drop=false,items=[];
+    function kItems(){var o=[],k;for(k=0;k<D.key.length;k++)o.push({sw:D.key[k].tier,w:D.key[k].word,r:drop?"":D.key[k].range});if(D.awKey)o.push({sw:"aw",w:D.awKey,r:""});return o;}
+    function kWidth(){var k,w=0;items=kItems();for(k=0;k<items.length;k++){w+=24+MW(items[k].w,RB(600,kf))+(items[k].r?6+MW(items[k].r,RB(500,kf)):0)+(k<items.length-1?18:0);}return w;}
+    while(kWidth()>R-L&&kf>16)kf--;
+    if(kWidth()>R-L){drop=true;kWidth();} /* the ranges drop last \u2014 THE LEGEND NAMES, THE FINE PRINT EXPLAINS */
+    var kx=L;for(i=0;i<items.length;i++){var it=items[i];
+      if(it.sw==="aw"){ctx.fillStyle=C.long;rr(kx,445,18,18,5);ctx.fill();ctx.fillStyle="rgba(255,255,255,.92)";rr(kx+3,449,12,3,2);ctx.fill();}else{ctx.fillStyle=ink(it.sw);rr(kx,445,18,18,5);ctx.fill();}
+      kx+=24;T(it.w,kx,460,RB(600,kf),C.muted);kx+=MW(it.w,RB(600,kf));
+      if(it.r){kx+=6;T(it.r,kx,460,RB(500,kf),C.muted2);kx+=MW(it.r,RB(500,kf));}
+      kx+=18;}
+    var tall=(D.rows.length<=4)?D.rows:D.rows.slice(0,3),rest=(D.rows.length<=4)?[]:D.rows.slice(3); /* (a) A-1: four or fewer seat all tall \u2014 a roll of one is a seat for its own sake */
+    for(i=0;i<tall.length;i++){var r=tall[i],y=480+i*144;
+      ctx.fillStyle=C.card;rr(L,y,R-L,130,26);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.stroke();
+      T(r.seat,L+62,y+84,RD(700,54),C.muted2,"center");
+      var vx=R-36,vs=(r.est==null)?"\u2013":String(r.est),vw=Math.max(MW(vs,RD(700,80)),120);
+      T(vs,vx,y+80,RD(700,80),ink(r.tier),"right");SP("MIN",vx,y+116,RB(700,23),C.muted2,3,"right"); /* every number in its tier\u2019s ink \u2014 the seat says 1, the color stays the crowd\u2019s */
+      var nx=174,mw=vx-vw-22-nx,fs=44;while(fs>36&&MW(r.name,RD(700,fs))>mw)fs--; /* ONE-LINE NAMES: shrink to the 36 floor, then ell */
+      T(ell(r.name,RD(700,fs),mw),nx,y+62,RD(700,fs),C.ink);
+      var segs=r.anchor?[[r.rec.replace(/^Has run about /,"About "),700,r.kind==="dip"?C.short:C.ink],[r.dts?" \u00b7 "+r.dts:"",500,C.muted]]:[["Has run ",500,C.muted],[r.band,700,ink(r.tier)],[r.odq?" \u00b7 ordinary days":"",500,C.muted]]; /* the line: the record\u2019s verb + the key\u2019s word, or the anchor\u2019s receipt (the mock-C clause) + its dates verbatim */
+      var lf=28,lw=function(z){var k,w=0;for(k=0;k<segs.length;k++)w+=segs[k][0]?MW(segs[k][0],RB(segs[k][1],z)):0;return w;};while(lf>24&&lw(lf)>mw)lf--; /* the line shrinks to 24 before it ells \u2014 the anchor\u2019s dates are stated, not cut */
+      var sx=nx;for(j=0;j<segs.length;j++){var sg=segs[j];if(!sg[0])continue;var sf=RB(sg[1],lf),st=ell(sg[0],sf,mw-(sx-nx));T(st,sx,y+104,sf,sg[2]);sx+=MW(st,sf);if(st!==sg[0])break;}
+    }
+    if(rest.length){
+      SP("ALSO IN THE RANGE",L+6,939,RB(800,22),C.muted2,3);
+      var seats=(rest.length<=4)?rest:rest.slice(0,3),more=(rest.length>4)?rest.length-3:0; /* FOUR SEATS, THE LAST ONE COUNTS \u2014 the page caps at seven, so the count is a net */
+      for(i=0;i<seats.length;i++){var q=seats[i],ty=951+i*46,qv=(q.est==null)?"\u2013":String(q.est);
+        T(q.seat,L+29,ty+35,RD(700,28),C.muted2,"center");
+        T(qv,R-12,ty+36,RD(700,32),ink(q.tier),"right");
+        var tag=q.anchor?((q.pct!=null?q.pct+"% "+(q.kind==="dip"?"quieter":"over"):q.rec)+(q.nyr!=null?" \u00b7 "+q.nyr+" yrs":"")):q.band; /* (f) the mock\u2019s compression for the anchor; the band word alone for an ordinary card */
+        var tx=R-12-90-16,tf=RB(600,24),tg=ell(tag||"",tf,420);T(tg,tx,ty+34,tf,C.muted,"right");
+        var nx2=126,mw2=tx-MW(tg,tf)-16-nx2;T(ell(q.name,RB(600,29),mw2),nx2,ty+35,RB(600,29),C.ink);
+        HL(ty+45,C.rollhair);}
+      if(more)T("+ "+more+" more",L+12,951+seats.length*46+35,RB(700,28),C.muted);
+    }
+    HL(1190,C.hair);
+    var bl=wrap(D.basis,RB(500,26),640);for(i=0;i<bl.length&&i<3;i++)T(bl[i],L,1234+i*34,RB(500,26),C.muted); /* (e) E-1: the seat grows to 640 (the right seats begin at ~727) */
+    T("parkpulse.live",R,1274,RB(700,31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,1309,RB(500,25),C.muted2,"right");
+  }
+  function tfShareCard(){ /* 0727a Plan-Card-Spec \u00a75 \u2014 the family lifecycle verbatim (tyShareCard): fonts.ready \u2192 toBlob \u2192 canShare/download */
+    var el=$("pgPulse");if(!el||tfOpen!=="s2")return;
+    var D=tfCardData(el);if(!D.rows.length)return;
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var x=cv.getContext("2d");tfDrawCard(x,D);
+      cv.toBlob(function(blob){
+        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+        var slug=D.range.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"plan";
+        var fname="parkpulse-plan-"+slug+".png",file=new File([blob],fname,{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:"ParkPulse \u2014 "+D.range})["catch"](function(){});}
+        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+      },"image/png");
+    });
   }
   function tpHomeHTML(){ /* 0717d: the planner's HOMEPAGE (owner pick A1) \u2014 the jewel hero + twin doors; both landing states wear it, and it moves whole to the dedicated tab in polish week */
     return rpBackBtn("Plan","plx")+'<div class="rp-crumb">Plan \u203a <b>Trip planner</b></div>'+'<div class="tph"><div class="eb">Trip planner</div><h2>Pick days like you\u2019ve been before.</h2><div class="sub">Every number is the banked record \u2014 never a guess. Rank your months, see any week up close, and walk in with a plan.</div></div>'+
@@ -6632,6 +6727,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     el.querySelectorAll("[data-tfdoor]").forEach(function(b){b.addEventListener("click",function(){tfOpen=true;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfback]").forEach(function(b){b.addEventListener("click",function(){tfOpen=false;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfback2]").forEach(function(b){b.addEventListener("click",function(){tfOpen="s1";renderPulsePage();rpTop();});});
+    var tfsh=el.querySelector("[data-tfshare]");if(tfsh)tfsh.addEventListener("click",function(){tfShareCard();}); /* 0727a: the Plan card\u2019s door */
     el.querySelectorAll("[data-tfmon]").forEach(function(b){b.addEventListener("click",function(){var m=+b.getAttribute("data-tfmon"),x=tfSel.indexOf(m);if(x>=0)tfSel.splice(x,1);else{tfSel.push(m);tfSel.sort(function(a,c){return a-c;});}renderPulsePage();});});
     el.querySelectorAll("[data-tflen]").forEach(function(b){b.addEventListener("click",function(){var v=+b.getAttribute("data-tflen");if(v){tfCust=false;tfLen=v;}else{tfCust=true;tfLen=Math.min(14,Math.max(2,tfLen));}renderPulsePage();});});
     el.querySelectorAll("[data-tfstp]").forEach(function(b){b.addEventListener("click",function(){tfLen=Math.min(14,Math.max(2,tfLen+ +b.getAttribute("data-tfstp")));renderPulsePage();});});
