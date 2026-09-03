@@ -2138,7 +2138,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -4948,7 +4948,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(it.edge<=3&&it.mxA-it.base<=8)p.push('holds near '+it.base+'m from here \u2014 the typical barely moves again today'); /* 0714r: "barely moves" is a RANGE claim \u2014 edge alone only looks downhill */
       else if(it.edge<=3)p.push('about as cheap as it gets \u2014 typically climbs toward ~'+it.mxA+'m by '+rpClk(it.tmx));
       else{
-        var atc9=(!it.cv.allday&&it.cv.crest&&nb>=it.cv.crest[0]&&nb<=it.cv.crest[1]);if(atc9)p.push('at its '+rpRange(it.cv.crest[0],it.cv.crest[1])+' crest (typically '+it.cv.pk+'m)'); /* 0725v W-1B: the crest face anchors here too */
+        var atc9=(!it.cv.allday&&it.cv.crest&&nb>=it.cv.crest[0]&&nb<it.cv.crest[1]); /* 0727i: the same exclusive end */if(atc9)p.push('at its '+rpRange(it.cv.crest[0],it.cv.crest[1])+' crest (typically '+it.cv.pk+'m)'); /* 0725v W-1B: the crest face anchors here too */
         if(it.backAhead)p.push('a walk-on after '+rpClk(it.cv.back)+' on typical nights');
         else p.push((atc9?'easing to ~':'typically easing to ~')+it.mn+'m'+(it.tm!==null?(it.near?' near close':' by '+rpClk(it.tm)):'')); /* 0725v W-1B: the word yields when the crest spoke it */
       }
@@ -5668,7 +5668,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!cv.allday&&cv.crest&&cv.crest[0]>=it.st0)p.push("crests near "+cv.pk+"m by "+rpClk(cv.crest[0]));
       else p.push("climbs toward ~"+it.mx+"m by "+rpClk(it.tmx)); /* 0726p 2-A MATCH THE TWIN (owner-ruled Aug 29; the FoP double-typically): the opener owns typicality \u2014 the crest twin set the verb. The mxA site keeps its word. */
     }else{
-      var atc=(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<=cv.crest[1]),anc=(!atc&&startMin>0&&!it.lateStart); /* 0724e THE PRESENT ANCHOR (owner-blessed): the future-opening face now opens where the rider stands \u2014 assurance, never a verdict (the bridge stays the only judge). Tense-gated on the A-class's own logic: day-voice and pre-start faces never anchor (0723m stands); the crest face already speaks the present. */
+      var atc=(!cv.allday&&cv.crest&&it.st0>=cv.crest[0]&&it.st0<cv.crest[1]), /* 0727i THE CREST'S END IS EXCLUSIVE (owner glass Sep 3 6:58 PM): crest[1] is the last bucket's end \u2014 a start ON it is past the crest */anc=(!atc&&startMin>0&&!it.lateStart); /* 0724e THE PRESENT ANCHOR (owner-blessed): the future-opening face now opens where the rider stands \u2014 assurance, never a verdict (the bridge stays the only judge). Tense-gated on the A-class's own logic: day-voice and pre-start faces never anchor (0723m stands); the crest face already speaks the present. */
       if(atc)p.push("at its "+rpRange(cv.crest[0],cv.crest[1])+" crest (typically "+cv.pk+"m)");
       else if(anc)p.push("typically ~"+it.base+"m through here");
       p.push(((anc||atc)?"eases to ~":"typically eases to ~")+it.mn+"m"+(it.tm!==null?(it.near?(it.lvw?" near your leave":" near close"):" by "+rpClk(it.tm)):"")); /* 0725v W-1B: the anchor carries the word for both \u2014 and the crest face IS an anchor (it already spoke "typically" in its parenthetical), so the claim "never a double" is now true as written */
