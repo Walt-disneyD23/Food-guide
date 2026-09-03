@@ -2138,7 +2138,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727g</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5823,8 +5823,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,fcx,(today?tdGeo(pk,t,ds):null)),n=0,ridden="",rdn=0; /* 0723v: the map rides only the living day */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&it.cv){var _tb=it.cv.bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
-        _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
-        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(it.dead&&it.wo?' data-tdwo="'+esc(it.wo)+'"':'')+(it.tier?' data-tdtr="'+it.tier+'"':'')+(it.tier===3?' data-tdws="'+it.ws+'"':'')+(it.tier===1&&it.dl!=null?' data-tddl="'+it.dl+'"':'')+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+(it.ws>it.st0?'Window':'Window closes')+'</span><b>'+(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl)))+'</b></div>':'')+'</div>';};
+        var _fll=_dlx?(it.ws>it.st0?'Window':'Window closes'):'',_flc=_dlx?(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?'close':'~'+rpClk(it.dl))):('~'+rpClk(it.dl))):''; /* 0727g: the footer's two words, ONE computation \u2014 the markup and the channel both drink it (LABELS MOVE WITH VALUES) */
+        _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),fl:_dlx?{l:_fll,c:_flc}:null,sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
+        return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(it.dead&&it.wo?' data-tdwo="'+esc(it.wo)+'"':'')+(it.tier?' data-tdtr="'+it.tier+'"':'')+(it.tier===3?' data-tdws="'+it.ws+'"':'')+(it.tier===1&&it.dl!=null?' data-tddl="'+it.dl+'"':'')+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+_fll+'</span><b>'+_flc+'</b></div>':'')+'</div>';};
       var _lt=0,_dl9=0; /* 0724j THE B CUT (B-2, ratified wording from option-b-mock.html): thin lanes at the tier seams — labels render at BOUNDARIES only, so an all-anytime board stays bare and a leave that outruns every future window never shows the evening lane (its absence is information). Pins are lane-neutral; done rides ride to their tail untouched. */
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);return;}
         var t9=it.pin?0:(it.tier||0);
@@ -5839,7 +5840,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         :('A suggested order from your day\u2019s typical waits \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+'s read the whole trip instead':''));
       basis=(hrs.c===null?'<b>Hours not published yet</b> \u00b7 ':'')+(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+(eng.swept?' \u00b7 anytime rides grouped by walk':'')+' \u00b7 history, never a promise'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c)+(swp2?'':' published'):''); /* 0723w MIDNIGHT IS 12 AM (owner Harbor specimen): >= springs the rpClk(1440) trap the hero already guards; and on sweep-extended nights the close is the WINDOW\u2019s, not the published \u2014 the false word comes off (labels state their measure) */
     }
-    tdSecHTML.rows=_cr;tdSecHTML.seq=_sq; /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
+    tdSecHTML.rows=_cr;tdSecHTML.seq=_sq;tdSecHTML.span={f:spF9,t:spT9,lens:tdLens}; /* 0727g THE PAIR: the span joins the horizon in the channel \u2014 the day card quotes the page\u2019s own two words */ /* 0717n: published after the walk; consumers read immediately (the tpRead.beats law) */
     return head+fuse9+hint+body+addr+'<div class="pf-basis">'+basis+'</div>'+pick+parksLab;
   }
   function tdStrip(t,model,ds){ /* 0717n (D-1 ratified): one chip per trip day - planned park's tier when planned, else the day's leading tier, neutral when thin; ring = the card's day */
@@ -5873,10 +5874,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return {ds:ds,dayName:tpWDn(ds).toUpperCase(),dateStr:tpMD(ds),
       eyebrow:((t&&t.n)||'My trip').toUpperCase()+' \u00b7 DAY '+(di+1)+' OF '+days.length,
       park:pk||'',tierW:(tier&&!tier.thin)?TP_TW[tier.lvl]:'',tierL:(tier&&!tier.thin)?tier.lvl:0,
-      hrs:hrs,ee:ee,strip:tdStrip(t,model,ds),head:hd2,foots:foots,
+      hrs:hrs,ee:ee,strip:tdStrip(t,model,ds).map(function(ch,i2){var d1=days[i2];ch.race=!!(EV&&EV.race&&EV.race[d1]);ch.pe=(EV&&EV.night&&EV.night[d1])?(tfPartyEm(d1)||"ring"):"";return ch;}),head:hd2,foots:foots, /* 0727g D4: the strip wears the trip card\u2019s marks \u2014 the two cards say the same thing about the same days */
+      span:(pk&&(tdSecHTML.rows||[]).length&&tdSecHTML.span)?(String(tdSecHTML.span.f).replace(/^from /,"From ")+" till "+tdSecHTML.span.t):"", /* 0727g D1: the page\u2019s own two words */
+      lens:(pk&&(tdSecHTML.rows||[]).length&&tdSecHTML.span&&tdSecHTML.span.lens==="mine")?"mine":"app",
       thinNote:thin.length?tpAmp(thin)+' too thin yet.':'',
       rows:pk?(tdSecHTML.rows||[]):[],count:pk?(tdSecHTML.rows||[]).length:0, /* 0717n: an unplanned day carries no board, whatever the channel last held */
-      basis:'Banked '+tpWDn(ds)+'s \u00b7 a pattern, not a forecast',link:'parkpulse.live'};}
+      basis:((pk&&(tdSecHTML.rows||[]).length)?(((tdSecHTML.span&&tdSecHTML.span.lens)==="mine")?'My order':'App\u2019s order')+' \u00b7 ':'')+'Banked '+tpWDn(ds)+'s \u00b7 a pattern, not a forecast',link:'parkpulse.live'};} /* 0727g D3: the lens leads (the M-A precedent); an empty board carries no lens */
   function RD(w,z){return w+" "+z+'px ui-rounded,"Space Grotesk",sans-serif';} /* 0717o: the Hybrid face debuts on this surface (owner call; the identity round follows later) */
   function RB(w,z){return w+" "+z+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
   var TD_SOFT=["","#93e2ba","#cbdba3","#f8d38f","#ffb197"]; /* the board's soft fills as card constants - cards keep their own palette in both themes */
@@ -5899,9 +5902,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var recL=wrapN(RB(500,34),D.head.r+(D.thinNote?" "+D.thinNote:""),R-L);
     var ftL=D.foots.map(function(f){return wrapN(RB(500,31),f.h,R-L-52);});
     var rowsM=D.rows.map(function(rr){
-      var nmL=wrapN(RB(600,38),rr.nm,R-L-64);if(nmL.length>2)nmL=[nmL[0],nmL[1]];
-      var sbL=rr.sub?wrapN(RB(500,30),rr.sub,R-L-64):[];
-      return {nm:nmL,sb:sbL};});
+      var nmW=R-L-64-(rr.fl?350:0),nmL=wrapN(RB(600,38),rr.nm,nmW);if(nmL.length>2)nmL=[nmL[0],nmL[1]]; /* 0727g D2: a windowed row keeps 350 for its rail */
+      var sbL=rr.sub?wrapN(RB(500,30),rr.sub,nmW):[];
+      return {nm:nmL,sb:sbL,nw:nmW};});
     function pass(x){ /* x=null: dry (height only) */
       var G=K.geom(x),rr2=G.rr2,T2=G.T2;function HL(py){G.HL(L,R,py);} /* 0717t Cut 1: geometry hands from the kit; HL keeps its local L/R seat so the pass body below is untouched */
       var y=104,q,j;
@@ -5914,7 +5917,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(D.strip.length){var n0=D.strip.length,gp=16,cw=(R-L-(n0-1)*gp)/n0;
         for(q=0;q<n0;q++){var ch=D.strip[q],cx2=L+q*(cw+gp);
           if(x){x.fillStyle=ch.lvl?TD_SOFT[ch.lvl]:"rgba(255,255,255,.16)";rr2(cx2,y,cw,86,20);x.fill();
-            if(ch.td){x.strokeStyle="#b4b0ff";x.lineWidth=5;rr2(cx2-7,y-7,cw+14,100,26);x.stroke();}}
+            if(ch.td){x.strokeStyle="#b4b0ff";x.lineWidth=5;rr2(cx2-7,y-7,cw+14,100,26);x.stroke();}
+            if(ch.race){x.fillStyle="#3dd68c";rr2(cx2+14,y+74,cw-28,7,4);x.fill();x.strokeStyle="rgba(255,255,255,.92)";x.lineWidth=3;rr2(cx2+14,y+74,cw-28,7,4);x.stroke();} /* 0727g D4: the race ribbon, the trip card\u2019s mark at chip scale */
+            if(ch.pe&&ch.pe!=="ring"){x.shadowColor="rgba(0,0,0,.35)";x.shadowOffsetY=2;x.shadowBlur=3;x.font="30px sans-serif";x.textAlign="left";x.fillStyle=C.ink;x.fillText(ch.pe,cx2-6,y+22);x.shadowColor="transparent";x.shadowBlur=0;x.shadowOffsetY=0;}}
           var ic=ch.lvl?"#1c1a38":"#7d97a1";
           T2(String(ch.dt),cx2+cw/2,y+40,RD(700,32),ic,"center");
           T2(n0>9?ch.wd3.slice(0,1):ch.wd3,cx2+cw/2,y+70,RB(600,20),ic,"center");}
@@ -5938,20 +5943,22 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(D.park){
         T2("MY DAY AT "+D.park.toUpperCase()+(D.count?" \u00b7 "+D.count+" RIDE"+(D.count===1?"":"S"):""),L,y,RD(700,29),C.muted2);
         if(D.hrs){T2(D.hrs,R,y,RB(600,31),C.ink,"right");if(D.ee)T2(D.ee.toUpperCase(),R,y+36,RD(700,22),"#9bf7c9","right");}
-        y+=(D.ee?110:86);
+        if(D.span)T2(D.span,L,y+40,RB(600,31),"#9bf7c9"); /* 0727g D1: the plan\u2019s premise \u2014 every \u201cfrom here\u201d on the card now has a here */
+        y+=((D.ee||D.span)?110:86);
         if(!D.rows.length){T2("No rides saved yet.",L,y,RB(500,30),C.muted2);y+=64;}
         for(q=0;q<D.rows.length;q++){var rw3=D.rows[q],rm=rowsM[q],ny=y;
           if(rw3.seat)T2(rw3.seat,L,y+6,RD(700,42),C.green);
-          for(j=0;j<rm.nm.length;j++){var nt=rm.nm[j];if(j===1)nt=ell(nt,RB(600,38),R-(L+64));T2(nt,L+64,ny+6,RB(600,38),C.ink);ny+=46;}
+          if(rw3.fl){T2(rw3.fl.c,R,y+6,RD(700,29),C.violet,"right");T2(String(rw3.fl.l).toUpperCase(),R,y+40,RD(700,20),C.muted2,"right");} /* 0727g D2: the window rail \u2014 the footer\u2019s own clock and word */
+          for(j=0;j<rm.nm.length;j++){var nt=rm.nm[j];if(j===1)nt=ell(nt,RB(600,38),rm.nw);T2(nt,L+64,ny+6,RB(600,38),C.ink);ny+=46;}
           if(rw3.badge&&x){var bw=tw(RB(700,24),rw3.badge)+28,bx=L+64+tw(RB(600,38),rm.nm[0])+16;
-            if(bx+bw<=R){x.strokeStyle="rgba(180,176,255,.5)";x.lineWidth=2;rr2(bx,y-24,bw,40,12);x.stroke();T2(rw3.badge,bx+14,y+4,RB(700,24),C.violet);}}
+            if(bx+bw<=L+64+rm.nw){x.strokeStyle="rgba(180,176,255,.5)";x.lineWidth=2;rr2(bx,y-24,bw,40,12);x.stroke();T2(rw3.badge,bx+14,y+4,RB(700,24),C.violet);}}
           for(j=0;j<rm.sb.length;j++){T2(rm.sb[j],L+64,ny+2,RB(500,30),C.muted);ny+=40;}
           y+=Math.max(58,rm.nm.length*46+rm.sb.length*40)+34;}
       }
       y+=30;
       var fy=y+126; /* hairline at fy-96, basis beneath it, green at fy-36, credits at fy - the family geometry */
       HL(fy-96);
-      T2(ell(D.basis,RB(500,26),R-L),L,fy-96+34,RB(500,26),C.muted2);
+      var bL=wrapN(RB(500,26),D.basis,560);for(q=0;q<bL.length&&q<2;q++)T2(bL[q],L,fy-96+34+q*34,RB(500,26),C.muted2); /* 0727g: one footer hand for the pair */
       T2("parkpulse.live",R,fy-36,RB(700,31),C.green,"right");
       T2("Data: ThemeParks.wiki",R,fy,RB(500,25),C.muted2,"right");
       return fy+56;
@@ -6005,7 +6012,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     txt=s.slice(last);if(txt)out.push({t:tdUnHTML(txt),b:b>0,tier:tier});
     return out;}
   function tpRowBadge(hd){ /* 0717u Cut 2a: the row's mint short badges from the recorded extras - key word + its recorded start, nothing invented (EE 8:30 \u00b7 EVE 10 PM \u00b7 EVT 7 PM) */
-    var K={EE:"EE",EEH:"EVE",EVT:"EVT"},j,xp=[];
+    var K={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"},j,xp=[]; /* 0727g T2: the day card\u2019s dialect \u2014 friends don\u2019t know EE */
     for(j=0;j<((hd&&hd.ext)||[]).length;j++){var x=hd.ext[j];xp.push((K[x.k]||x.k)+" "+tpClk(x.o));}
     return xp.join(" \u00b7 ");}
   function tpDayRows(t,model,EV,today){ /* 0717u Cut 2a: one model per trip day - chip via the shipped tdStrip D-1 (ring=today), park/tier word/count, published hours + short badges, chip-borne race/party marks; every field from shipped engines, null-model days keep their plan truths with neutral chips */
@@ -6017,7 +6024,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       out.push({ds:d0,dt:+d0.slice(8,10),wd3:strip?strip[i].wd3:tpWDn(d0).slice(0,3).toUpperCase(),
         lvl:strip?strip[i].lvl:0,ring:strip?!!strip[i].td:(d0===today),behind:d0<today,
         pk:pk||"",tierW:(tier&&!tier.thin)?TP_TW[tier.lvl]:"",count:pk?tdRides(t,d0).length:0,
-        hrs:hrs,ee:ee,race:!!(EV.race&&EV.race[d0]),pe:(EV.night&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""});}
+        tierL:(tier&&!tier.thin)?tier.lvl:0,hrs:hrs,ee:ee,race:!!(EV.race&&EV.race[d0]),pe:(EV.night&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""});}
     return out;}
   function tpCardData(t){ /* 0717u Cut 2a: the whole trip-card model (TR2, anatomy B, S3 - all owner-ratified) - header, headline + soft rail on the shipped composers verbatim, day rows, basis; the drawer consumes next cut */
     var model=tpModel(),today=tpToday(),ds=tpDays(t),EV=tpEvCtx(t,ds);
@@ -6029,7 +6036,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var er=(EV.reads||[]);for(q=0;q<er.length;q++)rail.push({k:er[q].c,e:er[q].e||"",runs:tpRuns(er[q].h)});
     return {eyebrow:((t&&t.n)||"My trip").toUpperCase(),big:tpRangeBig(t),meta:tpCardMeta(t,today),
       head:tpCardHd(rows,ds.length),rail:rail,rows:rows,n:ds.length,
-      basis:model?tpBasis(t,model):"The board fills from banked days",link:"parkpulse.live"};}
+      basis:model?("Same-weekday history \u00b7 "+model.cnt+" banked days \u00b7 a pattern, not a forecast"):"The board fills from banked days",link:"parkpulse.live"};} /* 0727g T1: the family sentence \u2014 the page\u2019s line was chopped at two lines (\u201ccolor = \u2026\u201d on glass) */
   function tpWrapRuns(K,runs,mw){ /* 0717v Cut 2b: run-aware wrapping - words keep their run's dress (bold / tier ink); lines of merged segments; run-edge spacing collapses to single spaces by construction */
     var toks=[],i,prevSp=true;
     for(i=0;i<runs.length;i++){var r=runs[i],s0=String(r.t),ws=s0.split(" "),j,st=/^\s/.test(s0);
@@ -6049,19 +6056,19 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var s=[];
     if(r.pk){s.push({t:r.count?(r.count+" ride"+(r.count===1?"":"s")):"no rides saved yet",mint:false});
       if(r.hrs)s.push({t:r.hrs,mint:false});
-      if(r.ee)s.push({t:r.ee,mint:true});}
+      if(r.ee)String(r.ee).split(" \u00b7 ").forEach(function(b9){s.push({t:b9,mint:true});});} /* 0727g T2: one segment per badge \u2014 the wrap law breaks between them */
     return s;}
   function tpDrawCard(D){ /* 0717v Cut 2b: the trip drawer - the day card one level up (TR2 read + anatomy B + S3 rows, all owner-ratified), single-path two-pass on tdKit; the amber-word paint is the day card's own mechanism */
     var W=1080,L=84,R=W-84,C=window.__pwCardInk,TI=["",C.green,"#ffce5c",C.busy,C.packed];
     var K=tdKit(),tw=K.tw,ell=K.ell;
     var railW=R-L-52,railL=D.rail.map(function(rr){return tpWrapRuns(K,rr.runs,railW);});
-    var metaL=D.rows.map(function(r){var s=tpMetaSegs(r),mw=R-(L+240),l1=[],l2=[],wsum=0,i;
-      for(i=0;i<s.length;i++){var sep=l1.length?" \u00b7 ":"";
+    var metaL=D.rows.map(function(r){var s=tpMetaSegs(r),mw=R-(L+240),ls=[[]],wsum=0,i; /* 0727g T2: greedy lines, up to three \u2014 spelled badges need the room */
+      for(i=0;i<s.length;i++){var cur=ls[ls.length-1],sep=cur.length?" \u00b7 ":"";
         var f=s[i].mint?RD(700,29):RB(500,33);
         var w2=(sep?tw(RB(500,33),sep):0)+tw(f,s[i].t);
-        if(!l2.length&&wsum+w2<=mw){l1.push(s[i]);wsum+=w2;}
-        else l2.push(s[i]);}
-      return {l1:l1,l2:l2};});
+        if(cur.length&&wsum+w2>mw){ls.push([s[i]]);wsum=tw(f,s[i].t);}
+        else{cur.push(s[i]);wsum+=w2;}}
+      return {l1:ls[0],l2:ls[1]||[],l3:ls[2]||[]};});
     function pass(x){
       var G=K.geom(x),rr2=G.rr2,T2=G.T2;function HL(py){G.HL(L,R,py);}
       function segLine(segs,mx2,my){var i2;
@@ -6108,21 +6115,18 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         var tx=L+240;
         if(r3.pk){var pw=r3.tierW?tw(RD(700,33),r3.tierW)+24:0;
           T2(ell(r3.pk,RD(700,46),R-tx-pw),tx,y+46,RD(700,46),C.ink);
-          if(r3.tierW)T2(r3.tierW,R,y+44,RD(700,33),"#ffce5c","right");
+          if(r3.tierW)T2(r3.tierW,R,y+44,RD(700,33),TI[r3.tierL]||"#ffce5c","right"); /* 0727g T3: ONE BAND VOCABULARY \u2014 Busy wears Busy */
           if(M.l1.length)segLine(M.l1,tx,y+92);
-          if(M.l2.length)segLine(M.l2,tx,y+136);}
+          if(M.l2.length)segLine(M.l2,tx,y+136);if(M.l3.length)segLine(M.l3,tx,y+180);}
         else T2("Not planned yet",tx,y+68,RB(500,42),C.muted2);
         if(x)x.globalAlpha=1;
-        y+=114+(M.l2.length?44:0);
+        y+=114+(M.l2.length?44:0)+(M.l3.length?44:0);
         if(q<D.rows.length-1)HL(y+28);
         y+=84;}
       y-=30;
       var fy=y+126; /* the family geometry - hairline at fy-96, green at fy-36, credits at fy */
       HL(fy-96);
-      var bL=K.wrapN(RB(500,26),D.basis,460),bMore=bL.length>2;bL=bL.slice(0,2);
-      if(bMore){var bw2=bL[1].split(" ");while(bw2.length>1&&tw(RB(500,26),bw2.join(" ")+" \u2026")>460)bw2.pop();bL[1]=bw2.join(" ")+" \u2026";} /* 0717w column; 0717y: the backstop drops whole words - no more mid-word "colo\u2026" (owner-caught) */
-      T2(bL[0],L,fy-96+34,RB(500,26),C.muted2);
-      if(bL[1])T2(bL[1],L,fy-96+68,RB(500,26),C.muted2);
+      var bL=K.wrapN(RB(500,26),D.basis,560);for(q=0;q<bL.length&&q<2;q++)T2(bL[q],L,fy-96+34+q*34,RB(500,26),C.muted2); /* 0727g T1: the family footer hand \u2014 the basis wraps at 560 beside the wordmark, two lines at most (the bright cards\u2019 own geometry); the 460 column and its word-dropping backstop retire with the page-length basis they served */
       T2("parkpulse.live",R,fy-36,RB(700,31),C.green,"right");
       T2("Data: ThemeParks.wiki",R,fy,RB(500,25),C.muted2,"right");
       return fy+56;
@@ -6172,7 +6176,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var hdn=(HOLIDAYS[d0]&&HOLIDAYS[d0]!=="Christmas week")?HOLIDAYS[d0]:null; /* Cut 3 (O-A): a SPECIFIC day-name wins its own row; the generic stretch label yields to the seasonal tag \u2014 the bars name the week either way */
       var hol=(hdn?'<span class="tp-hol">'+esc(hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var pln=pk?'Planned \u00b7 '+esc(pk):(behind?'Behind you':'Not planned yet'); /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
       var dx='';
       if(open){var L=tpDayLine(d0,model,t,EV),tdr9=(pk&&d0===tpToday())?'<button class="tp-today" data-tptoday="'+esc(pk)+'" type="button">It\u2019s today \u2014 your live board is on TODAY <span class="chev">\u203a</span></button>':'';dx='<div class="tp-dx">'+L.line+L.sub+tdr9+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0727d THE TRIP KNOWS TODAY (D): on the day itself the trip page names the surface where the waits live \u2014 one door, no input; the two surfaces name each other */ /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
