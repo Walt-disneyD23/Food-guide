@@ -2138,7 +2138,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727g</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5894,11 +5894,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       function HL(L2,R2,py){if(!x)return;x.strokeStyle="rgba(255,255,255,.09)";x.lineWidth=2;x.beginPath();x.moveTo(L2,py);x.lineTo(R2,py);x.stroke();}
       return {rr2:rr2,T2:T2,HL:HL};
     }
-    return {tw:tw,wrapN:wrapN,ell:ell,geom:geom};
+    function wrapC(f,t,mw){var cs=String(t).split(" \u00b7 "),ln="",o=[],i,j;for(i=0;i<cs.length;i++){var t2=(ln?ln+" \u00b7 ":"")+cs[i];if(tw(f,t2)>mw&&ln){o.push(ln);ln=cs[i];}else ln=t2;}if(ln)o.push(ln);var out=[];for(j=0;j<o.length;j++){if(tw(f,o[j])>mw)out=out.concat(wrapN(f,o[j],mw));else out.push(o[j]);}return out;} /* 0727h THE CLAUSE IS THE BREAK: the basis wraps at its dots; a clause wider than the column falls back to words */
+    return {tw:tw,wrapN:wrapN,wrapC:wrapC,ell:ell,geom:geom};
   }
   function tdDrawCard(D){ /* 0717o Cut 2b: single-path two-pass - pass(null) measures the height, pass(ctx) paints; one arithmetic, zero drift */
     var W=1080,L=84,R=W-84,C=window.__pwCardInk; /* 0717p: PW_CARD lives in the Wrap IIFE - the export is the bridge */
-    var K=tdKit(),tw=K.tw,wrapN=K.wrapN,ell=K.ell; /* 0717t Cut 1: the toolkit consumed from tdKit - bodies byte-identical, hoisted not rewritten */
+    var K=tdKit(),tw=K.tw,wrapN=K.wrapN,wrapC=K.wrapC,ell=K.ell; /* 0717t Cut 1: the toolkit consumed from tdKit - bodies byte-identical, hoisted not rewritten */
     var recL=wrapN(RB(500,34),D.head.r+(D.thinNote?" "+D.thinNote:""),R-L);
     var ftL=D.foots.map(function(f){return wrapN(RB(500,31),f.h,R-L-52);});
     var rowsM=D.rows.map(function(rr){
@@ -5958,7 +5959,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       y+=30;
       var fy=y+126; /* hairline at fy-96, basis beneath it, green at fy-36, credits at fy - the family geometry */
       HL(fy-96);
-      var bL=wrapN(RB(500,26),D.basis,560);for(q=0;q<bL.length&&q<2;q++)T2(bL[q],L,fy-96+34+q*34,RB(500,26),C.muted2); /* 0727g: one footer hand for the pair */
+      var bL=wrapC(RB(500,26),D.basis,560);for(q=0;q<bL.length&&q<2;q++)T2(bL[q],L,fy-96+34+q*34,RB(500,26),C.muted2); /* 0727g: one footer hand for the pair */
       T2("parkpulse.live",R,fy-36,RB(700,31),C.green,"right");
       T2("Data: ThemeParks.wiki",R,fy,RB(500,25),C.muted2,"right");
       return fy+56;
@@ -6066,7 +6067,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       for(i=0;i<s.length;i++){var cur=ls[ls.length-1],sep=cur.length?" \u00b7 ":"";
         var f=s[i].mint?RD(700,29):RB(500,33);
         var w2=(sep?tw(RB(500,33),sep):0)+tw(f,s[i].t);
-        if(cur.length&&wsum+w2>mw){ls.push([s[i]]);wsum=tw(f,s[i].t);}
+        if(cur.length&&(wsum+w2>mw||(s[i].mint&&!cur[cur.length-1].mint))){ls.push([s[i]]);wsum=tw(f,s[i].t);} /* 0727h: a badge never shares a line with the count and hours \u2014 every row the same shape */
         else{cur.push(s[i]);wsum+=w2;}}
       return {l1:ls[0],l2:ls[1]||[],l3:ls[2]||[]};});
     function pass(x){
@@ -6126,7 +6127,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       y-=30;
       var fy=y+126; /* the family geometry - hairline at fy-96, green at fy-36, credits at fy */
       HL(fy-96);
-      var bL=K.wrapN(RB(500,26),D.basis,560);for(q=0;q<bL.length&&q<2;q++)T2(bL[q],L,fy-96+34+q*34,RB(500,26),C.muted2); /* 0727g T1: the family footer hand \u2014 the basis wraps at 560 beside the wordmark, two lines at most (the bright cards\u2019 own geometry); the 460 column and its word-dropping backstop retire with the page-length basis they served */
+      var bL=K.wrapC(RB(500,26),D.basis,560);for(q=0;q<bL.length&&q<2;q++)T2(bL[q],L,fy-96+34+q*34,RB(500,26),C.muted2); /* 0727g T1: the family footer hand \u2014 the basis wraps at 560 beside the wordmark, two lines at most (the bright cards\u2019 own geometry); the 460 column and its word-dropping backstop retire with the page-length basis they served */
       T2("parkpulse.live",R,fy-36,RB(700,31),C.green,"right");
       T2("Data: ThemeParks.wiki",R,fy,RB(500,25),C.muted2,"right");
       return fy+56;
