@@ -2138,7 +2138,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727i</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727j</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3227,7 +3227,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(usingFallback)return "";
     var ds=(typeof tpToday==="function")?tpToday():null;if(!ds)return "";
     var h="",p=rdTnParty(ds),r=rdTnRace(ds);
-    if(p)h+='<div class="rd-row"><span class="ic">'+(p.holiday?"\uD83C\uDF84":"\uD83C\uDF83")+'</span><div class="tx"><b>'+esc(p.park)+'</b> hosts a ticketed '+(p.holiday?"holiday party":"party")+' tonight \u2014 it <b>closes early</b>; lighter waits there can be the shorter day talking.</div></div>';
+    if(p)h+='<div class="rd-row"><span class="ic">'+(p.holiday?"\uD83C\uDF84":"\uD83C\uDF83")+'</span><div class="tx"><b>'+esc(p.park)+'</b> hosts a ticketed '+(p.holiday?"holiday party":"party")+' tonight \u2014 it <b>closes to day guests</b>'+(function(){var f9=null,k9;for(k9 in BANNER_MONO)if(BANNER_MONO[k9]===p.park)f9=k9;var c9=(f9&&parkInfo[f9]&&parkInfo[f9].close)?fmtClock(parkInfo[f9].close):null;return c9?' at '+c9:' early';})()+'. Party days have run lighter through the day.</div></div>'; /* 0727j THE PARTY DAY RUNS LIGHTER (owner-ruled A, Sep 3): the short-day hedge retired \u2014 the tape says party daytimes run ~a fifth lighter (Party-Split-Findings \u00a78.6); the clock is the row's own published close, "early" when unknown; "day guests" tells whose night it is (DISCLOSURE OVER GATEKEEPING). C rider: the second sentence earns its live number when the party pool lands. */
     if(r)h+=r.open
       ?'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend \u2014 these weekends <b>have run quieter than typical</b>, not busier.</div></div>'
       :'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend across the resort.</div></div>';
@@ -5296,7 +5296,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       }}
     var nn=0;for(d in out.night)nn++;
     if(nn){var pg="";for(d in out.night){pg=tfPartyEm(d)||"";if(pg&&pg!=="ring")break;}
-      var rs2="Magic Kingdom "+(past?"hosted":"hosts")+" a ticketed party on <b>"+nn+"</b> of your night"+(nn===1?"":"s")+" \u2014 it "+(past?"closed":"closes")+" early those days; calmer colors there reflect the shorter day, not a quieter park.";out.read+=" "+rs2;out.reads.push({c:"party",e:(pg&&pg!=="ring")?pg:"",h:rs2});}
+      var rs2="Magic Kingdom "+(past?"hosted":"hosts")+" a ticketed party on <b>"+nn+"</b> of your night"+(nn===1?"":"s")+" \u2014 it "+(past?"closed":"closes")+" to day guests early those days. Party days have run lighter through the day."; /* 0727j THE PARTY DAY RUNS LIGHTER */out.read+=" "+rs2;out.reads.push({c:"party",e:(pg&&pg!=="ring")?pg:"",h:rs2});}
     for(i=0;i<T.events.length;i++){var e2=T.events[i];if(e2.type!=="party")continue;
       for(j=0;j<e2.windows.length;j++){var w2=e2.windows[j];
         if(!(w2.v==="vv"||w2.v==="v"))continue;
@@ -5367,7 +5367,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(EV&&EV.race&&EV.race[ds]){var w0=TP_EV_WORD[EV.race[ds]]||EV.race[ds],op=window.__pwRS&&window.__pwRS[EV.race[ds]]&&window.__pwRS[EV.race[ds]].v==="open";
       out.push({k:"race",h:'A <b>'+w0+' weekend</b> day'+(op?' \u2014 those weekends have run <b>quieter than typical, not busier</b>.':'.')});}
     if(EV&&EV.night&&EV.night[ds]){var bh=ds<tpToday(),pg2=tfPartyEm(ds)||"";
-      out.push({k:"party",e:(pg2&&pg2!=="ring")?pg2:"",h:'Magic Kingdom '+(bh?'hosted':'hosts')+' a ticketed party '+(bh?'that night':'tonight')+' \u2014 it '+(bh?'closed':'closes')+' early; calmer colors there reflect the shorter day, not a quieter park.'});}
+      out.push({k:"party",e:(pg2&&pg2!=="ring")?pg2:"",h:'Magic Kingdom '+(bh?'hosted':'hosts')+' a ticketed party '+(bh?'that night':'tonight')+' \u2014 it '+(bh?'closed':'closes')+' to day guests early. Party days have run lighter through the day.'});} /* 0727j: no published close for an off-day in the frontend's data \u2014 no clock (THE MANUAL INVENTS NOTHING) */
     return out;
   }
   function tpDayLine(ds,model,t,EV){ /* the opened day's per-day voice + the clause-earned holiday honesty sub - 0717k rail; 0717l event rows; 0717m: composers extracted, this is now the dresser */
