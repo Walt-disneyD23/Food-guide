@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Share probe</title>
+<style>
+  body{margin:0;padding:24px 20px 48px;font:17px/1.45 -apple-system,system-ui,sans-serif;background:#f6f7f9;color:#14203a}
+  h1{font-size:22px;margin:0 0 4px}
+  p{margin:0 0 18px;color:#5a6577}
+  button{display:block;width:100%;box-sizing:border-box;margin:0 0 12px;padding:16px 18px;border:0;border-radius:14px;background:#14203a;color:#fff;font:600 18px/1.2 -apple-system,system-ui,sans-serif;text-align:left}
+  button small{display:block;font-weight:400;font-size:14px;opacity:.75;margin-top:4px}
+  #log{margin-top:22px;padding:14px 16px;border-radius:12px;background:#fff;border:1px solid #dfe3ea;font:14px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word;color:#14203a}
+</style></head><body>
+<h1>Share probe</h1>
+<p>Tap each shape, send it to Messages, screenshot what arrives. The picture shows its own letter.</p>
+
+<button data-shape="A">A · files + title<small>today's shape — the control</small></button>
+<button data-shape="B">B · files + url<small>picture with a link, no title</small></button>
+<button data-shape="C">C · files + url + title<small>picture, link, and title</small></button>
+<button data-shape="D">D · files + text<small>picture with plain text (not a url field)</small></button>
+
+<div id="log">ready</div>
+
+<script>
+(function(){
+  var LINK="https://walt-disneyd23.github.io/Food-guide/share-probe.html#today";
+  var TITLE="Share probe \u2014 shape ";
+  var log=document.getElementById("log");
+  function say(s){log.textContent+="\n"+s;}
+  log.textContent="ua: "+navigator.userAgent+"\nnavigator.share: "+(typeof navigator.share)+"\nnavigator.canShare: "+(typeof navigator.canShare);
+
+  function paint(letter,cb){
+    var cv=document.createElement("canvas");cv.width=600;cv.height=400;
+    var x=cv.getContext("2d");
+    x.fillStyle="#14203a";x.fillRect(0,0,600,400);
+    x.fillStyle="#fff";x.textAlign="center";x.textBaseline="middle";
+    x.font="700 220px -apple-system,system-ui,sans-serif";x.fillText(letter,300,180);
+    x.font="500 34px -apple-system,system-ui,sans-serif";x.fillText("share probe \u00b7 shape "+letter,300,340);
+    cv.toBlob(function(b){cb(b);},"image/png");
+  }
+
+  function shape(letter,file){
+    var d={files:[file]};
+    if(letter==="A"){d.title=TITLE+letter;}
+    if(letter==="B"){d.url=LINK;}
+    if(letter==="C"){d.url=LINK;d.title=TITLE+letter;}
+    if(letter==="D"){d.text="share probe \u00b7 shape "+letter+" \u00b7 "+LINK;}
+    return d;
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("button"),function(btn){
+    btn.addEventListener("click",function(){
+      var letter=btn.getAttribute("data-shape");
+      paint(letter,function(blob){
+        if(!blob){say(letter+": toBlob gave nothing");return;}
+        var file=new File([blob],"probe-"+letter+".png",{type:"image/png"});
+        var d=shape(letter,file);
+        var can=(navigator.canShare&&navigator.canShare(d));
+        say(letter+": canShare="+can+" keys="+Object.keys(d).join(","));
+        if(!navigator.share){say(letter+": no navigator.share");return;}
+        navigator.share(d).then(function(){say(letter+": share resolved");})
+          ["catch"](function(e){say(letter+": share rejected \u2014 "+(e&&e.name)+" "+(e&&e.message));});
+      });
+    });
+  });
+})();
+</script>
+</body></html>
