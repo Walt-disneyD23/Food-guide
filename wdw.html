@@ -2201,7 +2201,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727t</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727u</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6739,7 +6739,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '</div>';
   }
   /* ===== 0727s THE CALENDAR — a place just to look (owner-ruled Sep 6–7; Name-S1 §7 addendum). Hours as Disney posts them, party nights by name where the windows are verified, holidays, festivals, the pattern's strip — any month Disney has published. Zero input: months swipe, a day taps open. ===== */
-  var pcYM=null,pcSel=null;
+  var pcYM=null,pcSel=null,pcWarm=false;
   var PC_MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
   function pcShift(mo,k){var a=mo.split("-"),y=+a[0],m=+a[1]-1+k;while(m<0){m+=12;y--;}while(m>11){m-=12;y++;}return y+"-"+("0"+(m+1)).slice(-2);}
   function pcPublished(mo){var rec=tpSched[mo],k,d;if(!rec)return null;for(k in rec){for(d in rec[k]){if(rec[k][d]&&rec[k][d].open)return true;}}return false;} /* null = loading · false = fetched, nothing published · true = published */
@@ -6803,8 +6803,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function pcPageHTML(){
     var today=tpToday();if(!pcYM){pcYM=today.slice(0,7);pcSel=today;} /* 0727t: arrival opens today's sheet — the question the door answers first */
     tpFetchMonth(pcYM,function(){if(rpView==="cal")renderPulsePage();});
-    if(typeof window.__avGo==="function")window.__avGo(function(){if(rpView==="cal")renderPulsePage();}); /* 0727t: the pattern's strips — warmed the way the funnel warms them */
-    if(typeof window.__slGo==="function"&&!((typeof window.__slAnchors==="function")&&window.__slAnchors()))window.__slGo(function(){if(rpView==="cal")renderPulsePage();}); /* …and the seated anchors for holiday weeks */
+    if(!pcWarm){pcWarm=true; /* 0727u: A WARM-UP IS ASKED FOR ONCE, ON ARRIVAL — pwAlmPrefetch calls back synchronously once loaded; asked from every render it re-entered the render until the stack blew */
+      if(!((typeof window.__tfL==="function")&&window.__tfL())&&typeof window.__avGo==="function")window.__avGo(function(){if(rpView==="cal")renderPulsePage();}); /* the pattern's strips — warmed the way the funnel warms them, with the funnel's guard */
+      if(typeof window.__slGo==="function"&&!((typeof window.__slAnchors==="function")&&window.__slAnchors()))window.__slGo(function(){if(rpView==="cal")renderPulsePage();});} /* …and the seated anchors for holiday weeks */
     var h='<div class="pw-nav"><button class="pw-back plx" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Plan</button></div>';
     h+='<div class="rpc pc-head"><div class="tp-peb" style="margin-top:0">The calendar</div><div class="pc-lead">Hours, party nights, holidays and festivals \u2014 any month Disney has posted. Tap a day for its hours.</div></div>';
     h+=pcUpHTML(today)+pcMonthHTML(today)+(pcSel?pcSheetHTML(pcSel,today):'');
@@ -6833,7 +6834,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var v=b.getAttribute("data-pl");
       if(v==="trip"){rpView="trip";rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;tpLensSel=null;tpLensDay=null;tpOpen=null;tdReset();renderPulsePage();rpTop();return;} /* the funnel keeps its place if it was mid-screen (playground law) */
       if(v==="census"){rpView="attr";tpEdit=false;tpNew=false;tpSel=null;tdReset();renderPulsePage();rpTop();return;}
-      if(v==="cal"){rpView="cal";rpDest=null;rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;pcYM=null;pcSel=null;renderPulsePage();rpTop();return;} /* 0727s: the calendar — a look, not a make · 0727t: every arrival lands on today, sheet open */
+      if(v==="cal"){rpView="cal";rpDest=null;rpPark=null;rpRide=null;rpSub=null;rcIds=null;rcPk=false;rcFoc=null;pcYM=null;pcSel=null;pcWarm=false;renderPulsePage();rpTop();return;} /* 0727s: the calendar — a look, not a make · 0727t: every arrival lands on today, sheet open */
       rpDest=v;renderPulsePage();rpTop();});}); /* board / hours / compare - the park rung asks the one question the tool needs */
     el.querySelectorAll("[data-plpk]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the rung's answer lands you inside the tool (0714p: the door path feeds itself) */
       rpPark=b.getAttribute("data-plpk");rpView="attr";rpRide=null;rcIds=null;rcFoc=null;tpEdit=false;tpNew=false;tpSel=null;tdReset();
