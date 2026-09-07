@@ -1,5 +1,5 @@
 /* =====================================================================
-   ParkPulse — service worker (sw.js)
+   RideCue — service worker (sw.js)
    Deploy this file to the SAME folder as wdw.html in your GitHub repo.
    It runs in the background (even with the app closed) and is what
    actually shows the notification when a push arrives from the Worker.
@@ -11,9 +11,9 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener("push", (event) => {
   let data = {};
   try { data = event.data.json(); }
-  catch (_) { data = { title: "ParkPulse", body: event.data ? event.data.text() : "" }; }
+  catch (_) { data = { title: "RideCue", body: event.data ? event.data.text() : "" }; }
 
-  const title = data.title || "ParkPulse";
+  const title = data.title || "RideCue";
   const options = {
     body: data.body || "",
     icon: "parkpulse-icon.png",   // upload this PNG next to sw.js
