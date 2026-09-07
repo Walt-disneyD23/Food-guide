@@ -2092,7 +2092,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="g-body"><b>Down rides show how long</b> (“Down since 8:32 AM”). When one reopens it <b>parks here till you clear it</b> — <b>Clear all</b> sweeps them once you’ve seen the news, and every new day starts it fresh.</div>
     </div>
     <div class="g-room">
-    <div class="g-lane"><span>Your pulse</span><b>your stars, right now</b></div>
+    <div class="g-lane"><span>Your callouts</span><b>your stars, right now</b></div>
     <div class="g-body"><span class="td-brg gv">GO NOW</span> and <span class="ig-red">ROUGH RIGHT NOW</span> callouts on your starred rides only — each with its receipt (“typically 30 this half-hour · 15 under”). Quiet is a valid state: “Your other 15 are <b>running their usual lines</b>.”</div>
     </div>
     <div class="g-room">
@@ -3794,7 +3794,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }).join("");
     var more=m.moreN>0?'<div class="pf-more">+ '+m.moreN+' more running unusual right now</div>':"";
     var shareBtn='<button class="pw-share pf-share-park" type="button">'+ /* 0711g: surface door — cards state only */
-      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this pulse</button>';
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share the callouts</button>';
     return '<div class="favcard pg-list">'+head+seg+body+more+basis+shareBtn+'</div>';
   }
   /* ===== 0711f: V1 share card pipeline — the story door's payload. emitCard-family plumbing
@@ -3916,7 +3916,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         kc:(c.kind==="go"?PW_CARD_ALT.green:c.kind==="rough"?"#ff9f6b":PW_CARD_ALT.accent)};
     });
     var pk=scope==="all"?"Walt Disney World":scope;
-    return {W:1080,H:1080,stamp:stamp,kicker:(pk+" \u00b7 Pulse").toUpperCase(),
+    return {W:1080,H:1080,stamp:stamp,kicker:(pk+" \u00b7 Callouts").toUpperCase(),
       count:(unusualN>0?unusualN+" "+(unusualN===1?"ride":"rides")+" running unusual right now":"Nothing running unusual right now"),
       rows:rows,tailN:tailN,
       basis:"Typical = "+((s.pool&&s.pool.txt)?s.pool.txt:("this half-hour over the last "+s.days+" days"))+" of live waits",
@@ -7358,7 +7358,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(d.hours)T(d.hours,L,280,IN("500",30),C.muted,"left");
 
       /* 0727n b-C (owner-ruled Sep 6): the heartbeat retires — one quiet full-width pill in the tier color keeps the band’s air (306–384) without a second crowd glyph; the word and the dots below say the crowd. */
-      var pX0=L,pW=R-L,pY=306,pH=78;
+      var pX0=L,pW=R-L,pY=306,pH=78,i; /* i: the loop counter the dots and rows below still borrow (strict mode) */
       ctx.fillStyle=hexA(tier,.6);rr(pX0,pY+35,pW,8,4);ctx.fill();
 
       var sT=430,colL=L,divX=L+345,colR=divX+42;
@@ -8873,7 +8873,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }).join("");
     var rest=mrRestLine(ids,m.cards);
     if(!rows&&!rest)return "";
-    return '<div class="mr-pulse"><div class="cap">Your pulse</div>'+rows+rest+'</div>';
+    return '<div class="mr-pulse"><div class="cap">Your callouts</div>'+rows+rest+'</div>';
   }
   function mrBellTap(id){
     var r=roster[id],nm=r?r.name:"Ride";
