@@ -2067,6 +2067,8 @@
   .pc-up>div>span{display:flex;flex-direction:column;gap:2px} .pc-k{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .pc-hr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line);font-size:15px} .pc-hr:first-of-type{border-top:0;margin-top:10px} .pc-hr b{font-weight:700}
   .pc-sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .pc-shead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px} .pc-shead .td-shg{margin-top:2px}
+  .pc-mshare{display:block;margin:12px 0 0;padding:0;border:0;background:none;font:650 var(--fs-small) var(--font-body);color:var(--accent);cursor:pointer;-webkit-tap-highlight-color:transparent} .pc-mshare .chev{margin-left:2px} /* 0727y: the month's door, a text link in the S2 grammar */
   .pc-sheet{scroll-margin-bottom:calc(118px + env(safe-area-inset-bottom))} /* 0727w: the shell pads its bottom 110px + safe area under the floating nav; the sheet lands above it */
   .pc-hr .tp-hrs{text-align:right} .pc-hr .tp-hrs b{font-family:var(--font-display)} .pc-hr .tp-eet{display:block;font:italic 500 var(--fs-meta) var(--font-body);color:var(--muted)} /* 0727r: the week colors the date on the grid too — the legend promised dates in green */ /* 0727p: the planned cell is the window, never the tint (.td-ws .wc.lN was (0,3,0)) */
 </style>
@@ -2202,7 +2204,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6791,12 +6793,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(pset["\ud83c\udf84"])lg+='<div><i><span class="em">\ud83c\udf84</span></i><span>MK Christmas party night</span><small>select nights</small></div>';
     if(pset["ring"])lg+='<div><i><b class="pty"></b></i><span>MK party night</span><small>which party isn\u2019t named yet</small></div>';
     h+='<div class="tf-callg lgl">'+lg+'</div>';
+    h+='<button type="button" class="pc-mshare" data-pcshare="month">Share this month <span class="chev">\u203a</span></button>'; /* 0727y (s-B): the month's door is a text link — the ‹ › row stays a title, not a toolbar */
     h+='<div class="tf-basis">Hours as Disney publishes them, via ThemeParks.wiki \u00b7 party nights only where the night list is verified \u00b7 the strips are a pattern, never a forecast \u00b7 the week colors the date, the day wears a mark \u00b7 tap a day for its hours</div></div>';
     return h;}
   function pcSheetHTML(ds,today){ /* THE DAY SHEET: published hours per park (tpHoursHTML — Early Entry, Extended Evening, Event from the feed), the party by name, the festival running */
     var a=ds.split("-"),y=+a[0],m=+a[1]-1,h='',i,night=window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[ds],pn=night?(pcPartyName(ds)||'MK party night'):null,em=night?tfPartyEm(ds):"";
     var fests=pcWins("festival",y,m).filter(function(w){return w.f<=ds&&ds<=w.t;});
-    h+='<div class="rpc pc-sheet"><div class="tp-wd big">'+tpWDn(ds)+'</div><div class="tp-dt big">'+pcMD(ds)+(ds===today?' \u00b7 today':'')+(HOLIDAYS[ds]&&HOLIDAYS[ds]!=="Christmas week"?' \u00b7 '+esc(HOLIDAYS[ds]):'')+'</div>';
+    h+='<div class="rpc pc-sheet"><div class="pc-shead"><div><div class="tp-wd big">'+tpWDn(ds)+'</div><div class="tp-dt big">'+pcMD(ds)+(ds===today?' \u00b7 today':'')+(HOLIDAYS[ds]&&HOLIDAYS[ds]!=="Christmas week"?' \u00b7 '+esc(HOLIDAYS[ds]):'')+'</div></div><button class="td-shg" data-pcshare="day" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'; /* 0727y (s-B): the room's one glyph — the day rows' door, on the sheet's header */
     for(i=0;i<TP_PARKS.length;i++){var p=TP_PARKS[i][0],sub='';
       if(p==="Magic Kingdom"&&pn)sub='<span class="pc-sub">'+(em&&em!=="ring"?em+' ':'')+esc(pn)+' \u00b7 closes to day guests early</span>';
       if(p==="EPCOT"&&fests.length)sub+='<span class="pc-sub">\ud83c\udf77 '+fests.map(function(w){return esc((window.__pwFestN||{})[w.id]||w.name);}).join(' \u00b7 ')+'</span>';
@@ -6812,8 +6815,117 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     h+='<div class="rpc pc-head"><div class="tp-peb" style="margin-top:0">The calendar</div><div class="pc-lead">Hours, party nights, holidays and festivals \u2014 any month Disney has posted. Tap a day for its hours.</div></div>';
     h+=pcUpHTML(today)+pcMonthHTML(today)+(pcSel?pcSheetHTML(pcSel,today):'');
     return h;}
+  /* ===== 0727y THE CALENDAR'S CARDS — the month (1080×1350) and the day (1080×1080), LIGHT family (the board): TY_CARD's dress, RD/RB faces, the Today card's lifecycle verbatim. A CARD WEARS THE FIELD OF THE SURFACE IT CAME FROM: the month card carries the month's marks and pattern; the day card carries the day's hours. Neither invents. ===== */
+  function pcCardHelpers(ctx,C,L,R){
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function ell(s,f,mw){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"\u2026",f)>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function HL(y,c){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke();}
+    function SP(s,x,y,f,c,sp,a){var j,w=0,ws=[];for(j=0;j<s.length;j++){ws.push(MW(s.charAt(j),f));w+=ws[j]+sp;}w-=sp;var x0=(a==="right")?x-w:x;for(j=0;j<s.length;j++){T(s.charAt(j),x0,y,f,c);x0+=ws[j]+sp;}}
+    function wrap(s,f,mw){var ws=String(s).split(" "),ln="",o=[],j;for(j=0;j<ws.length;j++){var t2=(ln?ln+" ":"")+ws[j];if(MW(t2,f)>mw&&ln){o.push(ln);ln=ws[j];}else ln=t2;}if(ln)o.push(ln);return o;}
+    function pill(x,y,w,h,c){rr(x,y,w,h,h/2);ctx.fillStyle=c;ctx.fill();}
+    function diamond(x,y,s,c){ctx.beginPath();ctx.moveTo(x,y-s);ctx.lineTo(x+s,y);ctx.lineTo(x,y+s);ctx.lineTo(x-s,y);ctx.closePath();ctx.fillStyle=c;ctx.fill();}
+    function foot(H,l1,l2){HL(H-160,C.hair);T(l1,L,H-116,RB(500,24),C.muted);if(l2)T(l2,L,H-84,RB(500,24),C.muted);T("ridecue.live",R,H-76,RB(700,31),C.green,"right");T("Data: ThemeParks.wiki",R,H-41,RB(500,25),C.muted2,"right");}
+    return {T:T,MW:MW,ell:ell,rr:rr,HL:HL,SP:SP,wrap:wrap,pill:pill,diamond:diamond,foot:foot};
+  }
+  var PC_TIERC={1:"short",2:"medium",3:"long",4:"packed"},PC_TIERW={1:9,2:15,3:21,4:27};
+  function pcMonthCardData(){ /* the month's field, from the same resolvers the room uses */
+    var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),today=tpToday(),pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m),d,cells=[],hols=[],hasHw=false,hasRace=false,pset={};
+    for(d=1;d<=n;d++){var ds=tfDate(y,m,d),v=tfDEst(m,y,d),lv=(v!=null)?({short:1,medium:2,long:3,packed:4}[window.__avTier(v)]||0):0;
+      var an=(typeof window.__slAnchorOf==="function")?window.__slAnchorOf(ds):null,hw=!!(an&&(an.a.kind==="lift"||an.a.kind==="dip")&&an.a.scopes&&an.a.scopes.resort&&an.a.scopes.resort.q!=null);if(hw)hasHw=true;
+      var hd=HOLIDAYS[ds]&&HOLIDAYS[ds]!=="Christmas week";if(hd)hols.push([HOLIDAYS[ds],d]);
+      var race=races.some(function(w){return w.f<=ds&&ds<=w.t;});if(race)hasRace=true;
+      var pe=pev[d]||"";if(pe)pset[pe]=1;
+      cells.push({d:d,lv:lv,hw:hw,hd:!!hd,race:race,pe:pe,today:ds===today});}
+    var pub=pcPublished(pcYM),fetched=!!tpSched[pcYM],note="";
+    if(fetched&&!pub)note="Disney hasn\u2019t published "+PC_MON[m]+"\u2019s hours yet \u2014 this is the pattern and the verified lists.";
+    else if(fetched&&pub<tfDate(y,m,n))note="Disney has published "+PC_MON[m]+"\u2019s hours through "+pcMD(pub)+".";
+    var band=[];fests.forEach(function(w){band.push({em:"\ud83c\udf77",t:((window.__pwFestN||{})[w.id]||w.name)+" \u00b7 "+pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
+    parties.forEach(function(w){band.push({em:TF_PARTY_EM[w.id]||"",t:w.name+" \u00b7 select nights"});});
+    var legend=[];if(hasHw)legend.push({g:"hw",n:"Holiday week",d:"dates in accent"});hols.forEach(function(x){legend.push({g:"hol",n:x[0],d:PC_MON[m].slice(0,3)+" "+x[1]});});
+    if(hasRace)legend.push({g:"race",n:races.map(function(w){return w.name;}).filter(function(x,i,arr){return arr.indexOf(x)===i;}).join(" \u00b7 "),d:"dates in green"});
+    if(pset["\ud83c\udf83"])legend.push({g:"\ud83c\udf83",n:"MK Halloween party night",d:"select nights"});if(pset["\ud83c\udf84"])legend.push({g:"\ud83c\udf84",n:"MK Christmas party night",d:"select nights"});if(pset["ring"])legend.push({g:"pty",n:"MK party night",d:"which party isn\u2019t named yet"});
+    return {title:PC_MON[m]+" "+y,y:y,m:m,fd:new Date(y,m,1).getDay(),cells:cells,band:band,legend:legend,note:note,slug:PC_MON[m].toLowerCase()+"-"+y};
+  }
+  function pcDrawMonthCard(ctx,D){ /* 1080×1350 · the month's grid in the family's cell */
+    var W=1080,H=1350,L=64,R=1016,C=TY_CARD,h=pcCardHelpers(ctx,C,L,R),i;
+    ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+    h.SP("THE CALENDAR \u00b7 WALT DISNEY WORLD",L,100,RB(800,26),C.accent,4);
+    h.T(D.title,L,196,RD(700,74),C.ink);
+    h.T("Party nights, holidays and the crowd\u2019s pattern \u2014 hours as Disney posts them.",L,248,RB(500,27),C.muted);
+    var y=290;
+    for(i=0;i<D.band.length&&i<3;i++){var b=D.band[i],tf=RB(600,24),tw=h.MW(b.t,tf)+78;ctx.fillStyle=C.card;h.rr(L,y,tw,44,22);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1.5;ctx.stroke();if(b.em)h.T(b.em,L+18,y+31,RB(500,22),C.ink);h.T(b.t,L+52,y+30,tf,C.ink);y+=54;}
+    if(D.note){var nl=h.wrap(D.note,RB(500,24),R-L);for(i=0;i<nl.length&&i<2;i++){h.T(nl[i],L,y+24,RB(500,24),C.muted);y+=32;}y+=6;}
+    y+=6;var gh=560;ctx.fillStyle=C.card;h.rr(L,y,R-L,gh,22);ctx.fill();
+    var gl=L+22,gr=R-22,cw=(gr-gl)/7,ch=86,py=y+40;
+    "SMTWTFS".split("").forEach(function(wd,j){h.T(wd,gl+cw*j+cw/2,py,RB(700,20),C.muted2,"center");});py+=24;
+    for(i=0;i<D.cells.length;i++){var c=D.cells[i],col=(D.fd+c.d-1)%7,row=Math.floor((D.fd+c.d-1)/7),cx=gl+cw*col+cw/2,cy=py+row*ch;
+      if(c.today){ctx.strokeStyle=C.accent;ctx.lineWidth=2.5;h.rr(cx-cw/2+6,cy-6,cw-12,ch-10,14);ctx.stroke();}
+      h.T(String(c.d),cx,cy+30,RD(700,30),(c.race?C.short:(c.hw?C.accent:C.ink)),"center");
+      var sy=cy+46,gx=cx;
+      if(c.pe&&c.pe!=="ring"){h.T(c.pe,cx-(c.hd?12:0),sy+14,RB(500,20),C.ink,"center");gx=cx+14;}
+      else if(c.pe==="ring"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(cx-(c.hd?12:0),sy+8,4,0,7);ctx.fill();gx=cx+14;}
+      if(c.hd)h.diamond(c.pe?gx:cx,sy+8,6,C.ink);
+      if(c.lv)h.pill(cx-PC_TIERW[c.lv]/2,sy+24,PC_TIERW[c.lv],6,C[PC_TIERC[c.lv]]);}
+    y+=gh+14;h.HL(y,C.hair);y+=6;
+    for(i=0;i<D.legend.length&&i<5;i++){var g=D.legend[i];
+      if(g.g==="hw")h.T("15",L+12,y+30,RD(800,22),C.accent,"center");else if(g.g==="race")h.T("15",L+12,y+30,RD(800,22),C.short,"center");else if(g.g==="hol")h.diamond(L+12,y+23,6,C.ink);else if(g.g==="pty"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(L+12,y+23,5,0,7);ctx.fill();}else h.T(g.g,L+12,y+31,RB(500,22),C.ink,"center");
+      var dw=h.MW(g.d,RB(500,22));h.T(g.d,R,y+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y+31,RB(600,25),C.ink);y+=44;h.HL(y,C.rollhair);y+=2;}
+    y+=18;var kx=L,keys=[["Light","short",9],["Moderate","medium",15],["Busy","long",21],["Packed","packed",27]];
+    for(i=0;i<4;i++){h.pill(kx,y+4,keys[i][2],6,C[keys[i][1]]);h.T(keys[i][0],kx+keys[i][2]+10,y+14,RB(600,22),C.muted);kx+=keys[i][2]+10+h.MW(keys[i][0],RB(600,22))+30;}
+    h.foot(H,"Party nights only where the night list is verified","The strips are a pattern, never a forecast");
+  }
+  function pcDayCardData(ds){ /* the day's field: the sheet's rows, from the same reader */
+    var a=ds.split("-"),y=+a[0],m=+a[1]-1,today=tpToday(),night=window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[ds],pn=night?(pcPartyName(ds)||"MK party night"):null,em=night?tfPartyEm(ds):"";
+    var fests=pcWins("festival",y,m).filter(function(w){return w.f<=ds&&ds<=w.t;}),races=pcWins("race",y,m).filter(function(w){return w.f<=ds&&ds<=w.t;}),hol=(HOLIDAYS[ds]&&HOLIDAYS[ds]!=="Christmas week")?HOLIDAYS[ds]:null;
+    var sub=[];if(hol)sub.push(hol);if(pn)sub.push(pn+" tonight");if(ds===today)sub.unshift("today");
+    var parks=[],i,mo=ds.slice(0,7),rec=tpSched[mo];
+    for(i=0;i<TP_PARKS.length;i++){var p=TP_PARKS[i][0],r=rec&&rec[p]&&rec[p][ds],ex=[],note="";
+      if(r&&r.open){var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"},j;for(j=0;j<(r.ext||[]).length;j++){var x=r.ext[j];ex.push((EEN[x.k]||x.k)+" "+tpClk(x.o)+((x.k==="EEH"&&x.c)?" \u2013 "+tpClk(x.c):""));}}
+      if(p==="Magic Kingdom"&&pn)note=(em&&em!=="ring"?em+" ":"")+pn+" \u00b7 closes to day guests early";
+      if(p==="EPCOT"&&fests.length)note="\ud83c\udf77 "+fests.map(function(w){return (window.__pwFestN||{})[w.id]||w.name;}).join(" \u00b7 ");
+      parks.push({name:p,hours:(r&&r.open)?(tpClk(r.open)+" \u2013 "+tpClk(r.close)):(rec?"Not in the published schedule yet":"Schedule loading\u2026"),pub:!!(r&&r.open),ex:ex,note:note});}
+    var extra=[];if(hol)extra.push({g:"hol",n:hol,d:""});fests.forEach(function(w){extra.push({g:"\ud83c\udf77",n:((window.__pwFestN||{})[w.id]||w.name)+" at EPCOT",d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});races.forEach(function(w){extra.push({g:"race",n:w.name,d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
+    return {day:tpWDn(ds),date:pcMD(ds)+", "+y,sub:sub.join(" \u00b7 "),parks:parks,extra:extra,slug:ds};
+  }
+  function pcDrawDayCard(ctx,D){ /* 1080×1080 · the sheet's rows in panels */
+    var W=1080,H=1080,L=64,R=1016,C=TY_CARD,h=pcCardHelpers(ctx,C,L,R),i;
+    ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+    h.SP("THE CALENDAR \u00b7 WALT DISNEY WORLD",L,100,RB(800,26),C.accent,4);
+    h.T(D.day,L,206,RD(700,92),C.ink);
+    h.T(h.ell(D.date+(D.sub?" \u00b7 "+D.sub:""),RB(500,27),R-L),L,252,RB(500,27),C.muted);
+    var y=292;
+    for(i=0;i<D.parks.length;i++){var p=D.parks[i],nl=p.note?h.wrap(p.note,RB(500,23),470):[],ph=Math.max(104,72+Math.max(p.ex.length,nl.length)*28+12);
+      ctx.fillStyle=C.card;h.rr(L,y,R-L,ph,22);ctx.fill();
+      h.T(p.name,L+30,y+48,RD(700,36),C.ink);
+      if(p.pub){h.T(p.hours,R-30,y+48,RD(700,34),C.ink,"right");var j;for(j=0;j<p.ex.length;j++)h.T(p.ex[j],R-30,y+80+j*28,RB(500,23),C.muted,"right");}
+      else{var hl=h.wrap(p.hours,RB(500,24),300);h.T(hl[0]||"",R-30,y+46,RB(500,24),C.muted2,"right");if(hl[1])h.T(hl[1],R-30,y+74,RB(500,24),C.muted2,"right");}
+      for(var k=0;k<nl.length;k++)h.T(nl[k],L+30,y+80+k*28,RB(500,23),C.muted);
+      y+=ph+12;}
+    if(D.extra.length){y+=6;h.SP("THIS DAY",L,y+18,RB(700,20),C.muted2,3);y+=32;
+      for(i=0;i<D.extra.length&&i<3;i++){var g=D.extra[i];if(g.g==="hol")h.diamond(L+12,y+23,6,C.ink);else if(g.g==="race")h.T("15",L+12,y+30,RD(800,22),C.short,"center");else h.T(g.g,L+12,y+31,RB(500,22),C.ink,"center");
+        var dw=h.MW(g.d,RB(500,22));if(g.d)h.T(g.d,R,y+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y+31,RB(600,25),C.ink);y+=44;h.HL(y,C.rollhair);y+=2;}}
+    h.foot(H,"Hours as Disney publishes them, via ThemeParks.wiki","Party nights from the verified list \u00b7 Early Entry from the feed");
+  }
+  function pcShareCard(kind){ /* the Today card's lifecycle verbatim: fonts.ready → toBlob → canShare/download */
+    var D,w,hh,draw,title,fname;
+    if(kind==="day"){if(!pcSel)return;D=pcDayCardData(pcSel);w=1080;hh=1080;draw=pcDrawDayCard;title="RideCue \u2014 "+D.day+", "+D.date;fname="ridecue-calendar-"+D.slug+".png";}
+    else{D=pcMonthCardData();w=1080;hh=1350;draw=pcDrawMonthCard;title="RideCue \u2014 "+D.title;fname="ridecue-calendar-"+D.slug+".png";}
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      var cv=document.createElement("canvas");cv.width=w;cv.height=hh;var x=cv.getContext("2d");draw(x,D);
+      cv.toBlob(function(blob){
+        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+        var file=new File([blob],fname,{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:title})["catch"](function(){});}
+        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+      },"image/png");
+    });
+  }
   function pcBind(el){
     el.querySelectorAll("[data-pcm]").forEach(function(b){b.addEventListener("click",function(){pcYM=pcShift(pcYM,+b.getAttribute("data-pcm"));pcSel=null;renderPulsePage();});});
+    el.querySelectorAll("[data-pcshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();pcShareCard(b.getAttribute("data-pcshare"));});}); /* 0727y: the two doors */
     el.querySelectorAll("[data-pcd]").forEach(function(b){b.addEventListener("click",function(){var ds=b.getAttribute("data-pcd");pcSel=(pcSel===ds)?null:ds;var sh=el.querySelector(".pc-sheet"),t0=sh?null:null;renderPulsePage();var s2=el.querySelector(".pc-sheet");if(s2&&pcSel)s2.scrollIntoView({block:"end",behavior:"smooth"});});});} /* 0727w: the sheet's BOTTOM lands above the tab bar (scroll-margin-bottom carries the shell's pad) */
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
