@@ -15,7 +15,7 @@
     --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff; --toast-glass:rgba(255,255,255,.78);
     --hm0:#eef0fd; --hm1:#d3d5f8; --hm2:#a8a9f0; --hm3:#7c74e9; --hm4:#4f46e5;
     --hmt0:#191a2e; --hmt1:#191a2e; --hmt2:#191a2e; --hmt3:#ffffff; --hmt4:#ffffff;
-    --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6;
+    --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6; --pip-off:#e1e2ea; /* 0728a: the unlit pip (ink at ~13% on the card) */
     --t1:#93e2ba; --t2:#cbdba3; --t3:#f8d38f; --t4:#ffb197; --ringc:#3b32c8; /* Cut C (C-2): Soft tier fills + the plan-ring color \u2014 TRIP-BOARD-SCOPED (owner, Aug 2); the app-wide retune is shelved */
     /* radius scale (0708a): dot 3 / el-sm 8 / el 10 / tile 14 / card 16 / hero 22 / sheet 24 / pill */
     --r-dot:3px; --r-el-sm:8px; --r-el:10px; --r-tile:14px; --r-card:16px; --r-hero:22px; --r-sheet:24px; --r-pill:999px;
@@ -1195,6 +1195,7 @@
     --hm0:#1c2440; --hm1:#2a3163; --hm2:#3c3f96; --hm3:#5a52cf; --hm4:#8b87ff;
     --hmt0:#9db0c0; --hmt1:#9db0c0; --hmt2:#0a141d; --hmt3:#0a141d; --hmt4:#0a141d;
     --t1:#2c8f61; --t2:#78904e; --t3:#b3893c; --t4:#bd674c; --ringc:#b4b0ff; /* Cut C (C-2): soft dark \u2014 dimmer, not paler; ringc needs LIGHTER in dark */
+    --pip-off:#3b4954; /* 0728a: the unlit pip in Harbor (ink at ~20% on the card) */
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
     --cmp-p1:#8b87ff; --cmp-p2:#22d3ee; --cmp-p3:#e879f9; /* 0714i: dark identity */
     --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45); --shadow-tk:drop-shadow(0 6px 14px rgba(0,0,0,.5));
@@ -2003,15 +2004,21 @@
   .mr-rl .hitF{color:var(--short);font-weight:700}
   .mr-rl .hitS{color:var(--muted-2);font-weight:600}
   /* ===== 0727o THE CALENDAR FAMILY · seated LAST by 0727p (THE FAMILY HAS THE LAST WORD) — ONE CELL, three Plan rooms (owner-ruled Sep 6–7; Name-S1 §7). label / slot / length-by-tier strip; THE WEEK COLORS THE DATE, THE DAY WEARS A MARK; the window is the only surface; QUIET COLOR BUYS LARGER TYPE ===== */
-  .cc{position:relative;display:grid;grid-template-rows:14px 12px 4px;justify-items:center;align-items:center;padding-top:8px;box-sizing:border-box;border-radius:10px;background:none;border:0;text-shadow:none;color:var(--ink)}
+  .cc{position:relative;display:grid;grid-template-rows:14px 12px 5px;justify-items:center;align-items:center;padding-top:8px;box-sizing:border-box;border-radius:10px;background:none;border:0;text-shadow:none;color:var(--ink)}
   .cc .d{font:700 14px var(--font-display);letter-spacing:-.01em;color:var(--ink);line-height:1}
   .cc .mk{height:12px;display:flex;align-items:center;gap:3px}
   .cc .mk:before,.cc .mk:after{display:none}
   .cc.pn .mk:before{content:attr(data-em);display:block;font-size:10px;line-height:1;font-style:normal} /* the season's face (g-B) */
   .cc.pnx .mk:before{content:"";display:block;width:6px;height:6px;border-radius:50%;background:var(--party)} /* a night whose kind isn't named yet — never a guessed costume */
   .cc.hd .mk:after{content:"";display:block;width:6px;height:6px;background:var(--ink);transform:rotate(45deg);border-radius:1.5px} /* the holiday: the season's own diamond, never a tier dot */
-  .cc .s{height:4px;border-radius:2px;align-self:end;width:0}
-  .cc.l1 .s{width:9px;background:var(--short)}.cc.l2 .s{width:15px;background:var(--medium)}.cc.l3 .s{width:21px;background:var(--long)}.cc.l4 .s{width:27px;background:var(--packed)}
+  .cc .s{height:5px;align-self:end;width:0;position:relative} /* 0728a: THE STRIP IS FOUR PIPS \u2014 the tier is a count, 1\u20134 lit; the pip is one pseudo-element and three box-shadow copies (6\u00d75, 1 px gaps = 27 px, the old Packed width); --on/--off so the tapped day re-inks it in one rule */
+  .cc.l1 .s,.cc.l2 .s,.cc.l3 .s,.cc.l4 .s{width:27px}
+  .cc .s:before{content:"";position:absolute;left:0;top:0;width:6px;height:5px;border-radius:2px;--on:var(--ink);--off:var(--pip-off);background:var(--off);box-shadow:7px 0 0 var(--off),14px 0 0 var(--off),21px 0 0 var(--off)}
+  .cc.l1 .s:before{background:var(--on)}
+  .cc.l2 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--off),21px 0 0 var(--off)}
+  .cc.l3 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--off)}
+  .cc.l4 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--on)}
+  .cc.sel .s:before,.cc.hit .s:before{--on:#fff;--off:rgba(255,255,255,.3)} /* the tapped day: white pips on the accent fill */
   .cc.aw1 .d,.cc.aw .d{color:var(--accent)} /* the week colors the date: a holiday week */
   .cc.race .d{color:var(--short)} /* …a race weekend */
   .cc.race:after,.cc.aw:before,.cc.aw1:before,.cc.hd:after,.cc.pn:before,.cc.pnx:before{display:none!important;content:none} /* the ribbon, the race bar, the corner dot and the corner glyph retire — the slot carries the marks */
@@ -2019,7 +2026,7 @@
   .cc.inb .d,.cc.plan .d,.cc.sel .d{color:var(--accent)}
   .cc.thin{border:1.5px dashed var(--muted-2);background:none}.cc.thin .d{color:var(--muted-2)}.cc.thin .s{display:none}
   .cc.tint.l1:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t1) 45%,transparent)}.cc.tint.l2:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t2) 45%,transparent)}.cc.tint.l3:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t3) 45%,transparent)}.cc.tint.l4:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t4) 45%,transparent)} /* v-B: the tier at a whisper */
-  .tf-cd.cc{height:52px;padding-top:8px;grid-template-rows:16px 12px 4px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tf-cd.cc{height:52px;padding-top:8px;grid-template-rows:16px 12px 5px;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .tf-cd.cc.hit{background:var(--accent-fill)!important;box-shadow:none!important;filter:none} .tf-cd.cc.hit .d{color:#fff}
   .tf-cal{gap:2px 4px}
   .tp-dc.cc{height:52px;width:52px;border-radius:10px} .tp-drow.dim .tp-dc.cc{opacity:.45}
@@ -2032,7 +2039,7 @@
   .tp-peb .dayin{color:var(--ink);font-weight:800;letter-spacing:.06em} /* d-D: the kicker carries the day */
   .td-wsh{display:grid;grid-template-columns:repeat(4,1fr);gap:5px 9px;margin:8px 0 4px}.td-wsh i{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;color:var(--muted-2);text-align:center;font-style:normal}
   .td-wsnote{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);margin:6px 0 0;text-align:right} /* a-B: seven around your day; the board has them all */
-  .tp-acr.cc{display:grid;grid-template-rows:16px 10px 4px 12px;row-gap:1px;justify-items:center;align-items:center;padding:10px 0 9px;height:auto;background:var(--card);border:1px solid var(--line)}
+  .tp-acr.cc{display:grid;grid-template-rows:16px 10px 5px 12px;row-gap:1px;justify-items:center;align-items:center;padding:10px 0 9px;height:auto;background:var(--card);border:1px solid var(--line)}
   .tp-acr.cc .d{font-size:14px} .tp-acr.cc .mk{height:10px} .tp-acr.cc .mk .td-st{font-size:12px;line-height:1;color:var(--accent);vertical-align:0}
   .tp-acr.cc .tw{font:800 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);line-height:1;padding-top:2px} /* k-C: the tier word stays under the tint */
   .tp-acr.cc.fitm{border-color:var(--line);background:var(--card)} .tp-acr.cc.fitm .d{color:var(--ink)}
@@ -2047,15 +2054,16 @@
   .lgl .pty{display:block;width:6px;height:6px;border-radius:50%;background:var(--party)}
   .lgl .sw{display:block;width:12px;height:12px;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--card-2)}
   .lgl .em{font-size:12px;line-height:1}
-  .pw-alm-key .kc b i{width:var(--kw,9px);height:4px;border-radius:2px;margin:0 0 5px;display:block} /* the key teaches the glyph: the strip at its real length */
+  .pw-alm-key .kc b i{width:27px;height:5px;margin:0 0 5px;display:block;position:relative;border-radius:0;background:none} /* 0728a: the key teaches the glyph: the same four pips, 1\u20134 lit */
+  .pw-alm-key .kc b i:before{content:"";position:absolute;left:0;top:0;width:6px;height:5px;border-radius:2px;background:var(--ink);box-shadow:7px 0 0 var(--pip-off),14px 0 0 var(--pip-off),21px 0 0 var(--pip-off)}
   .pw-alm-key .kc b{display:grid;justify-items:center;gap:0}
-  .pw-alm-key .kc.k1 b i{--kw:9px}.pw-alm-key .kc.k2 b i{--kw:15px}.pw-alm-key .kc.k3 b i{--kw:21px}.pw-alm-key .kc.k4 b i{--kw:27px}
+  .pw-alm-key .kc.k2 b i:before{box-shadow:7px 0 0 var(--ink),14px 0 0 var(--pip-off),21px 0 0 var(--pip-off)}.pw-alm-key .kc.k3 b i:before{box-shadow:7px 0 0 var(--ink),14px 0 0 var(--ink),21px 0 0 var(--pip-off)}.pw-alm-key .kc.k4 b i:before{box-shadow:7px 0 0 var(--ink),14px 0 0 var(--ink),21px 0 0 var(--ink)}
   :root{--party:#7a3fd1} html.dark{--party:#b48cff}
-  .td-ws .wc.cc{display:grid;grid-template-rows:14px 12px 4px;justify-items:center;align-items:center;padding-top:8px} /* 0727p: the day-page grid's old flex rule (0,2,0) outranked the cell; the family has the last word */
+  .td-ws .wc.cc{display:grid;grid-template-rows:14px 12px 5px;justify-items:center;align-items:center;padding-top:8px} /* 0727p: the day-page grid's old flex rule (0,2,0) outranked the cell; the family has the last word */
   .td-ws .wc.cc.plan,.td-ws .wc.cc.plan.cur{background:var(--card-2)}
   .td-ws .wc.cc.race .d,.td-ws .wc.cc.race.cur .d{color:var(--short)}
   /* 0727s THE CALENDAR — the room's own dress rides on the family's cell and rows */
-  .pc-cd.cc{height:52px;padding-top:8px;grid-template-rows:16px 12px 4px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:0;font-family:var(--font-body)}
+  .pc-cd.cc{height:52px;padding-top:8px;grid-template-rows:16px 12px 5px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:0;font-family:var(--font-body)}
   .pc-cd.cc.past .d{color:var(--muted-2)}
   .pc-cd.cc.today{background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--accent)} .pc-cd.cc.today .d{color:var(--accent)}
   .pc-cd.cc.sel,.pc-cd.cc.sel.today{background:var(--accent-fill);box-shadow:none} .pc-cd.cc.sel .d,.pc-cd.cc.sel.today .d{color:#fff} .pc-cd.cc.sel .mk:after{background:#fff} /* 0727v: the tapped day wears the solid accent fill with a white date (the selected-pill grammar); today keeps its ring — before, the two read the same */
@@ -2204,7 +2212,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728a</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6829,7 +6837,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function foot(H,l1,l2){HL(H-160,C.hair);T(l1,L,H-116,RB(500,24),C.muted);if(l2)T(l2,L,H-84,RB(500,24),C.muted);T("ridecue.live",R,H-76,RB(700,31),C.green,"right");T("Data: ThemeParks.wiki",R,H-41,RB(500,25),C.muted2,"right");}
     return {T:T,MW:MW,ell:ell,rr:rr,HL:HL,SP:SP,wrap:wrap,pill:pill,diamond:diamond,foot:foot};
   }
-  var PC_TIERC={1:"short",2:"medium",3:"long",4:"packed"},PC_TIERW={1:11,2:18,3:25,4:32}; /* 0727z: the strip scaled to the canvas (the room's 9·15·21·27 × ~1.2) */
+  var PC_PIP={w:7,g:2,h:6}; /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
   function pcMonthCardData(){ /* the month's field, from the same resolvers the room uses */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),today=tpToday(),pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m),d,cells=[],hols=[],hasHw=false,hasRace=false,pset={};
     for(d=1;d<=n;d++){var ds=tfDate(y,m,d),v=tfDEst(m,y,d),lv=(v!=null)?({short:1,medium:2,long:3,packed:4}[window.__avTier(v)]||0):0;
@@ -6868,7 +6876,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(c.pe&&c.pe!=="ring"){h.T(c.pe,cx-(c.hd?14:0),sy+18,RB(500,26),C.ink,"center");gx=cx+16;}
       else if(c.pe==="ring"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(cx-(c.hd?14:0),sy+10,5,0,7);ctx.fill();gx=cx+16;}
       if(c.hd)h.diamond(c.pe?gx:cx,sy+10,7,C.ink);
-      if(c.lv)h.pill(cx-PC_TIERW[c.lv]/2,sy+30,PC_TIERW[c.lv],7,C[PC_TIERC[c.lv]]);}
+      if(c.lv){var px0=cx-(4*PC_PIP.w+3*PC_PIP.g)/2,pi;for(pi=0;pi<4;pi++)h.pill(px0+pi*(PC_PIP.w+PC_PIP.g),sy+30,PC_PIP.w,PC_PIP.h,pi<c.lv?C.ink:C.hair);}}
     y+=gh+14;h.HL(y,C.hair);y+=6;
     for(i=0;i<D.legend.length&&i<5;i++){var g=D.legend[i];
       if(g.g==="hw")h.T("15",L+12,y+30,RD(800,22),C.accent,"center");else if(g.g==="race")h.T("15",L+12,y+30,RD(800,22),C.short,"center");else if(g.g==="hol")h.diamond(L+12,y+23,6,C.ink);else if(g.g==="pty"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(L+12,y+23,5,0,7);ctx.fill();}else h.T(g.g,L+12,y+31,RB(500,22),C.ink,"center");
@@ -10201,10 +10209,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         defines its own scale and claims no equivalence with Live's per-park-
         calibrated tiers (unification lives on the recalibration ledger item) */
       return '<div class="pw-alm-key">'
-        +'<span class="kc k1"><b><i style="background:var(--short)"></i>Light</b><em>under 15</em></span>'
-        +'<span class="kc k2"><b><i style="background:var(--medium)"></i>Moderate</b><em>15\u201329</em></span>'
-        +'<span class="kc k3"><b><i style="background:var(--long)"></i>Busy</b><em>30\u201344</em></span>'
-        +'<span class="kc k4"><b><i style="background:var(--packed)"></i>Packed</b><em>45 and up</em></span></div>';} /* 0727o: the key teaches the glyph — the strip at its real length (9·15·21·27) */
+        +'<span class="kc k1"><b><i></i>Light</b><em>under 15</em></span>'
+        +'<span class="kc k2"><b><i></i>Moderate</b><em>15\u201329</em></span>'
+        +'<span class="kc k3"><b><i></i>Busy</b><em>30\u201344</em></span>'
+        +'<span class="kc k4"><b><i></i>Packed</b><em>45 and up</em></span></div>';} /* 0727o: the key teaches the glyph; 0728a: four pips, 1·2·3·4 lit — the count is the tier, the CSS draws it */
     function pwAlmNoLightNote(cells){/* the Almanac's thesis, clause-earned: the
         record floor (the ribbon's own floor-pin fact, pwAlmFloor) proves no
         observed month has ever printed Light. Renders only while that stays
