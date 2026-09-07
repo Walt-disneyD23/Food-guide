@@ -2067,6 +2067,7 @@
   .pc-up>div>span{display:flex;flex-direction:column;gap:2px} .pc-k{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .pc-hr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line);font-size:15px} .pc-hr:first-of-type{border-top:0;margin-top:10px} .pc-hr b{font-weight:700}
   .pc-sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .pc-sheet{scroll-margin-bottom:calc(118px + env(safe-area-inset-bottom))} /* 0727w: the shell pads its bottom 110px + safe area under the floating nav; the sheet lands above it */
   .pc-hr .tp-hrs{text-align:right} .pc-hr .tp-hrs b{font-family:var(--font-display)} .pc-hr .tp-eet{display:block;font:italic 500 var(--fs-meta) var(--font-body);color:var(--muted)} /* 0727r: the week colors the date on the grid too — the legend promised dates in green */ /* 0727p: the planned cell is the window, never the tint (.td-ws .wc.lN was (0,3,0)) */
 </style>
 <meta name="theme-color" content="#e9ebf4" id="metaTheme">
@@ -2201,7 +2202,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727v</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727w</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6742,7 +6743,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   var pcYM=null,pcSel=null,pcWarm=false;
   var PC_MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
   function pcShift(mo,k){var a=mo.split("-"),y=+a[0],m=+a[1]-1+k;while(m<0){m+=12;y--;}while(m>11){m-=12;y++;}return y+"-"+("0"+(m+1)).slice(-2);}
-  function pcPublished(mo){var rec=tpSched[mo],k,d;if(!rec)return null;for(k in rec){for(d in rec[k]){if(rec[k][d]&&rec[k][d].open)return true;}}return false;} /* null = loading · false = fetched, nothing published · true = published */
+  function pcPublished(mo){var rec=tpSched[mo],k,d,last=null;if(!rec)return null;for(k in rec){for(d in rec[k]){if(rec[k][d]&&rec[k][d].open&&(!last||d>last))last=d;}}return last;} /* 0727w: null = loading · null-after-fetch handled by the caller via tpSched[mo] · otherwise the LAST published date — the horizon */
   function pcEvName(id){var T=window.__pwEvT,q;if(T)for(q=0;q<T.events.length;q++)if(T.events[q].id===id)return T.events[q].name;return null;}
   function pcPartyName(ds){var wins=tfPartyWins(),q;for(q=0;q<wins.length;q++)if(wins[q].f<=ds&&ds<=wins[q].t)return pcEvName(wins[q].id);return null;} /* the feed dates a party; the verified windows name it */
   function pcWins(type,y,m){var T=window.__pwEvT,out=[],ym=y+"-"+("0"+(m+1)).slice(-2),i,j;if(!T)return out;
@@ -6765,12 +6766,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return '<div class="rpc"><div class="tp-peb" style="margin-top:0">Coming up</div><div class="lgl pc-up">'+rows+'</div></div>';}
   function pcMonthHTML(today){ /* THE MONTH in the family's cell (Name-S1 §7): today wears the window; the pattern's strip under every date (t-B); the week colors the date, the day wears a mark */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
-    var pub=pcPublished(pcYM);
+    var pub=pcPublished(pcYM),fetched=!!tpSched[pcYM],lastDs=tfDate(y,m,n);
     h+='<div class="rpc"><div class="pc-nav"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>'; /* 0727v: the month in the display face; the arrows grown */
     var band='';fests.forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     parties.forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(band)h+='<div class="pc-band">'+band+'</div>';
-    if(pub===false)h+='<div class="pc-note">Disney hasn\u2019t published '+PC_MON[m]+'\u2019s hours yet \u2014 the month below is the pattern and the verified lists.</div>';
+    if(fetched&&!pub)h+='<div class="pc-note">Disney hasn\u2019t published '+PC_MON[m]+'\u2019s hours yet \u2014 the month below is the pattern and the verified lists.</div>';
+    else if(fetched&&pub<lastDs)h+='<div class="pc-note">Disney has published '+PC_MON[m]+' through '+pcMD(pub)+' \u2014 later days show the pattern and the verified lists.</div>'; /* 0727w: a partly published month names its horizon (THE LADDER NEVER ENDS ON SILENCE) */
     h+='<div class="tf-calh"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></div><div class="tf-cal">';
     for(d=0;d<fd;d++)h+='<span></span>';
     var hasHw=false,hols=[],hasRace=false,pset={};
@@ -6812,7 +6814,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return h;}
   function pcBind(el){
     el.querySelectorAll("[data-pcm]").forEach(function(b){b.addEventListener("click",function(){pcYM=pcShift(pcYM,+b.getAttribute("data-pcm"));pcSel=null;renderPulsePage();});});
-    el.querySelectorAll("[data-pcd]").forEach(function(b){b.addEventListener("click",function(){var ds=b.getAttribute("data-pcd");pcSel=(pcSel===ds)?null:ds;var sh=el.querySelector(".pc-sheet"),t0=sh?null:null;renderPulsePage();var s2=el.querySelector(".pc-sheet");if(s2&&pcSel)s2.scrollIntoView({block:"nearest",behavior:"smooth"});});});}
+    el.querySelectorAll("[data-pcd]").forEach(function(b){b.addEventListener("click",function(){var ds=b.getAttribute("data-pcd");pcSel=(pcSel===ds)?null:ds;var sh=el.querySelector(".pc-sheet"),t0=sh?null:null;renderPulsePage();var s2=el.querySelector(".pc-sheet");if(s2&&pcSel)s2.scrollIntoView({block:"end",behavior:"smooth"});});});} /* 0727w: the sheet's BOTTOM lands above the tab bar (scroll-margin-bottom carries the shell's pad) */
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
        away-guard so polls refresh it on any tab; navGo fresh-paints on entry. Page grammar
