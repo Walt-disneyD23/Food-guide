@@ -2058,9 +2058,9 @@
   .pc-cd.cc{height:52px;padding-top:8px;grid-template-rows:16px 12px 4px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:0;font-family:var(--font-body)}
   .pc-cd.cc.past .d{color:var(--muted-2)}
   .pc-cd.cc.today{background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--accent)} .pc-cd.cc.today .d{color:var(--accent)}
-  .pc-cd.cc.sel{background:var(--accent-soft)} .pc-cd.cc.sel .d{color:var(--accent)}
-  .pc-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px} .pc-nav span{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
-  .pc-arr{font:700 22px var(--font-display);line-height:1;color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;width:34px;height:30px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .pc-cd.cc.sel,.pc-cd.cc.sel.today{background:var(--accent-fill);box-shadow:none} .pc-cd.cc.sel .d,.pc-cd.cc.sel.today .d{color:#fff} .pc-cd.cc.sel .mk:after{background:#fff} /* 0727v: the tapped day wears the solid accent fill with a white date (the selected-pill grammar); today keeps its ring — before, the two read the same */
+  .pc-nav{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px} .pc-nav span{font:800 20px var(--font-display);letter-spacing:-.01em;color:var(--ink)} /* 0727v: the month in the display face, title case */
+  .pc-arr{font:800 26px var(--font-display);line-height:1;color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;width:42px;height:36px;cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0727v: grown for in-park thumbs */
   .pc-band{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px} .pc-band span{font:600 var(--fs-meta) var(--font-body);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--muted)} .pc-band span b{color:var(--ink);font-weight:700}
   .pc-note{font:500 var(--fs-small) var(--font-body);color:var(--muted);line-height:1.45;margin:0 0 10px}
   .pc-lead{font-size:15px;line-height:1.45;color:var(--muted)}
@@ -2201,7 +2201,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0727u</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0727v</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5468,7 +5468,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!d||!d.open)return '<span class="tp-hrs mut">'+(rec?'Not in the published schedule yet':'Schedule loading\u2026')+'</span>';
     var h='<b>'+tpClk(d.open)+' \u2013 '+tpClk(d.close)+'</b>',j,ex=''; /* 0715k (owner-ratified H2\u00b7W3): the extras leave their pills for an italic line beneath the hours */
     var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"};
-    for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];ex+=(ex?'<br>':'')+(EEN[x.k]||x.k)+' '+tpClk(x.o);}
+    for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];ex+=(ex?'<br>':'')+(EEN[x.k]||x.k)+' '+tpClk(x.o)+((x.k==="EEH"&&x.c)?' \u2013 '+tpClk(x.c):'');} /* 0727v: Extended Evening is about its END — the line says what Live says (SAME QUESTION SAME SENTENCE); Early Entry ends at park open and an Event needs only its start */
     return '<span class="tp-hrs">'+h+(ex?'<span class="tp-eet">'+ex+'</span>':'')+'</span>';
   }
   function tpFetchMonth(mo,onDone){ /* 0727s: ONE month fetch, shared by the trip planner and the calendar — once/session per month, 10-min retry, the caller re-renders on arrival; missing dates = observed absence */
@@ -6766,7 +6766,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function pcMonthHTML(today){ /* THE MONTH in the family's cell (Name-S1 §7): today wears the window; the pattern's strip under every date (t-B); the week colors the date, the day wears a mark */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
     var pub=pcPublished(pcYM);
-    h+='<div class="rpc"><div class="tp-peb pc-nav" style="margin-top:0"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>';
+    h+='<div class="rpc"><div class="pc-nav"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>'; /* 0727v: the month in the display face; the arrows grown */
     var band='';fests.forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     parties.forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(band)h+='<div class="pc-band">'+band+'</div>';
