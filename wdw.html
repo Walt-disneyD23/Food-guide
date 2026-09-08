@@ -592,7 +592,7 @@
   .td-wkh{margin-top:12px} /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 the picker's own columns; a pure readout (the locality law) */
   .td-ws{display:grid;grid-template-columns:64px repeat(4,1fr);gap:5px 9px;margin-top:2px} /* 0728e (E): a rail, then the SAME four columns + 9px gap as .tp-pgrid.rl \u2014 the chips ARE the headers */
   .tp-pgrid.rl{display:grid;grid-template-columns:64px repeat(4,1fr);gap:9px;align-items:stretch} .tp-pgrid.rl .td-dr{height:auto} /* 0728e (E): the picker rides the rail grid; its rail names the day being planned */
-  .td-dr{display:grid;align-content:center;justify-items:start;height:52px;padding-left:6px;border-radius:10px} .td-dr b{font:700 14px var(--font-display);color:var(--muted);line-height:1;letter-spacing:-.01em} .td-dr small{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-top:3px} .td-dr.cur b,.td-dr.cur small{color:var(--accent)} .td-dr.race b{color:var(--short)} /* 0728e (E): the day axis has one home \u2014 the week colors the date here now */
+  .td-dr{display:grid;align-content:center;justify-items:start;height:52px;padding-left:6px;border-radius:10px} .td-dr b{font:700 14px var(--font-display);color:var(--muted);line-height:1;letter-spacing:-.01em} .td-dr small{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-top:3px} .td-dr.cur b,.td-dr.cur small{color:var(--accent)} .td-dr.cur b{font-weight:800;font-size:15px} .td-dr.race b{color:var(--short)} /* 0728i: THE RAIL POINTS \u2014 your day's rail bold and a size up; the rows behind keep B's shade */ /* 0728e (E): the day axis has one home \u2014 the week colors the date here now */
   .td-ws .wc.cc:not(.cur):not(.plan) .s:before{--on:var(--muted-2)} /* 0728h (B): THE ROWS BEHIND STEP BACK \u2014 the calendar's past-day law re-homed: the pips on the rows behind take the label's muted ink; the ring and the \u2726 are exempt */
   .td-ws .wc.cc.fit .mk:after{content:"\2726";display:block;font-size:13px;line-height:1;color:var(--accent);font-style:normal;background:none;transform:none;width:auto;height:auto} /* 0728e (E): the tiles\u2019 \u2726 in the grid \u2014 the day\u2019s fit until a ring replaces it */
   .td-ws .wc{height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center} /* chunky (playable13 ratified) */
@@ -2220,7 +2220,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728h</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728i</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5245,7 +5245,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tdWeekStrip(t,ds,model,EV,fit){ /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 axis-flipped pure readout on the picker's own columns (playable13 ratified). Days are rows, parks are columns; rings from t.plan + EV.night, plan ring wins; NOTHING here taps, writes, or navigates (the locality law, owner-caught). */
     var days=tpDays(t),NT=(EV&&EV.night)||{},pl=(t.plan||{}),hasPlan=false,hasPn=false,hasRace=false,pnE="",PW=tfPartyWins(),h='',i,j; /* 0717f */
-    var lo=0,hi=days.length,ci=days.indexOf(ds);if(days.length>7&&ci>=0){lo=Math.max(0,Math.min(ci-3,days.length-7));hi=lo+7;} /* 0727o (a-B): seven rows around your day — this page has one job; the board has them all */
+    var lo=0,hi=days.length,ci=days.indexOf(ds);if(days.length>14&&ci>=0){lo=Math.max(0,Math.min(ci-3,days.length-7));hi=lo+7;} /* 0728i (b): THE BOARD HAS THEM ALL, TO A FORTNIGHT \u2014 every day up to 14 rows on the rail; only past that, seven around your day */ /* 0727o (a-B): seven rows around your day — this page has one job; the board has them all */
     var hasFit=false;
     for(i=lo;i<hi;i++){var d=days[i],wd=tpAsD(d).getDay(),cur=(d===ds),race=!!(EV&&EV.race&&EV.race[d]),mkd=tdDayMarks(model,d,NT);if(race)hasRace=true;
       h+='<div class="td-dr'+(cur?' cur':'')+(race?' race':'')+'"><b>'+tpWD3(d)+'</b><small>'+tpMD(d)+'</small></div>'; /* 0728e (E): the rail \u2014 the day and its date once per row, accent on yours, green on a race day */
