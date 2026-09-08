@@ -593,7 +593,8 @@
   .td-ws{display:grid;grid-template-columns:64px repeat(4,1fr);gap:5px 9px;margin-top:2px} /* 0728e (E): a rail, then the SAME four columns + 9px gap as .tp-pgrid.rl \u2014 the chips ARE the headers */
   .tp-pgrid.rl{display:grid;grid-template-columns:64px repeat(4,1fr);gap:9px;align-items:stretch} .tp-pgrid.rl .td-dr{height:auto} /* 0728e (E): the picker rides the rail grid; its rail names the day being planned */
   .td-dr{display:grid;align-content:center;justify-items:start;height:52px;padding-left:6px;border-radius:10px} .td-dr b{font:700 14px var(--font-display);color:var(--muted);line-height:1;letter-spacing:-.01em} .td-dr small{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-top:3px} .td-dr.cur b,.td-dr.cur small{color:var(--accent)} .td-dr.race b{color:var(--short)} /* 0728e (E): the day axis has one home \u2014 the week colors the date here now */
-  .td-ws .wc.cc.fit .mk:after{content:"\2726";display:block;font-size:11px;line-height:1;color:var(--accent);font-style:normal;background:none;transform:none;width:auto;height:auto} /* 0728e (E): the tiles\u2019 \u2726 in the grid \u2014 the day\u2019s fit until a ring replaces it */
+  .td-ws .wc.cc:not(.cur):not(.plan) .s:before{--on:var(--muted-2)} /* 0728h (B): THE ROWS BEHIND STEP BACK \u2014 the calendar's past-day law re-homed: the pips on the rows behind take the label's muted ink; the ring and the \u2726 are exempt */
+  .td-ws .wc.cc.fit .mk:after{content:"\2726";display:block;font-size:13px;line-height:1;color:var(--accent);font-style:normal;background:none;transform:none;width:auto;height:auto} /* 0728e (E): the tiles\u2019 \u2726 in the grid \u2014 the day\u2019s fit until a ring replaces it */
   .td-ws .wc{height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center} /* chunky (playable13 ratified) */
   .td-ws .wc i{font-style:normal;font:600 var(--fs-micro) var(--font-body);letter-spacing:.04em;color:rgba(25,26,46,.55)} /* low-contrast day stamp on the tier fill */
   .td-ws .wc.l1{background:var(--t1)}.td-ws .wc.l2{background:var(--t2)}.td-ws .wc.l3{background:var(--t3)}.td-ws .wc.l4{background:var(--t4)}
@@ -2045,8 +2046,8 @@
   .tp-peb .dayin{color:var(--ink);font-weight:800;letter-spacing:.06em} /* d-D: the kicker carries the day */
   /* 0728e (E): .td-wsh retired \u2014 the chips are the column headers again (Cut C) */
   .td-wsnote{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);margin:6px 0 0;text-align:right} /* a-B: seven around your day; the board has them all */
-  .tp-acr.cc{display:grid;grid-template-rows:16px 10px 5px 12px;row-gap:1px;justify-items:center;align-items:center;padding:10px 0 9px;height:auto;background:var(--card);border:1px solid var(--line)}
-  .tp-acr.cc .d{font-size:14px} .tp-acr.cc .mk{height:10px} .tp-acr.cc .mk .td-st{font-size:12px;line-height:1;color:var(--accent);vertical-align:0}
+  .tp-acr.cc{display:grid;grid-template-rows:16px 12px 5px 12px;row-gap:1px;justify-items:center;align-items:center;padding:10px 0 9px;height:auto;background:var(--card);border:1px solid var(--line)}
+  .tp-acr.cc .d{font-size:14px} .tp-acr.cc .mk{height:12px} .tp-acr.cc .mk .td-st{font-size:14px;line-height:1;color:var(--accent);vertical-align:0}
   .tp-acr.cc .tw{font:800 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);line-height:1;padding-top:2px} /* k-C: the tier word stays under the tint */
   .tp-acr.cc.fitm{border-color:var(--line);background:var(--card)} .tp-acr.cc.fitm .d{color:var(--ink)}
   .tp-acr.cc.sel{border-color:transparent} .tp-acr.cc.sel .tw{color:var(--accent)}
@@ -2219,7 +2220,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728f</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728h</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5222,9 +5223,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       store.set("ppTrips",ts);return;}
   }
   function tdAnchoredRender(ds){ /* Cut C (C-1) feel law: A WRITE MAY NOT MOVE THE READER - the day's own row holds its screen position across the rebuild; the browser's scroll clamp IS the settle-nearest clause (bottom-of-trip) */
-    var q='.tp-drow[data-tpday="'+ds+'"]',el=document.querySelector(q+' .tp-pgrid')||document.querySelector(q),t0=el?el.getBoundingClientRect().top:null;q=(el&&el.classList.contains('tp-pgrid'))?q+' .tp-pgrid':q; /* 0728f: THE THING YOU TOUCHED STAYS UNDER YOUR THUMB \u2014 anchor the picker when it's on glass (My Day and the read box grow above it), the row's top otherwise */
+    var q='.tp-drow[data-tpday="'+ds+'"]',pick=function(){var r=document.querySelector(q),hh=r&&r.parentNode,g=hh&&hh.querySelector&&hh.querySelector('.tp-pgrid');return g||r;},el=pick(),t0=el?el.getBoundingClientRect().top:null; /* 0728g: the picker is the row's SIBLING (tp-dx follows the closed row inside .rpc.tp-day) \u2014 found through the row's host, not inside the row */ /* 0728f: THE THING YOU TOUCHED STAYS UNDER YOUR THUMB \u2014 anchor the picker when it's on glass (My Day and the read box grow above it), the row's top otherwise */
     renderPulsePage();
-    var el2=document.querySelector(q);
+    var el2=pick();
     if(el2&&t0!==null){var dd=el2.getBoundingClientRect().top-t0;if(dd)window.ppShl().scrollTop+=dd;}
   }
   function tpPlanClause(t,ds,model,wd){ /* Cut 2 (2b-ratified): acknowledged, never judged — history first, pick second; no tier claim under the day floor */
