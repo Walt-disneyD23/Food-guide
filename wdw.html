@@ -2134,11 +2134,19 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="g-body"><b>Rides whose easy hour is open now</b> and dies at a clock time. The footer names the clock. <b>These lead the board</b> — no lane needed; the footers are the sign.</div>
     </div>
     <div class="g-room">
-    <div class="g-lane"><span>Ride now</span><b>anytime</b></div>
-    <div class="g-body"><b>Never bad from where you are</b> — no deadline, ordered as a natural walk through the park.</div>
+    <div class="g-lane"><span>Early Entry</span><b>running now</b></div><!-- 0728n THE EARLY ENTRY ROOM: the board's slot carries the clock; the guide's goes bare (0725k THE MANUAL CARRIES NO DATA) -->
+    <div class="g-body"><b>Before the park opens, the rides already running</b> — deepest under their typical first. At park open the room dissolves and every ride walks home to the plan.</div>
     </div>
     <div class="g-room">
-    <div class="g-lane"><span>Your evening windows</span></div><!-- 0725k THE MANUAL CARRIES NO DATA (owner glass Aug 26, 8:37 AM: a frozen example clock read as a rule) — the board’s slot is live; the guide’s goes bare, the WINDOWS/RIDDEN precedent -->
+    <div class="g-lane"><span>From park open</span><b>your day’s order</b></div>
+    <div class="g-body">The day’s plan, waiting for the gate — nothing under this line is running yet.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Anytime</span><b>grouped by walk</b></div>
+    <div class="g-body"><b>Never bad from where you are</b> — no deadline, the numbers are a walk through the park.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Your later windows</span></div><!-- 0725k THE MANUAL CARRIES NO DATA (owner glass Aug 26, 8:37 AM: a frozen example clock read as a rule) — the board’s slot is live; the guide’s goes bare, the WINDOWS/RIDDEN precedent -->
     <div class="g-body"><b>Their easy hour comes later.</b> Waiting below, earliest window first.</div>
     </div>
     <div class="g-room">
@@ -2220,7 +2228,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728m</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728n</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6029,10 +6037,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);return;}
         var t9=it.pin?0:(it.tier||0);
         if(t9&&_lt&&t9!==_lt){
-          if(t9===2)body+='<div class="td-lane"><span>Ride now</span><b>anytime</b></div>';
-          else if(t9===3)body+='<div class="td-lane"><span>Your evening windows</span><b>from ~'+rpClk(eng.fw)+'</b></div>';}
+          if(t9===2)body+='<div class="td-lane" data-room="anytime"><span>Anytime</span><b>grouped by walk</b></div>'; /* 0728n w-E (owner-ruled Sep 5): the right side is a WHY, true at every hour; Ride now lives on in the GO voice and the crown */
+          else if(t9===3)body+='<div class="td-lane" data-room="later"><span>Your later windows</span><b>from ~'+rpClk(eng.fw)+'</b></div>';} /* 0728n A (owner-ruled Sep 8; sightings Sep 3 EPCOT 3:53 PM, Sep 8 MK party day at noon): a day guest's day can end at 6 PM — "later" is true on every day */
         if(t9)_lt=t9;
-        if(!t9&&it.lv&&it.dead&&!_dl9){_dl9=1;body+='<div class="td-lane"><span>Past your day</span><b>easy after you leave</b></div>';} /* 0725b THE ROOM NAMES ITSELF (owner-ruled Aug 25, cold-start): the dissolved room finally wears its own lane \u2014 label rhymes with the wheel's \u201cYour day\u201d control (ONE PHENOMENON ONE HOME, applied to words). Gated on it.lv (the dissolved tape rows only): dead pins and the no-history tail never mislabeled; B-2's law holds \u2014 no tenants, no lane. Known edge (logged): a sunk row may trail beneath it. */
+        if(!t9&&it.lv&&it.dead&&!_dl9){_dl9=1;body+='<div class="td-lane" data-room="dead"><span>Past your day</span><b>easy after you leave</b></div>';} /* 0725b THE ROOM NAMES ITSELF (owner-ruled Aug 25, cold-start): the dissolved room finally wears its own lane \u2014 label rhymes with the wheel's \u201cYour day\u201d control (ONE PHENOMENON ONE HOME, applied to words). Gated on it.lv (the dissolved tape rows only): dead pins and the no-history tail never mislabeled; B-2's law holds \u2014 no tenants, no lane. Known edge (logged): a sunk row may trail beneath it. */
         _sq.push(it.id);body+=slA(it,false);});
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical waits \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are too thin to read') /* 0725x M-3 (owner-ruled Aug 26): \u201cstill\u201d retired \u2014 the weekday-alone tape is capped by design (RP_POOL=42 gives ~6 of any weekday vs the 10-day floor), and the Aug 26 pool study CROWNED that design (fresh-42 beat every deeper tape, incl. weekday sidecars, on 206 real days); the copy no longer promises a someday the constants forbid */
@@ -8472,6 +8480,36 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      (\u00a78's own build shape); its state is in-memory only \u2014 the rebreak precedent. */
   var tyPollN=0,tyProPoll={},tyPro={}; /* 0726n THE CROWN KNOWS ITS PARK (owner-ruled Aug 28; the 3:26/3:47 four-board frame - Kali's AK crown jailed MK's five GOs and EPCOT's deepest): the single slot splits per park - every board elects and damps its own crown; the guide's sentence ("the single best gift in the park") was already the law. Instant-on, THE MISS IS THE ONLY CLOCK, and the two-clean-poll walk home survive verbatim inside each park. */
   function tyPollTick(){tyPollN++;}
+  var tyEe={},tyEeDs="",tyEePoll=-1; /* 0728n THE EARLY ENTRY ROOM: members seen OPERATING inside a live morning extra — in-memory (the rebreak precedent), day-fenced, misses tick on the heartbeat (x-C) */
+  function tdEeWin(pk){ /* the live morning extra for a park: {open,close,desc,pub} while the park is inside an extra that opens BEFORE the published open and the published open hasn't come; null otherwise (evening extras never make a room) */
+    var inf=(typeof parkInfo!=="undefined"&&parkInfo&&pk)?parkInfo[pk]:null;if(!inf||!inf.open||!inf.extras||!inf.extras.length)return null;
+    var now=Date.now(),opT=new Date(inf.open).getTime();if(isNaN(opT)||!(now<opT))return null;
+    if(isOpenNow(inf)!==true)return null;
+    for(var i=0;i<inf.extras.length;i++){var e=inf.extras[i];if(!e||!e.open||!e.close)continue;var o=new Date(e.open).getTime(),c=new Date(e.close).getTime();
+      if(o<opT&&now>=o&&now<=c)return {open:e.open,close:e.close,desc:e.desc||"Early Entry",pub:inf.open};}
+    return null;
+  }
+  function tyEeEval(T,ds,pk){ /* x-C: a board ride joins the room the poll it is seen OPERATING inside the window; it leaves after two consecutive fresh polls not OPERATING; the room itself exists only while tdEeWin does */
+    var w=tdEeWin(pk);if(!w){tyEe={};return {win:null,members:{}};}
+    var ds0=tpToday();if(tyEeDs!==ds0){tyEeDs=ds0;tyEe={};} /* THE DAY FENCE */
+    var ids=tdRides(T,ds),i,fresh=(tyEePoll!==tyPollN);tyEePoll=tyPollN;
+    for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid];
+      if(lv&&lv.status==="OPERATING")tyEe[rid]={miss:0};
+      else if(tyEe[rid]){if(fresh)tyEe[rid].miss++;if(tyEe[rid].miss>=2)delete tyEe[rid];}}
+    return {win:w,members:tyEe};
+  }
+  function tdEeTyp(rid,pk){ /* the member's typical this half-hour through the ladder — ONE FLOOR (10 days); null = thin, THE MANUAL INVENTS NOTHING */
+    if(typeof tdLadder!=="function"||typeof pfEtMin!=="function"||typeof rpMed!=="function")return null;
+    var face=(typeof tdFaceNow==="function")?tdFaceNow(pk):null,L=tdLadder(rid,String(Math.floor(pfEtMin()/30)),face);
+    if(!L||!L.arr||L.arr.length<10)return null;return {typ:Math.round(rpMed(L.arr)),rung:L.rung};
+  }
+  function tyEeWhy(m,pk){ /* o-B: the row speaks the Callout's own sentence (SAME QUESTION SAME SENTENCE) — Running now — typically N this half-hour[ on party days] · M under / over; the bridge's bar (5 min and a quarter) or "near typical" */
+    var t=m.ty,w=m.w;if(!t)return 'Running now \u2014 no history this half-hour yet.';
+    var tail=(t.rung===1||t.rung===2)?(' on party '+((typeof tdPartyWord==="function")?tdPartyWord(pk):"nights")):'';
+    if(w===null)return 'Running now \u2014 typically <b>'+t.typ+'</b> this half-hour'+tail+'.';
+    var d=t.typ-w,a=Math.abs(d);if(a<5||a<0.25*t.typ)return 'Running now \u2014 typically <b>'+t.typ+'</b> this half-hour'+tail+' \u00b7 near typical.';
+    return 'Running now \u2014 typically <b>'+t.typ+'</b> this half-hour'+tail+' \u00b7 <b>'+a+(d>0?' under':' over')+'</b>.';
+  }
   var tySinkPoll=-1,tySink={};var tySeenOp={},tySeenDs=""; /* 0724x D-1: rides seen OPERATING this park-day \u2014 in-memory (the rebreak precedent), day-fenced below (rider 2) */ /* 0723q C1: in-memory only \u2014 the rebreak precedent; the map holds ONLY rides currently seen not-operating (DOWN, CLOSED, REFURBISHMENT) */
   function tySinkEval(T,ds,pk){ /* 0723q C1 THE RUNNING SEAT FIRST (owner, Aug 18): the sink generalizes to ANY 2-tick-confirmed not-operating status \u2014 DOWN, CLOSED, REFURBISHMENT \u2014 rides the promotion's own tyPollN heartbeat (renders between polls never tick). PARK-OPEN ONLY, the gate the DOWN sink never needed: pre-open everything is CLOSED and nothing may sink \u2014 proven-open or nothing, a null schedule sinks no one. Ticks carry across not-operating re-labels (owner: the seat question is operating-or-not; the copy speaks the current status). Reopen restores at one tick: the ride simply leaves the map. */
     if(isOpenNow(parkInfo[pk])!==true){tySink={};return tySink;} /* 0724p THE MISS IS THE ONLY CLOCK: under P-3 the sink is idempotent — on from first sight, reopen = absence — so it reads the sky EVERY render; a picker-added DOWN ride sinks on its own render (owner specimen, 9:46 PM). ticks is a cosmetic counter now, per-render. */ /* 0724o THE ARRIVAL DESERVES A READ (owner boot specimen Aug 21, 9:29 PM): an unproven park returns empty WITHOUT consuming the generation — boot lands in stages, and the schedule’s arrival render gets a real read instead of this guard’s stale empty; a genuinely closed park just re-reads {} each render, harmless */
@@ -8480,7 +8518,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var inf1=parkInfo[pk],due1=!!(inf1&&inf1.open&&Date.now()>=new Date(inf1.open).getTime()); /* 0724x D-1 THE RIDE'S OWN GATE (owner-ruled Aug 23; the AK 7:50 pre-gate pair): isOpenNow opens at Early Entry by design, so the park gate alone let never-opened rides sink wearing a reopen promise — a ride is DUE only past the PUBLISHED open, or once seen OPERATING this park-day */
     for(i=0;i<ids.length;i++){var rid=ids[i],lv=liveById[rid],s9=lv?lv.status:"CLOSED"; /* 0723x ONE CLOSED (owner wild specimen Aug 19, 9:10 AM): the rail has read ABSENCE as CLOSED since 0714s — the sink speaks the same predicate; the park-open gate and two ticks still guard the move */
       if(s9==="OPERATING")tySeenOp[rid]=1; /* 0724x: the sighting is the ride's own proof — a mid-EE breakdown still earns its sink */
-      if((s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT")&&(due1||tySeenOp[rid])){var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
+      if((s9==="DOWN"||s9==="CLOSED"||s9==="REFURBISHMENT")&&(due1||tySeenOp[rid]||s9==="DOWN")) /* 0728n s-A(i) (owner-ruled Sep 8; EPCOT 8:50 Sep 5: Test Track DOWN, unsunk till 9): inside a live window the feed's own DOWN is due — it was expected up; CLOSED still waits for the published open or a sighting (0724x D-1 stands: the AK 7:50 pair were CLOSED) */{var pr=tySink[rid],tk=(pr?pr.ticks:0)+1;nx[rid]={ticks:tk,on:true,st:s9};}} /* 0724n P-3 (owner-ruled): the sink seats at FIRST sight — the feed already speaks the status instantly on LIVE and Pulse, the seat now agrees; reopen restores at one tick as before (instant both ways for the sink — a wrongly-sunk ride misleads nobody) */
     tySink=nx;return tySink;
   }
   function tyGoCards(T,ds){ /* my board's eligible GO NOW cards \u2014 deepest under first, name-tiebroken */
@@ -8614,10 +8652,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(relRows.length&&tdLens!=="mine"){ /* 0724k L-1b THE EARLY WINDOW release: risen to tier 1’s TAIL — after dated deadlines (dl==null already sorts last in the comparator), ordered by depth. DOM-pass motion like the crown; the engine stays tape-pure. Pins are lane-neutral by tyGoCards’ own filter; My Order: voice only, zero motion (0720j law). */
       relRows.sort(function(a9,b9){return b9.delta-a9.delta;});
       var lns9=[].slice.call(el.querySelectorAll(".td-lane")),anc8=null;
-      for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("Ride now")>=0){anc8=lns9[i];break;}
+      for(i=0;i<lns9.length;i++)if(lns9[i].getAttribute("data-room")==="anytime"){anc8=lns9[i];break;} /* 0728n: the room by attribute, never by its words */
       var rs9={};relRows.forEach(function(x9){rs9[x9.row.getAttribute("data-tdpd")]=1;});
       if(!anc8){for(i=0;i<rows.length;i++){var p8=rows[i];if(p8.getAttribute("data-tdtr")==="2"&&!p8.classList.contains("pin")&&!p8.classList.contains("done")){anc8=p8;break;} /* 0725e THE ANCHOR SKIPS THE RIDDEN (owner glass Aug 25, 2:06 PM: risen Pirates seated inside the graveyard \u2014 done rows keep their tier attr, and an all-ridden anytime family made a ridden row the tail anchor; latent since 0724l, W-2 made risers common enough to find it) */}} /* 0724l THE TAIL FINDS ITS SEAT (owner wild specimen Aug 21, 7:59 PM): when tier 1 is empty the Ride-now lane never renders (boundary-only labels) — tier 1’s tail is the sweep’s HEAD, never the evening seam; the risen rows parked at the sweep’s tail on glass */
-      if(!anc8)for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("evening windows")>=0){anc8=lns9[i];break;} /* 0724t: the seam is NAMED, never assumed \u2014 a future top lane must never become the anchor (assumptions get named or removed) */
+      if(!anc8)for(i=0;i<lns9.length;i++)if(lns9[i].getAttribute("data-room")==="later"){anc8=lns9[i];break;} /* 0724t: the seam is NAMED, never assumed \u2014 a future top lane must never become the anchor (assumptions get named or removed) */
       if(!anc8){for(i=0;i<rows.length;i++){var q8=rows[i];if(q8.getAttribute("data-tdtr")==="3"&&!rs9[q8.getAttribute("data-tdpd")]&&!q8.classList.contains("done")){anc8=q8;break;}}} /* an all-future board has no lane — the tail is the first unrisen future row */
       if(!anc8)for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("Past your day")>=0){anc8=lns9[i];break;} /* 0725f THE TAIL STOPS AT THE ROOMS (owner glass Aug 25, 2:21 PM: seat 1, a room of dots, then seat 2 \u2014 0725e's last resort skipped the dissolved room): tier 1's tail ends where the named rooms begin \u2014 the dissolved lane, then any dissolved row, and only then the ridden label */
       if(!anc8){for(i=0;i<rows.length;i++){if(rows[i].classList.contains("pdead")){anc8=rows[i];break;}}}
@@ -8628,7 +8666,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     { /* 0726t THE ROOM HIDES ITS NAME (owner-ruled B, Aug 31; the EPCOT 3:25 PM Aug 30 glass: Soarin’ crowned out of a room it alone tenanted, no riser on the board, and YOUR EVENING WINDOWS · FROM ~5:30 PM stood over Test Track’s sink lane). The two lane guards (0724l evening lane, 0725d Past-your-day rider) lived inside the riser fence above and only ran when a GO-riser was on the board; hoisted here they run on every App’s-order pass — the crown, the sink, and the risers all count the same way (B-2’s word: no tenants, no lane; absence is information). The board rebuilds every pass, so a lane returns with its tenant. My Order: the app’s hands stay off — the render’s lanes stand. lns9/rs9 re-read here: the riser fence may not have run. */
       var lns9=[].slice.call(el.querySelectorAll(".td-lane")),rs9={};relRows.forEach(function(x9){rs9[x9.row.getAttribute("data-tdpd")]=1;});
-      var lnE=null;for(i=0;i<lns9.length;i++)if(lns9[i].textContent.indexOf("evening windows")>=0){lnE=lns9[i];break;}
+      var lnE=null;for(i=0;i<lns9.length;i++)if(lns9[i].getAttribute("data-room")==="later"){lnE=lns9[i];break;}
       if(lnE&&tdLens!=="mine"){var rw9=null; /* LABELS MOVE WITH VALUES: the lane’s clock follows the earliest UNRISEN future window; an emptied room hides its label — absence is information (B-2’s own word) */
         rows.forEach(function(q9){var id9=q9.getAttribute("data-tdpd");
           if(q9.getAttribute("data-tdtr")!=="3"||rs9[id9]||dset[id9])return;
@@ -8670,11 +8708,33 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(snk[rid]&&snk[rid].on)sunk.push(row);});
       if(sunk.length){var anc=el.querySelector(".td-ridlab")||el.querySelector("[data-tdadd]");
         if(anc){var ln9=el.querySelector(".td-lane.snklane"); /* 0725c THE SUNK ROOM NAMES ITSELF (owner-ruled Aug 25; completes 0725b\u2019s law \u2014 every room names itself): the mover that builds the room names it. Create-once (the bridge precedent), re-seated each pass, removed when the room empties; the dissolved lane above stays pure \u2014 the 0725b known edge retired. */
-          if(!ln9){ln9=anc.ownerDocument.createElement("div");ln9.className="td-lane snklane";ln9.innerHTML='<span>Not running</span><b>seats return on reopen</b>';}
+          if(!ln9){ln9=anc.ownerDocument.createElement("div");ln9.className="td-lane snklane";ln9.setAttribute("data-room","sink");ln9.innerHTML='<span>Not running</span><b>seats return on reopen</b>';}
           anc.parentNode.insertBefore(ln9,anc);
           sunk.forEach(function(row){var s9=row.querySelector(".td-sn");if(s9)s9.textContent="\u00b7";anc.parentNode.insertBefore(row,anc);}); /* glass order walks top-down \u2014 relative tape order preserved among the sunk; below the outs, above the ridden */
           var k9=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s9){if(/^\d+$/.test(s9.textContent))s9.textContent=String(++k9);});}}
       else{var ln8=el.querySelector(".td-lane.snklane");if(ln8)ln8.parentNode.removeChild(ln8);} /* 0725c: the room emptied \u2014 the name goes with it (belt for the fresh-rebuild suspenders) */
+    }
+    if(tdLens!=="mine"){ /* 0728n THE EARLY ENTRY ROOM (letter B, owner-ruled Sep 5 from glass MK 8:36 / EPCOT 8:50; spec EE-Room-Spec.md): from the EE open to the published open, the rides the feed confirms OPERATING lead the board under their own credential (h-A), ordered by value (o-B), ONE seam lane under them (r-D) while the anytime lane yields; no tenants, no room (THE ROOM HIDES ITS NAME); at the open tdEeWin goes null and the fresh render seats everyone home. App's order only; pins and ridden rows never move; footers leave the room rows (the room's clock is the lane's). */
+      var ee9=tyEeEval(T,ds,pk),ol9=el.querySelector(".td-lane.eelane"),ol8=el.querySelector(".td-lane.openlane");
+      if(ol9)ol9.parentNode.removeChild(ol9);if(ol8)ol8.parentNode.removeChild(ol8);
+      var mem9=[];
+      if(ee9.win)[].slice.call(el.querySelectorAll(".td-sl")).forEach(function(row){var rid=row.getAttribute("data-tdpd");
+        if(!rid||dset[rid]||row.classList.contains("pin")||row.classList.contains("done")||!ee9.members[rid])return;
+        var lv=liveById[rid],w=(lv&&typeof lv.wait==="number")?lv.wait:null,ty=tdEeTyp(rid,pk);
+        mem9.push({row:row,w:w,ty:ty,d:(ty&&w!==null)?(ty.typ-w):null,ord:mem9.length});});
+      if(mem9.length){
+        mem9.sort(function(a,b){if(a.d===null&&b.d===null)return a.ord-b.ord;if(a.d===null)return 1;if(b.d===null)return -1;if(b.d!==a.d)return b.d-a.d;return a.ord-b.ord;}); /* deepest under first; the walk breaks ties; thin last */
+        var first9=el.querySelector(".td-sl, .td-lane"),host9=first9&&first9.parentNode,doc9=el.ownerDocument,pub9=rpClk(rcEtMin(new Date(ee9.win.pub)));
+        if(host9){
+          var ln7=doc9.createElement("div");ln7.className="td-lane eelane";ln7.setAttribute("data-room","ee");ln7.innerHTML='<span>'+esc(ee9.win.desc)+'</span><b>running now \u00b7 till '+pub9+'</b>';
+          var ln6=doc9.createElement("div");ln6.className="td-lane openlane";ln6.setAttribute("data-room","open");ln6.innerHTML='<span>From park open</span><b>'+pub9+' \u00b7 your day\u2019s order</b>';
+          host9.insertBefore(ln7,first9);
+          mem9.forEach(function(m){var sx=m.row.querySelector(".td-srx"),fl=m.row.querySelector(".td-fl");if(sx)sx.innerHTML=tyEeWhy(m,pk);if(fl)fl.parentNode.removeChild(fl);host9.insertBefore(m.row,first9);});
+          host9.insertBefore(ln6,first9);
+          var la9=el.querySelector('.td-lane[data-room="anytime"]');if(la9)la9.parentNode.removeChild(la9); /* r-D: two headers on screen, never three */
+          var k7=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s9){if(/^\d+$/.test(s9.textContent))s9.textContent=String(++k7);});
+        }
+      }
     }
   }
   function tyEvParty(pk){ /* 0720n: tonight's ticketed party AT the picked park \u2014 nights truth resolved through
@@ -8809,6 +8869,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(fl){var fs=fl.querySelector("span"),fb=fl.querySelector("b");if(fs&&fb)return {t:String(fs.textContent||"").trim()+" "+String(fb.textContent||"").trim(),k:"win"};}
     return {t:tx.split(/\.(\s|$)/)[0].split(" \u2014 ")[0].trim(),k:""}; /* 0726z: the first clause stops at the dash too \u2014 "\u2026 from here \u2014 anyti\u2026" (owner glass MK 5:53 PM) */
   }
+  var TY_CARD_LANE={anytime:"anytime",ee:"early entry",open:"from park open"}; /* 0728n: the card's row tag by the lane's room — a header rename can never reach the card; other rooms keep the lane's small word (later: the arrival clock) */
   function tyCardData(el,pk){ /* \u00a76 THE MODEL \u2014 document order, lanes and rows interleaved; the board's own order, never re-sorted (the hand's own order reaches the card by construction); ridden rows drop off and count in the roll's last seat (R-A) */
     var inf=parkInfo[pk]||null,open=isOpenNow(inf),swp=tySweep(pk),t2=(open===true)?tyTier(pk):null,bits=[];
     if(swp)bits.push(swp.word+" till "+rpClk(swp.c));else if(open===true&&inf&&inf.close)bits.push("Open till "+tyClkIso(inf.close)); /* the hero's own close clause \u2014 the two-closes law rides along */
@@ -8819,7 +8880,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     D.basis=(D.lens==="mine"?"My order":"Ordered for my day")+" \u2014 till "+D.horizon+". Waits change every few minutes; the live board is in RideCue."; /* M-A: the tab's own name in the guest's lens */
     var kids=[].slice.call(el.querySelectorAll(".td-lane, .td-sl")),lane="",i;
     for(i=0;i<kids.length;i++){var k=kids[i];
-      if(k.classList.contains("td-lane")){var lb=k.querySelector("b");lane=lb?String(lb.textContent||"").trim():"";continue;}
+      if(k.classList.contains("td-lane")){var lb=k.querySelector("b"),rm=k.getAttribute("data-room");lane=TY_CARD_LANE[rm]||(lb?String(lb.textContent||"").trim():"");continue;}
       if(k.classList.contains("done")){D.ridden++;continue;}
       var sn=k.querySelector(".td-sn"),snm=k.querySelector(".td-snm"),nv=k.querySelector(".td-nvr>span:first-child"),fl=k.querySelector(".td-fl"),fst=tyCardFirst(k);
       var w=null,tier="",st="",lab="NOW",cl=nv?String(nv.className||""):"",tm=/\bt-(short|medium|long|packed)\b/.exec(cl);
