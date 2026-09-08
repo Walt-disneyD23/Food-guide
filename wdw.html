@@ -15,7 +15,7 @@
     --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff; --toast-glass:rgba(255,255,255,.78);
     --hm0:#eef0fd; --hm1:#d3d5f8; --hm2:#a8a9f0; --hm3:#7c74e9; --hm4:#4f46e5;
     --hmt0:#191a2e; --hmt1:#191a2e; --hmt2:#191a2e; --hmt3:#ffffff; --hmt4:#ffffff;
-    --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6; --pip-off:#e1e2ea; /* 0728a: the unlit pip (ink at ~13% on the card) */
+    --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6; --pip-off:#e1e2ea; /* 0728a: the unlit pip (ink at ~13% on the card) */ --bar1:#e1e2ea; --bar2:#c3c5d6; --bar3:#8f93ad; --bar4:#191a2e; /* 0728d (E): the ramp \u2014 the bar's fill steps with the band, Light palest, Packed ink */
     --t1:#93e2ba; --t2:#cbdba3; --t3:#f8d38f; --t4:#ffb197; --ringc:#3b32c8; /* Cut C (C-2): Soft tier fills + the plan-ring color \u2014 TRIP-BOARD-SCOPED (owner, Aug 2); the app-wide retune is shelved */
     /* radius scale (0708a): dot 3 / el-sm 8 / el 10 / tile 14 / card 16 / hero 22 / sheet 24 / pill */
     --r-dot:3px; --r-el-sm:8px; --r-el:10px; --r-tile:14px; --r-card:16px; --r-hero:22px; --r-sheet:24px; --r-pill:999px;
@@ -631,7 +631,8 @@
   .tf-mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px} /* twelve even cells (funnel-playable ratified) */
   .tf-mgc{background:var(--card-2);border-radius:10px;padding:9px 0 10px;text-align:center}
   .tf-mgc i{display:block;font-style:normal;font:700 var(--fs-micro) var(--font-display);letter-spacing:.1em;color:var(--muted-2)}
-  .tf-mgc b{display:block;font-family:var(--font-display);font-weight:700;font-size:17px;margin-top:2px}
+  .tf-mgc b{display:block;font-family:var(--font-display);font-weight:700;font-size:17px;margin-top:2px;color:var(--ink)} /* 0728d (B): the number in ink \u2014 hue left the tier */
+  .tf-mgc .s{display:block;width:27px;height:5px;margin:6px auto 0;position:relative} .tf-mgc .s:before{content:"";position:absolute;left:0;top:0;width:6px;height:5px;border-radius:2px;--on:var(--ink);--off:var(--pip-off);background:var(--off);box-shadow:7px 0 0 var(--off),14px 0 0 var(--off),21px 0 0 var(--off)} .tf-mgc.l1 .s:before{background:var(--on)} .tf-mgc.l2 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--off),21px 0 0 var(--off)} .tf-mgc.l3 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--off)} .tf-mgc.l4 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--on)} .tf-mgc:disabled .s{display:none} .tf-mgc:disabled b{color:var(--muted-2)} /* 0728d (B): the calendar's meter under the month's number \u2014 the number is the reading, the count names the band */
   .tf-keytruth{font-size:var(--fs-meta);color:var(--muted-2);line-height:1.5;margin-top:8px}
   .tf-mgc.on{outline:2px solid var(--accent);outline-offset:1.5px} /* Cut D (D-2): the ask */
   button.tf-mgc{border:0;cursor:pointer;font-family:var(--font-body)} button.tf-mgc:disabled{opacity:.45;cursor:default}
@@ -646,11 +647,12 @@
   .tf-go{margin-top:12px;width:100%;border:0;background:var(--accent-fill);color:#fff;font:700 var(--fs-body) var(--font-body);border-radius:var(--r-el);padding:12px 0;cursor:pointer}
   .tf-go:disabled{opacity:.4}
   .tf-band{display:grid;gap:5px;align-items:end;margin-bottom:2px} /* 0716z: height AUTO (owner-caught) \u2014 December\u2019s real 54 overflowed the fixed 104px box; bottoms align by the grid, the tallest month sets the roof */ /* the thirds band (readout in D-2; taps ride S3) */
-  .tf-bseg{text-align:center}.tf-bseg i{display:block;width:100%;border-radius:6px 6px 3px 3px;position:relative}
-  .tf-bseg i.aw:before{content:"";position:absolute;left:5px;right:5px;top:3px;height:3.5px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* 0726c (a-A): the band's confession \u2014 the aw1 week-ribbon idiom, band-sized; the mark names the stretch, the color stays the crowd's */
+  .tf-bseg{text-align:center}.tf-bseg i{display:block;width:100%;border-radius:6px 6px 3px 3px;position:relative;background:var(--muted-2)} .tf-bseg.l1 i{background:var(--bar1)}.tf-bseg.l2 i{background:var(--bar2)}.tf-bseg.l3 i{background:var(--bar3)}.tf-bseg.l4 i{background:var(--bar4)} /* 0728d (E): the fill steps with the band; the height stays the reading */
+  .tf-bseg i.aw:before{content:"";position:absolute;left:5px;right:5px;top:3px;height:3.5px;border-radius:2px;background:var(--accent);pointer-events:none} /* 0728d (E): the ribbon in the holiday's color (the diamond's) */ /* 0726c (a-A): the band's confession \u2014 the aw1 week-ribbon idiom, band-sized; the mark names the stretch, the color stays the crowd's */
   .tf-wt .odq{font:600 var(--fs-meta) var(--font-body);color:var(--muted-2)} /* 0726c (b-A): the ordinary card's measure, meta voice */
   .pb-fest{color:var(--muted-2)} /* 0726e: the park row's resident festival, muted \u2014 a festival is not a crowd tier */
-  .tf-bseg b{display:block;font:700 11px var(--font-display);margin-top:3px}
+  .tf-bseg b{display:block;font:700 11px var(--font-display);margin-top:3px;color:var(--ink)} /* 0728d: the number was Safari's default button blue \u2014 a leak, not a choice */
+  .tf-bseg .s{display:block;width:27px;height:5px;margin:4px auto 0;position:relative} .tf-bseg .s:before{content:"";position:absolute;left:0;top:0;width:6px;height:5px;border-radius:2px;--on:var(--ink);--off:var(--pip-off);background:var(--off);box-shadow:7px 0 0 var(--off),14px 0 0 var(--off),21px 0 0 var(--off)} .tf-bseg.l1 .s:before{background:var(--on)} .tf-bseg.l2 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--off),21px 0 0 var(--off)} .tf-bseg.l3 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--off)} .tf-bseg.l4 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--on)} /* 0728d (E): the meter under the bar's number */
   .tf-bseg em{display:block;font:600 7.5px var(--font-body);text-transform:uppercase;letter-spacing:.03em;color:var(--muted-2);font-style:normal;line-height:1.25;margin-top:2px}
   .tf-wh{display:flex;align-items:center;gap:10px}
   .tf-wr{width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:700 var(--fs-meta) var(--font-display);display:inline-flex;align-items:center;justify-content:center;flex:none}
@@ -663,8 +665,8 @@
   .tf-mfl .dts{color:var(--muted-2)}
   .tf-mfl b.h{color:var(--ink)} /* L2: the lift receipt's bold speaks ink \u2014 green stays the measured-quieter license */
   .tf-cd.aw1:before{content:"";position:absolute;left:4px;right:4px;top:3px;height:3.5px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* L2 (F1): the week ribbon \u2014 the mark names the week; the color stays the crowd's */
-  .tf-callg i.awc{width:16px;height:13px;border-radius:4px;background:var(--long);position:relative} /* L2: legend swatch = a mini tier cell wearing the actual bar (the grown-legend standard) */
-  .tf-callg i.awc:before{content:"";position:absolute;left:2.5px;right:2.5px;top:2px;height:2.5px;border-radius:2px;background:rgba(255,255,255,.92)}
+  .tf-callg i.awc{width:16px;height:13px;border-radius:4px;background:var(--bar3);position:relative} /* 0728d (E): the chip wears the ramp */ /* L2: legend swatch = a mini tier cell wearing the actual bar (the grown-legend standard) */
+  .tf-callg i.awc:before{content:"";position:absolute;left:2.5px;right:2.5px;top:2px;height:2.5px;border-radius:2px;background:var(--accent)}
   .rpc.tf-lift{border-color:var(--medium)} /* L2: anchor cards wear their direction \u2014 amber lift, green dip */
   .rpc.tf-dip{border-color:var(--short)}
   .tp-dc.aw:before{content:"";position:absolute;left:4px;right:4px;top:3px;height:3px;border-radius:2px;background:rgba(255,255,255,.92);box-shadow:0 1px 2px rgba(0,0,0,.18);pointer-events:none} /* Cut 2 (L2): the week ribbon on trip cells \u2014 the mark names the week; the color stays the crowd\u2019s */
@@ -1195,7 +1197,7 @@
     --hm0:#1c2440; --hm1:#2a3163; --hm2:#3c3f96; --hm3:#5a52cf; --hm4:#8b87ff;
     --hmt0:#9db0c0; --hmt1:#9db0c0; --hmt2:#0a141d; --hmt3:#0a141d; --hmt4:#0a141d;
     --t1:#2c8f61; --t2:#78904e; --t3:#b3893c; --t4:#bd674c; --ringc:#b4b0ff; /* Cut C (C-2): soft dark \u2014 dimmer, not paler; ringc needs LIGHTER in dark */
-    --pip-off:#3b4954; /* 0728a: the unlit pip in Harbor (ink at ~20% on the card) */
+    --pip-off:#3b4954; /* 0728a: the unlit pip in Harbor (ink at ~20% on the card) */ --bar1:#33424e; --bar2:#4f6070; --bar3:#8ea0b0; --bar4:#e7eef4; /* 0728d (E): the ramp in Harbor \u2014 ink is light here, so it flips with the theme */
     --track:#263c50; --dot-idle:#2c4155; --accent-deep:#b9b6ff; --emblem-plate:#dfe7ee; --fav:#f2c14e;
     --cmp-p1:#8b87ff; --cmp-p2:#22d3ee; --cmp-p3:#e879f9; /* 0714i: dark identity */
     --shadow:0 16px 40px -18px rgba(0,0,0,.55); --shadow-sm:0 6px 18px -8px rgba(0,0,0,.45); --shadow-tk:drop-shadow(0 6px 14px rgba(0,0,0,.5));
@@ -2214,7 +2216,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728c</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728d</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6561,9 +6563,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen)renderPulsePage();});
       return h+'<div class="tf-read">Warming up the record\u2026</div></div>';
     }
-    h+='<div class="tf-read">Tap every month you could travel \u2014 numbers are each month\u2019s typical day from the banked record.</div><div class="tf-mgrid">';
+    h+='<div class="tf-read">Tap every month you could travel \u2014 the number is that month\u2019s typical wait, in minutes, from the banked record.</div><div class="tf-mgrid">'; /* 0728d (a): the ask says wait and minutes */
     for(i=0;i<12;i++){var t=L.t3(i),r=(t&&t.v!=null)?Math.round(t.v):null;
-      h+='<button type="button" class="tf-mgc'+(tfSel.indexOf(i)>=0?' on':'')+'" data-tfmon="'+i+'"'+(r==null?' disabled':'')+'><i>'+TF_MN[i]+'</i><b style="color:var(--'+(r!=null?window.__avTier(r):'muted-2')+')">'+(r!=null?r:'\u2013')+'</b></button>';}
+      h+='<button type="button" class="tf-mgc'+(tfSel.indexOf(i)>=0?' on':'')+(r!=null?' l'+TF_LV[window.__avTier(r)]:'')+'" data-tfmon="'+i+'"'+(r==null?' disabled':'')+'><i>'+TF_MN[i]+'</i><b>'+(r!=null?r:'\u2013')+'</b><span class="s"></span></button>';} /* 0728d (B): the tier is a class, the number is ink, the pips say the band */
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+'<div class="tf-keytruth">Minutes of average posted wait \u00b7 no month has ever run Light \u2014 the game is picking Moderate over Packed.</div>';
     h+='<div class="tf-selline">'+(tfSel.length?tfSel.map(function(m){return TF_MFULL[m];}).join(" \u00b7 "):'')+'</div>';
     h+='<div class="tf-lenrow">'+[["3 days",3],["5 days",5],["7 days",7],["Custom\u2026",0]].map(function(o){
@@ -6587,7 +6589,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       [["E","early"],["M","mid"],["L","late"]].forEach(function(t){
         var v=P?Math.round(P[t[0]].v):null;
         var mk=tfThirdMarked(tfYFor(m),m,t[0]);if(mk)tfBandAw=1; /* 0726c (a-A): clause-earned */
-        h+='<button type="button" class="tf-bseg" data-tfseg="'+m+'.'+t[0]+'"><i'+(mk?' class="aw"':'')+' style="height:'+(v!=null?Math.max(8,Math.min(96,Math.round((v-20)*2.6))):8)+'px;background:var(--'+(v!=null?window.__avTier(v):'muted-2')+')"></i><b>'+(v!=null?v:'\u2013')+'</b><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});}
+        h+='<button type="button" class="tf-bseg'+(v!=null?' l'+TF_LV[window.__avTier(v)]:'')+'" data-tfseg="'+m+'.'+t[0]+'"><i'+(mk?' class="aw"':'')+' style="height:'+(v!=null?Math.max(8,Math.min(96,Math.round((v-20)*2.6))):8)+'px"></i><b>'+(v!=null?v:'\u2013')+'</b><span class="s"></span><em>'+t[1]+'<br>'+TF_MN[m]+'</em></button>';});} /* 0728d (E): the tier is a class \u2014 the ramp and the pips read it; the height stays inline (the card reads it back) */
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+(tfBandAw?'<div class="tf-callg"><span><i class="awc"></i>holds holiday-week days</span></div>':'')+tfFactsHTML()+'</div>'; /* 0726c (a-A): the band's legend \u2014 renders only when a ribbon rendered */
     var allw=tfWindows(),top=allw.slice(0,tfWindows.__cap||5),c,r,ancM={};function mHasMark(m){if(ancM[m]===undefined)ancM[m]=(tfThirdMarked(tfYFor(m),m,"E")||tfThirdMarked(tfYFor(m),m,"M")||tfThirdMarked(tfYFor(m),m,"L"))?1:0;return ancM[m];} /* 0726g THE GATE FINDS ITS DAYS: anchor cards carry no .m \u2014 the 0726c set filled with undefined and the qualifier never fired (owner glass 2:12 PM). The month test now walks the band ribbon's own predicate; December's spillover marks January correctly. */
     for(i=0;i<top.length;i++){c=top[i];
@@ -6604,14 +6606,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     h+='<div class="tf-basis">Has run, never will run. Every number comes from real days the record has kept, the last three years of each month\u2019s ordinary days \u00b7 each card shows what its exact dates have really run \u00b7 a holiday week wears its own history, lifted or eased by how it usually runs \u00b7 where the record runs thin, a card holds back rather than guess \u00b7 events from the verified table \u00b7 tap a window to see it up close.</div>';
     return h;
   }
+  var TF_LV={short:1,medium:2,long:3,packed:4},TF_TIERS=["short","medium","long","packed"]; /* 0728d: the tier word \u2194 the family's level class, one table each way */
   function tfCardData(el){ /* 0727a Plan-Card-Spec \u00a74 THE MODEL \u2014 a walk of the rendered S2 page (THE CARD READS THE GLASS): the .lbl range, the band\u2019s own bars and ribbons, the key\u2019s own words, the ranked cards in the page\u2019s order; nothing re-ranked, re-priced or re-tiered */
     var lb=el.querySelector(".rpc .lbl"),rg=lb?String(lb.textContent||"").replace(/^Across\s+/,"").trim():"";
-    function tv(x){var m=/--(short|medium|long|packed|muted-2)/.exec(String(x||""));return m?(m[1]==="muted-2"?"muted2":m[1]):"muted2";} /* the segment\u2019s tier var \u2192 the card constant */
+    function tv(el2){var k2,cl=el2&&el2.classList;if(cl)for(k2=1;k2<=4;k2++)if(cl.contains("l"+k2))return TF_TIERS[k2-1];return "muted2";} /* 0728d: the level class \u2192 the card constant (the inline var left the page in 0728a/d; reading it blanked the band words) */
     var d0=tpToday(),D={range:rg,stampDate:TF_MABs[+d0.slice(5,7)-1]+" "+(+d0.slice(8,10)),band:[],key:[],awKey:null,rows:[]};
     [].slice.call(el.querySelectorAll(".tf-band .tf-bseg")).forEach(function(sg){var bi=sg.querySelector("i"),bb=sg.querySelector("b"),em=sg.querySelector("em"),st=bi?String(bi.getAttribute("style")||""):"",hm=/height:\s*(\d+)px/.exec(st),ls=em?String(em.innerHTML||"").split(/<br\s*\/?>/i):[];
       var vt=bb?String(bb.textContent||"").trim():"",v=/^\d+$/.test(vt)?+vt:null;
-      D.band.push({v:v,h:Math.round((hm?+hm[1]:8)*1.25),tier:tv(st),aw:!!(bi&&bi.classList.contains("aw")),l1:String(ls[0]||"").replace(/<[^>]*>/g,"").trim().toUpperCase(),l2:String(ls[1]||"").replace(/<[^>]*>/g,"").trim().toUpperCase()});}); /* the bar is the page\u2019s own px \u00d7 1.25 \u2014 the law (v\u221220)\u00d72.6 is never re-derived */
-    [].slice.call(el.querySelectorAll(".pw-alm-key .kc")).forEach(function(k){var ki=k.querySelector("i"),kb=k.querySelector("b"),ke=k.querySelector("em");D.key.push({word:kb?String(kb.textContent||"").trim():"",range:ke?String(ke.textContent||"").trim():"",tier:tv(ki&&ki.getAttribute("style"))});}); /* (d) D-1: the key\u2019s own words \u2014 45 and up */
+      D.band.push({v:v,h:Math.round((hm?+hm[1]:8)*1.25),tier:tv(sg),aw:!!(bi&&bi.classList.contains("aw")),l1:String(ls[0]||"").replace(/<[^>]*>/g,"").trim().toUpperCase(),l2:String(ls[1]||"").replace(/<[^>]*>/g,"").trim().toUpperCase()});}); /* the bar is the page\u2019s own px \u00d7 1.25 \u2014 the law (v\u221220)\u00d72.6 is never re-derived */
+    [].slice.call(el.querySelectorAll(".pw-alm-key .kc")).forEach(function(k){var ki=k.querySelector("i"),kb=k.querySelector("b"),ke=k.querySelector("em");D.key.push({word:kb?String(kb.textContent||"").trim():"",range:ke?String(ke.textContent||"").trim():"",tier:(function(){var k3;for(k3=1;k3<=4;k3++)if(k.classList.contains("k"+k3))return TF_TIERS[k3-1];return "muted2";})()});}); /* (d) D-1: the key\u2019s own words \u2014 45 and up */
     var awc=el.querySelector(".tf-callg i.awc");if(awc&&awc.parentNode)D.awKey=String(awc.parentNode.textContent||"").replace(/\s+/g," ").trim(); /* clause-earned like the page: holds holiday-week days */
     function bw(t){var j;for(j=0;j<D.key.length;j++)if(D.key[j].tier===t)return D.key[j].word;return "";} /* the band word is the key\u2019s text (ONE BAND VOCABULARY) */
     [].slice.call(el.querySelectorAll(".rpc.tp-trl[data-tfsee]")).forEach(function(c){var wr=c.querySelector(".tf-wr"),wt=c.querySelector(".tf-wt"),wv=c.querySelector(".tf-wv"),od=wt?wt.querySelector(".odq"):null,nm=wt?String(wt.textContent||""):"";
@@ -6640,43 +6643,45 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     T("When I\u2019d go",L,214,RD(700,66),C.ink); /* (b) B-1: the door asks When should we go? \u2014 the card answers */
     var n=D.band.length,sw=n?((R-L)+10)/n-10:0;
     for(i=0;i<n;i++){var b=D.band[i],bx=L+i*(sw+10),cx=bx+sw/2,bh=Math.max(10,Math.min(120,b.h));
-      ctx.fillStyle=ink(b.tier);rr(bx,358-bh,sw,bh,10);ctx.fill();
-      if(b.aw){ctx.fillStyle="rgba(255,255,255,.92)";rr(bx+12,358-bh+(bh<24?(bh-8)/2:8),sw-24,8,4);ctx.fill();} /* 0727c: the pill centers on a short bar (early Sep at 25 = 16px; owner glass Sep 1) */ /* the band\u2019s confession rides along */
-      T(b.v==null?"\u2013":String(b.v),cx,387,RD(700,28),C.accent,"center");
-      SP(b.l1,cx,409,RB(600,16),C.muted2,1,"center");SP(b.l2,cx,427,RB(600,16),C.muted2,1,"center");}
+      ctx.fillStyle=C["bar"+(TF_LV[b.tier]||0)]||C.muted2;rr(bx,358-bh,sw,bh,10);ctx.fill(); /* 0728d (E): the ramp */
+      if(b.aw){ctx.fillStyle=C.accent;rr(bx+12,358-bh+(bh<24?(bh-8)/2:8),sw-24,8,4);ctx.fill();} /* 0728d: the ribbon in accent */ /* 0727c: the pill centers on a short bar (early Sep at 25 = 16px; owner glass Sep 1) */ /* the band\u2019s confession rides along */
+      T(b.v==null?"\u2013":String(b.v),cx,387,RD(700,28),C.ink,"center"); /* 0728d: the number in ink */
+      if(b.v!=null){var lv0=TF_LV[b.tier]||0,px0=cx-(4*PC_PIP.w+3*PC_PIP.g)/2,pi0;for(pi0=0;pi0<4;pi0++){rr(px0+pi0*(PC_PIP.w+PC_PIP.g),393,PC_PIP.w,PC_PIP.h,PC_PIP.h/2);ctx.fillStyle=pi0<lv0?C.ink:C.hair;ctx.fill();}} /* 0728d: the meter under the number (the month card's pip) */
+      SP(b.l1,cx,425,RB(600,16),C.muted2,1,"center");SP(b.l2,cx,443,RB(600,16),C.muted2,1,"center");} /* +16: the pips' room */
     var kf=19,drop=false,items=[];
     function kItems(){var o=[],k;for(k=0;k<D.key.length;k++)o.push({sw:D.key[k].tier,w:D.key[k].word,r:drop?"":D.key[k].range});if(D.awKey)o.push({sw:"aw",w:D.awKey,r:""});return o;}
-    function kWidth(){var k,w=0;items=kItems();for(k=0;k<items.length;k++){w+=24+MW(items[k].w,RB(600,kf))+(items[k].r?6+MW(items[k].r,RB(500,kf)):0)+(k<items.length-1?18:0);}return w;}
+    var KW=4*PC_PIP.w+3*PC_PIP.g; /* 0728d: the key's swatch is the meter */
+    function kWidth(){var k,w=0;items=kItems();for(k=0;k<items.length;k++){w+=(items[k].sw==="aw"?24:KW+6)+MW(items[k].w,RB(600,kf))+(items[k].r?6+MW(items[k].r,RB(500,kf)):0)+(k<items.length-1?18:0);}return w;}
     while(kWidth()>R-L&&kf>16)kf--;
     if(kWidth()>R-L){drop=true;kWidth();} /* the ranges drop last \u2014 THE LEGEND NAMES, THE FINE PRINT EXPLAINS */
     var kx=L;for(i=0;i<items.length;i++){var it=items[i];
-      if(it.sw==="aw"){ctx.fillStyle=C.long;rr(kx,445,18,18,5);ctx.fill();ctx.fillStyle="rgba(255,255,255,.92)";rr(kx+3,449,12,3,2);ctx.fill();}else{ctx.fillStyle=ink(it.sw);rr(kx,445,18,18,5);ctx.fill();}
-      kx+=24;T(it.w,kx,460,RB(600,kf),C.muted);kx+=MW(it.w,RB(600,kf));
-      if(it.r){kx+=6;T(it.r,kx,460,RB(500,kf),C.muted2);kx+=MW(it.r,RB(500,kf));}
+      if(it.sw==="aw"){ctx.fillStyle=C.bar3;rr(kx,461,18,18,5);ctx.fill();ctx.fillStyle=C.accent;rr(kx+3,465,12,3,2);ctx.fill();kx+=24;}else{var lk=TF_LV[it.sw]||0,pk;for(pk=0;pk<4;pk++){rr(kx+pk*(PC_PIP.w+PC_PIP.g),466,PC_PIP.w,PC_PIP.h,PC_PIP.h/2);ctx.fillStyle=pk<lk?C.ink:C.hair;ctx.fill();}kx+=KW+6;} /* 0728d: the key teaches the meter (1\u00b72\u00b73\u00b74 lit) and the ramp's chip; +16 */
+      T(it.w,kx,476,RB(600,kf),C.muted);kx+=MW(it.w,RB(600,kf));
+      if(it.r){kx+=6;T(it.r,kx,476,RB(500,kf),C.muted2);kx+=MW(it.r,RB(500,kf));}
       kx+=18;}
     var tall=(D.rows.length<=4)?D.rows:D.rows.slice(0,3),rest=(D.rows.length<=4)?[]:D.rows.slice(3); /* (a) A-1: four or fewer seat all tall \u2014 a roll of one is a seat for its own sake */
-    for(i=0;i<tall.length;i++){var r=tall[i],y=480+i*144;
+    for(i=0;i<tall.length;i++){var r=tall[i],y=496+i*144; /* 0728d: +16 */
       ctx.fillStyle=C.card;rr(L,y,R-L,130,26);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.stroke();
       T(r.seat,L+62,y+84,RD(700,54),C.muted2,"center");
       var vx=R-36,vs=(r.est==null)?"\u2013":String(r.est),vw=Math.max(MW(vs,RD(700,80)),120);
-      T(vs,vx,y+80,RD(700,80),ink(r.tier),"right");SP("MIN",vx,y+116,RB(700,23),C.muted2,3,"right"); /* every number in its tier\u2019s ink \u2014 the seat says 1, the color stays the crowd\u2019s */
+      T(vs,vx,y+80,RD(700,80),C.ink,"right");SP("MIN",vx,y+116,RB(700,23),C.muted2,3,"right"); /* 0728d: the number in ink \u2014 hue left the tier (the seat says 1, the band word says the band) */
       var nx=174,mw=vx-vw-22-nx,fs=44;while(fs>36&&MW(r.name,RD(700,fs))>mw)fs--; /* ONE-LINE NAMES: shrink to the 36 floor, then ell */
       T(ell(r.name,RD(700,fs),mw),nx,y+62,RD(700,fs),C.ink);
-      var segs=r.anchor?[[r.rec.replace(/^Has run about /,"About "),700,r.kind==="dip"?C.short:C.ink],[r.dts?" \u00b7 "+r.dts:"",500,C.muted]]:[["Has run ",500,C.muted],[r.band,700,ink(r.tier)],[r.odq?" \u00b7 ordinary days":"",500,C.muted]]; /* the line: the record\u2019s verb + the key\u2019s word, or the anchor\u2019s receipt (the mock-C clause) + its dates verbatim */
+      var segs=r.anchor?[[r.rec.replace(/^Has run about /,"About "),700,r.kind==="dip"?C.short:C.ink],[r.dts?" \u00b7 "+r.dts:"",500,C.muted]]:[["Has run ",500,C.muted],[r.band,700,C.ink],[r.odq?" \u00b7 ordinary days":"",500,C.muted]]; /* 0728d: the word is the band, in ink */ /* the line: the record\u2019s verb + the key\u2019s word, or the anchor\u2019s receipt (the mock-C clause) + its dates verbatim */
       var lf=28,lw=function(z){var k,w=0;for(k=0;k<segs.length;k++)w+=segs[k][0]?MW(segs[k][0],RB(segs[k][1],z)):0;return w;};while(lf>24&&lw(lf)>mw)lf--; /* the line shrinks to 24 before it ells \u2014 the anchor\u2019s dates are stated, not cut */
       var sx=nx;for(j=0;j<segs.length;j++){var sg=segs[j];if(!sg[0])continue;var sf=RB(sg[1],lf),st=ell(sg[0],sf,mw-(sx-nx));T(st,sx,y+104,sf,sg[2]);sx+=MW(st,sf);if(st!==sg[0])break;}
     }
     if(rest.length){
-      SP("ALSO IN THE RANGE",L+6,939,RB(800,22),C.muted2,3);
+      SP("ALSO IN THE RANGE",L+6,955,RB(800,22),C.muted2,3); /* 0728d: +16 */
       var seats=(rest.length<=4)?rest:rest.slice(0,3),more=(rest.length>4)?rest.length-3:0; /* FOUR SEATS, THE LAST ONE COUNTS \u2014 the page caps at seven, so the count is a net */
-      for(i=0;i<seats.length;i++){var q=seats[i],ty=951+i*46,qv=(q.est==null)?"\u2013":String(q.est);
+      for(i=0;i<seats.length;i++){var q=seats[i],ty=967+i*46,qv=(q.est==null)?"\u2013":String(q.est); /* 0728d: +16 */
         T(q.seat,L+29,ty+35,RD(700,28),C.muted2,"center");
-        T(qv,R-12,ty+36,RD(700,32),ink(q.tier),"right");
+        T(qv,R-12,ty+36,RD(700,32),C.ink,"right"); /* 0728d: ink */
         var tag=q.anchor?((q.pct!=null?q.pct+"% "+(q.kind==="dip"?"quieter":"over"):q.rec)+(q.nyr!=null?" \u00b7 "+q.nyr+" yrs":"")):q.band; /* (f) the mock\u2019s compression for the anchor; the band word alone for an ordinary card */
         var tx=R-12-90-16,tf=RB(600,24),tg=ell(tag||"",tf,420);T(tg,tx,ty+34,tf,C.muted,"right");
         var nx2=126,mw2=tx-MW(tg,tf)-16-nx2;T(ell(q.name,RB(600,29),mw2),nx2,ty+35,RB(600,29),C.ink);
         HL(ty+45,C.rollhair);}
-      if(more)T("+ "+more+" more",L+12,951+seats.length*46+35,RB(700,28),C.muted);
+      if(more)T("+ "+more+" more",L+12,967+seats.length*46+35,RB(700,28),C.muted);
     }
     HL(1190,C.hair);
     var bl=wrap(D.basis,RB(500,26),640);for(i=0;i<bl.length&&i<3;i++)T(bl[i],L,1234+i*34,RB(500,26),C.muted); /* (e) E-1: the seat grows to 640 (the right seats begin at ~727) */
@@ -8786,7 +8791,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      waits, the receipts, the lanes, the crown and the sink all live in the DOM, never in the walker's rows side-channel (0717n predates the
      live layer). Each tall row speaks its FIRST CLAUSE and the wait seat is the one number for its measure. FIVE SEATS, THE LAST ONE COUNTS:
      the roll never crosses the 1190 hairline. Bright palette = the board's own field, theme-invariant like the jewels. ===== */
-  var TY_CARD={bg:"#e9ebf4",card:"#ffffff",line:"#e4e6f1",ink:"#191a2e",muted:"#6b6f8c",muted2:"#9fa3c0",accent:"#4f46e5",short:"#15a36b",medium:"#dc8a06",long:"#ef6c3b",packed:"#e23b54",hair:"#cfd3e6",rollhair:"#d9dceb",green:"#15a36b"};
+  var TY_CARD={bg:"#e9ebf4",card:"#ffffff",line:"#e4e6f1",ink:"#191a2e",muted:"#6b6f8c",muted2:"#9fa3c0",accent:"#4f46e5",short:"#15a36b",medium:"#dc8a06",long:"#ef6c3b",packed:"#e23b54",hair:"#cfd3e6",rollhair:"#d9dceb",green:"#15a36b",bar1:"#e1e2ea",bar2:"#c3c5d6",bar3:"#8f93ad",bar4:"#191a2e"};
   var TY_NM_CARD={"expedition everest - legend of the forbidden mountain":"Expedition Everest","gran fiesta tour starring the three caballeros":"Gran Fiesta Tour","rock 'n' roller coaster starring aerosmith":"Rock \u2019n\u2019 Roller Coaster","rock 'n' roller coaster starring the muppets":"Rock \u2019n\u2019 Roller Coaster","guardians of the galaxy: cosmic rewind":"Cosmic Rewind","journey into imagination with figment":"Journey Into Imagination","star tours - the adventures continue":"Star Tours","mickey & minnie's runaway railway":"Runaway Railway","millennium falcon: smugglers run":"Smugglers Run","the twilight zone tower of terror":"Tower of Terror","star wars: rise of the resistance":"Rise of the Resistance","big thunder mountain railroad":"Big Thunder Mountain","the seas with nemo & friends":"The Seas with Nemo","tomorrowland transit authority peoplemover":"PeopleMover"}; /* 0726z THE CARD\u2019S SHORT NAME (owner-ruled N-A, Sep 1): card-only \u2014 the board wraps, the card cannot; 13 of 51 roster rides overrun the tall row at the 40 floor. Keys normalized (tyNmCard); the shrink-then-ell rule stays the net for anything unlisted. */
   function tyNmCard(n){var k=String(n||"").replace(/[\u2122\u00ae]/g,"").replace(/[\u2018\u2019]/g,"'").replace(/[\u2013\u2014]/g,"-").replace(/\s+/g," ").trim().toLowerCase();return TY_NM_CARD[k]||String(n||"").replace(/\u2122/g,"").trim();} /* the \u2122 never prints on the card either way */
   function tyCardFirst(row){ /* \u00a74 THE FIRST CLAUSE \u2014 crown \u2192 GO receipt \u2192 status \u2192 window clock \u2192 the why's first sentence; no line on the card ends in a period */
