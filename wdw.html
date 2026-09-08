@@ -2220,7 +2220,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728l</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728m</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -3241,7 +3241,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(typeof pfBase==="undefined"||!pfBase||!pfBase.rides)return {state:"none"};
     var anyOpen=PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])!==false;});
     if(!anyOpen)return {state:"none"};
-    var bkey=String(Math.floor(pfEtMin()/30)),deltas=[],i,s=0,ptyN=0;
+    var bkey=String(Math.floor(pfEtMin()/30)),deltas=[],i,s=0,ptyN=0,ptyPk=null;
     PARK_DEF.forEach(function(p){
       if(isOpenNow(parkInfo[p.key])===false)return;
       var fam=[],id,face=tdFaceNow(p.key); /* 0727k: the park's face tonight */
@@ -3255,21 +3255,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(i=0;i<fam.length;i++){
         var lv=liveById[fam[i].id];
         if(!lv||lv.status!=="OPERATING"||typeof lv.wait!=="number")continue;
-        deltas.push(lv.wait-fam[i].typ);if(fam[i].pty)ptyN++;
+        deltas.push(lv.wait-fam[i].typ);if(fam[i].pty){ptyN++;ptyPk=p.key;}
       }
     });
     if(deltas.length<8)return {state:"none"};
     for(i=0;i<deltas.length;i++)s+=deltas[i];
     var agg=s/deltas.length;
     return {state:agg>=5?"over":agg<=-5?"under":"quiet",n:Math.round(Math.abs(agg)),agg:agg,
-      members:deltas.length,dayPart:vdDayPart(pfEtMin()),weekday:vdWeekday(),party:(ptyN===deltas.length)}; /* 0727k m-B: the verdict names the measure only when every member drank a party pool */
+      members:deltas.length,dayPart:vdDayPart(pfEtMin()),weekday:vdWeekday(),party:(ptyN===deltas.length),partyWord:tdPartyWord(ptyPk)}; /* 0727k m-B: the verdict names the measure only when every member drank a party pool */
   }
   function vdLine(v){
     if(!v||v.state==="none")return "";
     var wd=esc(v.weekday||""),dp=esc(v.dayPart),lead=wd?wd+" "+dp:dp;
     if(v.state==="quiet")return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span><div class="tx"><b>A quiet '+lead+'</b> \u2014 headliners near their typical.</div></div>';
-    if(v.state==="over")return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#ffb197"></span></span><div class="tx">Headliners <b>about '+v.n+' min over</b> typical'+(v.party?' for a party night':'')+' this '+lead+'.</div></div>';
-    return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span><div class="tx">Headliners <b class="rd-go">about '+v.n+' min under</b> typical'+(v.party?' for a party night':'')+' this '+lead+'.</div></div>';
+    if(v.state==="over")return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#ffb197"></span></span><div class="tx">Headliners <b>about '+v.n+' min over</b> typical'+(v.party?(' for a party '+v.partyWord):'')+' this '+lead+'.</div></div>';
+    return '<div class="rd-row"><span class="ic"><span class="dot" style="background:#7ef0bd"></span></span><div class="tx">Headliners <b class="rd-go">about '+v.n+' min under</b> typical'+(v.party?(' for a party '+v.partyWord):'')+' this '+lead+'.</div></div>';
   }
   /* ===== THE TONIGHT SEAT (rdTn-, L-32 Cut 5a, 0718n) — clause 4 of the read.
      One seat, one home: the hours truth yields to any EARNED event truth; on a
@@ -3834,8 +3834,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var L=tdLadder(id,bkey,faces[r.park]||null),arr=L.arr;if(!arr||arr.length<10)return; /* 0727k THE LADDER NEVER ENDS ON SILENCE: this season's party pool → last season's → ordinary, per ride x bucket, by the park's face tonight */ /* 0726v ONE FLOOR (owner-ruled A, Sep 1; Aug 31 10:29 PM EPCOT: the row said "no wait history", the receipt said "20 under typical" - same half-hour slot, two floors): the Pulse asks the walker's question at the walker's bar, 10 days in the bucket (rpCurveOf's floor, crowned by the Aug 26 pool study). The receipt goes quiet wherever the board says no history; the crown cannot elect from a band the board will not show. */
       eligible++;
       var q=pfQuartiles(arr),w=lv.wait,typ=Math.round(q.med);
-      if(w<=q.p25-5&&q.med>=20&&w<=0.65*q.med)go.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:typ-w,tier:tierOf(lv),kind:"go",rung:L.rung,sn:L.sn,bw:pfRideBasis(r.park,L)});
-      else if(w>=q.p75+5&&w>=25&&w>=1.4*q.med)rough.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:w-typ,tier:tierOf(lv),kind:"rough",rung:L.rung,sn:L.sn,bw:pfRideBasis(r.park,L)});
+      if(w<=q.p25-5&&q.med>=20&&w<=0.65*q.med)go.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:typ-w,tier:tierOf(lv),park:r.park,kind:"go",rung:L.rung,sn:L.sn,bw:pfRideBasis(r.park,L)});
+      else if(w>=q.p75+5&&w>=25&&w>=1.4*q.med)rough.push({id:id,nm:r.name,pk:BANNER_MONO[r.park]||"",w:w,typ:typ,delta:w-typ,tier:tierOf(lv),park:r.park,kind:"rough",rung:L.rung,sn:L.sn,bw:pfRideBasis(r.park,L)});
     });
     var res=[],now=Date.now();
     for(var i=pfReopens.length-1;i>=0&&res.length<2;i--){var e=pfReopens[i];
@@ -5745,7 +5745,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tdOrdMinN(pks){var n=null,i;for(i=0;i<pks.length;i++){var v=tdOrdN(pks[i]);if(v==null)continue;if(n===null||v<n)n=v;}return n;}
   function tdOrdWord(n,v2){return "the last "+(n==null?28:n)+(v2?" ordinary":"")+" days";} /* v2 blobs say "ordinary" (the pool is fenced); v1 keeps 0727j's words */
-  function tdPoolWord(pr){return pr.rung===1?("this season\u2019s "+pr.n+" party nights"):pr.rung===2?("last season\u2019s "+pr.n+" party nights"):null;} /* the party pool's own name, seasons speaking their count */
+  function tdPartyWord(pk){var inf=(typeof parkInfo!=="undefined"&&parkInfo&&pk)?parkInfo[pk]:null;return (inf&&inf.close&&Date.now()<new Date(inf.close).getTime())?"days":"nights";} /* 0728m THE POOL FOLDS AT THE CLOSE (owner glass 12:26 PM Sep 8, ruled A): the party pool's word by the park's own clock \u2014 "days" while day guests are in, "nights" past the published close (the door the Today hero already flips at, t-A); no clock \u2192 the pool's proper name. THE CLOCK FOLDS AT ITS OWN DOOR: four callers consume the word, none computes it */
+  function tdPoolWord(pr,pk){return pr.rung===1?("this season\u2019s "+pr.n+" party "+tdPartyWord(pk)):pr.rung===2?("last season\u2019s "+pr.n+" party "+tdPartyWord(pk)):null;} /* the party pool's own name, seasons speaking their count; 0728m: the word folds at the park's close */
   function tdPartyLighter(pk,sn){ /* n-A THE PERCENT (owner-ruled Sep 4): the median party/ordinary ratio over the park's ride x buckets 10 AM\u20135:30 PM (keys 20\u201335), both pools \u2265 10, ordinary typical \u2265 15m \u2014 rung 1 this season \u2192 rung 2 last season \u2192 null (the caller keeps 0727j's unnumbered sentence). Replay exhibit: 140 MK ride-buckets, median 0.700. */
     var B=(typeof pfBase!=="undefined")?pfBase:null;if(!B||!B.rides||!pk||!sn)return null;
     function walk(s){var r=tdPtRides(s),rat=[],id,k;if(!r)return null;
@@ -5765,22 +5766,22 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tdLaneEBW(days,pk){ /* f-i: the lane eyebrow discloses the pool it drank; on a party pool every lens reads the season (the lens is inert — a set, not a window) */
     var face=tdFaceNow(pk),pr=tdParkRung(pk,face),v2=!!(pfBase&&pfBase.bv),n=tdOrdWinN(rpWin,pk);
-    var w=(pr.rung===1)?("party nights \u00b7 "+pr.n+" this season"):(pr.rung===2)?("party nights \u00b7 last season\u2019s "+pr.n):("last "+(n||days)+" days"+(v2?" \u00b7 ordinary":""));
+    var w=(pr.rung===1)?("party "+tdPartyWord(pk)+" \u00b7 "+pr.n+" this season"):(pr.rung===2)?("party "+tdPartyWord(pk)+" \u00b7 last season\u2019s "+pr.n):("last "+(n||days)+" days"+(v2?" \u00b7 ordinary":""));
     var E={all:w,last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
     if(pr.rung===1||pr.rung===2){E.last7=w;E.month=w;E.wkend=w;E.trip=w;}
     return {E:E,face:face,pr:pr};
   }
   function pfPoolBasis(scopeParks){ /* b-A ONE RECEIPT, TWO POOLS (owner-ruled Sep 4): the basis names each party park's pool and the ordinary parks' window, its own count */
     var v2=!!(pfBase&&pfBase.bv),pty=[],ord=[],i;
-    for(i=0;i<scopeParks.length;i++){var k=scopeParks[i],pr=tdParkRung(k,tdFaceNow(k));if(pr.rung===1||pr.rung===2)pty.push({mono:BANNER_MONO[k]||k,w:tdPoolWord(pr)});else ord.push(k);}
+    for(i=0;i<scopeParks.length;i++){var k=scopeParks[i],pr=tdParkRung(k,tdFaceNow(k));if(pr.rung===1||pr.rung===2)pty.push({mono:BANNER_MONO[k]||k,w:tdPoolWord(pr,k)});else ord.push(k);}
     var ow=tdOrdWord(tdOrdMinN(ord.length?ord:scopeParks),v2);
     if(!pty.length)return {txt:"this half-hour over "+ow,short:ow,party:false};
     if(!ord.length&&pty.length===1)return {txt:"this half-hour over "+pty[0].w,short:pty[0].w,party:true};
     var parts=pty.map(function(p){return p.mono+" over "+p.w;});if(ord.length)parts.push((pty.length===1?"other parks":"the other parks")+" over "+ow);
     var j=parts.join(" \u00b7 ");return {txt:"this half-hour \u00b7 "+j,short:j,party:true};
   }
-  function pfRideBasis(pk,L){var v2=!!(pfBase&&pfBase.bv);if(L.rung===1||L.rung===2)return tdPoolWord({rung:L.rung,n:tdPartyN(L.sn,pk)});return tdOrdWord(tdOrdN(pk),v2);} /* the single callout card's basis */
-  function pfMetaTail(c){return (c&&(c.rung===1||c.rung===2))?" on party nights":"";} /* m-B: the card says its basis */
+  function pfRideBasis(pk,L){var v2=!!(pfBase&&pfBase.bv);if(L.rung===1||L.rung===2)return tdPoolWord({rung:L.rung,n:tdPartyN(L.sn,pk)},pk);return tdOrdWord(tdOrdN(pk),v2);} /* the single callout card's basis */
+  function pfMetaTail(c){return (c&&(c.rung===1||c.rung===2))?(" on party "+tdPartyWord(c.park)):"";} /* m-B: the card says its basis; 0728m: the word folds at the park's close */
   function pfMetaR3(c){return (c&&c.rung===3)?" \u00b7 ordinary typical \u2014 no party history for this ride yet":"";} /* rung 3: the disclosed clause, on the card itself (owner-ruled) */
   window.__tdPartyOf=tdPartyOf;window.__tdFace=tdFace;window.__tdLadder=tdLadder;window.__tdPool=tdPool;window.__tdPartyLighter=tdPartyLighter;window.__tdPartyN=tdPartyN;window.__tdParkRung=tdParkRung;window.__tdSeasonKey=tdSeasonKey; /* the export seam (the __slAnchorOf idiom): one function each, every consumer and the fleet's lf seat */
   function tdCurve(rid,wd,wds,face){ /* the day's window: its weekday first, the trip's whole arc when thin — rpCurveOf's floors intact. 0727k THE PARTY FENCE: a party face reads the season pool through the ladder (rung 1/2) — one pool for row and receipt (THE TWO TYPICALS, lean D); rung 3 falls to the ordinary walk, disclosed by the caller. Ordinary targets drop party digest days from both tapes (THE DAY IS THE UNIT). */
@@ -8436,7 +8437,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       else pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 <span class="ty-echo">from now till '+(lvT||(lvE===null?'close':'~'+rpClk(lvE)))+'</span>'+gSm+'</div>'; /* 0724f: the echo — the horizon speaks up top while the door lives in the fuse (D ruling); live during the spin */
     }
     var ev=tyEvParty(pk),pl='';
-    if(swp)pl='<div class="ty-pline">'+esc(swp.cred)+' \u2014 the plan runs to '+(swp.c===1440?'midnight':rpClk(swp.c))+'.'+(function(){var f=tdFaceNow(pk),pr=f?tdParkRung(pk,f):null;return (pr&&(pr.rung===1||pr.rung===2))?' Typicals tonight: '+esc(tdPoolWord(pr))+'.':'';})()+'</div>'; /* 0727k t-A after the close: the board's rows are on party tape — this line is the reason they read lower */ /* 0720u (S5b): anyone still inside passed the sweep - the credential named, the stale day-guest tense retired */
+    if(swp)pl='<div class="ty-pline">'+esc(swp.cred)+' \u2014 the plan runs to '+(swp.c===1440?'midnight':rpClk(swp.c))+'.'+(function(){var f=tdFaceNow(pk),pr=f?tdParkRung(pk,f):null;return (pr&&(pr.rung===1||pr.rung===2))?' Typicals tonight: '+esc(tdPoolWord(pr,pk))+'.':'';})()+'</div>'; /* 0727k t-A after the close: the board's rows are on party tape — this line is the reason they read lower */ /* 0720u (S5b): anyone still inside passed the sweep - the credential named, the stale day-guest tense retired */
     else if(ev&&open===true&&inf.close)pl='<div class="ty-pline">'+(ev.em?ev.em+' ':'')+'<b>Party tonight</b> \u2014 closes to day guests at '+tyClkIso(inf.close)+'; the plan runs to your close.'+esc(tdLighterClause(tdPartyLighter(pk,tdSeasonKey(tyDs()))))+'</div>'; /* 0727k t-A (owner-ruled Sep 4): the Live hero's words verbatim — the day-guests-till seam retired; the C rider rides along */
     else if(open===true){var tn2=tyTonight(pk);if(tn2)pl='<div class="ty-pline">'+(tn2.em?tn2.em+' ':'')+'<b>'+esc(tn2.word)+' tonight</b> \u2014 '+tyClkPair(tn2.o,tn2.c)+', '+esc(tn2.cred)+'.</div>';} /* 0720v (S5b Cut 2): the info line announces the night - credential named, the plan holds the published close */
     var gdn=''; /* 0723n (A3): THE INCIDENT LEADS \u2014 the down line renders above the night line and silences the fact; no cause EVER claimed (the sky belongs to Wrap) */
