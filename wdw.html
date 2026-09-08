@@ -2067,13 +2067,14 @@
   .pc-cd.cc{height:52px;padding-top:8px;grid-template-rows:16px 12px 5px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:0;font-family:var(--font-body)}
   .pc-cd.cc.past .d{color:var(--muted-2)}
   .pc-cd.cc.today{background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--accent)} .pc-cd.cc.today .d{color:var(--accent)}
-  .pc-cd.cc.sel,.pc-cd.cc.sel.today{background:var(--accent-fill);box-shadow:none} .pc-cd.cc.sel .d,.pc-cd.cc.sel.today .d{color:#fff} .pc-cd.cc.sel .mk:after{box-shadow:inset 0 0 0 1.5px #fff} /* 0728b: a white frame on the fill */ /* 0727v: the tapped day wears the solid accent fill with a white date (the selected-pill grammar); today keeps its ring — before, the two read the same */
+  .pc-cd.cc.sel,.pc-cd.cc.sel.today{background:var(--accent-fill);box-shadow:none} .pc-cd.cc.sel.today{box-shadow:inset 0 0 0 2px var(--accent-fill),inset 0 0 0 3.5px rgba(255,255,255,.92)} /* 0728c: today, tapped \u2014 the ring the legend promises, in white, inside the fill */ .pc-cd.cc.sel .d,.pc-cd.cc.sel.today .d{color:#fff} .pc-cd.cc.sel .mk:after{box-shadow:inset 0 0 0 1.5px #fff} /* 0728b: a white frame on the fill */ /* 0727v: the tapped day wears the solid accent fill with a white date (the selected-pill grammar); today keeps its ring — before, the two read the same */
   .pc-nav{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px} .pc-nav span{font:800 20px var(--font-display);letter-spacing:-.01em;color:var(--ink)} /* 0727v: the month in the display face, title case */
   .pc-arr{font:800 26px var(--font-display);line-height:1;color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;width:42px;height:36px;cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0727v: grown for in-park thumbs */
   .pc-band{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px} .pc-band span{font:600 var(--fs-meta) var(--font-body);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--muted)} .pc-band span b{color:var(--ink);font-weight:700}
   .pc-note{font:500 var(--fs-small) var(--font-body);color:var(--muted);line-height:1.45;margin:0 0 10px}
   .pc-lead{font-size:15px;line-height:1.45;color:var(--muted)}
-  .pc-up>div>span{display:flex;flex-direction:column;gap:2px} .pc-k{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
+  .pc-up>div>span{display:flex;flex-direction:column;gap:2px} .pc-k{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);white-space:nowrap}
+  .lgl.pc-up .pc-c{font:500 12.5px var(--font-body);color:var(--muted);text-align:left} .lgl.pc-up>div>small{white-space:nowrap} /* 0728c (B): the clause under the name, the date alone on the right \u2014 the name gets its width back */
   .pc-hr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line);font-size:15px} .pc-hr:first-of-type{border-top:0;margin-top:10px} .pc-hr b{font-weight:700}
   .pc-sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
   .pc-shead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px} .pc-shead .td-shg{margin-top:2px}
@@ -2213,7 +2214,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728b</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728c</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6765,7 +6766,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var N=window.__pwEvN,nights=[],k,rows='';
     if(N&&N.dates)for(k in N.dates)if(k>=today)nights.push(k);nights.sort();
     if(nights.length){var nd=nights[0],nm=pcPartyName(nd),em=tfPartyEm(nd);
-      rows+='<div><i>'+(em&&em!=="ring"?'<span class="em">'+em+'</span>':'<b class="pty"></b>')+'</i><span><small class="pc-k">Next party night</small>'+(nm?esc(nm):'MK party night')+'</span><small>'+(nd===today?'Tonight':tpWDn(nd).slice(0,3)+' '+pcMD(nd))+' \u00b7 '+(nm?'MK closes to day guests early':'which party isn\u2019t named yet')+'</small></div>';}
+      rows+='<div><i>'+(em&&em!=="ring"?'<span class="em">'+em+'</span>':'<b class="pty"></b>')+'</i><span><small class="pc-k">Next party night</small>'+(nm?esc(nm):'MK party night')+'<small class="pc-c">'+(nm?'MK closes to day guests early':'which party isn\u2019t named yet')+'</small></span><small>'+(nd===today?'Tonight':tpWDn(nd).slice(0,3)+' '+pcMD(nd))+'</small></div>';} /* 0728c (B): the clause is the sheet\u2019s sentence, under the name (SAME QUESTION SAME SENTENCE) */
     else rows+='<div><i><b class="pty"></b></i><span><small class="pc-k">Next party night</small>MK party night</span><small>the next season\u2019s dates aren\u2019t on the list yet</small></div>';
     var hk=Object.keys(HOLIDAYS).filter(function(d){return d>=today&&HOLIDAYS[d]!=="Christmas week";}).sort();
     if(hk.length)rows+='<div><i><b class="hol"></b></i><span><small class="pc-k">Next holiday</small>'+esc(HOLIDAYS[hk[0]])+'</span><small>'+tpWDn(hk[0]).slice(0,3)+' '+pcMD(hk[0])+'</small></div>';
@@ -6839,7 +6840,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function foot(H,l1,l2){HL(H-160,C.hair);T(l1,L,H-116,RB(500,24),C.muted);if(l2)T(l2,L,H-84,RB(500,24),C.muted);T("ridecue.live",R,H-76,RB(700,31),C.green,"right");T("Data: ThemeParks.wiki",R,H-41,RB(500,25),C.muted2,"right");}
     return {T:T,MW:MW,ell:ell,rr:rr,HL:HL,SP:SP,wrap:wrap,pill:pill,diamond:diamond,diamondF:diamondF,foot:foot};
   }
-  var PC_PIP={w:7,g:2,h:6}; /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
+  var PC_PIP={w:10,g:3,h:8}; /* 0728c: the room\u2019s 6\u00b71\u00b75 at the date\u2019s scale (\u00d7~1.6) \u2014 a meter on the card, not dots */ /* was {w:7,g:2,h:6} */ /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
   function pcMonthCardData(){ /* the month's field, from the same resolvers the room uses */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),today=tpToday(),pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m),d,cells=[],hols=[],hasHw=false,hasRace=false,pset={};
     for(d=1;d<=n;d++){var ds=tfDate(y,m,d),v=tfDEst(m,y,d),lv=(v!=null)?({short:1,medium:2,long:3,packed:4}[window.__avTier(v)]||0):0;
@@ -6859,7 +6860,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return {title:PC_MON[m]+" "+y,y:y,m:m,fd:new Date(y,m,1).getDay(),cells:cells,band:band,legend:legend,note:note,slug:PC_MON[m].toLowerCase()+"-"+y};
   }
   function pcDrawMonthCard(ctx,D){ /* 1080×1350 · the month's grid in the family's cell */
-    var W=1080,H=1350,L=64,R=1016,C=TY_CARD,h=pcCardHelpers(ctx,C,L,R),i;
+    var W=1080,H=D.H||1350,L=64,R=1016,C=TY_CARD,h=pcCardHelpers(ctx,C,L,R),i; /* 0728c (b): H from the field */
     ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
     h.SP("THE CALENDAR \u00b7 WALT DISNEY WORLD",L,100,RB(800,26),C.accent,4);
     h.T(D.title,L,196,RD(700,74),C.ink);
@@ -6900,6 +6901,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var extra=[];if(hol)extra.push({g:"hol",n:hol,d:""});fests.forEach(function(w){extra.push({g:"\ud83c\udf77",n:((window.__pwFestN||{})[w.id]||w.name)+" at EPCOT",d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});races.forEach(function(w){extra.push({g:"race",n:w.name,d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
     return {day:tpWDn(ds),date:pcMD(ds)+", "+y,sub:sub.join(" \u00b7 "),parks:parks,extra:extra,slug:ds};
   }
+  function pcMonthCardH(D){ /* 0728c (b): THE CARD FITS ITS FIELD \u2014 the month card is as tall as its bands, note, rows, legend and key need, 1350 at least, the foot always clear of the key (the day card\u2019s law); mirrors pcDrawMonthCard\u2019s y arithmetic */
+    var rows=Math.ceil((D.fd+D.cells.length)/7),bands=Math.min(D.band.length,3),nl=D.note?Math.min(2,Math.ceil(String(D.note).length/80)):0,lg=Math.min(D.legend.length,5);
+    var y=290+bands*54+(nl?nl*32+6:0)+6+(70+rows*96)+14+6+lg*46+18+28;
+    return Math.max(1350,y+40+160);}
   function pcDayCardH(D){ /* 0727z: the day card is as tall as its field — square when it fits, the footer always below the last row (the snapshot card's precedent) */
     var y=292,i;for(i=0;i<D.parks.length;i++){var p=D.parks[i],nl=p.note?Math.ceil(p.note.length/44):0;y+=Math.max(104,72+Math.max(p.ex.length,nl)*28+12)+12;}
     if(D.extra.length)y+=38+Math.min(D.extra.length,3)*46;
@@ -6926,7 +6931,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function pcShareCard(kind){ /* the Today card's lifecycle verbatim: fonts.ready → toBlob → canShare/download */
     var D,w,hh,draw,title,fname;
     if(kind==="day"){if(!pcSel)return;D=pcDayCardData(pcSel);D.H=pcDayCardH(D);w=1080;hh=D.H;draw=pcDrawDayCard;title="RideCue \u2014 "+D.day+", "+D.date;fname="ridecue-calendar-"+D.slug+".png";}
-    else{D=pcMonthCardData();w=1080;hh=1350;draw=pcDrawMonthCard;title="RideCue \u2014 "+D.title;fname="ridecue-calendar-"+D.slug+".png";}
+    else{D=pcMonthCardData();D.H=pcMonthCardH(D);w=1080;hh=D.H;draw=pcDrawMonthCard;title="RideCue \u2014 "+D.title;fname="ridecue-calendar-"+D.slug+".png";}
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=document.createElement("canvas");cv.width=w;cv.height=hh;var x=cv.getContext("2d");draw(x,D);
