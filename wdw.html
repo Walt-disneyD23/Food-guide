@@ -2130,16 +2130,16 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="ig-p"><b>History builds the board. Live moves the pieces.</b> Your favorites are already here — set when you’re leaving, and the plan rebuilds itself all day.</div>
     <div class="set-lab">The rooms — as they appear on the board</div>
     <div class="g-room">
-    <div class="g-lane"><span>Windows</span></div>
-    <div class="g-body"><b>Rides whose easy hour is open now</b> and dies at a clock time. The footer names the clock. <b>These lead the board</b> — no lane needed; the footers are the sign.</div>
-    </div>
-    <div class="g-room">
     <div class="g-lane"><span>Early Entry</span><b>running now</b></div><!-- 0728n THE EARLY ENTRY ROOM: the board's slot carries the clock; the guide's goes bare (0725k THE MANUAL CARRIES NO DATA) -->
     <div class="g-body"><b>Before the park opens, the rides already running</b> — deepest under their typical first. At park open the room dissolves and every ride walks home to the plan.</div>
     </div>
     <div class="g-room">
     <div class="g-lane"><span>From park open</span><b>your day’s order</b></div>
     <div class="g-body">The day’s plan, waiting for the gate — nothing under this line is running yet.</div>
+    </div>
+    <div class="g-room">
+    <div class="g-lane"><span>Windows</span></div>
+    <div class="g-body"><b>Rides whose easy hour is open now</b> and dies at a clock time. The footer names the clock. <b>These lead the board</b> — no lane needed; the footers are the sign.</div>
     </div>
     <div class="g-room">
     <div class="g-lane"><span>Anytime</span><b>grouped by walk</b></div>
@@ -2228,7 +2228,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728n</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728p</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5330,6 +5330,89 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var avg=Math.round(e.s/e.n);
     return {avg:avg,lvl:window.__pwDayLvl(avg,park),n:e.n};
   }
+  /* ===== 0728o THE ADVISOR · S1 — the solver (Advisor-Spec.md §4; owner-ruled Sep 8: T-B spread across tied days). Pure and deterministic: same input, same output.
+     Inputs: days (the trip's ds list, in order) · cell(d,p) → {lvl,avg} or {thin:true} (tpCell by the day's weekday) · party {d:1} (MK verified party nights) ·
+     dials {parks:{park:0|1|n}, rest:n} (0 off · 1 on · n≥2 = ×n) · picks {d:park} (yours, sticky) · rests {d:1} (yours, sticky).
+     Output: {assign:{d:park|"rest"|null}, rests:{d:"yours"|"adv"}, ties:{} (retired Sep 8 evening — kept empty for the readers), quota:{park:n}, got:{park:[d..]}, open:[d..] (no record), planned:n}.
+     Laws: a party night costs MK a tier unless it is your pick · your rests first, then the toughest days (sum of tiers across parks on; ties toward Fri/Sat, then later) ·
+     quota = floor(park days ÷ parks on), ×n parks take theirs first, remainders to the park whose next-best day is best for itself · round-robin, worst-off park first ·
+     a park that finds no calm day is SHORT, never seated on a rest · THE MANUAL INVENTS NOTHING: a thin day is left open. */
+  var AD_PARKS=["Magic Kingdom","EPCOT","Hollywood Studios","Animal Kingdom"];
+  function adScore(cell,d,p,party,picks){ /* the park's own scale: [tier, avg]; a party night costs MK a tier unless picked; null = no record */
+    var c=cell(d,p);if(!c||c.thin)return null;
+    var t=c.lvl,a=(typeof c.avg==="number")?c.avg:0;
+    if(p==="Magic Kingdom"&&party&&party[d]&&!(picks&&picks[d]===p))t=Math.min(4,t+1);
+    return [t,a];
+  }
+  function adBetter(x,y){return x[0]!==y[0]?x[0]-y[0]:x[1]-y[1];} /* <0 when x is better (calmer) */
+  function adSpread(d,mine,days){ /* T-B: distance from the park's own days (in trip positions); Infinity when it has none */
+    if(!mine.length)return Infinity;var i=days.indexOf(d),best=Infinity,k;
+    for(k=0;k<mine.length;k++){var v=Math.abs(days.indexOf(mine[k])-i);if(v<best)best=v;}return best;
+  }
+  function adBest(p,free,days,scores,mine){ /* the park's best free day: calmest on its own scale, then the widest spread from its own days, then earliest */
+    var best=null,bs=null,bsp=0,i;
+    for(i=0;i<free.length;i++){var d=free[i],s=scores[d]&&scores[d][p];if(!s)continue;
+      var sp=adSpread(d,mine,days);
+      if(!best||adBetter(s,bs)<0||(adBetter(s,bs)===0&&sp>bsp)){best=d;bs=s;bsp=sp;}}
+    return best?{d:best,s:bs}:null;
+  }
+  function adSolve(days,cell,party,dials,picks,rests){
+    dials=dials||{};picks=picks||{};rests=rests||{};party=party||{};
+    var on=[],quota={},got={},scores={},assign={},rk={},ties={},open=[],i,j,p,d;
+    for(i=0;i<AD_PARKS.length;i++){p=AD_PARKS[i];var v=(dials.parks&&dials.parks[p]!=null)?dials.parks[p]:1;if(v>0)on.push(p);got[p]=[];}
+    for(i=0;i<days.length;i++){d=days[i];scores[d]={};var any=false;
+      for(j=0;j<AD_PARKS.length;j++){p=AD_PARKS[j];var s=adScore(cell,d,p,party,picks);if(s){scores[d][p]=s;any=true;}}
+      if(!any)open.push(d);}
+    /* 1 · your picks and your rests are fixed */
+    for(d in picks)if(picks.hasOwnProperty(d)&&days.indexOf(d)>=0&&picks[d]){assign[d]=picks[d];got[picks[d]]=got[picks[d]]||[];got[picks[d]].push(d);}
+    var yours=0;for(d in rests)if(rests.hasOwnProperty(d)&&rests[d]&&days.indexOf(d)>=0&&!assign[d]){assign[d]="rest";rk[d]="yours";yours++;}
+    /* 2 · the advisor's rests: the toughest of the remaining days */
+    var want=Math.max((dials.rest!=null)?dials.rest:0,yours),need=want-yours,cand=[];
+    for(i=0;i<days.length;i++){d=days[i];if(assign[d]||open.indexOf(d)>=0)continue;var tough=0,n=0;
+      for(j=0;j<on.length;j++){var sc=scores[d][on[j]];if(sc){tough+=sc[0];n++;}}
+      var wd=tpAsD(d).getDay();cand.push({d:d,t:n?tough:0,we:(wd===5||wd===6)?1:0,i:i});}
+    cand.sort(function(a,b){return b.t-a.t||b.we-a.we||b.i-a.i;});
+    for(i=0;i<cand.length&&need>0;i++){assign[cand[i].d]="rest";rk[cand[i].d]="adv";need--;}
+    /* 3 · quota — a park's share counts its picks (your pick is one of its days, not a day on top); ×n parks take theirs first; the plain parks split the rest evenly, remainders one per park to the park whose next-best day is best for itself */
+    var free=[];for(i=0;i<days.length;i++){d=days[i];if(!assign[d]&&open.indexOf(d)<0)free.push(d);}
+    var picked=0;for(p in got)if(got.hasOwnProperty(p))picked+=got[p].length;
+    var parkDays=free.length+picked,more=[],plain=[];
+    for(i=0;i<on.length;i++){p=on[i];var v9=dials.parks[p];if(v9>=2)more.push(p);else plain.push(p);}
+    var left=parkDays;for(i=0;i<more.length;i++){p=more[i];quota[p]=Math.min(dials.parks[p],left);left-=quota[p];}
+    var base=plain.length?Math.floor(left/plain.length):0,rem=plain.length?left-base*plain.length:0;
+    for(i=0;i<plain.length;i++)quota[plain[i]]=base;
+    var took={};while(rem>0){var bp=null,bs=null;for(i=0;i<plain.length;i++){p=plain[i];if(took[p])continue;var b=adBest(p,free,days,scores,got[p]);if(b&&(!bp||adBetter(b.s,bs)<0)){bp=p;bs=b.s;}}
+      if(!bp)break;quota[bp]++;took[bp]=1;rem--;}
+    for(p in got)if(got.hasOwnProperty(p)&&got[p].length>(quota[p]||0))quota[p]=got[p].length; /* more picks than a share: the picks stand */
+    /* 4 · round-robin, worst-off first. NO TIES (Sep 8 evening, dials glass 9:26 PM): a tie that seats nobody left days open while parks wanted them — the worst-off park takes the day, the other walks to its next-best, and a park that finds none is SHORT, which THE PLAN says in words (no day — free a rest, or turn a park off). "Two fit" lives on the rail's ✦, which already marks every park equally calm that day. */
+    var guard=0;
+    while(guard++<64){var wants=[];
+      for(i=0;i<on.length;i++){p=on[i];if(got[p].length>=(quota[p]||0))continue;var b2=adBest(p,free,days,scores,got[p]);if(b2)wants.push({p:p,d:b2.d,s:b2.s});}
+      if(!wants.length)break;
+      wants.sort(function(a,b){return adBetter(b.s,a.s)||AD_PARKS.indexOf(a.p)-AD_PARKS.indexOf(b.p);}); /* the worst-off park chooses first */
+      var w=wants[0];assign[w.d]=w.p;got[w.p].push(w.d);free.splice(free.indexOf(w.d),1);}
+    for(i=0;i<days.length;i++){d=days[i];if(assign[d]===undefined)assign[d]=null;}
+    var planned=0;for(d in assign)if(assign.hasOwnProperty(d)&&assign[d]&&assign[d]!=="rest"&&assign[d]!=="tie")planned++;
+    for(p in got)if(got.hasOwnProperty(p))got[p].sort(function(a,b){return days.indexOf(a)-days.indexOf(b);});
+    return {assign:assign,rests:rk,ties:ties,quota:quota,got:got,open:open,planned:planned,on:on};
+  }
+  function adDiff(prev,next,cell,days){ /* WHAT MOVED, as facts: per park the days lost and gained; a receipt per move from the record only (tier words and the average's difference, where the record has both) */
+    var out={rests:[],unrests:[],moved:[],lost:[],ties:[]},p,d,i;
+    if(!prev)return out;
+    for(i=0;i<days.length;i++){d=days[i];
+      if(next.assign[d]==="rest"&&prev.assign[d]!=="rest")out.rests.push({d:d,kind:next.rests[d]});
+      if(prev.assign[d]==="rest"&&next.assign[d]!=="rest")out.unrests.push({d:d});
+      if(next.assign[d]==="tie"&&prev.assign[d]!=="tie")out.ties.push({d:d,parks:next.ties[d]});}
+    for(p in next.got)if(next.got.hasOwnProperty(p)){var a=prev.got[p]||[],b=next.got[p]||[],from=[],to=[];
+      for(i=0;i<a.length;i++)if(b.indexOf(a[i])<0)from.push(a[i]);
+      for(i=0;i<b.length;i++)if(a.indexOf(b[i])<0)to.push(b[i]);
+      for(i=0;i<to.length;i++){var f=from[i]||null,ct=cell(to[i],p),cf=f?cell(f,p):null,r=null;
+        if(ct&&!ct.thin&&cf&&!cf.thin){var da=(typeof ct.avg==="number"&&typeof cf.avg==="number")?(ct.avg-cf.avg):null;r={lvlTo:ct.lvl,lvlFrom:cf.lvl,dAvg:da,same:(ct.lvl===cf.lvl&&(da===null||da===0))};}
+        out.moved.push({p:p,to:to[i],from:f,r:r});}
+      if(b.length<a.length)out.lost.push({p:p,n:b.length,was:a.length});}
+    return out;
+  }
+  window.__adSolve=adSolve;window.__adDiff=adDiff; /* the export seam (the __slAnchorOf idiom) */
   /* ===== 0716m \u00b7 Cut A: THE PARTY-TRUTH LAYER + THE RACE NOTE ==========
      Events reach the board via the Wrap exports (__pwDayRoll precedent).
      Disclosure laws (Funnel-Spec \u00a72): night badges render ONLY from banked
@@ -5680,7 +5763,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(h9.x)for(i=0;i<h9.x.length;i++){var w9=h9.x[i];if(w9.c!==null&&(fin===null||w9.c>fin)){fin=w9.c;fk=w9.k;}}
     var kindAt=function(c){var k=null,j;if(c!==null&&h9.c!==null&&c>h9.c&&h9.x)for(j=0;j<h9.x.length;j++)if(h9.x[j].c===c){k=h9.x[j].k;break;}return k;}; /* 0726s: past the published close the kind derives from the window that owns that clock */
     if(fk===null)fk=kindAt(fin);
-    var word=function(c,k){return k?("~"+rpClk(c)+" \u00b7 "+tdSeatKindWord(k,ds).toLowerCase()):"close";}; /* 0726r A THE NIGHT NAMES ITSELF - bare "close" is reserved for the published close */
+    var word=function(c,k){return k?(rpClk(c)+" \u00b7 "+tdSeatKindWord(k,ds).toLowerCase()):"close";}; /* 0728p: no tilde on a published end \u2014 the picker says "12 AM \u00b7 Party", so does the span; a chosen half-hour keeps its ~ */ /* 0726r A THE NIGHT NAMES ITSELF - bare "close" is reserved for the published close */
     if(lv===null){var bk=kindAt(base);return {c:base,lv:false,tl:word(base,bk),k:bk};} /* Close: the walker runs to its base - a day guest's 6 PM before the party, the party's midnight once the sweep is live (owner glass Aug 30 8:49 PM) */
     if(fin===null||lv<fin)return {c:lv,lv:true,tl:"~"+rpClk(lv),k:null}; /* the pick cuts the day (lvOn's twin) */
     return {c:fin,lv:false,tl:word(fin,fk),k:fk}; /* a to-the-end pick: the night names itself; a 9 PM park never claims midnight (owner EPCOT specimen Aug 21) */
@@ -5825,7 +5908,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,wo:rpClk(lt),why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
       var ch5=mn+5,dqA=-1,ws9=null;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){ws9=rem[q].t;dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
       var dl9=(dqA>=0)?rem[dqA].t+30:null,dlw9=false;if(dl9!==null&&ct!==null&&dl9>=ct){dlw9=true;if(dl9>ct)dl9=ct;} /* 0724a W-B: ws = the cheap window's own open; dlw = the run reached the wall, so the footer says the word close, never a clock past it */ /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
-      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,dl:dl9,ws:ws9,dlw:dlw9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
+      var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,rung:r.cvx.rung,dl:dl9,ws:ws9,dlw:dlw9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
         f2:(f>0&&f<rem.length)?rem[f-1].t+30:null,wk:(f===rem.length),
         lateStart:(startMin>0&&rem[0].t>startMin&&cv.bs[0].t>=startMin),st0:rem[0].t,
         near:(ct!==null&&tm!==null&&tm>=ct-45),lvw:clmp}; /* 0719i: the clause knows which end of the window it names */
@@ -5864,7 +5947,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tdWhy(it,startMin,openMin,mark){ /* clause-earned at their own thresholds — every clause provable from the ride's own tape */
     var cv=it.cv,p=[];
-    if(it.wk)p.push((startMin===0&&cv.allday)?"a walk-on most of the day \u2014 anytime":"a walk-on from here on typical days \u2014 anytime");
+    if(it.wk)p.push((startMin===0&&cv.allday)?"a walk-on most of the day \u2014 anytime":"a walk-on from here on "+((it.rung===1||it.rung===2)?("party "+tdPartyWord(tdWhy.pk)):"typical days")+" \u2014 anytime");
     else if(it.easy)p.push("typically stays under ~"+it.mx+"m"+(startMin>0?" from here":"")+" \u2014 anytime"); /* 0725p R2 (owner ruling 2B): a ceiling claim without the absolute \u2014 "typically" does the honest work beside a hot live chip */
     else if(it.k==="C")p.push("holds near "+it.base+"m from here \u2014 anytime");
     else if(it.k==="A"){
@@ -5969,7 +6052,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=lo;i<hi;i+=30){var on9=(lvSel===i);if(on9)hit=true;pre+=op(String(i),rpClk(i)+(hrs.o!=null&&i<hrs.o?" \u00b7 "+tdSeatKindWord("EE",ds):""),on9);}
     var tail=[];for(j=0;j<xw.length;j++){w=xw[j]; /* the after-hours windows: open at/past the day close, close known */
       if(w.c===null||hrs.c===null||!(w.o>=hrs.c-30))continue;
-      for(i=Math.max(Math.ceil(w.o/30)*30,hrs.c+30);i<=w.c;i+=30)tail.push([i,rpClk(i)+" \u00b7 "+tdSeatKindWord(w.k,ds)]);}
+      for(i=Math.max(Math.ceil(w.o/30)*30,hrs.c+30);i<w.c;i+=30)tail.push([i,rpClk(i)+" \u00b7 "+tdSeatKindWord(w.k,ds)]);} /* 0728p THE PICKER NEVER LISTS THE CLOSE TWICE: a window's own end is Close's job (owner glass 8:29 PM Sep 8: "12 AM \u00b7 Party" beside "Close") */
     tail.sort(function(a,b){return a[0]-b[0];});
     var tl="";for(j=0;j<tail.length;j++){var on8=(lvSel===tail[j][0]);if(on8)hit=true;tl+=op(String(tail[j][0]),tail[j][1],on8);}
     return pre+op("cl","Close",!hit)+tl;
@@ -6017,6 +6100,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var wd=rpHmWd(ds),wds=tpWdSet(t),hrs=tdHours(ds,pk),wdn=tpWDn(ds),arcN=0,cvN=0,fpt9=tdFace(ds,pk),pr9=fpt9?tdParkRung(pk,fpt9):null,r3N=0; /* 0727k: the day's face, once per walk · 0727l: named fpt9 — fc9 is 0723u's final-close clock further down this function */
       var nowT=today?tdNow():null,stKey=tdStart||(today?"now":"rd");if(stKey==="now"&&!today)stKey="rd"; /* 0715h: the day's natural start - From now when you're standing in it */
       var isNow=(stKey==="now"),sm=isNow?(nowT-(nowT%30)):tdStartMin(stKey);
+      tdWhy.pk=pk; /* 0728p: the row's basis word reads the park's clock through the static idiom (tdSecHTML.pool's twin) */
       var rows=ids.map(function(rid){var r=roster[rid]||{},cx=tdCurve(rid,wd,wds,fpt9);if(cx){cvN++;if(cx.arc)arcN++;if(cx.rung===3)r3N++;}return {id:rid,nm:r.name||rid,cvx:cx};});
       var cvT={};rows.forEach(function(r9){cvT[r9.id]=(r9.cvx&&r9.cvx.cv.bs.length)?r9.cvx.cv.bs[0].t:null;}); /* 0723m: every row hands the rail its tape start - pins and outs included */
       var allArc=(cvN>0&&arcN===cvN),mixed=(arcN>0&&arcN<cvN); /* 0715f: three window states — the basis frames each honestly */
@@ -6045,7 +6129,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(ridden)body+='<div class="td-ridlab">Ridden \u2014 '+rdn+'</div>'+ridden;
       var frame=allArc?('A suggested order from your trip\u2019s typical waits \u2014 '+tpWdPhrase(t)+', while operating \u00b7 '+wdn+'s alone are too thin to read') /* 0725x M-3 (owner-ruled Aug 26): \u201cstill\u201d retired \u2014 the weekday-alone tape is capped by design (RP_POOL=42 gives ~6 of any weekday vs the 10-day floor), and the Aug 26 pool study CROWNED that design (fresh-42 beat every deeper tape, incl. weekday sidecars, on 206 real days); the copy no longer promises a someday the constants forbid */
         :('A suggested order from your day\u2019s typical waits \u2014 '+wdn+'s, while operating'+(mixed?' \u00b7 thin '+wdn+'s read the whole trip instead':''));
-      if(fpt9&&pr9&&(pr9.rung===1||pr9.rung===2)&&cvN>r3N)frame='A suggested order from your day\u2019s typical waits \u2014 party days, '+(pr9.rung===1?'this season\u2019s ':'last season\u2019s ')+pr9.n+', while operating'+(r3N?' \u00b7 '+r3N+' without party history read ordinary days':''); /* 0727k THE DAY IS THE UNIT: a party day's rows drink party-day tape and the frame says so (LABELS MOVE WITH VALUES); rung-3 rows disclosed by count */
+      if(fpt9&&pr9&&(pr9.rung===1||pr9.rung===2)&&cvN>r3N)frame='A suggested order from your day\u2019s typical waits \u2014 party '+tdPartyWord(pk)+', '+(pr9.rung===1?'this season\u2019s ':'last season\u2019s ')+pr9.n+', while operating'+(r3N?' \u00b7 '+r3N+' without party history read ordinary days':''); /* 0727k THE DAY IS THE UNIT: a party day's rows drink party-day tape and the frame says so (LABELS MOVE WITH VALUES); rung-3 rows disclosed by count */
       else if(fpt9)frame+=' \u00b7 a party day \u2014 ordinary typicals, no party history here yet'; /* rung 3 across the board: the ordinary walk, disclosed */
       basis=(hrs.c===null?'<b>Hours not published yet</b> \u00b7 ':'')+(isNow?'From '+rpClk(sm)+' \u00b7 live as of '+rpClk(nowT)+' \u00b7 remaining half-hour medians \u00b7 ':(sm>0?'From '+rpClk(sm)+' \u00b7 ':''))+(lvOn?'until '+rpClk(ct2)+' \u00b7 ':'')+frame+(np?' \u00b7 pins are yours, the plan flows around them':'')+(eng.swept?' \u00b7 anytime rides grouped by walk':'')+' \u00b7 history, never a promise'+(hrs.c!==null?' \u00b7 close = '+rpClk(hrs.c)+(swp2?'':' published'):''); /* 0723w MIDNIGHT IS 12 AM (owner Harbor specimen): >= springs the rpClk(1440) trap the hero already guards; and on sweep-extended nights the close is the WINDOW\u2019s, not the published \u2014 the false word comes off (labels state their measure) */
     }
@@ -6088,7 +6172,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       lens:(pk&&(tdSecHTML.rows||[]).length&&tdSecHTML.span&&tdSecHTML.span.lens==="mine")?"mine":"app",
       thinNote:thin.length?tpAmp(thin)+' too thin yet.':'',
       rows:pk?(tdSecHTML.rows||[]):[],count:pk?(tdSecHTML.rows||[]).length:0, /* 0717n: an unplanned day carries no board, whatever the channel last held */
-      basis:((pk&&(tdSecHTML.rows||[]).length)?(((tdSecHTML.span&&tdSecHTML.span.lens)==="mine")?'My order':'App\u2019s order')+' \u00b7 ':'')+(function(){var p=tdSecHTML.pool;return (p&&(p.rung===1||p.rung===2))?('Banked party days \u00b7 '+(p.rung===1?'this season\u2019s ':'last season\u2019s ')+p.n):('Banked '+tpWDn(ds)+'s');})()+' \u00b7 a pattern, not a forecast',link:'ridecue.live'};} /* 0727k: the card's basis follows the pool the page drank */ /* 0727g D3: the lens leads (the M-A precedent); an empty board carries no lens */
+      basis:((pk&&(tdSecHTML.rows||[]).length)?(((tdSecHTML.span&&tdSecHTML.span.lens)==="mine")?'My order':'App\u2019s order')+' \u00b7 ':'')+(function(){var p=tdSecHTML.pool;return (p&&(p.rung===1||p.rung===2))?('Banked party '+tdPartyWord(pk)+' \u00b7 '+(p.rung===1?'this season\u2019s ':'last season\u2019s ')+p.n):('Banked '+tpWDn(ds)+'s');})()+' \u00b7 a pattern, not a forecast',link:'ridecue.live'};} /* 0727k: the card's basis follows the pool the page drank */ /* 0727g D3: the lens leads (the M-A precedent); an empty board carries no lens */
   function RD(w,z){return w+" "+z+'px ui-rounded,"Space Grotesk",sans-serif';} /* 0717o: the Hybrid face debuts on this surface (owner call; the identity round follows later) */
   function RB(w,z){return w+" "+z+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
   var TD_SOFT=["","#eeeff5","#d8dae8","#b5b9cf","#8b90ad"]; /* 0728e (B): the ramp as card constants (the LIGHT family) */ /* the board's soft fills as card constants - cards keep their own palette in both themes */
@@ -8726,11 +8810,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         mem9.sort(function(a,b){if(a.d===null&&b.d===null)return a.ord-b.ord;if(a.d===null)return 1;if(b.d===null)return -1;if(b.d!==a.d)return b.d-a.d;return a.ord-b.ord;}); /* deepest under first; the walk breaks ties; thin last */
         var first9=el.querySelector(".td-sl, .td-lane"),host9=first9&&first9.parentNode,doc9=el.ownerDocument,pub9=rpClk(rcEtMin(new Date(ee9.win.pub)));
         if(host9){
+          var mk9=doc9.createElement("i");mk9.className="td-eemark";host9.insertBefore(mk9,first9); /* 0728p THE ANCHOR IS NEVER A MEMBER (AK 7:47 AM Sep 9: Na\u2019vi was the first row AND a member \u2014 insertBefore(row,row) is a no-op, so the seam lane landed above it): a marker that no member can be */
           var ln7=doc9.createElement("div");ln7.className="td-lane eelane";ln7.setAttribute("data-room","ee");ln7.innerHTML='<span>'+esc(ee9.win.desc)+'</span><b>running now \u00b7 till '+pub9+'</b>';
           var ln6=doc9.createElement("div");ln6.className="td-lane openlane";ln6.setAttribute("data-room","open");ln6.innerHTML='<span>From park open</span><b>'+pub9+' \u00b7 your day\u2019s order</b>';
-          host9.insertBefore(ln7,first9);
-          mem9.forEach(function(m){var sx=m.row.querySelector(".td-srx"),fl=m.row.querySelector(".td-fl");if(sx)sx.innerHTML=tyEeWhy(m,pk);if(fl)fl.parentNode.removeChild(fl);host9.insertBefore(m.row,first9);});
-          host9.insertBefore(ln6,first9);
+          host9.insertBefore(ln7,mk9);
+          mem9.forEach(function(m){var sx=m.row.querySelector(".td-srx"),fl=m.row.querySelector(".td-fl");if(sx)sx.innerHTML=tyEeWhy(m,pk);if(fl)fl.parentNode.removeChild(fl);host9.insertBefore(m.row,mk9);});
+          host9.insertBefore(ln6,mk9);host9.removeChild(mk9);
           var la9=el.querySelector('.td-lane[data-room="anytime"]');if(la9)la9.parentNode.removeChild(la9); /* r-D: two headers on screen, never three */
           var k7=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s9){if(/^\d+$/.test(s9.textContent))s9.textContent=String(++k7);});
         }
