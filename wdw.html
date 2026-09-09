@@ -2044,7 +2044,8 @@
   .tp-adh.still{cursor:default} /* a trip with no day ahead: the facts only, no door */
   .tp-adv.closed .tp-adh{margin:0}
   .tp-adh .dh{margin-top:10px;padding-top:10px;border-top:1px solid var(--pwh-line);font:600 var(--fs-meta) var(--font-body);color:var(--pwh-muted);display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .tp-adh .dh b{color:var(--pwh-key);white-space:nowrap}
+  .tp-adh .dh{align-items:center}
+  .tp-adh .dh b.pill{display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:var(--accent-fill);color:#fff;font:800 13px var(--font-display);white-space:nowrap;letter-spacing:0} /* 0728y L-B */
   .tp-adh .cx{position:absolute;top:7px;right:7px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.09);color:var(--accent-tint);display:flex;align-items:center;justify-content:center;padding:0} /* 0728v (owner, Sep 9): the Live hero\u2019s own disc \u2014 .rb-share\u2019s size, wash and tint \u2014 with a drawn chevron; the \u02c4 glyph was a modifier letter and stayed tiny at any weight */
   .tp-adh .cx svg{width:18px;height:18px;display:block} /* 0728u X-A (owner, Sep 9): the close is the closed state's \u203a turned upward \u2014 the key green, no disc; the 8% disc on navy was invisible on glass */
   .tp-adh .rd2.facts .tp-readr .crow{border-top:1px solid var(--pwh-line);padding:7px 0}
@@ -2337,7 +2338,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728x</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728y</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6650,7 +6651,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else h+='<h2>'+r.planned+' day'+(r.planned===1?'':'s')+' planned \u00b7 '+restN+' rest.</h2>'+(open?'<div class="how">'+(picksN?picksN+' your pick'+(picksN===1?'':'s')+' \u00b7 ':'')+(yrs?yrs+' rest'+(yrs===1?'':'s')+' yours \u00b7 ':'')+'tap a park to change it; tap your pick to give it back; the advisor re-solves the rest.</div>':'');
     if(facts)h+='<div class="rd2 facts"><div class="tp-readr">'+facts+'</div></div>';
     if(open){var rt=adReadText(r,A,days,cell,party);if(rt)h+='<div class="rd2">'+rt+'</div>';}
-    else h+='<div class="dh">'+(mode==="held"?'<span>Your toughest days rest</span><b>Tap to see each day \u203a</b>':'<span>The rail is live</span><b>Tap to change any day \u203a</b>')+'</div>';
+    else h+='<div class="dh">'+(mode==="held"?'<span>Your toughest days rest</span><b class="pill">See each day \u203a</b>':'<span>The rail is live</span><b class="pill">Change any day \u203a</b>')+'</div>'; /* 0728y L-B (Chris, Sep 9): the door's call to action is a pill in the Plan button's dress \u2014 the green text line went unseen */
     return h+'</div>';
   }
   function adHeaderHTML(r,A,days){ /* W-A + M-C, THE HEADER IS THE PLAN: four equal seats read park → days (the rail reads day → park); the rest bar; the sum line with Start over once anything differs from the first answer */
