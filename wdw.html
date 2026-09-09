@@ -533,6 +533,7 @@
   .tp-plcap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 8px;font:500 var(--fs-small) var(--font-body);color:var(--muted);margin-top:10px;border-top:1px solid var(--line);padding-top:9px;min-height:50px;align-content:flex-start} /* 0717g/0717h: busy days wrap, the caption never truncates \u2014 and EVERY card reserves the two lines (the even-height law, owner-stated) */
   .tp-plcap>span:first-child{white-space:nowrap;flex:none}
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
+  .tp-plcap .chv{font-style:normal;margin-left:auto;flex:none;color:var(--muted-2);font-size:18px;line-height:1} /* 0728ab E-A */
   .tp-dc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the strengthened plan ring + theme-card halo */
   .tp-dc.pn.pnx{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717f: the dashed ring survives only as the unrecognized-party fallback */
   .tp-dc{position:relative}
@@ -2343,7 +2344,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728aa</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ab</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6591,7 +6592,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     });
     if(!t2)return;
     var nx2=adSolveOf(adState(t2,days),days,model,EV);
-    tpAdvS={id:id,prev:cur,diff:adDiff(cur,nx2,adCellFn(model),days),cause:cause,touched:true,so:so};
+    tpAdvS={id:id,prev:cur,diff:so?null:adDiff(cur,nx2,adCellFn(model),days),cause:cause,touched:true,so:so}; /* 0728ab (owner, Sep 9 3:48 PM): START OVER LANDS CLEAN \u2014 the first answer is the baseline, not a change; no chip wears the moved fill */
     adAnchored((kind==="park"||kind==="resttile"||kind==="restchip")?d:"seats");
   }
   function adToggle(id){tpAdvOpen=(tpAdvOpen===id)?null:id;adAnchored("door");}
@@ -6724,7 +6725,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var hdn=(HOLIDAYS[d0]&&HOLIDAYS[d0]!=="Christmas week")?HOLIDAYS[d0]:null; /* Cut 3 (O-A): a SPECIFIC day-name wins its own row; the generic stretch label yields to the seasonal tag \u2014 the bars name the week either way */
       var hol=(hdn?'<span class="tp-hol">'+esc(hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early to day guests</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var plv=pk?tpSznCell(model,pk,wd,d0):null,pln=pk?'<b>'+esc(pk)+'</b>'+((plv&&!plv.thin&&plv.lvl)?' \u00b7 '+TP_TW[plv.lvl]+' on '+tpWDn(d0)+'s':''):(behind?'Behind you':(t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest")?'Rest day':'Not planned yet'); /* 0728t: a rest the advisor wrote is a rest, not an unplanned day */ /* 0727o (t-B, q-B): the planned line names the park in ink and carries its tier in the day page\u2019s own sentence */ /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>';
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+(pk?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+(open?'':'<i class="chv">\u203a</i>')+'</div></div>'; /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
       var dx='';
       if(open){var L=tpDayLine(d0,model,t,EV),tdr9=(pk&&d0===tpToday())?'<button class="tp-today" data-tptoday="'+esc(pk)+'" type="button">It\u2019s today \u2014 your live board is on TODAY <span class="chev">\u203a</span></button>':'';dx='<div class="tp-dx">'+L.line+L.sub+tdr9+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0727d THE TRIP KNOWS TODAY (D): on the day itself the trip page names the surface where the waits live \u2014 one door, no input; the two surfaces name each other */ /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
@@ -7473,11 +7474,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(tpPlanDraft[d2]===p2)delete tpPlanDraft[d2];else tpPlanDraft[d2]=p2; /* tap again to clear */
         tpRepaint();});}
     el.querySelectorAll("[data-tpadv]").forEach(function(b){b.addEventListener("click",function(){var t2=tpCurTrip();if(!t2)return;adJump(t2.id,b.getAttribute("data-tpadv"));});}); /* 0728z D-A: the day page's door into the advisor */
-    el.querySelectorAll("[data-tpbpk]").forEach(function(b){b.addEventListener("click",function(){ /* Cut 2: the board door - a tapped chip persists immediately / Cut C (C-1) feel law: FLASH-THEN-COMMIT - the accent lights ~150ms BEFORE the write+re-render (same-frame destruction defeats :active alone); the write then lands scroll-anchored */
-      var t2=tpCurTrip();if(!t2)return;var ds0=b.getAttribute("data-tppd"),p0=b.getAttribute("data-tpbpk");
-      b.classList.add("hit");
-      var cur0=(t2.plan||{})[ds0]; /* 0727r: tap the picked chip again to clear — the Map-your-park-days grammar (tap again to clear) */
-      setTimeout(function(){tpSetPlan(t2.id,ds0,(cur0===p0)?null:p0);tpPlanPick=null;tdAnchoredRender(ds0);},150);});});
+    /* 0728ab: the picker's [data-tpbpk] binder retired \u2014 nothing has rendered those chips since 0728z (D-A) */
     el.querySelectorAll("[data-tppchg]").forEach(function(b){b.addEventListener("click",function(){tpClrArm=null;tpPlanPick=b.getAttribute("data-tppchg");tdAnchoredRender(tpPlanPick);});});
     el.querySelectorAll("[data-tppclr]").forEach(function(b){b.addEventListener("click",function(){ /* 0715n: first tap arms, second fires - the trip-delete grammar */
       var t2=tpCurTrip();if(!t2)return;var ds3=b.getAttribute("data-tppclr");
