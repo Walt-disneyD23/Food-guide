@@ -2344,7 +2344,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ac</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ad</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6592,7 +6592,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     });
     if(!t2)return;
     var nx2=adSolveOf(adState(t2,days),days,model,EV);
-    tpAdvS={id:id,prev:cur,diff:so?null:adDiff(cur,nx2,adCellFn(model),days),cause:cause,touched:true,so:so}; /* 0728ab (owner, Sep 9 3:48 PM): START OVER LANDS CLEAN \u2014 the first answer is the baseline, not a change; no chip wears the moved fill */
+    tpAdvS={id:id,prev:cur,diff:so?null:adDiff(cur,nx2,adCellFn(model),days),cause:cause,touched:true,so:so,td:(kind==="park"?d:null),tp:(kind==="park"?p:null)}; /* 0728ad M-A: the landing your tap made is the cause row, never a move line */ /* 0728ab (owner, Sep 9 3:48 PM): START OVER LANDS CLEAN \u2014 the first answer is the baseline, not a change; no chip wears the moved fill */
     adAnchored((kind==="park"||kind==="resttile"||kind==="restchip")?d:"seats");
   }
   function adToggle(id){tpAdvOpen=(tpAdvOpen===id)?null:id;adAnchored("door");}
@@ -6629,33 +6629,34 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     r.on.forEach(function(p){if(!(r.got[p]||[]).length)cl.push(TP_P2[p]+" has no day \u2014 free a rest, or turn a park off");});
     return cl.join(" \u00b7 ");
   }
-  function adMovedHTML(S,r,A){ /* WHAT MOVED SAYS THE CAUSE AND THE COST, NEVER THE MECHANICS: YOU · what you did; a park line only when its day count changed or a move landed on a busier day (with the record's receipt); a park you turned off is the cause, never a cost */
+  function adMovedHTML(S,r,A){ /* 0728ad M-A (owner, Sep 9 7:19 PM): WHAT MOVED NAMES EACH MOVE \u2014 YOU \u00b7 what you did; then one line per park that moved (from \u2192 to, with the record's receipt: still the same tier, or the tier it landed in and where it came from, and the average's difference where the record has both); a park's day count when it changed; "nothing else moved" only when nothing else moved. The word cost left the glass \u2014 the old closing line described a reshuffle on a tap that moved nothing. A park you turned off is the cause, never a move. */
     if(S.so)return '<p><b>Back to the advisor\u2019s first plan</b> \u2014 your picks and rests cleared</p>';
     var f=S.diff;if(!f||!S.touched)return "";var rows=[],PS=TP_P2,TW=TP_TW;
     if(S.cause)rows.push({k:"you",a:S.cause});
     var byP={};f.moved.forEach(function(m){(byP[m.p]=byP[m.p]||[]).push(m);});
     AD_PARKS.forEach(function(p){if(A.parks[p]===0)return;var was=(S.prev&&S.prev.got[p]||[]).length,now=(r.got[p]||[]).length,parts=[];
       if(now!==was)parts.push(now===0?"no day left \u2014 free a rest, or turn a park off":(was+" \u2192 "+now+" day"+(now===1?"":"s")));
-      (byP[p]||[]).forEach(function(m){if(m.from&&m.r&&!m.r.same&&m.r.lvlTo>m.r.lvlFrom)parts.push(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 "+TW[m.r.lvlTo]+" where "+adDn(m.from)+" ran "+TW[m.r.lvlFrom]+(m.r.dAvg?" \u00b7 ~"+Math.abs(m.r.dAvg)+" min more":""));});
+      (byP[p]||[]).forEach(function(m){if(S.td&&m.p===S.tp&&m.to===S.td)return;var mn=(m.r&&m.r.dAvg)?" \u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"";
+        parts.push(!m.from?("now on "+adDn(m.to)):!m.r?(adDn(m.from)+" \u2192 "+adDn(m.to)):(m.r.lvlTo===m.r.lvlFrom)?(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 still "+TW[m.r.lvlTo]+mn):(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 "+TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn));});
       if(parts.length)rows.push({k:p,a:parts[0],b:parts.slice(1).join(" \u00b7 ")});});
-    if(rows.length<=1&&S.cause)rows.push({k:"",a:"nothing else cost you a day \u2014 the rest reshuffled to days as calm on the record"});
+    if(rows.length<=1&&S.cause)rows.push({k:"",a:"nothing else moved"});
     if(!rows.length)return "";
     return '<div class="tp-adpl">'+rows.map(function(R){return '<div class="row"><b class="'+(R.k==="you"?"you":R.k?"":"rest")+'">'+(R.k==="you"?"YOU":R.k?PS[R.k]:"\u00b7")+'</b><span><span class="days">'+R.a+'</span>'+(R.b?'<span class="note">'+R.b+'</span>':'')+'</span></div>';}).join('')+'</div>';
   }
   function adHeroHTML(t,r,A,days,cell,party,mode,facts,open,pend){ /* R-A · F-A · H-A: the trip board's hero and the advisor's door in one — kicker, the headline that explains the room, THE READ's own rows as the first fine print (the trip's facts, on navy), the advisor's read beneath once open; closed, the last line is the hint */
     var yrs=days.filter(function(d){return r.rests[d]==="yours";}).length,picksN=Object.keys(A.picks).length,restN=Object.keys(r.rests).length;
     var h='<div class="tp-adh'+(open?' op':'')+'" data-adkey="door" data-addoor="'+esc(t.id)+'">'+(open?'<span class="cx" aria-label="Close the advisor"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'')+'<div class="k">The advisor \u00b7 '+adSpan(t)+' \u00b7 '+days.length+' day'+(days.length===1?'':'s')+'</div>';
-    if(mode==="held")h+='<h2>Each park on the day it runs best for itself.</h2>'+(open?'<div class="how">Your toughest days rest \u2014 tap REST on any day to rest there instead. <b>Held, not planned</b> \u2014 change any, then plan.</div>':'');
+    if(mode==="held")h+='<h2>Each park on the day it runs best for itself.</h2>'+(open?'<div class="how">Your toughest days rest \u2014 tap REST on any day to rest there instead. Tap a park up top for more of its days, or none; tap a day\u2019s tile to put a park there yourself. <b>Held, not planned</b> \u2014 change any, then plan.</div>':'');
     else h+='<h2>'+r.planned+' day'+(r.planned===1?'':'s')+' planned \u00b7 '+restN+' rest.</h2>'+(open?'<div class="how">'+(picksN?picksN+' your pick'+(picksN===1?'':'s')+' \u00b7 ':'')+(yrs?yrs+' rest'+(yrs===1?'':'s')+' yours \u00b7 ':'')+'tap a park to change it; tap your pick to give it back; the advisor re-solves the days you haven\u2019t touched.</div>':'');
     if(facts)h+='<div class="rd2 facts"><div class="tp-readr">'+facts+'</div></div>';
     if(open){var rt=adReadText(r,A,days,cell,party);if(rt)h+='<div class="rd2">'+rt+'</div>';}
     else h+='<div class="dh">'+(mode==="held"?'<span>Your toughest days rest</span><b class="pill">See each day \u203a</b>':(pend&&pend.n?'<span>'+pend.n+' day'+(pend.n===1?'':'s')+' changed</span><b class="pill">Confirm \u203a</b>':'<span>On your days below</span><b class="pill">Change any day \u203a</b>'))+'</div>'; /* 0728ac: a change waiting says so on the closed door \u2014 the fact, then the pill as the verb, the door's own grammar */ /* 0728y L-B (Chris, Sep 9): the door's call to action is a pill in the Plan button's dress \u2014 the green text line went unseen */
     return h+'</div>';
   }
-  function adHeaderHTML(r,A,days){ /* W-A + M-C, THE HEADER IS THE PLAN: four equal seats read park → days (the rail reads day → park); the rest bar; the sum line with Start over once anything differs from the first answer */
+  function adHeaderHTML(r,A,days){ /* W-A + M-C, THE HEADER IS THE PLAN: four equal seats read park → how many days (the rail reads day → park; 0728ad S-A); the rest bar; the sum line with Start over once anything differs from the first answer */
     var PS=TP_P2,n=days.length,h='<div class="tp-adhd"><div class="tp-adseats" data-adkey="seats">',d;
-    AD_PARKS.forEach(function(p){var v=A.parks[p],off=v===0,fixed=(v!==1&&!off),cnt=(v==="x1")?1:v,g=r.got[p]||[],dl=g.map(function(d){return tpAsD(d).getDate();}).join(" \u00b7 ");
-      h+='<span class="tp-adseat'+(off?' off':fixed?' fixed':'')+'" data-adseat="'+esc(p)+'"><b>'+PS[p]+'</b><small>'+(off?'off':!g.length?'no day':(g.length<=3?dl:g.length+' days'))+(fixed&&g.length<cnt?' <i>of '+cnt+'</i>':'')+'</small></span>';});
+    AD_PARKS.forEach(function(p){var v=A.parks[p],off=v===0,fixed=(v!==1&&!off),cnt=(v==="x1")?1:v,g=r.got[p]||[];
+      h+='<span class="tp-adseat'+(off?' off':fixed?' fixed':'')+'" data-adseat="'+esc(p)+'"><b>'+PS[p]+'</b><small>'+(off?'off':!g.length?'no day':g.length+' day'+(g.length===1?'':'s'))+(fixed&&g.length<cnt?' <i>of '+cnt+'</i>':'')+'</small></span>';}); /* 0728ad S-A (owner, Sep 9): THE SEAT SAYS HOW MANY \u2014 the count the seat's own tap turns; the rail beneath says where (the dates were the header reading the rail back) */
     var restN=0,yrs=0;for(d in r.rests)if(r.rests.hasOwnProperty(d)){restN++;if(r.rests[d]==="yours")yrs++;}
     var adv=restN-yrs,yn=Object.keys(A.rests).length,cap=Math.max(0,n-r.on.length);
     var mid=restN+' rest day'+(restN===1?'':'s')+'<small>'+(restN===0?'none \u2014 the advisor places them':restN<=3?days.filter(function(d){return r.rests[d];}).map(function(d){return r.rests[d]==="yours"?'<i>'+adDn(d)+'</i>':adDn(d);}).join(' \u00b7 '):(yrs?yrs+' yours \u00b7 '+adv+' placed':'the advisor places them'))+'</small>';
