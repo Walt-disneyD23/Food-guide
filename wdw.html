@@ -2343,7 +2343,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728z</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728aa</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5369,36 +5369,16 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     /* 0716t: the party-truth floor RETIRED (owner call, Aug 2) \u2014 the \u2726 reads banked tier history and stands wherever it's earned; the early close moved from suppression to DISCLOSURE (clause B, below the chips). */
     return m;
   }
-  function tdWeekStrip(t,ds,model,EV,fit){ /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 axis-flipped pure readout on the picker's own columns (playable13 ratified). Days are rows, parks are columns; rings from t.plan + EV.night, plan ring wins; NOTHING here taps, writes, or navigates (the locality law, owner-caught). */
-    var days=tpDays(t),NT=(EV&&EV.night)||{},pl=(t.plan||{}),hasPlan=false,hasPn=false,hasRace=false,pnE="",PW=tfPartyWins(),h='',i,j; /* 0717f */
-    var lo=0,hi=days.length,ci=days.indexOf(ds);if(days.length>14&&ci>=0){lo=Math.max(0,Math.min(ci-3,days.length-7));hi=lo+7;} /* 0728i (b): THE BOARD HAS THEM ALL, TO A FORTNIGHT \u2014 every day up to 14 rows on the rail; only past that, seven around your day */ /* 0727o (a-B): seven rows around your day — this page has one job; the board has them all */
-    var hasFit=false;
-    for(i=lo;i<hi;i++){var d=days[i],wd=tpAsD(d).getDay(),cur=(d===ds),race=!!(EV&&EV.race&&EV.race[d]),mkd=tdDayMarks(model,d,NT);if(race)hasRace=true;
-      h+='<div class="td-dr'+(cur?' cur':'')+(race?' race':'')+'"><b>'+tpWD3(d)+'</b><small>'+tpMD(d)+'</small></div>'; /* 0728e (E): the rail \u2014 the day and its date once per row, accent on yours, green on a race day */
-      for(j=0;j<TP_PARKS.length;j++){var p=TP_PARKS[j][0],c=tpCell(model,p,wd);
-        var pem=(p==="Magic Kingdom"&&NT[d])?(tfPartyEm(d,PW)||"ring"):""; /* 0728k: the party is a fact about the day \u2014 the mark rides the planned MK cell too */
-        var rc='',fitc=(mkd[p]&&pl[d]!==p)?' fit':'';if(fitc)hasFit=true; /* 0728e (E): the race mark moved to the rail; the fit rides the cell until a ring replaces it */
-        var ring=(pl[d]===p)?' plan'+((pem&&pem!=="ring")?' pn':''):(pem?' pn'+(pem==="ring"?' pnx':''):''); /* 0728k: the emoji rides under the plan ring; the dashed party ring still yields to it */
-        if(pl[d]===p)hasPlan=true;if(pem&&(pl[d]!==p||pem!=="ring")){hasPn=true;if(pem!=="ring"&&pnE.indexOf(pem)<0)pnE+=pem;} /* 0728k: the legend counts the mark wherever it shows */
-        h+='<span class="wc cc'+(c.thin?' thin':' tint l'+c.lvl)+ring+rc+fitc+(cur?' cur':'')+'"'+((pem&&pem!=="ring")?' data-em="'+pem+'"':'')+'><span class="d">'+(TP_P2[p]||TP_PSHORT[p]||p)+'</span><span class="mk"'+((pem&&pem!=="ring")?' data-em="'+pem+'"':'')+'></span><i class="s"></i></span>';}} /* 0727q (d-D): your row wears its date — the row was found by color alone */ /* 0727o THE CALENDAR FAMILY: the grid's cell is the calendar's cell (g-B); your day at full tint, the rest quiet (r-C) */
-    var lg='';
-    if(fit||hasFit)lg+='<div><i><b class="lgk" style="color:var(--accent);font-size:14px">\u2726</b></i><span>Day\u2019s fit</span><small>yours to overrule</small></div>'; /* 0728e: gated on marks on glass anywhere in the section */ /* 0727o (l-B): the marks legend is aligned rows — glyph · name · detail */
-    if(hasPlan)lg+='<div><i><b class="sw"></b></i><span>Planned</span><small>the park you picked</small></div>';
-    if(hasPn)lg+='<div><i>'+(pnE?'<span class="em">'+pnE+'</span>':'<b class="pty"></b>')+'</i><span>MK party night</span><small>closes early to day guests</small></div>';
-    if(hasRace)lg+='<div><i><b class="lgk rw">15</b></i><span>Race weekend</span><small>dates in green</small></div>';
-    var wsn=(hi-lo<days.length)?'<div class="td-wsnote">days '+(lo+1)+' \u2013 '+hi+' of '+days.length+' \u00b7 the board has them all</div>':'';
-    return '<div class="tp-peb td-wkh">Your days, park by park \u00b7 <span class="dayin">'+tpWDn(ds)+'</span></div><div class="td-ws">'+h+'</div>'+wsn+(lg?'<div class="td-lgd lgl">'+lg+'</div>':'')+'<div class="td-lgt">A readout, not buttons \u2014 each column is one park on its own scale; the strips never compare across columns \u00b7 your day\u2019s row runs at full color</div>'; /* 0727o (w-B): Your days, park by park */
-  }
+  /* 0728aa D-B (owner, Sep 9): tdWeekStrip \u2014 THE WEEK, PARK BY PARK (Cut C C-2 \u2192 0728e) \u2014 retired from the day page: on glass it read as a second picker under the receipt; the advisor's rail is that grid, axis-flipped, and the one home for a day. Its dress (.td-ws) awaits the next CSS sweep. */
   function tpPlanRow(t,ds,model,EV){ /* 0728z D-A (owner, Sep 9): the picker retires \u2014 the advisor is the one home for planning a day (ONE PHENOMENON, ONE HOME). The day page keeps the receipt and a door: the day's park (or its rest, or nothing yet) in the rail's own chip, whose it is, and Change \u203a \u2014 which closes the day, opens the advisor and lands on this day's lane. The PARK BY PARK readout beneath stays. Prior: Cut 2 / Cut C (C-1) / 0727r / 0728e \u2014 the square two-line picker chips, retired here. */
-    var pk=(t.plan||{})[ds],wd=tpAsD(ds).getDay(),NT=(EV&&EV.night)||{},mk=tdDayMarks(model,ds,NT),A=t.adv||{},rest=!!(A.planned&&A.wrote&&A.wrote[ds]==="rest"),yours=!!((A.picks&&A.picks[ds])||!A.planned),behind=ds<tpToday(),any=false,i;
-    for(i=0;i<4;i++)if(mk[TP_PARKS[i][0]])any=true;
+    var pk=(t.plan||{})[ds],wd=tpAsD(ds).getDay(),NT=(EV&&EV.night)||{},mk=tdDayMarks(model,ds,NT),A=t.adv||{},rest=!!(A.planned&&A.wrote&&A.wrote[ds]==="rest"),yours=!!((A.picks&&A.picks[ds])||!A.planned),behind=ds<tpToday();
     var h='<div class="tp-peb">'+(pk?'Planned':rest?'Rest day':'Plan a park')+' \u00b7 <span class="dayin">'+tpWDn(ds)+', '+tpMD(ds)+'</span></div><div class="tp-plrec">';
     if(pk){var cc=tpCell(model,pk,wd);h+='<span class="tp-adans '+(yours?'plan':'held')+'"><b>'+(TP_P2[pk]||TP_PSHORT[pk]||pk)+'</b><span class="tw">'+(cc.thin?'no record':TP_TW[cc.lvl])+'</span>'+(mk[pk]?'<span class="fx">\u2726</span>':'')+'</span><span class="txt">'+esc(pk)+' \u00b7 '+(yours?'your pick':'the advisor\u2019s')+'</span>';}
     else if(rest)h+='<span class="tp-adans rest'+((A.rests&&A.rests[ds])?' yours':'')+'">Rest day</span><span class="txt">'+((A.rests&&A.rests[ds])?'yours':'the advisor\u2019s')+'</span>';
     else h+='<span class="tp-adans rest open">\u2014</span><span class="txt">'+(behind?'Behind you':'Not planned yet')+'</span>';
     if(!behind)h+='<button class="tp-plch" type="button" data-tpadv="'+ds+'">'+((pk||rest)?'Change':'Plan it')+' \u203a</button>';
     h+='</div>';
-    h+=tdWeekStrip(t,ds,model,EV,any&&!pk); /* Cut C (C-2) / 0717e (owner pick C): the readout keeps its fit legend, gated on the same marks-on-glass signal */
+    /* 0728aa D-B: the readout beneath the receipt retired \u2014 the day page is the receipt and the door */
     return h;
   }
   function tpPlanSecHTML(a,b){ /* Cut 2: the creator’s park-day grid (mock-4 B, owner-ratified) — appears once the dates are valid, re-lists live, draft-backed until Save */
