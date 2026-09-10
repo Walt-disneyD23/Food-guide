@@ -2353,7 +2353,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ah</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ai</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6609,9 +6609,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     tpOpen=null;tpPlanPick=null;tdReset();tpAdvOpen=id;renderPulsePage();
     var el=document.querySelector('.tp-adv [data-adkey="'+d+'"]');if(el){var sh=window.ppShl();sh.scrollTop+=el.getBoundingClientRect().top-Math.round((window.innerHeight||600)/3);}
   } /* F-A · O-A: the hero is the door; it opens in place under your thumb and the day rows push down */
+  function adRideFate(t,r,days){ /* 0728ai R-A (owner, Sep 9): THE RIDES FOLLOW THE PARK \u2014 against the RECORD, per park: the written days it leaves and the days it lands on, paired in day order (adDiff's pairing); a pair carries the day's rides, pins and done marks; a written day it leaves with no landing loses them. Pure; feeds the writer and the receipt alike. */
+    var pl=t.plan||{},RD=t.rides||{},out={carry:[],lost:[],moveN:0,lostN:0},k,d;
+    AD_PARKS.forEach(function(p){var from=[],to=[];for(k=0;k<days.length;k++){d=days[k];var was=pl[d]===p,now=r.assign[d]===p;if(was&&!now)from.push(d);if(now&&!was)to.push(d);}
+      for(k=0;k<from.length;k++){var n=(RD[from[k]]||[]).length;if(k<to.length){out.carry.push({p:p,from:from[k],to:to[k],n:n});out.moveN+=n;}else if(n){out.lost.push({p:p,d:from[k],n:n});out.lostN+=n;}}});
+    return out;
+  }
   function adApply(t,A,days,model,EV){ /* S3: the plan, written whole — every day ahead through tpPlanDay (the day page's own writer, so the 0715l hygiene is one law: a changed park wipes the day's rides, pins and done marks; a kept park keeps them); rests and open days cleared; the record remembers what it wrote so a day-page change can be told apart later */
-    var r=adSolveOf(A,days,model,EV),w={},i,d,p;
+    var r=adSolveOf(A,days,model,EV),w={},i,d,p,F=adRideFate(t,r,days),keep=[];
+    F.carry.forEach(function(c){keep.push({to:c.to,rides:(t.rides||{})[c.from],pins:(t.pins||{})[c.from],done:(t.done||{})[c.from]});}); /* 0728ai R-A: snapshot before the days are written (tpPlanDay clears a changed day) */
     for(i=0;i<days.length;i++){d=days[i];p=r.assign[d];tpPlanDay(t,d,(p&&p!=="rest")?p:null);w[d]=p||null;}
+    keep.forEach(function(c){if(c.rides){if(!t.rides)t.rides={};t.rides[c.to]=c.rides;}if(c.pins){if(!t.pins)t.pins={};t.pins[c.to]=c.pins;}if(c.done){if(!t.done)t.done={};t.done[c.to]=c.done;}}); /* the moved park's list lands with it */
     A.planned=1;A.wrote=w;return r;
   }
   function adWrittenOf(t,A,d){var p=(t.plan||{})[d]||null;return p||((((A&&A.wrote)||{})[d]==="rest")?"rest":null);} /* 0728ac: what your days hold for d \u2014 the park, the written rest, or nothing */
@@ -6638,15 +6646,18 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     r.on.forEach(function(p){if(!(r.got[p]||[]).length)cl.push(TP_P2[p]+" has no day \u2014 free a rest, or turn a park off");});
     return cl.join(" \u00b7 ");
   }
-  function adMovedHTML(S,r,A){ /* 0728ad M-A (owner, Sep 9 7:19 PM): WHAT MOVED NAMES EACH MOVE \u2014 YOU \u00b7 what you did; then one line per park that moved (from \u2192 to, with the record's receipt: still the same tier, or the tier it landed in and where it came from, and the average's difference where the record has both); a park's day count when it changed; "nothing else moved" only when nothing else moved. The word cost left the glass \u2014 the old closing line described a reshuffle on a tap that moved nothing. A park you turned off is the cause, never a move. */
+  function adMovedHTML(S,r,A,t){ /* 0728ad M-A (owner, Sep 9 7:19 PM): WHAT MOVED NAMES EACH MOVE \u2014 YOU \u00b7 what you did; then one line per park that moved (from \u2192 to, with the record's receipt: still the same tier, or the tier it landed in and where it came from, and the average's difference where the record has both); a park's day count when it changed; "nothing else moved" only when nothing else moved. The word cost left the glass \u2014 the old closing line described a reshuffle on a tap that moved nothing. A park you turned off is the cause, never a move. */
     if(S.so)return '<p><b>Back to the advisor\u2019s first plan</b> \u2014 your picks and rests cleared</p>';
     var f=S.diff;if(!f||!S.touched)return "";var rows=[],PS=TP_P2,TW=TP_TW;
     if(S.cause)rows.push({k:"you",a:S.cause});
     var byP={};f.moved.forEach(function(m){(byP[m.p]=byP[m.p]||[]).push(m);});
+    var F=adRideFate(t,r,Object.keys(r.assign).sort()),rideAt=function(p,from,to){for(var k=0;k<F.carry.length;k++)if(F.carry[k].p===p&&F.carry[k].from===from&&F.carry[k].to===to)return F.carry[k].n;return 0;}; /* 0728ai D: THE CHANGE SAYS WHAT'S AT STAKE \u2014 the record's rides on a moved day, before you confirm */
     AD_PARKS.forEach(function(p){if(A.parks[p]===0)return;var was=(S.prev&&S.prev.got[p]||[]).length,now=(r.got[p]||[]).length,parts=[];
       if(now!==was)parts.push(now===0?"no day left \u2014 free a rest, or turn a park off":(was+" \u2192 "+now+" day"+(now===1?"":"s")));
       (byP[p]||[]).forEach(function(m){if(S.td&&m.p===S.tp&&m.to===S.td)return;var mn=(m.r&&m.r.dAvg)?"\u00a0\u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"";
-        parts.push(!m.from?("now on "+adDn(m.to)):!m.r?(adDn(m.from)+" \u2192 "+adDn(m.to)):(m.r.lvlTo===m.r.lvlFrom)?(adDn(m.from)+" \u2192 "+adDn(m.to)+"\u00a0\u00b7 still "+TW[m.r.lvlTo]+mn):(adDn(m.from)+" \u2192 "+adDn(m.to)+"\u00a0\u00b7 "+TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn));});
+        var rn=m.from?rideAt(p,m.from,m.to):0,rw=rn?"\u00a0\u00b7 "+rn+" ride"+(rn===1?"":"s")+" go"+(rn===1?"es":"")+" with it":"";
+        parts.push(!m.from?("now on "+adDn(m.to)):!m.r?(adDn(m.from)+" \u2192 "+adDn(m.to)+rw):(m.r.lvlTo===m.r.lvlFrom)?(adDn(m.from)+" \u2192 "+adDn(m.to)+"\u00a0\u00b7 still "+TW[m.r.lvlTo]+mn+rw):(adDn(m.from)+" \u2192 "+adDn(m.to)+"\u00a0\u00b7 "+TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn+rw));});
+      F.lost.forEach(function(L){if(L.p===p)parts.push(adDn(L.d)+"\u2019s "+L.n+" ride"+(L.n===1?"":"s")+" will be cleared");}); /* 0728ai D: a list with nowhere to go is named before it goes */
       if(parts.length)rows.push({k:p,a:parts[0],b:parts.slice(1)});}); /* 0728ag (owner glass 9:04 PM): the notes stay a list \u2014 THE CLAUSE IS THE BREAK; each move takes its own line */
     if(rows.length<=1&&S.cause)rows.push({k:"",a:"nothing else moved"});
     if(!rows.length)return "";
@@ -6687,8 +6698,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(a!=="rest")h+='<span class="tp-adalt rt" data-adrt="'+d+'"><i>\u2661</i><b>REST</b></span>';
     return h+'</span></div>';
   }
-  function adSlotHTML(S,r,A,mode){ /* 0728ae (owner, Sep 9): THE SLOT TEACHES, THEN REPORTS \u2014 one box between the header and the rail, one job: what you should know right now. Untouched, HOW IT WORKS in the board's own keys (E-1 + K-1); after a tap, WHAT MOVED. A muted link at the label's right swaps the faces (R-B); the next tap brings the report back. */
-    var mv=adMovedHTML(S,r,A),teach=!mv||!!S.help,lnk;
+  function adSlotHTML(S,r,A,mode,t){ /* 0728ae (owner, Sep 9): THE SLOT TEACHES, THEN REPORTS \u2014 one box between the header and the rail, one job: what you should know right now. Untouched, HOW IT WORKS in the board's own keys (E-1 + K-1); after a tap, WHAT MOVED. A muted link at the label's right swaps the faces (R-B); the next tap brings the report back. */
+    var mv=adMovedHTML(S,r,A,t),teach=!mv||!!S.help,lnk;
     if(!teach){return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>What moved</span><span class="hw" data-adhelp>How it works \u203a</span></div>'+mv+'</div>';}
     lnk=mv?'<span class="hw" data-adhelp>What moved \u203a</span>':'';
     var rows=[["PARKS","tap a park up top to hold it at 1, 2 or 3 days, or off\u00a0\u00b7 once more gives it back to the advisor"],["REST","the bar sets how many\u00a0\u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["KEEP","tap a dashed park to keep it where it is\u00a0\u00b7 dashed days can move when you change another"],(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])];
@@ -6697,17 +6708,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tpAdvCardHTML(t,ds,model,EV,facts){ /* the board's hero and the advisor's room: closed, the hero alone (kicker · headline · the trip's facts · the hint); open, hero · header · WHAT MOVED (only after a tap) · the rail · the button · the legend · the basis. A trip with no day ahead has no advisor: its hero carries the facts only. Pure: the same record renders the same bytes. */
     var days=adDaysOf(ds);
     if(!days.length)return facts?'<div class="rpc tp-adv closed"><div class="tp-adh still"><div class="k">The read \u00b7 '+adSpan(t)+' \u00b7 '+ds.length+' day'+(ds.length===1?'':'s')+'</div><div class="rd2 facts"><div class="tp-readr">'+facts+'</div></div></div></div>':'';
-    var A=adState(t,days),cell=adCellFn(model),party=EV.night||{},r=adSolveOf(A,days,model,EV),S=(tpAdvS.id===t.id)?tpAdvS:{prev:null,diff:null,cause:null,touched:false,so:false},mode=A.planned?"planned":"held",restN=Object.keys(r.rests).length,N=r.planned,open=(tpAdvOpen===t.id),PD=adPending(t,A,r,days),i;
+    var A=adState(t,days),cell=adCellFn(model),party=EV.night||{},r=adSolveOf(A,days,model,EV),S=(tpAdvS.id===t.id)?tpAdvS:{prev:null,diff:null,cause:null,touched:false,so:false},mode=A.planned?"planned":"held",restN=Object.keys(r.rests).length,N=r.planned,open=(tpAdvOpen===t.id),PD=adPending(t,A,r,days),RF=adRideFate(t,r,days),i;
     var hero=adHeroHTML(t,r,A,days,cell,party,mode,facts,open,PD);
     if(!open)return '<div class="rpc tp-adv closed" data-advtrip="'+esc(t.id)+'">'+hero+'</div>';
     var h='<div class="rpc tp-adv" data-advtrip="'+esc(t.id)+'">'+hero+adHeaderHTML(r,A,days);
-    h+=adSlotHTML(S,r,A,mode);
+    h+=adSlotHTML(S,r,A,mode,t);
     h+='<div class="tp-adrh"><span>Day</span><span>The park</span><span>or</span></div><div class="tp-adgrid">';
     for(i=0;i<days.length;i++)h+=adRowHTML(days[i],r,A,S,cell,EV,model,mode,t,PD.map);
     h+='</div>';
     if(adDirty(A,days.length))h+='<div class="tp-adrow foot"><span class="tp-adans held so" data-adso><span>\u21ba</span>Back to the advisor\u2019s first plan</span></div>'; /* 0728u W-E (owner, Sep 9): Start over is the rail's last row \u2014 a full-width dashed chip, the rail's own grammar (dashed is the advisor's), present only when something differs from the first answer */
-    if(mode==="held")h+='<button class="tp-adbtn" type="button" data-adplan>Plan these '+N+' day'+(N===1?'':'s')+' \u203a<small>'+restN+' rest day'+(restN===1?'':'s')+' \u00b7 nothing is written until you tap</small></button>';
-    else if(PD.n)h+='<button class="tp-adbtn" type="button" data-adplan>Confirm changes \u203a<small>'+PD.n+' day'+(PD.n===1?'':'s')+' changed \u00b7 nothing is written until you tap</small></button>'; /* 0728ac (owner, Sep 9): THE BUTTON COMES BACK \u2014 a change to a written plan asks to be confirmed in the Plan button's own dress and promise-line; the count is the pending days */
+    if(mode==="held")h+='<button class="tp-adbtn" type="button" data-adplan>Plan these '+N+' day'+(N===1?'':'s')+' \u203a<small>'+restN+' rest day'+(restN===1?'':'s')+' \u00b7 '+(days.some(function(d){return (t.plan||{})[d];})?'your days keep their last plan until you tap':'nothing is written until you tap')+'</small></button>';
+    else if(PD.n)h+='<button class="tp-adbtn" type="button" data-adplan>Confirm changes \u203a<small>'+PD.n+' day'+(PD.n===1?'':'s')+' changed'+(RF.moveN?' \u00b7 '+RF.moveN+' ride'+(RF.moveN===1?'':'s')+' move':'')+(RF.lostN?' \u00b7 '+RF.lostN+' ride'+(RF.lostN===1?'':'s')+' cleared':'')+' \u00b7 nothing is written until you tap</small></button>'; /* 0728ac (owner, Sep 9): THE BUTTON COMES BACK \u2014 a change to a written plan asks to be confirmed in the Plan button's own dress and promise-line; the count is the pending days */
     else h+='<div class="tp-addone"><span class="ck">\u2713</span><span><b>Planned \u00b7 '+N+' day'+(N===1?'':'s')+' on your trip \u00b7 '+restN+' rest</b><small>written to your days below \u2014 tap any day to change it; the advisor re-solves the days you haven\u2019t touched</small></span></div>';
     h+='<div class="tp-adleg"><div><i><b class="sw held"></b></i><span>Suggested</span><small>not on your days yet\u00a0\u00b7 can move when you change another; tap it to keep it</small></div><div><i><b class="sw"></b></i><span>On your days</span><small>tapped, kept or planned</small></div><div><i><b class="sw mv"></b></i><span>Moved</span><small>by your last tap</small></div><div><i><span class="fx">\u2726</span></i><span>Day\u2019s fit</span><small>the calmest park that day</small></div>'+(days.some(function(d){return party[d];})?'<div><i><span class="em">'+(tfPartyEm(days.filter(function(d){return party[d];})[0],tfPartyWins())||'\u25cc')+'</span></i><span>MK party night</span><small>closes early to day guests</small></div>':'')+'<div><i><b class="rt">REST</b></i><span>Rest</span><small>the bar sets how many \u00b7 the tiles set where \u00b7 the advisor places the rest \u00b7 tap a rest day it placed to keep it, again to give it back</small></div></div>';
     h+='<div class="tp-adbasis">From the same-weekday record \u00b7 each park on the day it runs best for itself; the \u2726 is that day\u2019s calmest park \u00b7 rest days are the trip\u2019s toughest \u00b7 '+(mode==="held"?'held, not planned, until you tap':'planned \u2014 a change is written when you confirm it')+' \u00b7 a pattern, never a forecast.</div>';
