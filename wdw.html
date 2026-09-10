@@ -2355,7 +2355,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ak</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728al</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -8831,13 +8831,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       else if(gd.k===1)gdn='<div class="ty-pline">Heads up \u2014 <b>'+esc((roster[gd.dn[0]]&&roster[gd.dn[0]].name)||'')+'</b> is down right now. '+((nD>0)?'It\u2019s one of your '+gd.n+' to go.':((gd.ops===gd.n-1)?(gd.ops===1?'Your other one is running.':'Your other '+gd.ops+' are running.'):gd.ops+' still running.'))+'</div>'; /* tail honesty: "Your other" only when ops equals set-minus-down */
       else gdn='<div class="ty-pline">Heads up \u2014 <b>'+gd.k+' of your '+gd.n+'</b> are down right now. '+((gd.ops===gd.n-gd.k)?(gd.ops===1?'Your other one is running.':'Your other '+gd.ops+' are running.'):gd.ops+' still running \u2014 the rows have the names.')+'</div>'; /* owner ruling (Aug 17): counts take over at 2+ \u2014 the full name rides only at 1 */
     }
-    var eel=''; /* 0723n (B2): the park head's morning credential \u2014 pre-open only, retires at gate open; the resort-guests tail is Early Entry's alone */
-    if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){
+    var eel=''; /* 0723n (B2): the park head's morning credential \u2014 the resort-guests tail is Early Entry's alone */ /* 0728al THE CREDENTIAL FOLDS AT ITS OWN DOOR (owner glass Sep 10 7:34 AK / 8:37 EP / 8:38 HS; ruled P2): the gate read open===false, which meant the published open when 0723n wrote it and the Early Entry window since 0724p \u2014 so the line retired the moment the window began. Now: gated on the PUBLISHED open alone; before the window the sentence as before, inside it the same sentence folded to present tense \u2014 "Early Entry now \u2014 till 9 AM, resort guests." \u2014 the room header's own clock word; past the published open, nothing. Per park by construction (inf and the extra are the park's own). */
+    if(inf&&inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){
       for(var e9=0;e9<inf.extras.length;e9++){var ex9=inf.extras[e9];
         if(!ex9.open||!(new Date(ex9.open).getTime()<new Date(inf.open).getTime()))continue;
         var ra9=tyClkIso(ex9.open),rb9=ex9.close?tyClkIso(ex9.close):null;
         if(ra9&&rb9&&ra9.slice(-2)===rb9.slice(-2))ra9=ra9.slice(0,-3); /* the shared meridiem folds (tyClkPair's rhyme, dash dialect) */
-        eel='<div class="ty-pline">\u2600\ufe0f <b class="win">'+esc(ex9.desc||'Early Entry')+' this morning</b> \u2014 '+ra9+(rb9?'\u2013'+rb9:'')+(/early entry/i.test(ex9.desc||'')?', resort guests':'')+'.</div>';
+        var lv9=Date.now()>=new Date(ex9.open).getTime(),pubC9=tyClkIso(inf.open); /* 0728al: the window is live \u2014 fold, never drop */
+        eel='<div class="ty-pline">\u2600\ufe0f <b class="win">'+esc(ex9.desc||'Early Entry')+(lv9?' now':' this morning')+'</b> \u2014 '+(lv9?('till '+pubC9):(ra9+(rb9?'\u2013'+rb9:'')))+(/early entry/i.test(ex9.desc||'')?', resort guests':'')+'.</div>';
         break;}
     }
     var fct=''; /* 0723n (D3+F-follows): the fact yields while a down line holds the hero; the done day is Wrap's (tense flips whole \u2014 "Up ahead" never lies past close) */
