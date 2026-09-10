@@ -2102,6 +2102,7 @@
   .tp-adpl .row .days{color:var(--ink);font-weight:700}
   .tp-adpl .row .note{display:inline;font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-left:6px}
   .tp-adpl .row .note:before{content:"\2014  ";color:var(--muted-2)}
+  .tp-adpl .row .note+.note{display:block;margin-left:0} /* 0728ag: a park's second and later moves break to their own lines, each with its dash */
   .tp-adrh{display:grid;grid-template-columns:70px 1fr 172px;gap:6px; /* 0728t C-C: the header's columns follow the row \u2014 the tiles' block is 172 px (3 + REST, or 4) */margin:0 0 4px;font:800 var(--fs-micro) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .tp-adrh span:nth-child(2){text-align:center}
   .tp-adrh span:nth-child(3){padding-left:8px}
@@ -2350,7 +2351,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728af</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ag</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6644,10 +6645,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(now!==was)parts.push(now===0?"no day left \u2014 free a rest, or turn a park off":(was+" \u2192 "+now+" day"+(now===1?"":"s")));
       (byP[p]||[]).forEach(function(m){if(S.td&&m.p===S.tp&&m.to===S.td)return;var mn=(m.r&&m.r.dAvg)?" \u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"";
         parts.push(!m.from?("now on "+adDn(m.to)):!m.r?(adDn(m.from)+" \u2192 "+adDn(m.to)):(m.r.lvlTo===m.r.lvlFrom)?(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 still "+TW[m.r.lvlTo]+mn):(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 "+TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn));});
-      if(parts.length)rows.push({k:p,a:parts[0],b:parts.slice(1).join(" \u00b7 ")});});
+      if(parts.length)rows.push({k:p,a:parts[0],b:parts.slice(1)});}); /* 0728ag (owner glass 9:04 PM): the notes stay a list \u2014 THE CLAUSE IS THE BREAK; each move takes its own line */
     if(rows.length<=1&&S.cause)rows.push({k:"",a:"nothing else moved"});
     if(!rows.length)return "";
-    return '<div class="tp-adpl">'+rows.map(function(R){return '<div class="row"><b class="'+(R.k==="you"?"you":R.k?"":"rest")+'">'+(R.k==="you"?"YOU":R.k?PS[R.k]:"\u00b7")+'</b><span><span class="days">'+R.a+'</span>'+(R.b?'<span class="note">'+R.b+'</span>':'')+'</span></div>';}).join('')+'</div>';
+    return '<div class="tp-adpl">'+rows.map(function(R){return '<div class="row"><b class="'+(R.k==="you"?"you":R.k?"":"rest")+'">'+(R.k==="you"?"YOU":R.k?PS[R.k]:"\u00b7")+'</b><span><span class="days">'+R.a+'</span>'+(R.b&&R.b.length?R.b.map(function(x){return '<span class="note">'+x+'</span>';}).join(''):'')+'</span></div>';}).join('')+'</div>';
   }
   function adHeroHTML(t,r,A,days,cell,party,mode,facts,open,pend){ /* R-A · F-A · H-A: the trip board's hero and the advisor's door in one — kicker, the headline that explains the room, THE READ's own rows as the first fine print (the trip's facts, on navy), the advisor's read beneath once open; closed, the last line is the hint */
     var restN=Object.keys(r.rests).length;
