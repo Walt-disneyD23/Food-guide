@@ -2090,6 +2090,7 @@
   .tp-admv{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)}
   .tp-admv .lbl{font:800 var(--fs-micro) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 4px;display:flex;justify-content:space-between;align-items:baseline}
   .tp-admv .lbl .hw{color:var(--muted-2);cursor:pointer;padding:6px 0 6px 12px;margin:-6px 0;-webkit-tap-highlight-color:transparent} /* 0728ae R-B: the slot's other face, a muted link at the label's right (the day rows' muted \u203a idiom); the padding grows the thumb target without moving the row */
+  .tp-adpl.hw{margin-top:8px;gap:5px} /* 0728af (owner glass 8:45 PM): the teaching face breathes under its label; the report keeps its tighter fit */
   .tp-adpl.hw .row{grid-template-columns:62px 1fr} /* 0728ae: the teaching keys (PARKS \u2026 CONFIRM) need the width WHAT MOVED's park codes don't */
   .tp-admv p{margin:0;font:500 var(--fs-small) var(--font-body);color:var(--ink);line-height:1.55}
   .tp-admv p b{color:var(--accent)}
@@ -2131,7 +2132,10 @@
   .tp-adalt.cc.fit:after{content:"\2726"}
   .tp-adalt.cc .s{align-self:center;margin:0 auto} /* the cell CSS's align-self:end reads as "right" in a flex column — center it */
   .tp-adalt.cc.thin{border:0;box-shadow:inset 0 0 0 1.5px var(--muted-2)}
-  .tp-adalt.cc.off{opacity:.3;cursor:default}
+  .tp-adalt.cc.off{cursor:default} /* 0728af (owner glass 8:28 PM): the whole-tile fade took the frame with it and the neighbours' edges read as a bleed \u2014 the off tile now wears the off seat's dress: crisp frame, code struck and muted, pips washed */
+  .tp-adalt.cc.off .d{color:var(--muted-2);text-decoration:line-through;opacity:.6}
+  .tp-adalt.cc.off .s{opacity:.3}
+  .tp-adalt.cc.off:after{opacity:.3}
   .tp-adalt.rt{width:40px;height:52px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted-2);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .tp-adalt.rt b{font:800 9px var(--font-body);letter-spacing:.1em;color:var(--muted-2)}
   .tp-adalt.rt i{font-style:normal;font-size:12px;line-height:1;color:var(--muted-2)}
@@ -2346,7 +2350,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ae</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728af</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6658,7 +6662,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function adHeaderHTML(r,A,days){ /* W-A + M-C, THE HEADER IS THE PLAN: four equal seats read park → how many days (the rail reads day → park; 0728ad S-A); the rest bar; the sum line with Start over once anything differs from the first answer */
     var PS=TP_P2,n=days.length,h='<div class="tp-adhd"><div class="tp-adseats" data-adkey="seats">',d;
     AD_PARKS.forEach(function(p){var v=A.parks[p],off=v===0,fixed=(v!==1&&!off),cnt=(v==="x1")?1:v,g=r.got[p]||[];
-      h+='<span class="tp-adseat'+(off?' off':fixed?' fixed':'')+'" data-adseat="'+esc(p)+'"><b>'+PS[p]+'</b><small>'+(off?'off':!g.length?'no day':g.length+' day'+(g.length===1?'':'s'))+(fixed&&g.length<cnt?' <i>of '+cnt+'</i>':'')+'</small></span>';}); /* 0728ad S-A (owner, Sep 9): THE SEAT SAYS HOW MANY \u2014 the count the seat's own tap turns; the rail beneath says where (the dates were the header reading the rail back) */
+      h+='<span class="tp-adseat'+(off?' off':fixed?' fixed':'')+'" data-adseat="'+esc(p)+'"><b>'+PS[p]+'</b><small>'+(off?'off':!g.length?'no day':(fixed?'held \u00b7 ':'')+g.length+' day'+(g.length===1?'':'s'))+(fixed&&g.length<cnt?' <i>of '+cnt+'</i>':'')+'</small></span>';}); /* 0728af P-A (owner, Sep 9): THE HELD SEAT SAYS SO \u2014 the fill never carries alone */ /* 0728ad S-A (owner, Sep 9): THE SEAT SAYS HOW MANY \u2014 the count the seat's own tap turns; the rail beneath says where (the dates were the header reading the rail back) */
     var restN=0,yrs=0;for(d in r.rests)if(r.rests.hasOwnProperty(d)){restN++;if(r.rests[d]==="yours")yrs++;}
     var adv=restN-yrs,yn=Object.keys(A.rests).length,cap=Math.max(0,n-r.on.length);
     var mid=restN+' rest day'+(restN===1?'':'s')+'<small>'+(restN===0?'none \u2014 the advisor places them':restN<=3?days.filter(function(d){return r.rests[d];}).map(function(d){return r.rests[d]==="yours"?'<i>'+adDn(d)+'</i>':adDn(d);}).join(' \u00b7 '):(yrs?yrs+' yours \u00b7 '+adv+' placed':'the advisor places them'))+'</small>';
@@ -6684,7 +6688,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var mv=adMovedHTML(S,r,A),teach=!mv||!!S.help,lnk;
     if(!teach){return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>What moved</span><span class="hw" data-adhelp>How it works \u203a</span></div>'+mv+'</div>';}
     lnk=mv?'<span class="hw" data-adhelp>What moved \u203a</span>':'';
-    var rows=[["PARKS","tap a park up top for more of its days, or none"],["REST","the bar sets how many \u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["KEEP","tap a dashed park to hold it where it is \u00b7 dashed days can move when you change another"],(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])];
+    var rows=[["PARKS","tap a park up top to hold it at 1, 2 or 3 days, or off \u00b7 once more gives it back to the advisor"],["REST","the bar sets how many \u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["KEEP","tap a dashed park to hold it where it is \u00b7 dashed days can move when you change another"],(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])];
     return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>How it works</span>'+lnk+'</div><div class="tp-adpl hw">'+rows.map(function(R){return '<div class="row"><b>'+R[0]+'</b><span>'+R[1]+'</span></div>';}).join('')+'</div></div>';
   }
   function tpAdvCardHTML(t,ds,model,EV,facts){ /* the board's hero and the advisor's room: closed, the hero alone (kicker · headline · the trip's facts · the hint); open, hero · header · WHAT MOVED (only after a tap) · the rail · the button · the legend · the basis. A trip with no day ahead has no advisor: its hero carries the facts only. Pure: the same record renders the same bytes. */
