@@ -454,7 +454,8 @@
      the calibrated CROWD_TIERS palette inline (theme-invariant JS constants);
      everything else consumes the theme vars so both themes come free. ===== */
   .tp-head{position:relative}
-  .tp-edit{position:absolute;top:10px;right:14px;font:700 var(--fs-meta) var(--font-body);color:var(--accent);background:rgba(79,70,229,.10);border:0;border-radius:999px;padding:8px 15px;cursor:pointer} /* 0717y (owner pick P2): the soft-pill dress - the pin sheet's own chip cloth */
+  .tp-hc{position:absolute;top:12px;right:12px;display:flex;gap:8px;align-items:center} /* 0728ah T-C2 (owner, Sep 9): THE CORNER IS ONE ROW \u2014 share and Edit in one flex row, one anchor, one height, one gap; Edit leads by width and weight, never by a second accent fill */
+  .tp-edit{height:36px;padding:0 16px;font:800 13px var(--font-display);color:var(--accent);background:rgba(79,70,229,.10);border:0;border-radius:999px;display:inline-flex;align-items:center;cursor:pointer} /* 0717y (owner pick P2): the soft-pill dress - the pin sheet's own chip cloth */
   html.dark .tp-edit{background:rgba(139,135,255,.14)}
   .tp-eb{font-family:var(--font-display);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--accent)}
   .tp-tt{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);letter-spacing:-.02em;line-height:1.1;margin-top:4px}
@@ -486,7 +487,8 @@
   .td-shg::after{content:"";position:absolute;inset:-6px} /* the invisible 44pt hitbox, the story-door law */
   .td-shg.hit{background:var(--accent-fill)!important;color:#fff!important;transform:scale(.94)} /* 0717r: the door lights like every chip - the accent flash before the sheet rises */
   html.dark .td-shg{background:rgba(139,135,255,.14)} /* 0717i: the boxes grow to the approved mock geometry (owner ask) */
-  .tp-shg{position:absolute;top:10px;right:82px;margin-top:0} /* 0717v seat, 0717y spacing: beside the Edit pill with an 8px gutter */
+  .tp-shg{position:relative;height:36px;padding:0 13px;margin-top:0} /* 0728ah: the app's own share pill, grown to the row's 36 px */
+  .tp-tt{padding-right:132px} /* the title never runs under the corner row */ /* 0717v seat, 0717y spacing: beside the Edit pill with an 8px gutter */
   .tp-wd{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.012em}
   .tp-dt{font-size:var(--fs-body);color:var(--muted)}
   .tp-hol{display:block;font:500 var(--fs-small) var(--font-body);letter-spacing:0;text-transform:none;color:var(--muted);text-align:right} /* 0727q (q-B): the clauses speak in the planned line's voice */
@@ -2351,7 +2353,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ag</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ah</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6558,7 +6560,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   var AD_NUMW=["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen"];
   function adNumW(n){return AD_NUMW[n]||String(n);}
   function adDn(d){return tpWD3(d)+" "+tpAsD(d).getDate();}
-  function adSpan(t){var a=tpAsD(t.a),b=tpAsD(t.b),M=function(x){return x.toLocaleDateString("en-US",{month:"short"});};return (a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear())?(M(a)+" "+a.getDate()+"\u2013"+b.getDate()):(M(a)+" "+a.getDate()+" \u2013 "+M(b)+" "+b.getDate());}
+  function adSpan(t,a0,b0){var a=tpAsD(a0||t.a),b=tpAsD(b0||t.b),M=function(x){return x.toLocaleDateString("en-US",{month:"short"});};return (a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear())?(M(a)+" "+a.getDate()+"\u2013"+b.getDate()):(M(a)+" "+a.getDate()+" \u2013 "+M(b)+" "+b.getDate());}
   function adRestDefault(n){return n<=3?0:Math.floor(n/3);} /* L-A (owner, Sep 9): a rest every third day — a three-day trip rests none; 7 → 2, 10 → 3, 14 → 4. A real plan for a person who touches nothing; the bar, the REST tile and Start over move it from there. */
   function adDefaults(n){return {parks:{"Magic Kingdom":1,"EPCOT":1,"Hollywood Studios":1,"Animal Kingdom":1},rest:adRestDefault(n),picks:{},rests:{},kept:{},avoid:{},planned:0};}
   function adDaysOf(ds){var today=tpToday(),out=[],i;for(i=0;i<ds.length;i++)if(ds[i]>=today)out.push(ds[i]);return out;} /* days behind you are not the advisor's */
@@ -6586,9 +6588,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var cur=adSolveOf(adState(t,days),days,model,EV),cause=null,so=false,PS=TP_P2,n=days.length;
     var t2=adWrite(id,function(A,days2,t3){var k;
       if(kind==="seat"){var v=A.parks[p],cap=Math.max(1,n-Object.keys(cur.rests).length),nx=(v===1)?"x1":(v==="x1")?2:(v>=2&&v<Math.min(3,cap))?v+1:(v>=2)?0:1; /* D-A: on → ×1 → ×2 → ×3 → off → on, ×n capped at the park days */
-        A.parks[p]=nx;cause=PS[p]+(nx===0?" off":nx===1?" back to its share":" set to "+(nx==="x1"?1:nx)+" day"+(nx==="x1"?"":"s"));
+        A.parks[p]=nx;cause=PS[p]+(nx===0?" off":nx===1?" back to the advisor":" set to "+(nx==="x1"?1:nx)+" day"+(nx==="x1"?"":"s"));
         if(nx===0){for(k in A.picks)if(A.picks.hasOwnProperty(k)&&A.picks[k]===p){delete A.picks[k];delete A.kept[k];}}} /* a park you turned off drops its picks — the cause, never a cost */
-      else if(kind==="rest+"||kind==="rest-"){var was=A.rest,yn=Object.keys(A.rests).length,cap2=Math.max(0,n-cur.on.length),want=Math.max(yn,Math.min(cap2,A.rest+(kind==="rest+"?1:-1)));A.rest=want;if(want!==was)cause="rest days "+was+" \u2192 "+want;}
+      else if(kind==="rest+"||kind==="rest-"){var was=A.rest,yn=Object.keys(A.rests).length,cap2=Math.max(0,n-1),want=Math.max(yn,Math.min(cap2,A.rest+(kind==="rest+"?1:-1)));A.rest=want;if(want!==was)cause="rest days "+was+" \u2192 "+want;}
       else if(kind==="park"){
         if(A.picks[d]===p){delete A.picks[d];delete A.kept[d];cause=adDn(d)+" back to the advisor";} /* your pick / your kept chip tapped again: the row goes back to the advisor (one tap) */
         else{var wasRest=!!cur.rests[d],wasHeld=(cur.assign[d]===p);A.picks[d]=p;if(wasHeld)A.kept[d]=1;else delete A.kept[d];if(A.rests[d])delete A.rests[d];if(wasRest)A.rest=Math.max(Object.keys(A.rests).length,A.rest-1);delete A.avoid[d];cause=PS[p]+" on "+adDn(d)+(wasHeld?" \u2014 kept":" \u2014 your pick")+(wasRest?" (no longer resting)":"");}} /* confirming the advisor's chip is KEPT, not a pick; a park tile on a rest row makes it a park day */
@@ -6643,8 +6645,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var byP={};f.moved.forEach(function(m){(byP[m.p]=byP[m.p]||[]).push(m);});
     AD_PARKS.forEach(function(p){if(A.parks[p]===0)return;var was=(S.prev&&S.prev.got[p]||[]).length,now=(r.got[p]||[]).length,parts=[];
       if(now!==was)parts.push(now===0?"no day left \u2014 free a rest, or turn a park off":(was+" \u2192 "+now+" day"+(now===1?"":"s")));
-      (byP[p]||[]).forEach(function(m){if(S.td&&m.p===S.tp&&m.to===S.td)return;var mn=(m.r&&m.r.dAvg)?" \u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"";
-        parts.push(!m.from?("now on "+adDn(m.to)):!m.r?(adDn(m.from)+" \u2192 "+adDn(m.to)):(m.r.lvlTo===m.r.lvlFrom)?(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 still "+TW[m.r.lvlTo]+mn):(adDn(m.from)+" \u2192 "+adDn(m.to)+" \u00b7 "+TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn));});
+      (byP[p]||[]).forEach(function(m){if(S.td&&m.p===S.tp&&m.to===S.td)return;var mn=(m.r&&m.r.dAvg)?"\u00a0\u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"";
+        parts.push(!m.from?("now on "+adDn(m.to)):!m.r?(adDn(m.from)+" \u2192 "+adDn(m.to)):(m.r.lvlTo===m.r.lvlFrom)?(adDn(m.from)+" \u2192 "+adDn(m.to)+"\u00a0\u00b7 still "+TW[m.r.lvlTo]+mn):(adDn(m.from)+" \u2192 "+adDn(m.to)+"\u00a0\u00b7 "+TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn));});
       if(parts.length)rows.push({k:p,a:parts[0],b:parts.slice(1)});}); /* 0728ag (owner glass 9:04 PM): the notes stay a list \u2014 THE CLAUSE IS THE BREAK; each move takes its own line */
     if(rows.length<=1&&S.cause)rows.push({k:"",a:"nothing else moved"});
     if(!rows.length)return "";
@@ -6652,7 +6654,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function adHeroHTML(t,r,A,days,cell,party,mode,facts,open,pend){ /* R-A · F-A · H-A: the trip board's hero and the advisor's door in one — kicker, the headline that explains the room, THE READ's own rows as the first fine print (the trip's facts, on navy), the advisor's read beneath once open; closed, the last line is the hint */
     var restN=Object.keys(r.rests).length;
-    var h='<div class="tp-adh'+(open?' op':'')+'" data-adkey="door" data-addoor="'+esc(t.id)+'">'+(open?'<span class="cx" aria-label="Close the advisor"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'')+'<div class="k">The advisor \u00b7 '+adSpan(t)+' \u00b7 '+days.length+' day'+(days.length===1?'':'s')+'</div>';
+    var h='<div class="tp-adh'+(open?' op':'')+'" data-adkey="door" data-addoor="'+esc(t.id)+'">'+(open?'<span class="cx" aria-label="Close the advisor"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'')+'<div class="k">The advisor'+(days.length!==tpDays(t).length?' \u00b7 '+adSpan(t,days[0],days[days.length-1]):'')+' \u00b7 '+days.length+' day'+(days.length===1?'':'s')+'</div>'; /* 0728ah (owner, Sep 9): the span is clause-earned \u2014 the head card just said the trip's; the kicker names a span only for the days ahead of a trip in progress */
     if(mode==="held")h+='<h2>Each park on the day it runs best for itself.</h2>'; /* 0728ae (owner, Sep 9): the how-line left the hero \u2014 the slot between the header and the rail teaches, then reports (adSlotHTML) */
     else h+='<h2>'+r.planned+' day'+(r.planned===1?'':'s')+' planned \u00b7 '+restN+' rest.</h2>';
     if(facts)h+='<div class="rd2 facts"><div class="tp-readr">'+facts+'</div></div>';
@@ -6665,7 +6667,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     AD_PARKS.forEach(function(p){var v=A.parks[p],off=v===0,fixed=(v!==1&&!off),cnt=(v==="x1")?1:v,g=r.got[p]||[];
       h+='<span class="tp-adseat'+(off?' off':fixed?' fixed':'')+'" data-adseat="'+esc(p)+'"><b>'+PS[p]+'</b><small>'+(off?'off':!g.length?'no day':(fixed?'held \u00b7 ':'')+g.length+' day'+(g.length===1?'':'s'))+(fixed&&g.length<cnt?' <i>of '+cnt+'</i>':'')+'</small></span>';}); /* 0728af P-A (owner, Sep 9): THE HELD SEAT SAYS SO \u2014 the fill never carries alone */ /* 0728ad S-A (owner, Sep 9): THE SEAT SAYS HOW MANY \u2014 the count the seat's own tap turns; the rail beneath says where (the dates were the header reading the rail back) */
     var restN=0,yrs=0;for(d in r.rests)if(r.rests.hasOwnProperty(d)){restN++;if(r.rests[d]==="yours")yrs++;}
-    var adv=restN-yrs,yn=Object.keys(A.rests).length,cap=Math.max(0,n-r.on.length);
+    var adv=restN-yrs,yn=Object.keys(A.rests).length,cap=Math.max(0,n-1); /* 0728ah B-B (owner, Sep 9): THE BAR DOES WHAT THE TILE DOES \u2014 + steps until one park day is left; a park this starves is disclosed by its seat (no day), the hero and WHAT MOVED; the n \u2212 parks-on cap retired */
     var mid=restN+' rest day'+(restN===1?'':'s')+'<small>'+(restN===0?'none \u2014 the advisor places them':restN<=3?days.filter(function(d){return r.rests[d];}).map(function(d){return r.rests[d]==="yours"?'<i>'+adDn(d)+'</i>':adDn(d);}).join(' \u00b7 '):(yrs?yrs+' yours \u00b7 '+adv+' placed':'the advisor places them'))+'</small>';
     h+='</div><div class="tp-adbar"><b class="'+(A.rest<=yn?'dis':'')+'" data-adrest="-">\u2212</b><span class="mid">'+mid+'</span><b class="'+(A.rest>=cap?'dis':'')+'" data-adrest="+">+</b></div>';
     h+='</div>'; /* 0728u (owner, Sep 9): the sum line retires \u2014 the button and the hero already say it; Start over moved to the rail's foot (W-E) */
@@ -6689,7 +6691,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var mv=adMovedHTML(S,r,A),teach=!mv||!!S.help,lnk;
     if(!teach){return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>What moved</span><span class="hw" data-adhelp>How it works \u203a</span></div>'+mv+'</div>';}
     lnk=mv?'<span class="hw" data-adhelp>What moved \u203a</span>':'';
-    var rows=[["PARKS","tap a park up top to hold it at 1, 2 or 3 days, or off \u00b7 once more gives it back to the advisor"],["REST","the bar sets how many \u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["KEEP","tap a dashed park to hold it where it is \u00b7 dashed days can move when you change another"],(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])];
+    var rows=[["PARKS","tap a park up top to hold it at 1, 2 or 3 days, or off\u00a0\u00b7 once more gives it back to the advisor"],["REST","the bar sets how many\u00a0\u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["KEEP","tap a dashed park to keep it where it is\u00a0\u00b7 dashed days can move when you change another"],(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])];
     return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>How it works</span>'+lnk+'</div><div class="tp-adpl hw">'+rows.map(function(R){return '<div class="row"><b>'+R[0]+'</b><span>'+R[1]+'</span></div>';}).join('')+'</div></div>';
   }
   function tpAdvCardHTML(t,ds,model,EV,facts){ /* the board's hero and the advisor's room: closed, the hero alone (kicker · headline · the trip's facts · the hint); open, hero · header · WHAT MOVED (only after a tap) · the rail · the button · the legend · the basis. A trip with no day ahead has no advisor: its hero carries the facts only. Pure: the same record renders the same bytes. */
@@ -6707,7 +6709,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(mode==="held")h+='<button class="tp-adbtn" type="button" data-adplan>Plan these '+N+' day'+(N===1?'':'s')+' \u203a<small>'+restN+' rest day'+(restN===1?'':'s')+' \u00b7 nothing is written until you tap</small></button>';
     else if(PD.n)h+='<button class="tp-adbtn" type="button" data-adplan>Confirm changes \u203a<small>'+PD.n+' day'+(PD.n===1?'':'s')+' changed \u00b7 nothing is written until you tap</small></button>'; /* 0728ac (owner, Sep 9): THE BUTTON COMES BACK \u2014 a change to a written plan asks to be confirmed in the Plan button's own dress and promise-line; the count is the pending days */
     else h+='<div class="tp-addone"><span class="ck">\u2713</span><span><b>Planned \u00b7 '+N+' day'+(N===1?'':'s')+' on your trip \u00b7 '+restN+' rest</b><small>written to your days below \u2014 tap any day to change it; the advisor re-solves the days you haven\u2019t touched</small></span></div>';
-    h+='<div class="tp-adleg"><div><i><b class="sw held"></b></i><span>Suggested</span><small>not on your days yet \u00b7 can move when you change another; tap it to keep it</small></div><div><i><b class="sw"></b></i><span>On your days</span><small>tapped, kept or planned</small></div><div><i><b class="sw mv"></b></i><span>Moved</span><small>by your last tap</small></div><div><i><span class="fx">\u2726</span></i><span>Day\u2019s fit</span><small>the calmest park that day</small></div>'+(days.some(function(d){return party[d];})?'<div><i><span class="em">'+(tfPartyEm(days.filter(function(d){return party[d];})[0],tfPartyWins())||'\u25cc')+'</span></i><span>MK party night</span><small>closes early to day guests</small></div>':'')+'<div><i><b class="rt">REST</b></i><span>Rest</span><small>the bar sets how many \u00b7 the tiles set where \u00b7 the advisor places the rest \u00b7 tap a rest day it placed to keep it, again to give it back</small></div></div>';
+    h+='<div class="tp-adleg"><div><i><b class="sw held"></b></i><span>Suggested</span><small>not on your days yet\u00a0\u00b7 can move when you change another; tap it to keep it</small></div><div><i><b class="sw"></b></i><span>On your days</span><small>tapped, kept or planned</small></div><div><i><b class="sw mv"></b></i><span>Moved</span><small>by your last tap</small></div><div><i><span class="fx">\u2726</span></i><span>Day\u2019s fit</span><small>the calmest park that day</small></div>'+(days.some(function(d){return party[d];})?'<div><i><span class="em">'+(tfPartyEm(days.filter(function(d){return party[d];})[0],tfPartyWins())||'\u25cc')+'</span></i><span>MK party night</span><small>closes early to day guests</small></div>':'')+'<div><i><b class="rt">REST</b></i><span>Rest</span><small>the bar sets how many \u00b7 the tiles set where \u00b7 the advisor places the rest \u00b7 tap a rest day it placed to keep it, again to give it back</small></div></div>';
     h+='<div class="tp-adbasis">From the same-weekday record \u00b7 each park on the day it runs best for itself; the \u2726 is that day\u2019s calmest park \u00b7 rest days are the trip\u2019s toughest \u00b7 '+(mode==="held"?'held, not planned, until you tap':'planned \u2014 a change is written when you confirm it')+' \u00b7 a pattern, never a forecast.</div>';
     return h+'</div>';
   }
@@ -6726,7 +6728,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
     var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Plan \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
-    var head=lad+'<div class="rpc tp-head"><button class="td-shg tp-shg" data-tpshare type="button" aria-label="Share this trip"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="tp-edit" type="button">Edit</button>'+
+    var head=lad+'<div class="rpc tp-head"><div class="tp-hc"><button class="td-shg tp-shg" data-tpshare type="button" aria-label="Share this trip"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="tp-edit" type="button">Edit</button></div>'+
       '<div class="tp-eb">'+esc(tpEyebrow(t,today))+'</div>'+
       '<div class="tp-tt">'+esc(t.n||"My trip")+'</div>'+
       '<div class="tp-ts">'+tpRangeFmt(t)+' \u00b7 <b>'+ds.length+' day'+(ds.length===1?'':'s')+'</b></div></div>';
