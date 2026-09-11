@@ -2131,6 +2131,13 @@
 .tp-admv .lbl .sub{color:var(--muted-2);letter-spacing:.08em;text-transform:none;font-weight:700;margin-left:6px}
 .tp-adrow.foot.two .tp-adans.so{width:auto;flex:1 1 0;min-width:0;font-size:13px;padding:0 6px;white-space:normal;text-align:center;line-height:1.15} /* 0728ao TWO EXITS: near and far side by side */
 .tp-adans.so.undo{outline:0;box-shadow:inset 0 0 0 1.5px var(--accent);background:none}
+.tp-adans.so.keep{outline:0;box-shadow:inset 0 0 0 1.5px var(--accent);background:none} /* 0728au K-A: Keep all my days \u2014 the near exit's solid ring; a claim, not an exit */
+.tp-admv .hr{height:1px;background:var(--line);margin:10px 0 8px} /* 0728au W-A: one box, a hairline between the report and the take */
+.tp-adpl.chips .row.mv .cl .mv{color:var(--accent);font-weight:800;margin-left:8px;white-space:nowrap} /* 0728au C-A: Move it \u203a \u2014 the day rows' \u203a idiom, in accent */
+.tp-adpl.chips .ch.cnt{box-shadow:inset 0 0 0 1.5px var(--line)} /* 0728au count chips B: A COUNT IS A NUMBER, NOT A PLACE \u2014 plain outline in the line token, the code muted; the count you tapped still fills */
+.tp-adpl.chips .ch.cnt b{color:var(--muted)}
+.tp-adpl.chips .ch.cnt.you{background:var(--accent-fill);color:#fff;box-shadow:none}.tp-adpl.chips .ch.cnt.you b{color:#fff}
+.tp-adpl.chips .ch .em{font-size:12px;line-height:1} /* 0728au D-B: THE BOX CHIP WEARS THE TREE */
   .tp-adpl .row .note+.note{display:block;margin-left:0} /* 0728ag: a park's second and later moves break to their own lines, each with its dash */
   .tp-adrh{display:grid;grid-template-columns:54px 1fr 172px;gap:6px; /* 0728ao THE LANE GIVES THE CHIP ITS WIDTH (owner-ruled Sep 10, mock rail-header-whatmoved-mock.html): the lane 70\u219254 on every row, the chip takes the 16 px */ /* 0728t C-C: the header's columns follow the row \u2014 the tiles' block is 172 px (3 + REST, or 4) */margin:0 0 4px;font:800 var(--fs-micro) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .tp-adrh span:nth-child(1){text-align:center} /* 0728ao: DAY centered over the days */
@@ -2382,7 +2389,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728at</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728au</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6628,7 +6635,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var tb=document.querySelector(".topbar"),pad=(tb&&window.getComputedStyle)?(parseFloat(window.getComputedStyle(tb).paddingTop)||22):22,st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,y=Math.max(0,sh.scrollTop+el.getBoundingClientRect().top-st-pad);
     try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}
   }
-  function adTap(id,kind,d,p){ /* every tap: solve the state as it stands (the previous answer), change only what was touched, solve again, remember the diff for WHAT MOVED, render through the anchor */
+  function adTap(id,kind,d,p,take){ /* every tap: solve the state as it stands (the previous answer), change only what was touched, solve again, remember the diff for WHAT MOVED, render through the anchor */
     var ts=tpTrips(),t=null,i;for(i=0;i<ts.length;i++)if(ts[i].id===id)t=ts[i];if(!t)return;
     var ds=tpDays(t),days=adDaysOf(ds),model=tpModel(),EV=tpEvCtx(t,ds);if(!model||!days.length)return;
     var cur=adSolveOf(adState(t,days),days,model,EV),cause=null,cz=null,so=false,PS=TP_P2,n=days.length; /* 0728ao: cz \u2014 the cause as facts, for WHAT MOVED's chips */
@@ -6640,6 +6647,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       else if(kind==="park"){
         if(A.picks[d]===p){delete A.picks[d];delete A.kept[d];cause=adDn(d)+" back to the advisor";cz={k:"back",p:p,d:d};} /* your pick / your kept chip tapped again: the row goes back to the advisor (one tap) */
         else{var wasRest=!!cur.rests[d],wasHeld=(cur.assign[d]===p);A.picks[d]=p;if(wasHeld)A.kept[d]=1;else delete A.kept[d];if(A.rests[d])delete A.rests[d];if(wasRest)A.rest=Math.max(Object.keys(A.rests).length,A.rest-1);delete A.avoid[d];cause=PS[p]+" on "+adDn(d)+(wasHeld?" \u2014 kept":" \u2014 your pick")+(wasRest?" (no longer resting)":"");cz={k:"pick",p:p,d:d,kept:wasHeld,w:(wasHeld?"kept":"your pick")+(wasRest?" (no longer resting)":"")};}} /* confirming the advisor's chip is KEPT, not a pick; a park tile on a rest row makes it a park day */
+      else if(kind==="take"){var wasRest2=!!cur.rests[d];delete A.picks[take];delete A.kept[take];A.picks[d]=p;delete A.kept[d];if(A.rests[d])delete A.rests[d];if(wasRest2)A.rest=Math.max(Object.keys(A.rests).length,A.rest-1);delete A.avoid[d];cause=PS[p]+" on "+adDn(d)+" \u2014 your pick, on the advisor\u2019s take";cz={k:"pick",p:p,d:d,from:take,take:true,w:"your pick"+(wasRest2?" (no longer resting)":"")};} /* 0728au C-A A TAKE IS A MOVE NOT YET MADE: Move it \u203a moves your pick \u2014 released from its day, placed on the landing, one write; the displaced park goes where the advisor puts it and WHAT MOVED reports it after */
       else if(kind==="resttile"){var advLeft=0;for(k in cur.rests)if(cur.rests.hasOwnProperty(k)&&cur.rests[k]==="adv")advLeft++;A.rests[d]=1;delete A.picks[d];delete A.kept[d];delete A.avoid[d];if(!advLeft)A.rest=A.rest+1;cause=adDn(d)+" rest day \u2014 yours";cz={k:"rest",d:d,w:"yours"};} /* 0728v R-B (owner, Sep 9): THE BAR SAYS HOW MANY, THE TILES SAY WHERE \u2014 a claim on a new day displaces one of the advisor\u2019s suggestions (the count holds, the advisor\u2019s rest gives way and its day gets a park); the count steps up only when every rest is already yours. A claim never displaces a claim. */
       else if(kind==="restchip"){if((cur.rests[d]||null)==="adv"){A.rests[d]=1;A.kept[d]=1;cause=adDn(d)+" rest day \u2014 kept";cz={k:"rest",d:d,w:"kept"};}else{delete A.rests[d];delete A.kept[d];cause=adDn(d)+" rest day back to the advisor";cz={k:"restback",d:d};}} /* the chip toggles kept / the advisor's; a park tile is how a rest becomes a park day */
       else if(kind==="startover"){var D=adDefaults(n);A.parks=D.parks;A.rest=D.rest;A.picks={};A.rests={};A.kept={};A.avoid={};A.planned=0;delete A.wrote;so=true;} /* 0728t S-C (owner, Sep 9): START OVER HOLDS \u2014 back to the first open: the advisor\u2019s first answer, every ring dashed, the Plan button back; the record\u2019s plan is untouched until you Plan again (a day whose park doesn\u2019t change keeps its rides then) */
@@ -6647,10 +6655,20 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     });
     if(!t2)return;
     var nx2=adSolveOf(adState(t2,days),days,model,EV);
-    tpAdvS={id:id,prev:cur,diff:so?null:adDiff(cur,nx2,adCellFn(model),days),cause:cause,cz:cz,touched:true,so:so,td:(kind==="park"?d:null),tp:(kind==="park"?p:null)}; /* 0728ad M-A: the landing your tap made is the cause row, never a move line */ /* 0728ab (owner, Sep 9 3:48 PM): START OVER LANDS CLEAN \u2014 the first answer is the baseline, not a change; no chip wears the moved fill */
-    adAnchored((kind==="park"||kind==="resttile"||kind==="restchip")?d:"seats");
+    tpAdvS={id:id,prev:cur,diff:so?null:adDiff(cur,nx2,adCellFn(model),days),cause:cause,cz:cz,touched:true,so:so,td:((kind==="park"||kind==="take")?d:null),tp:((kind==="park"||kind==="take")?p:null)}; /* 0728ad M-A: the landing your tap made is the cause row, never a move line */ /* 0728ab (owner, Sep 9 3:48 PM): START OVER LANDS CLEAN \u2014 the first answer is the baseline, not a change; no chip wears the moved fill */
+    adAnchored(kind==="take"?"slot":(kind==="park"||kind==="resttile"||kind==="restchip")?d:"seats");
   }
   function adToggle(id){tpAdvOpen=(tpAdvOpen===id)?null:id;adAnchored("door");}
+  function adKeepAll(id){ /* 0728au K-A KEEP ALL MY DAYS (owner-ruled Sep 11): one write \u2014 every advisor day as it sits becomes yours (a park: your pick with the kept flag; a placed rest: yours with the flag; the bar's count holds, 0728v R-B); WHAT MOVED gets a YOU row and the take wakes beneath it. Before Plan it pauses the advisor for the first plan; after Plan it stops the re-solving on later changes. */
+    var ts=tpTrips(),t=null,i;for(i=0;i<ts.length;i++)if(ts[i].id===id)t=ts[i];if(!t)return;
+    var ds=tpDays(t),days=adDaysOf(ds),model=tpModel(),EV=tpEvCtx(t,ds);if(!model||!days.length)return;
+    var cur=adSolveOf(adState(t,days),days,model,EV),n=days.length;
+    var t2=adWrite(id,function(A){days.forEach(function(d){var a=cur.assign[d];if(!a||a==="tie")return;if(a==="rest"){if(!A.rests[d]){A.rests[d]=1;A.kept[d]=1;}}else if(!A.picks[d]){A.picks[d]=a;A.kept[d]=1;}});});
+    if(!t2)return;
+    var nx2=adSolveOf(adState(t2,days),days,model,EV);
+    tpAdvS={id:id,prev:cur,diff:adDiff(cur,nx2,adCellFn(model),days),cause:"all "+n+" days \u00b7 kept",cz:{k:"keepall",n:n},touched:true,so:false,td:null,tp:null};
+    adAnchored("slot");
+  }
   function adJump(id,d){ /* 0728z D-A: the day page's Change \u203a \u2014 close the day, open the advisor, land on this day's lane a third of the way down the screen */
     tpOpen=null;tpPlanPick=null;tdReset();tpAdvOpen=id;renderPulsePage();
     var el=document.querySelector('.tp-adv [data-adkey="'+d+'"]');if(el){var sh=window.ppShl();sh.scrollTop+=el.getBoundingClientRect().top-Math.round((window.innerHeight||600)/3);}
@@ -6696,25 +6714,28 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     r.on.forEach(function(p){if(!(r.got[p]||[]).length)cl.push(TP_P2[p]+" has no day \u2014 free a rest, or turn a park off");});
     return cl.join(" \u00b7 ");
   }
-  function adMovedHTML(S,r,A,t){ /* 0728ad M-A (owner, Sep 9 7:19 PM): WHAT MOVED NAMES EACH MOVE \u2014 YOU \u00b7 what you did; then one line per park that moved (from \u2192 to, with the record's receipt: still the same tier, or the tier it landed in and where it came from, and the average's difference where the record has both); a park's day count when it changed; "nothing else moved" only when nothing else moved. The word cost left the glass \u2014 the old closing line described a reshuffle on a tap that moved nothing. A park you turned off is the cause, never a move. */
+  function adChip(p,txt,cls,em){return '<span class="ch'+(cls?' '+cls:'')+'">'+(p==="rest"?'<b class="rt">REST</b>':'<b>'+TP_P2[p]+'</b>')+(em?'<span class="em">'+em+'</span>':'')+(txt?esc(txt):'')+'</span>';} /* 0728au D-B (owner-ruled Sep 11): THE BOX CHIP WEARS THE TREE \u2014 one chip for WHAT MOVED and the take; a dated MK chip on a party night carries the tree in its own span after the code (the rail's idiom, 0728am) */
+  function adRidesW(rn){return rn?"\u00a0\u00b7 "+rn+" ride"+(rn===1?"":"s")+" go"+(rn===1?"es":"")+" with it":"";}
+  function adMovedHTML(S,r,A,t,party){ /* 0728ad M-A (owner, Sep 9 7:19 PM): WHAT MOVED NAMES EACH MOVE \u2014 YOU \u00b7 what you did; then one line per park that moved (from \u2192 to, with the record's receipt: still the same tier, or the tier it landed in and where it came from, and the average's difference where the record has both); a park's day count when it changed; "nothing else moved" only when nothing else moved. The word cost left the glass \u2014 the old closing line described a reshuffle on a tap that moved nothing. A park you turned off is the cause, never a move. */
     if(S.so)return '<p><b>Back to the advisor\u2019s first plan</b> \u2014 your picks and rests cleared</p>';
-    var f=S.diff;if(!f||!S.touched)return "";var rows=[],PS=TP_P2,TW=TP_TW,CH=function(p,txt,cls){return '<span class="ch'+(cls?' '+cls:'')+'">'+(p==="rest"?'<b class="rt">REST</b>':'<b>'+PS[p]+'</b>')+(txt?esc(txt):'')+'</span>';},ARR='<i class="arr">\u2192</i>'; /* 0728ao WHAT MOVED WEARS THE RAIL'S CHIPS (owner-ruled Sep 10): solid = where it was (on your days), dashed = where it lands (not on your days yet), filled = your tap; the clause lines are the 0728ad/0728ai strings byte for byte */
+    var f=S.diff;if(!f||!S.touched)return "";var rows=[],PS=TP_P2,TW=TP_TW,CH=adChip,PW=tfPartyWins(),em=function(p,d){return (p==="Magic Kingdom"&&party&&party[d])?(tfPartyEm(d,PW)||""):"";},ARR='<i class="arr">\u2192</i>'; /* 0728ao WHAT MOVED WEARS THE RAIL'S CHIPS (owner-ruled Sep 10): solid = where it was (on your days), dashed = where it lands (not on your days yet), filled = your tap; the clause lines are the 0728ad/0728ai strings byte for byte */
     var F=adRideFate(t,r,Object.keys(r.assign).sort()),rideAt=function(p,from,to){for(var k=0;k<F.carry.length;k++)if(F.carry[k].p===p&&F.carry[k].from===from&&F.carry[k].to===to)return F.carry[k].n;return 0;}; /* 0728ai D: THE CHANGE SAYS WHAT'S AT STAKE \u2014 the record's rides on a moved day, before you confirm */
-    var rw=function(rn){return rn?"\u00a0\u00b7 "+rn+" ride"+(rn===1?"":"s")+" go"+(rn===1?"es":"")+" with it":"";};
+    var rw=adRidesW;
     if(S.cause){var z=S.cz||{},ln="",cl=S.cause;
-      if(z.k==="pick"){var own=null;f.moved.forEach(function(m){if(m.p===z.p&&m.to===z.d)own=m;});var rn0=(own&&own.from)?rideAt(z.p,own.from,z.d):0;ln=((own&&own.from)?CH(z.p,adDn(own.from))+ARR:"")+CH(z.p,adDn(z.d),"you");cl=z.w+rw(rn0);} /* THE BUTTON PRICES WHAT THE BOX NAMES (owner glass 6:02 PM Sep 10): a pick that relocates a park names where it came from and the rides that came along */
-      else if(z.k==="back"){ln=CH(z.p,adDn(z.d),"dsh");cl="back to the advisor";}
+      if(z.k==="pick"){var own=null;f.moved.forEach(function(m){if(m.p===z.p&&m.to===z.d)own=m;});var fr0=z.from||((own&&own.from)?own.from:null),rn0=fr0?rideAt(z.p,fr0,z.d):0;ln=(fr0?CH(z.p,adDn(fr0),"",em(z.p,fr0))+ARR:"")+CH(z.p,adDn(z.d),"you",em(z.p,z.d));cl=z.w+(z.take?", on the advisor\u2019s take":"")+rw(rn0);} /* 0728au C-A: a pick made from the take names the pick's own day and says so */ /* THE BUTTON PRICES WHAT THE BOX NAMES (owner glass 6:02 PM Sep 10): a pick that relocates a park names where it came from and the rides that came along */
+      else if(z.k==="back"){ln=CH(z.p,adDn(z.d),"dsh",em(z.p,z.d));cl="back to the advisor";}
       else if(z.k==="rest"){ln=CH("rest",adDn(z.d),"you");cl=z.w;}
       else if(z.k==="restback"){ln=CH("rest",adDn(z.d),"dsh");cl="back to the advisor";}
-      else if(z.k==="restn"){ln=CH("rest",z.was+" day"+(z.was===1?"":"s"))+ARR+CH("rest",z.want+" day"+(z.want===1?"":"s"),"you");cl="";}
+      else if(z.k==="restn"){ln=CH("rest",z.was+" day"+(z.was===1?"":"s"),"cnt")+ARR+CH("rest",z.want+" day"+(z.want===1?"":"s"),"cnt you");cl="";} /* 0728au count chips B */
+      else if(z.k==="keepall"){ln='<span class="ch you"><b>\u2713</b>all '+z.n+' day'+(z.n===1?'':'s')+'</span>';cl="kept";} /* 0728au K-A: one tap claimed every advisor day \u2014 a chip with no code, the check in its place */
       else if(z.k==="seat"){ln=CH(z.p,"","you");cl=z.w;}
       rows.push({you:true,ln:ln,cl:cl});}
     var byP={};f.moved.forEach(function(m){(byP[m.p]=byP[m.p]||[]).push(m);});
     AD_PARKS.forEach(function(p){if(A.parks[p]===0)return;var was=(S.prev&&S.prev.got[p]||[]).length,now=(r.got[p]||[]).length,parts=[];
-      if(now!==was)parts.push(now===0?{ln:CH(p,""),cl:"no day left \u2014 free a rest, or turn a park off"}:{ln:CH(p,was+" day"+(was===1?"":"s"))+ARR+CH(p,now+" day"+(now===1?"":"s"),"dsh"),cl:""});
+      if(now!==was)parts.push(now===0?{ln:CH(p,""),cl:"no day left \u2014 free a rest, or turn a park off"}:{ln:CH(p,was+" day"+(was===1?"":"s"),"cnt")+ARR+CH(p,now+" day"+(now===1?"":"s"),"cnt"),cl:""}); /* 0728au count chips B: a count is a number, not a place */
       (byP[p]||[]).forEach(function(m){if(S.td&&m.p===S.tp&&m.to===S.td)return;var mn=(m.r&&m.r.dAvg)?"\u00a0\u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"";
         var rn=m.from?rideAt(p,m.from,m.to):0,rs=rw(rn);
-        var ln=(m.from?CH(p,adDn(m.from)):CH(p,""))+ARR+CH(p,adDn(m.to),"dsh");
+        var ln=(m.from?CH(p,adDn(m.from),"",em(p,m.from)):CH(p,""))+ARR+CH(p,adDn(m.to),"dsh",em(p,m.to));
         var cl=!m.from?"":!m.r?rs.replace(/^\u00a0\u00b7 /,""):(m.r.lvlTo===m.r.lvlFrom)?("still "+TW[m.r.lvlTo]+mn+rs):(TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom]+mn+rs);
         parts.push({ln:ln,cl:cl});});
       var notes=[];F.lost.forEach(function(L){if(L.p===p)notes.push(adDn(L.d)+"\u2019s "+L.n+" ride"+(L.n===1?"":"s")+" will be cleared");}); /* 0728ai D: a list with nowhere to go is named before it goes */
@@ -6769,30 +6790,52 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var ps=(none.length?"one in "+tpAnd(ones):"one in each park")+(top?", "+PS[top]+(topN===2?" twice \u2014 its calmest second day":" "+topN+" times \u2014 its calmest days"):"")+(none.length?" \u2014 "+tpAnd(none)+(none.length>1?" have":" has")+" no day":"")+". A shorter ticket, or a park twice?";
     return '<div class="tp-adpl hw pr rd">'+row("rest","Rest days",restN,rs)+row("seats","Park days",r.planned+" of "+days.length,ps)+row("time","Time of day","all day","all day in each park. Rope-drop or afternoon parks? Say so and it re-plans.")+'</div>';
   }
-  function adSlotHTML(S,r,A,mode,t,prop){ /* 0728ae (owner, Sep 9): THE SLOT TEACHES, THEN REPORTS \u2014 one box between the header and the rail, one job: what you should know right now. Untouched, HOW IT WORKS in the board's own keys (E-1 + K-1); after a tap, WHAT MOVED. A muted link at the label's right swaps the faces (R-B); the next tap brings the report back. */
-    var mv=adMovedHTML(S,r,A,t),teach=!mv||!!S.help,lnk;
-    if(!teach){return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>What moved<span class="sub">\u00b7 your last tap</span></span><span class="hw" data-adhelp>How it works \u203a</span></div>'+mv+'</div>';} /* 0728ao: the box only ever shows the last tap \u2014 now it says so */
+  function adTake(r,A,cell,party,days,t){ /* 0728au T-A ONE ROW PER PICK (owner-ruled Sep 11): the take reads cells, never solves \u2014 for each pick (a day you tapped a park onto; a kept day is the advisor's answer you agreed to, never a pick here) the park's best free day among the advisor's days: its parks and its placed rests, kept or not; your other picks and your own rests are never landings. Tier first (party cost on MK, the pick's own day waived), minutes within; a row only where that beats where you put it (a lower tier, or the same tier and \u2265 1 min less). Two rows may name the same free day. */
+    var rows=[],i,d,p,f,j;
+    for(i=0;i<days.length;i++){d=days[i];p=A.picks[d];if(!p||A.kept[d]||r.assign[d]!==p)continue;
+      var sd=adScore(cell,d,p,party,A.picks),best=null,bf=null;if(!sd)continue;
+      for(j=0;j<days.length;j++){f=days[j];if(f===d)continue;var a=r.assign[f];if(!a||a==="tie"||a===p)continue;
+        if(A.picks[f]&&!A.kept[f])continue;if(a==="rest"&&A.rests[f]&&!A.kept[f])continue;if(a!=="rest"&&r.rests[f])continue;
+        var sf=adScore(cell,f,p,party,null);if(!sf)continue;if(!best||adBetter(sf,best)<0){best=sf;bf=f;}}
+      if(!bf)continue;if(!(best[0]<sd[0]||(best[0]===sd[0]&&sd[1]-best[1]>=1)))continue;
+      var cd=cell(d,p),cf=cell(bf,p),da=(typeof cf.avg==="number"&&typeof cd.avg==="number")?Math.round(cf.avg-cd.avg):null;
+      var pl=t.plan||{};rows.push({p:p,from:d,to:bf,r:{lvlFrom:cd.lvl,lvlTo:cf.lvl,dAvg:da},rides:(pl[d]===p&&pl[bf]!==p)?tdRides(t,d).length:0});} /* the rides go with it only where the writer would carry them (0728ai R-A): the pick's day written with this park, the landing not */
+    return rows;
+  }
+  function adTakeHTML(r,A,cell,party,days,t){ /* 0728au W-A THE TAKE RIDES WHAT MOVED: after the report, a hairline and a second label; C-A the clause is the move sentence byte for byte, then Move it \u203a; the all-good line when picks exist and none sits below its best free day; a trip with no picks renders nothing of it */
+    var picks=days.some(function(d){return A.picks[d]&&!A.kept[d];});if(!picks)return "";
+    var rows=adTake(r,A,cell,party,days,t),TW=TP_TW,PW=tfPartyWins(),ARR='<i class="arr">\u2192</i>',em=function(p,d){return (p==="Magic Kingdom"&&party&&party[d])?(tfPartyEm(d,PW)||""):"";},h;
+    if(!rows.length)h='<div class="row mv"><span class="note">every pick is on its park\u2019s best free day</span></div>';
+    else h=rows.map(function(m){var mn=(m.r.dAvg!==null&&m.r.dAvg!==0)?"\u00a0\u00b7 ~"+Math.abs(m.r.dAvg)+" min "+(m.r.dAvg>0?"more":"less"):"",cl=(m.r.lvlTo===m.r.lvlFrom?"still "+TW[m.r.lvlTo]:TW[m.r.lvlTo]+", from "+TW[m.r.lvlFrom])+mn+adRidesW(m.rides);
+      return '<div class="row mv"><span class="ln">'+adChip(m.p,adDn(m.from),"",em(m.p,m.from))+ARR+adChip(m.p,adDn(m.to),"dsh",em(m.p,m.to))+'</span><span class="cl">'+cl+'<span class="mv" data-adtake="'+esc(m.from+"|"+m.p+"|"+m.to)+'">Move it \u203a</span></span></div>';}).join('');
+    return '<div class="hr"></div><div class="lbl"><span>The advisor\u2019s take<span class="sub">\u00b7 on your picks</span></span></div><div class="tp-adpl chips">'+h+'</div>';
+  }
+  function adSlotHTML(S,r,A,mode,t,prop,party,take,keep){ /* 0728ae (owner, Sep 9): THE SLOT TEACHES, THEN REPORTS \u2014 one box between the header and the rail, one job: what you should know right now. Untouched, HOW IT WORKS in the board's own keys (E-1 + K-1); after a tap, WHAT MOVED. A muted link at the label's right swaps the faces (R-B); the next tap brings the report back. */
+    var mv=adMovedHTML(S,r,A,t,party),teach=!mv||!!S.help,lnk;
+    if(!teach){return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>What moved<span class="sub">\u00b7 your last tap</span></span><span class="hw" data-adhelp>How it works \u203a</span></div>'+mv+(S.so?'':take)+'</div>';} /* 0728au W-A: the take rides the report */ /* 0728ao: the box only ever shows the last tap \u2014 now it says so */
     if(prop&&!S.help)return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>The proposal</span><span class="hw" data-adhelp>How it works \u203a</span></div>'+prop+'</div>'; /* 0728at THE SHOES STAY ON THE SHELF: untouched, the slot's first face is THE PROPOSAL; the link swaps to the manual (R-B) and back; the first tap retires it for WHAT MOVED */
     lnk=mv?'<span class="hw" data-adhelp>What moved \u203a</span>':(prop?'<span class="hw" data-adhelp>The proposal \u203a</span>':'');
-    var rows=[["PARKS","tap a park up top to hold it at 1, 2 or 3 days, or off\u00a0\u00b7 once more gives it back to the advisor"],["REST","the bar sets how many\u00a0\u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["TIME","tap the chip under a park for its mornings or afternoons\u00a0\u00b7 all day gives it back"],(mode==="held"?["KEEP","tap a dashed park to keep it where it is\u00a0\u00b7 dashed days can move when you change another"]:["KEEP","tap a park to keep it where it is\u00a0\u00b7 the advisor\u2019s days can move when you change another"]),(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])] /* 0728ao THE MANUAL SEES WHAT THE SCREEN SHOWS (owner glass 12:07 PM Sep 10): after Plan no park is dashed, so the KEEP row stops pointing at a ring the screen can't show */;
+    var rows=[["PARKS","tap a park up top to hold it at 1, 2 or 3 days, or off\u00a0\u00b7 once more gives it back to the advisor"],["REST","the bar sets how many\u00a0\u00b7 tap REST on a day to rest there instead"],["DAYS","tap a tile to put a park there yourself"],["TIME","tap the chip under a park for its mornings or afternoons\u00a0\u00b7 all day gives it back"],(!keep?["KEEP","every day is kept\u00a0\u00b7 a change moves only the day you tap"]:mode==="held"?["KEEP","tap a dashed park to keep it where it is\u00a0\u00b7 dashed days can move when you change another"]:["KEEP","tap a park to keep it where it is\u00a0\u00b7 the advisor\u2019s days can move when you change another"]),(mode==="held"?["PLAN","nothing is written until you tap"]:["CONFIRM","a change is written when you tap"])] /* 0728ao THE MANUAL SEES WHAT THE SCREEN SHOWS (owner glass 12:07 PM Sep 10): after Plan no park is dashed, so the KEEP row stops pointing at a ring the screen can't show */;
     return '<div class="tp-admv" data-adkey="slot"><div class="lbl"><span>How it works</span>'+lnk+'</div><div class="tp-adpl hw">'+rows.map(function(R){return '<div class="row"><b>'+R[0]+'</b><span>'+R[1]+'</span></div>';}).join('')+'</div></div>';
   }
   function tpAdvCardHTML(t,ds,model,EV,facts){ /* the board's hero and the advisor's room: closed, the hero alone (kicker · headline · the trip's facts · the hint); open, hero · header · WHAT MOVED (only after a tap) · the rail · the button · the legend · the basis. A trip with no day ahead has no advisor: its hero carries the facts only. Pure: the same record renders the same bytes. */
     var days=adDaysOf(ds);
     if(!days.length)return facts?'<div class="rpc tp-adv closed"><div class="tp-adh still"><div class="k">The read \u00b7 '+adSpan(t)+' \u00b7 '+ds.length+' day'+(ds.length===1?'':'s')+'</div><div class="rd2 facts"><div class="tp-readr">'+facts+'</div></div></div></div>':'';
     var A=adState(t,days),cell=adCellFn(model),party=EV.night||{},r=adSolveOf(A,days,model,EV),S=(tpAdvS.id===t.id)?tpAdvS:{prev:null,diff:null,cause:null,touched:false,so:false},mode=A.planned?"planned":"held",restN=Object.keys(r.rests).length,N=r.planned,open=(tpAdvOpen===t.id),PD=adPending(t,A,r,days),RF=adRideFate(t,r,days),i;
-    var prop9=(mode==="held"&&!adDirty(A,days.length)&&!adMovedHTML(S,r,A,t))?adProposalHTML(r,A,days):""; /* 0728at: the proposal shows on an untouched held trip until the first tap (WHAT MOVED retires it, Start over's line included) */
+    var prop9=(mode==="held"&&!adDirty(A,days.length)&&!adMovedHTML(S,r,A,t,party))?adProposalHTML(r,A,days):"";
+    var keep9=days.some(function(d){var a=r.assign[d];return a&&a!=="tie"&&!A.picks[d]&&!A.kept[d]&&!A.rests[d];}),take9=S.touched?adTakeHTML(r,A,cell,party,days,t):""; /* 0728au K-A: any day still the advisor's \u2014 Keep all my days shows; W-A: the take rides the report */ /* 0728at: the proposal shows on an untouched held trip until the first tap (WHAT MOVED retires it, Start over's line included) */
     var hero=adHeroHTML(t,r,A,days,cell,party,mode,facts,open,PD,prop9);
     if(!open)return '<div class="rpc tp-adv closed" data-advtrip="'+esc(t.id)+'">'+hero+'</div>';
     var h='<div class="rpc tp-adv" data-advtrip="'+esc(t.id)+'">'+hero+adHeaderHTML(r,A,days);
-    h+=adSlotHTML(S,r,A,mode,t,prop9);
+    h+=adSlotHTML(S,r,A,mode,t,prop9,party,take9,keep9);
     h+='<div class="tp-adrh"><span>Day</span><span>The park</span><span>or</span></div><div class="tp-adgrid">';
     for(i=0;i<days.length;i++)h+=adRowHTML(days[i],r,A,S,cell,EV,model,mode,t,PD.map);
     h+='</div>';
     var undo9=(mode==="planned"&&PD.n>0&&!!A.base),so9=adDirty(A,days.length),foot9=''; /* 0728ao TWO EXITS, NEAR AND FAR (owner-ruled Sep 10): Undo these changes \u2014 only while something is pending, back to what's written; Start over with the advisor \u2014 W-E's button, renamed */
+    if(keep9)foot9+='<span class="tp-adans so keep" data-adkeepall><span>\u2713</span>Keep all my days</span>'; /* 0728au K-A (owner-ruled Sep 11): KEEP ALL MY DAYS \u2014 first at the foot, the near exit's ring; alone it is full width; gone once every day is yours */
     if(undo9)foot9+='<span class="tp-adans so undo" data-adundo><span>\u21ba</span>Undo these changes</span>';
     if(so9)foot9+='<span class="tp-adans held so" data-adso><span>\u21ba</span>Start over with the advisor</span>';
-    if(foot9)h+='<div class="tp-adrow foot'+((undo9&&so9)?' two':'')+'">'+foot9+'</div>'; /* 0728u W-E (owner, Sep 9): Start over is the rail's last row \u2014 a full-width dashed chip, the rail's own grammar (dashed is the advisor's), present only when something differs from the first answer */
+    if(foot9)h+='<div class="tp-adrow foot'+(((keep9?1:0)+(undo9?1:0)+(so9?1:0))>1?' two':'')+'">'+foot9+'</div>'; /* 0728u W-E (owner, Sep 9): Start over is the rail's last row \u2014 a full-width dashed chip, the rail's own grammar (dashed is the advisor's), present only when something differs from the first answer */
     if(mode==="held")h+='<button class="tp-adbtn" type="button" data-adplan>Plan these '+N+' day'+(N===1?'':'s')+' \u203a<small>'+restN+' rest day'+(restN===1?'':'s')+' \u00b7 '+(days.some(function(d){return (t.plan||{})[d];})?'your days keep their last plan until you tap':'nothing is written until you tap')+'</small></button>';
     else if(PD.n)h+='<button class="tp-adbtn" type="button" data-adplan>Confirm changes \u203a<small>'+PD.n+' day'+(PD.n===1?'':'s')+' changed'+(RF.moveN?' \u00b7 '+RF.moveN+' ride'+(RF.moveN===1?'':'s')+' move':'')+(RF.lostN?' \u00b7 '+RF.lostN+' ride'+(RF.lostN===1?'':'s')+' cleared':'')+' \u00b7 nothing is written until you tap</small></button>'; /* 0728ac (owner, Sep 9): THE BUTTON COMES BACK \u2014 a change to a written plan asks to be confirmed in the Plan button's own dress and promise-line; the count is the pending days */
     else h+='<div class="tp-addone"><span class="ck">\u2713</span><span><b>Planned \u00b7 '+N+' day'+(N===1?'':'s')+' on your trip \u00b7 '+restN+' rest</b><small>written to your days below \u2014 tap any day to change it; the advisor re-solves the days you haven\u2019t touched</small></span></div>';
@@ -6810,6 +6853,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     host.querySelectorAll("[data-adrc]").forEach(function(b){b.addEventListener("click",function(){adTap(id,"restchip",b.getAttribute("data-adrc"),null);});});
     host.querySelectorAll("[data-adso]").forEach(function(b){b.addEventListener("click",function(){adTap(id,"startover",null,null);});});
     host.querySelectorAll("[data-adundo]").forEach(function(b){b.addEventListener("click",function(){adUndo(id);});}); /* 0728ao: the near exit */
+    host.querySelectorAll("[data-adkeepall]").forEach(function(b){b.addEventListener("click",function(){adKeepAll(id);});}); /* 0728au K-A */
+    host.querySelectorAll("[data-adtake]").forEach(function(b){b.addEventListener("click",function(){var x=b.getAttribute("data-adtake").split("|");adTap(id,"take",x[2],x[1],x[0]);});}); /* 0728au C-A: Move it \u203a moves the pick to the landing; the YOU row names the take */
     host.querySelectorAll("[data-adplan]").forEach(function(b){b.addEventListener("click",function(){adPlan(id);});}); /* S3: Plan writes */
     host.querySelectorAll("[data-adhelp]").forEach(function(b){b.addEventListener("click",function(){if(tpAdvS.id!==id)tpAdvS={id:id,prev:null,diff:null,cause:null,touched:false,so:false};tpAdvS.help=!tpAdvS.help;adAnchored("slot");});}); /* 0728ae R-B: the slot recalls itself \u2014 a session face, never a write */
     host.querySelectorAll("[data-adgo]").forEach(function(b){b.addEventListener("click",function(){adGo(b.getAttribute("data-adgo"));});}); /* 0728at: the proposal's rows are doors to their controls */
@@ -6958,7 +7003,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tfJump(d){ /* the bracket rides the tap \u2014 length preserved, clamped to the month (drag was REJECTED at ratification) */
     var y=tfYFor(tfCurM),n=tfDim(y,tfCurM);tfAnchor=Math.max(1,Math.min(d,n-tfLen+1));}
   function tfOpenCal(m,k,s){tfCurM=m;tfCurK=k;tfAnchor=(s!=null&&!isNaN(s))?Math.max(1,Math.min(s,tfDim(tfYFor(m),m)-tfLen+1)):tfBestRun(m,tfYFor(m),k,tfLen);tfOpen="s3";} /* L2 (K1): a tapped card hands its OWN pre-seated run to the calendar; anchor cards hand their window\u2019s start */
-  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare],[data-adseat],[data-adrest]:not(.dis),[data-adp]:not(.off),[data-adrt],[data-adrc],[data-adso],[data-adundo],[data-adplan],[data-tpadv]'; /* 0728r: the advisor's seats, bar, chips, tiles and button join the flash family */ /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
+  var PP_TAP='[data-tfmon],[data-tflen],[data-tfstp],[data-tfgo],[data-tfback],[data-tfseg],[data-tfsee],[data-tfback3],[data-tfday],[data-tfmake],[data-tfdoor],[data-tfnew],[data-tpsel],[data-tpdoor],[data-tpday],[data-tpcrback],[data-tppchg],[data-tppclr],[data-tdsl],[data-tdstars],[data-tdpt],[data-tdpx],.tp-plc,.tp-edit,.tp-save,.tp-cancel,.tp-del,[data-tdshare],[data-tpshare],[data-adseat],[data-adrest]:not(.dis),[data-adp]:not(.off),[data-adrt],[data-adrc],[data-adso],[data-adundo],[data-adkeepall],[data-adplan],[data-tpadv]'; /* 0728r: the advisor's seats, bar, chips, tiles and button join the flash family */ /* 0717q: the share door joins the flash family - the intercept picks the DOOR, not the row beneath it */
   document.addEventListener("click",function(e){ /* 0717g: flash-then-commit, delegated \u2014 the tap is intercepted at capture, the element lights, and the SAME click re-dispatches after 150ms so every existing handler runs unchanged. The picker chips (tp-acr) keep their own Cut C flash and stay out of this list. A second tap inside the window is swallowed \u2014 the free double-tap guard. */
     if(e.__pp)return;
     var t=e.target&&e.target.closest?e.target.closest(PP_TAP):null;
