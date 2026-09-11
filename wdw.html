@@ -2374,7 +2374,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ap</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728aq</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5351,7 +5351,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(k2 in dk)if(!inR[k2]||(op[k2]||null)!==(keep[k2]||null)){
         if(tgt.rides)delete tgt.rides[k2];
         if(tgt.pins)delete tgt.pins[k2];
-        if(tgt.done)delete tgt.done[k2];}
+        if(tgt.done)delete tgt.done[k2];
+        if(tgt.span&&!inR[k2])delete tgt.span[k2];} /* 0728aq: a day pruned out of the range drops its span; a park change keeps it (the leave is the day's) */
       tgt.n=n;tgt.a=a;tgt.b=b;tgt.plan=keep;tpSel=tgt.id;}
     else{var t={id:String(Date.now())+"-"+ts.length,n:n,a:a,b:b,plan:keep};ts.push(t);tpSel=t.id;}
     store.set("ppTrips",ts);tpEdit=false;tpNew=false;tpOpen=null;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;
@@ -6187,16 +6188,26 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var tl="";for(j=0;j<tail.length;j++){var on8=(lvSel===tail[j][0]);if(on8)hit=true;tl+=op(String(tail[j][0]),tail[j][1],on8);}
     return pre+op("cl","Close",!hit)+tl;
   }
-  function tdBindSpan(el,rr,today){ /* 0724g: ONE binder, both rooms — the native pickers ARE the door; no sheet, no custom physics, commit lands on Apple's own Done · 0724i THE DAY REMEMBERS: a TODAY commit writes the day's memory */
+  function tdBindSpan(el,rr,today,rec){ /* 0728aq: rec={id,ds} from the trip day page \u2014 the record remembers the span */ /* 0724g: ONE binder, both rooms — the native pickers ARE the door; no sheet, no custom physics, commit lands on Apple's own Done · 0724i THE DAY REMEMBERS: a TODAY commit writes the day's memory */
     el.querySelectorAll("[data-tdsel]").forEach(function(sl){sl.addEventListener("change",function(){
       var v=sl.value;
-      if(sl.getAttribute("data-tdsel")==="st")tdStart=(v==="rd")?"":v; /* rope drop = the wake-state seed — THE EMPTY SEED NEVER PLANTS a number */
-      else{tdLeave=v;if(today)tdDayWrite();} /* the pick sticks for the day — the stamp is the expiry */
+      if(sl.getAttribute("data-tdsel")==="st"){tdStart=(v==="rd")?"":v;if(rec)tdSpanWrite(rec.id,rec.ds);} /* rope drop = the wake-state seed — THE EMPTY SEED NEVER PLANTS a number */
+      else{tdLeave=v;if(today)tdDayWrite();if(rec)tdSpanWrite(rec.id,rec.ds);} /* 0728aq THE TRIP DAY REMEMBERS (owner glass 10:36 PM Sep 10): a trip day's span lands in the record */ /* the pick sticks for the day — the stamp is the expiry */
       rr();});});
   }
   function tdDayWrite(){ /* 0724i: one writer — the day-stamped memory {d, lv}; lv only when a real clock was picked (Close is the wake-state, never stored as a pick) */
     var d9=(typeof tpToday==="function")?tpToday():null;if(!d9)return;
     store.set("tdDay",{d:d9,lv:(/^\d+$/.test(tdLeave)?tdLeave:null)});
+  }
+  function tdSpanWrite(id,ds){ /* 0728aq THE TRIP DAY REMEMBERS: the span beside the day's rides \u2014 one-read store law; Rope drop and Close are the wake-state and store nothing (an empty span leaves the record) */
+    var ts=tpTrips(),i;for(i=0;i<ts.length;i++)if(ts[i].id===id){var st=(/^\d+$/.test(tdStart)?tdStart:null),lv=(/^\d+$/.test(tdLeave)?tdLeave:null);
+      if(!st&&!lv){if(ts[i].span){delete ts[i].span[ds];if(!Object.keys(ts[i].span).length)delete ts[i].span;}}
+      else{ts[i].span=ts[i].span||{};ts[i].span[ds]={st:st,lv:lv};}
+      store.set("ppTrips",ts);return;}
+  }
+  function tdSpanSeed(ds){ /* 0728aq: the day opens on what it remembers; tdReset first, then the record */
+    var t9=(typeof tpCurTrip==="function")?tpCurTrip():null,sp=t9&&t9.span&&t9.span[ds];if(!sp)return;
+    if(sp.st&&/^\d+$/.test(sp.st))tdStart=sp.st;if(sp.lv&&/^\d+$/.test(sp.lv))tdLeave=sp.lv;
   }
     function tdSecHTML(t,ds){
     if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* 0725w: the Today board warms /seasonal so tdOrd can drink the calendar \u2014 the 6108 idiom verbatim (guard keeps the cached sync path from re-entering, 0719b; __slGo queues waiters, never drops) */ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
@@ -7417,7 +7428,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     el.querySelectorAll("[data-tpshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();tpShareCard();});}); /* 0717v: the trip door - same family, stopPropagation keeps the head card quiet */ /* 0717o: the day-card door - the tap must not toggle the day beneath it */
     el.querySelectorAll(".rp-park[data-rpk]").forEach(function(b){b.addEventListener("click",function(){
       rpPark=b.getAttribute("data-rpk");rpSub=null;rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
-    var rpb=el.querySelector(".rp-back:not(.plx)");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub){if(rpSub==="morning"||rpSub==="evening")rpSub="hours";else if(rpDest){rpView="plan";rpSub=null;rpPark=null;rcPk=false;}else rpSub=null;} /* 0719l: the hours rooms pop to their landing; the board keeps its park-page door \u00b7 0719r: a rung-doored tool pops to its park pick */else if(rpDest){rpView="plan";rpPark=null;rcPk=false;rcFoc=null;} /* 0719r: the compare-doored park page pops to the rung */else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware \u00b7 0714a: the board rung \u00b7 0719r: plx pills carry their own homeward binder */
+    var rpb=el.querySelector(".rp-back:not(.plx)");if(rpb)rpb.addEventListener("click",function(){if(rcIds){rcIds=null;rcFoc=null;}else if(rpRide)rpRide=null;else if(rpSub){if(rpSub==="morning"||rpSub==="evening")rpSub="hours";else if(rpDest){rpView="plan";rpSub=null;rpPark=null;rcPk=false;}else rpSub=null;} /* 0719l: the hours rooms pop to their landing; the board keeps its park-page door \u00b7 0719r: a rung-doored tool pops to its park pick */else if(rpDest){rpView="plan";rpPark=null;rcPk=false;rcFoc=null;} /* 0719r: the compare-doored park page pops to the rung */else{var TLb=tpLensTrip();if(TLb){rpView="trip";tpSel=TLb.id;tpOpen=tpLensDay;tpLensSel=null;tpLensDay=null;tdReset();tdSpanSeed(tpOpen);tpEnsureSched();}rpPark=null;} /* 0715e: doored in, the bottom rung lands on the trip board \u2014 the day you left stays open; leaving the rail folds the lens (0715d law) */ renderPulsePage();rpTop();}); /* 0713r: one pill, ladder-aware \u00b7 0714a: the board rung \u00b7 0719r: plx pills carry their own homeward binder */
     el.querySelectorAll(".rp-go").forEach(function(b){b.addEventListener("click",function(){
       rpRide=b.getAttribute("data-rid");rcIds=null;rcPk=false;rcFoc=null;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-rpsub]").forEach(function(b){b.addEventListener("click",function(){ /* 0714a: the planning doors */
@@ -7444,7 +7455,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
-      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();tdAnchoredRender(d);});}); /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
+      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen)tdSpanSeed(tpOpen);tdAnchoredRender(d);});}); /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
     el.querySelectorAll("[data-tpdoor]").forEach(function(b){b.addEventListener("click",function(){ /* 0715d: the home-base door — the lens's ONLY writer; the trip + day are the ones you're standing in, so the window can never misname its trip. tpSel survives: the TRIP pill walks back to this board. */
       var t2=tpCurTrip();if(!t2)return;
       tpLensSel=t2.id;tpLensDay=b.getAttribute("data-tpdd");
@@ -7452,7 +7463,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){ /* 0715e: the day page's lens — flips the reading, never the data */
       var v=b.getAttribute("data-tdlens");if(v===tdLens)return;tdLens=v;renderPulsePage();});});
-    tdBindSpan(el,function(){renderPulsePage();},(typeof tpToday==="function"&&tpOpen===tpToday())); /* 0727e THE DAY REMEMBERS ON BOTH DOORS (owner glass Sep 2): the opened day IS today \u2192 the pick writes the day stamp Today's binder writes; any other day stays exploratory */ /* 0724f THE WHEELS: the span door + wheels sheet replace the chip binders — the two inputs only the user knows, one door; trip rooms never write the day's memory (0724i) */
+    tdBindSpan(el,function(){renderPulsePage();},(typeof tpToday==="function"&&tpOpen===tpToday()),(function(){var t9=tpCurTrip();return (t9&&tpOpen)?{id:t9.id,ds:tpOpen}:null;})()); /* 0727e THE DAY REMEMBERS ON BOTH DOORS (owner glass Sep 2): the opened day IS today \u2192 the pick writes the day stamp Today's binder writes; any other day stays exploratory */ /* 0724f THE WHEELS: the span door + wheels sheet replace the chip binders — the two inputs only the user knows, one door; trip rooms never write the day's memory (0724i) */
     el.querySelectorAll("[data-tdgrip]").forEach(function(g){ /* 0715j: handle-scoped drag (owner-ratified A, reorder-mock.html of record) - whole-row drag stays banned; the page scrolls everywhere but the grip */
       g.addEventListener("click",function(e2){e2.stopPropagation();}); /* a bare grip tap stays inert - never a pin door */
       g.addEventListener("touchstart",function(te){te.preventDefault();},{passive:false}); /* iOS: veto the pan before Safari enrolls it - touch-action alone loses the down-drag race (owner-caught on mock v1) */
