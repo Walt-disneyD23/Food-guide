@@ -19,6 +19,7 @@
     --t1:#eeeff5; --t2:#d8dae8; --t3:#b5b9cf; --t4:#8b90ad; --ringc:#3b32c8; /* 0728e (B): THE RAMP \u2014 four greys the ink still reads on; darker = busier; the hue ladder retired */ /* Cut C (C-2): Soft tier fills + the plan-ring color \u2014 TRIP-BOARD-SCOPED (owner, Aug 2); the app-wide retune is shelved */
     /* radius scale (0708a): dot 3 / el-sm 8 / el 10 / tile 14 / card 16 / hero 22 / sheet 24 / pill */
     --r-dot:3px; --r-el-sm:8px; --r-el:10px; --r-tile:14px; --r-card:16px; --r-hero:22px; --r-sheet:24px; --r-pill:999px;
+    --nav-lift:max(0px, calc(env(safe-area-inset-bottom) - 24px)); /* 0728as THE BAR SITS WHERE IT SAT (owner-ruled B, Sep 11): the tab bar and what hangs off it lift by the inset beyond 24 px \u2014 10 pt on inset phones, 0 on home-button phones; content clearance keeps the full inset */
     /* type ladder (0708b): micro 9.5 / caps 10.5 / meta 11.5 / small 12.5 / body 13.5 / title 15 / lead 17 / head 19 / stat 22 / stat-lg 24 / swing 26 / wait 29 / emblem 33 */
     --fs-micro:9.5px; --fs-fine:11px; /* 0722n F1-c (owner-ratified): the fine-print family\u2019s one size \u2014 settings sub-lines + sheet fine print read the same token */ --fs-caps:10.5px; --fs-meta:11.5px; --fs-small:12.5px; --fs-body:13.5px; --fs-title:15px; --fs-lead:17px; --fs-head:19px; --fs-stat:22px; --fs-stat-lg:24px; --fs-swing:26px; --fs-wait:29px; --fs-emblem:33px;
     /* color tokens (0708c): paired light/dark + theme-invariant pw-hero family + semantic aliases */
@@ -987,7 +988,7 @@
   .state{text-align:center;padding:54px 20px;color:var(--muted)}
   .state h3{font-family:var(--font-display);color:var(--ink);font-size:var(--fs-head);margin-bottom:8px}
 
-  .toasts{position:fixed;left:14px;right:14px;bottom:calc(96px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:8px;z-index:120} /* 0723h: above the sheet (89) - the Set toast must be seen from inside it */
+  .toasts{position:fixed;left:14px;right:14px;bottom:calc(96px + var(--nav-lift));display:flex;flex-direction:column;align-items:center;gap:8px;z-index:120} /* 0723h: above the sheet (89) - the Set toast must be seen from inside it */
   .toast{display:flex;align-items:flex-start;gap:11px;width:100%;max-width:372px;background:var(--toast-glass);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--line);border-radius:var(--r-card);padding:12px 14px;box-shadow:var(--shadow);animation:toastin .45s cubic-bezier(.34,1.45,.64,1)} /* 0723b T-B: THE FROSTED CARD - the side-bar retires, the glass carries */
   @keyframes toastin{from{transform:translateY(14px) scale(.92);opacity:0}to{transform:none;opacity:1}}
   @keyframes toastout{to{transform:translateY(10px) scale(.95);opacity:0}}
@@ -1048,7 +1049,7 @@
   .banner.lt.expanded .banner-sub b{color:#fff}
   .banner.lt.expanded .banner-mono{color:#fff;opacity:.07}
   /* P1 (0710l): return pill — the expanded header’s runaway chip. Appears only while an expanded park’s navy header is scrolled off; the tap rides the same scrollIntoView landing as the expand tap (scroll-margin-top 74). Hidden whenever #banners is (search, or any non-Live tab) via the offsetParent gate in bk2Sync, and under any sheet via the body classes below. */
-  .bk2top{position:fixed;left:50%;bottom:calc(94px + env(safe-area-inset-bottom));z-index:58;
+  .bk2top{position:fixed;left:50%;bottom:calc(94px + var(--nav-lift));z-index:58;
     display:flex;align-items:center;gap:7px;padding:11px 16px;border-radius:var(--r-pill);
     color:#fff;background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg));
     border:1px solid var(--pwh-line);box-shadow:0 8px 22px -8px rgba(10,20,40,.5);
@@ -1062,10 +1063,10 @@
      Phase 1 of the bottom-nav arc: Live/Wrap route through setMode; Favorites/Pulse are shell panes
      until their phases land. Always visible; sheets (z88+) slide over it and their scrims dim it;
      content clearance lives in the body padding; .bk2top and .toasts are lifted above it. ===== */
-  .appnav{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:25;
+  .appnav{position:fixed;left:14px;right:14px;bottom:calc(14px + var(--nav-lift));z-index:25;
     display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
     padding:8px;box-shadow:var(--shadow);transition:transform .2s ease,opacity .2s ease}
-  .appnav.kbhide{transform:translateY(calc(100% + 20px + env(safe-area-inset-bottom)));opacity:0;pointer-events:none} /* 0721a: the bar yields to the keyboard */
+  .appnav.kbhide{transform:translateY(calc(100% + 20px + var(--nav-lift)));opacity:0;pointer-events:none} /* 0721a: the bar yields to the keyboard */
   .appnav .it{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
     border:0;background:none;color:var(--muted-2);padding:11px 0;border-radius:var(--r-pill);font-family:var(--font-body);flex:1}
   .appnav .it svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -2374,7 +2375,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ar</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728as</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
