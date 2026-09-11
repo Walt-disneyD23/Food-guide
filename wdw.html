@@ -2078,6 +2078,7 @@
   .tp-adseat.fixed{background:var(--accent-fill)}
   .tp-adseat.fixed b,.tp-adseat.fixed small{color:#fff}
   .tp-adseat.hit{filter:brightness(.92);transform:scale(.97)}
+  .tp-adseats.lit .tp-adseat{filter:brightness(.92);transform:scale(.97)} .tp-adbar.lit{filter:brightness(.92)} /* 0728av THE DOOR LIGHTS, IT DOESN'T MOVE (owner-ruled A, Sep 11): a proposal row lights its control with the seats' own flash dress for a beat; nothing moves under the thumb */
   .tp-adbar{margin:8px 0 14px;height:52px;border-radius:var(--r-tile);background:var(--accent-soft);display:grid;grid-template-columns:52px 1fr 52px;align-items:center}
   .tp-adbar b{font:800 20px var(--font-display);color:var(--accent);text-align:center;cursor:pointer;user-select:none;line-height:52px;-webkit-tap-highlight-color:transparent}
   .tp-adbar b.dis{opacity:.3;cursor:default}
@@ -2389,7 +2390,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728au</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728av</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6630,10 +6631,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     renderPulsePage();
     var el2=document.querySelector(q);if(el2&&t0!==null){var dd=el2.getBoundingClientRect().top-t0;if(dd)window.ppShl().scrollTop+=dd;}
   }
-  function adGo(k){ /* 0728at THE PROPOSAL: a row is the door to its control \u2014 the bar for REST, the seats for PARKS and TIME; the control slides up to where the topbar's content sits, the proposal following beneath it. No state, no write. */
+  function adGo(k){ /* 0728at THE PROPOSAL: a row is the door to its control \u2014 the bar for REST, the seats for PARKS and TIME. 0728av THE DOOR LIGHTS, IT DOESN'T MOVE (owner glass 6:22 PM Sep 11, ruled A): the control lights for a beat; the page scrolls only when the control sits above the top of the glass, and then only far enough to show it. No state, no write. */
     var key=(k==="rest")?"bar":"seats",el=document.querySelector('.tp-adv [data-adkey="'+key+'"]'),sh=window.ppShl();if(!el||!sh)return;
-    var tb=document.querySelector(".topbar"),pad=(tb&&window.getComputedStyle)?(parseFloat(window.getComputedStyle(tb).paddingTop)||22):22,st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,y=Math.max(0,sh.scrollTop+el.getBoundingClientRect().top-st-pad);
-    try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}
+    var tb=document.querySelector(".topbar"),pad=(tb&&window.getComputedStyle)?(parseFloat(window.getComputedStyle(tb).paddingTop)||22):22,st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,top=el.getBoundingClientRect().top-st;
+    if(top<pad){var y=Math.max(0,sh.scrollTop+top-pad);try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}}
+    el.classList.add("lit");window.setTimeout(function(){el.classList.remove("lit");},320);
   }
   function adTap(id,kind,d,p,take){ /* every tap: solve the state as it stands (the previous answer), change only what was touched, solve again, remember the diff for WHAT MOVED, render through the anchor */
     var ts=tpTrips(),t=null,i;for(i=0;i<ts.length;i++)if(ts[i].id===id)t=ts[i];if(!t)return;
