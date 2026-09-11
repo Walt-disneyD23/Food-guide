@@ -2374,7 +2374,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ao</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ap</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6447,7 +6447,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(pk){if(hd&&hd.open){hrs=tpClk(hd.open)+" \u2013 "+tpClk(hd.close);ee=tpRowBadge(hd);}else hrs=rec?"hours TBA":"";}
       out.push({ds:d0,dt:+d0.slice(8,10),wd3:strip?strip[i].wd3:tpWDn(d0).slice(0,3).toUpperCase(),
         lvl:strip?strip[i].lvl:0,ring:strip?!!strip[i].td:(d0===today),behind:d0<today,
-        pk:pk||"",tierW:(tier&&!tier.thin)?TP_TW[tier.lvl]:"",count:pk?tdRides(t,d0).length:0,
+        pk:pk||"",rest:(!pk&&!!(t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest")),tierW:(tier&&!tier.thin)?TP_TW[tier.lvl]:"",count:pk?tdRides(t,d0).length:0, /* 0728ap THE CARD SAYS REST DAY (owner glass 10:15 PM Sep 10): the day row's own test (0728t), on the card */
         tierL:(tier&&!tier.thin)?tier.lvl:0,hrs:hrs,ee:ee,race:!!(EV.race&&EV.race[d0]),pe:(EV.night&&EV.night[d0])?(tfPartyEm(d0)||"ring"):""});}
     return out;}
   function tpCardData(t){ /* 0717u Cut 2a: the whole trip-card model (TR2, anatomy B, S3 - all owner-ratified) - header, headline + soft rail on the shipped composers verbatim, day rows, basis; the drawer consumes next cut */
@@ -6542,6 +6542,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
           if(r3.tierW)T2(r3.tierW,R,y+44,RD(700,33),TI[r3.tierL]||"#ffce5c","right"); /* 0727g T3: ONE BAND VOCABULARY \u2014 Busy wears Busy */
           if(M.l1.length)segLine(M.l1,tx,y+92);
           if(M.l2.length)segLine(M.l2,tx,y+136);if(M.l3.length)segLine(M.l3,tx,y+180);}
+        else if(r3.rest)T2("Rest day",tx,y+68,RD(700,42),C.ink); /* 0728ap: a written rest wears the plan's face on the card too (0728an) */
         else T2("Not planned yet",tx,y+68,RB(500,42),C.muted2);
         if(x)x.globalAlpha=1;
         y+=114+(M.l2.length?44:0)+(M.l3.length?44:0);
