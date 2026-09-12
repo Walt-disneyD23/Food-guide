@@ -1239,6 +1239,17 @@
   .set-row b{font-size:var(--fs-body);font-weight:600;color:var(--muted)}
   .set-row b.lnk{color:var(--accent)}
   .set-disc{font-size:var(--fs-meta);line-height:1.55;color:var(--muted-2);margin:0 2px}
+/* 0728bg SETTINGS, APP STORE GRADE (owner-ruled S-1): the cards, the tiles (one tint — the tile marks a row, the color means nothing, so it is one color), the group footnotes, Done */
+.ap-done{font:700 var(--fs-body) var(--font-body);color:var(--accent);background:none;border:0;padding:6px 0 6px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.set-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 8px}
+.set-card{position:relative;border:0;background:none;font:inherit;text-align:left;width:100%;border-radius:14px;padding:3px;box-shadow:inset 0 0 0 1.5px var(--line);cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit} .set-card.on{box-shadow:inset 0 0 0 2px var(--accent)}
+.set-card .pv{display:flex;flex-direction:column;gap:6px;border-radius:11px;height:78px;padding:10px 9px;overflow:hidden} .set-card .pv i{display:block;height:6px;border-radius:3px} .set-card .pv .bar{height:5px;width:44%;background:var(--muted-2);opacity:.55} .set-card .pv .tile{border-radius:6px;padding:7px;display:flex;flex-direction:column;gap:4px} .set-card .pv .tile i{width:38%;background:#3dd68c} .set-card .pv .tile i+i{width:70%;background:#eaf3f2} .set-card .pv .tile i+i+i{width:52%;height:4px;background:#5f7882} .set-card .pv .ln{width:80%;background:#fff;opacity:.9} .set-card .pv .ln.s{width:60%}
+.set-card .pv.light{background:#eef0f7} .set-card .pv.light .tile{background:#141a2e} .set-card .pv.dark{background:#0b0e18} .set-card .pv.dark .tile{background:#182034} .set-card .pv.auto{background:linear-gradient(90deg,#eef0f7 50%,#0b0e18 50%)} .set-card .pv.auto .tile{background:linear-gradient(90deg,#141a2e 50%,#182034 50%)}
+.set-card .nm{display:block;text-align:center;font:600 var(--fs-body) var(--font-body);color:var(--muted);padding:8px 0 5px} .set-card.on .nm{color:var(--accent)}
+.set-card .ck{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--accent-fill);display:none;align-items:center;justify-content:center} .set-card .ck svg{width:11px;height:11px} .set-card.on .ck{display:flex}
+.set-row .l{display:flex;align-items:center;min-width:0} .set-row .ic{width:28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;margin-right:11px;flex:none} .set-row .ic svg{width:15px;height:15px}
+.set-row .v{display:inline-flex;align-items:center;gap:6px} .set-row .v .chv{font-style:normal;color:var(--muted-2);font-weight:700} .set-row b.ver{color:var(--muted)} .set-row b.ver small{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-left:6px}
+.set-foot{font-size:var(--fs-meta);line-height:1.55;color:var(--muted-2);margin:-6px 2px 4px}
 
   /* ===== pull-to-refresh ===== */
   #ptr{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));z-index:60;
@@ -2392,23 +2403,27 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div class="help-scrim alerts-scrim" id="setScrim" hidden style="z-index:90;-webkit-backdrop-filter:none;backdrop-filter:none"></div>
   <div class="alerts-pop" id="setPop" hidden style="z-index:91">
     <div class="help-grab"></div>
-    <div class="ap-head"><div class="ap-title"><svg width="16" height="16" style="vertical-align:-2.5px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.12-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09A1.7 1.7 0 0 0 10.13 3V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51.87z"/></svg> Settings</div></div>
+    <div class="ap-head"><div class="ap-title">Settings</div><button class="ap-done" type="button" id="setDone">Done</button></div> <!-- 0728bg SETTINGS, APP STORE GRADE (owner-ruled S-1 on settings-mock.html, after the owner's own mock): title + Done, the gear retired -->
     <div class="set-lab">Appearance</div>
-    <div class="pw-seg set-seg" id="themeSeg">
-      <button type="button" data-t="light" class="on">Light</button>
-      <button type="button" data-t="dark">Dark</button>
-      <button type="button" data-t="auto">Auto</button>
-    </div>
+    <div class="set-cards" id="themeSeg"><button type="button" class="set-card on" data-t="light"><span class="pv light"><i class="bar"></i><span class="tile"><i></i><i></i><i></i></span><i class="ln"></i><i class="ln s"></i></span><span class="nm">Light</span><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></button><button type="button" class="set-card" data-t="dark"><span class="pv dark"><i class="bar"></i><span class="tile"><i></i><i></i><i></i></span><i class="ln"></i><i class="ln s"></i></span><span class="nm">Dark</span><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></button><button type="button" class="set-card" data-t="auto"><span class="pv auto"><i class="bar"></i><span class="tile"><i></i><i></i><i></i></span><i class="ln"></i><i class="ln s"></i></span><span class="nm">Auto</span><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span></button></div> <!-- the cards are buttons with data-t, so applyTheme and the click binder read them as they read the old segment; a card says "chosen" once: ring, the ✓ badge, the accent label -->
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728bf</b></div>
-      <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
-      <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
-      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
-      <div class="set-row"><span>Live refresh</span><b>Every 5 min</b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bg</small></b></div>
     </div>
-    <div class="set-disc">Unofficial — not affiliated with or endorsed by The Walt Disney Company. Crowd level is an estimate from live wait times, not official attendance.</div>
+    <div class="set-lab">Data</div>
+    <div class="set-rows">
+      <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Live waits</span><span class="v"><b class="lnk">ThemeParks.wiki</b><i class="chv">›</i></span></a>
+      <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg></span>Weather</span><span class="v"><b class="lnk">Open-Meteo</b><i class="chv">›</i></span></a>
+      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span>Lightning</span><span class="v"><b class="lnk">Xweather</b><i class="chv">›</i></span></a>
+    </div>
+    <div class="set-foot">Live waits refresh every 5 minutes · history, never a promise.</div> <!-- information sits in a footnote, never in a row that looks like a control -->
+    <div class="set-lab">Legal &amp; support</div>
+    <div class="set-rows">
+      <a class="set-row" href="https://ridecue.live/privacy/" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>Privacy Policy</span><span class="v"><i class="chv">›</i></span></a>
+      <a class="set-row" href="https://ridecue.live/support/" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>Support</span><span class="v"><b class="lnk">ridecue.live</b><i class="chv">›</i></span></a>
+    </div>
+    <div class="set-foot">Unofficial — not affiliated with or endorsed by The Walt Disney Company. Crowd level is an estimate from live wait times, not official attendance.</div> <!-- the privacy and support pages are on the Site-Spec queue (§2); the rows point at them now so the sheet is launch-shaped -->
   </div>
 
   <div class="help-scrim" id="helpScrim" hidden></div>
@@ -2744,6 +2759,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var b=e.target.closest("button");if(!b)return;
     store.set(THEME_KEY,b.getAttribute("data-t"));applyTheme();
   });
+  $("setDone").addEventListener("click",closeSetSheet); /* 0728bg: Done closes the sheet, like the scrim */
   function closeSetSheet(){var p=$("setPop"),sc=$("setScrim");if(p.hasAttribute("hidden"))return;
     p.classList.remove("show");sc.classList.remove("show");
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
