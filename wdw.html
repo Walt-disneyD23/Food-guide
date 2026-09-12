@@ -2085,7 +2085,8 @@
   .tp-adtime2.off{opacity:.3;cursor:default} /* an off park's chip is plain and inert */
   .tp-adtime2.hit{background:var(--accent-fill)!important;color:#fff!important}
   .tp-adans .wn{flex:none;font-size:12px;line-height:1} /* 0728ay: the window glyph rides the chip like the tree \u2014 its own span after the code; the tier word stays the whole day's */
-  .tp-adseats.lit .tp-adseat,.tp-adbar.lit{background:var(--accent-fill)} .tp-adseats.lit .tp-adseat b,.tp-adseats.lit .tp-adseat small,.tp-adbar.lit b,.tp-adbar.lit .mid,.tp-adbar.lit .mid small,.tp-adbar.lit .mid small i{color:#fff} /* 0728av THE DOOR LIGHTS, IT DOESN'T MOVE (owner-ruled A, Sep 11); 0728ax L-B (owner glass 6:31 PM): the flash family's own dress (0717g) \u2014 the accent fill, white words \u2014 the brightness dim read grey on the accent-soft ground */
+  .tp-adseats.lit .tp-adseat,.tp-adbar.lit,.tp-adtimes.lit .tp-adtime2{background:var(--accent-fill);box-shadow:none} .tp-adseats.lit .tp-adseat b,.tp-adseats.lit .tp-adseat small,.tp-adbar.lit b,.tp-adbar.lit .mid,.tp-adbar.lit .mid small,.tp-adbar.lit .mid small i,.tp-adtimes.lit .tp-adtime2,.tp-adtimes.lit .tp-adtime2 i{color:#fff} /* 0728ba: the Time row lights the chips */
+  .tp-adseats.fade .tp-adseat,.tp-adseats.fade .tp-adseat b,.tp-adseats.fade .tp-adseat small,.tp-adbar.fade,.tp-adbar.fade b,.tp-adbar.fade .mid,.tp-adbar.fade .mid small,.tp-adbar.fade .mid small i,.tp-adtimes.fade .tp-adtime2,.tp-adtimes.fade .tp-adtime2 i{transition:background-color .16s ease-out,color .16s ease-out} .tp-adseats.fade:not(.lit) .tp-adseat,.tp-adbar.fade:not(.lit),.tp-adtimes.fade:not(.lit) .tp-adtime2{transition-duration:.26s} /* 0728ba THE LIGHT RAMPS (owner glass 8:44 PM Sep 11): in over 160 ms, a beat, out over 260 */ /* 0728av THE DOOR LIGHTS, IT DOESN'T MOVE (owner-ruled A, Sep 11); 0728ax L-B (owner glass 6:31 PM): the flash family's own dress (0717g) \u2014 the accent fill, white words \u2014 the brightness dim read grey on the accent-soft ground */
   .tp-adbar{margin:8px 0 14px;height:52px;border-radius:var(--r-tile);background:var(--accent-soft);display:grid;grid-template-columns:52px 1fr 52px;align-items:center}
   .tp-adbar b{font:800 20px var(--font-display);color:var(--accent);text-align:center;cursor:pointer;user-select:none;line-height:52px;-webkit-tap-highlight-color:transparent}
   .tp-adbar b.dis{opacity:.3;cursor:default}
@@ -2397,7 +2398,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728az</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728ba</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -6658,10 +6659,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var el2=document.querySelector(q);if(el2&&t0!==null){var dd=el2.getBoundingClientRect().top-t0;if(dd)window.ppShl().scrollTop+=dd;}
   }
   function adGo(k){ /* 0728at THE PROPOSAL: a row is the door to its control \u2014 the bar for REST, the seats for PARKS and TIME. 0728av THE DOOR LIGHTS, IT DOESN'T MOVE (owner glass 6:22 PM Sep 11, ruled A): the control lights for a beat; the page scrolls only when the control sits above the top of the glass, and then only far enough to show it. No state, no write. */
-    var key=(k==="rest")?"bar":"seats",el=document.querySelector('.tp-adv [data-adkey="'+key+'"]'),sh=window.ppShl();if(!el||!sh)return;
+    var key=(k==="rest")?"bar":(k==="time")?"times":"seats",el=document.querySelector('.tp-adv [data-adkey="'+key+'"]'),sh=window.ppShl();if(!el||!sh)return;
     var tb=document.querySelector(".topbar"),pad=(tb&&window.getComputedStyle)?(parseFloat(window.getComputedStyle(tb).paddingTop)||22):22,st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,top=el.getBoundingClientRect().top-st;
     if(top<pad){var y=Math.max(0,sh.scrollTop+top-pad);try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}}
-    el.classList.add("lit");window.setTimeout(function(){el.classList.remove("lit");},320);
+    el.classList.add("fade");el.classList.add("lit");window.setTimeout(function(){el.classList.remove("lit");},380);window.setTimeout(function(){el.classList.remove("fade");},680); /* 0728ba THE LIGHT RAMPS: the ease rides the fade class, so the flash family's own tap stays instant */
   }
   function adTap(id,kind,d,p,take){ /* every tap: solve the state as it stands (the previous answer), change only what was touched, solve again, remember the diff for WHAT MOVED, render through the anchor */
     var ts=tpTrips(),t=null,i;for(i=0;i<ts.length;i++)if(ts[i].id===id)t=ts[i];if(!t)return;
@@ -6800,7 +6801,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return h+'</div>';
   }
   function adTimesHTML(A){ /* 0728ay T-1 (owner-ruled Sep 11): four chips under the four seats \u2014 all day \u00b7 \u2600 Rope drop \u00b7 \u25d1 Afternoon \u2014 always present (a control that is always where it lives beats one that appears); an off park's chip is plain and inert */
-    var w=A.win||{},h='<div class="tp-adtimes">';
+    var w=A.win||{},h='<div class="tp-adtimes" data-adkey="times">';
     AD_PARKS.forEach(function(p){var v=w[p]||"",off=A.parks[p]===0;h+='<span class="tp-adtime2'+(off?' off':v?' set':'')+'" data-adwin="'+esc(p)+'">'+(off||!v?'all day':v==="am"?'<i>\u2600\ufe0e</i>Rope drop':'<i>\u25d1</i>Afternoon')+'</span>';});
     return h+'</div>';
   }
