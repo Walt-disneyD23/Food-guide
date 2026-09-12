@@ -2402,7 +2402,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span>Version</span><b id="setBuild">build 0728be</b></div>
+      <div class="set-row"><span>Version</span><b id="setBuild">build 0728bf</b></div>
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span>Data source</span><b class="lnk">ThemeParks.wiki</b></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span>Weather</span><b class="lnk">Open-Meteo</b></a>
       <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span>Lightning</span><b class="lnk">Xweather</b></a>
@@ -5445,7 +5445,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!a||!b||b<a)return "";
     if(Math.round((tpAsD(b)-tpAsD(a))/864e5)+1>TP_MAXDAYS)return "";
     if(tpPlanDraft===null)tpPlanDraft={};
-    var ds=tpDays({a:a,b:b}),SZ9=tpSznCtx(null,ds),h='<div class="tp-plhd">Park days \u00b7 optional</div><div class="tp-lanes"><div class="tp-lane"><i>Know your days?</i><p>Tap a park for any day \u2014 <b>tap again to clear</b>. They\u2019re your picks; the advisor plans around them.</p></div><div class="tp-lane"><i>Not sure yet?</i><p>Skip it \u2014 <b>the advisor</b> holds each park on the day it runs best for itself, resting the days the parks have run busiest. Change any, then plan.</p></div></div><div class="tp-plgh"><span></span>',i,j;
+    var ds=tpDays({a:a,b:b}),SZ9=tpSznCtx(null,ds),h='<div class="tp-plhd">Park days \u00b7 optional</div><div class="tp-lanes"><div class="tp-lane"><i>Know your days?</i><p>Tap a park for any day \u2014 <b>tap again to clear</b>. They\u2019re your picks; the advisor plans around them.</p></div><div class="tp-lane"><i>Not sure yet?</i><p>Skip it \u2014 <b>the advisor</b> gives each park as calm a day as your days allow, then the fewest minutes, resting the days the parks have run busiest. Change any, then plan.</p></div></div><div class="tp-plgh"><span></span>',i,j;
     for(j=0;j<4;j++)h+='<i>'+TP_PARKS[j][1]+'</i>';
     h+='</div>';
     for(i=0;i<ds.length;i++){var d0=ds[i],hw9=(HOLIDAYS[d0]&&HOLIDAYS[d0]!=="Christmas week")?HOLIDAYS[d0]:(SZ9.tag[d0]||HOLIDAYS[d0]||""),hol=hw9?' <span class="tp-hol">'+esc(hw9)+'</span>':''; /* 0728bc P-O (owner-ruled Sep 12): the trip page's rule (Cut 3 O-A) \u2014 a specific day-name wins; the generic stretch label yields to the season's tag; the table's word only where no season names the day. SAME QUESTION SAME SENTENCE across the creator and the trip page */
@@ -5529,6 +5529,30 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!best||adBetterP(s,bs)<0||(adBetterP(s,bs)===0&&sp>bsp)){best=d;bs=s;bsp=sp;}}
     return best?{d:best,s:bs}:null;
   }
+  function adAssign(on,free,days,scores,got,quota,assign){ /* 0728bf THE EXACT SOLVE \u2014 a DP over the free days in trip order; state = each park's unfilled share; key = [tier drops, your windows' minutes, the other parks' minutes, \u2212spread]; ties keep the first found (earlier day, parks in AD_PARKS order); the final state with the fewest unfilled shares wins (a thin day leaves a park SHORT). WITHIN A PARK THE WINDOW RULES (0728ay): a windowed park's days are ordered by its window's minutes alone \u2014 no tier term; and A WINDOW IS A PRIORITY (0728bf, card 23c): your windows' minutes are settled before the other parks' minutes \u2014 no park drops a tier for a window, and no window is spent to shave another park's day */
+    var need={},bestT={},i,j,k,p,d,s;
+    for(i=0;i<on.length;i++){p=on[i];need[p]=Math.max(0,(quota[p]||0)-got[p].length);var b=9;for(k=0;k<free.length;k++){s=scores[free[k]]&&scores[free[k]][p];if(s&&s[0]<b)b=s[0];}bestT[p]=b;}
+    function winM(x){return (x[2]!=null)?x[2]:0;} function mins(x){return (x[2]!=null)?0:x[1];}
+    function drop(x,p){return (x[2]!=null)?0:(x[0]-bestT[p]);}
+    function key(q){var a=[];for(var m=0;m<on.length;m++)a.push(q[on[m]]);return a.join(",");}
+    function better(a,b){for(var m=0;m<a.length;m++){if(a[m]!==b[m])return a[m]<b[m];}return false;}
+    function put(map,kk,st){var o=map[kk];if(!o||better(st.k,o.k))map[kk]=st;}
+    var cur={};cur[key(need)]={k:[0,0,0,0],asg:[],q:need};
+    for(i=0;i<free.length;i++){d=free[i];var nx={};
+      for(var kk in cur){if(!cur.hasOwnProperty(kk))continue;var st=cur[kk];
+        put(nx,kk,st);
+        for(j=0;j<on.length;j++){p=on[j];if(!st.q[p])continue;s=scores[d]&&scores[d][p];if(!s)continue;
+          var q2={};for(var m=0;m<on.length;m++)q2[on[m]]=st.q[on[m]];q2[p]--;
+          var mine=[];for(m=0;m<st.asg.length;m++)if(st.asg[m][1]===p)mine.push(st.asg[m][0]);
+          var sp=adSpread(d,mine,days);if(sp===Infinity)sp=0;
+          put(nx,key(q2),{k:[st.k[0]+drop(s,p),st.k[1]+winM(s),st.k[2]+mins(s),st.k[3]-sp],asg:st.asg.concat([[d,p]]),q:q2});}}
+      cur=nx;}
+    var fin=null,fu=Infinity;
+    for(var k2 in cur){if(!cur.hasOwnProperty(k2))continue;var st2=cur[k2],un=0;for(m=0;m<on.length;m++)un+=st2.q[on[m]];
+      if(un<fu||(un===fu&&better(st2.k,fin.k))){fin=st2;fu=un;}}
+    if(!fin)return;
+    for(i=0;i<fin.asg.length;i++){d=fin.asg[i][0];p=fin.asg[i][1];assign[d]=p;got[p].push(d);free.splice(free.indexOf(d),1);}
+  }
   function adSolve(days,cell,party,dials,picks,rests,avoid){ /* 0728r S2: +avoid \u2014 a day you released from rest is a day the advisor may not rest again until you tap it (A TAP CHANGES ONLY WHAT YOU TOUCHED); +"x1" \u2014 a fixed one-day share (D-A: on \u2192 \u00d71 \u2192 \u00d72 \u2192 \u00d73 \u2192 off) */
     dials=dials||{};picks=picks||{};rests=rests||{};party=party||{};
     var on=[],quota={},got={},scores={},assign={},rk={},ties={},open=[],i,j,p,d;
@@ -5557,13 +5581,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var took={};while(rem>0){var bp=null,bs=null;for(i=0;i<plain.length;i++){p=plain[i];if(took[p])continue;var b=adBest(p,free,days,scores,got[p]);if(b&&(!bp||adBetter(b.s,bs)<0)){bp=p;bs=b.s;}}
       if(!bp)break;quota[bp]++;took[bp]=1;rem--;}
     for(p in got)if(got.hasOwnProperty(p)&&got[p].length>(quota[p]||0))quota[p]=got[p].length; /* more picks than a share: the picks stand */
-    /* 4 · round-robin, worst-off first. NO TIES (Sep 8 evening, dials glass 9:26 PM): a tie that seats nobody left days open while parks wanted them — the worst-off park takes the day, the other walks to its next-best, and a park that finds none is SHORT, which THE PLAN says in words (no day — free a rest, or turn a park off). "Two fit" lives on the rail's ✦, which already marks every park equally calm that day. */
-    var guard=0;
-    while(guard++<64){var wants=[];
-      for(i=0;i<on.length;i++){p=on[i];if(got[p].length>=(quota[p]||0))continue;var b2=adBest(p,free,days,scores,got[p]);if(b2)wants.push({p:p,d:b2.d,s:b2.s});}
-      if(!wants.length)break;
-      wants.sort(function(a,b){return adBetter(b.s,a.s)||AD_PARKS.indexOf(a.p)-AD_PARKS.indexOf(b.p);}); /* the worst-off park chooses first */
-      var w=wants[0];assign[w.d]=w.p;got[w.p].push(w.d);free.splice(free.indexOf(w.d),1);}
+    /* 4 \u00b7 THE EXACT SOLVE (0728bf, owner-ruled Sep 12 on Solver-Study.md): the same park-days on the same free days, placed by an exact assignment \u2014 tier drops first (no park sits a tier above its calmest free day if any arrangement avoids it), the record's minutes second (a windowed park by its window's minutes), the spread across a park's own days third; deterministic. The round-robin it replaces (worst-off first, Sep 8) ranked parks by how bad their BEST day was, not by what they had to lose: a park Busy everywhere took a day worth a minute to it and pushed a park with one calm day off it \u2014 573 of 1,825 trips on the record. A park that finds no day is SHORT, which THE PLAN says in words. "Two fit" lives on the rail's \u2726. */
+    adAssign(on,free,days,scores,got,quota,assign);
     for(i=0;i<days.length;i++){d=days[i];if(assign[d]===undefined)assign[d]=null;}
     var planned=0;for(d in assign)if(assign.hasOwnProperty(d)&&assign[d]&&assign[d]!=="rest"&&assign[d]!=="tie")planned++;
     for(p in got)if(got.hasOwnProperty(p))got[p].sort(function(a,b){return days.indexOf(a)-days.indexOf(b);});
@@ -6799,7 +6818,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var restN=Object.keys(r.rests).length;
     var h='<div class="tp-adh'+(open?' op':'')+'" data-adkey="door" data-addoor="'+esc(t.id)+'">'+(open?'<span class="cx" aria-label="Close the advisor"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>':'')+'<div class="k">The advisor'+(days.length!==tpDays(t).length?' \u00b7 '+adSpan(t,days[0],days[days.length-1]):'')+' \u00b7 '+days.length+' day'+(days.length===1?'':'s')+'</div>'; /* 0728ah (owner, Sep 9): the span is clause-earned \u2014 the head card just said the trip's; the kicker names a span only for the days ahead of a trip in progress */
     if(mode==="held"&&!adDirty(A,days.length))h+='<h2>A first plan for '+adSpan(t,days[0],days[days.length-1])+', from the record.</h2>'+(open?'<div class="how">Tell it how you do the parks and it re-plans. Nothing is written until you tap.</div>':''); /* 0728at THE SHOES STAY ON THE SHELF (owner-ruled Sep 11): a fresh trip shows a proposal, never a plan \u2014 the hero says so and the how-line returns beneath it, open only; once anything differs from the first answer the held hero reads as before */
-    else if(mode==="held")h+='<h2>Each park on the day it runs best for itself.</h2>'; /* 0728ae (owner, Sep 9): the how-line left the hero \u2014 the slot between the header and the rail teaches, then reports (adSlotHTML) */
+    else if(mode==="held")h+='<h2>Each park as calm a day as your days allow; then the fewest minutes.</h2>'; /* 0728ae (owner, Sep 9): the how-line left the hero \u2014 the slot between the header and the rail teaches, then reports (adSlotHTML) */
     else h+='<h2>'+r.planned+' day'+(r.planned===1?'':'s')+' planned \u00b7 '+restN+' rest.</h2>';
     if(facts)h+='<div class="rd2 facts"><div class="tp-readr">'+facts+'</div></div>';
     if(open){var rt=adReadText(r,A,days,cell,party,prop);if(rt)h+='<div class="rd2">'+rt+'</div>';}
@@ -6901,7 +6920,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(PD.n)h+='<button class="tp-adbtn" type="button" data-adplan>Confirm changes \u203a<small>'+PD.n+' day'+(PD.n===1?'':'s')+' changed'+(RF.moveN?' \u00b7 '+RF.moveN+' ride'+(RF.moveN===1?'':'s')+' move':'')+(RF.lostN?' \u00b7 '+RF.lostN+' ride'+(RF.lostN===1?'':'s')+' cleared':'')+' \u00b7 nothing is written until you tap</small></button>'; /* 0728ac (owner, Sep 9): THE BUTTON COMES BACK \u2014 a change to a written plan asks to be confirmed in the Plan button's own dress and promise-line; the count is the pending days */
     else h+='<div class="tp-addone"><span class="ck">\u2713</span><span><b>Planned \u00b7 '+N+' day'+(N===1?'':'s')+' on your trip \u00b7 '+restN+' rest</b><small>written to your days below \u2014 tap any day to change it; the advisor re-solves the days you haven\u2019t touched</small></span></div>';
     h+='<div class="tp-adleg"><div><i><b class="sw held"></b></i><span>Suggested</span><small>not on your days yet\u00a0\u00b7 can move when you change another; tap it to keep it</small></div><div><i><b class="sw"></b></i><span>On your days</span><small>tapped, kept or planned</small></div><div><i><b class="sw mv"></b></i><span>Moved</span><small>by your last tap</small></div><div><i><span class="fx">\u2726</span></i><span>Day\u2019s fit</span><small>the calmest park that day</small></div>'+(adWinNames(A).am.length?'<div><i><span class="em">'+AD_SUN+'</span></i><span>Rope drop</span><small>chosen by its mornings\u00a0\u00b7 the word is the whole day\u2019s</small></div>':'')+(adWinNames(A).pm.length?'<div><i><span class="em">'+AD_HALF+'</span></i><span>Afternoon</span><small>chosen by its afternoons\u00a0\u00b7 the word is the whole day\u2019s</small></div>':'')+''+(days.some(function(d){return party[d];})?'<div><i><span class="em">'+(tfPartyEm(days.filter(function(d){return party[d];})[0],tfPartyWins())||'\u25cc')+'</span></i><span>MK party night</span><small>closes early to day guests</small></div>':'')+'<div><i><b class="rt">REST</b></i><span>Rest</span><small>the bar sets how many \u00b7 the tiles set where \u00b7 the advisor rests the days the parks have run busiest \u00b7 tap a rest day it placed to keep it, again to give it back</small></div></div>';
-    h+='<div class="tp-adbasis">From the same-weekday record \u00b7 each park on the day it runs best for itself; the \u2726 is that day\u2019s calmest park'+adWinBasis(A)+' \u00b7 rest days are the days the parks have run busiest \u00b7 '+(mode==="held"?'held, not planned, until you tap':'planned \u2014 a change is written when you confirm it')+' \u00b7 a pattern, never a forecast.</div>';
+    h+='<div class="tp-adbasis">From the same-weekday record \u00b7 each park as calm a day as your days allow, then the fewest minutes; the \u2726 is that day\u2019s calmest park'+adWinBasis(A)+' \u00b7 rest days are the days the parks have run busiest \u00b7 '+(mode==="held"?'held, not planned, until you tap':'planned \u2014 a change is written when you confirm it')+' \u00b7 a pattern, never a forecast.</div>';
     return h+'</div>';
   }
   function adWinNames(A){var w=A.win||{},o={am:[],pm:[]};AD_PARKS.forEach(function(p){if(A.parks[p]!==0&&w[p])o[w[p]].push(TP_P2[p]);});return o;}
