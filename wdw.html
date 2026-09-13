@@ -1249,7 +1249,7 @@
 .set-card .ck{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--accent-fill);display:none;align-items:center;justify-content:center} .set-card .ck svg{width:11px;height:11px} .set-card.on .ck{display:flex}
 .set-row .l{display:flex;align-items:center;min-width:0} .set-row .ic{width:28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;margin-right:11px;flex:none} .set-row .ic svg{width:15px;height:15px}
 .set-row .v{display:inline-flex;align-items:center;gap:6px} .set-row .v .chv{font-style:normal;color:var(--muted-2);font-weight:700} .set-row b.ver{color:var(--muted)} .set-row b.ver small{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-left:6px}
-.set-foot{font-size:var(--fs-meta);line-height:1.55;color:var(--muted-2);margin:-6px 2px 4px}
+.set-foot{font-size:var(--fs-meta);line-height:1.55;color:var(--muted-2);margin:-6px 2px 10px} /* 0728bh: breathing room under the footnote (glass nit) */
 
   /* ===== pull-to-refresh ===== */
   #ptr{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));z-index:60;
@@ -2409,7 +2409,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bh</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -4718,7 +4718,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function rpProfileHTML(){
     var r=roster[rpRide]||{},w=rpWinDs(rpWin),loading=!rpDigs,cv=loading?null:rpWinCurve(rpRide,rpWin),rel=loading?null:rpRel(rpRide,rpWin),dc=loading?null:rpDayCrest(rpRide,rpWin),days=w.n||((pfBase&&pfBase.days)||28);
-    var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"}; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
+    var EBW={all:(days===28?'last 4 weeks':'last '+days+' days'),last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"} /* 0728bh: four full weeks, spoken as weeks; a shorter pool says its count */; /* 0713v: the eyebrow announces the window — CSS caps it, so it can never sneak */
     var crumb=rpBackBtn(esc(rpPark||"parks"))+
       '<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark||"")+' \u203a <b>'+esc(r.name||"")+'</b></div>';
     var hero='<div class="rp-hero"><div class="eb">Ride profile \u00b7 '+EBW[rpWin]+'</div>'+
@@ -4727,7 +4727,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="hstats"><div class="hstat"><div class="k">Typical wait</div><div class="v">'+(cv?cv.typ+'<small>m</small>':'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Day crest</div><div class="v">'+(dc?dc.md+'<small>m</small>':'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Clean days</div><div class="v">'+(rel?rel.clean+'<small>/'+rel.n+'</small>':'\u2013')+'</div></div></div>'+rpCrestFine(dc)+'</div>';
-    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>'; /* 0713v: D1 — one lens under the hero, windowing the entire profile */
     var shape;
     if(loading)shape='<div class="rpc"><div class="lbl">Shape of the line</div><div class="fc-empty">The shape loads from the day ledger \u2014 one moment.</div></div>';
@@ -4818,7 +4818,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="hstats"><div class="hstat"><div class="k">Morning windows</div><div class="v">'+(C?C.until.length:'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Never under 10m</div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k">Easy all day</div><div class="v">'+(C?C.allday.length:'\u2013')+'</div></div></div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The board builds from the day ledger \u2014 one moment.</div></div>';
     var body="";
@@ -4902,7 +4902,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hero='<div class="rp-hero"><div class="eb">My Morning \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
       '<div class="sub">Built from your starred rides\u2019 typical mornings.</div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(!stars.length)return crumb+hero+'<div class="rpc"><div class="fc-empty">Star rides in this park \u2014 from Live, Favorites, or a ride\u2019s profile \u2014 and the morning builds itself here.</div></div>';
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The plan builds from the day ledger \u2014 one moment.</div></div>';
@@ -5002,7 +5002,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hero='<div class="rp-hero"><div class="eb">My Evening \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
       '<div class="sub">Built from your starred rides\u2019 typical evenings.</div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(!stars.length)return crumb+hero+'<div class="rpc"><div class="fc-empty">Star rides in this park \u2014 from Live, Favorites, or a ride\u2019s profile \u2014 and the evening builds itself here.</div></div>';
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The plan builds from the day ledger \u2014 one moment.</div></div>';
@@ -5093,7 +5093,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="rc-seats">'+seats+'</div>'+
       shelf+
       '<input class="rc-srch" type="search" placeholder="Search '+esc(rpPark||"")+' rides" autocomplete="off"/>'+
-      ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from the last 28 days of banked waits \u2014 one moment</div>':'')+
+      ((!rpDigs)?'<div class="rc-cap" style="margin:0 0 8px">Typicals fill from the last 4 weeks of banked waits \u2014 one moment</div>':'')+
       '<div class="rc-colhead">Typical</div><div class="rc-roster">'+rows+'</div>'+
       (cap?'<div class="rc-cap">Three seats filled \u2014 remove a ride to swap</div>':'')+
       '<button class="rc-go" type="button"'+(rcSel.length<2?' disabled':'')+'>Compare '+rcSel.length+' ride'+(rcSel.length===1?'':'s')+'</button></div>';
@@ -5252,7 +5252,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function rcCompareHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28);
-    var EBW={all:'last '+days+' days',last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"};
+    var EBW={all:(days===28?'last 4 weeks':'last '+days+' days'),last7:"last 7 days",month:"this month",wkend:"weekends",trip:"your trip days"} /* 0728bh: four full weeks, spoken as weeks; a shorter pool says its count */;
     var org=rpRide?(roster[rpRide]||{}):null,i,its=[];
     for(i=0;i<rcIds.length;i++){var rr=roster[rcIds[i]]||{};
       its.push({id:rcIds[i],nm:rr.name||"",cv:rpWinCurve(rcIds[i],rpWin),rel:rpRel(rcIds[i],rpWin)});}
@@ -5263,7 +5263,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span>'+rcNowChip(its[i].id)+'</button>'; /* 0714m: live wears the hero (N1, ratified) */}
     var hero='<div class="rc-hero"><div class="eb">Compare \u00b7 '+EBW[rpWin]+'</div><div class="rc-legend">'+chips+'</div>'+
       '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 now as of '+rpClk(rcEtMin(new Date()))+' \u00b7 refreshes ~5 min</div></div>';
-    var lens='<div class="rp-hmpre">'+[["all","Last 28"],["last7","Last 7 days"],["month","This month"],["wkend","Weekends"]].concat(tpLensTrip()?[["trip","Trip days"]]:[]).map(function(t){
+    var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcOrderHTML(its)+rcTableHTML(its,days);
   }
@@ -5280,7 +5280,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var crumb=(TLa?rpBackBtn(esc(TLa.n||"My trip")):rpBackBtn("parks")) /* 0714d: the pill names its destination */+
       '<div class="rp-crumb">'+(TLa?'Plan \u203a Trip \u203a '+esc(TLa.n||"My trip")+' \u203a <b>'+esc(rpPark)+'</b>':'Plan \u203a Parks \u203a <b>'+esc(rpPark)+'</b>')+'</div>';
     if(!pfBase||!pfBase.rides){ /* 0713q: honest pre-baseline state; pfEnsureBase re-renders on arrival */
-      return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 28 days of banked waits \u2014 one moment.</div></div>';
+      return crumb+'<div class="favcard pg-list"><div class="fc-empty">This list fills from the last 4 weeks of banked waits \u2014 one moment.</div></div>';
     }
     var items=[],id;
     for(id in roster){var r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark||!pfBase.rides[id])continue; /* 0714k: browse walks the curated list */
@@ -7577,7 +7577,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
        Lens stays board furniture: hl-tabs beside the HOT LINES label (owner picked keep). */
     var el=$("pgPulse");if(!el)return;
     var shR=el.querySelector(".rc-sheet"),stR=shR?shR.scrollTop:0; /* 0725s THE SEAT LAW REACHES COMPARE: the 0715q idiom, function-side \u2014 td-sheet kept its seat, rc-sheet never did (every pick bounced the list to top; owner glass memory, Aug 26). Function-side covers every caller, including ones not yet born. */
-    if(rpWin==="trip"&&!tpLensTrip())rpWin="all"; /* 0715d: one guard — the Trip-days window lives only while the session’s doored trip does (covers deletion + the rail’s fold) */
+    if(rpWin==="trip"&&!tpLensTrip())rpWin="all";if(rpWin!=="all"&&rpWin!=="trip")rpWin="all"; /* 0728bh: the lens holds only the two windows that meet the floor */ /* 0715d: one guard — the Trip-days window lives only while the session’s doored trip does (covers deletion + the rail’s fold) */
     pfEnsureBase(); /* 0711b: non-blocking; re-renders this page on arrival */
         if(rpView==="plan"){el.innerHTML=plLandingHTML();} /* 0719r (Cut 1): the landing IS the tab's front door - the rail retires; rooms keep their ladders */
     else if(rpView==="cal"){el.innerHTML=pcPageHTML();pcBind(el);} /* 0727s THE CALENDAR: the fourth small door's room */
