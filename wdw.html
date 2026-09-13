@@ -2411,7 +2411,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bk</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bl</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6897,12 +6897,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var ps=(none.length?"one in "+tpAnd(ones):"one in each park")+(top?", "+PS[top]+(topN===2?" twice \u2014 its calmest second day":" "+topN+" times \u2014 its calmest days"):"")+(none.length?" \u2014 "+tpAnd(none)+(none.length>1?" have":" has")+" no day":"")+". A shorter ticket, or a park twice?";
     return '<div class="tp-adpl hw pr rd">'+row("rest","Rest days",restN,rs)+row("seats","Park days",r.planned+" of "+days.length,ps)+row("time","Time of day","all day","all day in each park. Rope-drop or afternoon parks? Say so and it re-plans.")+'</div>';
   }
-  function adTake(r,A,cell,party,days,t){ /* 0728au T-A ONE ROW PER PICK (owner-ruled Sep 11): the take reads cells, never solves \u2014 for each pick (a day you tapped a park onto; a kept day is the advisor's answer you agreed to, never a pick here) the park's best free day among the advisor's days: its parks and its placed rests, kept or not; your other picks and your own rests are never landings. Tier first (party cost on MK, the pick's own day waived), minutes within; a row only where that beats where you put it (a lower tier, or the same tier and \u2265 1 min less). Two rows may name the same free day. */
+  function adTake(r,A,cell,party,days,t){ /* 0728au T-A ONE ROW PER PICK (owner-ruled Sep 11): the take reads cells, never solves \u2014 for each pick (a day you tapped a park onto; a kept day is the advisor's answer you agreed to, never a pick here) the park's best free day among the advisor's days: its parks and its placed rests; a day that is yours \u2014 tapped, kept or rested \u2014 is never a landing (0728bl C A KEPT DAY IS NOT A LANDING, owner-ruled Sep 12: the chip promises a change moves only the day you tap; the take can't be the exception). Tier first (party cost on MK, the pick's own day waived), minutes within; a row only where that beats where you put it (a lower tier, or the same tier and \u2265 1 min less). Two rows may name the same free day. */
     var rows=[],i,d,p,f,j;
     for(i=0;i<days.length;i++){d=days[i];p=A.picks[d];if(!p||A.kept[d]||r.assign[d]!==p)continue;
       var sd=adScore(cell,d,p,party,A.picks),best=null,bf=null;if(!sd)continue;
       for(j=0;j<days.length;j++){f=days[j];if(f===d)continue;var a=r.assign[f];if(!a||a==="tie"||a===p)continue;
-        if(A.picks[f]&&!A.kept[f])continue;if(a==="rest"&&A.rests[f]&&!A.kept[f])continue;if(a!=="rest"&&r.rests[f])continue;
+        if(A.picks[f]||A.rests[f]||A.kept[f])continue;if(a!=="rest"&&r.rests[f])continue;
         var sf=adScore(cell,f,p,party,null);if(!sf)continue;if(!best||adBetterP(sf,best)<0){best=sf;bf=f;}}
       var cd=cell(d,p),wn=cd.win||null,other=wn?cell.w(wn==="am"?"pm":"am",d,p):null;
       var beats=bf&&(wn&&best[2]!=null&&sd[2]!=null?(sd[2]-best[2]>=1):(best[0]<sd[0]||(best[0]===sd[0]&&sd[1]-best[1]>=1))); /* 0728ay: on a windowed park the minutes compared are the window's */
@@ -6915,11 +6915,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var picks=days.some(function(d){return A.picks[d]&&!A.kept[d];});if(!picks)return "";
     var rows=adTake(r,A,cell,party,days,t),TW=TP_TW,PW=tfPartyWins(),ARR='<i class="arr">\u2192</i>',em=function(p,d){return (p==="Magic Kingdom"&&party&&party[d])?(tfPartyEm(d,PW)||""):"";},h;
     var notes=rows.filter(function(m){return !!m.note;}),moves=rows.filter(function(m){return !m.note;}),nPicks=days.filter(function(d){return A.picks[d]&&!A.kept[d];}).length;
-    if(!moves.length&&!notes.length)h='<div class="row mv"><span class="note">every pick is on its park\u2019s best free day</span></div>';
+    var free9=days.some(function(d){var a=r.assign[d];return a&&a!=="tie"&&!A.picks[d]&&!A.rests[d];}); /* 0728bl C: any day still the advisor's \u2014 the manual's keep9, word for word; with none left there is no landing, and the take says so in the manual's sentence */
+    if(!moves.length&&!notes.length)h='<div class="row mv"><span class="note">'+(free9?'every pick is on its park\u2019s best free day':'every other day is kept')+'</span></div>';
     else h=moves.map(function(m){var cl=adMoveCl(m.r,adRidesW(m.rides));
       return '<div class="row mv"><span class="ln">'+adChip(m.p,adDn(m.from),"",em(m.p,m.from))+ARR+adChip(m.p,adDn(m.to),"dsh",em(m.p,m.to))+'</span><span class="cl">'+cl+'<span class="mv" data-adtake="'+esc(m.from+"|"+m.p+"|"+m.to)+'">Move it \u203a</span></span></div>';}).join('')
       +notes.map(function(m){return '<div class="row mv"><span class="ln">'+adChip(m.p,adDn(m.d),"",em(m.p,m.d))+'</span><span class="note">'+m.note+'</span></div>';}).join('') /* 0728ay S-C */
-      +((!moves.length&&notes.length<nPicks)?'<div class="row mv"><span class="note">every other pick is on its park\u2019s best free day</span></div>':'');
+      +((!moves.length&&notes.length<nPicks)?'<div class="row mv"><span class="note">'+(free9?'every other pick is on its park\u2019s best free day':'every other day is kept')+'</span></div>':'');
     return '<div class="hr"></div><div class="lbl"><span>The advisor\u2019s take<span class="sub">\u00b7 on your picks</span></span></div><div class="tp-adpl chips">'+h+'</div>';
   }
   function adSlotHTML(S,r,A,mode,t,prop,party,take,keep){ /* 0728ae (owner, Sep 9): THE SLOT TEACHES, THEN REPORTS \u2014 one box between the header and the rail, one job: what you should know right now. Untouched, HOW IT WORKS in the board's own keys (E-1 + K-1); after a tap, WHAT MOVED. A muted link at the label's right swaps the faces (R-B); the next tap brings the report back. */
