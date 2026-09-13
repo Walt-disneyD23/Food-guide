@@ -1675,15 +1675,15 @@
   .ltg-asof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-left:auto;white-space:nowrap}
   .ltg-asof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:6px;font-weight:600;cursor:pointer}
   .ltg-cond{display:flex;align-items:baseline;gap:6px;margin-top:7px;font-size:var(--fs-small);color:var(--pwh-sub)}
-.pw-hero .pw-sky{display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--pwh-line);align-items:flex-end;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none} /* 0728bp THE SKY IS A STAT ROW: the hero's hstats dress, two stats and a door */
-.pw-sky .st{flex:1;min-width:0}
+.pw-hero .pw-sky{display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--pwh-line);align-items:flex-start;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none} /* 0728bp THE SKY IS A STAT ROW: the hero's hstats dress, two stats and a door */
+.pw-sky .st{flex:1 1 auto;min-width:0} /* 0728bq THE KEYS SHARE A BASELINE: content-sized, so a short verdict gives the lightning its room; the row aligns at the top so a wrapped unit never drops a key */
 .pw-sky .st .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--pwh-dim)}
 .pw-sky .st .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;margin-top:2px;line-height:1.15}
 .pw-sky .st .v small{font-size:var(--fs-small);font-weight:500;color:var(--pwh-sub);font-family:var(--font-body)}
 .pw-sky .st .v .w{font-weight:600;color:var(--pwh-sub);font-size:var(--fs-title)}
 .pw-sky .st .v .bolt{color:#fbbf24;font-size:15px;margin-right:2px}
 .pw-sky .st .v .bolt.q{color:var(--pwh-dim)}
-.pw-sky .door{flex:0 0 auto;color:rgba(230,233,251,.45);font-size:18px;padding-bottom:5px}
+.pw-sky .door{flex:0 0 auto;color:rgba(230,233,251,.45);font-size:18px;align-self:center}
 .pw-hero .pw-skyasof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-top:8px}
 .pw-skyasof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:8px;font-weight:600;cursor:pointer}
   .ltg-cond b{color:var(--pwh-ink);font-weight:600}
@@ -2422,7 +2422,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bp</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bq</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11724,7 +11724,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!any){lv='<span class="bolt q">\u26a1</span><span class="w">none</span>';
         lu=live?(full?" \u00b7 none detected today":" \u00b7 quiet from "+pwClk(S[0].t)):(full?" \u00b7 quiet all day":" \u00b7 quiet from "+pwClk(S[0].t)+" to close");}
       else{lv='<span class="bolt">\u26a1</span>'+tot;
-        lu=(tot===1?" strike":" strikes")+(live?" so far":"")+" \u00b7 peak "+hr(max.t);} /* the sheet says how many at once; the hero says when */
+        lu=(tot===1?" strike":" strikes")+(live?" so far":"")+" \u00b7 peak\u00a0"+hr(max.t).replace(" ","\u00a0");} /* 0728bq: the peak time is one word */ /* the sheet says how many at once; the hero says when */
       var h='<div class="pw-sky" id="pwSkyCard" role="button" tabindex="0">'+(first||"")+'<div class="st"><div class="k">Lightning \u00b7 10 mi</div><div class="v">'+lv+'<small>'+lu+'</small></div></div><div class="door">\u203a</div></div>';
       if(live&&tab==="today"&&cacheAt.today){
         var at=new Date(cacheAt.today),ah=at.getHours(),am=at.getMinutes(),ap=ah<12?"AM":"PM",a12=((ah+11)%12)+1;
