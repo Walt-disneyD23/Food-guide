@@ -1675,6 +1675,17 @@
   .ltg-asof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-left:auto;white-space:nowrap}
   .ltg-asof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:6px;font-weight:600;cursor:pointer}
   .ltg-cond{display:flex;align-items:baseline;gap:6px;margin-top:7px;font-size:var(--fs-small);color:var(--pwh-sub)}
+.pw-hero .pw-sky{display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--pwh-line);align-items:flex-end;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none} /* 0728bp THE SKY IS A STAT ROW: the hero's hstats dress, two stats and a door */
+.pw-sky .st{flex:1;min-width:0}
+.pw-sky .st .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--pwh-dim)}
+.pw-sky .st .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;margin-top:2px;line-height:1.15}
+.pw-sky .st .v small{font-size:var(--fs-small);font-weight:500;color:var(--pwh-sub);font-family:var(--font-body)}
+.pw-sky .st .v .w{font-weight:600;color:var(--pwh-sub);font-size:var(--fs-title)}
+.pw-sky .st .v .bolt{color:#fbbf24;font-size:15px;margin-right:2px}
+.pw-sky .st .v .bolt.q{color:var(--pwh-dim)}
+.pw-sky .door{flex:0 0 auto;color:rgba(230,233,251,.45);font-size:18px;padding-bottom:5px}
+.pw-hero .pw-skyasof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-top:8px}
+.pw-skyasof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:8px;font-weight:600;cursor:pointer}
   .ltg-cond b{color:var(--pwh-ink);font-weight:600}
   .ltg-strip{display:flex;align-items:flex-end;gap:3px;height:26px;margin-top:9px;cursor:pointer}
   /* 0712a: Sky Page layers — ride in .pw-st-card containers */
@@ -2411,7 +2422,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bo</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bp</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11695,7 +11706,33 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         else r1=z;
       }
     }
-    function pwLtgCard(d,live,tab,chip){ /* 0712z: chip rides in \u2014 rendered as the card\u2019s verdict band when present */
+    function pwSkyRow(d,live,tab,chip){ /* 0728bp THE SKY IS A STAT ROW (owner-ruled Sep 13, wrap-sky-mock-D.html): the hero's own stat grammar \u2014 the verdict as a number, then the lightning, then the door; the chart and the sentence live in the sky sheet the row opens. Ids kept: pwSkyCard (the door), pwLtgUpd (the live update link). */
+      var L=d&&d.ltg,S=L&&L.samples;
+      if(!S||!S.length)return "";
+      var i,max=null,latest=S[S.length-1],any=false,tot=0;
+      for(i=0;i<S.length;i++){if(S[i].n>0){any=true;tot+=S[i].n;if(!max||S[i].n>max.n)max=S[i];}}
+      var full=S[0].t<=540;
+      function hr(t){return pwClk(t).replace(":00","");}
+      function st(k,v,u,word){return '<div class="st"><div class="k">'+esc(k)+'</div><div class="v">'+(word?'<span class="w">'+esc(v)+'</span>':esc(v))+(u?'<small>'+esc(u)+'</small>':'')+'</div></div>';}
+      var first=null;
+      if(chip&&chip.stat)first=st(chip.stat.k,chip.stat.v,chip.stat.u,!!chip.stat.w);
+      else{var wxS=d.wx&&d.wx.samples,hiT=null,hiF=null,cur=wxS&&wxS.length?wxS[wxS.length-1]:null; /* no verdict: the day's high (FINAL) or the current reading (live), the samples the sheet draws */
+        if(live){if(cur&&cur.tF!=null)first=st("Now",cur.tF+"\u00b0",(cur.fF!=null?" \u00b7 feels like "+cur.fF+"\u00b0":""));}
+        else if(wxS){for(i=0;i<wxS.length;i++){if(wxS[i].tF!=null&&(hiT==null||wxS[i].tF>hiT))hiT=wxS[i].tF;if(wxS[i].fF!=null&&(hiF==null||wxS[i].fF>hiF))hiF=wxS[i].fF;}
+          if(hiT!=null)first=st("High",hiT+"\u00b0",(hiF!=null?" \u00b7 feels like "+hiF+"\u00b0":""));}}
+      var lv,lu;
+      if(!any){lv='<span class="bolt q">\u26a1</span><span class="w">none</span>';
+        lu=live?(full?" \u00b7 none detected today":" \u00b7 quiet from "+pwClk(S[0].t)):(full?" \u00b7 quiet all day":" \u00b7 quiet from "+pwClk(S[0].t)+" to close");}
+      else{lv='<span class="bolt">\u26a1</span>'+tot;
+        lu=(tot===1?" strike":" strikes")+(live?" so far":"")+" \u00b7 peak "+hr(max.t);} /* the sheet says how many at once; the hero says when */
+      var h='<div class="pw-sky" id="pwSkyCard" role="button" tabindex="0">'+(first||"")+'<div class="st"><div class="k">Lightning \u00b7 10 mi</div><div class="v">'+lv+'<small>'+lu+'</small></div></div><div class="door">\u203a</div></div>';
+      if(live&&tab==="today"&&cacheAt.today){
+        var at=new Date(cacheAt.today),ah=at.getHours(),am=at.getMinutes(),ap=ah<12?"AM":"PM",a12=((ah+11)%12)+1;
+        h+='<div class="pw-skyasof">as of '+a12+":"+(am<10?"0":"")+am+" "+ap+'<span class="upd" id="pwLtgUpd" role="button" tabindex="0">\u21bb update</span></div>';
+      }
+      return h;
+    }
+    function pwLtgCard(d,live,tab,chip){ /* 0728bp: retired in place \u2014 the hero draws pwSkyRow; unreferenced, kept for the archive until a tidy */ /* 0712z: chip rides in \u2014 rendered as the card\u2019s verdict band when present */
       var L=d&&d.ltg,S=L&&L.samples;
       if(!S||!S.length)return "";
       var i,max=null,latest=S[S.length-1],any=false,tot=0;
@@ -11787,7 +11824,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var chip=isWeek?null:wxChip(d,live);
       var ltgOn=!isWeek&&!!(d.ltg&&d.ltg.samples&&d.ltg.samples.some(function(s){return s.n>0;}));
       var wxKind=(chip&&(chip.kind==="storm"||chip.kind==="wind"||chip.kind==="rain"))?chip.kind:null,wxX=wxKind?wxDerive(d):null;
-      var ltgH=isWeek?"":pwLtgCard(d,live,tab,chip); /* 0712z: computed first \u2014 the chip only stands alone when there is no card to dock in */
+      var ltgH=isWeek?"":pwSkyRow(d,live,tab,chip); /* 0728bp THE SKY IS A STAT ROW */ /* 0712z: computed first \u2014 the chip only stands alone when there is no card to dock in */
       var chipH="";
       if(chip&&!ltgH){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
@@ -11943,7 +11980,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function wxChip(d,live){
       if(!d||!d.wx)return null;
       var x=wxDerive(d);
-      if(x.code>=95&&x.downPeak>=8)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak")};
+      if(x.code>=95&&x.downPeak>=8)return {kind:"storm",icon:"⛈",tappable:true,text:(live?"Storms moving through":"Storms swept through")+" — "+x.downPeak+" rides paused"+(live?" so far":" at the peak"),stat:{k:"Storms \u00b7 paused",v:String(x.downPeak),u:(live?" rides so far":" rides at the peak")}}; /* 0728bp THE SKY IS A STAT ROW: the verdict's own number, for the hero's stat row */
       if(x.downPeak>=8){var hnp=0,hpk;for(hpk in x.parkPeaks){if(x.parkPeaks[hpk]>0)hnp++;}
         /* 0712j: states earn their tense (the heat chip's doctrine, applied to holds). Recovered =
            BOTH observed signals clear: current downs under the gate AND the latest lightning sample
@@ -11952,11 +11989,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var hLg=(d.ltg&&d.ltg.samples&&d.ltg.samples.length)?d.ltg.samples[d.ltg.samples.length-1]:null;
         var hRec=live&&hNow<8&&hLg&&hLg.n===0;
         var hPP=(hnp>=4?"all four parks":hnp+" park"+(hnp===1?"":"s"));
-        if(hRec)return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses swept "+hPP+" \u2014 "+x.downPeak+" attractions at once at the peak"};
+        if(hRec)return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses swept "+hPP+" \u2014 "+x.downPeak+" attractions at once at the peak",stat:{k:"Paused at the peak",v:String(x.downPeak),u:" attractions at once"}};
         /* 0712d: the hold chip \u2014 down-count is the truer storm signal than the point's code (6-for-6 on the trip week). Descriptive, never causal; "attractions", never "rides". Chevron opens the Sky page. */
-        return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses across "+hPP+" \u2014 "+x.downPeak+" attractions at once"+(live?" so far":" at the peak")};}
-      if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner")};
-      if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon")};
+        return {kind:"hold",icon:"\u23f8",tappable:true,text:"Pauses across "+hPP+" \u2014 "+x.downPeak+" attractions at once"+(live?" so far":" at the peak"),stat:{k:(live?"Paused so far":"Paused at the peak"),v:String(x.downPeak),u:" attractions at once"}};}
+      if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner"),stat:{k:"Gusts",v:String(x.gust),u:(live?" mph \u00b7 tall rides may pause":" mph \u00b7 tall rides pause")}};
+      if(x.code===65||x.code===82||(!live&&x.precip>=1.0))return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":x.precip.toFixed(1)+"\" of rain — a soaker through the afternoon"),stat:(live?{k:"Rain",v:"heavy",w:true,u:" \u00b7 moving through"}:{k:"Rain",v:x.precip.toFixed(1)+"\"",u:" a soaker \u00b7 afternoon"})};
       var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
       /* 0713e: forecast latch (owner call \u2014 the 1:35 PM two-hero specimen: forecast oscillating
          104\u2194105 flipped the day\u2019s identity between renders). Once any BANKED sample carried a
@@ -11972,23 +12009,23 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
            100°+ observed — below that floor the sentence undersells an
            extreme-heat warning, so the forecast framing carries the morning.
            The floor is tunable, same spirit as the 25 mph gust floor. */
-        var hT;
+        var hT,hS; /* 0728bp: hS is the stat beside the sentence \u2014 the same number the sentence prints */
         if(heatF){
           var hs=x.samples||[],hf=[],hz;
           for(hz=0;hz<hs.length;hz++)if(hs[hz]&&hs[hz].fF!=null)hf.push(hs[hz].fF);
           var hCur=hf.length?hf[hf.length-1]:null,hPrev=hf.length>1?hf[hf.length-2]:null,hMax=null;
           for(hz=0;hz<hf.length;hz++)if(hMax==null||hf[hz]>hMax)hMax=hf[hz];
           var hFc=Math.max((x.feelsFcast!=null?x.feelsFcast:heatHi)||0,hLatch); /* 0713e: the printed number is the day\u2019s own maximum banked proposal \u2014 provable, never a flap artifact */
-          if(!live)hT=(hMax!=null?"Extreme heat — feels-like peaked at "+hMax+"°":"Extreme heat — a forecast feels-like of "+hFc+"°");
-          else if(hMax!=null&&hCur!=null&&hCur<=hMax-5)hT="Extreme heat today — feels-like peaked at "+hMax+"°";
-          else if(hCur!=null&&hPrev!=null&&hCur>hPrev&&hCur>=100)hT="Extreme heat today — feels like "+hCur+"° and climbing";
-          else hT="Extreme heat today — heading for a feels-like of "+hFc+"°";
+          if(!live){if(hMax!=null){hT="Extreme heat — feels-like peaked at "+hMax+"°";hS={k:"Feels-like peak",v:hMax+"\u00b0",u:" extreme heat"};}else{hT="Extreme heat — a forecast feels-like of "+hFc+"°";hS={k:"Feels-like \u00b7 forecast",v:hFc+"\u00b0",u:" extreme heat"};}}
+          else if(hMax!=null&&hCur!=null&&hCur<=hMax-5){hT="Extreme heat today — feels-like peaked at "+hMax+"°";hS={k:"Feels-like peak",v:hMax+"\u00b0",u:" extreme heat today"};}
+          else if(hCur!=null&&hPrev!=null&&hCur>hPrev&&hCur>=100){hT="Extreme heat today — feels like "+hCur+"° and climbing";hS={k:"Feels like now",v:hCur+"\u00b0",u:" and climbing"};}
+          else{hT="Extreme heat today — heading for a feels-like of "+hFc+"°";hS={k:"Feels-like \u00b7 heading for",v:hFc+"\u00b0",u:" extreme heat"};}
         }else{
-          hT=(live?"Extreme heat today — heading for a high of "+heatHi+"°":"Extreme heat — a high of "+heatHi+"°");
+          hT=(live?"Extreme heat today — heading for a high of "+heatHi+"°":"Extreme heat — a high of "+heatHi+"°");hS={k:(live?"Heading for a high of":"High"),v:heatHi+"\u00b0",u:" extreme heat"};
         }
-        return {kind:"heat",icon:"🥵",tappable:false,text:hT};
+        return {kind:"heat",icon:"🥵",tappable:false,text:hT,stat:hS};
       }
-      if(x.dayLow<=40)return {kind:"cold",icon:"🥶",tappable:false,text:(live?"Cold out there — "+x.dayLow+"° this morning":"Cold start — down to "+x.dayLow+"° this morning")};
+      if(x.dayLow<=40)return {kind:"cold",icon:"🥶",tappable:false,text:(live?"Cold out there — "+x.dayLow+"° this morning":"Cold start — down to "+x.dayLow+"° this morning"),stat:{k:"Morning low",v:x.dayLow+"\u00b0",u:(live?" cold out there":" cold start")}};
       return null;
     }
     function wxClass(sm){if(sm.code>=95)return sm.pIn>0?"core":"storm";if(sm.code>=51)return "rain";return sm.code<=1?"clear":"cloud";}
