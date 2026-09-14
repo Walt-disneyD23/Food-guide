@@ -2422,7 +2422,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bs</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bt</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9406,7 +9406,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     el.querySelectorAll("[data-tychip]").forEach(function(b){b.addEventListener("click",function(){
       var p2=b.getAttribute("data-tychip");if(p2===pk)return;
       tyPick(p2);tdPk=false;tdPin=null;rpEnsureDigs();tyEnsureSched();renderTodayPage();window.ppShl().scrollTo(0,0);});});
-    var bk=el.querySelector("[data-tyback]");if(bk)bk.addEventListener("click",function(){tyHome=true;tdPk=false;tdPin=null;renderTodayPage();window.ppShl().scrollTo(0,0);});
+    var bk=el.querySelector("[data-tyback]");if(bk)bk.addEventListener("click",function(){tyHome=true;tdPk=false;tdPin=null;store.set("tdDay",null);renderTodayPage();window.ppShl().scrollTo(0,0);}); /* 0728bt THE DOOR FORGETS: leaving the board by its door clears the day stamp, so a cross-tab return lands where you last were (0724i keeps the stamp only while you are on the board) */
     var tfx=el.querySelector("[data-tyfx]");if(tfx)tfx.addEventListener("click",function(e2){e2.stopPropagation();store.set("ppFactDis",tyDs());renderTodayPage();}); /* 0723n: the \u2715 kills facts for the DAY (in-memory fallback returns on hard reload \u2014 accepted) */
     el.querySelectorAll("[data-tdlens]").forEach(function(b){b.addEventListener("click",function(){
       var v=b.getAttribute("data-tdlens")==="mine"?"mine":"app";if(v===tdLens)return;tdLens=v;renderTodayPage();});});
@@ -13422,9 +13422,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       document.body.classList.toggle("pane-open",k==="myrides"||k==="pulse"||k==="wrap"); /* 0711r: Wrap joins the 0711e paint gate — it swaps via __pwActive, not a pane class, so the pill haunted exactly one foreign tab */ /* 0711e: paint gate for .bk2top — navGo hides banners but not the Live list on these panes, so offsetParent stays truthy and the IO honestly reports "header below fold". Gate the paint, keep the IO sole writer. */
       var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"&&k!=="myrides"); /* 0725j: the second guide is written \u2014 the 0724q comment kept its promise */ /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
     }
+    function navDoor(k){ /* 0728bt THE SECOND TAP LANDS HOME: the room's first homeward door that is not inside a hidden pane \u2014 Wrap's crumbs; Plan's rungs, ladder back and trip-page backs (.pw-back); Today's door */
+      var sel=(k==="wrap")?"#wrapView .pw-back":(k==="pulse")?"#pgPulse .plx, #pgPulse .rp-back, #pgPulse .pw-back":(k==="today")?"#pgToday [data-tyback]":null;
+      if(!sel)return null;var L=document.querySelectorAll(sel),i;for(i=0;i<L.length;i++){if(!(L[i].closest&&L[i].closest("[hidden]")))return L[i];}return null;
+    }
     function navGo(k){
       if(k===navTab){ /* 0725q THE SECOND TAP PRESSES HOME (owner-ruled T-1A): the tap presses the room\u2019s own homeward doors until home \u2014 Wrap\u2019s crumb backs, Plan\u2019s plx rungs + ladder-aware rp-back, Today\u2019s tyback \u2014 so every reset recipe lives in ONE place: the door. Live & My Rides are owner-declared drill-free (no door, pure top). Cross-tab return memory untouched. */
-      var hd9,cap9=5;while(cap9-->0){hd9=(k==="wrap")?document.querySelector("#wrapView .pw-back"):(k==="pulse")?(document.querySelector("#pgPulse .plx")||document.querySelector("#pgPulse .rp-back")):(k==="today")?document.querySelector("#pgToday [data-tyback]"):null;if(!hd9)break;hd9.click();}
+      var hd9,cap9=8;while(cap9-->0){hd9=navDoor(k);if(!hd9)break;hd9.click();} /* 0728bt: navDoor knows every homeward door, including Plan's trip pages */
+      if(k==="wrap"&&(curTab!=="yesterday"||pwMonthCursor)){pwMonthCursor=null;loadTab("yesterday");} /* 0728bt: Wrap's month, week and today faces have no crumb \u2014 home is Yesterday, the cursor reset (the tab's own rule, 0716b) */
       try{window.ppShl().scrollTo({top:0,behavior:"smooth"});}catch(_){window.ppShl().scrollTo(0,0);}return;}
       navTab=k;
       if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");}
