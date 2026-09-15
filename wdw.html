@@ -2438,7 +2438,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bw</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2690,7 +2690,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   /* 0719x: the sheet's select-priming retired with its DOM — MY RIDES builds its own selects */
   $("type").value=f.type;$("cat").value=f.cat;$("status").value=f.status;$("band").value=f.band;$("sort").value=f.sort;
   setOn($("llChip"),f.ll);setOn($("srChip"),f.sr);setOn($("watchChip"),f.watched);
-  function notifGranted(){return typeof Notification!=="undefined"&&Notification.permission==="granted";}
+  function notifGranted(){return notifPerm()==="granted";} /* 0728bw THE SHELL HEARS THE WORKER: one permission reader */
   function setOn(el,on){el.classList[on?"add":"remove"]("on");}
   function snap5(v){v=Math.round((+v||0)/5)*5;return Math.max(5,Math.min(120,v));}
   function threshOptions(sel){var s=snap5(sel),o="";for(var v=5;v<=120;v+=5){o+='<option value="'+v+'"'+(v===s?" selected":"")+'>'+v+'</option>';}return o;}
@@ -3153,7 +3153,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      duplicate banner — the instant in-app toast still fires. If push isn't
      actually subscribed (pushSub null), this is false and the app falls back to
      its own notification, so you never miss an alert. */
-  function pushActive(){return pushSupported()&&Notification.permission==="granted"&&!!pushSub;}
+  function pushActive(){return pushSupported()&&notifPerm()==="granted"&&!!pushSub;}
   function fireAlert(r,lv){
     var ru=ruleFor(r.id);
     var body=(ru.dir==="below"?"dropped to":"climbed to")+" "+lv.wait+" min · "+r.park;
@@ -10019,7 +10019,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       settings.notif=false;store.set("notif",false);setOn(el,false);
       disablePush();pushSub=null;renderMyRidesPage();return;
     }
-    if(typeof Notification==="undefined"){pushToast("Not supported","This browser can't show notifications.");return;}
+    if(typeof Notification==="undefined"&&!shellPush()){pushToast("Not supported","This browser can't show notifications.");return;} /* 0728bw: the shell has no Notification object and needs none */
     if(pushSupported()){
       enablePush().then(function(ok){
         if(ok){settings.notif=true;store.set("notif",true);setOn(el,true);
@@ -10029,7 +10029,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       });
       return;
     }
-    if(Notification.permission==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);renderMyRidesPage();}
+    if(notifPerm()==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);renderMyRidesPage();}
     else{Notification.requestPermission().then(function(p){
       if(p==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);}
       else{pushToast("Notifications blocked","Allow them in your browser's site settings to get alerts.");}
@@ -10091,7 +10091,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     fetchSchedule().then(function(){rollBusy=false;load(false);},function(){rollBusy=false;});
   }
   function refreshIfStale(){ if(!lastUpdated||(Date.now()-lastUpdated)>30000)load(false); }
-  function syncOnReturn(){ if(settings.notif&&pushSupported()&&Notification.permission==="granted")syncPush(); }
+  function syncOnReturn(){ if(settings.notif&&pushSupported()&&notifPerm()==="granted")syncPush(); }
   function fossilCheck(){ /* 0722k THE RESUME CHECKS THE STAMP: iOS can restore a stale page snapshot (field specimen: a July 0711d fossil waking in August). The marker is the newest build this device has run; a page older than the marker is a fossil and reloads itself once. One source — the stamp itself. */
     try{
       var el=document.getElementById("setBuild");var b=el?String(el.textContent||"").replace("build ","").trim():"";if(!b)return;
@@ -10115,7 +10115,49 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   };
   var pushSub=null,syncTimer=null;
 
-  function pushSupported(){return ("serviceWorker" in navigator)&&("PushManager" in window)&&typeof Notification!=="undefined";}
+  function pushSupported(){return shellPush()||(("serviceWorker" in navigator)&&("PushManager" in window)&&typeof Notification!=="undefined");} /* 0728bw THE SHELL HEARS THE WORKER: the App Store shell is a push surface too */
+
+  /* 0728bw THE SHELL HEARS THE WORKER — the shell's push seat. Inside the Capacitor shell (WKWebView) there is no Web Push and no
+     Notification object; the PushNotifications plugin is the door. The APNs device token becomes a synthetic subscription so every
+     caller of pushSub (syncPush, flushPendingSync, disablePush, pushActive) keeps its sentence; the Worker (v3.23) keys the record by
+     the same endpoint and sends through Apple. notifPerm() is the ONE permission reader for both worlds. A notification tap opens the
+     app, as sw.js does on the web. */
+  var shellPerm="prompt",shellWait=null;
+  function shellPN(){try{var C=window.Capacitor;return (C&&C.isNativePlatform&&C.isNativePlatform()&&C.isPluginAvailable&&C.isPluginAvailable("PushNotifications")&&C.Plugins&&C.Plugins.PushNotifications)||null;}catch(e){return null;}}
+  function shellPush(){return !!shellPN();}
+  function notifPerm(){if(shellPush())return shellPerm;return typeof Notification!=="undefined"?Notification.permission:"denied";}
+  function shellSubOf(tok){return {endpoint:"apns:"+tok,toJSON:function(){return {endpoint:"apns:"+tok,apns:{token:tok}};}};}
+  function shellListen(){ /* once: the plugin's events */
+    var PN=shellPN();if(!PN||shellListen.done)return;shellListen.done=true;
+    PN.addListener("registration",function(t){var v=t&&t.value;if(!v)return;pushSub=shellSubOf(v);if(shellWait){var w=shellWait;shellWait=null;w(pushSub);}});
+    PN.addListener("registrationError",function(e){console.error("shell registration failed",e&&e.error);if(shellWait){var w=shellWait;shellWait=null;w(null);}});
+  }
+  function shellSub(){ /* the shell's ensureSub: no prompt; the token arrives on the registration event */
+    if(pushSub)return Promise.resolve(pushSub);
+    var PN=shellPN();if(!PN||shellPerm!=="granted")return Promise.resolve(null);
+    shellListen();
+    return new Promise(function(ok){
+      shellWait=ok;
+      var tm=setTimeout(function(){if(shellWait===ok){shellWait=null;ok(null);}},15000);
+      Promise.resolve().then(function(){return PN.register();}).then(function(){},function(e){console.error("shell register failed",e);clearTimeout(tm);if(shellWait===ok){shellWait=null;ok(null);}});
+    });
+  }
+  function shellEnable(){ /* the shell's enablePush: from a tap, so the prompt is allowed */
+    var PN=shellPN();if(!PN)return Promise.resolve(false);
+    return Promise.resolve().then(function(){return PN.requestPermissions();}).then(function(p){
+      shellPerm=(p&&p.receive)||"denied";
+      if(shellPerm!=="granted")return false;
+      return ensureSub().then(function(sub){if(!sub)return false;return syncPush().then(function(){return true;});});
+    }).catch(function(e){console.error("shellEnable failed",e);return false;});
+  }
+  function shellBoot(){ /* the shell's boot: learn the permission, then sync as the web does */
+    var PN=shellPN();if(!PN)return;shellListen();
+    Promise.resolve().then(function(){return PN.checkPermissions();}).then(function(p){
+      shellPerm=(p&&p.receive)||"prompt";
+      if(settings.notif&&shellPerm==="granted")syncPush();
+      if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
+    }).catch(function(e){console.error("shellBoot failed",e);});
+  }
 
   /* Snapshot the app's real state objects into the exact rules shape the
      deployed Worker's /save expects. overrides may be empty -> send {}. */
@@ -10163,7 +10205,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      what makes syncing self-healing across app launches. */
   function ensureSub(){
     if(pushSub)return Promise.resolve(pushSub);
-    if(!pushSupported()||Notification.permission!=="granted")return Promise.resolve(null);
+    if(shellPush())return shellSub(); /* 0728bw THE SHELL HEARS THE WORKER */
+    if(!pushSupported()||notifPerm()!=="granted")return Promise.resolve(null);
     return navigator.serviceWorker.register("sw.js").then(function(reg){
       return reg.pushManager.getSubscription().then(function(existing){
         if(existing){ /* 0725z THE SUBSCRIPTION FOLLOWS THE KEY: a sub is bound to the key that minted it \u2014 after a VAPID rotation the old sub is a dead letter (Apple rejects new-key signatures against it, silently; owner glass Aug 26: diary full, phone quiet). Compare the bound key to the current one; mismatch \u2192 unsubscribe \u2192 mint fresh. Unreadable bound key (older engines) keeps the sub \u2014 never unsubscribe what we can't verify. */
@@ -10186,6 +10229,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   /* Turn-ON path — called from a user tap, so prompting for permission is OK. */
   function enablePush(){
     if(!pushSupported())return Promise.resolve(false);
+    if(shellPush())return shellEnable(); /* 0728bw THE SHELL HEARS THE WORKER */
     return Notification.requestPermission().then(function(perm){
       if(perm!=="granted")return false;
       return ensureSub().then(function(sub){
@@ -10327,7 +10371,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
   /* ---- boot ---- */
   buildFallbackRoster();buildBanners();render();updateAlertBadge();load(false);
-  if(settings.notif&&pushSupported()&&Notification.permission==="granted")syncPush();
+  if(shellPush())shellBoot();else if(settings.notif&&pushSupported()&&notifPerm()==="granted")syncPush(); /* 0728bw THE SHELL HEARS THE WORKER: the shell learns its permission first */
 
   /* ===================== DAILY WRAP (pw-) — Stage 1+2 ===================== */
   /* Additive: Live/Wrap toggle, recap view (hero + grid + park rows),
