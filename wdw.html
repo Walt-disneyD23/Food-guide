@@ -1447,7 +1447,9 @@
   .icon-btn .badge.show{display:grid}
 
   @media (max-width:540px){
-    .brand-sub{font-size:var(--fs-meta);white-space:normal;line-height:1.25;margin-top:3px}
+    .brand-sub{font-size:var(--fs-meta);white-space:normal;line-height:1.25;margin-top:3px;display:flex;flex-wrap:wrap;column-gap:5px} /* 0728bz THE BREAK FALLS AT THE DOT (owner-ruled H2): two phrases, each unbreakable; a third header button drops the second phrase whole */
+    .brand-sub span{white-space:nowrap}
+    .brand-sub span:first-child::after{content:" \00b7"}
   }
 
 
@@ -2324,7 +2326,7 @@ document.documentElement.classList.add("dark");}catch(e){}
       </svg>
       <div class="brand-text">
         <div class="brand-title">Ride<span class="t">Cue</span></div>
-        <div class="brand-sub">Walt Disney World · waits, plans &amp; alerts</div>
+        <div class="brand-sub"><span>Walt Disney World</span><span>waits, plans &amp; alerts</span></div>
       </div>
     </div>
     <div class="topbar-actions">
@@ -2438,7 +2440,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bx</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bz</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5078,7 +5080,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var _fact=(cl===null)?'Built':(tn.closed?('Closed for the night'+(tn.nx!==null?' \u00b7 back at '+rpClk(tn.nx)+' tomorrow':'')+' \u00b7 built'):('Open till '+rpClk(cl>1440?cl-1440:cl)+' tonight \u00b7 built'));
     var hero='<div class="tph md-tph"><div class="eb">'+esc(rpPark)+' \u00b7 My day</div>'+
       '<h2>Pick your hours like you\u2019ve been before.</h2>'+
-      '<div class="sub">'+_fact+' from your starred rides\u2019 typical days \u2014 history, never a promise.</div></div>';
+      '<div class="sub">'+(rmStars().length?(_fact+' from your starred rides\u2019 typical days \u2014 history, never a promise.'):(function(){var o9=ffOther(rpPark); /* 0728by THE HERO DISCLOSES (owner-ruled L1): no stars in the park, the hero says so; the cards stay so the guest learns where the rooms are */
+        return (o9.n?('No stars in '+esc(rpPark)+' yet \u2014 yours are in '+o9.ks.map(function(k){return esc(k)+' \u2605'+o9.by[k];}).join(' \u00b7 ')+'. '):'No stars yet \u2014 the mornings and evenings build from them. ')+'On the Live board, open '+esc(rpPark)+' and tap \u2605 on a ride.';})())+'</div></div>';
     var rcpt='',id,r,q;
     if(rpDigs&&pfBase&&pfBase.rides){var cnt=0,anyLate=false;
       for(id in roster){r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark)continue;
@@ -6329,9 +6332,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var t9=(typeof tpCurTrip==="function")?tpCurTrip():null,sp=t9&&t9.span&&t9.span[ds];if(!sp)return;
     if(sp.st&&/^\d+$/.test(sp.st))tdStart=sp.st;if(sp.lv&&/^\d+$/.test(sp.lv))tdLeave=sp.lv;
   }
-    function ffFaceHTML(pk,room){ /* 0728bx THE FIRST FACE, THE FAMILY (owner-ruled T1 + M2, first-face-family-mock.html): one builder for the Today board and the My Morning / My Evening rooms \u2014 the E1 idiom (0728bu): the star, the state, the exact address, one door to Live (.mr-go \u2192 navGo("live"), bound at the document). S0 = no stars anywhere; S1 = stars exist, none in this park, named by park from the stars map */
+    function ffOther(pk){ /* 0728by ONE HOME: the stars outside this park, by park, most first then by name — the family's S1 count (ffFaceHTML and the My day hero read it) */
       var by={},n=0,id,r;for(id in watch){r=roster[id];if(!r||!r.park||r.park===pk)continue;by[r.park]=(by[r.park]||0)+1;n++;}
-      var ks=Object.keys(by).sort(function(a,b){return by[b]-by[a]||a.localeCompare(b);});
+      return {n:n,by:by,ks:Object.keys(by).sort(function(a,b){return by[b]-by[a]||a.localeCompare(b);})};
+    }
+    function ffFaceHTML(pk,room){ /* 0728bx THE FIRST FACE, THE FAMILY (owner-ruled T1 + M2, first-face-family-mock.html): one builder for the Today board and the My Morning / My Evening rooms \u2014 the E1 idiom (0728bu): the star, the state, the exact address, one door to Live (.mr-go \u2192 navGo("live"), bound at the document). S0 = no stars anywhere; S1 = stars exist, none in this park, named by park from the stars map */
+      var o9=ffOther(pk),by=o9.by,n=o9.n,ks=o9.ks; /* 0728by: the count has one home */
       var t=n?'No stars in '+esc(pk)+' yet.':'Star the rides you care about.';
       var where=n?'Your stars are in other parks \u2014 '+ks.map(function(k){return '<b>'+esc(k)+' \u2605'+by[k]+'</b>';}).join(' \u00b7 ')+'. ':'';
       var job=(room==="today")?'The board builds your day <b>from your stars</b> \u2014 which to hit, in what order. ':('This room reads what the '+room+'s have run for your stars. ');
