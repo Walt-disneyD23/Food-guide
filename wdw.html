@@ -2294,7 +2294,10 @@
   .lgl.pc-up .pc-c{font:500 12.5px var(--font-body);color:var(--muted);text-align:left} .lgl.pc-up>div>small{white-space:nowrap} /* 0728c (B): the clause under the name, the date alone on the right \u2014 the name gets its width back */
   .pc-hr{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--line);font-size:15px} .pc-hr:first-of-type{border-top:0;margin-top:10px} .pc-hr b{font-weight:700}
   .pc-sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
-  .pc-shead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px} .pc-shead .td-shg{margin-top:2px}
+  .pc-shead{display:flex;justify-content:space-between;align-items:center;gap:12px} /* 0728bv THE DAY SHEET'S HEADER IS ONE LINE (owner-ruled H1's header, day-sheet-mock.html): the weekday at the tab's 20 px, the date beside it, the share button centered on the line */
+.pc-shead .tp-wd{min-width:0}
+.pc-shead .tp-wd .dt{font-family:var(--font-body);font-weight:500;font-size:var(--fs-body);color:var(--muted-2);letter-spacing:0;margin-left:8px}
+.pc-shead .td-shg{margin-top:0;align-self:center;flex:none} .pc-shead .td-shg{margin-top:2px}
   .pc-mshare{display:block;margin:12px 0 0;padding:0;border:0;background:none;font:650 var(--fs-small) var(--font-body);color:var(--accent);cursor:pointer;-webkit-tap-highlight-color:transparent} .pc-mshare .chev{margin-left:2px} /* 0727y: the month's door, a text link in the S2 grammar */
   .pc-sheet{scroll-margin-bottom:calc(118px + env(safe-area-inset-bottom))} /* 0727w: the shell pads its bottom 110px + safe area under the floating nav; the sheet lands above it */
   .pc-hr .tp-hrs{text-align:right} .pc-hr .tp-hrs b{font-family:var(--font-display)} .pc-hr .tp-eet{display:block;font:italic 500 var(--fs-meta) var(--font-body);color:var(--muted)} /* 0727r: the week colors the date on the grid too — the legend promised dates in green */ /* 0727p: the planned cell is the window, never the tint (.td-ws .wc.lN was (0,3,0)) */
@@ -2435,7 +2438,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bu</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bv</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -7473,7 +7476,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function pcSheetHTML(ds,today){ /* THE DAY SHEET: published hours per park (tpHoursHTML — Early Entry, Extended Evening, Event from the feed), the party by name, the festival running */
     var a=ds.split("-"),y=+a[0],m=+a[1]-1,h='',i,night=window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[ds],pn=night?(pcPartyName(ds)||'MK party night'):null,em=night?tfPartyEm(ds):"";
     var fests=pcWins("festival",y,m).filter(function(w){return w.f<=ds&&ds<=w.t;});
-    h+='<div class="rpc pc-sheet"><div class="pc-shead"><div><div class="tp-wd big">'+tpWDn(ds)+'</div><div class="tp-dt big">'+pcMD(ds)+(ds===today?' \u00b7 today':'')+(HOLIDAYS[ds]&&HOLIDAYS[ds]!=="Christmas week"?' \u00b7 '+esc(HOLIDAYS[ds]):'')+'</div></div><button class="td-shg" data-pcshare="day" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'; /* 0727y (s-B): the room's one glyph — the day rows' door, on the sheet's header */
+    h+='<div class="rpc pc-sheet"><div class="pc-shead"><div class="tp-wd"><span class="wd">'+tpWDn(ds)+'</span><span class="dt">'+pcMD(ds)+(ds===today?' \u00b7 today':'')+(HOLIDAYS[ds]&&HOLIDAYS[ds]!=="Christmas week"?' \u00b7 '+esc(HOLIDAYS[ds]):'')+'</span></div><button class="td-shg" data-pcshare="day" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'; /* 0727y (s-B): the room's one glyph — the day rows' door, on the sheet's header */
     for(i=0;i<TP_PARKS.length;i++){var p=TP_PARKS[i][0],sub='';
       if(p==="Magic Kingdom"&&pn)sub='<span class="pc-sub">'+(em&&em!=="ring"?em+' ':'')+esc(pn)+' \u00b7 closes to day guests early</span>';
       if(p==="EPCOT"&&fests.length)sub+='<span class="pc-sub">\ud83c\udf77 '+fests.map(function(w){return esc((window.__pwFestN||{})[w.id]||w.name);}).join(' \u00b7 ')+'</span>';
