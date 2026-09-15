@@ -2438,7 +2438,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bw</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728bx</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -4933,7 +4933,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="sub">What the mornings have shown for your stars \u2014 what\u2019s worth the open, what closes when, and what comes back.</div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
-    if(!stars.length)return crumb+hero+'<div class="rpc"><div class="fc-empty">Star rides in this park \u2014 from Live, Favorites, or a ride\u2019s profile \u2014 and the morning builds itself here.</div></div>';
+    if(!stars.length)return crumb+hero+ffFaceHTML(rpPark,"morning"); /* 0728bx THE FIRST FACE, THE FAMILY (M2) */
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The plan builds from the day ledger \u2014 one moment.</div></div>';
     var items=[],outs=[],i,cv;
     for(i=0;i<stars.length;i++){cv=rpWinCurve(stars[i].id,rpWin,face9); /* 0727k f-i */
@@ -5039,7 +5039,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="sub">What the evenings have shown for your stars \u2014 what costs the same now, what eases when, and what to save for last.</div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
-    if(!stars.length)return crumb+hero+'<div class="rpc"><div class="fc-empty">Star rides in this park \u2014 from Live, Favorites, or a ride\u2019s profile \u2014 and the evening builds itself here.</div></div>';
+    if(!stars.length)return crumb+hero+ffFaceHTML(rpPark,"evening"); /* 0728bx THE FIRST FACE, THE FAMILY (M2) */
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The plan builds from the day ledger \u2014 one moment.</div></div>';
     var items=[],outs=[],i,cv;
     for(i=0;i<stars.length;i++){cv=rpWinCurve(stars[i].id,rpWin,face9); /* 0727k f-i */
@@ -6329,6 +6329,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var t9=(typeof tpCurTrip==="function")?tpCurTrip():null,sp=t9&&t9.span&&t9.span[ds];if(!sp)return;
     if(sp.st&&/^\d+$/.test(sp.st))tdStart=sp.st;if(sp.lv&&/^\d+$/.test(sp.lv))tdLeave=sp.lv;
   }
+    function ffFaceHTML(pk,room){ /* 0728bx THE FIRST FACE, THE FAMILY (owner-ruled T1 + M2, first-face-family-mock.html): one builder for the Today board and the My Morning / My Evening rooms \u2014 the E1 idiom (0728bu): the star, the state, the exact address, one door to Live (.mr-go \u2192 navGo("live"), bound at the document). S0 = no stars anywhere; S1 = stars exist, none in this park, named by park from the stars map */
+      var by={},n=0,id,r;for(id in watch){r=roster[id];if(!r||!r.park||r.park===pk)continue;by[r.park]=(by[r.park]||0)+1;n++;}
+      var ks=Object.keys(by).sort(function(a,b){return by[b]-by[a]||a.localeCompare(b);});
+      var t=n?'No stars in '+esc(pk)+' yet.':'Star the rides you care about.';
+      var where=n?'Your stars are in other parks \u2014 '+ks.map(function(k){return '<b>'+esc(k)+' \u2605'+by[k]+'</b>';}).join(' \u00b7 ')+'. ':'';
+      var job=(room==="today")?'The board builds your day <b>from your stars</b> \u2014 which to hit, in what order. ':('This room reads what the '+room+'s have run for your stars. ');
+      var addr='On the <b>Live</b> board, open '+esc(pk)+' and tap <span class="st">\u2605</span> on a ride'+((room==="today")?(n?', and the board builds your day from it.':'.'):(' \u2014 the '+room+' builds itself here.'));
+      return '<div class="mr-hello"'+((room==="today")?'':' style="margin-top:0"')+'><div class="big">\u2606</div><div class="t">'+t+'</div><div class="s">'+(n?where:job)+addr+'</div><div class="mr-go" role="button" tabindex="0"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg>Open Live and pick '+esc(pk)+'<span class="chev">\u203a</span></div></div>';
+    }
     function tdSecHTML(t,ds){
     if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* 0725w: the Today board warms /seasonal so tdOrd can drink the calendar \u2014 the 6108 idiom verbatim (guard keeps the cached sync path from re-entering, 0719b; __slGo queues waiters, never drops) */ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
     var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
@@ -6338,7 +6347,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var addr='<button class="td-addr" data-tdadd type="button">+ Add or remove rides</button>';
     var parksLab='<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>';
     var pick=(tdPk?tdPickHTML(t,ds,pk):"")+(tdPin!==null?tdPnHTML(t,ds,pk):""); /* 0715g: the pin sheet mounts beside the picker (never both open) */
-    if(!ids.length){tdSecHTML.rows=[];tdSecHTML.seq=[];return head+'<div class="fc-empty" style="padding:8px 2px">Nothing saved yet \u2014 add rides with the picker below, or from any '+esc(pk)+' ride\u2019s page reached through this day.</div>'+addr+pick+parksLab;}
+    if(!ids.length){tdSecHTML.rows=[];tdSecHTML.seq=[];return head+ffFaceHTML(pk,"today")+'<button class="td-addr" data-tdadd type="button">+ Add rides for '+((ds===tpToday())?'today':'this day')+' only</button>'+pick+parksLab;} /* 0728bx THE FIRST FACE, THE FAMILY (T1): the star first, the picker the second offer, its label true to a board with nothing to remove */
     var tabs='<div class="td-tabs"><button class="hl-tab'+(tdLens!=="mine"?' on':'')+'" data-tdlens="app" type="button">App\u2019s order</button><button class="hl-tab'+(tdLens==="mine"?' on':'')+'" data-tdlens="mine" type="button">My order</button></div>';
     var body="",basis,hint="",_cr=[],_sq=[]; /* 0717n: the rows side-channel - the card reads what the sheet shows, one walk */
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
