@@ -913,11 +913,12 @@
   .rc-tbl{width:100%;border-collapse:collapse;font-size:var(--fs-small)}
   .rc-tbl th{font:600 var(--fs-meta) var(--font-body);text-align:right;padding:0 0 8px 6px;vertical-align:bottom;color:var(--ink)} /* 0714l: names wrap \u2014 the clamp box owns containment now */
   .rc-tbl th:first-child{text-align:left}
-  .rc-tbl th .hd{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:84px;margin-left:auto;line-height:1.25} /* 0714l: the two-line rhyme (.fc-nm) reaches the compare headers */
+  .rc-tbl th .hd{display:block;line-height:1.25} /* 0728cg EVERY NAME IN FULL: the column's own width, wrapping freely, never an ellipsis (was an 84px / 2-line clamp box) */ /* 0714l: the two-line rhyme (.fc-nm) reaches the compare headers */
   .rc-tbl th .rc-dot{width:8px;height:8px;margin-right:5px}
   .rc-tbl td{padding:7px 0 7px 6px;border-top:1px solid var(--line);text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
   .rc-tbl td:first-child{text-align:left;color:var(--muted);font-size:var(--fs-meta)}
   .rc-tbl .mut{color:var(--muted-2)}
+  .rc-tbl td.win{font-weight:700} .rc-tbl td.win .mut{font-weight:400} /* 0728cg THE WINNER IN INK: weight carries, never color */
   .rc-tbl .fd{opacity:.35}
   /* ===== 0714m: the ordering card + live layer (FromHere-Contract) \u2014 live wears tier grammar, typicals stay ink ===== */
   .rc-nv{flex:none;margin-left:10px;text-align:right;font:700 var(--fs-small) var(--font-display);font-variant-numeric:tabular-nums;color:var(--pwh-ink)}
@@ -2453,7 +2454,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ce</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cg</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5183,7 +5184,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       s+='<p>'+t2;
       var mid=wc.filter(function(x){return los.indexOf(x)<0&&his.indexOf(x)<0;});
       if(mid.length===1){var mc=mid[0].cv;
-        s+=' '+nms(mid)+' runs between them \u2014 typically <b>'+mc.typ+'m</b>'+(mc.allday?' as a walk-on all day.':(mc.front!==null?', a walk-on until <b>'+rpClk(mc.front)+'</b>.':', cresting '+rpRange(mc.crest[0],mc.crest[1])+'.'));}
+        s+='</p><p>'+nms(mid)+' runs between them \u2014 typically <b>'+mc.typ+'m</b>'+(mc.allday?' as a walk-on all day.':(mc.front!==null?', a walk-on until <b>'+rpClk(mc.front)+'</b>.':', cresting '+rpRange(mc.crest[0],mc.crest[1])+'.'));}
       s+='</p>';
     }
     var WN={all:'Last 28 days',last7:'The last 7 days',month:'This month',wkend:'Weekends'};
@@ -5226,18 +5227,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var i,heads='<th></th>',WD={all:'over the last '+days+' days',last7:'over the last 7 days',month:'this month',wkend:'on weekends'};
     function fd(id){return (rcFoc&&rcFoc!==id)?' class="fd"':'';}
     for(i=0;i<its.length;i++)heads+='<th'+fd(its[i].id)+'><span class="hd"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span> '+esc(its[i].nm)+'</span></th>'; /* 0714l: the dot lives INSIDE the clamp box \u2014 wrapped names can never strand it */
-    function row(lab2,fn){var c='<td>'+lab2+'</td>';
-      for(var q=0;q<its.length;q++)c+='<td'+fd(its[q].id)+'>'+fn(its[q])+'</td>';
+    function row(lab2,fn,key){ /* 0728cg THE WINNER IN INK: key(x) -> a number where lower is better (null = not in the race); the best cell(s) wear .win, ties bold both */
+      var c='<td>'+lab2+'</td>',ks=[],best=null,q,k;
+      for(q=0;q<its.length;q++){k=key?key(its[q]):null;if(typeof k!=='number'||isNaN(k))k=null;ks.push(k);if(k!==null&&(best===null||k<best))best=k;}
+      for(q=0;q<its.length;q++){var cl=[];if(rcFoc&&rcFoc!==its[q].id)cl.push('fd');if(best!==null&&ks[q]===best)cl.push('win');
+        c+='<td'+(cl.length?' class="'+cl.join(' ')+'"':'')+'>'+fn(its[q])+'</td>';}
       return '<tr>'+c+'</tr>';}
     var MUT='<span class="mut">\u2014</span>';
-    var b=row('Typical',function(x){return x.cv?x.cv.typ+'m':'\u2013';})+
-      row('Typical peak',function(x){return x.cv?x.cv.pk+'m':'\u2013';})+
-      row('Walk-on until',function(x){return x.cv?(x.cv.allday?'All day':(x.cv.front!==null?rpClk(x.cv.front):'<span class="mut">Never</span>')):'\u2013';})+
-      row('Walk-on again',function(x){return x.cv&&x.cv.back!==null?rpClk(x.cv.back):MUT;})+
+    var b=row('Typical',function(x){return x.cv?x.cv.typ+'m':'\u2013';},function(x){return x.cv?x.cv.typ:null;})+
+      row('Typical peak',function(x){return x.cv?x.cv.pk+'m':'\u2013';},function(x){return x.cv?x.cv.pk:null;})+
+      row('Walk-on until',function(x){return x.cv?(x.cv.allday?'All day':(x.cv.front!==null?rpClk(x.cv.front):'<span class="mut">Never</span>')):'\u2013';},function(x){return x.cv?(x.cv.allday?-1e9:(x.cv.front!==null?-x.cv.front:null)):null;})+ /* latest wins; All day beats every clock; Never is out of the race */
+      row('Walk-on again',function(x){return x.cv&&x.cv.back!==null?rpClk(x.cv.back):MUT;},function(x){return x.cv&&x.cv.back!==null?x.cv.back:null;})+ /* earliest wins */
       row('Crests',function(x){return x.cv&&!x.cv.allday?rpRange(x.cv.crest[0],x.cv.crest[1]):MUT;})+
-      row('Clean days',function(x){return x.rel?x.rel.clean+'<span class="mut">/'+x.rel.n+'</span>':'\u2013';});
+      row('Clean days',function(x){return x.rel?x.rel.clean+'<span class="mut">/'+x.rel.n+'</span>':'\u2013';},function(x){return x.rel?-x.rel.clean:null;}); /* most wins */
     return '<div class="rpc"><div class="lbl">Side by side</div><table class="rc-tbl"><tr>'+heads+'</tr>'+b+'</table>'+
-      '<div class="pf-basis">Identity colors the headers; values stay ink \u2014 color keeps one job \u00b7 typical = half-hour medians '+WD[rpWin]+' while operating'+(rcFoc?' \u00b7 tap the chip again to release':'')+'</div></div>';
+      '<div class="pf-basis">Identity colors the headers; values stay ink \u2014 color keeps one job \u00b7 <b>bold</b> = the better number in its row (crests are a window, not a race) \u00b7 typical = half-hour medians '+WD[rpWin]+' while operating'+(rcFoc?' \u00b7 tap the chip again to release':'')+'</div></div>';
   }
   function rcEtMin(d){ /* 0714m: minutes-of-day in park time (ET) \u2014 never the raw local clock */
     var p=new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",hour12:false,hour:"2-digit",minute:"2-digit"}).format(d).split(":");
@@ -5326,7 +5330,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(i=0;i<its.length;i++){var f=rcFoc===its[i].id;
       chips+='<button class="rc-lchip'+(rcFoc?(f?' sel':' fade'):'')+'" data-rcfoc="'+esc(its[i].id)+'" type="button"><span class="rc-dot" style="background:var(--cmp-p'+(i+1)+')"></span><span class="nm">'+esc(its[i].nm)+'</span><span class="typ">'+(its[i].cv?its[i].cv.typ+'m typical':'\u2013')+'</span>'+rcNowChip(its[i].id)+'</button>'; /* 0714m: live wears the hero (N1, ratified) */}
     var hero='<div class="rc-hero"><div class="eb">Compare \u00b7 '+EBW[rpWin]+'</div><div class="rc-legend">'+chips+'</div>'+
-      '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 now as of '+rpClk(rcEtMin(new Date()))+' \u00b7 refreshes ~5 min</div></div>';
+      '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 now as of '+rpClk(rcEtMin(new Date()))+' \u00b7 refreshes ~3 min while open</div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcOrderHTML(its)+rcTableHTML(its,days);
