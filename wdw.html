@@ -134,7 +134,7 @@
   .alert-note b{color:var(--ink);font-weight:600}
 
   .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade)); /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme */
-    padding:8px 0 12px;margin:0}
+    padding:calc(8px + env(safe-area-inset-top,0px)) 0 12px;margin:calc(-1*env(safe-area-inset-top,0px)) 0 0} /* 0728ci THE PLATE (owner-ruled A, controls-sweep-mock.html): the top inset rides as padding, cancelled at rest by the negative margin; pinned, the row's own background plates the status bar and the bar rests beneath the clock */
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px}
   .filterbar{display:flex;align-items:center;gap:8px}
   /* one control grammar: three matched pills, same height, same surface (front-door mock, Jul 5) */
@@ -176,6 +176,7 @@
   .chip-toggle:hover{color:var(--ink);border-color:var(--accent)}
   .chip-toggle.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
   .filter-panel .clear{color:var(--accent);cursor:pointer;font-size:var(--fs-small);margin-left:auto;font-weight:500}
+  .frow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;width:100%} .frow .lab{font:700 var(--fs-caps) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);width:64px;flex:none} .frow .chip-toggle{padding:6px 11px} /* 0728ci THE CONTROLS, SWEPT (B): four labeled chip rows, the panel's own chip as its only control */
   .resultline{font-size:var(--fs-small);color:var(--muted);margin:12px 2px 6px}
   .resultline .src{color:var(--medium)}
 
@@ -538,7 +539,8 @@
   .tp-plcap.none{color:var(--muted-2);font-weight:500}
   .tp-plcap .chv{font-style:normal;margin-left:auto;flex:none;color:var(--muted-2);font-size:18px;line-height:1}
   .tp-plcap .tp-plrn{margin-left:auto;flex:none;font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);white-space:nowrap} /* 0728aj: your rides, at the row's other end */
-  .tp-plcap .tp-plrn+.chv{margin-left:6px} /* 0728ab E-A */
+  .tp-plcap .tp-plrn+.chv{margin-left:6px}
+  .tp-plcap .tp-plr{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none} .tp-plcap .tp-plr .tp-hols,.tp-plcap .tp-plr .tp-plrn,.tp-plcap .tp-plr .chv{margin-left:0} .tp-plcap .tp-plr .tp-hols+.tp-plrn::before{content:"\\00b7";margin-right:6px} /* 0728ci: the caption's right seat clusters holiday \u00b7 count \u203a and wraps as one */ /* 0728ab E-A */
   .tp-dc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the strengthened plan ring + theme-card halo */
   .tp-dc.pn.pnx{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717f: the dashed ring survives only as the unrecognized-party fallback */
   .tp-dc{position:relative}
@@ -1190,7 +1192,7 @@
   .spread .k{font-size:var(--fs-caps);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
   .spread-bar{display:flex;height:16px;border-radius:var(--r-el-sm);overflow:hidden;gap:2px;cursor:pointer}
   .spread-bar i{display:block;height:100%;min-width:34px;transition:opacity .15s}
-  .spread-bar i.s{background:var(--short)}.spread-bar i.m{background:var(--medium)}.spread-bar i.l{background:var(--long)}
+  .spread-bar i.s{background:var(--short)}.spread-bar i.m{background:var(--medium)}.spread-bar i.l{background:var(--long)}.spread-bar i.p{background:var(--packed)} /* 0728ci: the fourth band */
   .spread-bar.sel i{opacity:.28}
   .spread-bar.sel i.active{opacity:1}
   .spread-active{display:flex;align-items:center;gap:10px;margin-top:11px;font-size:var(--fs-small)}
@@ -1286,7 +1288,7 @@
     var(--bg);}
 
   /* ===== tidy app header ===== */
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(22px + env(safe-area-inset-top)) 0 14px} /* 0728ar THE SHELL'S EDGES (shell review Sep 4; cut Sep 11): viewport-fit=cover lets the page run under the status bar and home indicator \u2014 the shell showed black bands there \u2014 so the topbar, the shell's first child, wears the top inset; every bottom edge already spoke env(safe-area-inset-bottom) */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(22px + env(safe-area-inset-top)) 0 14px;position:relative;z-index:21} /* 0728ci: the topbar paints above the controls' plate at rest */ /* 0728ar THE SHELL'S EDGES (shell review Sep 4; cut Sep 11): viewport-fit=cover lets the page run under the status bar and home indicator \u2014 the shell showed black bands there \u2014 so the topbar, the shell's first child, wears the top inset; every bottom edge already spoke env(safe-area-inset-bottom) */
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
   .brand-mark{width:42px;height:42px;flex:none;border-radius:var(--r-tile);box-shadow:0 6px 16px -8px rgba(12,34,48,.6)}
   .brand-text{min-width:0}
@@ -2455,7 +2457,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ch</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ci</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2518,18 +2520,12 @@ document.documentElement.classList.add("dark");}catch(e){}
       <button class="ctl filters-btn" id="filtersToggle">Filters <span class="fcount" id="fcount">0</span></button>
     </div>
     <div class="filter-panel" id="filterPanel" hidden>
-      <div class="fld"><label for="type">Type</label>
-        <select id="type"><option value="all">All</option><option value="ride">Rides</option><option value="show">Shows</option></select></div>
-      <div class="fld"><label for="cat">Category</label>
-        <select id="cat"><option value="all">All</option><option value="Thrill">Thrill</option><option value="Family">Family</option><option value="Kids">Kids</option><option value="Water">Water</option><option value="Show">Show</option><option value="Untagged">Untagged</option></select></div>
-      <div class="fld"><label for="status">Status</label>
-        <select id="status"><option value="all">All</option><option value="open">Open</option><option value="down">Down</option><option value="closed">Closed</option></select></div>
-      <div class="fld"><label for="band">Wait</label>
-        <select id="band"><option value="all">Any</option><option value="short">&le;20</option><option value="medium">21–45</option><option value="long">&gt;45</option></select></div>
-      <div class="chip-toggle" id="llChip">Lightning Lane</div>
-      <div class="chip-toggle" id="srChip">Single Rider</div>
-      <div class="chip-toggle" id="watchChip">★ Favorites</div>
-      <span class="clear" id="clearF">Clear all</span>
+      <!-- 0728ci THE CONTROLS, SWEPT (owner-ruled B): every choice is a chip; the lit chip is the state; four bands by name (ONE BAND VOCABULARY); Untagged retired; Starred, not Favorites -->
+      <div class="frow" data-frow="type"><span class="lab">Type</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="ride">Rides</div><div class="chip-toggle" data-v="show">Shows</div></div>
+      <div class="frow" data-frow="status"><span class="lab">Status</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="open">Open</div><div class="chip-toggle" data-v="down">Down</div><div class="chip-toggle" data-v="closed">Closed</div></div>
+      <div class="frow" data-frow="band"><span class="lab">Wait</span><div class="chip-toggle on" data-v="all">Any</div><div class="chip-toggle" data-v="short">Short</div><div class="chip-toggle" data-v="medium">Medium</div><div class="chip-toggle" data-v="long">Long</div><div class="chip-toggle" data-v="packed">Packed</div></div>
+      <div class="frow" data-frow="cat"><span class="lab">Category</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="Thrill">Thrill</div><div class="chip-toggle" data-v="Family">Family</div><div class="chip-toggle" data-v="Kids">Kids</div><div class="chip-toggle" data-v="Water">Water</div><div class="chip-toggle" data-v="Show">Show</div></div>
+      <div class="frow"><span class="lab">Also</span><div class="chip-toggle" id="llChip">Lightning Lane</div><div class="chip-toggle" id="srChip">Single Rider</div><div class="chip-toggle" id="watchChip">★ Starred</div><span class="clear" id="clearF">Clear all</span></div>
     </div>
   </div>
 </div>
@@ -2705,7 +2701,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var liveState="ok";
 
   /* 0719x: the sheet's select-priming retired with its DOM — MY RIDES builds its own selects */
-  $("type").value=f.type;$("cat").value=f.cat;$("status").value=f.status;$("band").value=f.band;$("sort").value=f.sort;
+  frowSync("type",f.type);frowSync("cat",f.cat);frowSync("status",f.status);frowSync("band",f.band);$("sort").value=f.sort; /* 0728ci: the chip rows prime from the stored filters */
   setOn($("llChip"),f.ll);setOn($("srChip"),f.sr);setOn($("watchChip"),f.watched);
   function notifGranted(){return notifPerm()==="granted";} /* 0728bw THE SHELL HEARS THE WORKER: one permission reader */
   function setOn(el,on){el.classList[on?"add":"remove"]("on");}
@@ -2978,10 +2974,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
 
   /* ---- events ---- */
   /* 0719w: the default-rule selects moved home — MY RIDES binds mrDir/mrThr */
-  bindSel("type","f_type",function(v){f.type=v;});
-  bindSel("cat","f_cat",function(v){f.cat=v;});
-  bindSel("status","f_status",function(v){f.status=v;});
-  bindSel("band","f_band",function(v){f.band=v;});
+  bindRow("type","f_type",function(v){f.type=v;});
+  bindRow("cat","f_cat",function(v){f.cat=v;});
+  bindRow("status","f_status",function(v){f.status=v;});
+  bindRow("band","f_band",function(v){f.band=v;});
   bindSel("sort","sort",function(v){f.sort=v;});
   function syncSortVal(){var s=$("sort"),sv=$("sortVal");if(s&&sv&&s.selectedIndex>=0)sv.textContent=s.options[s.selectedIndex].text;}
   $("sort").addEventListener("change",syncSortVal);syncSortVal();
@@ -2996,6 +2992,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   /* 0719w: the notifications master switch moved home — its permission ladder rides mrNotifTap whole */
   function bindSel(id,key,fn){$(id).addEventListener("change",function(){fn(this.value);store.set(key,this.value);render();});}
   function bindChip(id,key,fn){$(id).addEventListener("click",function(){var on=!this.classList.contains("on");setOn(this,on);fn(on);store.set(key,on);render();});}
+  function frowSync(k,v){var row=document.querySelector('[data-frow="'+k+'"]');if(!row)return;Array.prototype.forEach.call(row.querySelectorAll("[data-v]"),function(c){setOn(c,c.getAttribute("data-v")===v);});} /* 0728ci: the lit chip is the state */
+  function bindRow(k,key,fn){var row=document.querySelector('[data-frow="'+k+'"]');if(!row)return;row.addEventListener("click",function(e){var c=e.target&&e.target.closest?e.target.closest("[data-v]"):null;if(!c||!row.contains(c))return;var v=c.getAttribute("data-v");frowSync(k,v);fn(v);store.set(key,v);render();});} /* 0728ci: one tap picks; the bindSel idiom on a chip row */
   function resetAlerts(){alertState={};saveAlertState();}
 
   /* ---- fallback roster ---- */
@@ -3330,7 +3328,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   /* ---- shared display helpers ---- */
   function tierOf(lv){if(!lv||lv.status!=="OPERATING"||lv.wait===null)return "closed";
     if(lv.wait<=20)return "short";if(lv.wait<=45)return "medium";if(lv.wait<=70)return "long";return "packed";}
-  function bandOf(lv){var t=tierOf(lv);return t==="packed"?"long":t;}
+  function bandOf(lv){return tierOf(lv);} /* 0728ci ONE BAND VOCABULARY: the filter and the spread speak the tile's four bands (was: packed folded into long) */
   function statusBucket(lv){if(!lv)return "closed";if(lv.status==="OPERATING")return "open";if(lv.status==="DOWN")return "down";return "closed";}
   function statusLabel(lv){if(!lv||lv.status==="CLOSED")return "Closed";if(lv.status==="DOWN")return "Down";if(lv.status==="REFURBISHMENT")return "Refurb";return "Open";}
   function groupOf(o){var lv=o.lv,op=lv&&lv.status==="OPERATING";
@@ -6379,7 +6377,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     }
     function ffSeedFaceHTML(pk,sd){ /* 0728ch THE DAY STARTS FROM YOUR STARS \u2014 S2 (owner-ruled A, s2-face-mock.html): stars in this park, nothing in the day (a day you emptied; a day planned before its stars). The face keeps its one door, which now seats the stars through the picker's own data-tdstars binder (Plan: tdAdd; Today: tyRAdd) \u2014 never Live */
       var n=sd.length;
-      return '<div class="mr-hello"><div class="big">\u2606</div><div class="t">Nothing on this day yet.</div><div class="s">Your <b>'+n+' '+esc(pk)+' star'+(n===1?'':'s')+'</b> '+(n===1?'is':'are')+' one tap away, or pick rides one at a time.</div><div class="mr-go" role="button" tabindex="0" data-tdstars="'+esc(sd.join("|"))+'"><span class="fs">\u2605</span>Add your '+(n===1?'star':n+' stars')+'<span class="chev">\u203a</span></div></div>';
+      return '<div class="mr-hello"><div class="big">\u2606</div><div class="t">Nothing on this day yet.</div><div class="s">Your <b>'+n+' starred '+esc(pk)+' ride'+(n===1?'':'s')+'</b> '+(n===1?'is':'are')+' one tap away, or pick rides one at a time.</div><div class="mr-go" role="button" tabindex="0" data-tdstars="'+esc(sd.join("|"))+'"><span class="fs">\u2605</span>Add your '+(n===1?'starred ride':n+' starred rides')+'<span class="chev">\u203a</span></div></div>';
     }
     function tdSecHTML(t,ds){
     if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* 0725w: the Today board warms /seasonal so tdOrd can drink the calendar \u2014 the 6108 idiom verbatim (guard keeps the cached sync path from re-entering, 0719b; __slGo queues waiters, never drops) */ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
@@ -7085,7 +7083,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var hdn=(HOLIDAYS[d0]&&HOLIDAYS[d0]!=="Christmas week")?HOLIDAYS[d0]:null; /* Cut 3 (O-A): a SPECIFIC day-name wins its own row; the generic stretch label yields to the seasonal tag \u2014 the bars name the week either way */
       var hol=(hdn?'<span class="tp-hol">'+esc(hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early to day guests</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var plv=pk?tpSznCell(model,pk,wd,d0):null,pln=pk?'<b>'+esc(pk)+'</b>'+((plv&&!plv.thin&&plv.lvl)?' \u00b7 '+TP_TW[plv.lvl]+' on '+tpWDn(d0)+'s':''):(behind?'Behind you':(t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest")?'<b>Rest day</b>':'Not planned yet'),rst9=(!pk&&!behind&&t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest"); /* 0728t: a rest the advisor wrote is a rest, not an unplanned day */ /* 0728an A WRITTEN REST WEARS THE PLAN'S FACE (owner glass 11:40 AM Sep 10): the words changed on 0728t, the dress didn't \u2014 a written rest reads in the plan caption's ink; Not planned yet and Behind you keep the muted face, they are absences */ /* 0727o (t-B, q-B): the planned line names the park in ink and carries its tier in the day page\u2019s own sentence */ /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+((pk||rst9)?'':' none')+'"><span>'+pln+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+((!open&&pk&&((t.rides||{})[d0]||[]).length)?'<span class="tp-plrn">'+((t.rides||{})[d0]||[]).length+' ride'+(((t.rides||{})[d0]||[]).length===1?'':'s')+'</span>':'')+(open?'':'<i class="chv">\u203a</i>')+'</div></div>'; /* 0728aj (owner glass 10:14 PM, Sep 9): THE ROW SAYS WHAT YOU'VE DONE \u2014 a closed row with rides carries the count at the caption's right, beside the \u203a; the open day's header already says it */ /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+((pk||rst9)?'':' none')+'"><span>'+pln+'</span><span class="tp-plr">'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+((!open&&pk&&((t.rides||{})[d0]||[]).length)?'<span class="tp-plrn">'+((t.rides||{})[d0]||[]).length+' ride'+(((t.rides||{})[d0]||[]).length===1?'':'s')+'</span>':'')+(open?'':'<i class="chv">\u203a</i>')+'</span></div></div>'; /* 0728ci: the right seat is one cluster \u2014 holiday \u00b7 count \u203a wrap together */ /* 0728aj (owner glass 10:14 PM, Sep 9): THE ROW SAYS WHAT YOU'VE DONE \u2014 a closed row with rides carries the count at the caption's right, beside the \u203a; the open day's header already says it */ /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
       var dx='';
       if(open){var L=tpDayLine(d0,model,t,EV),tdr9=(pk&&d0===tpToday())?'<button class="tp-today" data-tptoday="'+esc(pk)+'" type="button">It\u2019s today \u2014 your live board is on TODAY <span class="chev">\u203a</span></button>':'';dx='<div class="tp-dx">'+L.line+L.sub+tdr9+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0727d THE TRIP KNOWS TODAY (D): on the day itself the trip page names the surface where the waits live \u2014 one door, no input; the two surfaces name each other */ /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
@@ -8062,7 +8060,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var head='<div class="results-head">Results for &ldquo;<span class="q">'+esc(q)+'</span>&rdquo; '+
       '<span class="c">'+list.length+'</span>'+
       '<button class="results-clear" id="resClear">Clear</button></div>'+
-      '<div class="results-hint">Across all four parks · tap &#9733; to set an alert</div>';
+      '<div class="results-hint">Across all four parks · tap &#9733; to star it</div>';
     var body;
     if(!list.length){
       body='<div class="state"><h3>No matches for &ldquo;'+esc(q)+'&rdquo;</h3><p>Try a shorter word or check the spelling.</p></div>';
@@ -8200,17 +8198,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
     var ws=scopeWaits(key),spreadHTML="";
     if(!usingFallback&&ws.length){
-      var bnd={short:0,medium:0,long:0};
-      ws.forEach(function(w){if(w<=20)bnd.short++;else if(w<=45)bnd.medium++;else bnd.long++;});
+      var bnd={short:0,medium:0,long:0,packed:0};
+      ws.forEach(function(w){if(w<=20)bnd.short++;else if(w<=45)bnd.medium++;else if(w<=70)bnd.long++;else bnd.packed++;}); /* 0728ci: four bands */
       var sel=f.band;
-      var BANDS=[{k:"short",c:"s",lbl:"≤20 min"},{k:"medium",c:"m",lbl:"21–45"},{k:"long",c:"l",lbl:"45+"}];
+      var BANDS=[{k:"short",c:"s",lbl:"≤20 min"},{k:"medium",c:"m",lbl:"21–45"},{k:"long",c:"l",lbl:"46–70"},{k:"packed",c:"p",lbl:"70+"}];
       var segs=BANDS.filter(function(x){return bnd[x.k]>0;}).map(function(x){
         return '<i class="'+x.c+(sel===x.k?" active":"")+'" data-band="'+x.k+'" style="flex:'+bnd[x.k]+'"></i>';
       }).join("");
       spreadHTML='<div class="spread"><div class="k">'+(sel==="all"?"Wait spread · tap a band to filter":"Wait spread")+'</div>'+
         '<div class="spread-bar'+(sel!=="all"?" sel":"")+'">'+segs+'</div>';
       if(sel!=="all"){
-        var lbl=sel==="short"?"≤20 min":sel==="medium"?"21–45 min":"45+ min",
+        var lbl=sel==="short"?"≤20 min":sel==="medium"?"21–45 min":sel==="long"?"46–70 min":"70+ min",
             cnt=bnd[sel],col="var(--"+sel+")";
         spreadHTML+='<div class="spread-active"><span class="pill"><span class="d" style="background:'+col+'"></span>Showing '+lbl+' · '+cnt+'</span><span class="clear" data-band="all">✕ Clear</span></div>';
       }else{
@@ -8259,7 +8257,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         var band=seg.getAttribute("data-band");
         f.band=(band===f.band)?"all":band;
         store.set("f_band",f.band);
-        var bs=$("band");if(bs)bs.value=f.band;
+        frowSync("band",f.band); /* 0728ci: the spread's tap lights the panel's row */
         render();
       });
     });
@@ -10092,7 +10090,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     f.type="all";f.cat="all";f.status="all";f.band="all";f.ll=false;f.sr=false;f.watched=false;
     ["f_type","f_cat","f_status","f_band"].forEach(function(k){store.set(k,"all");});
     store.set("f_ll",false);store.set("f_sr",false);store.set("f_watched",false);
-    $("type").value="all";$("cat").value="all";$("status").value="all";$("band").value="all";
+    frowSync("type","all");frowSync("cat","all");frowSync("status","all");frowSync("band","all");
     setOn($("llChip"),false);setOn($("srChip"),false);setOn($("watchChip"),false);render();
   }
 
