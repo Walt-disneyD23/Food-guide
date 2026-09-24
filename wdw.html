@@ -2047,6 +2047,7 @@
   .mr-go{display:flex;align-items:center;gap:10px;background:var(--accent-fill);color:#fff;border-radius:var(--r-card);padding:14px 16px;margin-top:14px;font:700 var(--fs-title) var(--font-display);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .mr-go svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   .mr-go .chev{margin-left:auto;font-weight:700;opacity:.8}
+  .mr-go .fs{color:var(--fav);font-size:18px;line-height:1} /* 0728ch: the S2 door's star */
   /* ===== MY RIDES Stage 2 (0719z) — chips lens + YOUR PULSE, mock v12 grammar */
   .mr-chips{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:5px;margin-bottom:10px}
   .mr-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:999px;padding:8px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -2454,7 +2455,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ch</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5467,6 +5468,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(tgt.span&&!inR[k2])delete tgt.span[k2];} /* 0728aq: a day pruned out of the range drops its span; a park change keeps it (the leave is the day's) */
       tgt.n=n;tgt.a=a;tgt.b=b;tgt.plan=keep;tpSel=tgt.id;}
     else{var t={id:String(Date.now())+"-"+ts.length,n:n,a:a,b:b,plan:keep};ts.push(t);tpSel=t.id;}
+    var t9=tgt||t,k9;for(k9 in keep)tdSeed(t9,k9); /* 0728ch THE DAY STARTS FROM YOUR STARS: the creator is the second door that writes a plan \u2014 every kept day with no list seeds here */
     store.set("ppTrips",ts);tpEdit=false;tpNew=false;tpOpen=null;tpDelArm=false;tpPlanDraft=null;tpPlanPick=null;
     return null;
   }
@@ -5491,6 +5493,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(t.pins)delete t.pins[d];
       if(t.done)delete t.done[d];
     }
+    if(p)tdSeed(t,d); /* 0728ch THE DAY STARTS FROM YOUR STARS: the day picker and the Advisor both land here \u2014 a changed park wipes, then seeds from the new park's stars; a kept park keeps its list; a never-seeded day seeds now (the Advisor's carry lands after this and wins) */
   }
   function tdAnchoredRender(ds){ /* Cut C (C-1) feel law: A WRITE MAY NOT MOVE THE READER - the day's own row holds its screen position across the rebuild; the browser's scroll clamp IS the settle-nearest clause (bottom-of-trip) */
     var q='.tp-drow[data-tpday="'+ds+'"]',pick=function(kind){var r=document.querySelector(q),hh=r&&r.parentNode,g=(kind!=="row")&&hh&&hh.querySelector&&hh.querySelector('.tp-pgrid');return g||r;},el=pick(),kind=(el&&el.classList.contains('tp-pgrid'))?"grid":"row",t0=el?el.getBoundingClientRect().top:null; /* 0728l: the anchor's element is decided ONCE, before the render, and re-found by KIND after \u2014 an expand would otherwise measure the row before and the new picker after */ /* 0728g: the picker is the row's SIBLING (tp-dx follows the closed row inside .rpc.tp-day) \u2014 found through the row's host, not inside the row */ /* 0728f: THE THING YOU TOUCHED STAYS UNDER YOUR THUMB \u2014 anchor the picker when it's on glass (My Day and the read box grow above it), the row's top otherwise */
@@ -5929,6 +5932,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      thresholds; quick-add picker (A + stars, owner-picked Jul 29); history, never a promise. ===== */
   function tdReset(){tdLens="app";tdStart="";tdLeave="cl";tdPk=false;tdPkA=false;tdQ="";tdPin=null;tdPnA=false;tdPnP=null;tdPnS=null;tdPnE=null;tdPnL=null;tpClrArm=null;}
   function tdRides(t,ds){return (t&&t.rides||{})[ds]||[];}
+  function tdSeed(t,ds){ /* 0728ch THE DAY STARTS FROM YOUR STARS (owner-ruled Sep 24): a planned day with no list of its own seats the park's stars \u2014 Today's seed (tySeed), one home; THE EMPTY SEED NEVER PLANTS (no stars \u2192 no key, the face stays honest); a real [] is the guest's own emptying and stands. Returns true when it wrote. Pure on t; the callers own the store write */
+    var pk=(t&&t.plan||{})[ds];if(!pk||(t.rides||{})[ds])return false;
+    var sd=tySeed(pk);if(!sd.length)return false;
+    if(!t.rides)t.rides={};t.rides[ds]=sd;return true;
+  }
+  function tdSeedWrite(id,ds){ /* 0728ch: the day-open door \u2014 seeds a never-seeded day inside one tpTrips() read (the tdAdd idiom); a day planned before its stars picks them up the first time you look */
+    var ts=tpTrips(),i;for(i=0;i<ts.length;i++)if(ts[i].id===id){if(tdSeed(ts[i],ds))store.set("ppTrips",ts);return;}
+  }
   function tdAdd(id,ds,rid){ /* one-read store law: mutate inside a single tpTrips() read */
     var ts=tpTrips(),i;
     for(i=0;i<ts.length;i++)if(ts[i].id===id){
@@ -5942,7 +5953,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(i=0;i<ts.length;i++)if(ts[i].id===id){
       var a=(ts[i].rides||{})[ds];if(!a)return;
       j=a.indexOf(rid);if(j<0)return;a.splice(j,1);
-      if(!a.length)delete ts[i].rides[ds];
+      /* 0728ch: an emptied day keeps its real [] \u2014 the guest's own emptying stands; only an absent key means never seeded (Today's null/[] law reaches the trip) */
       var pm=(ts[i].pins||{})[ds]; /* 0715g: a removed ride can't stay pinned */
       if(pm&&(rid in pm)){delete pm[rid];if(!Object.keys(pm).length)delete ts[i].pins[ds];}
       var dl=(ts[i].done||{})[ds],dj; /* 0715h: nor keep its done mark */
@@ -6366,6 +6377,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var addr='On the <b>Live</b> board, open '+esc(pk)+' and tap <span class="st">\u2605</span> on a ride'+((room==="today")?(n?', and the board builds your day from it.':'.'):(' \u2014 the '+room+' builds itself here.'));
       return '<div class="mr-hello"'+((room==="today")?'':' style="margin-top:0"')+'><div class="big">\u2606</div><div class="t">'+t+'</div><div class="s">'+(n?where:job)+addr+'</div><div class="mr-go" role="button" tabindex="0"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg>Open Live and pick '+esc(pk)+'<span class="chev">\u203a</span></div></div>';
     }
+    function ffSeedFaceHTML(pk,sd){ /* 0728ch THE DAY STARTS FROM YOUR STARS \u2014 S2 (owner-ruled A, s2-face-mock.html): stars in this park, nothing in the day (a day you emptied; a day planned before its stars). The face keeps its one door, which now seats the stars through the picker's own data-tdstars binder (Plan: tdAdd; Today: tyRAdd) \u2014 never Live */
+      var n=sd.length;
+      return '<div class="mr-hello"><div class="big">\u2606</div><div class="t">Nothing on this day yet.</div><div class="s">Your <b>'+n+' '+esc(pk)+' star'+(n===1?'':'s')+'</b> '+(n===1?'is':'are')+' one tap away, or pick rides one at a time.</div><div class="mr-go" role="button" tabindex="0" data-tdstars="'+esc(sd.join("|"))+'"><span class="fs">\u2605</span>Add your '+(n===1?'star':n+' stars')+'<span class="chev">\u203a</span></div></div>';
+    }
     function tdSecHTML(t,ds){
     if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* 0725w: the Today board warms /seasonal so tdOrd can drink the calendar \u2014 the 6108 idiom verbatim (guard keeps the cached sync path from re-entering, 0719b; __slGo queues waiters, never drops) */ /* {WEEKDAY} AT <PARK> (0719l rename; the landing took "My day") — leads the opened day once a park is planned; the lens flips the reading, never the data */
     var pk=(t&&t.plan||{})[ds];if(!pk){tdSecHTML.rows=[];return "";} /* 0717n: no park, no rows - the channel never goes stale */
@@ -6375,7 +6390,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var addr='<button class="td-addr" data-tdadd type="button">+ Add or remove rides</button>';
     var parksLab='<div class="td-lab" style="margin-top:15px"><span>The parks</span></div>';
     var pick=(tdPk?tdPickHTML(t,ds,pk):"")+(tdPin!==null?tdPnHTML(t,ds,pk):""); /* 0715g: the pin sheet mounts beside the picker (never both open) */
-    if(!ids.length){tdSecHTML.rows=[];tdSecHTML.seq=[];return head+ffFaceHTML(pk,"today")+'<button class="td-addr" data-tdadd type="button">+ Add rides for '+((ds===tpToday())?'today':'this day')+' only</button>'+pick+parksLab;} /* 0728bx THE FIRST FACE, THE FAMILY (T1): the star first, the picker the second offer, its label true to a board with nothing to remove */
+    if(!ids.length){tdSecHTML.rows=[];tdSecHTML.seq=[];var sd9=tySeed(pk);return head+(sd9.length?ffSeedFaceHTML(pk,sd9):ffFaceHTML(pk,"today"))+'<button class="td-addr" data-tdadd type="button">+ Add rides for '+((ds===tpToday())?'today':'this day')+' only</button>'+pick+parksLab;} /* 0728bx THE FIRST FACE, THE FAMILY (T1): the star first, the picker the second offer, its label true to a board with nothing to remove */
     var tabs='<div class="td-tabs"><button class="hl-tab'+(tdLens!=="mine"?' on':'')+'" data-tdlens="app" type="button">App\u2019s order</button><button class="hl-tab'+(tdLens==="mine"?' on':'')+'" data-tdlens="mine" type="button">My order</button></div>';
     var body="",basis,hint="",_cr=[],_sq=[]; /* 0717n: the rows side-channel - the card reads what the sheet shows, one walk */
     var today=(ds===tpToday()),dnl=tdDoneList(t,ds),dset={},di; /* 0715h: the live layer wakes on today only */
@@ -7711,7 +7726,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
-      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen)tdSpanSeed(tpOpen);tdAnchoredRender(d);});}); /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
+      var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
     el.querySelectorAll("[data-tpdoor]").forEach(function(b){b.addEventListener("click",function(){ /* 0715d: the home-base door — the lens's ONLY writer; the trip + day are the ones you're standing in, so the window can never misname its trip. tpSel survives: the TRIP pill walks back to this board. */
       var t2=tpCurTrip();if(!t2)return;
       tpLensSel=t2.id;tpLensDay=b.getAttribute("data-tpdd");
@@ -13567,7 +13582,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var d=e.target&&e.target.closest?e.target.closest(".mr-door"):null;
       if(d)navGo("pulse");
       var g9=e.target&&e.target.closest?e.target.closest(".mr-go"):null; /* 0728bu THE FIRST FACE: the empty face's one door opens the Live board */
-      if(g9)navGo("live");
+      if(g9&&!g9.hasAttribute("data-tdstars"))navGo("live"); /* 0728ch: the S2 door carries data-tdstars and seats stars through the page's own binder \u2014 never Live */
       var w9=e.target&&e.target.closest?e.target.closest(".ty-wrapdoor"):null; /* 0723r: THE TAP MUST CROSS THE WIRE \u2014 the done-day door lands on Wrap\u2019s day view (owner ruling A, Aug 18) */
       if(w9)navGo("wrap");
       var td9=e.target&&e.target.closest?e.target.closest(".tp-today"):null; /* 0727d: the Plan tab\u2019s day-of door \u2014 tyPick stamps the day (tdDayWrite), so navGo("today") lands on the board, not the landing */
