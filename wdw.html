@@ -1354,6 +1354,16 @@
     font-family:var(--font-body);-webkit-tap-highlight-color:transparent;transition:.15s}
   .dn-watch.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
   .sp-foot a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+  /* 0728ck THE TILE'S PROOF (owner-ruled P1, tile-proof-mock.html): the eight behind the big number, then the second number proven the same way */
+  .pp-hl{margin:12px 0 0;padding:0;list-style:none}
+  .pp-hl li{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:var(--fs-body);color:var(--ink)}
+  .pp-hl li:first-child{border-top:0}
+  .pp-hl .wt{font-family:var(--font-display);font-weight:700;font-variant-numeric:tabular-nums;flex:none;color:color-mix(in srgb,var(--wb) 75%,var(--ink))} /* the tile's ink rule: the band deepened in Light */
+  html.dark .pp-hl .wt{color:var(--wb)}
+  .pp-hl .wt .u{font-size:var(--fs-caps);color:var(--muted-2);font-weight:600;margin-left:1px}
+  .pp-sub{font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin:12px 0 4px}
+  .pp-all{font-size:var(--fs-body);color:var(--muted);line-height:1.45} .pp-all b{color:var(--ink);font-weight:600}
+  .pb-rr[data-pbproof]{cursor:pointer} .pb-tile.lit{outline:2px solid var(--accent);outline-offset:2px} /* the door and its lit state */
   .icon-btn{width:40px;height:40px;border-radius:var(--r-tile);border:1px solid var(--line);background:var(--card);
     color:var(--ink);font-size:var(--fs-lead);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:.15s}
   .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -1365,7 +1375,7 @@
   .alerts-pop[hidden]{display:none}
   /* ---- de-clutter: status = floating glance popover; alerts = bottom sheet.
      The page belongs to content — nothing in-flow expands anymore. */
-  #statusPop{position:fixed;right:16px;width:min(330px,calc(100vw - 32px));z-index:70;margin-bottom:0;
+  #statusPop,#proofPop{position:fixed;right:16px;width:min(330px,calc(100vw - 32px));z-index:70;margin-bottom:0; /* 0728ck THE TILE'S PROOF: the proof card wears the status card's float */
     border-radius:var(--r-card);box-shadow:0 18px 44px rgba(20,22,50,.22);animation:spopIn .18s ease}
   @keyframes spopIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
   #alertsPop{position:fixed;left:0;right:0;bottom:0;z-index:89;margin:0;border:none;border-radius:var(--r-sheet) var(--r-sheet) 0 0;
@@ -2460,7 +2470,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ck</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2512,6 +2522,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="sp-foot">Refreshes every 3 minutes while parks are open — pull down any time · data from
       <a href="https://themeparks.wiki" target="_blank" rel="noopener">ThemeParks.wiki</a></div>
   </div>
+  <div class="alerts-pop" id="proofPop" hidden data-pk=""></div> <!-- 0728ck THE TILE'S PROOF: filled by pbProofHTML on a tile tap -->
 </div>
 
 <div class="controls-wrap">
@@ -2861,7 +2872,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
       return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open");}
-    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#igPop,#statusPop,.dn-list.open,.rc-sheet,.td-sheet,.td-grip"));}
+    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#igPop,#statusPop,#proofPop,.dn-list.open,.rc-sheet,.td-sheet,.td-grip"));}
     function setPull(px){
       ptr.classList.add("pull");
       ptr.style.opacity=Math.min(px/40,1);
@@ -2930,6 +2941,22 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
   },true);
   window.addEventListener("scroll",closeStatusPop,{passive:true});window.ppShl().addEventListener("scroll",closeStatusPop,{passive:true});
+  /* ---- 0728ck THE TILE'S PROOF: the proof card, the status card's grammar verbatim ---- */
+  function closeProofPop(){var p=$("proofPop");if(!p||p.hasAttribute("hidden"))return;p.setAttribute("hidden","");p.setAttribute("data-pk","");var l=document.querySelector(".pb-tile.lit");if(l)l.classList.remove("lit");}
+  document.addEventListener("click",function(e){ /* capture phase: a tap on a tile column opens the card under it (and never expands the row beneath); a tap-out is swallowed whole; the dash column is no door */
+    var p=$("proofPop");if(!p)return;
+    var d=e.target&&e.target.closest?e.target.closest("[data-pbproof]"):null;
+    if(d){var tile=d.querySelector(".pb-tile");if(!tile||tile.classList.contains("pb-tx"))return;
+      e.stopPropagation();e.preventDefault();
+      var pk=d.getAttribute("data-pbproof"),was=!p.hasAttribute("hidden")&&p.getAttribute("data-pk")===pk;closeProofPop();if(was)return;
+      var html=pbProofHTML(pk);if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
+      var r=d.getBoundingClientRect();p.style.top=Math.round(r.bottom+8)+"px";p.removeAttribute("hidden");tile.classList.add("lit");
+      var ph=p.offsetHeight||0,lim=(window.innerHeight||0)-96;if(ph&&r.bottom+8+ph>lim)p.style.top=Math.max(8,Math.round(r.top-8-ph))+"px"; /* a low row's card opens above its tile, clear of the nav */
+      return;}
+    if(p.hasAttribute("hidden"))return;
+    if(!p.contains(e.target)){e.stopPropagation();e.preventDefault();closeProofPop();}
+  },true);
+  window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
   function renderStatus(){renderStatusMeta();renderStatusCover();}
   function renderStatusMeta(){
     var dot=$("spDot"),word=$("spWord"),desc=$("spDesc"),up=$("spUpdated"),nx=$("spNext");
@@ -3839,6 +3866,19 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var b=tierOfWait(av);
     return '<span class="pb-tile pb-b-'+b+'" style="--tc:var(--'+b+')"><span class="pb-avg">'+av+'<span class="u">m</span></span><span class="w">Headliners</span>'+((all===null||all===undefined)?'':'<span class="sec"><span class="pb-avg">'+all+'<span class="u">m</span></span><span class="w">All rides</span></span>')+'</span>';
   }
+  function pbHeadliners(pk){ /* 0728ck THE TILE'S PROOF: the eight behind the big number \u2014 scopeWaits' own predicate (park \u00b7 open per schedule \u00b7 OPERATING with a wait), ranked by wait, so the card's average IS the tile's (ONE NUMBER FAMILY) */
+    var out=[];Object.keys(roster).forEach(function(id){var r=roster[id],lv=liveById[id];if(!r||r.park!==pk)return;if(isOpenNow(parkInfo[r.park])===false)return;if(lv&&lv.status==="OPERATING"&&lv.wait!==null)out.push({id:id,name:r.name||id,wait:lv.wait});});
+    out.sort(function(a,b){return (b.wait-a.wait)||String(a.name).localeCompare(String(b.name));});
+    return {top:out.slice(0,8),open:out.length};
+  }
+  function pbProofHTML(pk){ /* 0728ck THE TILE'S PROOF (owner-ruled P1): the status pill's card, verbatim dress \u2014 THE CARDS PROVE. The ALL RIDES line proves the second number the same way; when \u22648 rides are open the two lists are one list and the card says so (owner, Sep 25: AK 33/33) */
+    var h=pbHeadliners(pk),n=h.top.length;if(!n)return '';
+    var t=0,i;for(i=0;i<n;i++)t+=h.top[i].wait;var av=Math.round(t/n),b=tierOfWait(av),allAvg=tyAllAvg(pk),st=bannerStats(pk);
+    var list='<ul class="pp-hl">';for(i=0;i<n;i++){var x=h.top[i];list+='<li><span>'+esc(x.name)+'</span><span class="wt" style="--wb:var(--'+tierOfWait(x.wait)+')">'+x.wait+'<span class="u">m</span></span></li>';}list+='</ul>';
+    var allLine=(h.open<=8)?'All <b>'+h.open+'</b> open ride'+(h.open===1?'':'s')+' are the headliners \u00b7 <b>'+allAvg+'m</b> either way':'<b>'+allAvg+'m</b> average across the <b>'+h.open+'</b> open';
+    var crowd=(st&&st.crowd)?' \u00b7 crowd <b style="color:'+esc(st.crowd.color)+'">'+esc(st.crowd.label)+'</b> \u00b7 est.':'';
+    return '<div class="sp-head"><span class="sp-dot" style="background:var(--'+b+')"></span>'+esc(pk)+' \u00b7 Headliners</div><div class="sp-desc">The '+n+' busiest ride'+(n===1?'':'s')+' right now \u2014 their average is the tile\u2019s big number.</div>'+list+'<div class="pp-sub">All rides</div><div class="pp-all">'+allLine+crowd+'</div><div class="sp-foot">Estimates from live wait times, not official attendance.</div>';
+  }
   function pbOpenSub(s,inf,sw,now){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
     function ck(mn){mn=((mn%1440)+1440)%1440;var h=Math.floor(mn/60),m2=mn%60,ap=h>=12?"PM":"AM";h=h%12||12;return h+":"+(m2<10?"0":"")+m2+" "+ap;}
     var word=null;
@@ -3926,7 +3966,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         row=document.createElement("div");row.className="pb-row";row.setAttribute("data-key",key);
         row.innerHTML='<div class="pb-m"><div class="pb-nm">'+esc(key)+'</div>'+ /* 0728cj: the tick retired (D2) \u2014 the tile is the row's one colour */
           '<div class="pb-sub"><i class="dot"></i>Live</div></div>'+
-          '<div class="pb-rr">'+pbTileHTML(null,null)+'</div><span class="pb-chv">\u25be</span>'; /* CARDS ARE DOORS, HAIRLINES ARE READOUTS; 0728ca: the column holds the tile */
+          '<div class="pb-rr" data-pbproof="'+esc(key)+'">'+pbTileHTML(null,null)+'</div><span class="pb-chv">\u25be</span>'; /* 0728ck: the column is the proof card's door */ /* CARDS ARE DOORS, HAIRLINES ARE READOUTS; 0728ca: the column holds the tile */
         row.addEventListener("click",function(){pbToggle(key,root);});
         pbSegA.appendChild(row);
       }
@@ -9055,7 +9095,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
       }
       else if(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()){var tn3=tyTonight(pk);if(tn3)body+='<div class="ty-eel">'+(tn3.em?tn3.em+' ':'')+'<b class="win">'+esc(tn3.word)+' tonight</b> \u2014 '+tyClkPair(tn3.o,tn3.c)+'.</div>';} /* 0720v (S5b Cut 2): the evening sibling of the morning credential line - one grammar, both ends of the day */
-      hl='<span class="pb-rr">'+pbTileHTML(av,tyAllAvg(pk))+'</span>'; /* 0728cj E3: both numbers; 0728ca THE TILE (supersedes 0722e's ink average): the label still seats once in the header (LABELS MOVE WITH VALUES); a null average is the dash in the column */
+      hl='<span class="pb-rr" data-pbproof="'+esc(pk)+'">'+pbTileHTML(av,tyAllAvg(pk))+'</span>'; /* 0728ck: the column is the proof card's door */ /* 0728cj E3: both numbers; 0728ca THE TILE (supersedes 0722e's ink average): the label still seats once in the header (LABELS MOVE WITH VALUES); a null average is the dash in the column */
     }else if(open===false){
       var nowMs=Date.now(),pre=!!(inf&&inf.open&&nowMs<new Date(inf.open).getTime());
       body='<div class="ty-sub'+(pre?'':' closed')+'"><i class="dot"></i>'+pbClosedSub(inf||{},nowMs)+'</div>'; /* 0722e: S3-A on every surface — "Opens at", "Closed for the day \u00b7 back at" and "Closed today" retired with honor */
