@@ -133,8 +133,10 @@
   .alert-note{font-size:var(--fs-small);color:var(--muted);margin-top:12px}
   .alert-note b{color:var(--ink);font-weight:600}
 
-  .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade)); /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme */
+  .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade)) no-repeat;background-origin:content-box; /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme; 0728cl THE PLATE WHEN PINNED: at rest the gradient starts at the content box, so the padded inset stays transparent and the wash shows through */
     padding:calc(8px + env(safe-area-inset-top,0px)) 0 12px;margin:calc(-1*env(safe-area-inset-top,0px)) 0 0} /* 0728ci THE PLATE (owner-ruled A, controls-sweep-mock.html): the top inset rides as padding, cancelled at rest by the negative margin; pinned, the row's own background plates the status bar and the bar rests beneath the clock */
+  .controls-wrap.pinned{background-origin:padding-box} /* 0728cl: pinned, the gradient starts at the box's top \u2014 the plate paints under the clock */
+  .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px}
   .filterbar{display:flex;align-items:center;gap:8px}
   /* one control grammar: three matched pills, same height, same surface (front-door mock, Jul 5) */
@@ -1375,6 +1377,7 @@
   .alerts-pop[hidden]{display:none}
   /* ---- de-clutter: status = floating glance popover; alerts = bottom sheet.
      The page belongs to content — nothing in-flow expands anymore. */
+  #proofPop{overflow-y:auto;overscroll-behavior:contain} /* 0728cl THE CARD FITS: when neither side has room, the list scrolls inside */
   #statusPop,#proofPop{position:fixed;right:16px;width:min(330px,calc(100vw - 32px));z-index:70;margin-bottom:0; /* 0728ck THE TILE'S PROOF: the proof card wears the status card's float */
     border-radius:var(--r-card);box-shadow:0 18px 44px rgba(20,22,50,.22);animation:spopIn .18s ease}
   @keyframes spopIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
@@ -2470,7 +2473,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ck</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cl</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2525,6 +2528,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div class="alerts-pop" id="proofPop" hidden data-pk=""></div> <!-- 0728ck THE TILE'S PROOF: filled by pbProofHTML on a tile tap -->
 </div>
 
+<div class="cw-sentinel" aria-hidden="true"></div> <!-- 0728cl THE PLATE WHEN PINNED: the row's pin sentinel -->
 <div class="controls-wrap">
   <div class="controls-inner">
     <div class="filterbar" id="filterbar">
@@ -2950,13 +2954,26 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       e.stopPropagation();e.preventDefault();
       var pk=d.getAttribute("data-pbproof"),was=!p.hasAttribute("hidden")&&p.getAttribute("data-pk")===pk;closeProofPop();if(was)return;
       var html=pbProofHTML(pk);if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
-      var r=d.getBoundingClientRect();p.style.top=Math.round(r.bottom+8)+"px";p.removeAttribute("hidden");tile.classList.add("lit");
-      var ph=p.offsetHeight||0,lim=(window.innerHeight||0)-96;if(ph&&r.bottom+8+ph>lim)p.style.top=Math.max(8,Math.round(r.top-8-ph))+"px"; /* a low row's card opens above its tile, clear of the nav */
+      var r=d.getBoundingClientRect();p.style.maxHeight="";p.style.top=Math.round(r.bottom+8)+"px";p.removeAttribute("hidden");tile.classList.add("lit");
+      pbProofPlace(p,r); /* 0728cl THE CARD FITS */
       return;}
     if(p.hasAttribute("hidden"))return;
     if(!p.contains(e.target)){e.stopPropagation();e.preventDefault();closeProofPop();}
   },true);
   window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
+  function pbProofPlace(p,r){ /* 0728cl THE CARD FITS (owner glass Sep 25 12:59 PM): the room below the tile vs the room above it, both clear of the status bar (the topbar's own inset) and the nav; whichever holds the card; if neither, the larger side and the card scrolls inside; never above the clock */
+    var ph=p.offsetHeight||0;if(!ph)return;
+    var tb=document.querySelector(".topbar"),inset=0;try{inset=tb?Math.max(0,(parseFloat(getComputedStyle(tb).paddingTop)||22)-22):0;}catch(_){}
+    var top0=inset+8,bot0=(window.innerHeight||0)-96,below=bot0-(r.bottom+8),above=(r.top-8)-top0;
+    if(ph<=below){p.style.top=Math.round(r.bottom+8)+"px";return;}
+    if(ph<=above){p.style.top=Math.round(r.top-8-ph)+"px";return;}
+    if(above>below){p.style.top=Math.round(top0)+"px";p.style.maxHeight=Math.max(120,Math.floor(above))+"px";}
+    else{p.style.top=Math.round(r.bottom+8)+"px";p.style.maxHeight=Math.max(120,Math.floor(below))+"px";}
+  }
+  (function(){ /* 0728cl THE PLATE WHEN PINNED (owner glass Sep 25): a 1px sentinel above the LIVE controls row; when it leaves the shell's top the row is pinned and wears its plate; at rest the inset region is transparent and the page's wash shows through */
+    var cw=document.querySelector(".controls-wrap"),sn=document.querySelector(".cw-sentinel");if(!cw||!sn||!("IntersectionObserver" in window))return;
+    try{new IntersectionObserver(function(en){var e=en[en.length-1];cw.classList.toggle("pinned",!e.isIntersecting&&e.boundingClientRect.top<0);},{root:window.ppShl(),threshold:0}).observe(sn);}catch(_){}
+  })();
   function renderStatus(){renderStatusMeta();renderStatusCover();}
   function renderStatusMeta(){
     var dot=$("spDot"),word=$("spWord"),desc=$("spDesc"),up=$("spUpdated"),nx=$("spNext");
@@ -3284,14 +3301,16 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   /* 0719w: the sheet's list binder retired — bindMyRides binds the room */
 
   /* ---- stats helpers ---- */
-  function scopeWaits(parkKey){
+  function scopeRides(parkKey){ /* 0728cl RIDES ONLY (owner-ruled Sep 25; the proof card showed meets in three parks' eight): the ONE predicate behind every park number \u2014 park \u00b7 a ride (shows and meets out: the Wrap's 0716a law, ONE NUMBER FAMILY) \u00b7 open per schedule \u00b7 OPERATING with a wait. LABELS STATE THEIR MEASURE: "rides" means rides */
     var arr=[];Object.keys(roster).forEach(function(id){
-      var r=roster[id],lv=liveById[id];
+      var r=roster[id],lv=liveById[id];if(!r)return;
       if(parkKey!=="all"&&r.park!==parkKey)return;
+      if(r.kind==="show"||isMeet(r))return;
       if(isOpenNow(parkInfo[r.park])===false)return; /* park closed per schedule -> ignore stale waits */
-      if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push(lv.wait);});
+      if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push({id:id,name:r.name||id,wait:lv.wait});});
     return arr;
   }
+  function scopeWaits(parkKey){return scopeRides(parkKey).map(function(x){return x.wait;});} /* 0728cl: the waits of scopeRides \u2014 one home */
   /* 0709b: min/max RIDE NAMES for the board face — the filter mirrors scopeWaits exactly,
      so the names always belong to the same collection the numbers come from. */
   function scopeMinMax(parkKey){
@@ -3866,8 +3885,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var b=tierOfWait(av);
     return '<span class="pb-tile pb-b-'+b+'" style="--tc:var(--'+b+')"><span class="pb-avg">'+av+'<span class="u">m</span></span><span class="w">Headliners</span>'+((all===null||all===undefined)?'':'<span class="sec"><span class="pb-avg">'+all+'<span class="u">m</span></span><span class="w">All rides</span></span>')+'</span>';
   }
-  function pbHeadliners(pk){ /* 0728ck THE TILE'S PROOF: the eight behind the big number \u2014 scopeWaits' own predicate (park \u00b7 open per schedule \u00b7 OPERATING with a wait), ranked by wait, so the card's average IS the tile's (ONE NUMBER FAMILY) */
-    var out=[];Object.keys(roster).forEach(function(id){var r=roster[id],lv=liveById[id];if(!r||r.park!==pk)return;if(isOpenNow(parkInfo[r.park])===false)return;if(lv&&lv.status==="OPERATING"&&lv.wait!==null)out.push({id:id,name:r.name||id,wait:lv.wait});});
+  function pbHeadliners(pk){ /* 0728ck THE TILE'S PROOF: the eight behind the big number \u2014 0728cl: scopeRides, the ONE predicate (rides only), ranked by wait, so the card's average IS the tile's (ONE NUMBER FAMILY) */
+    var out=scopeRides(pk);
     out.sort(function(a,b){return (b.wait-a.wait)||String(a.name).localeCompare(String(b.name));});
     return {top:out.slice(0,8),open:out.length};
   }
