@@ -2473,7 +2473,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cl</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cm</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3301,11 +3301,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   /* 0719w: the sheet's list binder retired — bindMyRides binds the room */
 
   /* ---- stats helpers ---- */
-  function scopeRides(parkKey){ /* 0728cl RIDES ONLY (owner-ruled Sep 25; the proof card showed meets in three parks' eight): the ONE predicate behind every park number \u2014 park \u00b7 a ride (shows and meets out: the Wrap's 0716a law, ONE NUMBER FAMILY) \u00b7 open per schedule \u00b7 OPERATING with a wait. LABELS STATE THEIR MEASURE: "rides" means rides */
+  function scopeRides(parkKey){ /* 0728cl RIDES ONLY \u00b7 0728cm THE CENSUS PREDICATE (owner-ruled Sep 26): the ONE predicate behind every park number \u2014 park \u00b7 a ride the OWNER ratified (rpCuratedRide: PARK_DEF.rides IS the Jul 31 census, RIDE band; theater shows typed ATTRACTION upstream, meets and SKIP walk-throughs are out \u2014 the same census the walker, the seed and the picker trust) \u00b7 open per schedule \u00b7 OPERATING with a wait. LABELS STATE THEIR MEASURE: "rides" means the rides on the list */
     var arr=[];Object.keys(roster).forEach(function(id){
       var r=roster[id],lv=liveById[id];if(!r)return;
       if(parkKey!=="all"&&r.park!==parkKey)return;
-      if(r.kind==="show"||isMeet(r))return;
+      if(!rpCuratedRide(r))return; /* 0728cm: the census, one home (kind "ride" and on the owner's list) */
       if(isOpenNow(parkInfo[r.park])===false)return; /* park closed per schedule -> ignore stale waits */
       if(lv&&lv.status==="OPERATING"&&lv.wait!==null)arr.push({id:id,name:r.name||id,wait:lv.wait});});
     return arr;
