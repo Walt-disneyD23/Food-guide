@@ -2481,7 +2481,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cq</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cr</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3968,11 +3968,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(el.root.parentNode===pbWrapX)pbWrapX.removeChild(el.root);
         (hit?pbSegB:pbSegA).appendChild(el.row);
       }});
+    if(pbFine)(hit?pbSegB:pbSegA).appendChild(pbFine); /* 0728cr THE FINE PRINT FOLLOWS THE ROWS (owner glass): every regroup re-appends the rows, so the fine print re-seats last, in the segment that holds the last row */
     pbWrapX.hidden=!hit;
     if(!hit)pbWrapX.innerHTML="";
     pbSegB.hidden=!(pbSegB.children.length>0);
   }
-  var bannerEls={};
+  var bannerEls={},pbFine=null; /* 0728cr: the panel's fine print, re-seated by pbRegroup */
 
   function buildBanners(){
     elBanners.innerHTML="";bannerEls={};
@@ -4011,7 +4012,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v"),
         row:row,rowSub:row&&row.querySelector(".pb-sub"),rowRR:row&&row.querySelector(".pb-rr")}; /* 0728ca: the paint replaces the whole column; 0728cj: rowTick retired with the tick (D2) */
     });
-    var pbFine=document.createElement("div");pbFine.className="pb-fine";pbFine.innerHTML='Crowd words are each park\u2019s own scale \u00b7 est.';pbSegA.appendChild(pbFine); /* 0728cq H3: the panel's fine print, once, under the four rows */
+    pbFine=document.createElement("div");pbFine.className="pb-fine";pbFine.innerHTML='Crowd words are each park\u2019s own scale \u00b7 est.';pbSegA.appendChild(pbFine); /* 0728cq H3: the panel's fine print, once, under the four rows */
     elBanners.appendChild(pbSegA);elBanners.appendChild(pbWrapX);elBanners.appendChild(pbSegB);
     var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
     (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);var sb=ar&&ar.querySelector(".rb-share");if(sb)sb.addEventListener("click",function(ev){ev.stopPropagation();rbShareCard();});})(); /* door B (RB-Spec): the glyph is the only door; the hero stays a pure read (0718k) */ /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
