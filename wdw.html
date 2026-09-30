@@ -2489,7 +2489,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cw</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cx</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5762,6 +5762,24 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(i=0;i<plain.length;i++)quota[plain[i]]=base;
     var took={};while(rem>0){var bp=null,bs=null;for(i=0;i<plain.length;i++){p=plain[i];if(took[p])continue;var b=adBest(p,free,days,scores,got[p]);if(b&&(!bp||adBetter(b.s,bs)<0)){bp=p;bs=b.s;}}
       if(!bp)break;quota[bp]++;took[bp]=1;rem--;}
+    var rN=0,rT;for(rT in took)if(took.hasOwnProperty(rT))rN++; /* 0728cx THE EXTRA DAY GOES WHERE IT COSTS THE FEWEST MINUTES (owner-ruled Sep 29; exhibit Oct 12\u201319 2025: HS\u2019s second day on a 51m Friday, 31 minutes dearer than MK\u2019s at 20m): the rule above only SEEDS the split \u2014 every other way of handing the same extra days to the plain parks is solved by the real adAssign on copies, and the fewest minutes over the advisor\u2019s own placements wins (a short park first, as THE EXACT SOLVE ranks it; a windowed park by its window\u2019s minutes); a tie keeps the seed. \u00d7n and \u00d71 took theirs above; your picks and rests never enter this */
+    if(rN>0&&plain.length>rN){
+      var rCur=[],rAll=[],rQ0={};
+      for(i=0;i<on.length;i++)rQ0[on[i]]=(quota[on[i]]||0)-(took[on[i]]?1:0);
+      for(i=0;i<plain.length;i++)if(took[plain[i]])rCur.push(plain[i]);
+      (function rPick(st,acc){if(acc.length===rN){rAll.push(acc.slice());return;}for(var c=st;c<plain.length;c++){acc.push(plain[c]);rPick(c+1,acc);acc.pop();}})(0,[]);
+      var rCost=function(cmb){var q2={},g2={},f2=free.slice(),x,y,m=0,un=0;
+        for(x=0;x<on.length;x++){q2[on[x]]=rQ0[on[x]];g2[on[x]]=got[on[x]].slice();}
+        for(x=0;x<cmb.length;x++)q2[cmb[x]]++;
+        for(x=0;x<on.length;x++)if(g2[on[x]].length>q2[on[x]])q2[on[x]]=g2[on[x]].length; /* more picks than a share: the picks stand, here too */
+        adAssign(on,f2,days,scores,g2,q2,{});
+        for(x=0;x<on.length;x++){var pp=on[x];un+=Math.max(0,q2[pp]-g2[pp].length);
+          for(y=got[pp].length;y<g2[pp].length;y++){var s2=scores[g2[pp][y]][pp];m+=(s2[2]!=null)?s2[2]:s2[1];}}
+        return [un,m];};
+      var rBest=rCur,rBk=rCost(rCur);
+      for(i=0;i<rAll.length;i++){var rK=rCost(rAll[i]);if(rK[0]<rBk[0]||(rK[0]===rBk[0]&&rK[1]<rBk[1])){rBk=rK;rBest=rAll[i];}}
+      if(rBest!==rCur){for(i=0;i<rCur.length;i++)quota[rCur[i]]--;for(i=0;i<rBest.length;i++)quota[rBest[i]]++;}
+    }
     for(p in got)if(got.hasOwnProperty(p)&&got[p].length>(quota[p]||0))quota[p]=got[p].length; /* more picks than a share: the picks stand */
     /* 4 \u00b7 THE EXACT SOLVE (0728bf, owner-ruled Sep 12 on Solver-Study.md): the same park-days on the same free days, placed by an exact assignment \u2014 tier drops first (no park sits a tier above its calmest free day if any arrangement avoids it), the record's minutes second (a windowed park by its window's minutes), the spread across a park's own days third; deterministic. The round-robin it replaces (worst-off first, Sep 8) ranked parks by how bad their BEST day was, not by what they had to lose: a park Busy everywhere took a day worth a minute to it and pushed a park with one calm day off it \u2014 573 of 1,825 trips on the record. A park that finds no day is SHORT, which THE PLAN says in words. "Two fit" lives on the rail's \u2726. */
     adAssign(on,free,days,scores,got,quota,assign);
