@@ -1127,19 +1127,24 @@
   /* 0728ca THE TILE (owner-ruled G1): the park row's one read — the headliner average over the crowd word, centered in a soft tier tile.
      --tc is the crowd family's constant (the tick's exact source); --tf its fill; the ink is the constant, deepened in Light for the pale fill. */
   .pb-rr{flex:none;display:flex;align-items:center;justify-content:center;width:100px} /* 0728cj E3: the column widens with the tile */
-  .pb-tile{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:100px;min-height:86px;padding:10px 10px 9px;box-sizing:border-box;border-radius:var(--r-tile);
-    --tf:24%;--ti:color-mix(in srgb,var(--tc) 75%,var(--ink));background:color-mix(in srgb,var(--tc) var(--tf),transparent);color:var(--ti)} /* 0728cj THE WORD AND THE NUMBER (E3): --tc is the headliner number's wait band */
-  .pb-tile.pb-b-packed{--tf:18%}
-  html.dark .pb-tile{--tf:34%;--ti:var(--tc)}
-  html.dark .pb-tile.pb-b-packed{--tf:28%}
+  .pb-tile{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:100px;min-height:86px;padding:0;box-sizing:border-box;border-radius:var(--r-tile);overflow:hidden;background:none;
+    --tf1:24%;--tf2:24%;--i1:color-mix(in srgb,var(--h) 75%,var(--ink));--i2:color-mix(in srgb,var(--a) 75%,var(--ink));color:var(--i1)} /* 0728cq F6 THE SPLIT WASH (owner-ruled on panel-mock-2): the top half wears the headliner number's band (--h), the bottom half the all-rides number's (--a), the card's white as the seam — LABELS MOVE WITH VALUES, both lines; supersedes 0728cj's one wash (--tc) and 0728cb ONE INK for the second line */
+  .pb-tile .top{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;flex:1;padding:10px 10px 8px;background:color-mix(in srgb,var(--h) var(--tf1),transparent);color:var(--i1)}
+  .pb-tile.pb-b-packed{--tf1:18%} .pb-tile.pb-a-packed{--tf2:18%}
+  html.dark .pb-tile{--tf1:34%;--tf2:34%;--i1:var(--h);--i2:var(--a)}
+  html.dark .pb-tile.pb-b-packed{--tf1:28%} html.dark .pb-tile.pb-a-packed{--tf2:28%}
   .pb-tile .pb-avg{font-size:23px;line-height:1;color:inherit}
   .pb-tile .pb-avg .u{color:inherit;opacity:.75;margin-left:1px}
-  .pb-tile .w{font:700 9px var(--font-display);letter-spacing:.09em;text-transform:uppercase;margin-top:3px;color:var(--ti);white-space:nowrap} /* 0728cb ONE INK IN THE TILE (owner glass): the label wears the number's ink */
-  .pb-tile .sec{display:flex;align-items:baseline;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--ti) 22%,transparent);width:100%;justify-content:center} /* 0728cj E3: the all-rides average beneath the hairline */
+  .pb-tile .w{font:700 9px var(--font-display);letter-spacing:.09em;text-transform:uppercase;margin-top:3px;color:inherit;white-space:nowrap} /* 0728cb ONE INK IN THE TILE (owner glass): the label wears its number's ink — 0728cq: each half's own */
+  .pb-tile .sec{display:flex;align-items:baseline;gap:5px;margin-top:0;padding:7px 10px 8px;border-top:1px solid var(--card);width:100%;justify-content:center;background:color-mix(in srgb,var(--a) var(--tf2),transparent);color:var(--i2)} /* 0728cj E3: the all-rides average beneath the seam; 0728cq: in its own wash and ink */
   .pb-tile .sec .pb-avg{font-size:17px}
   .pb-tile .sec .w{margin-top:0}
-  .pb-tile .w .fr{opacity:.8;letter-spacing:.04em;margin-left:3px} .pb-tile.pb-tx .w{color:var(--muted-2)} .pb-tile.pb-tx .sec{border-color:var(--line)} /* 0728co THE TIER: the fraction on the label; the dash keeps its label */
-  .pb-tile.pb-tx{background:none;color:var(--muted-2)} /* closed: the dash, centered in the same column */
+  .pb-tile .w .fr{opacity:.8;letter-spacing:.04em;margin-left:3px} .pb-tile.pb-tx .w{color:var(--muted-2)} .pb-tile.pb-tx .sec{border-color:var(--line);background:none;margin-top:8px;padding:8px 0 0} /* 0728co THE TIER: the fraction on the label; the dash keeps its label */
+  .pb-tile.pb-tx{background:none;color:var(--muted-2);padding:10px 10px 9px} /* closed: the dash, centered in the same column, no wash */
+  .pb-cw{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:2px 8px;border-radius:6px;font-size:var(--fs-meta);font-weight:600;line-height:1.6;--ci:color-mix(in srgb,var(--cc) 75%,var(--ink));color:var(--ci);background:color-mix(in srgb,var(--cc) 20%,transparent)} /* 0728cq G6 THE PILL: the crowd word on the row, the whole pill in the word's ink; est. never separates (0709r) */
+  .pb-cw b{font-weight:700;color:var(--ci)} .pb-cw i{font-style:normal;font-weight:600;color:var(--ci)} .pb-cw em{font-style:normal;font-weight:600;opacity:.8;color:var(--ci)}
+  html.dark .pb-cw{--ci:var(--cc);background:color-mix(in srgb,var(--cc) 24%,transparent)}
+  .pb-fine{padding:9px 14px 11px;border-top:1px solid var(--line);font-size:var(--fs-fine);line-height:1.5;color:var(--muted-2)} /* 0728cq H3: the panel's fine print — THE LEGEND NAMES, THE FINE PRINT EXPLAINS, THE CARDS PROVE */
   .pb-row.closed .pb-tile .pb-avg{font-size:19px}
   .pb-chv{flex:none;font-size:var(--fs-title);margin-left:8px;color:var(--muted-2);transition:transform .2s} /* 0728cn: one token up (--fs-title), the mark the row's other chevrons wear */
   .pb-row.closed .pb-nm{color:var(--muted)}
@@ -2476,7 +2481,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cp</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cq</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3885,8 +3890,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function pbTileHTML(av,all,frac){ /* 0728cj THE WORD AND THE NUMBER (owner-ruled E3) \u00b7 0728co THE TIER: the label carries the fraction when the tier is partial (HEADLINERS 6/8); the dash keeps its label and fraction so a floor reads as "not enough running", never "broken" */
     var lab='Headliners'+(frac?' <span class="fr">'+esc(frac)+'</span>':'');
     if(av===null||av===undefined)return '<span class="pb-tile pb-tx"><span class="pb-avg">\u2013</span>'+(frac?'<span class="w">'+lab+'</span>':'')+((frac&&all!==null&&all!==undefined)?'<span class="sec"><span class="pb-avg">'+all+'<span class="u">m</span></span><span class="w">All rides</span></span>':'')+'</span>';
-    var b=tierOfWait(av);
-    return '<span class="pb-tile pb-b-'+b+'" style="--tc:var(--'+b+')"><span class="pb-avg">'+av+'<span class="u">m</span></span><span class="w">'+lab+'</span>'+((all===null||all===undefined)?'':'<span class="sec"><span class="pb-avg">'+all+'<span class="u">m</span></span><span class="w">All rides</span></span>')+'</span>';
+    var b=tierOfWait(av),b2=(all===null||all===undefined)?null:tierOfWait(all); /* 0728cq F6: two bands, one per half */
+    return '<span class="pb-tile pb-b-'+b+(b2?' pb-a-'+b2:'')+'" style="--h:var(--'+b+');--a:var(--'+(b2||b)+')"><span class="top"><span class="pb-avg">'+av+'<span class="u">m</span></span><span class="w">'+lab+'</span></span>'+(b2?'<span class="sec"><span class="pb-avg">'+all+'<span class="u">m</span></span><span class="w">All rides</span></span>':'')+'</span>';
   }
 
   function pbHeadliners(pk){ /* 0728co THE TIER (Headliner-Tier-Spec, owner-ruled Sep 29): every ratified headliner, in ratified order, with its state \u2014 open (OPERATING with a posted wait) \u00b7 down \u00b7 closed (scheduled, or the park) \u00b7 refurb \u00b7 nowait (running, no standby posted); run = the open ones; tot = the tier minus refurb (refurb leaves the count, never the list) */
@@ -3906,7 +3911,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var allLine=(allAvg===null||allAvg===undefined)?'no rides posting waits right now':'<b>'+allAvg+'m</b> average across the <b>'+h.open+'</b> open';
     var crowd=(st&&st.crowd)?' \u00b7 crowd <b style="color:'+esc(st.crowd.color)+'">'+esc(st.crowd.label)+'</b> \u00b7 est.':'';
     var lt=(typeof rdLtgClause==="function")?rdLtgClause():"";
-    return '<div class="sp-head"><span class="sp-dot" style="background:'+(b?'var(--'+b+')':'var(--muted-2)')+'"></span>'+esc(pk)+' \u00b7 Headliners</div><div class="sp-desc">'+desc+'</div>'+list+'<div class="pp-sub">All rides</div><div class="pp-all">'+allLine+crowd+'</div>'+(lt?'<div class="pp-ltg">'+lt+'</div>':'')+'<div class="sp-foot">Headliners \u2014 the park\u2019s marquee rides, ratified by RideCue. Estimates from live wait times, not official attendance.</div>';
+    return '<div class="sp-head"><span class="sp-dot" style="background:'+(b?'var(--'+b+')':'var(--muted-2)')+'"></span>'+esc(pk)+' \u00b7 Headliners</div><div class="sp-desc">'+desc+'</div>'+list+'<div class="pp-sub">All rides</div><div class="pp-all">'+allLine+crowd+'</div>'+(lt?'<div class="pp-ltg">'+lt+'</div>':'')+'<div class="sp-foot">Headliners \u2014 the park\u2019s marquee rides, ratified by RideCue. Crowd words are each park\u2019s own scale. Estimates from live wait times, not official attendance.</div>';
   }
 
   function pbOpenSub(s,inf,sw,now){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
@@ -3917,7 +3922,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(ex.open&&ex.close&&now>=new Date(ex.open).getTime()&&now<=new Date(ex.close).getTime()){word=ex.desc||"Early Entry";break;}}}
     if(!word)word=s.sweepWord||null;
     var parts=['<span class="cwu"><i class="dot open"></i>'+esc(word||"Open")+'</span>']; /* 0721z: the dot never orphans (on-glass catch) */
-    /* 0728ca THE TILE: the crowd word rides inside the tile now (it would read twice here); est. still speaks once, in the hero */
+    /* 0728ca THE TILE: the crowd word left the sentence; 0728cq: it rides the pill under the sentence (pbCrowdPill), est. on the pill (0709r) */
     if(s.open)parts.push('<span class="cwu"><b>'+s.open+' rides open</b></span>'); /* 0722b: the noun returned (owner call, supersedes S1-r) — one count dialect with the hero; the two-line reserve absorbs any wrap */
     var closeTxt=null;
     if(inf&&inf.close){
@@ -3929,6 +3934,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var tail=pbEveTail(inf,now);
     if(tail&&closeTxt)parts.push('<span class="cwu">'+esc(tail.kind)+' '+fmtClock(tail.iso)+(tail.close?'\u2013'+fmtClock(tail.close):'')+'</span>'); /* 0722c: the tail speaks the Hours-tile pair dialect (owner call) — both clocks full, en dash; start alone when no close is recorded */
     return parts.join(' <span class="sep">\u00b7</span> '); /* 0721z: breathable seps — wraps land BETWEEN clauses (0709r) */
+  }
+  function pbCrowdPill(s){ /* 0728cq G6 THE PILL: the crowd word on the row, its own line under the sentence, only while the park is open; the word is the ruler's (cp), the colour the crowd family's ONE SOURCE */
+    return (s&&s.isOpen===true&&s.crowd)?'<br><span class="pb-cw" style="--cc:'+esc(s.crowd.color)+'"><i>crowd</i><b>'+esc(s.crowd.label)+'</b><em>\u00b7 est.</em></span>':'';
   }
   function pbClosedSub(inf,now){ /* S3-A: the hero dialect in board compression; bare Closed is the honest floor */
     inf=inf||{};
@@ -4003,6 +4011,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v"),
         row:row,rowSub:row&&row.querySelector(".pb-sub"),rowRR:row&&row.querySelector(".pb-rr")}; /* 0728ca: the paint replaces the whole column; 0728cj: rowTick retired with the tick (D2) */
     });
+    var pbFine=document.createElement("div");pbFine.className="pb-fine";pbFine.innerHTML='Crowd words are each park\u2019s own scale \u00b7 est.';pbSegA.appendChild(pbFine); /* 0728cq H3: the panel's fine print, once, under the four rows */
     elBanners.appendChild(pbSegA);elBanners.appendChild(pbWrapX);elBanners.appendChild(pbSegB);
     var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
     (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);var sb=ar&&ar.querySelector(".rb-share");if(sb)sb.addEventListener("click",function(ev){ev.stopPropagation();rbShareCard();});})(); /* door B (RB-Spec): the glyph is the only door; the hero stays a pure read (0718k) */ /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
@@ -8039,7 +8048,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
           var el2=bannerEls[key],inf2=parkInfo[key]||null,sw2=(typeof tySweep==="function")?tySweep(key):null,nw2=Date.now();
           el2.rowSub.innerHTML=((s.isOpen===true)?pbOpenSub(s,inf2,sw2,nw2)
             :(s.isOpen===false)?'<i class="dot"></i>'+pbClosedSub(inf2||{},nw2)
-            :'<i class="dot"></i>Live')+pbFestSuffix(key); /* no schedule yet — the row waits honestly, no fake state · 0726e: the resident festival rides every state during its season */
+            :'<i class="dot"></i>Live')+pbFestSuffix(key)+pbCrowdPill(s); /* 0728cq: the pill after the suffix */ /* no schedule yet — the row waits honestly, no fake state · 0726e: the resident festival rides every state during its season */
           el2.rowRR.innerHTML=pbTileHTML((s.isOpen===true&&s.headAvg!==null)?s.headAvg:null,(s.isOpen===true)?s.avg:null,(s.isOpen===true&&s.headTot&&s.headRun<s.headTot)?(s.headRun+'/'+s.headTot):null); /* 0728co: the fraction when partial */ /* 0728ca THE TILE \u00b7 0728cj: the second number is s.avg, the all-rides mean; the tick retired (D2) */
           el2.row.classList.toggle("closed",s.isOpen!==true);
         }
