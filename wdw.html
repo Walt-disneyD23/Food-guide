@@ -133,14 +133,15 @@
   .alert-note{font-size:var(--fs-small);color:var(--muted);margin-top:12px}
   .alert-note b{color:var(--ink);font-weight:600}
 
-  .controls-wrap{position:sticky;top:0;z-index:20;background:none; /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme; 0728cl THE PLATE WHEN PINNED: at rest the gradient starts at the content box, so the padded inset stays transparent and the wash shows through */
+  .controls-wrap{position:sticky;top:0;z-index:23;pointer-events:none;background:none; /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme; 0728cl THE PLATE WHEN PINNED: at rest the gradient starts at the content box, so the padded inset stays transparent and the wash shows through */
     padding:calc(8px + env(safe-area-inset-top,0px)) 0 12px;margin:calc(-1*env(safe-area-inset-top,0px)) 0 0} /* 0728ci THE PLATE (owner-ruled A, controls-sweep-mock.html): the top inset rides as padding, cancelled at rest by the negative margin; pinned, the row's own background plates the status bar and the bar rests beneath the clock */
-  .controls-wrap::before{content:"";position:absolute;left:0;right:0;bottom:0;top:calc(env(safe-area-inset-top,0px) - 6px);z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade));background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 70%,transparent) 70%,var(--bg-fade));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-mask-image:linear-gradient(180deg,transparent,#000 14px,#000 76%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14px,#000 76%,transparent)} /* 0728dc THE PILLS FLOAT ON THE FROST (owner glass on db, frames 7\u20139: a sharp strip of the hero and a hard line above LIVE\u2019s pills \u2014 the row still wore its solid band under a frosted clock): the row\u2019s backing is the clock plate\u2019s own material, behind the pills (z \u22121 in the row\u2019s stacking context), rising 14px into the plate\u2019s fading foot so the two cross-fade, and fading out beneath the row; the fallback line is the old band */
-  #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px)*1.14);z-index:22;pointer-events:none;opacity:0;transition:opacity .18s ease;background:linear-gradient(180deg,var(--bg),var(--bg-fade));background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 70%,transparent),var(--bg-fade));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent);mask-image:linear-gradient(180deg,#000 80%,transparent)} /* 0728db THE FROST UNDER THE CLOCK (owner-ruled G-C, Sep 30: \u201cother apps just fade a bit but are still there\u201d): ONE plate on every tab, LIVE included \u2014 the page\u2019s own --bg as a 70% tint easing to nothing over a 12px blur, the whole strip masked soft at its foot; it ends where LIVE\u2019s pills begin (inset \u00d7 1.14 \u2248 inset + 8), so it never hazes them and never steps aside; the fallback line is the 0728cy solid-to-fade; inset 0 \u2192 height 0; no env() in a gradient stop (0728cl) */
+  /* 0728dd: the row\u2019s own frost (0728dc) retired \u2014 ONE PLATE, below */ #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + 88px);z-index:22;pointer-events:none;opacity:0;transition:opacity .18s ease;background:var(--bg);background:color-mix(in srgb,var(--bg) 50%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 88px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 88px),transparent)} /* 0728dd ONE PLATE, NO SEAM (owner \u201cCut\u201d, Sep 30, on the measured frames: both phones showed a dark dip and an 8pt step where the clock strip and the row\u2019s frost met, and a 70% tint read as a light band on a dark hero): ONE frosted piece \u2014 a uniform 50% tint of the page\u2019s own --bg over an 8px blur, full behind the clock, then one long fade (88px) with nothing to join. LIVE\u2019s pills ride ABOVE it (the row is z 23, the plate 22, the topbar 21). The first line is the fallback; no env() in a gradient stop (0728cl) */
+  html.sb-live #sbPlate{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 40px),transparent)} /* on LIVE the plate holds full to the pills\u2019 foot (inset + 8 + 40), then fades over 40px */
+  html:not(.sb-live) #sbPlate{max-height:calc(env(safe-area-inset-top,0px)*9999)} /* no clock to clear (inset 0: Safari, desktop) and no pills to back \u2192 no plate */
   html.sb-on #sbPlate{opacity:1}
   .controls-wrap.pinned{background-origin:padding-box} /* 0728cl: pinned, the gradient starts at the box's top \u2014 the plate paints under the clock */
   .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
-  .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px}
+  .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px;pointer-events:auto}
   .filterbar{display:flex;align-items:center;gap:8px}
   /* one control grammar: three matched pills, same height, same surface (front-door mock, Jul 5) */
   .ctl{height:40px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);
@@ -2494,7 +2495,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dd</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2983,8 +2984,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!p.contains(e.target)){e.stopPropagation();e.preventDefault();closeProofPop();}
   },true);
   window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
-  function sbSync(){ /* 0728db THE FROST UNDER THE CLOCK: one plate, one test \u2014 on once the shell has scrolled, off at rest (the wash shows through). The pin judge (0728cz/da) retires with the hand-off it served: the header reappeared over the clock the moment LIVE\u2019s row stuck (owner glass on da, frame 9) because the row\u2019s plate sits under the topbar */
-    var sh=window.ppShl();document.documentElement.classList.toggle("sb-on",!!(sh&&sh.scrollTop>6));
+  function sbSync(){ /* 0728dd ONE PLATE, NO SEAM: on once the shell has scrolled, off at rest; sb-live says LIVE\u2019s controls row is on glass, so the plate holds full to the pills\u2019 foot. No pin judge, no sentinel (0728db) */
+    var sh=window.ppShl(),cw=document.querySelector(".controls-wrap"),de=document.documentElement;
+    de.classList.toggle("sb-live",!!(cw&&cw.offsetParent!==null));
+    de.classList.toggle("sb-on",!!(sh&&sh.scrollTop>6));
   }
   window.__sbSync=sbSync;window.ppShl().addEventListener("scroll",sbSync,{passive:true});
   function pbProofPlace(p,r){ /* 0728cl THE CARD FITS (owner glass Sep 25 12:59 PM): the room below the tile vs the room above it, both clear of the status bar (the topbar's own inset) and the nav; whichever holds the card; if neither, the larger side and the card scrolls inside; never above the clock */
