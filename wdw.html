@@ -2489,7 +2489,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cw</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3357,7 +3357,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   var INFO_COPY={
     headAll:"Headliner avg — the average wait across each park's headliners that are running (its marquee rides, ratified by RideCue). Busiest right now = the park with the highest headliner average. An estimate from wait times, not official attendance.",
-    headPark:"Headliner avg — the average wait across this park's headliners that are running — the tile says how many. Shown when at least two are. Tap the tile to see them. An estimate from wait times, not official attendance.",
+    headPark:"Headliner avg — the average wait across this park’s headliners that are running — the tile says how many. Shown when at least two are. Tap the tile to see them. An estimate from wait times, not official attendance.",
     crowd:"Crowd — an estimate from live wait times: the all-rides average, read against that park’s own usual midday — each park on its own scale, so a light day at Hollywood Studios still runs longer lines than a light day at Magic Kingdom. Not official attendance.",
     dine:"Walk-up dining — the estimated wait to be seated if you join the restaurant's walk-up list right now, posted per party size. Join in the Disney app or at the podium — RideCue can't hold a spot. Not reservations."
   };
@@ -9175,6 +9175,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     out.sort(function(a,b){return a.agg-b.agg;});
     var lead=out[0],next=out[1],by={};out.forEach(function(o){by[o.pk]=o;});
     if(lead.agg<=-BV_UNDER&&(next.agg-lead.agg)>=BV_GAP)return {state:"call",pk:lead.pk,agg:lead.agg,by:by}; /* law 5: clearly under, clearly ahead */
+    if(lead.agg<=-BV_UNDER&&next.agg<=-BV_UNDER)return {state:"tie",pks:[lead.pk,next.pk],by:by}; /* 0728cw THE TIE SPEAKS (owner-ruled W1): both clearly under, neither clearly ahead \u2014 the two furthest under, leader first */
     return {state:"wash",by:by};
   }
   function tyBestValue(){ /* 0728cv: the seat — instant-on at first sight (0724n P-3: the floors are the restraint), two polls to hand over to another park, two clean polls to empty; advances ONLY on a fresh poll */
@@ -9184,8 +9185,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(tyBv.seat===null){if(pk){tyBv.seat=pk;tyBv.cand=null;tyBv.ct=0;}}
     else if(pk===tyBv.seat){tyBv.cand=null;tyBv.ct=0;}
     else if(fr){if(tyBv.cand===pk)tyBv.ct++;else{tyBv.cand=pk;tyBv.ct=1;}if(tyBv.ct>=2){tyBv.seat=pk;tyBv.cand=null;tyBv.ct=0;}}
-    if(tyBv.seat===null)return {state:"wash"};
-    var o=r.by[tyBv.seat];if(!o){tyBv.seat=null;tyBv.cand=null;tyBv.ct=0;return {state:"wash"};} /* the seated park left the comparison (closed, thin) — the seat empties with it */
+    var idle=(r.state==="tie")?{state:"tie",pks:r.pks}:{state:"wash"}; /* 0728cw: a tie is a no-call poll \u2014 the seat discipline is untouched; the empty seat says which kind of quiet this is */
+    if(tyBv.seat===null)return idle;
+    var o=r.by[tyBv.seat];if(!o){tyBv.seat=null;tyBv.cand=null;tyBv.ct=0;return idle;} /* the seated park left the comparison (closed, thin) — the seat empties with it */
     return {state:"call",pk:tyBv.seat,n:Math.max(1,Math.round(-o.agg)),agg:o.agg,dayPart:vdDayPart(pfEtMin()),weekday:vdWeekday()};
   }
   function tyBvPark(){return tyBvNow;} /* 0728cv: the row tag reads the seat through a guarded door (harness slices never see the module var) */
@@ -9193,6 +9195,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!v||v.state==="none")return '';
     if(v.state==="early")return '<div class="ty-bv quiet"><span class="k">Best value right now</span>Too early to call \u2014 the parks are still filling. From regular open.</div>'; /* est. speaks once per surface (mock-6): the hero's resort line carries it */
     if(v.state==="wash")return '<div class="ty-bv quiet"><span class="k">Best value right now</span>No park is running clearly under its usual this hour.</div>';
+    if(v.state==="tie")return '<div class="ty-bv quiet"><span class="k">Best value right now</span><b>'+esc(v.pks[0])+'</b> and <b>'+esc(v.pks[1])+'</b> are both running under their usual \u2014 too close to call.</div>'; /* 0728cw THE TIE SPEAKS (letter A, tie-face-mock.html): the parks lead, the verdict closes; no chip, no tag */
     var lead=(v.weekday?esc(v.weekday)+' ':'')+esc(v.dayPart||'');
     return '<div class="ty-bv call"><div class="chip">'+v.n+' under<small>its usual</small></div><div><span class="k">Best value right now</span><b>'+esc(v.pk)+'</b> \u2014 headliners under their usual for a '+lead+'.</div></div>';
   }
