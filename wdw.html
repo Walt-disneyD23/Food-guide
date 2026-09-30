@@ -135,7 +135,7 @@
 
   .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade)) no-repeat;background-origin:content-box; /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme; 0728cl THE PLATE WHEN PINNED: at rest the gradient starts at the content box, so the padded inset stays transparent and the wash shows through */
     padding:calc(8px + env(safe-area-inset-top,0px)) 0 12px;margin:calc(-1*env(safe-area-inset-top,0px)) 0 0} /* 0728ci THE PLATE (owner-ruled A, controls-sweep-mock.html): the top inset rides as padding, cancelled at rest by the negative margin; pinned, the row's own background plates the status bar and the bar rests beneath the clock */
-  #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px)*1.36);z-index:22;pointer-events:none;opacity:0;transition:opacity .18s ease;background:linear-gradient(180deg,var(--bg),var(--bg-fade)) bottom/100% 27% no-repeat,linear-gradient(var(--bg),var(--bg)) top/100% 74% no-repeat} /* 0728cy THE PLATE UNDER THE CLOCK (owner-ruled H-A): solid behind the clock, a soft fade beneath, no hard line; two sized layers, never env() in a gradient stop (0728cl); inset 0 \u2192 height 0 */
+  #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px)*1.14);z-index:22;pointer-events:none;opacity:0;transition:opacity .18s ease;background:linear-gradient(180deg,var(--bg),var(--bg-fade));background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 70%,transparent),var(--bg-fade));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);-webkit-mask-image:linear-gradient(180deg,#000 68%,transparent);mask-image:linear-gradient(180deg,#000 68%,transparent)} /* 0728db THE FROST UNDER THE CLOCK (owner-ruled G-C, Sep 30: \u201cother apps just fade a bit but are still there\u201d): ONE plate on every tab, LIVE included \u2014 the page\u2019s own --bg as a 70% tint easing to nothing over a 12px blur, the whole strip masked soft at its foot; it ends where LIVE\u2019s pills begin (inset \u00d7 1.14 \u2248 inset + 8), so it never hazes them and never steps aside; the fallback line is the 0728cy solid-to-fade; inset 0 \u2192 height 0; no env() in a gradient stop (0728cl) */
   html.sb-on #sbPlate{opacity:1}
   .controls-wrap.pinned{background-origin:padding-box} /* 0728cl: pinned, the gradient starts at the box's top \u2014 the plate paints under the clock */
   .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
@@ -1930,7 +1930,7 @@
 .ty-bv .k{display:block;font-family:var(--font-display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--pwh-muted);margin-bottom:2px}
 .ty-bv b{color:var(--pwh-ink);font-weight:700} .ty-bv .est{color:var(--pwh-muted)} .ty-bv.quiet{color:var(--pwh-muted)}
 .ty-bv.call{display:flex;align-items:center;gap:12px} .ty-bv .chip{flex:none;padding:6px 10px;border-radius:10px;background:rgba(126,240,189,.16);color:#7ef0bd;font:700 var(--fs-body) var(--font-display);letter-spacing:-.01em;text-align:center;line-height:1.15} .ty-bv .chip small{display:block;font:600 9px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:#8fe9bf;margin-top:2px}
-.ty-bvtag{font:700 10px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--short);background:color-mix(in srgb,var(--short) 14%,transparent);border-radius:6px;padding:3px 8px;margin-left:8px;vertical-align:2px} /* 0728cv: the door is marked — the same measure the hero named, on the row you'd tap */ /* 0727d THE TRIP KNOWS TODAY */
+.ty-bvtag{font:700 10px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--short);background:color-mix(in srgb,var(--short) 14%,transparent);border-radius:6px;padding:3px 8px;margin-left:0;display:inline-block;white-space:nowrap;vertical-align:2px} /* 0728cv: the door is marked — the same measure the hero named, on the row you'd tap */ /* 0727d THE TRIP KNOWS TODAY */
   .ty-trip .teb{font-family:var(--font-display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:var(--fs-caps);color:#b4b0ff}
   .ty-trip .tl{margin-top:3px;font-size:var(--fs-body);color:var(--pwh-sub);line-height:1.45}.ty-trip .tl b{color:var(--pwh-ink)}
   .ty-door{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:10px 14px;border:0;border-radius:var(--r-pill);background:rgba(155,247,201,.14);color:var(--pwh-key);font:700 var(--fs-small) var(--font-display);cursor:pointer}
@@ -2493,7 +2493,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728da</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728db</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2982,13 +2982,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!p.contains(e.target)){e.stopPropagation();e.preventDefault();closeProofPop();}
   },true);
   window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
-  function sbSync(){ /* 0728cy THE PLATE UNDER THE CLOCK: on once the shell has scrolled; off at rest (the page\u2019s wash shows through \u2014 the Sep 25 shade) and off while LIVE\u2019s controls row is pinned (that row wears its own plate; the fade would wash its pills) */
-    var sh=window.ppShl(),cw=document.querySelector(".controls-wrap"),sn=document.querySelector(".cw-sentinel"),pin=false;
-    if(cw&&sn&&cw.offsetParent!==null){ /* 0728da THE JUDGE ASKS THE ROW, NOT ITS SENTINEL (owner glass on cz: Today\u2019s header reappeared mid-scroll): off LIVE the row is display:none while its sentinel, a sibling, stays on glass \u2014 a row that is not on glass is never pinned */ /* 0728cz THE PLATE KNOWS WHEN THE ROW IS STUCK (owner glass Sep 30, LIVE scrolled slowly): the row is pulled up by the top inset, so it sticks while the sentinel is still one inset below the top \u2014 stuck IS pinned; the inset is the row\u2019s own padding less its 8px, read once it is on glass */
-      if(sbSync.ins==null){try{sbSync.ins=Math.max(0,(parseFloat(getComputedStyle(cw).paddingTop)||8)-8);}catch(_){sbSync.ins=0;}}
-      pin=sn.getBoundingClientRect().top<=sbSync.ins;}
-    if(cw)cw.classList.toggle("pinned",pin); /* ONE JUDGE: the row\u2019s plate and the clock\u2019s plate trade places on the same read */
-    document.documentElement.classList.toggle("sb-on",!!(sh&&sh.scrollTop>6)&&!pin);
+  function sbSync(){ /* 0728db THE FROST UNDER THE CLOCK: one plate, one test \u2014 on once the shell has scrolled, off at rest (the wash shows through). The pin judge (0728cz/da) retires with the hand-off it served: the header reappeared over the clock the moment LIVE\u2019s row stuck (owner glass on da, frame 9) because the row\u2019s plate sits under the topbar */
+    var sh=window.ppShl();document.documentElement.classList.toggle("sb-on",!!(sh&&sh.scrollTop>6));
   }
   window.__sbSync=sbSync;window.ppShl().addEventListener("scroll",sbSync,{passive:true});
   function pbProofPlace(p,r){ /* 0728cl THE CARD FITS (owner glass Sep 25 12:59 PM): the room below the tile vs the room above it, both clear of the status bar (the topbar's own inset) and the nav; whichever holds the card; if neither, the larger side and the card scrolls inside; never above the clock */
@@ -9191,7 +9186,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }else{
       body='<div class="ty-sub">\u2014</div>'; /* no schedule yet \u2014 the row waits honestly, no fake state */
     }
-    return '<button class="pb-row'+(dim?' off':'')+'" data-typk="'+esc(pk)+'" type="button"><span class="pb-m m"><span class="pb-nm">'+esc(pk)+'</span>'+(((typeof tyTripDay==="function"&&tyTripDay())||{}).pk===pk?'<span class="ty-planned">Planned</span>':'')+((typeof tyBvPark==="function"&&tyBvPark()===pk)?'<span class="ty-bvtag">Best value</span>':'')+body+'</span>'+hl+'<span class="pb-chv">\u203a</span></button>';
+    return '<button class="pb-row'+(dim?' off':'')+'" data-typk="'+esc(pk)+'" type="button"><span class="pb-m m"><span class="pb-nm">'+esc(pk)+'</span>'+(((typeof tyTripDay==="function"&&tyTripDay())||{}).pk===pk?'<span class="ty-planned">Planned</span>':'')+((typeof tyBvPark==="function"&&tyBvPark()===pk)?' <span class="ty-bvtag">Best value</span>':'')+body+'</span>'+hl+'<span class="pb-chv">\u203a</span></button>';
   }
   var BV_UNDER=5,BV_GAP=4,tyBvPoll=-1,tyBv={seat:null,cand:null,ct:0},tyBvNow=null; /* 0728cv BEST VALUE RIGHT NOW: the hero's own ±5 as the under floor; the gap keeps a wash honest; the seat is in-memory only (the rebreak precedent) */
   function tyBestValueRead(){ /* 0728cv: the snapshot — per park, its ratified headliners' live waits against their half-hour typicals (the LIVE hero's vdVerdict measure, per park); floors 1–3 here, the margin too; the seat discipline lives in tyBestValue */
