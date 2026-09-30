@@ -135,6 +135,8 @@
 
   .controls-wrap{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--bg) 76%,var(--bg-fade)) no-repeat;background-origin:content-box; /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme; 0728cl THE PLATE WHEN PINNED: at rest the gradient starts at the content box, so the padded inset stays transparent and the wash shows through */
     padding:calc(8px + env(safe-area-inset-top,0px)) 0 12px;margin:calc(-1*env(safe-area-inset-top,0px)) 0 0} /* 0728ci THE PLATE (owner-ruled A, controls-sweep-mock.html): the top inset rides as padding, cancelled at rest by the negative margin; pinned, the row's own background plates the status bar and the bar rests beneath the clock */
+  #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px)*1.36);z-index:22;pointer-events:none;opacity:0;transition:opacity .18s ease;background:linear-gradient(180deg,var(--bg),var(--bg-fade)) bottom/100% 27% no-repeat,linear-gradient(var(--bg),var(--bg)) top/100% 74% no-repeat} /* 0728cy THE PLATE UNDER THE CLOCK (owner-ruled H-A): solid behind the clock, a soft fade beneath, no hard line; two sized layers, never env() in a gradient stop (0728cl); inset 0 \u2192 height 0 */
+  html.sb-on #sbPlate{opacity:1}
   .controls-wrap.pinned{background-origin:padding-box} /* 0728cl: pinned, the gradient starts at the box's top \u2014 the plate paints under the clock */
   .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px}
@@ -1385,7 +1387,9 @@
   .alerts-pop[hidden]{display:none}
   /* ---- de-clutter: status = floating glance popover; alerts = bottom sheet.
      The page belongs to content — nothing in-flow expands anymore. */
-  #proofPop{overflow-y:auto;overscroll-behavior:contain} /* 0728cl THE CARD FITS: when neither side has room, the list scrolls inside */
+  #proofPop{overflow-y:auto;overscroll-behavior:contain}
+  #proofPop.clip{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 36px),transparent)} /* 0728cy C-B: the clipped edge says there is more */
+  #proofPop.clip.end{-webkit-mask-image:none;mask-image:none} /* 0728cl THE CARD FITS: when neither side has room, the list scrolls inside */
   #statusPop,#proofPop{position:fixed;right:16px;width:min(330px,calc(100vw - 32px));z-index:70;margin-bottom:0; /* 0728ck THE TILE'S PROOF: the proof card wears the status card's float */
     border-radius:var(--r-card);box-shadow:0 18px 44px rgba(20,22,50,.22);animation:spopIn .18s ease}
   @keyframes spopIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
@@ -2489,7 +2493,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cx</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cz</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2583,6 +2587,7 @@ document.documentElement.classList.add("dark");}catch(e){}
 </nav>
 
 <div class="toasts" id="toasts"></div>
+<div id="sbPlate" aria-hidden="true"></div>
 <div id="ptr" aria-hidden="true"><span class="gl">↓</span></div>
 
 <script>
@@ -2970,25 +2975,36 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       e.stopPropagation();e.preventDefault();
       var pk=d.getAttribute("data-pbproof"),was=!p.hasAttribute("hidden")&&p.getAttribute("data-pk")===pk;closeProofPop();if(was)return;
       var html=pbProofHTML(pk);if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
-      var r=d.getBoundingClientRect();p.style.maxHeight="";p.style.top=Math.round(r.bottom+8)+"px";p.removeAttribute("hidden");tile.classList.add("lit");
+      var r=d.getBoundingClientRect();p.style.maxHeight="";p.classList.remove("clip","end");p.scrollTop=0;p.style.top=Math.round(r.bottom+8)+"px";p.removeAttribute("hidden");tile.classList.add("lit");
       pbProofPlace(p,r); /* 0728cl THE CARD FITS */
       return;}
     if(p.hasAttribute("hidden"))return;
     if(!p.contains(e.target)){e.stopPropagation();e.preventDefault();closeProofPop();}
   },true);
   window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
+  function sbSync(){ /* 0728cy THE PLATE UNDER THE CLOCK: on once the shell has scrolled; off at rest (the page\u2019s wash shows through \u2014 the Sep 25 shade) and off while LIVE\u2019s controls row is pinned (that row wears its own plate; the fade would wash its pills) */
+    var sh=window.ppShl(),cw=document.querySelector(".controls-wrap"),sn=document.querySelector(".cw-sentinel"),pin=false;
+    if(cw&&sn&&sn.offsetParent!==null){ /* 0728cz THE PLATE KNOWS WHEN THE ROW IS STUCK (owner glass Sep 30, LIVE scrolled slowly): the row is pulled up by the top inset, so it sticks while the sentinel is still one inset below the top \u2014 stuck IS pinned; the inset is the row\u2019s own padding less its 8px, read once it is on glass */
+      if(sbSync.ins==null){try{sbSync.ins=Math.max(0,(parseFloat(getComputedStyle(cw).paddingTop)||8)-8);}catch(_){sbSync.ins=0;}}
+      pin=sn.getBoundingClientRect().top<=sbSync.ins;}
+    if(cw)cw.classList.toggle("pinned",pin); /* ONE JUDGE: the row\u2019s plate and the clock\u2019s plate trade places on the same read */
+    document.documentElement.classList.toggle("sb-on",!!(sh&&sh.scrollTop>6)&&!pin);
+  }
+  window.__sbSync=sbSync;window.ppShl().addEventListener("scroll",sbSync,{passive:true});
   function pbProofPlace(p,r){ /* 0728cl THE CARD FITS (owner glass Sep 25 12:59 PM): the room below the tile vs the room above it, both clear of the status bar (the topbar's own inset) and the nav; whichever holds the card; if neither, the larger side and the card scrolls inside; never above the clock */
     var ph=p.offsetHeight||0;if(!ph)return;
     var tb=document.querySelector(".topbar"),inset=0;try{inset=tb?Math.max(0,(parseFloat(getComputedStyle(tb).paddingTop)||22)-22):0;}catch(_){}
     var top0=inset+8,bot0=(window.innerHeight||0)-96,below=bot0-(r.bottom+8),above=(r.top-8)-top0;
     if(ph<=below){p.style.top=Math.round(r.bottom+8)+"px";return;}
     if(ph<=above){p.style.top=Math.round(r.top-8-ph)+"px";return;}
-    if(above>below){p.style.top=Math.round(top0)+"px";p.style.maxHeight=Math.max(120,Math.floor(above))+"px";}
-    else{p.style.top=Math.round(r.bottom+8)+"px";p.style.maxHeight=Math.max(120,Math.floor(below))+"px";}
+    var band=bot0-top0; /* 0728cy THE CARD COVERS ITS TILE (owner-ruled C-C, a trial; owner glass Sep 30 4:31 PM: the HS card clipped mid-footer with 37pt to spare in the band): neither side holds it but the band between the clock and the nav does \u2014 the card keeps the roomier side\u2019s edge and lies over its own tile (least overlap); the header still names the park */
+    if(ph<=band){p.style.top=Math.round(above>below?top0:bot0-ph)+"px";return;}
+    p.style.top=Math.round(top0)+"px";p.style.maxHeight=Math.max(120,Math.floor(band))+"px";p.classList.add("clip"); /* C-B: only when even the band cannot hold it \u2014 the whole band, the list scrolls inside, the clipped edge fades until the scroll reaches its end */
+    if(!p.__clipL){p.__clipL=1;p.addEventListener("scroll",function(){p.classList.toggle("end",p.scrollTop+p.clientHeight>=p.scrollHeight-2);},{passive:true});}
   }
   (function(){ /* 0728cl THE PLATE WHEN PINNED (owner glass Sep 25): a 1px sentinel above the LIVE controls row; when it leaves the shell's top the row is pinned and wears its plate; at rest the inset region is transparent and the page's wash shows through */
     var cw=document.querySelector(".controls-wrap"),sn=document.querySelector(".cw-sentinel");if(!cw||!sn||!("IntersectionObserver" in window))return;
-    try{new IntersectionObserver(function(en){var e=en[en.length-1];cw.classList.toggle("pinned",!e.isIntersecting&&e.boundingClientRect.top<0);},{root:window.ppShl(),threshold:0}).observe(sn);}catch(_){}
+    try{new IntersectionObserver(function(en){var e=en[en.length-1];sbSync(); /* 0728cz: the observer asks the one judge */},{root:window.ppShl(),threshold:0}).observe(sn);}catch(_){}
   })();
   function renderStatus(){renderStatusMeta();renderStatusCover();}
   function renderStatusMeta(){
@@ -13683,6 +13699,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function navSync(k){
       var its=document.querySelectorAll("#appNav .it");
       for(var i=0;i<its.length;i++){its[i].classList.toggle("on",its[i].getAttribute("data-pg")===k);}
+      if(window.__sbSync)window.__sbSync(); /* 0728cy: the plate re-reads on a tab change */
       document.body.classList.toggle("tab-myrides",k==="myrides"); /* page-scoped body hook (0710t: the flag-yield rule retired with the header door) */
       document.body.classList.toggle("pane-open",k==="myrides"||k==="pulse"||k==="wrap"); /* 0711r: Wrap joins the 0711e paint gate — it swaps via __pwActive, not a pane class, so the pill haunted exactly one foreign tab */ /* 0711e: paint gate for .bk2top — navGo hides banners but not the Live list on these panes, so offsetParent stays truthy and the IO honestly reports "header below fold". Gate the paint, keep the IO sole writer. */
       var ig9=$id("igBtn");if(ig9)ig9.hidden=(k!=="today"&&k!=="myrides"); /* 0725j: the second guide is written \u2014 the 0724q comment kept its promise */ /* 0724q: same seat every page — the door appears only where a guide exists (Today first; the rest join as their guides are written). DIM IS QUIET: no pulse, the glyph is universal. */
