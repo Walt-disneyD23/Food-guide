@@ -2481,7 +2481,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cr</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cs</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2955,10 +2955,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   window.addEventListener("scroll",closeStatusPop,{passive:true});window.ppShl().addEventListener("scroll",closeStatusPop,{passive:true});
   /* ---- 0728ck THE TILE'S PROOF: the proof card, the status card's grammar verbatim ---- */
   function closeProofPop(){var p=$("proofPop");if(!p||p.hasAttribute("hidden"))return;p.setAttribute("hidden","");p.setAttribute("data-pk","");var l=document.querySelector(".pb-tile.lit");if(l)l.classList.remove("lit");}
-  document.addEventListener("click",function(e){ /* capture phase: a tap on a tile column opens the card under it (and never expands the row beneath); a tap-out is swallowed whole; the dash column is no door */
+  document.addEventListener("click",function(e){ /* capture phase: a tap on a tile column opens the card under it (and never expands the row beneath); a tap-out is swallowed whole; the bare dash (a closed park) is no door — 0728cs: the labeled dash (open park, below the floor) IS one, the card says why it dashes */
     var p=$("proofPop");if(!p)return;
     var d=e.target&&e.target.closest?e.target.closest("[data-pbproof]"):null;
-    if(d){var tile=d.querySelector(".pb-tile");if(!tile||tile.classList.contains("pb-tx"))return;
+    if(d){var tile=d.querySelector(".pb-tile");if(!tile||(tile.classList.contains("pb-tx")&&!tile.querySelector(".w")))return; /* 0728cs THE FLOOR IS A DOOR */
       e.stopPropagation();e.preventDefault();
       var pk=d.getAttribute("data-pbproof"),was=!p.hasAttribute("hidden")&&p.getAttribute("data-pk")===pk;closeProofPop();if(was)return;
       var html=pbProofHTML(pk);if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
