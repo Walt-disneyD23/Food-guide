@@ -1853,6 +1853,9 @@
   .pw-alm-explain{margin-top:10px}
   .pw-alm-explain .xb{color:var(--muted);font-size:var(--fs-small);line-height:1.5}
   .pw-alm-explain .pw-alm-key{margin-top:10px}
+  .pp-key .kc{position:relative} .pp-key .kc.on{background:color-mix(in srgb,var(--cc) 20%,transparent)} .pp-key .kc.on b,.pp-key .kc.on em{color:color-mix(in srgb,var(--cc) 75%,var(--ink))} html.dark .pp-key .kc.on b,html.dark .pp-key .kc.on em{color:var(--cc)} /* 0728ct THE KEY IN THE CARD (owner-ruled K4): the park's own four cells under ALL RIDES, the current word's cell washed in the crowd tint */
+  .pp-key .kc .now{position:absolute;top:-7px;left:50%;transform:translateX(-50%);font:700 8.5px var(--font-display);letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--cc) 75%,var(--ink));color:#fff} html.dark .pp-key .kc .now{background:var(--cc);color:var(--card)}
+  .pp-keycap{font-size:var(--fs-micro);color:var(--muted-2);margin-top:6px;letter-spacing:.02em}
   #pwAlmDoor{margin-top:10px}
   .pw-alm-row .rchev{width:14px;text-align:right;color:var(--muted-2);font-weight:700;font-size:var(--fs-title);flex:none}
   /* 0716h: AT EPCOT festival calendar card */
@@ -2481,7 +2484,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728cs</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ct</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3901,6 +3904,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var x={id:id,name:name,wait:(st==="open")?lv.wait:null,st:st};list.push(x);if(st==="open")run.push(x);if(st==="refurb")refurb.push(x);}
     return {list:list,run:run,refurb:refurb,tot:list.length-refurb.length,open:scopeRides(pk).length};
   }
+  function pbKeyHTML(pk,crowd){ /* 0728ct THE KEY IN THE CARD (owner-ruled K4, key-mock.html): the park's own scale as four cells \u2014 ranges read from CROWD_RULERS.snap[pk] so the card can never drift from the file; the current word's cell washed in the crowd tint with a NOW tag; a caption names the measure. Parks only \u2014 the resort has no card. */
+    var R=CROWD_RULERS.snap[pk];if(!R)return '';
+    var W=["Light","Moderate","Busy","Packed"],rg=['\u2264'+R[0],(R[0]+1)+'\u2013'+R[1],(R[1]+1)+'\u2013'+R[2],(R[2]+1)+'+'],on=crowd?crowd.level:0,h='<div class="pw-alm-key pp-key"'+(crowd?' style="--cc:'+esc(crowd.color)+'"':'')+'>',i;
+    for(i=0;i<4;i++){var lit=(i+1===on);h+='<span class="kc k'+(i+1)+(lit?' on':'')+'">'+(lit?'<span class="now">now</span>':'')+'<b><i></i>'+W[i]+'</b><em>'+rg[i]+'</em></span>';}
+    return h+'</div><div class="pp-keycap">'+esc(pk)+(/s$/.test(pk)?'\u2019':'\u2019s')+' own scale \u00b7 all-rides average, minutes.</div>'; /* a name ending in s takes the bare apostrophe */
+  }
   function pbProofHTML(pk){ /* 0728ck THE TILE'S PROOF \u00b7 0728co THE TIER (tier-states-mock.html, owner: "looks great"): the card lists every headliner with its state where the wait would be; first line N of M; the floor sentence under two; the refurb clause; the hero's lightning line (rdLtgClause \u2014 same function, same gates, observed never causal); the footer defines the word */
     var h=pbHeadliners(pk);if(!h.list.length)return '';
     var T=headTier(pk),n=h.run.length,M=h.tot,b=(T.avg===null)?null:tierOfWait(T.avg),allAvg=tyAllAvg(pk),st=bannerStats(pk),i,list='<ul class="pp-hl">';
@@ -3911,7 +3920,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var allLine=(allAvg===null||allAvg===undefined)?'no rides posting waits right now':'<b>'+allAvg+'m</b> average across the <b>'+h.open+'</b> open';
     var crowd=(st&&st.crowd)?' \u00b7 crowd <b style="color:'+esc(st.crowd.color)+'">'+esc(st.crowd.label)+'</b> \u00b7 est.':'';
     var lt=(typeof rdLtgClause==="function")?rdLtgClause():"";
-    return '<div class="sp-head"><span class="sp-dot" style="background:'+(b?'var(--'+b+')':'var(--muted-2)')+'"></span>'+esc(pk)+' \u00b7 Headliners</div><div class="sp-desc">'+desc+'</div>'+list+'<div class="pp-sub">All rides</div><div class="pp-all">'+allLine+crowd+'</div>'+(lt?'<div class="pp-ltg">'+lt+'</div>':'')+'<div class="sp-foot">Headliners \u2014 the park\u2019s marquee rides, ratified by RideCue. Crowd words are each park\u2019s own scale. Estimates from live wait times, not official attendance.</div>';
+    return '<div class="sp-head"><span class="sp-dot" style="background:'+(b?'var(--'+b+')':'var(--muted-2)')+'"></span>'+esc(pk)+' \u00b7 Headliners</div><div class="sp-desc">'+desc+'</div>'+list+'<div class="pp-sub">All rides</div><div class="pp-all">'+allLine+crowd+'</div>'+pbKeyHTML(pk,st&&st.crowd?st.crowd:null)+(lt?'<div class="pp-ltg">'+lt+'</div>':'')+'<div class="sp-foot">Headliners \u2014 the park\u2019s marquee rides, ratified by RideCue. Crowd words are each park\u2019s own scale. Estimates from live wait times, not official attendance.</div>';
   }
 
   function pbOpenSub(s,inf,sw,now){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
