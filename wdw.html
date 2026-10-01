@@ -135,10 +135,8 @@
 
   .controls-wrap{position:sticky;top:0;z-index:23;pointer-events:none;background:none; /* 0716o: fade to the theme's own bg \u2014 no tinted band in either theme; 0728cl THE PLATE WHEN PINNED: at rest the gradient starts at the content box, so the padded inset stays transparent and the wash shows through */
     padding:calc(8px + env(safe-area-inset-top,0px)) 0 12px;margin:calc(-1*env(safe-area-inset-top,0px)) 0 0} /* 0728ci THE PLATE (owner-ruled A, controls-sweep-mock.html): the top inset rides as padding, cancelled at rest by the negative margin; pinned, the row's own background plates the status bar and the bar rests beneath the clock */
-  /* 0728dd: the row\u2019s own frost (0728dc) retired \u2014 ONE PLATE, below */ #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + 88px);z-index:22;pointer-events:none;opacity:0;transition:opacity .18s ease;background:var(--bg);background:color-mix(in srgb,var(--bg) 50%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 88px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 88px),transparent)} /* 0728dd ONE PLATE, NO SEAM (owner \u201cCut\u201d, Sep 30, on the measured frames: both phones showed a dark dip and an 8pt step where the clock strip and the row\u2019s frost met, and a 70% tint read as a light band on a dark hero): ONE frosted piece \u2014 a uniform 50% tint of the page\u2019s own --bg over an 8px blur, full behind the clock, then one long fade (88px) with nothing to join. LIVE\u2019s pills ride ABOVE it (the row is z 23, the plate 22, the topbar 21). The first line is the fallback; no env() in a gradient stop (0728cl) */
-  html.sb-live #sbPlate{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 40px),transparent)} /* on LIVE the plate holds full to the pills\u2019 foot (inset + 8 + 40), then fades over 40px */
+  /* 0728dd: the row\u2019s own frost (0728dc) retired \u2014 ONE PLATE, below */ #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + var(--sb-s,0px) + var(--sb-f,28px));z-index:22;pointer-events:none;opacity:0;background:var(--bg);background:color-mix(in srgb,var(--bg) 50%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - var(--sb-f,28px)),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - var(--sb-f,28px)),transparent)} /* 0728de THE FROST FOLLOWS THE FINGER (owner glass on dd, 7:50\u20137:57 PM: \u201cinstant blur, not a transition\u201d, \u201cstarts lower than it should\u201d \u2014 measured: the frost reached 137pt down Today\u2019s hero and swallowed the whole header at 7px of scroll). ONE plate still (0728dd: no seam), but: full only behind the clock with a 28px fade; its strength is the scroll\u2019s (sbSync sets opacity, 0 \u2192 1 over the first 30px \u2014 no switch, no timer); and on LIVE the full zone GROWS to the pills\u2019 foot as the row travels its last 60px to the top (--sb-s 0 \u2192 48px, --sb-f 28 \u2192 40px), so the pinned row sits on the dd ramp and nothing is tall before it pins. 50% tint of --bg, 8px blur; the first background line is the fallback; no env() in a gradient stop (0728cl) */
   html:not(.sb-live) #sbPlate{max-height:calc(env(safe-area-inset-top,0px)*9999)} /* no clock to clear (inset 0: Safari, desktop) and no pills to back \u2192 no plate */
-  html.sb-on #sbPlate{opacity:1}
   .controls-wrap.pinned{background-origin:padding-box} /* 0728cl: pinned, the gradient starts at the box's top \u2014 the plate paints under the clock */
   .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px;pointer-events:auto}
@@ -2495,7 +2493,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dd</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728de</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2984,10 +2982,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!p.contains(e.target)){e.stopPropagation();e.preventDefault();closeProofPop();}
   },true);
   window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
-  function sbSync(){ /* 0728dd ONE PLATE, NO SEAM: on once the shell has scrolled, off at rest; sb-live says LIVE\u2019s controls row is on glass, so the plate holds full to the pills\u2019 foot. No pin judge, no sentinel (0728db) */
-    var sh=window.ppShl(),cw=document.querySelector(".controls-wrap"),de=document.documentElement;
-    de.classList.toggle("sb-live",!!(cw&&cw.offsetParent!==null));
-    de.classList.toggle("sb-on",!!(sh&&sh.scrollTop>6));
+  function sbSync(){ /* 0728de THE FROST FOLLOWS THE FINGER: opacity is the scroll\u2019s (0 at 2px, 1 at 32px); on LIVE k = how close the controls row is to sticking (0 when its pills are 60px or more from their pinned seat, 1 when pinned) and the plate\u2019s full zone and fade grow with it. Continuous \u2014 no judge, no class to flip mid-scroll; sb-live only says the row is on glass */
+    var sh=window.ppShl(),pl=document.getElementById("sbPlate"),cw=document.querySelector(".controls-wrap");if(!pl)return;
+    var st=sh?sh.scrollTop:0,live=!!(cw&&cw.offsetParent!==null),k=0;
+    if(live){var inn=cw.firstElementChild,ins=0;try{ins=Math.max(0,(parseFloat(getComputedStyle(cw).paddingTop)||8)-8);}catch(_){}
+      if(inn)k=Math.max(0,Math.min(1,1-(inn.getBoundingClientRect().top-(ins+8))/60));}
+    document.documentElement.classList.toggle("sb-live",live);
+    pl.style.setProperty("--sb-s",Math.round(48*k)+"px");pl.style.setProperty("--sb-f",Math.round(28+12*k)+"px");
+    pl.style.opacity=String(Math.round(Math.max(0,Math.min(1,(st-2)/30))*100)/100);
   }
   window.__sbSync=sbSync;window.ppShl().addEventListener("scroll",sbSync,{passive:true});
   function pbProofPlace(p,r){ /* 0728cl THE CARD FITS (owner glass Sep 25 12:59 PM): the room below the tile vs the room above it, both clear of the status bar (the topbar's own inset) and the nav; whichever holds the card; if neither, the larger side and the card scrolls inside; never above the clock */
