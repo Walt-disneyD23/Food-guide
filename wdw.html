@@ -2352,7 +2352,8 @@
 .pc-shead .tp-wd{min-width:0}
 .pc-shead .tp-wd .dt{font-family:var(--font-body);font-weight:500;font-size:var(--fs-body);color:var(--muted-2);letter-spacing:0;margin-left:8px}
 .pc-shead .td-shg{margin-top:0;align-self:center;flex:none} .pc-shead .td-shg{margin-top:2px}
-  .pc-mshare{display:block;margin:12px 0 0;padding:0;border:0;background:none;font:650 var(--fs-small) var(--font-body);color:var(--accent);cursor:pointer;-webkit-tap-highlight-color:transparent} .pc-mshare .chev{margin-left:2px} /* 0727y: the month's door, a text link in the S2 grammar */
+  .pc-mshare{display:block;margin:12px 0 0;padding:0;border:0;background:none;font:650 var(--fs-small) var(--font-body);color:var(--accent);cursor:pointer;-webkit-tap-highlight-color:transparent} .pc-mshare .chev{margin-left:2px}
+  .pc-home{display:block;margin:-6px auto 10px;padding:2px 8px;border:0;background:none;font:650 var(--fs-small) var(--font-body);color:var(--accent);cursor:pointer;-webkit-tap-highlight-color:transparent} .pc-home .chev{margin-right:3px} /* 0728dq THE WAY HOME (J-A): month-home-mock.html's bytes */ /* 0727y: the month's door, a text link in the S2 grammar */
   .pc-sheet{scroll-margin-bottom:calc(118px + env(safe-area-inset-bottom))} /* 0727w: the shell pads its bottom 110px + safe area under the floating nav; the sheet lands above it */
   .pc-hr .tp-hrs{text-align:right} .pc-hr .tp-hrs b{font-family:var(--font-display)} .pc-hr .tp-eet{display:block;font:italic 500 var(--fs-meta) var(--font-body);color:var(--muted)} /* 0727r: the week colors the date on the grid too — the legend promised dates in green */ /* 0727p: the planned cell is the window, never the tint (.td-ws .wc.lN was (0,3,0)) */
 </style>
@@ -2492,7 +2493,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dp</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dr</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3345,16 +3346,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function scopeWaits(parkKey){return scopeRides(parkKey).map(function(x){return x.wait;});} /* 0728cl: the waits of scopeRides \u2014 one home */
   /* 0709b: min/max RIDE NAMES for the board face — the filter mirrors scopeWaits exactly,
      so the names always belong to the same collection the numbers come from. */
-  function scopeMinMax(parkKey){
+  function scopeMinMax(parkKey){ /* 0728dr THE NAME COMES FROM THE NUMBER'S OWN LIST (owner glass 9:59 PM Oct 1: LONGEST 25m named 'Meet Jack Skellington and Sally...'): the tile's number is the census rides (bannerStats over scopeWaits); its name scanned the whole roster - meets, shows, everything posting a wait. One list now (scopeRides, the Sep 26 census predicate), so the name is always the ride that holds the number. */
     var mn=null,mx=null;
-    Object.keys(roster).forEach(function(id){
-      var r=roster[id],lv=liveById[id];
-      if(parkKey!=="all"&&r.park!==parkKey)return;
-      if(isOpenNow(parkInfo[r.park])===false)return;
-      if(lv&&lv.status==="OPERATING"&&lv.wait!==null){
-        if(!mn||lv.wait<mn.w)mn={w:lv.wait,n:r.name};
-        if(!mx||lv.wait>mx.w)mx={w:lv.wait,n:r.name};
-      }});
+    scopeRides(parkKey).forEach(function(x){
+      if(!mn||x.wait<mn.w)mn={w:x.wait,n:x.name};
+      if(!mx||x.wait>mx.w)mx={w:x.wait,n:x.name};});
     return {min:mn,max:mx};
   }
   /* Crowd Pulse Stage 1: top-8 headliner average — the same "what counts" as the
@@ -4073,7 +4069,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var avg=waits.length?Math.round(waits.reduce(function(a,b){return a+b;},0)/waits.length):null;
     var isOpen=key==="all"?PARK_DEF.some(function(p){var oA=isOpenNow(parkInfo[p.key]);return oA===true||(oA===false&&typeof tySweep==="function"&&!!tySweep(p.key));})
                           :(function(){var oP=isOpenNow(parkInfo[key]);return (oP===false&&typeof tySweep==="function"&&tySweep(key))?true:oP;})(); /* 0721i: the last unlit door rides the sweep */
-    var sweepWord=null;if(key!=="all"&&isOpen===true&&typeof tySweep==="function"){ /* 0728dj: the guard asked isOpenNow for false, but isOpenNow counts a live window (and bridges the gap, 0726s) - it could never be false here, so the word never arrived. tySweep is null before the published close: its answer IS the test. */var swH=tySweep(key);if(swH)sweepWord=(swH.em?swH.em+" ":"")+swH.word;} /* the hero states its measure - the window word, never an Open costume */
+    var sweepWord=null;if(key!=="all"&&isOpen===true&&typeof tySweep==="function"){ /* 0728dj: the guard asked isOpenNow for false, but isOpenNow counts a live window (and bridges the gap, 0726s) - it could never be false here, so the word never arrived. tySweep is null before the published close: its answer IS the test. */var swH=tySweep(key);if(swH)sweepWord=swH.word;} /* 0728dr THE HERO CARRIES THE EMBLEM (owner-ruled Oct 1): the expanded card's head leads with its status dot; the pumpkin, tree or moon is on LIVE's hero line above - the word alone here, as on the row */ /* the hero states its measure - the window word, never an Open costume */
     var busiest=null,headAvg=null,headRun=0,headTot=0; /* 0728co THE TIER: headAvg is the ratified headliners running (headTier); the resort number is the mean of the park numbers that exist */
     if(key==="all"){
       var best=-1,hsum=0,hn=0;
@@ -7635,6 +7631,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
     var pub=pcPublished(pcYM),fetched=!!tpSched[pcYM],lastDs=tfDate(y,m,n);
     h+='<div class="rpc"><div class="pc-nav"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>'; /* 0727v: the month in the display face; the arrows grown */
+    if(pcYM!==today.slice(0,7))h+='<button type="button" class="pc-home" data-pchome="1"><span class="chev">\u2039</span> Back to '+PC_MON[+today.slice(5,7)-1]+'</button>'; /* 0728dq THE WAY HOME (owner glass 9:51 PM Oct 1; ruled J-A on month-home-mock.html): a text link in the Share link's dress, under the title, ONLY away from the current month - at rest the header is untouched; the \u2039 \u203a row stays a title, not a toolbar (0727y s-B) */
     var band='';fests.forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     parties.forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(band)h+='<div class="pc-band">'+band+'</div>';
@@ -7800,6 +7797,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function pcBind(el){
     el.querySelectorAll("[data-pcm]").forEach(function(b){b.addEventListener("click",function(){pcYM=pcShift(pcYM,+b.getAttribute("data-pcm"));pcSel=null;renderPulsePage();});});
+    el.querySelectorAll("[data-pchome]").forEach(function(b){b.addEventListener("click",function(){var t9=tpToday();pcYM=t9.slice(0,7);pcSel=t9;renderPulsePage();});}); /* 0728dq: home is the arrival - this month, today's sheet open (0727t) */
     el.querySelectorAll("[data-pcshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();pcShareCard(b.getAttribute("data-pcshare"));});}); /* 0727y: the two doors */
     el.querySelectorAll("[data-pcd]").forEach(function(b){b.addEventListener("click",function(){var ds=b.getAttribute("data-pcd");pcSel=(pcSel===ds)?null:ds;var sh=el.querySelector(".pc-sheet"),t0=sh?null:null;renderPulsePage();var s2=el.querySelector(".pc-sheet");if(s2&&pcSel)s2.scrollIntoView({block:"end",behavior:"smooth"});});});} /* 0727w: the sheet's BOTTOM lands above the tab bar (scroll-margin-bottom carries the shell's pad) */
   function renderPulsePage(){
