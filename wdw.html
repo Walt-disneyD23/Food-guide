@@ -2492,7 +2492,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dn</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dp</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2970,7 +2970,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   document.addEventListener("click",function(e){ /* capture phase: a tap on a tile column opens the card under it (and never expands the row beneath); a tap-out is swallowed whole; the bare dash (a closed park) is no door — 0728cs: the labeled dash (open park, below the floor) IS one, the card says why it dashes */
     var p=$("proofPop");if(!p)return;
     var d=e.target&&e.target.closest?e.target.closest("[data-pbproof]"):null;
-    if(d){var tile=d.querySelector(".pb-tile");if(!tile||(tile.classList.contains("pb-tx")&&!tile.querySelector(".w")))return; /* 0728cs THE FLOOR IS A DOOR */
+    if(d){var tile=d.querySelector(".pb-tile");if(!tile||(tile.classList.contains("pb-tx")&&!tile.querySelector(".w"))){if(!p.hasAttribute("hidden")){e.stopPropagation();e.preventDefault();closeProofPop();}return;} /* 0728cs THE FLOOR IS A DOOR \u00b7 0728dp THE TAP-OUT IS SWALLOWED WHOLE (owner glass 9:34 PM Oct 1: closing the card over a closed park's dash opened EPCOT's row): a column that is no door still dismisses an open card, and the tap goes no further */
       e.stopPropagation();e.preventDefault();
       var pk=d.getAttribute("data-pbproof"),was=!p.hasAttribute("hidden")&&p.getAttribute("data-pk")===pk;closeProofPop();if(was)return;
       var html=pbProofHTML(pk);if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
@@ -3634,11 +3634,17 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return null;
   }
   /* rdTnEE retired 0723x \u2014 THE CROWN WEARS THE FINAL CLOSE absorbed 0718o\u2019s other-park suffix into the crown itself; the blind spot it never covered was the crown holder\u2019s own window (owner wild specimen, Aug 19) */
+  function rdPartyOn(p){ /* 0728dp TENSE FLIPS WHOLE (owner glass 9:34 PM Oct 1: LIVE still said 'closes to day guests at 6 PM' three hours after it had): null before the day close (the tonight sentence speaks); past it, Today's own sentence (SAME QUESTION SAME SENTENCE) while the window is live; '' once no window is left - never 'on now' without one */
+    var f9=null,k9;for(k9 in BANNER_MONO)if(BANNER_MONO[k9]===p.park)f9=k9;
+    var i9=(f9&&parkInfo[f9])||null;if(!i9||!i9.close||!(Date.now()>new Date(i9.close).getTime()))return null;
+    var sw9=(typeof tySweep==="function")?tySweep(f9):null;if(!sw9||sw9.c==null)return '';
+    return '<div class="rd-row"><span class="ic">'+(p.holiday?"\uD83C\uDF84":"\uD83C\uDF83")+'</span><div class="tx"><b>'+esc(p.park)+' party on now</b> \u2014 till '+rpClk(sw9.c)+'.</div></div>';
+  }
   function rdTonightClause(){
     if(usingFallback)return "";
     var ds=(typeof tpToday==="function")?tpToday():null;if(!ds)return "";
     var h="",p=rdTnParty(ds),r=rdTnRace(ds);
-    if(p)h+='<div class="rd-row"><span class="ic">'+(p.holiday?"\uD83C\uDF84":"\uD83C\uDF83")+'</span><div class="tx"><b>'+esc(p.park)+'</b> hosts a ticketed '+(p.holiday?"holiday party":"party")+' tonight \u2014 it <b>closes to day guests</b>'+(function(){var f9=null,k9;for(k9 in BANNER_MONO)if(BANNER_MONO[k9]===p.park)f9=k9;var c9=(f9&&parkInfo[f9]&&parkInfo[f9].close)?fmtClock(parkInfo[f9].close):null;return c9?' at '+c9:' early';})()+'.'+esc(tdLighterClause(tdPartyLighter(tdMonoFull(p.park),tdSeasonKey(ds))))+'</div></div>'; /* 0727k n-A: the rider earns its live number from the two pools; unnumbered when neither rung reaches 10 */ /* 0727j THE PARTY DAY RUNS LIGHTER (owner-ruled A, Sep 3): the short-day hedge retired \u2014 the tape says party daytimes run ~a fifth lighter (Party-Split-Findings \u00a78.6); the clock is the row's own published close, "early" when unknown; "day guests" tells whose night it is (DISCLOSURE OVER GATEKEEPING). C rider: the second sentence earns its live number when the party pool lands. */
+    var po9=(p&&typeof rdPartyOn==="function")?rdPartyOn(p):null;if(po9!==null)h+=po9;else if(p)h+='<div class="rd-row"><span class="ic">'+(p.holiday?"\uD83C\uDF84":"\uD83C\uDF83")+'</span><div class="tx"><b>'+esc(p.park)+'</b> hosts a ticketed '+(p.holiday?"holiday party":"party")+' tonight \u2014 it <b>closes to day guests</b>'+(function(){var f9=null,k9;for(k9 in BANNER_MONO)if(BANNER_MONO[k9]===p.park)f9=k9;var c9=(f9&&parkInfo[f9]&&parkInfo[f9].close)?fmtClock(parkInfo[f9].close):null;return c9?' at '+c9:' early';})()+'.'+esc(tdLighterClause(tdPartyLighter(tdMonoFull(p.park),tdSeasonKey(ds))))+'</div></div>'; /* 0727k n-A: the rider earns its live number from the two pools; unnumbered when neither rung reaches 10 */ /* 0727j THE PARTY DAY RUNS LIGHTER (owner-ruled A, Sep 3): the short-day hedge retired \u2014 the tape says party daytimes run ~a fifth lighter (Party-Split-Findings \u00a78.6); the clock is the row's own published close, "early" when unknown; "day guests" tells whose night it is (DISCLOSURE OVER GATEKEEPING). C rider: the second sentence earns its live number when the party pool lands. */
     if(r)h+=r.open
       ?'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend \u2014 these weekends <b>have run quieter than typical</b>, not busier.</div></div>'
       :'<div class="rd-row"><span class="ic"><span class="rd-evbar"></span></span><div class="tx">A <b>'+r.word+'</b> race weekend across the resort.</div></div>';
@@ -3934,7 +3940,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function pbProofHTML(pk){ /* 0728ck THE TILE'S PROOF \u00b7 0728co THE TIER (tier-states-mock.html, owner: "looks great"): the card lists every headliner with its state where the wait would be; first line N of M; the floor sentence under two; the refurb clause; the hero's lightning line (rdLtgClause \u2014 same function, same gates, observed never causal); the footer defines the word */
     var h=pbHeadliners(pk);if(!h.list.length)return '';
     var T=headTier(pk),n=h.run.length,M=h.tot,b=(T.avg===null)?null:tierOfWait(T.avg),allAvg=tyAllAvg(pk),st=bannerStats(pk),i,list='<ul class="pp-hl">';
-    for(i=0;i<h.list.length;i++){var x=h.list[i];list+='<li'+(x.st==="open"?'':' class="off"')+'><span>'+esc(x.name)+'</span>'+(x.st==="open"?'<span class="wt" style="--wb:var(--'+tierOfWait(x.wait)+')">'+x.wait+'<span class="u">m</span></span>':'<span class="st '+x.st+'">'+(x.st==="nowait"?"No wait":x.st==="refurb"?"Refurb":x.st==="down"?"Down":"Closed")+'</span>')+'</li>';}
+    var L9=h.list.map(function(x9,i9){return {x:x9,i:i9};}).sort(function(p9,q9){var po=(p9.x.st==="open"),qo=(q9.x.st==="open");if(po!==qo)return po?-1:1;if(po&&q9.x.wait!==p9.x.wait)return q9.x.wait-p9.x.wait;return p9.i-q9.i;}); /* 0728dp THE PROOF LEADS WITH WHAT DRIVES THE NUMBER (owner glass 9:34 PM Oct 1, ruled O-B): longest wait first; rides that are not posting follow, in ratified order; pbHeadliners keeps the ratified order for every other reader */
+    for(i=0;i<L9.length;i++){var x=L9[i].x;list+='<li'+(x.st==="open"?'':' class="off"')+'><span>'+esc(x.name)+'</span>'+(x.st==="open"?'<span class="wt" style="--wb:var(--'+tierOfWait(x.wait)+')">'+x.wait+'<span class="u">m</span></span>':'<span class="st '+x.st+'">'+(x.st==="nowait"?"No wait":x.st==="refurb"?"Refurb":x.st==="down"?"Down":"Closed")+'</span>')+'</li>';}
     list+='</ul>';
     var desc=(n>=2)?'<b>'+n+' of '+M+'</b> headliners running \u2014 their average is the tile\u2019s big number.':'<b>'+n+' of '+M+'</b> running \u2014 too few for an honest average; the tile shows a dash until two are.';
     if(h.refurb.length)desc+=' <b>'+esc(h.refurb.map(function(x){return x.name;}).join(', '))+'</b> '+(h.refurb.length===1?'is':'are')+' in refurbishment.';
@@ -3944,7 +3951,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return '<div class="sp-head"><span class="sp-dot" style="background:'+(b?'var(--'+b+')':'var(--muted-2)')+'"></span>'+esc(pk)+' \u00b7 Headliners</div><div class="sp-desc">'+desc+'</div>'+list+'<div class="pp-sub">All rides</div><div class="pp-all">'+allLine+crowd+'</div>'+pbKeyHTML(pk,st&&st.crowd?st.crowd:null)+(lt?'<div class="pp-ltg">'+lt+'</div>':'')+'<div class="sp-foot">Headliners \u2014 the park\u2019s marquee rides, ratified by RideCue. Crowd words are each park\u2019s own scale. Estimates from live wait times, not official attendance.</div>';
   }
 
-  function pbOpenSub(s,inf,sw,now){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
+  function pbOpenSub(s,inf,sw,now,pk5){ /* the row's open sentence: state \u00b7 word \u00b7 count \u00b7 close \u00b7 tail */
     var word=null;
     if(inf&&inf.open&&now<new Date(inf.open).getTime()&&inf.extras){ /* the morning credential, worn inline (0720s): before the published open the window word leads */
       for(var i=0;i<inf.extras.length;i++){var ex=inf.extras[i];
@@ -3961,7 +3968,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }else if(sw&&sw.c!=null)closeTxt=rpClk(sw.c); /* 0728dj THE CLOCK FOLDS AT ITS OWN DOOR: the private ck() printed "11:00 PM"; rpClk folds */
     if(closeTxt)parts.push('<span class="cwu">to '+closeTxt+'</span>');
     var tail=pbEveTail(inf,now);
-    if(tail&&closeTxt)parts.push('<span class="cwu">'+esc(tail.kind)+' '+fmtClock(tail.iso)+(tail.close?'\u2013'+fmtClock(tail.close):'')+'</span>'); /* 0722c: the tail speaks the Hours-tile pair dialect (owner call) — both clocks full, en dash; start alone when no close is recorded */
+    if(tail&&closeTxt)parts.push('<span class="cwu">'+esc((pk5&&/ticketed/i.test(tail.kind||"")&&typeof tyEvParty==="function"&&tyEvParty(pk5))?"Party":tail.kind)+' '+fmtClock(tail.iso)+(tail.close?'\u2013'+fmtClock(tail.close):'')+'</span>'); /* 0722c: the tail speaks the Hours-tile pair dialect (owner call) — both clocks full, en dash; start alone when no close is recorded */
     return parts.join(' <span class="sep">\u00b7</span> '); /* 0721z: breathable seps — wraps land BETWEEN clauses (0709r) */
   }
   function pbCrowdPill(s){ /* 0728cq G6 THE PILL: the crowd word on the row, its own line under the sentence, only while the park is open; the word is the ruler's (cp), the colour the crowd family's ONE SOURCE */
@@ -3974,14 +3981,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(t>now&&(!eext||t<eext.t))eext={t:t,iso:e.open,kind:e.desc};});
     if(inf.open&&now<new Date(inf.open).getTime()){
       var oT=fmtClock(inf.open),line="Closed \u00b7 opens "+oT;
-      if(eext&&eext.t<new Date(inf.open).getTime())line+=" \u00b7 "+eext.kind+" "+pbStripAm(fmtClock(eext.iso),oT);
+      if(eext&&eext.t<new Date(inf.open).getTime())line+=" \u00b7 "+(eext.kind+" "+pbStripAm(fmtClock(eext.iso),oT)).replace(/ /g,"\u00a0"); /* 0728dp THE CLAUSE WRAPS WHOLE (owner glass 9:34 PM Oct 1: "Early Entry" ended one line and "8:30" sat alone on the next): the window and its clock are bound; the line breaks at the dot before them */
       return line;
     }
     if(eext)return "Closed \u00b7 "+eext.kind+" "+fmtClock(eext.iso); /* the gap voice: a later window today */
     if(inf.nextOpen&&new Date(inf.nextOpen).getTime()>now){
       var nT=fmtClock(inf.nextOpen),l2="Closed \u00b7 reopens "+nT; /* after the close the verb flips (hero tense) */
       if(inf.nextExtraOpen&&inf.nextExtraKind&&new Date(inf.nextExtraOpen).getTime()>now)
-        l2+=" \u00b7 "+inf.nextExtraKind+" "+pbStripAm(fmtClock(inf.nextExtraOpen),nT);
+        l2+=" \u00b7 "+(inf.nextExtraKind+" "+pbStripAm(fmtClock(inf.nextExtraOpen),nT)).replace(/ /g,"\u00a0");
       return l2;
     }
     return "Closed";
@@ -8095,7 +8102,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(s.crowd){el.root.classList.add("tier-"+s.crowd.level);el.root.style.setProperty("--cl",s.crowd.color);}
         if(key!=="all"&&bannerEls[key]&&bannerEls[key].row){ /* PB (0721y): the row face — the expanded card's own sub above keeps the ticket clauses verbatim */
           var el2=bannerEls[key],inf2=parkInfo[key]||null,sw2=(typeof tySweep==="function")?tySweep(key):null,nw2=Date.now();
-          el2.rowSub.innerHTML=((s.isOpen===true)?pbOpenSub(s,inf2,sw2,nw2)
+          el2.rowSub.innerHTML=((s.isOpen===true)?pbOpenSub(s,inf2,sw2,nw2,key) /* 0728dp SAME QUESTION SAME WORD (owner-ruled Oct 1): on a verified party night the tail says Party, as Today's row does - never the schedule's 'Ticketed Event' */
             :(s.isOpen===false)?'<i class="dot"></i>'+pbClosedSub(inf2||{},nw2)
             :'<i class="dot"></i>Live')+pbFestSuffix(key)+pbCrowdPill(s); /* 0728cq: the pill after the suffix */ /* no schedule yet — the row waits honestly, no fake state · 0726e: the resident festival rides every state during its season */
           el2.rowRR.innerHTML=pbTileHTML((s.isOpen===true&&s.headAvg!==null)?s.headAvg:null,(s.isOpen===true)?s.avg:null,(s.isOpen===true&&s.headTot&&s.headRun<s.headTot)?(s.headRun+'/'+s.headTot):null); /* 0728co: the fraction when partial */ /* 0728ca THE TILE \u00b7 0728cj: the second number is s.avg, the all-rides mean; the tick retired (D2) */
@@ -9192,12 +9199,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var swp=tySweep(pk);
       var pt9=(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()&&typeof tyPartyTonight==="function")?tyPartyTonight(pk):null; /* 0728dl R-A: the party's timed line, the evening sibling Extended Evening already has */
       var pw=(tyEvParty(pk)&&!pt9)?' \u00b7 party':''; /* 0728dl: said once - the bare tag stands only where the timed line cannot (Early Entry, no published window) */ /* 0720u (S5b): the row never claims a close that already passed - the window word leads */
-      body='<div class="ty-sub">'+(swp?((swp.em?swp.em+' ':'')+'<b class="win">'+esc(swp.word)+'</b> to '+rpClk(swp.c)+' \u00b7 '+tw):(tw+(cl?('to '+cl):'open now')+pw+' \u00b7 '))+(dn>0?(dn+' down'):'all running')+'</div>';
+      body='<div class="ty-sub">'+(swp?(((swp.em&&swp.word!=="Party")?swp.em+' ':'')+'<b class="win">'+esc(swp.word)+'</b> \u00b7 to '+rpClk(swp.c)+' \u00b7 '+tw): /* 0728dp THE HERO CARRIES THE EMBLEM (owner-ruled Oct 1): the party's pumpkin or tree is on the hero line just above, so the row says the word alone; the moon stays - the hero never names Extended Evening. The word and its close take the row's own dot. */(tw+(cl?('to '+cl):'open now')+pw+' \u00b7 '))+(dn>0?(dn+' down'):'all running')+'</div>';
       if(inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){ /* 0720s (C, owner-lettered): the morning credential - a row never claims open-for-all before the published open */
         var ee=null,ei;for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&ex.close&&Date.now()>=new Date(ex.open).getTime()&&Date.now()<=new Date(ex.close).getTime()){ee=ex;break;}}
         if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
       }
-      else if(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()){if(pt9)body+='<div class="ty-eel">'+(pt9.em?pt9.em+' ':'')+'<b class="win">Party tonight</b> \u2014 '+tyClkPair(pt9.o,pt9.c)+'.</div>';var tn3=tyTonight(pk);if(tn3)body+='<div class="ty-eel">'+(tn3.em?tn3.em+' ':'')+'<b class="win">'+esc(tn3.word)+' tonight</b> \u2014 '+tyClkPair(tn3.o,tn3.c)+'.</div>';} /* 0720v (S5b Cut 2): the evening sibling of the morning credential line - one grammar, both ends of the day */
+      else if(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()){if(pt9)body+='<div class="ty-eel"><b class="win">Party tonight</b> \u2014 '+tyClkPair(pt9.o,pt9.c)+'.</div>';var tn3=tyTonight(pk);if(tn3)body+='<div class="ty-eel">'+(tn3.em?tn3.em+' ':'')+'<b class="win">'+esc(tn3.word)+' tonight</b> \u2014 '+tyClkPair(tn3.o,tn3.c)+'.</div>';} /* 0720v (S5b Cut 2): the evening sibling of the morning credential line - one grammar, both ends of the day */
       hl='<span class="pb-rr" data-pbproof="'+esc(pk)+'">'+pbTileHTML(av,tyAllAvg(pk),tyHeadFrac(pk))+'</span>'; /* 0728ck: the column is the proof card's door */ /* 0728cj E3: both numbers; 0728ca THE TILE (supersedes 0722e's ink average): the label still seats once in the header (LABELS MOVE WITH VALUES); a null average is the dash in the column */
     }else if(open===false){
       var nowMs=Date.now(),pre=!!(inf&&inf.open&&nowMs<new Date(inf.open).getTime());
@@ -9220,9 +9227,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(inf.close&&now>new Date(inf.close).getTime())return; /* law 2, the evening side (0728dk, owner-ruled E-A Oct 1): a park leaves the comparison at its published close - Extended Evening and a party are credentialed rooms, never the call (owner glass Sep 30: HS wore the tag in Extended Evening) */
       inReg++;
       var fam=HEADLINERS[p.key]||[],face=tdFaceNow(p.key),ds=[],s=0;
-      fam.forEach(function(hd){var id=hd.id;if(!pfBase.rides[id])return;var L=tdLadder(id,bkey,face),arr=L.arr;if(!arr||arr.length<10)return;var lv=liveById[id];if(!lv||lv.status!=="OPERATING"||typeof lv.wait!=="number")return;ds.push(lv.wait-pfQuartiles(arr).med);});
+      fam.forEach(function(hd){var id=hd.id;if(!pfBase.rides[id])return;var L=tdLadder(id,bkey,face),arr=L.arr;if(!arr||arr.length<10)return;if(L.rung===3)return; /* 0728do: on a party face with no party pool (this season or last) the ladder falls back to ORDINARY days - a party day would read far under its 'usual'. That ride sits out; law 1 then decides whether the park can speak. */var lv=liveById[id];if(!lv||lv.status!=="OPERATING"||typeof lv.wait!=="number")return;ds.push(lv.wait-pfQuartiles(arr).med);});
       if(!fam.length||ds.length*2<fam.length)return; /* law 1: at least half the family posting on a ladder — silent, not "light", before that */
-      ds.forEach(function(d){s+=d;});out.push({pk:p.key,agg:s/ds.length,n:ds.length});
+      var u9=0;ds.forEach(function(d){s+=d;if(d<0)u9++;});var a9=s/ds.length;if(a9<0&&u9*2<ds.length)a9=0; /* 0728dp ONE RIDE NEVER CARRIES A PARK (owner-ruled Oct 1): the figure is an average, so one headliner far under could make a park read 'headliners under their usual' while most sat at or over theirs. A park stands under only when at least half its posting headliners are each under their own usual; otherwise it stands at its usual. */out.push({pk:p.key,agg:a9,n:ds.length});
     });
     if(out.length<2){ /* law 3: a comparison of one is a fact, not a call. 0728dk EACH QUIET SAYS ITS OWN CAUSE (owner glass 3:11 AM Oct 1 + 10 PM Sep 30; ruled P-A, N-A): one sentence had four causes */
       if(!anyOpen)return {state:"none"}; /* P-A: before any gate (and in a dark gap) the line is silent - the sub already names the first gates */
@@ -9233,7 +9240,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     out.sort(function(a,b){return a.agg-b.agg;});
     var lead=out[0],next=out[1],by={};out.forEach(function(o){by[o.pk]=o;});
     if(lead.agg<=-BV_UNDER&&(next.agg-lead.agg)>=BV_GAP)return {state:"call",pk:lead.pk,agg:lead.agg,by:by}; /* law 5: clearly under, clearly ahead */
-    if(lead.agg<=-BV_UNDER&&next.agg<=-BV_UNDER)return {state:"tie",pks:[lead.pk,next.pk],by:by}; /* 0728cw THE TIE SPEAKS (owner-ruled W1): both clearly under, neither clearly ahead \u2014 the two furthest under, leader first */
+    if(lead.agg<=-BV_UNDER){ /* 0728do THE TIE NAMES EVERYONE IN IT (owner glass 4:17 PM Oct 1, ruled T-B - supersedes 0728cw W1's "two names only"): every park clearly under AND within the gap of the leader is in the tie, leader first. A park under but clearly behind is not "too close to call" and is not named. */
+      var tied=[];out.forEach(function(o){if(o.agg<=-BV_UNDER&&(o.agg-lead.agg)<BV_GAP)tied.push(o.pk);});
+      if(tied.length>=2)return {state:"tie",pks:tied,by:by};
+      return {state:"lone",pk:lead.pk,by:by}; /* 0728do THE WASH IS ONLY SAID WHEN TRUE (owner-ruled Oct 1): one park clearly under, not clearly ahead of a park that is not under - "No park is running clearly under its usual" was false here by the app's own floor */
+    }
     return {state:"wash",by:by};
   }
   function tyBestValue(){ /* 0728cv: the seat — instant-on at first sight (0724n P-3: the floors are the restraint), two polls to hand over to another park, two clean polls to empty; advances ONLY on a fresh poll */
@@ -9243,10 +9254,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(tyBv.seat===null){if(pk){tyBv.seat=pk;tyBv.cand=null;tyBv.ct=0;}}
     else if(pk===tyBv.seat){tyBv.cand=null;tyBv.ct=0;}
     else if(fr){if(tyBv.cand===pk)tyBv.ct++;else{tyBv.cand=pk;tyBv.ct=1;}if(tyBv.ct>=2){tyBv.seat=pk;tyBv.cand=null;tyBv.ct=0;}}
-    var idle=(r.state==="tie")?{state:"tie",pks:r.pks}:{state:"wash"}; /* 0728cw: a tie is a no-call poll \u2014 the seat discipline is untouched; the empty seat says which kind of quiet this is */
+    var idle=(r.state==="tie")?{state:"tie",pks:r.pks}:(r.state==="lone")?{state:"lone",pk:r.pk}:{state:"wash"}; /* 0728cw: a tie is a no-call poll \u2014 the empty seat says which kind of quiet this is; 0728do: the lone park too */
+    var o=(tyBv.seat!==null)?r.by[tyBv.seat]:null;
+    if(tyBv.seat!==null&&(!o||o.agg>-BV_UNDER)){tyBv.seat=pk;tyBv.cand=null;tyBv.ct=0;} /* 0728do THE SEAT HOLDS ONLY WHAT IS STILL TRUE (owner-ruled Oct 1): the damping smooths the LEAD (two polls to hand over, two to empty), never the claim - a seated park that left the comparison, or is no longer clearly under its usual, gives the seat up at once (to this poll's call, if there is one). The old max(1,...) floor printed "1 under" for a park at or over its usual. */
     if(tyBv.seat===null)return idle;
-    var o=r.by[tyBv.seat];if(!o){tyBv.seat=null;tyBv.cand=null;tyBv.ct=0;return idle;} /* the seated park left the comparison (closed, thin) — the seat empties with it */
-    return {state:"call",pk:tyBv.seat,n:Math.max(1,Math.round(-o.agg)),agg:o.agg,dayPart:vdDayPart(pfEtMin()),weekday:vdWeekday()};
+    o=r.by[tyBv.seat];
+    return {state:"call",pk:tyBv.seat,n:Math.round(-o.agg),agg:o.agg,dayPart:vdDayPart(pfEtMin()),weekday:vdWeekday()};
   }
   function tyBvPark(){return tyBvNow;} /* 0728cv: the row tag reads the seat through a guarded door (harness slices never see the module var) */
   function tyBvHTML(v){ /* 0728cv V2: the chip carries the number, the line the receipt; the wash and the early face speak, never an absent line */
@@ -9254,9 +9267,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(v.state==="early")return '<div class="ty-bv quiet"><span class="k">Best value right now</span>Too early to call \u2014 the parks are still filling. From regular open.</div>'; /* est. speaks once per surface (mock-6): the hero's resort line carries it */
     if(v.state==="wash")return '<div class="ty-bv quiet"><span class="k">Best value right now</span>No park is running clearly under its usual this hour.</div>';
     if(v.state==="thin")return '<div class="ty-bv quiet"><span class="k">Best value right now</span>Not enough headliners posting waits to call it.</div>'; /* 0728dk: regular hours, fewer than two parks with half their headliners posting (owner-ruled Oct 1) */
-    if(v.state==="tie")return '<div class="ty-bv quiet"><span class="k">Best value right now</span><b>'+esc(v.pks[0])+'</b> and <b>'+esc(v.pks[1])+'</b> are both running under their usual \u2014 too close to call.</div>'; /* 0728cw THE TIE SPEAKS (letter A, tie-face-mock.html): the parks lead, the verdict closes; no chip, no tag */
-    var lead=(v.weekday?esc(v.weekday)+' ':'')+esc(v.dayPart||'');
-    return '<div class="ty-bv call"><div class="chip">'+v.n+' under<small>its usual</small></div><div><span class="k">Best value right now</span><b>'+esc(v.pk)+'</b> \u2014 headliners under their usual for a '+lead+'.</div></div>';
+    if(v.state==="tie"){var tp9=v.pks||[],tn9=tp9.length,nm9=tp9.map(function(x){return '<b>'+esc(x)+'</b>';}); /* 0728cw THE TIE SPEAKS (letter A, tie-face-mock.html): the parks lead, the verdict closes; no chip, no tag. 0728do: two, three, or all four */
+      if(tn9>=4)return '<div class="ty-bv quiet"><span class="k">Best value right now</span><b>All four parks</b> are running under their usual \u2014 too close to call.</div>';
+      return '<div class="ty-bv quiet"><span class="k">Best value right now</span>'+(tn9===2?nm9[0]+' and '+nm9[1]+' are both':nm9.slice(0,-1).join(', ')+' and '+nm9[tn9-1]+' are all')+' running under their usual \u2014 too close to call.</div>';}
+    if(v.state==="lone")return '<div class="ty-bv quiet"><span class="k">Best value right now</span><b>'+esc(v.pk)+'</b> is a little under its usual \u2014 not enough to call.</div>'; /* 0728do (owner-ruled Oct 1): by the floors this park is 5 to 8 under and the next is not under */
+    return '<div class="ty-bv call"><div class="chip">'+v.n+' under<small>its usual</small></div><div><span class="k">Best value right now</span><b>'+esc(v.pk)+'</b> \u2014 headliners under their usual for this time of day.</div></div>'; /* 0728do LABELS STATE THEIR MEASURE (owner-ruled Oct 1): the usual is each ride's recent history for this half-hour across all weekdays - 'for a Thursday midday' implied a Thursday baseline */
   }
   function tyLandingHTML(){
     var ds=tyDs(),d0=tpAsD(ds);
