@@ -2496,7 +2496,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dw</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13060,8 +13060,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         rb+='<text x="'+icx.toFixed(1)+'" y="44" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="30">'+ICONS[Sg2.cl]+'</text>';lastR=icx+16;}
       /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
       var axLast=T0;
-      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;}
-      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
+      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="'+(t2===T0?"start":t2>=T1?"end":"middle")+'" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;} /* 0728dw THE LABELS STAY INSIDE THE CHART (owner glass 11:20 AM Oct 3: 7a and 12a hung past the band’s ends): the first hour starts at the left edge, the last ends at the right edge, the rest stay centred */
+      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
       /* 0712r: the glow marks the EVENT, not the sky (owner call) \u2014 windows = contiguous runs of
          concurrent downs >= 8, straight from the series the chart draws. Cause-neutral by construction:
