@@ -265,7 +265,7 @@
   .ux-pks button.on,.ux-typ button.on{background:rgba(79,70,229,.20);color:var(--accent)} /* 0718m: .13→.20, smaller seats read lighter (owner) · 0718l: the rail's own voice (pg-seg .on, owner pick B) — one selected-chip grammar across surfaces */
   .cp-seg{margin:9px 0 6px} /* Cut 2 (0719u): the section's chips - the ux family, card furniture */
   .cp-seg button.dim{opacity:.45}
-  #cpCard{scroll-margin-top:74px} /* the readout glide clears the sticky toolbar - the banner's own stop */
+  #cpCard{scroll-margin-top:calc(74px + env(safe-area-inset-top,0px))} /* the readout glide clears the sticky toolbar - the banner's own stop */
   .ux-rows{margin-top:4px}
   .ux-row{display:flex;align-items:center;gap:10px;padding:9px 0}
   .ux-row+.ux-row{border-top:1px solid var(--line)}
@@ -1029,7 +1029,7 @@
   .banner{position:relative;border-radius:var(--r-hero);overflow:hidden;border:1px solid var(--line);
     box-shadow:var(--shadow-sm);margin-bottom:14px;background:var(--card);
     transition:box-shadow .2s,transform .2s;
-    scroll-margin-top:74px} /* 0709q: expand-tap scrollIntoView(block:start) was burying the header under the 60px sticky toolbar — stop 60 + the 14px rhythm short */
+    scroll-margin-top:calc(74px + env(safe-area-inset-top,0px))} /* 0709q: expand-tap scrollIntoView(block:start) was burying the header under the 60px sticky toolbar — stop 60 + the 14px rhythm short */ /* 0728dt THE LANDING CLEARS THE CLOCK (owner glass 8:43 AM Oct 3: the expanded park’s navy header landed under the pinned search row): since 0728ci the pinned row rests beneath the clock, so the stop adds the top inset; in Safari the inset is 0 and nothing moves */
   .banner.expanded{box-shadow:var(--shadow)}
   .banner-art{position:relative;cursor:pointer;min-height:128px;padding:18px 20px;display:flex;align-items:flex-end;
     background-size:cover;background-position:center;background-color:var(--accent)}
@@ -2495,7 +2495,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ds</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dt</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -8135,10 +8135,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var art=el.root.querySelector(".banner-art");if(!art)return;
     p.querySelector(".mo").textContent=BANNER_MONO[expanded]||"";
     if(!("IntersectionObserver" in window))return;
+    var ins=0;try{ins=Math.max(0,Math.round((parseFloat(getComputedStyle(document.querySelector(".controls-wrap")).paddingTop)||8)-8));}catch(_){} /* 0728dt THE LANDING CLEARS THE CLOCK: the pinned row’s own top inset (its padding beyond the resting 8px, sbSync’s measure) — the header is gone once it is under the row where the row now rests */
     bk2IO=new IntersectionObserver(function(es){
       var e=es[es.length-1];
       bk2Set(!e.isIntersecting && art.offsetParent!==null);
-    },{rootMargin:"-64px 0px 0px 0px"}); /* header counts as gone once it’s under the 60px sticky toolbar (+4 buffer); the 74px scroll-margin landing then reads cleanly as "back" */
+    },{rootMargin:"-"+(64+ins)+"px 0px 0px 0px"}); /* header counts as gone once it’s under the 60px sticky toolbar (+4 buffer); the 74px scroll-margin landing then reads cleanly as "back" */
     bk2IO.observe(art);
   }
   (function(){var p=$("bk2top");if(!p)return;p.addEventListener("click",function(){
