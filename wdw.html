@@ -1188,6 +1188,7 @@
   .lstat.wide{grid-column:1/-1;min-height:0}
   .lstat .lbl{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
   .lstat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1.05;margin-top:auto;font-variant-numeric:tabular-nums}
+  .lstat:not(.wide) .v{margin-top:9px} /* 0728du THE NUMBER FOLLOWS ITS LABEL (owner glass 8:57 AM Oct 3, Animal Kingdom: a two-line ride name lifted SHORTEST’s 15m above LONGEST’s 60m; owner-ruled U-A on tile-mock.html): the number no longer sits on the name; labels and numbers line up, a long name hangs below, the tiles keep their height */
   .lstat .v .u{font-size:.58em;color:var(--muted);font-weight:600}
   .lstat .v.txt{font-size:var(--fs-title)}
   
@@ -2495,7 +2496,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dt</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728du</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -8313,10 +8314,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     /* A-r board face (0709b): Shortest/Longest tiles with ride names, a wide Hours tile
        (parks) or Busiest-park tile (All), and avg+crowd demoted to a labeled fine-print row
        that keeps both ⓘ explainers. Tiles are inert by design — Live glances, Wrap investigates. */
-    var mm=scopeMinMax(key);
+    var mm=scopeMinMax(key); /* 0728du THE TILE SAYS RIDE (owner-ruled L-2 Oct 3; LABELS STATE THEIR MEASURE): the tiles count rides only (0728cm/0728dr) while the list below also holds trails, shows and meets — a 5m trail under SHORTEST 15m read as a contradiction; the label says ride, the header’s own word */
     var tiles=
-      '<div class="lstat"><div class="lbl">Shortest</div><div class="v">'+(s.min===null?'\u2013':s.min+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.min?esc(mm.min.n):'')+'</div></div>'+
-      '<div class="lstat"><div class="lbl">Longest</div><div class="v">'+(s.max===null?'\u2013':s.max+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.max?esc(mm.max.n):'')+'</div></div>';
+      '<div class="lstat"><div class="lbl">Shortest ride</div><div class="v">'+(s.min===null?'\u2013':s.min+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.min?esc(mm.min.n):'')+'</div></div>'+
+      '<div class="lstat"><div class="lbl">Longest ride</div><div class="v">'+(s.max===null?'\u2013':s.max+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.max?esc(mm.max.n):'')+'</div></div>';
     { /* 0718u: park-only since 0718k — the Busiest tile swept; bannerStats' busiest model stays for the ledgered re-seat */
       var info=parkInfo[key],line;
       if(info&&info.open&&info.close)line=fmtClock(info.open)+" \u2013 "+fmtClock(info.close);
