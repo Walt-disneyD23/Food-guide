@@ -1279,7 +1279,9 @@
 .set-card .nm{display:block;text-align:center;font:600 var(--fs-body) var(--font-body);color:var(--muted);padding:8px 0 5px} .set-card.on .nm{color:var(--accent)}
 .set-card .ck{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--accent-fill);display:none;align-items:center;justify-content:center} .set-card .ck svg{width:11px;height:11px} .set-card.on .ck{display:flex}
 .set-row .l{display:flex;align-items:center;min-width:0} .set-row .ic{width:28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;margin-right:11px;flex:none} .set-row .ic svg{width:15px;height:15px}
-.set-row .v{display:inline-flex;align-items:center;gap:6px} .set-row .v .chv{font-style:normal;color:var(--muted-2);font-weight:700} .set-row b.ver{color:var(--muted)} .set-row b.ver small{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-left:6px}
+.set-row .v{display:inline-flex;align-items:center;gap:6px} .set-row .v .chv{font-style:normal;color:var(--muted-2);font-weight:700}
+.set-row .stk{display:inline-flex;flex-direction:column;align-items:flex-end;line-height:1.25} /* 0728ds THE CREDIT SAYS THE FULL NAME (owner-ruled C-B + S-C Oct 2 on credit-row-mock.html): the Lightning row keeps its label; "Powered by" sits small over the name, two lines on every phone on purpose */
+.set-row .stk small{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2)} .set-row b.ver{color:var(--muted)} .set-row b.ver small{font:500 var(--fs-meta) var(--font-body);color:var(--muted-2);margin-left:6px}
 .set-foot{font-size:var(--fs-meta);line-height:1.55;color:var(--muted-2);margin:-6px 2px 10px} /* 0728bh: breathing room under the footnote (glass nit) */
 
   /* ===== pull-to-refresh ===== */
@@ -2493,13 +2495,13 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728dr</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ds</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Live waits</span><span class="v"><b class="lnk">ThemeParks.wiki</b><i class="chv">›</i></span></a>
       <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg></span>Weather</span><span class="v"><b class="lnk">Open-Meteo</b><i class="chv">›</i></span></a>
-      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span>Lightning</span><span class="v"><b class="lnk">Xweather</b><i class="chv">›</i></span></a>
+      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span>Lightning</span><span class="v"><span class="stk"><small>Powered by</small><b class="lnk">Vaisala Xweather</b></span><i class="chv">›</i></span></a>
     </div>
     <div class="set-foot">Live waits refresh every 3 minutes while parks are open — or pull down any time · history, never a promise.</div> <!-- information sits in a footnote, never in a row that looks like a control -->
     <div class="set-lab">Legal &amp; support</div>
@@ -8873,7 +8875,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     y+=48;var fy=y;hair(fy);
     if(D.crowd)T("Crowd is an estimate from live wait times",L,fy+42,IN("500",23),C.muted2);
     T("ridecue.live",R,fy+38,IN("700",28),C.green,"right");
-    T("Data: ThemeParks.wiki"+(D.ltg?" \u00b7 Lightning: Xweather":""),R,fy+70,IN("500",22),C.muted2,"right");
+    T("Data: ThemeParks.wiki"+(D.ltg?" \u00b7 Lightning: Vaisala Xweather":""),R,fy+70,IN("500",22),C.muted2,"right");
     ctx.restore();
     return fy+70+28+36;
   }
@@ -13184,7 +13186,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var lgSW=(lastData.ltg&&lastData.ltg.samples)?lastData.ltg.samples.filter(function(sv){return (sv.w||60)<=20;}):[];
       var lgMix=lgSW.length>=2;
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lgSW.some(function(sv){return sv.n>0;})?"through the storm":"at close watch")+" "+pwClk(lgSW[0].t)+"\u2013"+pwClk(lgSW[lgSW.length-1].t)):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a true 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
-      html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Xweather</div>';
+      html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Vaisala Xweather</div>';
       wv.innerHTML=html;topw();
       if(LN){var TLc=Math.max(x.series.length?x.series[x.series.length-1][0]:0,x.samples.length?x.samples[x.samples.length-1].t:0,(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.length)?lastData.ltg.samples[lastData.ltg.samples.length-1].t:0);
       pwSkyBind({T0:LN.T0,T1:LN.T1,TL:TLc,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples});} /* 0712l: one clock. 0713d: not a storm privilege. 0713g: TL = the last banked moment \u2014 the lens\u2019s future fence */
@@ -13345,7 +13347,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
       T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain",hold:"the holds",heat:"the heat",cold:"the cold"}[kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
       T("ridecue.live",R,fy+36,IN("700",26),C.green,"right");
-      T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Xweather",L,fy+66,IN("500",20),C.muted2,"left");
+      T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Vaisala Xweather",L,fy+66,IN("500",20),C.muted2,"left");
       ctx.restore();
     }
 
