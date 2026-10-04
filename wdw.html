@@ -2497,7 +2497,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ee</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ef</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3820,7 +3820,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     "entertainment at germany gazebo":"\u266A","fantasmic":"\uD83C\uDF86","feathered friends in flight":"\uD83C\uDFAD",
     "festival of fantasy parade":"\uD83C\uDF88","festival of lion king":"\uD83C\uDFAD","finding nemo big blue and beyond":"\uD83C\uDFAD",
     "first order searches for resistance":"\u266A","flag retreat":"\u266A","for first time in forever a frozen singalong celebration":"\uD83C\uDFAD",
-    "garden rocks concert series at epcot international flower and garden festival":"\uD83C\uDFAD","goofycore at communicore hall":"\u266A","green army drum corps":"\u266A",
+    "garden rocks concert series at epcot international flower and garden festival":"\u266A","goofycore at communicore hall":"\u266A","green army drum corps":"\u266A",
     "happily ever after":"\uD83C\uDF86","harambe village street band burudika":"\u266A","hocus pocus villain spelltacular":"\uD83C\uDFAD","hollygroove swingin":"\u266A",
     "indiana jones epic stunt spectacular":"\uD83C\uDFAD","jammitors":"\u266A","jessies roundup a riproarin revue":"\uD83C\uDFAD",
     "jr mickey mouse clubhouse live":"\uD83C\uDFAD","kora tinga tinga":"\u266A","little mermaid a musical adventure":"\uD83C\uDFAD",
@@ -3906,6 +3906,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      Oct 4 rulings: N-A every nighttime show its own gold line, in time order \u00b7 W-A a gold name wraps (the party is never cut off) \u00b7 no cap on card A \u00b7 a run wraps at its dots \u00b7
      M-B the meridiem once per half of the day (pbStripAm against the next time) \u00b7 the head and the count name the meets when meets ride \u00b7 +N more leaves out the gold-line shows \u00b7 B-A the door names the park only. ===== */
   var UX_NIGHT="\uD83C\uDF86";
+  function uxPartyNote(now){ /* 0728ef P-A (owner glass 6:44 PM Oct 4: on a party night MK's rows ellipsize exactly where the party's name begins, and Hocus Pocus never names it): THE CARD TELLS YOU WHOSE NIGHT IT IS - the calendar's own sentence (SAME QUESTION SAME SENTENCE), from the verified night list, broken at its dot */
+    var p=new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date(now)),o={},i;for(i=0;i<p.length;i++)o[p[i].type]=p[i].value;
+    var ds=o.year+"-"+o.month+"-"+o.day,N=window.__pwEvN;if(!N||!N.dates||!N.dates[ds])return null;
+    var pn=((typeof pcPartyName==="function")&&pcPartyName(ds))||"MK party night",em=(typeof tfPartyEm==="function")?tfPartyEm(ds):"";
+    return [(em&&em!=="ring"?em+" ":"")+pn+" tonight \u00b7","closes to day guests early"];
+  }
   function uxCardModel(ch){
     if(!ch||!ch.next||!ch.next.length)return null; /* R7: nothing left, nothing to share */
     var clock=uxClk(ch.now),wd="",mo="",dy="";
@@ -3925,6 +3931,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(meets&&acts){D.head="EVERY SHOWTIME AND MEET LEFT TODAY";noun=n+" shows and meets";}
       else if(meets){D.head="EVERY MEET LEFT TODAY";noun=n+" meet"+(n===1?"":"s");}
       else{D.head="EVERY SHOWTIME LEFT TODAY";noun=n+" act"+(n===1?"":"s");}
+      D.note=(ch.pk==="Magic Kingdom")?uxPartyNote(ch.now):null;
       D.kicker="LIVE SHOWS \u00b7 "+ch.pk.toUpperCase();D.title="Today\u2019s lineup";D.sub=date+" \u00b7 "+noun+" still to come";
       D.fname="ridecue-upnext-"+String(BANNER_MONO[ch.pk]||ch.pk).toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png";
       D.shareTitle="RideCue \u2014 "+ch.pk+" lineup";
@@ -3935,7 +3942,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         var rows=ch.next.filter(function(x){return x.park===pd.key;}),rest=rows.slice(3);
         var night=rest.filter(function(x){return x.mk===UX_NIGHT;}),m=rest.length-night.length; /* a nighttime show already among the three is not listed twice */
         function rw(x){return {t:uxClk(x.t),nm:x.nm};}
-        return {nm:pd.key.toUpperCase(),rows:rows.slice(0,3).map(rw),night:night.map(rw),
+        return {nm:pd.key.toUpperCase(),note:(pd.key==="Magic Kingdom"&&rows.length)?uxPartyNote(ch.now):null,rows:rows.slice(0,3).map(rw),night:night.map(rw),
           more:m>0?"+"+m+" more"+(ch.all?"":" act"+(m===1?"":"s"))+" today":null,
           none:rows.length?null:(ch.all?"Nothing left today":"No shows left today")};
       });
@@ -3955,6 +3962,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
     function sec(tx){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);LS("0px");y+=51;}
+    function note(n){if(!n)return;for(var q=0;q<n.length;q++){T(n[q],L,y+30,IN("500",28),SOFT);y+=38;}y+=8;} /* 0728ef P-A: the quiet ink - gold stays the nighttime shows' */
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
     rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
@@ -3968,7 +3976,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     y+=(tl.length-1)*76+62;
     T(D.sub,L,y,IN("500",30),C.muted);y+=10;
     if(D.kind==="A"){
-      sec(D.head);
+      sec(D.head);note(D.note);
       var TX=L+78,TWD=R-TX,fr=IN("500",30),fb=IN("700",30),gap=MW(" ",fr),dotw=MW(" \u00b7",fr);
       for(i=0;i<D.rows.length;i++){
         var r=D.rows[i];y+=18;
@@ -3988,7 +3996,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }else{
       var NX=L+228,NW=R-NX;
       for(i=0;i<D.secs.length;i++){
-        var s=D.secs[i];sec(s.nm);
+        var s=D.secs[i];sec(s.nm);note(s.note);
         if(s.none){T(s.none,L,y+42,IN("500",30),C.muted2);y+=65;}
         for(j=0;j<s.rows.length;j++){T(s.rows[j].t,L,y+42,SG("800",33),C.ink);T(ell(s.rows[j].nm,NW,IN("500",34)),NX,y+42,IN("500",34),SOFT);y+=65;}
         if(s.more){T(s.more,NX,y+30,IN("500",27),C.muted2);y+=38;}
@@ -7921,7 +7929,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       else{var hl=h.wrap(p.hours,RB(500,26),tw-60);for(j=0;j<hl.length&&j<2;j++)h.T(hl[j],x+30,fy+j*32,RB(500,26),C.muted2);}}
     if(D.extra.length){var y2=G.bot+26;h.SP("THIS DAY",L,y2+18,RB(700,20),C.muted2,3);y2+=32;
       for(i=0;i<D.extra.length&&i<3;i++){var g=D.extra[i];if(g.g==="hol")h.diamondF(L+12,y2+23,7,C.accent,3);else if(g.g==="race")h.T("15",L+12,y2+30,RD(800,22),C.short,"center");else h.T(g.g,L+12,y2+31,RB(500,22),C.ink,"center"); /* the holiday wears the month card's frame (0728b D) */
-        var dw=h.MW(g.d,RB(500,22));if(g.d)h.T(g.d,R,y2+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y2+31,RB(600,25),C.ink);y2+=44;h.HL(y2,C.rollhair);y2+=2;}}
+        var dw=h.MW(g.d,RB(500,22));if(g.d)h.T(g.d,R,y2+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y2+31,RB(600,25),C.ink);y2+=44;if(i<Math.min(D.extra.length,3)-1)h.HL(y2,C.rollhair);y2+=2;}} /* 0728ef: the last row leaves its rule to the footer (owner glass Oct 4: two hairlines read as a double line) */
     h.foot(H,"Hours as Disney publishes them","Party nights from the verified list \u00b7 Early Entry from the feed");
   }
   function pcShareCard(kind){ /* the Today card's lifecycle verbatim: fonts.ready → toBlob → canShare/download */
