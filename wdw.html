@@ -410,7 +410,7 @@
   .rp-hero .hstat .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--pwh-dim)}
   .rp-hero .hstat .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;margin-top:2px}
   .rp-hero .hstat .v small{font-size:var(--fs-small);font-weight:500;color:var(--pwh-sub)}
-  .rp-hero .hstat{display:flex;flex-direction:column} .rp-hero .hstats .hstat .v{margin-top:auto;padding-top:2px} /* 0728dx THE NUMBERS SHARE ONE LINE (owner glass 2:37 PM Oct 3, Rope Drop Board: EASY ALL DAY’s one-line label let its 1 ride above the 3 and the 2; R-A on align-mock.html): each number sits at the foot of its column, whatever its label’s length */
+  .rp-hero .hstat{display:flex;flex-direction:column} .rp-hero .hstat .k .nb{white-space:nowrap} /* 0728eb THE WORD STAYS WHOLE (owner glass 8:00 AM Oct 4: the hero label broke as NEVER A WALK- / ON): a hyphenated word in a stat label never breaks at its hyphen */ .rp-hero .hstats .hstat .v{margin-top:auto;padding-top:2px} /* 0728dx THE NUMBERS SHARE ONE LINE (owner glass 2:37 PM Oct 3, Rope Drop Board: EASY ALL DAY’s one-line label let its 1 ride above the 3 and the 2; R-A on align-mock.html): each number sits at the foot of its column, whatever its label’s length */
   .rpc{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:14px 16px;box-shadow:var(--shadow-sm);margin-bottom:9px}
   .rpc .lbl{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin-bottom:8px}
   .rp-win{display:flex;flex-wrap:wrap;gap:7px;padding:0 0 10px}
@@ -2497,7 +2497,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ea</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eb</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -4983,8 +4983,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hero='<div class="rp-hero"><div class="eb">Rope Drop Board \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+'</h2>'+
       '<div class="sub">How mornings typically ran \u2014 not a forecast.</div>'+
-      '<div class="hstats"><div class="hstat"><div class="k">Never a walk-on</div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
-      '<div class="hstat"><div class="k">Walk-on until</div><div class="v">'+(C?C.until.length:'\u2013')+'</div></div>'+ /* 0728dy THE HERO COUNTS ITS OWN SECTIONS (owner glass 7:50 PM Oct 3, Hollywood Studios 1 \u00b7 7 \u00b7 1: two of the three names appeared nowhere below and the order crossed the page\u2019s; N-A on rd-hero-mock.html): each stat wears its section\u2019s words, left to right as top to bottom (SAME QUESTION SAME SENTENCE) */
+      '<div class="hstats"><div class="hstat"><div class="k">Never a <span class="nb">walk-on</span></div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
+      '<div class="hstat"><div class="k"><span class="nb">Walk-on</span> until</div><div class="v">'+(C?C.until.length:'\u2013')+'</div></div>'+ /* 0728dy THE HERO COUNTS ITS OWN SECTIONS (owner glass 7:50 PM Oct 3, Hollywood Studios 1 \u00b7 7 \u00b7 1: two of the three names appeared nowhere below and the order crossed the page\u2019s; N-A on rd-hero-mock.html): each stat wears its section\u2019s words, left to right as top to bottom (SAME QUESTION SAME SENTENCE) */
       '<div class="hstat"><div class="k">Easy all day</div><div class="v">'+(C?C.allday.length:'\u2013')+'</div></div></div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
