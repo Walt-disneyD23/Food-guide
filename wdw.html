@@ -2497,7 +2497,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ed</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ee</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6125,7 +6125,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!d||!d.open)return '<span class="tp-hrs mut">'+(rec?'Not in the published schedule yet':'Schedule loading\u2026')+'</span>';
     var h='<b>'+tpClk(d.open)+' \u2013 '+tpClk(d.close)+'</b>',j,ex=''; /* 0715k (owner-ratified H2\u00b7W3): the extras leave their pills for an italic line beneath the hours */
     var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"};
-    for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];ex+=(ex?'<br>':'')+(EEN[x.k]||x.k)+' '+tpClk(x.o)+((x.k==="EEH"&&x.c)?' \u2013 '+tpClk(x.c):'');} /* 0727v: Extended Evening is about its END — the line says what Live says (SAME QUESTION SAME SENTENCE); Early Entry ends at park open and an Event needs only its start */
+    for(j=0;j<(d.ext||[]).length;j++){var x=d.ext[j];ex+=(ex?'<br>':'')+(EEN[x.k]||x.k)+' '+tpClk(x.o)+(((x.k==="EEH"||x.k==="EVT")&&x.c)?' \u2013 '+tpClk(x.c):'');} /* 0727v: Extended Evening is about its END — the line says what Live says (SAME QUESTION SAME SENTENCE); Early Entry ends at park open and an Event needs only its start */
     return '<span class="tp-hrs">'+h+(ex?'<span class="tp-eet">'+ex+'</span>':'')+'</span>';
   }
   function tpFetchMonth(mo,onDone){ /* 0727s: ONE month fetch, shared by the trip planner and the calendar — once/session per month, 10-min retry, the caller re-renders on arrival; missing dates = observed absence */
@@ -7790,7 +7790,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(pset["\ud83c\udf84"])lg+='<div><i><span class="em">\ud83c\udf84</span></i><span>MK Christmas party night</span><small>select nights</small></div>';
     if(pset["ring"])lg+='<div><i><b class="pty"></b></i><span>MK party night</span><small>which party isn\u2019t named yet</small></div>';
     h+='<div class="tf-callg lgl">'+lg+'</div>';
-    h+='<button type="button" class="pc-mshare" data-pcshare="month">Share this month <span class="chev">\u203a</span></button>'; /* 0727y (s-B): the month's door is a text link — the ‹ › row stays a title, not a toolbar */
+    h+='<button class="pw-share pc-mdoor" type="button" data-pcshare="month">'+'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this month</button>'; /* 0728ee (B-C, owner-ruled Oct 4 on cal-door-B.png): the month's door is the family's full-width door, in the text link's old seat above the fine print; the day sheet keeps its glyph. Was 0727y s-B, a text link */
     h+='<div class="tf-basis">Hours as Disney publishes them, via ThemeParks.wiki \u00b7 party nights only where the night list is verified \u00b7 the strips are a pattern, never a forecast \u00b7 the week colors the date, the day wears a mark \u00b7 tap a day for its hours</div></div>';
     return h;}
   function pcSheetHTML(ds,today){ /* THE DAY SHEET: published hours per park (tpHoursHTML — Early Entry, Extended Evening, Event from the feed), the party by name, the festival running */
@@ -7827,6 +7827,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function foot(H,l1,l2){HL(H-160,C.hair);T(l1,L,H-116,RB(500,24),C.muted);if(l2)T(l2,L,H-84,RB(500,24),C.muted);T("ridecue.live",R,H-76,RB(700,31),C.green,"right");T("Data: ThemeParks.wiki",R,H-41,RB(500,25),C.muted2,"right");}
     return {T:T,MW:MW,ell:ell,rr:rr,HL:HL,SP:SP,wrap:wrap,pill:pill,diamond:diamond,diamondF:diamondF,foot:foot};
   }
+  var PC_TINT=["","#f7f8fb","#eef0f6","#dee0eb","#cdd0de"]; /* 0728ee: the screen's --t1..--t4 at its own 45% on the white panel (0728dn's quiet tint) */
   var PC_PIP={w:10,g:3,h:8}; /* 0728c: the room\u2019s 6\u00b71\u00b75 at the date\u2019s scale (\u00d7~1.6) \u2014 a meter on the card, not dots */ /* was {w:7,g:2,h:6} */ /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
   function pcMonthCardData(){ /* the month's field, from the same resolvers the room uses */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),today=tpToday(),pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m),d,cells=[],hols=[],hasHw=false,hasRace=false,pset={};
@@ -7841,9 +7842,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(fetched&&pub<tfDate(y,m,n))note="Disney has published "+PC_MON[m]+"\u2019s hours through "+pcMD(pub)+".";
     var band=[];fests.forEach(function(w){band.push({em:"\ud83c\udf77",t:((window.__pwFestN||{})[w.id]||w.name)+" \u00b7 "+pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
     parties.forEach(function(w){band.push({em:TF_PARTY_EM[w.id]||"",t:w.name+" \u00b7 select nights"});});
+    var bem={};band.slice(0,3).forEach(function(b){if(b.em)bem[b.em]=1;}); /* 0728ee (M-C): a party its chip already names with its glyph is not named again in the legend */
     var legend=[];if(hasHw)legend.push({g:"hw",n:"Holiday week",d:"dates in accent"});hols.forEach(function(x){legend.push({g:"hol",n:x[0],d:PC_MON[m].slice(0,3)+" "+x[1]});});
     if(hasRace)legend.push({g:"race",n:races.map(function(w){return w.name;}).filter(function(x,i,arr){return arr.indexOf(x)===i;}).join(" \u00b7 "),d:"dates in green"});
-    if(pset["\ud83c\udf83"])legend.push({g:"\ud83c\udf83",n:"MK Halloween party night",d:"select nights"});if(pset["\ud83c\udf84"])legend.push({g:"\ud83c\udf84",n:"MK Christmas party night",d:"select nights"});if(pset["ring"])legend.push({g:"pty",n:"MK party night",d:"which party isn\u2019t named yet"});
+    if(pset["\ud83c\udf83"]&&!bem["\ud83c\udf83"])legend.push({g:"\ud83c\udf83",n:"MK Halloween party night",d:"select nights"});if(pset["\ud83c\udf84"]&&!bem["\ud83c\udf84"])legend.push({g:"\ud83c\udf84",n:"MK Christmas party night",d:"select nights"});if(pset["ring"])legend.push({g:"pty",n:"MK party night",d:"which party isn\u2019t named yet"});
     return {title:PC_MON[m]+" "+y,y:y,m:m,fd:new Date(y,m,1).getDay(),cells:cells,band:band,legend:legend,note:note,slug:PC_MON[m].toLowerCase()+"-"+y};
   }
   function pcDrawMonthCard(ctx,D){ /* 1080×1350 · the month's grid in the family's cell */
@@ -7860,13 +7862,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var gl=L+22,gr=R-22,cw=(gr-gl)/7,py=y+40;
     "SMTWTFS".split("").forEach(function(wd,j){h.T(wd,gl+cw*j+cw/2,py,RB(700,20),C.muted2,"center");});py+=24;
     for(i=0;i<D.cells.length;i++){var c=D.cells[i],col=(D.fd+c.d-1)%7,row=Math.floor((D.fd+c.d-1)/7),cx=gl+cw*col+cw/2,cy=py+row*ch;
+      if(c.lv){ctx.fillStyle=PC_TINT[c.lv];h.rr(cx-cw/2+5,cy+3,cw-10,ch-6,14);ctx.fill();} /* 0728ee (M-B): THE CARD WEARS THE SCREEN'S SHADE - each day its tier's quiet tile; the pips still carry the crowd */
       if(c.today){ctx.strokeStyle=C.accent;ctx.lineWidth=3;h.rr(cx-cw/2+8,cy+2,cw-16,ch-4,16);ctx.stroke();} /* 0728b: the ring sits cy+2\u2026cy+94, symmetric in the 96 row, clear of the pips (cy+80\u202686) */
       h.T(String(c.d),cx,cy+34,RD(700,34),(c.race?C.short:(c.hw?C.accent:C.ink)),"center"); /* 0727z: the cell scaled to the canvas */
       var sy=cy+50,gx=cx;
       if(c.pe&&c.pe!=="ring"){h.T(c.pe,cx-(c.hd?14:0),sy+18,RB(500,26),C.ink,"center");gx=cx+16;}
       else if(c.pe==="ring"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(cx-(c.hd?14:0),sy+10,5,0,7);ctx.fill();gx=cx+16;}
       if(c.hd)h.diamondF(c.pe?gx:cx,sy+10,8,C.accent,3); /* 0728b (D): the frame, in the holiday's color */
-      if(c.lv){var px0=cx-(4*PC_PIP.w+3*PC_PIP.g)/2,pi;for(pi=0;pi<4;pi++)h.pill(px0+pi*(PC_PIP.w+PC_PIP.g),sy+30,PC_PIP.w,PC_PIP.h,pi<c.lv?C.ink:C.hair);}}
+      if(c.lv){var px0=cx-(4*PC_PIP.w+3*PC_PIP.g)/2,pi;for(pi=0;pi<4;pi++)h.pill(px0+pi*(PC_PIP.w+PC_PIP.g),sy+30,PC_PIP.w,PC_PIP.h,pi<c.lv?C.ink:"rgba(25,26,46,.16)");}} /* 0728ee: the unlit pip darkens a step so it holds on the deepest tile */
     y+=gh+14;h.HL(y,C.hair);y+=6;
     for(i=0;i<D.legend.length&&i<5;i++){var g=D.legend[i];
       if(g.g==="hw")h.T("15",L+12,y+30,RD(800,22),C.accent,"center");else if(g.g==="race")h.T("15",L+12,y+30,RD(800,22),C.short,"center");else if(g.g==="hol")h.diamondF(L+12,y+23,7,C.accent,3);else if(g.g==="pty"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(L+12,y+23,5,0,7);ctx.fill();}else h.T(g.g,L+12,y+31,RB(500,22),C.ink,"center");
@@ -7881,39 +7884,45 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var sub=[];if(hol)sub.push(hol);if(pn)sub.push(pn+" tonight");if(ds===today)sub.unshift("today");
     var parks=[],i,mo=ds.slice(0,7),rec=tpSched[mo];
     for(i=0;i<TP_PARKS.length;i++){var p=TP_PARKS[i][0],r=rec&&rec[p]&&rec[p][ds],ex=[],note="";
-      if(r&&r.open){var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"},j;for(j=0;j<(r.ext||[]).length;j++){var x=r.ext[j];ex.push((EEN[x.k]||x.k)+" "+tpClk(x.o)+((x.k==="EEH"&&x.c)?" \u2013 "+tpClk(x.c):""));}}
+      if(r&&r.open){var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"},j;for(j=0;j<(r.ext||[]).length;j++){var x=r.ext[j];ex.push((EEN[x.k]||x.k)+" "+tpClk(x.o)+(((x.k==="EEH"||x.k==="EVT")&&x.c)?" \u2013 "+tpClk(x.c):""));}}
       if(p==="Magic Kingdom"&&pn)note=(em&&em!=="ring"?em+" ":"")+pn+" \u00b7 closes to day guests early";
       if(p==="EPCOT"&&fests.length)note="\ud83c\udf77 "+fests.map(function(w){return (window.__pwFestN||{})[w.id]||w.name;}).join(" \u00b7 ");
       parks.push({name:p,hours:(r&&r.open)?(tpClk(r.open)+" \u2013 "+tpClk(r.close)):(rec?"Not in the published schedule yet":"Schedule loading\u2026"),pub:!!(r&&r.open),ex:ex,note:note});}
-    var extra=[];if(hol)extra.push({g:"hol",n:hol,d:""});fests.forEach(function(w){extra.push({g:"\ud83c\udf77",n:((window.__pwFestN||{})[w.id]||w.name)+" at EPCOT",d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});races.forEach(function(w){extra.push({g:"race",n:w.name,d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
-    return {day:tpWDn(ds),date:pcMD(ds)+", "+y,sub:sub.join(" \u00b7 "),parks:parks,extra:extra,slug:ds};
+    var extra=[];if(hol)extra.push({g:"hol",n:hol,d:""});/* 0728ee: the festival rides EPCOT's tile - not said again under THIS DAY */races.forEach(function(w){extra.push({g:"race",n:w.name,d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
+    var v=tfDEst(m,y,+a[2]),lv=(v!=null&&typeof window.__avTier==="function")?({short:1,medium:2,long:3,packed:4}[window.__avTier(v)]||0):0; /* 0728ee: the day's pattern, from the month card's own resolver */
+    return {day:tpWDn(ds),date:pcMD(ds)+", "+y,sub:sub.join(" \u00b7 "),parks:parks,extra:extra,slug:ds,md:pcMD(ds),lv:lv};
   }
   function pcMonthCardH(D){ /* 0728c (b): THE CARD FITS ITS FIELD \u2014 the month card is as tall as its bands, note, rows, legend and key need, 1350 at least, the foot always clear of the key (the day card\u2019s law); mirrors pcDrawMonthCard\u2019s y arithmetic */
     var rows=Math.ceil((D.fd+D.cells.length)/7),bands=Math.min(D.band.length,3),nl=D.note?Math.min(2,Math.ceil(String(D.note).length/80)):0,lg=Math.min(D.legend.length,5);
     var y=290+bands*54+(nl?nl*32+6:0)+6+(70+rows*96)+14+6+lg*46+18+28;
     return Math.max(1350,y+40+160);}
-  function pcDayCardH(D){ /* 0727z: the day card is as tall as its field — square when it fits, the footer always below the last row (the snapshot card's precedent) */
-    var y=292,i;for(i=0;i<D.parks.length;i++){var p=D.parks[i],nl=p.note?Math.ceil(p.note.length/44):0;y+=Math.max(104,72+Math.max(p.ex.length,nl)*28+12)+12;}
-    if(D.extra.length)y+=38+Math.min(D.extra.length,3)*46;
-    return Math.max(1080,y+180);}
-  function pcDrawDayCard(ctx,D){ /* the sheet's rows in panels; H from the field */
-    var W=1080,H=D.H||1080,L=64,R=1016,C=TY_CARD,h=pcCardHelpers(ctx,C,L,R),i;
+  function pcDayGeo(D){ /* 0728ee (D-C3): four even tiles; a third line under any park's hours grows every tile; THIS DAY, when the day earns one, grows the card (square when it fits - 0727z's law) */
+    var mx=0,i;for(i=0;i<D.parks.length;i++)mx=Math.max(mx,D.parks[i].ex.length);
+    var th=291+Math.max(0,mx-2)*30,bot=290+2*th+20,n=Math.min(D.extra.length,3);
+    return {th:th,bot:bot,H:Math.max(1080,n?bot+26+32+n*46+18+160:bot+28+160)};}
+  function pcDayCardH(D){return pcDayGeo(D).H;}
+  function pcDrawDayCard(ctx,D){ /* 0728ee THE DATE LEADS, THE HOURS STAND (owner-ruled Oct 4 on cal-day-D-C3 / -oct31.png): the date in the month card's title size; the day's pattern under it; each park a tile - its name on top with what rides it (the party by name, the festival), its hours on the foot with the feed's extras; nothing said twice */
+    var W=1080,G=pcDayGeo(D),H=D.H||G.H,L=64,R=1016,C=TY_CARD,h=pcCardHelpers(ctx,C,L,R),i,j,TIER=["","Light","Moderate","Busy","Packed"];
     ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
     h.SP("THE CALENDAR \u00b7 WALT DISNEY WORLD",L,100,RB(800,26),C.accent,4);
-    h.T(D.day,L,206,RD(700,92),C.ink);
-    h.T(h.ell(D.date+(D.sub?" \u00b7 "+D.sub:""),RB(500,27),R-L),L,252,RB(500,27),C.muted);
-    var y=292;
-    for(i=0;i<D.parks.length;i++){var p=D.parks[i],nl=p.note?h.wrap(p.note,RB(500,23),470):[],ph=Math.max(104,72+Math.max(p.ex.length,nl.length)*28+12);
-      ctx.fillStyle=C.card;h.rr(L,y,R-L,ph,22);ctx.fill();
-      h.T(p.name,L+30,y+48,RD(700,36),C.ink);
-      if(p.pub){h.T(p.hours,R-30,y+48,RD(700,34),C.ink,"right");var j;for(j=0;j<p.ex.length;j++)h.T(p.ex[j],R-30,y+80+j*28,RB(500,23),C.muted,"right");}
-      else{var hl=h.wrap(p.hours,RB(500,24),300);h.T(hl[0]||"",R-30,y+46,RB(500,24),C.muted2,"right");if(hl[1])h.T(hl[1],R-30,y+74,RB(500,24),C.muted2,"right");}
-      for(var k=0;k<nl.length;k++)h.T(nl[k],L+30,y+80+k*28,RB(500,23),C.muted);
-      y+=ph+12;}
-    if(D.extra.length){y+=6;h.SP("THIS DAY",L,y+18,RB(700,20),C.muted2,3);y+=32;
-      for(i=0;i<D.extra.length&&i<3;i++){var g=D.extra[i];if(g.g==="hol")h.diamond(L+12,y+23,6,C.ink);else if(g.g==="race")h.T("15",L+12,y+30,RD(800,22),C.short,"center");else h.T(g.g,L+12,y+31,RB(500,22),C.ink,"center");
-        var dw=h.MW(g.d,RB(500,22));if(g.d)h.T(g.d,R,y+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y+31,RB(600,25),C.ink);y+=44;h.HL(y,C.rollhair);y+=2;}}
-    h.foot(H,"Hours as Disney publishes them, via ThemeParks.wiki","Party nights from the verified list \u00b7 Early Entry from the feed");
+    h.T(h.ell(D.day+", "+D.md,RD(700,74),R-L),L,196,RD(700,74),C.ink);
+    if(D.lv){var px=L;for(i=0;i<4;i++)h.pill(px+i*21,232,16,12,i<D.lv?C.ink:C.hair);px+=94; /* the month card's four pips, at the sub's scale; the tier in its word (COLOR NEVER CARRIES ALONE) */
+      h.T(TIER[D.lv],px,246,RB(700,27),C.ink);h.T(" \u00b7 a pattern for this day, never a forecast",px+h.MW(TIER[D.lv],RB(700,27)),246,RB(500,27),C.muted);}
+    var top=290,gap=20,tw=(R-L-gap)/2,th=G.th;
+    for(i=0;i<D.parks.length&&i<4;i++){var p=D.parks[i],x=L+(i%2)*(tw+gap),y=top+Math.floor(i/2)*(th+gap);
+      ctx.fillStyle=C.card;h.rr(x,y,tw,th,26);ctx.fill();
+      h.T(h.ell(p.name,RD(700,40),tw-60),x+30,y+62,RD(700,40),C.ink);
+      var nz=24,nl=p.note?h.wrap(p.note,RB(500,nz),tw-60):[];while(nl.length>2&&nz>20){nz-=2;nl=h.wrap(p.note,RB(500,nz),tw-60);} /* what rides the park stays whole in two lines: the face steps down before a word is lost */
+      if(nl.length>2){nl=nl.slice(0,2);nl[1]=h.ell(nl[1]+"\u2026",RB(500,nz),tw-60);}
+      for(j=0;j<nl.length;j++)h.T(nl[j],x+30,y+100+j*29,RB(500,nz),C.muted);
+      var fy=y+th-100-Math.max(0,p.ex.length-2)*30;
+      if(p.pub){h.T(p.hours,x+30,fy,RD(700,46),C.ink);
+        for(j=0;j<p.ex.length;j++){var ev=p.ex[j].indexOf("Extended Evening")===0;h.T(p.ex[j],x+30,fy+36+j*30,RB(ev?600:500,24),ev?C.accent:C.muted);}} /* Extended Evening stands apart from Early Entry - in its words first, the accent second */
+      else{var hl=h.wrap(p.hours,RB(500,26),tw-60);for(j=0;j<hl.length&&j<2;j++)h.T(hl[j],x+30,fy+j*32,RB(500,26),C.muted2);}}
+    if(D.extra.length){var y2=G.bot+26;h.SP("THIS DAY",L,y2+18,RB(700,20),C.muted2,3);y2+=32;
+      for(i=0;i<D.extra.length&&i<3;i++){var g=D.extra[i];if(g.g==="hol")h.diamondF(L+12,y2+23,7,C.accent,3);else if(g.g==="race")h.T("15",L+12,y2+30,RD(800,22),C.short,"center");else h.T(g.g,L+12,y2+31,RB(500,22),C.ink,"center"); /* the holiday wears the month card's frame (0728b D) */
+        var dw=h.MW(g.d,RB(500,22));if(g.d)h.T(g.d,R,y2+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y2+31,RB(600,25),C.ink);y2+=44;h.HL(y2,C.rollhair);y2+=2;}}
+    h.foot(H,"Hours as Disney publishes them","Party nights from the verified list \u00b7 Early Entry from the feed");
   }
   function pcShareCard(kind){ /* the Today card's lifecycle verbatim: fonts.ready → toBlob → canShare/download */
     var D,w,hh,draw,title,fname;
