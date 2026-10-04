@@ -2497,7 +2497,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eb</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ec</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3861,13 +3861,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var mk=uxMark(n),tag=BANNER_MONO[r.park]||"";
       var fut=null,lp=null,l2=null,ln=0,i; /* 0718t: the "then" tail (owner pick A) — later starts beyond the seat, min+count, order-robust */
       for(i=0;i<sets.length;i++){if(sets[i]>=nowMs){if(fut==null)fut=sets[i];else{ln++;if(l2==null||sets[i]<l2)l2=sets[i];}}else lp=sets[i];}
-      if(fut!=null)next.push({t:fut,nm:r.name,mk:mk,pk:tag,id:id,l2:l2,ln:ln});
+      if(fut!=null)next.push({t:fut,nm:r.name,mk:mk,pk:tag,id:id,l2:l2,ln:ln,park:r.park,fs:sets.filter(function(v){return v>=nowMs;})}); /* 0728ec: the row carries its park and every start left - the share card reads them */
       if(lp!=null&&(nowMs-lp)<=UX_STARTED_MS&&(lastPast==null||lp>lastPast.t))lastPast={t:lp,nm:r.name,mk:mk,pk:tag,id:id};
     }
     next.sort(function(a,b){return a.t-b.t||(a.nm<b.nm?-1:a.nm>b.nm?1:0);});
     return {next:next,started:lastPast?[lastPast]:[]};
   }
-  var uxState={pk:store.get("uxPk","all")||"all",all:store.get("uxAll",true)!==false,open:false};
+  var uxState={pk:store.get("uxPk","all")||"all",all:store.get("uxAll",true)!==false,open:false}; var uxLast=null; /* 0728ec: renderUpNext publishes its pass here (THE CARD DRINKS THE CHANNEL) */
   function uxRel(ms){var m=Math.round(ms/60000);if(m<1)return "NOW";if(m<60)return "IN "+m+"M";
     var h=Math.floor(m/60),mm=m%60;return "IN "+h+"H"+(mm?" "+mm+"M":"");}
   function uxClk(ms){return fmtClock(new Date(ms).toISOString())||"";}
@@ -3876,6 +3876,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var haveShows=false,id;for(id in liveById){if(liveById[id]&&liveById[id].shows){haveShows=true;break;}}
     if(!haveShows){el.innerHTML="";return;} /* pre-poll or no showtime data: the seat stays empty */
     var now=Date.now(),res=uxRows(now,uxState.pk,uxState.all),cap=uxState.open?15:5,next=res.next.slice(0,cap);
+    uxLast={now:now,pk:uxState.pk,all:uxState.all,next:res.next};
     var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT &middot; LIVE SHOWS</span><span>'+esc(uxClk(now))+'</span></div>';
     h+='<div class="ux-pks"><button type="button" data-uxpk="all"'+(uxState.pk==="all"?' class="on"':'')+'>ALL</button>';
     PARK_DEF.forEach(function(p){h+='<button type="button" data-uxpk="'+esc(p.key)+'"'+(uxState.pk===p.key?' class="on"':'')+'>'+esc(BANNER_MONO[p.key]||p.key)+'</button>';});
@@ -3889,12 +3890,142 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           h+='<div class="ux-row dim"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>STARTED '+ago+'M AGO</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});}
       h+='</div>';
       if(res.next.length>5)h+='<button type="button" class="ux-more">'+(uxState.open?'Fewer shows \u25B4':'More shows \u25BE')+'</button>';
+      if(res.next.length)h+='<button class="pw-share ux-share" type="button">'+'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> '+esc(uxState.pk==="all"?"Share all four parks":"Share the "+(BANNER_MONO[uxState.pk]||uxState.pk)+" lineup")+'</button>'; /* 0728ec R5 + R7: the Callouts door, its words follow the park chip; no start left, no door */
     }
     h+='</div>';
     el.innerHTML=h;
     el.querySelectorAll('[data-uxpk]').forEach(function(b){b.addEventListener("click",function(){uxState.pk=this.getAttribute("data-uxpk");store.set("uxPk",uxState.pk);renderUpNext();});});
     el.querySelectorAll('[data-uxall]').forEach(function(b){b.addEventListener("click",function(){uxState.all=this.getAttribute("data-uxall")==="1";store.set("uxAll",uxState.all);renderUpNext();});});
     var mo=el.querySelector(".ux-more");if(mo)mo.addEventListener("click",function(){uxState.open=!uxState.open;renderUpNext();});
+    var ush=el.querySelector(".ux-share");if(ush)ush.addEventListener("click",function(){uxShareCard();});
+  }
+
+  /* ===== 0728ec THE UP NEXT SHARE CARD (UpNext-Card-Spec R1\u2013R8, owner-ruled Oct 3; the six open items ruled Oct 4 on upnext-real-mock.html from his 12:46 PM frames).
+     THE CHIPS CHOOSE: a park chip shares card A (the lineup: every start left today, the next in green); ALL shares card C (the next three per park, then each nighttime show in gold).
+     THE CARD DRINKS THE CHANNEL: uxLast is renderUpNext's own pass \u2014 nothing here re-derives a row. NO COUNTDOWNS: clocks and a stamp only.
+     Oct 4 rulings: N-A every nighttime show its own gold line, in time order \u00b7 W-A a gold name wraps (the party is never cut off) \u00b7 no cap on card A \u00b7 a run wraps at its dots \u00b7
+     M-B the meridiem once per half of the day (pbStripAm against the next time) \u00b7 the head and the count name the meets when meets ride \u00b7 +N more leaves out the gold-line shows \u00b7 B-A the door names the park only. ===== */
+  var UX_NIGHT="\uD83C\uDF86";
+  function uxCardModel(ch){
+    if(!ch||!ch.next||!ch.next.length)return null; /* R7: nothing left, nothing to share */
+    var clock=uxClk(ch.now),wd="",mo="",dy="";
+    new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"long",month:"short",day:"numeric"}).formatToParts(new Date(ch.now)).forEach(function(x){if(x.type==="weekday")wd=x.value;if(x.type==="month")mo=x.value;if(x.type==="day")dy=x.value;});
+    var date=wd+", "+mo+" "+dy;
+    var D={W:1080,stamp:clock,basis:["Showtimes as posted at "+clock+" \u00b7","they can change"]}; /* R6: THE CLAUSE IS THE BREAK */
+    if(ch.pk!=="all"){
+      var meets=0;
+      D.kind="A";
+      D.rows=ch.next.map(function(x){
+        if(uxIsMeet(normName(x.nm)))meets++;
+        var c=(x.fs&&x.fs.length?x.fs:[x.t]).map(uxClk),run=[],j;
+        for(j=0;j<c.length;j++)run.push(j<c.length-1?pbStripAm(c[j],c[j+1]):c[j]);
+        return {mk:x.mk,nm:x.nm,run:run};
+      });
+      var n=D.rows.length,acts=n-meets,noun;
+      if(meets&&acts){D.head="EVERY SHOWTIME AND MEET LEFT TODAY";noun=n+" shows and meets";}
+      else if(meets){D.head="EVERY MEET LEFT TODAY";noun=n+" meet"+(n===1?"":"s");}
+      else{D.head="EVERY SHOWTIME LEFT TODAY";noun=n+" act"+(n===1?"":"s");}
+      D.kicker="LIVE SHOWS \u00b7 "+ch.pk.toUpperCase();D.title="Today\u2019s lineup";D.sub=date+" \u00b7 "+noun+" still to come";
+      D.fname="ridecue-upnext-"+String(BANNER_MONO[ch.pk]||ch.pk).toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png";
+      D.shareTitle="RideCue \u2014 "+ch.pk+" lineup";
+    }else{
+      D.kind="C";
+      D.kicker="LIVE SHOWS \u00b7 ALL FOUR PARKS";D.title="Up next across the parks";D.sub=date+" \u00b7 from "+clock;
+      D.secs=PARK_DEF.map(function(pd){
+        var rows=ch.next.filter(function(x){return x.park===pd.key;}),rest=rows.slice(3);
+        var night=rest.filter(function(x){return x.mk===UX_NIGHT;}),m=rest.length-night.length; /* a nighttime show already among the three is not listed twice */
+        function rw(x){return {t:uxClk(x.t),nm:x.nm};}
+        return {nm:pd.key.toUpperCase(),rows:rows.slice(0,3).map(rw),night:night.map(rw),
+          more:m>0?"+"+m+" more"+(ch.all?"":" act"+(m===1?"":"s"))+" today":null,
+          none:rows.length?null:(ch.all?"Nothing left today":"No shows left today")};
+      });
+      D.fname="ridecue-upnext-all.png";D.shareTitle="RideCue \u2014 Up next across the parks";
+    }
+    return D;
+  }
+  function uxDrawCard(ctx,D,H){ /* the dress is upnext-card-mock.html / upnext-c-mock.html at 3x: LIVE's navy field, PW_CARD_ALT inks, rcMark, the family footer */
+    var W=D.W,C=PW_CARD_ALT,GOLD="#ffce5c",SOFT="#c8d2e8";
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px ui-rounded,"Space Grotesk",sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function sec(tx){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);LS("0px");y+=51;}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j;
+    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    T(D.stamp,R,139,IN("700",28),C.ink,"right");
+    LS("3px");T(D.kicker,L,218,IN("800",28),C.accent);LS("0px");
+    var tl=wrapW(D.title,CW,SG("700",66));y=299;
+    for(i=0;i<tl.length;i++)T(tl[i],L,y+i*76,SG("700",66),C.ink);
+    y+=(tl.length-1)*76+62;
+    T(D.sub,L,y,IN("500",30),C.muted);y+=10;
+    if(D.kind==="A"){
+      sec(D.head);
+      var TX=L+78,TWD=R-TX,fr=IN("500",30),fb=IN("700",30),gap=MW(" ",fr),dotw=MW(" \u00b7",fr);
+      for(i=0;i<D.rows.length;i++){
+        var r=D.rows[i];y+=18;
+        var nl=wrapW(r.nm,TWD,IN("600",35));
+        T(r.mk,L+27,y+32,IN("500",36),C.muted,"center");
+        for(j=0;j<nl.length;j++){T(nl[j],TX,y+32,IN("600",35),C.ink);y+=43;}
+        y+=3;
+        var x=TX; /* a run wraps at its dots: the dot ends the line it closes, a time is never split */
+        for(j=0;j<r.run.length;j++){
+          var f=j===0?fb:fr,tw=MW(r.run[j],f),last=j===r.run.length-1;
+          if(x>TX&&x+tw+(last?0:dotw)>R){x=TX;y+=45;}
+          T(r.run[j],x,y+32,f,j===0?C.green:C.muted);x+=tw;
+          if(!last){T(" \u00b7",x,y+32,fr,C.muted);x+=dotw+gap;}
+        }
+        y+=45+18;
+      }
+    }else{
+      var NX=L+228,NW=R-NX;
+      for(i=0;i<D.secs.length;i++){
+        var s=D.secs[i];sec(s.nm);
+        if(s.none){T(s.none,L,y+42,IN("500",30),C.muted2);y+=65;}
+        for(j=0;j<s.rows.length;j++){T(s.rows[j].t,L,y+42,SG("800",33),C.ink);T(ell(s.rows[j].nm,NW,IN("500",34)),NX,y+42,IN("500",34),SOFT);y+=65;}
+        if(s.more){T(s.more,NX,y+30,IN("500",27),C.muted2);y+=38;}
+        if(s.night.length)y+=15;
+        for(j=0;j<s.night.length;j++){ /* THE TONIGHT LINE: time in gold, mark + name in ink; the name wraps whole */
+          T(s.night[j].t,L,y+42,SG("800",33),GOLD);
+          var gl=wrapW(UX_NIGHT+" "+s.night[j].nm,NW,IN("500",34)),k;
+          for(k=0;k<gl.length;k++)T(gl[k],NX,y+42+k*43,IN("500",34),C.ink);
+          y+=22+gl.length*43;
+        }
+      }
+    }
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    T(D.basis[0],L,y+59,IN("500",26),C.muted2);T(D.basis[1],L,y+93,IN("500",26),C.muted2);
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    ctx.restore();
+    return y+98+52+36;
+  }
+  function uxShareCard(){ /* the family lifecycle (fonts.ready -> two-pass self-size -> toBlob -> canShare/download); the tap re-reads the board first so the card and the glass are one pass */
+    renderUpNext();
+    var D=uxCardModel(uxLast);if(!D)return;
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;
+      var ctx=cv.getContext("2d");
+      var Hf=Math.ceil(uxDrawCard(ctx,D,6000));
+      cv.height=Hf; /* resizing resets the context state */
+      ctx=cv.getContext("2d");
+      uxDrawCard(ctx,D,Hf);
+      cv.toBlob(function(blob){
+        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+        var file=new File([blob],D.fname,{type:"image/png"});
+        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:D.shareTitle})["catch"](function(){});}
+        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+      },"image/png");
+    });
   }
 
   /* ===== PB: THE FOUR-PARK BOARD (0721y) — Live-Board-Spec.md Cut 1.
