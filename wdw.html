@@ -1796,9 +1796,11 @@
   .pw-hs{padding-bottom:12px}
   .pw-hsw{overflow-x:auto;overflow-y:hidden;margin:6px -12px 0;padding:0 12px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
   .pw-hsw::-webkit-scrollbar{display:none}
-  .pw-hsr{display:flex;width:max-content}
+  .pw-hsr{display:flex;width:max-content;padding-right:12px} /* 0728eu: the last column (Now, on a live day) clears the edge fade */
   .pw-hc{flex:none;width:50px;text-align:center;padding:6px 0 4px;border-radius:12px}
   .pw-hc.ev{background:rgba(99,102,241,.10)}
+  .pw-hc.now{box-shadow:inset 0 0 0 1.5px var(--accent)} /* 0728eu: Now is an outline and a word; a hold wave is a tint \u2014 the two can share a column */
+  .pw-hc.now .h{color:var(--accent);font-weight:700}
   .pw-hc .h{font-family:var(--font-body);font-weight:600;font-size:10.5px;color:var(--muted)}
   .pw-hc .i{font-size:19px;line-height:1;margin:7px 0 6px}
   .pw-hc .f{font-family:var(--font-display);font-weight:700;font-size:14.5px;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -2537,7 +2539,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728es</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eu</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13163,7 +13165,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(fall&&g)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", "+gustC+", and "+rain+"."};
       if(fall)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", with "+rain+"."};
       if(g)return {h:pwClk(c.t)+" — the rain core arrived",b:GustC+" and "+rain+"."};
-      return {h:pwClk(c.t)+" — the rain core arrived",b:rain+"."};
+      return {h:pwClk(c.t)+" — the rain core arrived",b:rain.charAt(0).toUpperCase()+rain.slice(1)+"."}; /* 0728et (owner glass 7:37 PM Oct 5: \u201crain falling at 0.9" an hour.\u201d): a sentence that is only the rain starts with a capital */
     }
     function pwCall(color,h,b){return '<div class="pw-st-call"><span class="dot" style="background:'+color+'"></span><div><div class="h">'+esc(h)+'</div><div class="b">'+esc(b)+'</div></div></div>';}
     /* ===== 0712a: the Sky Page — the storm timeline evolved into the one sky surface.
@@ -13260,15 +13262,24 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var S=x.samples||[],L=(d&&d.ltg&&d.ltg.samples)||[],ser=x.series||[];if(S.length<2)return "";
       var IC={clear:"\u2600\ufe0f",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
       function lt(tq){for(var q=0;q<L.length;q++){var w=L[q].w||60;if(L[q].t-w<tq&&tq<=L[q].t)return L[q].n;}return 0;}
-      var H0=Math.round(S[0].t/60),H1=Math.round(S[S.length-1].t/60),hh,i,cols=[],open=0,pkI=-1;
+      var H0=Math.round(S[0].t/60),H1=Math.round(S[S.length-1].t/60),hh,i,cols=[],open=0,pkI=-1,lastB=null;
       for(hh=H0;hh<=H1;hh++){var T=hh*60,b=null;
         for(i=0;i<S.length;i++)if(S[i].fF!=null&&(!b||Math.abs(S[i].t-T)<Math.abs(b.t-T)))b=S[i];
-        if(!b||Math.abs(b.t-T)>30)continue;
+        if(!b||Math.abs(b.t-T)>30||T>S[S.length-1].t+7)continue; /* 0728et (owner glass 7:37 PM Oct 5: an 8p column at 7:37 PM, drawn from the 7:31 reading): no column for an hour the readings have not reached (HISTORY, NEVER A PROMISE) */
         var cl=wxClass(b);if(lt(b.t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
         var dn=0;for(i=0;i<ser.length;i++)if(ser[i][0]>T-30&&ser[i][0]<=T+30&&ser[i][1]>dn)dn=ser[i][1];
         if(x.peakPt&&x.downPeak>=8&&x.peakPt.t>T-30&&x.peakPt.t<=T+30)pkI=cols.length;
-        cols.push('<div class="pw-hc'+(dn>=8?' ev':'')+'"><div class="h">'+pwClkS(T%1440)+'</div><div class="i">'+IC[cl]+'</div><div class="f">'+b.fF+'\u00b0</div><div class="d">'+(dn>=8?('<b>'+dn+'</b> down'):'&nbsp;')+'</div></div>');}
+        lastB=b;cols.push('<div class="pw-hc'+(dn>=8?' ev':'')+'"><div class="h">'+pwClkS(T%1440)+'</div><div class="i">'+IC[cl]+'</div><div class="f">'+b.fF+'\u00b0</div><div class="d">'+(dn>=8?('<b>'+dn+'</b> down'):'&nbsp;')+'</div></div>');}
+      if(live&&S.length){ /* 0728eu NOW IS A READING (owner-ruled N-C Oct 5 on now-mock.png): a live day's strip ends on a column named Now \u2014 the latest banked reading itself, the one the Wrap card calls Now \u2014 outlined, never tinted (the tint is a hold wave's). When the last hour's column was drawn from that same reading, Now takes its place: one reading, one column. Its sky glyph is the band's rule; its count is the number down at the latest snapshot, on the wave's gate. A finished day has no Now. */
+        var nb=null;for(i=S.length-1;i>=0;i--)if(S[i].fF!=null){nb=S[i];break;}
+        if(nb){if(lastB===nb){cols.pop();if(pkI>=cols.length)pkI=cols.length;}
+          var ncl=wxClass(nb);if(lt(nb.t)>0&&ncl!=="core"&&ncl!=="rain")ncl="storm";
+          var ndn=ser.length?ser[ser.length-1][1]:0;
+          cols.push('<div class="pw-hc now'+(ndn>=8?' ev':'')+'"><div class="h">Now</div><div class="i">'+IC[ncl]+'</div><div class="f">'+nb.fF+'\u00b0</div><div class="d">'+(ndn>=8?('<b>'+ndn+'</b> down'):'&nbsp;')+'</div></div>');}
+      }
       if(cols.length<2)return "";
+      var anyEv=false;for(i=0;i<cols.length;i++)if(cols[i].indexOf(' ev"')>=0)anyEv=true;
+      if(!anyEv)for(i=0;i<cols.length;i++)cols[i]=cols[i].replace('<div class="d">&nbsp;</div>',""); /* 0728et (owner glass): with no hold-wave hour the count row is empty on every column, so it is not drawn */
       open=pkI>=0?pkI:(live?cols.length-1:0); /* THE INCIDENT LEADS: a wave day opens on its peak hour; a live day on the latest hour; a quiet finished day at its start */
       return '<div class="pw-st-card pw-hs"><div class="pw-lh"><span class="nm">Hour by hour</span><span class="st q">'+(tm?'temperature':'feels-like')+'</span></div><div class="pw-lrule"></div><div class="pw-hsw" id="pwHsw" data-open="'+open+'"><div class="pw-hsr">'+cols.join("")+'</div></div><div class="pw-pl" id="pwWxPl"><button type="button" data-m="t"'+(tm?' class="on"':'')+'>Temp</button><button type="button" data-m="f"'+(tm?'':' class="on"')+'>Feels like</button></div></div>';
     }
@@ -13351,9 +13362,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var fmk=[],fq,fb,fg; /* a number at the banked reading nearest each grid hour (within 45 min, clear of the high); the high always */
         for(fg=0;fg<GT.length;fg++){fb=null;for(fq=0;fq<FS.length;fq++)if(!fb||Math.abs(FS[fq].t-GT[fg])<Math.abs(fb.t-GT[fg]))fb=FS[fq];
           if(fb&&Math.abs(fb.t-GT[fg])<=45&&Math.abs(fb.t-S3[fpk].t)>80&&fmk.indexOf(fb)<0)fmk.push(fb);}
-        for(fq=0;fq<fmk.length;fq++){var mX=parseFloat(tx(fmk[fq].t)),mY=fyn(fmk[fq].fF),mB=(fx&&Math.abs(mY-fyn(108))<26);
+        for(fq=0;fq<fmk.length;fq++){var mX=parseFloat(tx(fmk[fq].t)),mY=fyn(fmk[fq].fF),mB=(fx&&mX>540&&Math.abs(mY-fyn(108))<26);
           l3+='<circle class="pt" cx="'+mX.toFixed(1)+'" cy="'+mY.toFixed(1)+'" r="4.5" stroke="url(#pwTg)"/><text class="val" x="'+lx(mX)+'" y="'+(mB?mY+26:mY-12).toFixed(1)+'" text-anchor="middle">'+fmk[fq].fF+'\u00b0</text>';}
-        var hX=parseFloat(tx(S3[fpk].t)),hY=fyn(S3[fpk].fF),hB=(fx&&Math.abs(hY-fyn(108))<30);
+        var hX=parseFloat(tx(S3[fpk].t)),hY=fyn(S3[fpk].fF),hB=(fx&&hX>540&&Math.abs(hY-fyn(108))<30); /* 0728et (owner glass 7:37 PM Oct 5: the high\u2019s 110\u00b0 and 105\u00b0 sat on the curve): a number rides ABOVE its reading; it drops below only at the right edge, where the rule\u2019s own label lives */
         l3+='<circle class="pt" cx="'+hX.toFixed(1)+'" cy="'+hY.toFixed(1)+'" r="6.5" stroke="url(#pwTg)"/><text class="val hi" x="'+lx(hX)+'" y="'+(hB?hY+30:hY-14).toFixed(1)+'" text-anchor="middle">'+S3[fpk].fF+'\u00b0</text>';
         l3+='</svg>';
         h+='<div class="pw-lh"><span class="nm">'+(tm?'Temperature':'Feels-like')+'</span><span class="st">high '+(live?'so far ':'')+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
