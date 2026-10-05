@@ -2499,7 +2499,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ej</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ek</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5132,14 +5132,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hero='<div class="rp-hero"><div class="eb">Rope Drop Board \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+'</h2>'+
       '<div class="sub">How mornings typically ran \u2014 not a forecast.</div>'+
-      '<div class="hstats"><div class="hstat"><div class="k">Never a <span class="nb">walk-on</span></div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
+      '<div class="hstats"><div class="hstat"><div class="k">No <span class="nb">walk-on</span> at the open</div><div class="v">'+(C?C.never.length:'\u2013')+'</div></div>'+
       '<div class="hstat"><div class="k"><span class="nb">Walk-on</span> until</div><div class="v">'+(C?C.until.length:'\u2013')+'</div></div>'+ /* 0728dy THE HERO COUNTS ITS OWN SECTIONS (owner glass 7:50 PM Oct 3, Hollywood Studios 1 \u00b7 7 \u00b7 1: two of the three names appeared nowhere below and the order crossed the page\u2019s; N-A on rd-hero-mock.html): each stat wears its section\u2019s words, left to right as top to bottom (SAME QUESTION SAME SENTENCE) */
       '<div class="hstat"><div class="k">Easy all day</div><div class="v">'+(C?C.allday.length:'\u2013')+'</div></div></div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(loading)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The board builds from the day ledger \u2014 one moment.</div></div>';
     var body="";
-    /* 0728dz THE NAME STATES WHAT THE SECTION HOLDS (owner glass 8:29 PM Oct 3, Magic Kingdom: Space Mountain 15m, Big Thunder 13m, Haunted Mansion 13m, Jungle Cruise 11m at open under NEVER AN EASY LINE \u2014 "those seem like easy lines to me"; owner-ruled E-C): the section holds lines that never dipped to walk-on, so the open is their discount \u2014 the rope-drop plan\u2019s own name for the same class (SAME QUESTION SAME SENTENCE). The hero stat wears the same words */ body+=rdSec("Never a walk-on", /* 0728ea THE NAME IS TRUE OF EVERY ROW (owner glass 7:43 AM Oct 4, MK party days: Space Mountain typical 13m, 13m at open \u2014 not worth the open; G-B): the section holds lines that never dipped to walk-on, and says exactly that; a row whose low lands later still corrects the cap with its own clock (0724b) */"The median never dipped to walk-on \u2014 the open was the discount.",C.never.map(function(it){return rdRow(it,"never");}).join(""));
+    /* 0728dz THE NAME STATES WHAT THE SECTION HOLDS (owner glass 8:29 PM Oct 3, Magic Kingdom: Space Mountain 15m, Big Thunder 13m, Haunted Mansion 13m, Jungle Cruise 11m at open under NEVER AN EASY LINE \u2014 "those seem like easy lines to me"; owner-ruled E-C): the section holds lines that never dipped to walk-on, so the open is their discount \u2014 the rope-drop plan\u2019s own name for the same class (SAME QUESTION SAME SENTENCE). The hero stat wears the same words */ body+=rdSec("No walk-on at the open", /* 0728ea THE NAME IS TRUE OF EVERY ROW (owner glass 7:43 AM Oct 4, MK party days: Space Mountain typical 13m, 13m at open \u2014 not worth the open; G-B): the section holds lines that never dipped to walk-on, and says exactly that; a row whose low lands later still corrects the cap with its own clock (0724b) */"Not a walk-on when the park opens \u2014 the open was the discount." /* 0728ek N-B: the section holds every ride with no walk-on at the open, some of which reach it later; the name and the caption now say only that */,C.never.map(function(it){return rdRow(it,"never");}).join(""));
     body+=rdSec("Walk-on until \u2014","Soonest to end first. Times are typical patterns, not today.",C.until.map(function(it){return rdRow(it,"until");}).join(""));
     body+=rdSec("Easy all day","Short at every hour \u2014 timing never mattered.",C.allday.map(function(it){return rdRow(it,"allday");}).join(""));
     if(!C.never.length&&!C.until.length&&!C.allday.length)
@@ -5172,10 +5172,17 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     defer.sort(function(a,b){return (b.cv.typ-a.cv.typ)||((a.cv.front==null?9999:a.cv.front)-(b.cv.front==null?9999:b.cv.front))||a.nm.localeCompare(b.nm);});
     var fl=defer.filter(function(x){return x.cls==="flat";}).sort(function(a,b){return a.nm.localeCompare(b.nm);}),df=defer.filter(function(x){return x.cls!=="flat";}); var bk9=df.filter(function(x){return !x.cv.allday;}).sort(function(a,b){return (a.cv.back-b.cv.back)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);}),ad9=df.filter(function(x){return x.cv.allday;}); return never.concat(burn,bk9,ad9,fl); /* 0728ei L-C: the rides that come back run in the order of the clock they show (0728eg's law), then the all-days */ /* 0714f: flats sit last \u2014 the least actionable rows */
   }
+  function rmOpenMin(){ /* 0728ek E-C: the park's own published open, in minutes; null when the feed has none (then nothing changes) */
+    var pi=(typeof parkInfo!=="undefined"&&parkInfo)?parkInfo[rpPark]:null;if(!pi||!pi.open||typeof rcEtMin!=="function")return null;return rcEtMin(new Date(pi.open));}
+  function rmTouch(cv){ /* the first half-hour at or under the ride's walk-on mark, or null: null = never a walk-on at any hour */
+    var W=cv.walk||10,q;for(q=0;q<cv.bs.length;q++)if(cv.bs[q].med<=W)return cv.bs[q].t;return null;}
   function rmCoach(it,first){ /* clause-derived; every headline provable from its own why · 0714e: one rope drop per morning — later never-easies say Then (owner-caught: four Rope drops is an instruction you can’t follow) */
     var cv=it.cv;
-    if(it.cls==="never")return {hd:(first?"Rope drop ":"Then ")+esc(it.nm),
-      why:"Never under "+(cv.walk||10)+"m \u2014 opened near "+cv.bs[0].med+"m, typical "+cv.typ+"m."};
+    if(it.cls==="never"){ /* 0728ek N-B THE GROUP IS NAMED FOR THE OPEN (owner glass Oct 5: Jungle Cruise, Smugglers Run and Kilimanjaro Safaris under Never a walk-on on the morning page, walk-on after 9:30 PM / 8:30 PM / from 4 PM on the evening page): the class has always been "no walk-on at the open"; each row now says what happens later, in the evening page's own words (after = it holds, around = a touch) \u00b7 E-C: a walk-on that ends as the gates open is not a walk-on at the open */
+      var t9=rmTouch(cv),tl9=(cv.back!=null)?("walk-on after "+rpClk(cv.back)):(t9!==null?("walk-on around "+rpClk(t9)):"never a walk-on");
+      return {hd:(first?"Rope drop ":"Then ")+esc(it.nm),
+        why:(it.pre!=null)?("Typical "+cv.typ+"m \u00b7 walk-on only before the "+rpClk(it.pre)+" open"+(cv.back!=null?" \u00b7 again after "+rpClk(cv.back):"")+".")
+          :("Opened near "+cv.bs[0].med+"m, typical "+cv.typ+"m \u00b7 "+tl9+".")};}
     return {hd:esc(it.nm)+" by "+rpClk(cv.front),
       why:"Walk-on until "+rpClk(cv.front)+" on typical days, with no evening return."};
   }
@@ -5205,7 +5212,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(j=0;j<it.cv.bs.length;j++)by[it.cv.bs[j].t]=it.cv.bs[j].med;
       for(j=540;j<780;j+=30){var m=by[j];
         cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=(it.cv.walk||10)?' wo':'')+'"></i>';}
-      var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">never a walk-on</span>'
+      var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">'+(rmTouch(it.cv)===null?'never a walk-on':'not at the open')+'</span>'
         :(it.cv.allday?'<span class="rm-edge">all day</span>'
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
       rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
@@ -5220,7 +5227,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>My morning</b></div>';
     var hero='<div class="rp-hero"><div class="eb">My Morning \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
-      '<div class="sub">What the mornings have shown for your stars \u2014 what never dips to walk-on, what closes when, and what comes back.</div></div>';
+      '<div class="sub">What the mornings have shown for your stars \u2014 what has no walk-on at the open, what closes when, and what comes back.</div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(!stars.length)return crumb+hero+ffFaceHTML(rpPark,"morning"); /* 0728bx THE FIRST FACE, THE FAMILY (M2) */
@@ -5228,7 +5235,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var items=[],outs=[],i,cv;
     for(i=0;i<stars.length;i++){cv=rpWinCurve(stars[i].id,rpWin,face9); /* 0727k f-i */
       if(!cv){outs.push(stars[i]);continue;}
-      items.push({id:stars[i].id,nm:stars[i].nm,cv:cv,cls:rmClass(cv)});}
+      items.push({id:stars[i].id,nm:stars[i].nm,cv:cv,cls:rmClass(cv)});
+      var L9=items[items.length-1],op9=rmOpenMin();if(op9!==null&&(L9.cls==="burn"||L9.cls==="defer")&&!cv.allday&&cv.front!==null&&cv.front<=op9){L9.cls="never";L9.pre=op9;}} /* 0728ek E-C (owner glass Oct 5: Na\u2019vi walk-on until 8 AM, Tower of Terror until 9 AM): the edge sits at or before the published open, so the ride joins the open's group and says so */
     if(!items.length)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked mornings yet for your stars.':'This window is too thin for a plan \u2014 try All.')+'</div></div>'+rmOuts(outs);
     var ord=rmPlanOrder(items),rec='',flats=[],gBack=false,gAll=false,gOpen=false,gBurn=false,anyNever=false,firstNever=true; /* 0728bi A MORNING IS A GUIDE, NOT A ROUTE (owner-ruled G-1 on morning-guide-mock.html, Sep 12): the Today board numbers the walk; here the never-easies are the choice at open (one Rope drop, the rest "or"), the walk-ons lead with their clock and say what a rope drop costs them, Later stays. rmClass, rmPlanOrder's two keys and the receipts are untouched. */
     for(i=0;i<ord.length;i++)if(ord[i].cls==="never")anyNever=true;
@@ -5236,13 +5244,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var it=ord[i];
       if(it.cls==="flat"){flats.push(it); /* 0728ei L-C (owner glass 12:45 PM Oct 5, the circled dots: "why there's no time for these two"): Later held three kinds of ride under one dot. The rides that come back lead with the clock walk-on returns (BACK TONIGHT); the all-days stand apart (EASY ALL DAY \u00b7 any); a flat line has no morning story and says so in the rope-drop board's own sentence */
       }else if(it.cls==="defer"&&!it.cv.allday){
-        if(!gBack){rec+='<div class="grp">Back tonight<small>the clock walk-on returns</small></div>';gBack=true;}
+        if(!gBack){rec+='<div class="grp">Back later<small>the clock walk-on returns</small></div>' /* 0728ek B-B (owner glass Oct 5, EPCOT: Back tonight over a 2 PM return): true at any hour */;gBack=true;}
         rec+='<div class="row"><div class="n t">'+rpClk(it.cv.back)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">Walk-on until '+rpClk(it.cv.front)+', again after '+rpClk(it.cv.back)+' \u00b7 typical '+it.cv.typ+'m, crest '+it.cv.pk+'m.</div></div></div>';
       }else if(it.cls==="defer"){
         if(!gAll){rec+='<div class="grp">Easy all day<small>timing never mattered</small></div>';gAll=true;}
         rec+='<div class="row"><div class="n any">any</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+rmTailWhy(it)+'</div></div></div>';
       }else if(it.cls==="never"){
-        if(!gOpen){rec+='<div class="grp">Never a walk-on<small>rope-drop one</small></div>' /* 0728eg W-B THE MORNING WEARS THE READ'S NAME (owner glass Oct 4: Haunted Mansion, opened near 13m, typical 18m, under Worth the open \u2014 the case 0728ea ruled on the Today read): SAME QUESTION SAME SENTENCE; the name is true of every row */;gOpen=true;}
+        if(!gOpen){rec+='<div class="grp">No walk-on at the open<small>rope-drop one</small></div>' /* 0728eg W-B THE MORNING WEARS THE READ'S NAME (owner glass Oct 4: Haunted Mansion, opened near 13m, typical 18m, under Worth the open \u2014 the case 0728ea ruled on the Today read): SAME QUESTION SAME SENTENCE; the name is true of every row */;gOpen=true;}
         var c=rmCoach(it,firstNever);
         rec+='<div class="row"><div class="n '+(firstNever?'pick">GO':'or">or')+'</div><div class="m"><div class="hd">'+(firstNever?c.hd:esc(it.nm))+'</div><div class="why">'+c.why+'</div></div></div>';firstNever=false;
       }else{var cv=it.cv;
@@ -5250,7 +5258,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         rec+='<div class="row"><div class="n t">'+rpClk(cv.front)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">Walk-on until '+rpClk(cv.front)+' on typical days'+(anyNever?' \u00b7 <span class="miss">likely gone after a rope drop</span>':'')+' \u00b7 typical '+cv.typ+'m.</div></div></div>';}
     }
     var plan='<div class="rpc rm-rec"><div class="lbl">Your morning</div>'+rec+(flats.length?'<div class="pf-more" style="border-top:0;padding-top:2px">One typical number all day \u2014 no morning story to tell: '+flats.map(function(o){return esc(o.nm)+" ("+o.cv.bs[0].med+"m)";}).join(", ")+'.</div>':'')+
-      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 never a walk-on = the typical line never dipped to 10m; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 back tonight = the clock walk-on returns \u00b7 easy all day = walk-on at every hour \u00b7 priciest miss listed first'+rpWalkNote(ord)+'</div></div>';
+      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 no walk-on at the open = the typical line is over 10m when the park opens; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 back later = the clock walk-on returns \u00b7 easy all day = walk-on at every hour \u00b7 priciest miss listed first'+rpWalkNote(ord)+'</div></div>';
     return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
   }
 /* ===== 0719l (ME): MY EVENING \u2014 engine + landing =========================
@@ -5283,7 +5291,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(q=0;q<bs.length;q++){if(bs[q].med<=W9){wk=bs[q].t;break;}}
     /* 0728ei C-B AFTER MEANS IT HOLDS (owner glass 12:35 PM Oct 5: Tiana's read walk-on after 9 PM over one walk-on half-hour while the morning page said no evening return; Haunted Mansion read 9:30 here and 10:30 there): the clock is where the walk-on run that reaches this ride's last kept half-hour begins \u2014 rpCurveOf's own rule for the morning's "again after", so the two pages cannot disagree. A ride that touches walk-on and climbs again keeps its first touch and says around. */
     var tch=wk,hold=false,h9=bs.length;while(h9>0&&bs[h9-1].med<=W9)h9--;if(h9<bs.length){hold=true;wk=bs[h9].t;}
-    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,tch:tch,hold:hold,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>W9),walk:W9};}
+    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,tch:tch,hold:hold,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,lastMed:lastB.med,ne:(mn>W9),walk:W9};}
   function meXN(rid,t,pre,face,walk){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v; /* 0727k: the receipt drinks the lane's pool — party digest days only on a party face, neither on the ordinary face; undefined stays 0725w */ /* 0725w: the odds drink ordinary days only (THE FILTER LAW) */
     for(i=0;i<days.length;i++){if(face===undefined){if(!tdOrd(days[i].d))continue;}else if(face){if(days[i].pt!==face)continue;}else{if(!tdOrd(days[i].d)||days[i].pt)continue;}idx=(t/30)-days[i].hs;if(idx<0||idx>=days[i].hm.length)continue;
       v=days[i].hm[idx];if(v===null)continue;n++;if(v<=(walk||10))x++;}
@@ -5301,7 +5309,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return ne.concat(fd);}
   function meCoach(it,isLast,boardMn,boardTm,pre,fdN){var e=it.ev,hd,why;
     if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
-      why="Eases, but never to walk-on \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
+      why=(e.lastMed!=null&&e.lastLo<=(e.walk||10))?("Eases, but its typical line stops short of walk-on \u2014 ~"+e.lastMed+"m even at "+rpClk(e.lastT)+"; about one night in four reaches "+(e.walk||10)+"m.") /* 0728ek R-C (owner glass Oct 5: Tiana's "never to walk-on \u2014 typically 10\u201315m"): when the band's low quartile is at walk-on, the row says the middle and how often, instead of printing a walk-on number after the word never */
+        :("Eases, but never to walk-on \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."); /* 0719n: a collapsed band speaks one number */}
     else{var rc="",rcT="",xr=null;
       if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark),e.walk);if(xn.n>0){xr=xn;rcT=(e.walk||10)+" or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";rc=" \u00b7 "+rcT;}} /* 0719o: the receipt speaks the definition */
       var t0=e.bs[0].t,fromStart=(e.wk===t0&&e.hold!==false),touch=(e.hold===false),late9=(e.hold===true&&e.tch!=null&&e.tch<e.wk);
