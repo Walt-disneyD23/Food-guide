@@ -576,7 +576,7 @@
 .md-doors .tp-door{display:flex;flex-direction:column}
 .md-doors .tp-door .ch{margin-top:auto;padding-top:8px}
 .md-doors .tp-door p{font-size:var(--fs-body);line-height:1.5}
-.md-pchip{display:inline-block;font:700 var(--fs-meta) var(--font-display);background:#fff3d6;color:#8a6100;border:1px solid #f0d79a;border-radius:999px;padding:3px 10px}
+.md-doors .tp-door p b.md-pty{color:var(--ink)} /* 0728eg T-D: the party is the tile's headline word, in the tile's own ink (the gold pill was three literal hexes with no Harbor twin) */
   .tp-peb{font:700 var(--fs-caps) var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:13px 0 8px}
   .tp-pgrid{display:flex;gap:9px}
   .tp-pgrid .tp-ac{flex:1;text-align:center;padding:11px 0;font-size:var(--fs-small)}
@@ -771,6 +771,7 @@
   .rm-lane i{flex:1;border-radius:2px;opacity:.85}
   .rm-lane i.t-short{background:var(--short)} .rm-lane i.t-medium{background:var(--medium)} .rm-lane i.t-long{background:var(--long)} .rm-lane i.t-packed{background:var(--packed)}
   .rm-lane i.sp{background:var(--card-2);opacity:1}
+  .rm-lane.rail{margin-bottom:6px} .rm-lane.rail i.wo{position:relative} .rm-lane.rail i.wo:after{content:"";position:absolute;left:-.75px;right:-.75px;bottom:-5px;height:2.5px;background:var(--ink)} /* 0728eg S-D THE LINE BENEATH IS THE WALK-ON (strip-walkon-mock.html): the cells are tier-coloured; the line marks every half-hour at 10m or under, in ink (COLOR NEVER CARRIES ALONE) */
   .rm-axis{display:flex;justify-content:space-between;font:700 var(--fs-micro) var(--font-body);color:var(--muted-2);padding:0 0 6px;letter-spacing:.04em}
   /* ===== 0714i: Compare (L-28 cut 9, lean) \u2014 identity is contained, tiers stay tiers ===== */
   .rc-hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:5px}
@@ -2497,7 +2498,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ef</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eg</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5192,15 +5193,15 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var it=ord[i],cells='',by={};
       for(j=0;j<it.cv.bs.length;j++)by[it.cv.bs[j].t]=it.cv.bs[j].med;
       for(j=540;j<780;j+=30){var m=by[j];
-        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+'"></i>';}
-      var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">never easy</span>'
+        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=10?' wo':'')+'"></i>';}
+      var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">never a walk-on</span>'
         :(it.cv.allday?'<span class="rm-edge">all day</span>'
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
-      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane">'+cells+'</div></div>';
+      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
     }
     return '<div class="rpc"><div class="lbl">Their mornings, side by side \u00b7 9 AM \u2013 1 PM</div>'+
       '<div class="rm-axis"><span>9A</span><span>10A</span><span>11A</span><span>12P</span><span>1P</span></div>'+rows+
-      '<div class="pf-basis">Typical half-hour medians \u00b7 walk-on = 10m or under \u00b7 green ends where the edge does \u00b7 gray = slot hidden by the n-floor</div></div>';
+      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under \u00b7 gray = slot hidden by the n-floor</div></div>';
   }
   function rmMorningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),lf9=tdLaneEBW(days,rpPark),EBW=lf9.E,face9=lf9.face; /* 0727k f-i: the eyebrow discloses the pool (last N days · ordinary / party nights · N this season / party nights · last season's N) */
@@ -5208,7 +5209,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var crumb=rpBackBtn(esc(rpPark))+'<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>My morning</b></div>';
     var hero='<div class="rp-hero"><div class="eb">My Morning \u00b7 '+EBW[rpWin]+'</div>'+
       '<h2>'+esc(rpPark)+(stars.length?' <span class="fs">\u2605'+stars.length+'</span>':'')+'</h2>'+
-      '<div class="sub">What the mornings have shown for your stars \u2014 what\u2019s worth the open, what closes when, and what comes back.</div></div>';
+      '<div class="sub">What the mornings have shown for your stars \u2014 what never dips to walk-on, what closes when, and what comes back.</div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
     if(!stars.length)return crumb+hero+ffFaceHTML(rpPark,"morning"); /* 0728bx THE FIRST FACE, THE FAMILY (M2) */
@@ -5226,7 +5227,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(!started){rec+='<div class="later">Later</div>';started=true;}
         rec+='<div class="row tail"><div class="n">\u00b7</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+rmTailWhy(it)+'</div></div></div>';
       }else if(it.cls==="never"){
-        if(!gOpen){rec+='<div class="grp">Worth the open<small>pick one</small></div>';gOpen=true;}
+        if(!gOpen){rec+='<div class="grp">Never a walk-on<small>rope-drop one</small></div>' /* 0728eg W-B THE MORNING WEARS THE READ'S NAME (owner glass Oct 4: Haunted Mansion, opened near 13m, typical 18m, under Worth the open \u2014 the case 0728ea ruled on the Today read): SAME QUESTION SAME SENTENCE; the name is true of every row */;gOpen=true;}
         var c=rmCoach(it,firstNever);
         rec+='<div class="row"><div class="n '+(firstNever?'pick">GO':'or">or')+'</div><div class="m"><div class="hd">'+(firstNever?c.hd:esc(it.nm))+'</div><div class="why">'+c.why+'</div></div></div>';firstNever=false;
       }else{var cv=it.cv;
@@ -5234,7 +5235,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         rec+='<div class="row"><div class="n t">'+rpClk(cv.front)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">Walk-on until '+rpClk(cv.front)+' on typical days'+(anyNever?' \u00b7 <span class="miss">likely gone after a rope drop</span>':'')+' \u00b7 typical '+cv.typ+'m.</div></div></div>';}
     }
     var plan='<div class="rpc rm-rec"><div class="lbl">Your morning</div>'+rec+
-      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 worth the open = a line that never dipped to walk-on; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first</div></div>';
+      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 never a walk-on = the typical line never dipped to 10m; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first</div></div>';
     return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
   }
 /* ===== 0719l (ME): MY EVENING \u2014 engine + landing =========================
@@ -5274,16 +5275,23 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(i=0;i<evs.length;i++)(evs[i].ev.ne?ne:fd).push(evs[i]);
     ne.sort(function(a,b){return a.nm.localeCompare(b.nm);});
     fd.sort(function(a,b){return (a.ev.tm-b.ev.tm)||(b.ev.mn-a.ev.mn)||a.nm.localeCompare(b.nm);}); /* deepest = the lowest floor, one measure with the crown */
+    /* 0728eg O-C THE ROWS RUN IN THE ORDER OF THE CLOCK THEY SHOW (owner glass 10:07 PM Oct 4: Easier after read 7:30, 11:30, 10 \u2014 sorted by the low's clock under a column showing the walk-on clock): the crown is chosen on the old order, by its own gate, so it cannot change hands; the rest sort by the shown clock (a from-start ride's is the window's open, so that group leads) */
+    var crown=null,bm=1e9,bt=-1,L;
+    if(fd.length>1){for(i=0;i<fd.length;i++){if(fd[i].ev.mn<bm)bm=fd[i].ev.mn;if(fd[i].ev.tm>bt)bt=fd[i].ev.tm;}
+      L=fd[fd.length-1];if(L.ev.tm>L.ev.bs[0].t&&L.ev.mn===bm&&L.ev.tm===bt)crown=fd.pop();}
+    fd.sort(function(a,b){var ka=(a.ev.wk!==null?a.ev.wk:a.ev.tm),kb=(b.ev.wk!==null?b.ev.wk:b.ev.tm);return (ka-kb)||(a.ev.tm-b.ev.tm)||(b.ev.mn-a.ev.mn)||a.nm.localeCompare(b.nm);});
+    if(crown)fd.push(crown);
     return ne.concat(fd);}
   function meCoach(it,isLast,boardMn,boardTm,pre,fdN){var e=it.ev,hd,why;
     if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
-      why="Eases, but never gets easy \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
-    else{var rc="";
-      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark));if(xn.n>0)rc=" \u00b7 10 or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";} /* 0719o: the receipt speaks the definition */
+      why="Eases, but never to walk-on \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
+    else{var rc="",rcT="";
+      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark));if(xn.n>0){rcT="10 or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";rc=" \u00b7 "+rcT;}} /* 0719o: the receipt speaks the definition */
       var t0=e.bs[0].t,fromStart=(e.wk===t0);
       var fall=fromStart
         ?("Typically ~"+e.e0+"m already at "+rpClk(t0)+(e.tm>t0&&e.mn<e.e0?" \u2014 drifting to ~"+e.mn+"m by "+rpClk(e.tm):"")) /* 0719o: no fall grammar for a ride that starts at its floor */
         :("Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 falls to ~"+e.mn+"m by "+rpClk(e.tm));
+      if(!fromStart&&rcT){fall="Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 "+rcT+" \u00b7 lowest ~"+e.mn+"m by "+rpClk(e.tm);rc="";} /* 0728eg O-C: the row's clock is the walk-on clock, so the sentence leads with it; the low follows. No receipt, the fall sentence stands */
       if(isLast&&fdN>1&&e.tm>t0&&e.mn===boardMn&&e.tm===boardTm){hd="Save "+esc(it.nm)+" for last"; /* 0719o: the crown needs a comparison set and a low the window didn\u2019t open with */
         why=fall+rc+" \u00b7 the deepest dip on the board, and it comes latest.";}
       else{hd=(fromStart?esc(it.nm)+" \u2014 easy from the start":"Then "+esc(it.nm)+(e.wk!==null?" \u2014 after "+rpClk(e.wk):""));
@@ -5292,21 +5300,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function meCtx(items,pre){ /* 0725w: T3-A RETIRED BY THE FILTER LAW \u2014 the clause guarded a polluted pool ("typicals lean with it"), and once the pool drinks ordinary its premise can never again be true. Its successor \u2014 the marked-TODAY clause, for guests walking the parks ON an anchor day while the tape honestly describes ordinary weeks \u2014 is the L3 seat, awaiting its own design round (ordering holds at anchors, \u03c1 0.96; levels speak in words there, per the Aug 5 study). Signature kept: three call sites, one epitaph. */
     return "";}
   function meAx(t){var h=Math.floor((t%1440)/60),mm=t%60,ap=h>=12?"P":"A";h=h%12;if(!h)h=12;return h+(mm?":30":"")+ap;}
-  function meLanesHTML(ord,win){ /* 0719m: the evening strip \u2014 the morning's lane component over the evening window; green BEGINS where the edge does */
+  function meLanesHTML(ord,win){ /* 0719m: the evening strip \u2014 the morning's lane component over the evening window \u00b7 0728eg S-D (owner-ruled Oct 5 on strip-walkon-mock.html): the legend's old claim (green begins where the edge does) was never true of tier-coloured cells; the fine print names the four tiers and a line runs beneath every walk-on half-hour, on both strips, in one sentence */
     var rows='',i,j;
     for(i=0;i<ord.length;i++){
       var it=ord[i],cells='',by={};
       for(j=0;j<it.ev.bs.length;j++)by[it.ev.bs[j].t]=it.ev.bs[j].med;
       for(j=win.a;j<win.b;j+=30){var m=by[j];
-        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+'"></i>';}
-      var edge=it.ev.ne?'<span class="rm-edge mut">eases, never easy</span>'
+        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=10?' wo':'')+'"></i>';}
+      var edge=it.ev.ne?'<span class="rm-edge mut">eases, never a walk-on</span>'
         :(it.ev.wk<=win.a?'<span class="rm-edge">walk-on from the start</span>':'<span class="rm-edge">walk-on after '+rpClk(it.ev.wk)+'</span>'); /* 0719p: the lane speaks the from-start voice too */
-      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane">'+cells+'</div></div>';
+      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
     }
     var ax='',t;for(t=win.a;t<=win.b;t+=60)ax+='<span>'+meAx(t)+'</span>';
     return '<div class="rpc"><div class="lbl">Their evenings, side by side \u00b7 '+rpClk(win.a)+' \u2013 '+rpClk(win.b)+'</div>'+
       '<div class="rm-axis">'+ax+'</div>'+rows+
-      '<div class="pf-basis">Typical half-hour medians \u00b7 walk-on = 10m or under \u00b7 green begins where the edge does \u00b7 gray = slot hidden by the n-floor</div></div>';
+      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under \u00b7 gray = slot hidden by the n-floor</div></div>';
   }
   function meEveningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),lf9=tdLaneEBW(days,rpPark),EBW=lf9.E,face9=lf9.face; /* 0727k f-i: the eyebrow discloses the pool (last N days · ordinary / party nights · N this season / party nights · last season's N) */
@@ -5367,7 +5375,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(anyLate&&cnt>0)rcpt=' \u00b7 <b>'+cnt+' ride'+(cnt===1?'':'s')+' walk-on past 10</b> lately'; /* the number only where the claim can form (AK\u2019s nights end early \u2014 no false zero) */}
     var party=(rpPark==="Magic Kingdom"&&window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[meTodayDs()]);
     var evCase=party
-      ?'<span class="md-pchip">Party tonight \u00b7 '+(tn.closed?'closed ':'closes ')+(cl!==null?rpClk(cl>1440?cl-1440:cl):'early')+' to day guests</span>'
+      ?(function(){var em9=(typeof tfPartyEm==="function")?tfPartyEm(meTodayDs()):"",pr9=(typeof tdParkRung==="function")?tdParkRung(rpPark,tdFaceNow(rpPark)):null; /* 0728eg T-D (owner-ruled Oct 5 on myday-polish-mock.html: "never cared for that gold pill"): the party is the tile's headline word, the party's own mark leading; the close keeps its tense; the last clause only when the lanes inside really drink a party pool (rung 1 or 2) */
+        return '<b class="md-pty">'+(em9&&em9!=="ring"?em9+' ':'')+'Party tonight.</b> '+(tn.closed?'Closed ':'Closes ')+(cl!==null?rpClk(cl>1440?cl-1440:cl):'early')+' to day guests'+((pr9&&(pr9.rung===1||pr9.rung===2))?' \u00b7 the evening inside is the party\u2019s':'')+'.';})()
       :'The lines go home before the crowds do'+rcpt+'.';
     var doors='<div class="tp-doors md-doors">'+
       '<div class="tp-door" data-rpsub="morning" role="button" tabindex="0"><i>My morning</i><p>The park wakes up slowly \u00b7 ride ahead of it, done by lunch.</p><span class="ch">Plan it \u203a</span></div>'+
