@@ -1727,17 +1727,23 @@
   .ltg-asof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-left:auto;white-space:nowrap}
   .ltg-asof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:6px;font-weight:600;cursor:pointer}
   .ltg-cond{display:flex;align-items:baseline;gap:6px;margin-top:7px;font-size:var(--fs-small);color:var(--pwh-sub)}
-.pw-hero .pw-sky{display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--pwh-line);align-items:flex-start;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none} /* 0728bp THE SKY IS A STAT ROW: the hero's hstats dress, two stats and a door */
-.pw-sky .st{flex:1;min-width:0} /* 0728bs THE HERO SAYS HOW MUCH, THE SHEET SAYS WHEN (owner-ruled A): two equal columns, keys level, numbers level; the units are short enough to fit at half width */
-.pw-sky .st .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--pwh-dim)}
-.pw-sky .st .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;margin-top:2px;line-height:1.15}
-.pw-sky .st .v small{font-size:var(--fs-small);font-weight:500;color:var(--pwh-sub);font-family:var(--font-body)}
-.pw-sky .st .v .w{font-weight:600;color:var(--pwh-sub);font-size:var(--fs-title)}
-.pw-sky .st .v .bolt{color:#fbbf24;font-size:15px;margin-right:2px}
-.pw-sky .st .v .bolt.q{color:var(--pwh-dim)}
-.pw-sky .door{flex:0 0 auto;color:rgba(230,233,251,.45);font-size:18px;align-self:center}
-.pw-hero .pw-skyasof{font-size:var(--fs-meta);color:var(--pwh-dim);margin-top:8px}
-.pw-skyasof .upd{color:var(--pwh-muted);border:1px solid var(--pwh-line);border-radius:var(--r-pill);padding:2px 9px;margin-left:8px;font-weight:600;cursor:pointer}
+.pw-wxc{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:13px 14px 10px;margin-bottom:11px;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none} /* 0728eo THE WEATHER HAS ITS OWN DOOR (owner-ruled D-C): the card beneath the hero; supersedes the 0728bp/bs stat row */
+.pw-wxc .hd{display:flex;align-items:baseline;justify-content:space-between}
+.pw-wxc .hd .nm{font-size:var(--fs-caps);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.pw-wxc .hd .go{font-family:var(--font-body);font-weight:600;font-size:var(--fs-small);color:var(--accent)}
+.pw-wxc .hd .go i{font-style:normal;margin-left:4px;font-size:15px}
+.pw-wxc .sts{display:flex;gap:18px;margin-top:9px;align-items:flex-start}
+.pw-wxc .st{flex:1;min-width:0}
+.pw-wxc .st .k{font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.pw-wxc .st .v{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);font-variant-numeric:tabular-nums;color:var(--ink);margin-top:2px;line-height:1.15}
+.pw-wxc .st .v small{font-size:var(--fs-small);font-weight:500;color:var(--muted);font-family:var(--font-body)}
+.pw-wxc .st .v .w{font-weight:600;color:var(--muted);font-size:var(--fs-title)}
+.pw-wxc .st .v .bolt{color:#f59e0b;font-size:15px;margin-right:2px}
+.pw-wxc .st .v .bolt.q{color:var(--muted-2)}
+.pw-wxc .sp{display:block;width:100%;margin-top:6px;overflow:visible}
+.pw-wxc .sp .pt{fill:var(--card);stroke-width:4}
+.pw-wxc .asof{font-size:var(--fs-meta);color:var(--muted);margin-top:4px}
+.pw-wxc .asof .upd{color:var(--accent);border:1px solid var(--line);border-radius:var(--r-pill);padding:2px 9px;margin-left:8px;font-weight:600;cursor:pointer}
   .ltg-cond b{color:var(--pwh-ink);font-weight:600}
   .ltg-strip{display:flex;align-items:flex-end;gap:3px;height:26px;margin-top:9px;cursor:pointer}
   /* 0712a: Sky Page layers — ride in .pw-st-card containers */
@@ -1770,8 +1776,40 @@
   .pw-lh .st.q{font-family:Inter,sans-serif;font-weight:600;font-size:10.5px;color:var(--muted)}
   .pw-lrule{height:1px;background:var(--line);margin:0 0 3px}
   .pw-lane{display:block;width:100%;overflow:visible}
+  /* 0728el ONE CLOCK, DRAWN LIKE WEATHER: the chart\u2019s greys are tokens (the page follows Harbor); the numbers on the line wear the card as a halo */
+  .pw-lane .g{stroke:var(--line);stroke-width:1}
+  .pw-lane .ax{fill:var(--muted)}
+  .pw-lane .sc{font:600 16px var(--font-body);fill:var(--muted);paint-order:stroke;stroke:var(--card);stroke-width:5px;stroke-linejoin:round}
+  .pw-lane .val{font:700 21px var(--font-display);fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:6px;stroke-linejoin:round;font-variant-numeric:tabular-nums}
+  .pw-lane .val.hi{font-size:27px}
+  .pw-lane .pt{fill:var(--card);stroke-width:2.5}
+  .pw-sgl{position:relative}
+  .pw-sgl .pw-lh,.pw-sgl .pw-lrule,.pw-sgl .pw-lane{position:relative;z-index:1}
+  /* 0728em THE DAY IN FOUR NUMBERS: the Sky page\u2019s tiles */
+  .pw-tl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .pw-tl .t{background:var(--card);border-radius:var(--r-tile);box-shadow:var(--shadow-sm);padding:12px 13px 11px;min-width:0}
+  .pw-tl .k{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pw-tl .v{font-family:var(--font-display);font-weight:700;font-size:30px;line-height:33px;color:var(--ink);margin-top:5px;font-variant-numeric:tabular-nums}
+  .pw-tl .v.w{font-size:22px;color:var(--muted)}
+  .pw-tl .u{font-family:var(--font-body);font-weight:500;font-size:11.5px;line-height:1.35;color:var(--muted);margin-top:2px}
+  /* 0728en THE DAY, HOUR BY HOUR: the Sky page\u2019s strip \u2014 it scrolls sideways inside its card; the edges fade to say so */
+  .pw-hs{padding-bottom:12px}
+  .pw-hsw{overflow-x:auto;overflow-y:hidden;margin:6px -12px 0;padding:0 12px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
+  .pw-hsw::-webkit-scrollbar{display:none}
+  .pw-hsr{display:flex;width:max-content}
+  .pw-hc{flex:none;width:50px;text-align:center;padding:6px 0 4px;border-radius:12px}
+  .pw-hc.ev{background:rgba(99,102,241,.10)}
+  .pw-hc .h{font-family:var(--font-body);font-weight:600;font-size:10.5px;color:var(--muted)}
+  .pw-hc .i{font-size:19px;line-height:1;margin:7px 0 6px}
+  .pw-hc .f{font-family:var(--font-display);font-weight:700;font-size:14.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .pw-hc .d{font-family:var(--font-body);font-weight:600;font-size:9px;color:var(--muted);margin-top:3px;white-space:nowrap}
+  .pw-hc .d b{color:#e23b54;font-size:10.5px}
+  /* 0728es THE PAGE OPENS ON THE TEMPERATURE: the measure pills under the hour strip (accent fill = --accent-fill; accent text = --accent) */
+  .pw-pl{display:flex;gap:8px;margin:12px 0 2px}
+  .pw-pl button{font-family:var(--font-body);font-weight:600;font-size:var(--fs-small);line-height:1.2;color:var(--accent);background:none;border:1.5px solid var(--accent);border-radius:var(--r-pill);padding:6px 14px;white-space:nowrap;cursor:pointer;-webkit-appearance:none;appearance:none}
+  .pw-pl button.on{background:var(--accent-fill);border-color:var(--accent-fill);color:var(--accent-ink,#fff)}
   .pw-sleg{font:600 11px/1.6 Inter,sans-serif;color:var(--muted);margin:8px 2px 0;letter-spacing:.01em} /* 0712t: in-use-only ribbon legend under the stack */
-  .pw-szone{position:absolute;top:28px;bottom:29px;background:linear-gradient(0deg,rgba(99,102,241,.16),rgba(99,102,241,.02));border-radius:3px 3px 0 0;pointer-events:none;z-index:3} /* 0712q: the glow ends AT the ribbon\u2019s top edge \u2014 rising from the segment, never washing its label */ /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */ /* 0712u: 26\u219229px \u2014 floor grew 56\u219264u; same landing on the band\u2019s top edge */
+  .pw-szone{position:absolute;top:30px;bottom:0;background:linear-gradient(0deg,rgba(99,102,241,.16),rgba(99,102,241,.02));border-radius:3px 3px 0 0;pointer-events:none;z-index:0} /* 0712q: the glow ends AT the ribbon\u2019s top edge \u2014 rising from the segment, never washing its label */ /* 0712n: S3 brackets (owner pick) \u2014 the storm as punctuation, not paint */ /* 0712u: 26\u219229px \u2014 floor grew 56\u219264u; same landing on the band\u2019s top edge */
   .ltg-strip.lbl{height:48px} /* 0713g: room for the guard\u2019s second label row */
   .ltg-strip i{flex:1;position:relative;background:#fbbf24;border-radius:2px 2px 0 0;min-height:2px;opacity:.9}
   .ltg-strip i.z{background:rgba(255,255,255,.22);height:2px!important}
@@ -2499,7 +2537,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ek</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728es</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -12193,7 +12231,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(s.code>=95)return "\u26c8";
       if(s.code>=51)return "\ud83c\udf27";
       if((s.gust||0)>=35)return "\ud83d\udca8";
-      if(s.fF!=null&&s.fF>=105)return "\ud83e\udd75";
+      if(s.fF!=null&&s.fF>=108)return "\ud83e\udd75";
       return s.code>=1?"\u26c5":"\u2600\ufe0f";
     }
     /* 0713g: label guard for the tapped strip. Bar centers are MEASURED (exact); label widths are
@@ -12224,21 +12262,32 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function st(k,v,u,word){return '<div class="st"><div class="k">'+esc(k)+'</div><div class="v">'+(word?'<span class="w">'+esc(v)+'</span>':esc(v))+(u?'<small>'+esc(u)+'</small>':'')+'</div></div>';}
       var first=null;
       if(chip&&chip.stat)first=st(chip.stat.k,chip.stat.v,chip.stat.u,!!chip.stat.w);
-      else{var wxS=d.wx&&d.wx.samples,hiT=null,hiF=null,cur=wxS&&wxS.length?wxS[wxS.length-1]:null; /* no verdict: the day's high (FINAL) or the current reading (live), the samples the sheet draws */
+      else{var wxS=wxDerive(d).samples,hiT=null,hiF=null,cur=wxS&&wxS.length?wxS[wxS.length-1]:null; /* no verdict: the day's high (FINAL) or the current reading (live), the samples the sheet draws */
         if(live){if(cur&&cur.tF!=null)first=st("Now",cur.tF+"\u00b0",(cur.fF!=null?" \u00b7 feels like "+cur.fF+"\u00b0":""));}
         else if(wxS){for(i=0;i<wxS.length;i++){if(wxS[i].tF!=null&&(hiT==null||wxS[i].tF>hiT))hiT=wxS[i].tF;if(wxS[i].fF!=null&&(hiF==null||wxS[i].fF>hiF))hiF=wxS[i].fF;}
           if(hiT!=null)first=st("High",hiT+"\u00b0",(hiF!=null?" \u00b7 feels like "+hiF+"\u00b0":""));}}
       var lv,lu;
       if(!any){lv='<span class="bolt q">\u26a1</span><span class="w">none</span>';
-        lu=live?(full?" \u00b7 none detected today":" \u00b7 quiet from "+pwClk(S[0].t)):(full?" \u00b7 quiet all day":" \u00b7 quiet from "+pwClk(S[0].t)+" to close");}
+        lu=live?(full?" detected today":" \u00b7 quiet from "+pwClk(S[0].t)):(full?" \u00b7 quiet all day":" \u00b7 quiet from "+pwClk(S[0].t)+" to close");}
       else{lv='<span class="bolt">\u26a1</span>'+tot;
         lu=(tot===1?" strike":" strikes")+(live?" so far":"");} /* 0728bs: the hero says how much; the sheet says when (the peak's time and count draw there) */ /* the sheet says how many at once; the hero says when */
-      var h='<div class="pw-sky" id="pwSkyCard" role="button" tabindex="0">'+(first||"")+'<div class="st"><div class="k">Lightning \u00b7 10 mi</div><div class="v">'+lv+'<small>'+lu+'</small></div></div><div class="door">\u203a</div></div>';
+      var h='<div class="pw-wxc" id="pwSkyCard" role="button" tabindex="0"><div class="hd"><span class="nm">Weather</span><span class="go">'+(live?"Today so far":"The whole day")+'<i>\u203a</i></span></div><div class="sts">'+(first||"")+'<div class="st"><div class="k">Lightning \u00b7 10 mi</div><div class="v">'+lv+'<small>'+lu+'</small></div></div></div>'+pwSkySpark(d); /* 0728eo THE WEATHER HAS ITS OWN DOOR (owner-ruled D-C Oct 5 on door-final-light.png; supersedes 0728bp THE SKY IS A STAT ROW): the two stats leave the hero for a card beneath it; the day\u2019s feels-like curve is the invitation; the whole card is the door and says where it goes. Ids kept: pwSkyCard (the door), pwLtgUpd (the live update link). */
       if(live&&tab==="today"&&cacheAt.today){
         var at=new Date(cacheAt.today),ah=at.getHours(),am=at.getMinutes(),ap=ah<12?"AM":"PM",a12=((ah+11)%12)+1;
-        h+='<div class="pw-skyasof">as of '+a12+":"+(am<10?"0":"")+am+" "+ap+'<span class="upd" id="pwLtgUpd" role="button" tabindex="0">\u21bb update</span></div>';
+        h+='<div class="asof">as of '+a12+":"+(am<10?"0":"")+am+" "+ap+'<span class="upd" id="pwLtgUpd" role="button" tabindex="0">\u21bb update</span></div>';
       }
-      return h;
+      return h+'</div>';
+    }
+    function pwSkySpark(d){ /* 0728eo: the door\u2019s preview \u2014 the same readings, the same curve and the same colours as the weather page\u2019s feels-like lane; no numbers (the stats above carry them); fewer than two readings draw nothing */ /* 0728es: the curve is the air temperature, the measure the page opens on */
+      var S=wxDerive(d).samples,R=[],i,lo=1e9,hi=-1e9,pk=null;
+      for(i=0;i<S.length;i++)if(S[i].tF!=null&&(!R.length||S[i].t>R[R.length-1].t)){R.push(S[i]);if(S[i].tF<lo)lo=S[i].tF;if(S[i].tF>hi)hi=S[i].tF;if(!pk||S[i].tF>pk.tF)pk=S[i];}
+      if(R.length<2)return "";
+      var t0=R[0].t,t1=R[R.length-1].t,rg=Math.max(4,hi-lo);
+      function X(t){return 8+(t-t0)/(t1-t0)*704;}
+      function Y(f){return 14+(1-(f-lo)/rg)*70;}
+      var P=[];for(i=0;i<R.length;i++)P.push([X(R[i].t),Y(R[i].tF)]);
+      var p=skyMono(P);
+      return '<svg class="sp" viewBox="0 0 720 96" preserveAspectRatio="none"><defs><linearGradient id="pwSg" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="'+Y(60).toFixed(1)+'" y2="'+Y(112).toFixed(1)+'"><stop offset="0%" stop-color="#38bdf8"/><stop offset="23.1%" stop-color="#2dd4bf"/><stop offset="38.5%" stop-color="#facc15"/><stop offset="57.7%" stop-color="#fb923c"/><stop offset="73.1%" stop-color="#f4511e"/><stop offset="86.5%" stop-color="#dc2626"/><stop offset="100%" stop-color="#9f1239"/></linearGradient><linearGradient id="pwSgF" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="pwSgM"><rect x="0" y="0" width="720" height="96" fill="url(#pwSgF)"/></mask></defs><path d="'+p+' L'+P[P.length-1][0].toFixed(1)+' 96 L'+P[0][0].toFixed(1)+' 96 Z" fill="url(#pwSg)" fill-opacity=".28" mask="url(#pwSgM)"/><path d="'+p+'" fill="none" stroke="url(#pwSg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle class="pt" cx="'+X(pk.t).toFixed(1)+'" cy="'+Y(pk.tF).toFixed(1)+'" r="7" stroke="url(#pwSg)"/></svg>';
     }
     function pwLtgCard(d,live,tab,chip){ /* 0728bp: retired in place \u2014 the hero draws pwSkyRow; unreferenced, kept for the archive until a tidy */ /* 0712z: chip rides in \u2014 rendered as the card\u2019s verdict band when present */
       var L=d&&d.ltg,S=L&&L.samples;
@@ -12336,7 +12385,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var chipH="";
       if(chip&&!ltgH){var cls="pw-chip pw-chip-"+chip.kind+(ltgOn?" pw-chip-sky":"")+(chip.tappable?" tap":""),attr=chip.tappable?' id="pwChip" role="button" tabindex="0"':"";
         chipH='<div class="'+cls+'"'+attr+'><span class="ic">'+chip.icon+'</span><span class="tx">'+esc(chip.text)+'</span>'+(chip.tappable?'<span class="chev">\u203a</span>':"")+'</div>';}
-      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+(isWeek?pwWeekStrip(d):"")+chipH+ltgH+pwProvLine(d,isWeek)+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+h.k+'</div><div class="l">'+esc(h.l)+'</div>'+(h.sub?'<div class="sub">'+esc(h.sub)+'</div>':'')+(isWeek?pwWeekStrip(d):"")+chipH+pwProvLine(d,isWeek)+'</div>'+ltgH; /* 0728eo: the weather card sits beneath the hero */
 
       html+='<div class="pw-grid">';
       if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park,null,c.toughest.id,c.toughest.park);
@@ -12469,6 +12518,20 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwPA(p){return ({"Magic Kingdom":"MK","Hollywood Studios":"HS","Animal Kingdom":"AK","EPCOT":"EPCOT"})[p]||p;}
     function wxDerive(d){
       var wx=(d&&d.wx)||{},roll=wx.roll||{},samples=wx.samples||[],snap=(d&&d.snap)||{},rows=snap.rows||[];
+      /* 0728eq THE WEATHER READS WHAT HAPPENED AT THE PARKS (owner-ruled Oct 5 on the three-day study, real-2026-09-21.png: Open-Meteo held 85\u00b0 and partly cloudy through 197 strikes in 15 minutes and 30 attractions down; Xweather read 73\u00b0, Strong Thunderstorms, 1.98 in/hr). ONE DOOR: when the day banked Xweather\u2019s readings (rec.blend, every 15 min since Worker v3.11) for at least four fifths of its weather samples, the air temperature, the feels-like, the rain and the clear/cloud states come from them; gusts and the forecast roll stay Open-Meteo\u2019s (the readings carry none); a day without them reads Open-Meteo whole, as before. Rain is the banked RATE: a reading is wet at 0.02 in/hr or more, and its amount is the rate held for the gap since the last reading (an estimate, labelled where it prints). A reading is a thunderstorm only when it is raining AND the lightning ledger counted strikes in that window \u2014 two observations; Xweather\u2019s weather words (\u201cChance of Thunderstorms\u201d sat on 13 readings on Oct 3, hours after the last strike) are forecasts and paint nothing; only its clear/cloud cover is read. As of 0728er the heat verdict reads these same samples; omFeelsHigh, omDayHigh and omSamples remain as the record of what Open-Meteo said. */
+      var om=samples,src="om",xrain=0,xb=(d&&d.blend&&d.blend.samples)||[],xu=[],xi,xj;
+      var xl=(d&&d.ltg&&d.ltg.samples)||[];
+      function xlt(tq){for(var q=0;q<xl.length;q++){var lw=xl[q].w||60;if(xl[q].t-lw<tq&&tq<=xl[q].t)return xl[q].n;}return 0;}
+      for(xi=0;xi<xb.length;xi++)if(xb[xi]&&xb[xi].tF2!=null&&xb[xi].fF2!=null)xu.push(xb[xi]);
+      if(xu.length>=2&&xu.length>=om.length*0.8){src="xw";samples=[];
+        for(xi=0;xi<xu.length;xi++){var xs=xu[xi],xw=null;
+          for(xj=0;xj<om.length;xj++)if(!xw||Math.abs(om[xj].t-xs.t)<Math.abs(xw.t-xs.t))xw=om[xj];
+          if(xw&&Math.abs(xw.t-xs.t)>20)xw=null;
+          var xdt=xi?Math.min(60,xs.t-xu[xi-1].t):15,xr=xs.rIn||0,xwet=xr>=0.02,xtok=String(xs.cod||"").split(":").pop();
+          var xcode=xwet?(xlt(xs.t)>0?95:(xr>=0.3?65:61)):((xtok==="CL"||xtok==="FW")?1:((xtok==="SC"||xtok==="BK"||xtok==="OV")?3:((xw&&xw.code<=1)?1:3)));
+          var xamt=xwet?xr*xdt/60:0;xrain+=xamt;
+          samples.push({t:xs.t,tF:xs.tF2,fF:xs.fF2,code:xcode,pIn:xamt,rIn:xr,gust:(xw?xw.gust:0),fFc:(xw?xw.fFc:undefined),tFo:(xw?xw.tF:null),fFo:(xw?xw.fF:null)});}
+      }
       var series=[],downPeak=0,parkPeaks={},onset=null,peakPt=null,prevTot=0;
       for(var i=0;i<rows.length;i++){var dp=rows[i].dp||{},tot=0,topPark=null,topN=0;
         for(var k in dp){tot+=dp[k];if(dp[k]>topN){topN=dp[k];topPark=k;}if((parkPeaks[k]||0)<dp[k])parkPeaks[k]=dp[k];}
@@ -12476,14 +12539,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(tot>downPeak){downPeak=tot;peakPt={t:rows[i].t,tot:tot};}
         if(!onset&&(tot-prevTot)>=8&&tot>=10){onset={t:rows[i].t,tot:tot,park:topPark,n:topN};}
         prevTot=tot;}
-      var maxCode=0,maxGust=0,maxTF=(roll.hiF!=null?roll.hiF:-999),minTF=(roll.loF!=null?roll.loF:999),maxFF=(roll.feelsHiF!=null?roll.feelsHiF:null),core=null,maxP=-1;
+      var maxCode=0,maxGust=0,maxTF=(src==="om"&&roll.hiF!=null?roll.hiF:-999),minTF=(src==="om"&&roll.loF!=null?roll.loF:999),maxFF=(src==="om"&&roll.feelsHiF!=null?roll.feelsHiF:null),core=null,maxP=-1;
       for(var s=0;s<samples.length;s++){var m=samples[s];
         if(m.code>maxCode)maxCode=m.code;if(m.gust>maxGust)maxGust=m.gust;
         if(m.tF>maxTF)maxTF=m.tF;if(m.tF<minTF)minTF=m.tF;
         if(m.fF!=null&&(maxFF==null||m.fF>maxFF))maxFF=m.fF;
         if(m.pIn>maxP){maxP=m.pIn;if(m.pIn>0){var pv=(s>0?samples[s-1]:null);
-          core={t:m.t,tF:m.tF,gust:m.gust,pIn:m.pIn,prevTF:(pv?pv.tF:null),mins:(pv?(m.t-pv.t):null)};}}}
-      return {code:maxCode,gust:maxGust,dayHigh:maxTF,dayLow:minTF,feelsHigh:maxFF,feelsFcast:(roll.feelsHiF!=null?roll.feelsHiF:null),precip:(roll.precipIn||0),downPeak:downPeak,series:series,parkPeaks:parkPeaks,samples:samples,onset:onset,peakPt:peakPt,core:core};
+          core={t:m.t,tF:m.tF,gust:m.gust,pIn:m.pIn,rIn:(m.rIn!=null?m.rIn:null),prevTF:(pv?pv.tF:null),mins:(pv?(m.t-pv.t):null)};}}}
+      var omTF=(roll.hiF!=null?roll.hiF:-999),omFF=(roll.feelsHiF!=null?roll.feelsHiF:null),oz; /* the heat verdict\u2019s own inputs, exactly as before the door: Open-Meteo\u2019s roll and samples */
+      for(oz=0;oz<om.length;oz++){if(om[oz].tF>omTF)omTF=om[oz].tF;if(om[oz].fF!=null&&(omFF==null||om[oz].fF>omFF))omFF=om[oz].fF;}
+      return {src:src,omDayHigh:omTF,omFeelsHigh:omFF,omSamples:om,code:maxCode,gust:maxGust,dayHigh:maxTF,dayLow:minTF,feelsHigh:maxFF,feelsFcast:(roll.feelsHiF!=null?roll.feelsHiF:null),precip:(src==="xw"?xrain:(roll.precipIn||0)),downPeak:downPeak,series:series,parkPeaks:parkPeaks,samples:samples,onset:onset,peakPt:peakPt,core:core};
     }
     function wxChip(d,live){
       if(!d||!d.wx)return null;
@@ -12503,35 +12568,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(x.gust>=35)return {kind:"wind",icon:"💨",tappable:true,text:(live?"Winds gusting to "+x.gust+" mph — tall rides may pause":"Winds gusted to "+x.gust+" mph — the kind that pauses tall rides and the Skyliner"),stat:{k:"Gusts",v:String(x.gust),u:(live?" mph \u00b7 tall rides may pause":" mph \u00b7 tall rides pause")}};
       if(x.code===65||x.code===82||(!live&&x.precip>=1.0)){var soak=!live&&x.precip>=1.0; /* 0728dv THE NUMBER EARNS ITS OWN SEAT (owner glass 11:05 AM Oct 3: FINAL Oct 1 read RAIN 0.0" a soaker \u00b7 afternoon over a Sky page with 0.4" at 5:46 PM): the verdict is earned by a heavy-rain reading OR by an inch on the day; the inches and "a soaker" print only when the inch earned it. Earned by the reading alone, the finished day says the live line\u2019s own words in the past tense (TENSE FLIPS WHOLE). "afternoon" retired (W-A + T-A, Oct 3: it was never checked; THE HERO SAYS HOW MUCH, THE SHEET SAYS WHEN) */
         return {kind:"rain",icon:"🌧",tappable:true,text:(live?"Heavy rain moving through":soak?x.precip.toFixed(1)+"\" of rain — a soaker":"Heavy rain moved through"),stat:(live?{k:"Rain",v:"heavy",w:true,u:" \u00b7 moving through"}:soak?{k:"Rain",v:x.precip.toFixed(1)+"\"",u:" a soaker"}:{k:"Rain",v:"heavy",w:true,u:" \u00b7 moved through"})};}
-      var heatHi=(x.feelsHigh!=null?x.feelsHigh:x.dayHigh),heatF=(x.feelsHigh!=null);
-      /* 0713e: forecast latch (owner call \u2014 the 1:35 PM two-hero specimen: forecast oscillating
-         104\u2194105 flipped the day\u2019s identity between renders). Once any BANKED sample carried a
-         forecast roll >=105, the heat identity is irrevocable for the day \u2014 the ledger remembers
-         so the display doesn\u2019t flap. Frontend half of worker v3.8.3 (fFc); inert until the
-         worker banks the field \u2014 legacy samples have no fFc and change nothing. */
-      var hLatch=0,hlz,hls=x.samples||[];
-      for(hlz=0;hlz<hls.length;hlz++)if(hls[hlz].fFc!=null&&hls[hlz].fFc>hLatch)hLatch=hls[hlz].fFc;
-      if((x.feelsHigh!=null?x.feelsHigh>=105:x.dayHigh>=95)||hLatch>=105){
-        /* Heat states earn their tense (0707a): forecast numbers speak future
-           ("heading for"), observed numbers speak present/past. "and climbing"
-           renders only when the latest sample is BOTH rising and already at
-           100°+ observed — below that floor the sentence undersells an
-           extreme-heat warning, so the forecast framing carries the morning.
-           The floor is tunable, same spirit as the 25 mph gust floor. */
-        var hT,hS; /* 0728bp: hS is the stat beside the sentence \u2014 the same number the sentence prints */
-        if(heatF){
-          var hs=x.samples||[],hf=[],hz;
-          for(hz=0;hz<hs.length;hz++)if(hs[hz]&&hs[hz].fF!=null)hf.push(hs[hz].fF);
-          var hCur=hf.length?hf[hf.length-1]:null,hPrev=hf.length>1?hf[hf.length-2]:null,hMax=null;
-          for(hz=0;hz<hf.length;hz++)if(hMax==null||hf[hz]>hMax)hMax=hf[hz];
-          var hFc=Math.max((x.feelsFcast!=null?x.feelsFcast:heatHi)||0,hLatch); /* 0713e: the printed number is the day\u2019s own maximum banked proposal \u2014 provable, never a flap artifact */
-          if(!live){if(hMax!=null){hT="Extreme heat — feels-like peaked at "+hMax+"°";hS={k:"Feels-like peak",v:hMax+"\u00b0",u:" extreme heat"};}else{hT="Extreme heat — a forecast feels-like of "+hFc+"°";hS={k:"Feels-like \u00b7 forecast",v:hFc+"\u00b0",u:" extreme heat"};}}
-          else if(hMax!=null&&hCur!=null&&hCur<=hMax-5){hT="Extreme heat today — feels-like peaked at "+hMax+"°";hS={k:"Feels-like peak",v:hMax+"\u00b0",u:" extreme heat today"};}
-          else if(hCur!=null&&hPrev!=null&&hCur>hPrev&&hCur>=100){hT="Extreme heat today — feels like "+hCur+"° and climbing";hS={k:"Feels like now",v:hCur+"\u00b0",u:" and climbing"};}
-          else{hT="Extreme heat today — heading for a feels-like of "+hFc+"°";hS={k:"Feels-like \u00b7 heading for",v:hFc+"\u00b0",u:" extreme heat"};}
-        }else{
-          hT=(live?"Extreme heat today — heading for a high of "+heatHi+"°":"Extreme heat — a high of "+heatHi+"°");hS={k:(live?"Heading for a high of":"High"),v:heatHi+"\u00b0",u:" extreme heat"};
-        }
+      /* 0728er EXTREME HEAT IS HELD, NOT TOUCHED (owner-ruled Oct 5 on feels-aug-oct.json, 65 days Aug 1 \u2013 Oct 4: the old rule \u2014 any reading or forecast at 105\u00b0 \u2014 crowned 42 of them, 16 on the forecast latch alone; one Xweather reading at 105\u00b0 crowns 39): the verdict is earned when the day\u2019s feels-like holds 108\u00b0 or more for four readings in a row (an hour; 108\u00b0 is where the National Weather Service\u2019s heat advisory for Orlando begins) \u2014 9 of the 65. Observed only: the forecast latch (0713e) and the forecast voices (\u201cheading for\u201d, \u201ca forecast feels-like of\u201d) retire, and so does the air-high fallback (95\u00b0 with no feels-like). A sustained observed rule cannot flap, which was the latch\u2019s one job. The verdict reads the same samples as the page (ONE NUMBER FAMILY PER MEASURE). */
+      function wxHeatHeld(S){var run=0,q;S=S||[];for(q=0;q<S.length;q++){if(S[q]&&S[q].fF!=null&&S[q].fF>=108){if(++run>=4)return true;}else run=0;}return false;} /* 108\u00b0 or more on four readings in a row; a missing reading breaks the run */
+      if(wxHeatHeld(x.samples)){
+        var hT,hS,hs=x.samples||[],hf=[],hz;
+            for(hz=0;hz<hs.length;hz++)if(hs[hz]&&hs[hz].fF!=null)hf.push(hs[hz].fF);
+            var hCur=hf.length?hf[hf.length-1]:null,hPrev=hf.length>1?hf[hf.length-2]:null,hMax=null;
+            for(hz=0;hz<hf.length;hz++)if(hMax==null||hf[hz]>hMax)hMax=hf[hz];
+        if(!live){hT="Extreme heat — feels-like peaked at "+hMax+"°";hS={k:"Feels-like peak",v:hMax+"\u00b0",u:" extreme heat"};}
+        else if(hMax!=null&&hCur!=null&&hCur<=hMax-5){hT="Extreme heat today — feels-like peaked at "+hMax+"°";hS={k:"Feels-like peak",v:hMax+"\u00b0",u:" extreme heat today"};}
+        else if(hCur!=null&&hPrev!=null&&hCur>hPrev&&hCur>=100){hT="Extreme heat today — feels like "+hCur+"° and climbing";hS={k:"Feels like now",v:hCur+"\u00b0",u:" and climbing"};}
+        else{hT="Extreme heat today — feels-like has reached "+hMax+"°";hS={k:"Feels-like so far",v:hMax+"\u00b0",u:" extreme heat today"};} /* 0728er: the held heat that is neither climbing nor five below its peak says what was observed (it used to say a forecast) */
         return {kind:"heat",icon:"🥵",tappable:false,text:hT,stat:hS};
       }
       if(x.dayLow<=40)return {kind:"cold",icon:"🥶",tappable:false,text:(live?"Cold out there — "+x.dayLow+"° this morning":"Cold start — down to "+x.dayLow+"° this morning"),stat:{k:"Morning low",v:x.dayLow+"\u00b0",u:(live?" cold out there":" cold start")}};
@@ -12892,14 +12939,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwScrubWx(t){
       var lg=lastData&&lastData.ltg&&lastData.ltg.samples; /* 0713l: strikes lead */
       if(lg)for(var li=0;li<lg.length;li++){var s2=lg[li];if(s2.n>0&&t>s2.t-(s2.w||60)&&t<=s2.t)return "\u26a1";}
-      var wx=lastData&&lastData.wx&&lastData.wx.samples;if(!wx||!wx.length)return "";
+      var wx=lastData?wxDerive(lastData).samples:null;if(!wx||!wx.length)return "";
       var best=null,bd=1e9;
       for(var i=0;i<wx.length;i++){var d=Math.abs(wx[i].t-t);if(d<bd){bd=d;best=wx[i];}}
       if(!best||bd>7.5)return "";
       if(best.code>=95)return "⛈";
       if(best.code>=51)return "🌧";
       if((best.gust||0)>=35)return "💨";
-      if(best.fF!=null&&best.fF>=105)return "🥵";
+      if(best.fF!=null&&best.fF>=108)return "🥵";
       return "";
     }
     function pwScrubPlace(sc,t,fromX){
@@ -13097,7 +13144,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwAn(n){return /^(8|11|18|8\d)$/.test(""+n)?"an":"a";}
     function pwCoreBeat(x){
       var c=x.core;if(!c)return null;
-      var dry=(c.pIn.toFixed(1)==="0.0");
+      if(c.rIn!=null&&c.rIn<0.05)return null; /* 0728eq: a drizzle is not a rain core \u2014 the rate must print as more than 0.0 to earn the beat */
+      var dry=(c.rIn!=null)?false:(c.pIn.toFixed(1)==="0.0");
       var fall=(c.prevTF!=null&&c.prevTF>c.tF)?("Temperature fell "+c.prevTF+"\u00b0 \u2192 "+c.tF+"\u00b0 in "+c.mins+" minutes"):null;
       /* clause-level gate (0705l): every clause EARNS its slot — the fall must be
          proven, the gust must clear the same 25 mph floor as the beat gate, the
@@ -13111,7 +13159,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(g)return {h:pwClk(c.t)+" — the gust front hit",b:(fall?fall+" on "+gustC:GustC)+" — the storm's dry leading edge."};
         return {h:pwClk(c.t)+" — the cool crash swept through",b:fall+" — the storm's dry leading edge."};
       }
-      var rain=c.pIn.toFixed(1)+"\" of rain";
+      var rain=(c.rIn!=null)?("rain falling at "+c.rIn.toFixed(1)+"\" an hour"):(c.pIn.toFixed(1)+"\" of rain"); /* 0728eq: on Xweather the banked fact is a rate, so the beat says the rate (no amount is claimed for a moment) */
       if(fall&&g)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", "+gustC+", and "+rain+"."};
       if(fall)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", with "+rain+"."};
       if(g)return {h:pwClk(c.t)+" — the rain core arrived",b:GustC+" and "+rain+"."};
@@ -13164,7 +13212,83 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        only \u2014 no in-chart text; a lane without news speaks plain ("none within 10 mi"). Full-bleed
        x-mapping (0..720, no margins) \u2014 the lens math simplifies to pure fractions. The honest ribbon
        keeps its words as the floor. stormSVG remains for reference; this page no longer calls it. */
-    function skyLanes(x,ltg){
+    function skyTiles(d,x,live,op){ /* 0728em THE DAY IN FOUR NUMBERS (owner-ruled W-C Oct 5 on wC-light.png; stage 2, the tiles): feels-like high \u00b7 attractions down \u00b7 lightning \u00b7 rain, each from the readings the chart beneath draws. The keys never change; the tense rides the line under the number (TENSE FLIPS WHOLE). A measure with no banked readings says so and claims nothing. */
+      function tl(k,v,u,w){return '<div class="t"><div class="k">'+k+'</div><div class="v'+(w?' w':'')+'">'+v+'</div><div class="u">'+u+'</div></div>';}
+      var sf=live?' so far':'',S=x.samples||[],L=(d&&d.ltg&&d.ltg.samples)||[],i,h='';
+      h+=op?tl('Feels-like high',op.fF+'\u00b0',(live?'so far \u00b7 ':'')+pwClk(op.t)+' \u00b7 air high '+op.airHi+'\u00b0'):tl('Feels-like high','\u2013','no readings banked',1);
+      h+=x.peakPt?tl('Attractions down',String(x.peakPt.tot),'at once'+sf+' \u00b7 '+pwClk(x.peakPt.t)):tl('Attractions down','0',live?'so far today':'all day');
+      if(!L.length)h+=tl('Lightning \u00b7 10 mi','\u2013','no checks banked',1);
+      else{var tot=0,mx=null,full=L[0].t<=540;for(i=0;i<L.length;i++){tot+=L[i].n;if(L[i].n>0&&(!mx||L[i].n>mx.n))mx=L[i];}
+        if(tot>0&&mx)h+=tl('Lightning \u00b7 10 mi',String(tot),(tot===1?'strike':'strikes')+sf+' \u00b7 peak '+mx.n+' in '+((mx.w||60)>=50?'an hour':(mx.w+' min')));
+        else h+=tl('Lightning \u00b7 10 mi','none',live?(full?'detected today':'quiet from '+pwClk(L[0].t)):(full?'quiet all day':'quiet from '+pwClk(L[0].t)+' to close'),1);}
+      if(!S.length)h+=tl('Rain','\u2013','no readings banked',1);
+      else if(x.src==="xw"){var rk=null;for(i=0;i<S.length;i++)if(S[i].rIn>=0.02&&(!rk||S[i].rIn>rk.rIn))rk=S[i];
+        /* 0728eq: on a day read from Xweather the tile is the day\u2019s total, added up from the banked rate and labelled an estimate (owner-ruled Oct 5: the heaviest reading was the stand-in until the rain was wired) */
+        if(rk)h+=tl('Rain',x.precip>=0.05?(x.precip.toFixed(1)+'\u2033'):'trace','estimated'+sf+' \u00b7 heaviest '+pwClk(rk.t),x.precip<0.05);
+        else h+=tl('Rain','none','in any reading'+sf,1);}
+      else{var rm=null;for(i=0;i<S.length;i++)if(S[i].pIn>0&&(!rm||S[i].pIn>rm.pIn))rm=S[i];
+        /* the heaviest single reading, never the day\u2019s total (the daily sum is the number the page already distrusts); a reading that would print 0.0 prints as a trace */
+        if(rm)h+=tl('Rain',rm.pIn>=0.05?(rm.pIn.toFixed(1)+'\u2033'):'trace','heaviest reading'+sf+' \u00b7 '+pwClk(rm.t),rm.pIn<0.05);
+        else h+=tl('Rain','none','in any reading'+sf,1);}
+      return '<div class="pw-tl">'+h+'</div>';
+    }
+    var pwWxMode="t"; /* 0728es THE PAGE OPENS ON THE TEMPERATURE (owner-ruled P-A Oct 5 on pills-A-light.png): two pills under the hour strip, Temp and Feels like, switch the strip\u2019s numbers and the chart\u2019s temperature lane together. Temp is always the default \u2014 the choice is never remembered; every door resets it. The tile stays Feels-like high whichever pill is on. */
+    function skyAsTemp(x){ /* the same day with the air temperature in the seat the builders read; readings with no temperature drop out */
+      var o={},k,S=[],i,s,c,q;for(k in x)o[k]=x[k];
+      for(i=0;i<x.samples.length;i++){s=x.samples[i];if(s.tF==null)continue;c={};for(q in s)c[q]=s[q];c.fF=s.tF;S.push(c);}
+      o.samples=S;return o;
+    }
+    function skyBody(d,x,live){ /* the strip and the chart, in the chosen measure */
+      var tm=(pwWxMode!=="f"),xv=tm?skyAsTemp(x):x,LN=skyLanes(xv,(d.ltg&&d.ltg.samples)||null,live,tm);
+      return {LN:LN,html:skyStrip(d,xv,live,tm)+(LN?('<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+LN.html+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div>'+(LN.leg||"")+'</div>'):"")};
+    }
+    function skyBodyBind(d,x,live,LN,first){
+      if(LN){var TLc=Math.max(x.series.length?x.series[x.series.length-1][0]:0,x.samples.length?x.samples[x.samples.length-1].t:0,(d.ltg&&d.ltg.samples&&d.ltg.samples.length)?d.ltg.samples[d.ltg.samples.length-1].t:0);
+        pwSkyBind({T0:LN.T0,T1:LN.T1,TL:TLc,series:x.series,ltg:(d.ltg&&d.ltg.samples)||[],wx:x.samples,tm:(pwWxMode!=="f")});} /* 0712l: one clock. 0713g: TL = the last banked moment \u2014 the lens\u2019s future fence. 0728es: the lens reads the pill\u2019s measure */
+      if(first)skyStripOpen();
+      var pl=$id("pwWxPl");if(!pl)return;
+      pl.addEventListener("click",function(ev){
+        var b=ev.target;while(b&&b!==pl&&!(b.getAttribute&&b.getAttribute("data-m")))b=b.parentNode;
+        if(!b||b===pl)return;var m=b.getAttribute("data-m");if(m===pwWxMode)return;
+        var w=$id("pwHsw"),keep=w?w.scrollLeft:0,box=$id("pwWxBody");if(!box)return;
+        pwWxMode=m;var B=skyBody(d,x,live);box.innerHTML=B.html; /* only the strip and the chart repaint: the page stays where the thumb left it */
+        w=$id("pwHsw");if(w)w.scrollLeft=keep;
+        skyBodyBind(d,x,live,B.LN,false);
+      });
+    }
+    function skyStrip(d,x,live,tm){ /* 0728en THE DAY, HOUR BY HOUR (owner-ruled W-C Oct 5 on wC-light.png; stage 3, the hours; the reading ruled Oct 5: each hour shows the banked reading nearest the top of the hour \u2014 a real reading, the one the curve\u2019s numbers print). The sky glyph is the band\u2019s own rule; an hour inside a hold wave (8 or more down at once, the glow\u2019s gate) says how many. History, never a forecast: a live day stops at the last reading. */
+      var S=x.samples||[],L=(d&&d.ltg&&d.ltg.samples)||[],ser=x.series||[];if(S.length<2)return "";
+      var IC={clear:"\u2600\ufe0f",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
+      function lt(tq){for(var q=0;q<L.length;q++){var w=L[q].w||60;if(L[q].t-w<tq&&tq<=L[q].t)return L[q].n;}return 0;}
+      var H0=Math.round(S[0].t/60),H1=Math.round(S[S.length-1].t/60),hh,i,cols=[],open=0,pkI=-1;
+      for(hh=H0;hh<=H1;hh++){var T=hh*60,b=null;
+        for(i=0;i<S.length;i++)if(S[i].fF!=null&&(!b||Math.abs(S[i].t-T)<Math.abs(b.t-T)))b=S[i];
+        if(!b||Math.abs(b.t-T)>30)continue;
+        var cl=wxClass(b);if(lt(b.t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
+        var dn=0;for(i=0;i<ser.length;i++)if(ser[i][0]>T-30&&ser[i][0]<=T+30&&ser[i][1]>dn)dn=ser[i][1];
+        if(x.peakPt&&x.downPeak>=8&&x.peakPt.t>T-30&&x.peakPt.t<=T+30)pkI=cols.length;
+        cols.push('<div class="pw-hc'+(dn>=8?' ev':'')+'"><div class="h">'+pwClkS(T%1440)+'</div><div class="i">'+IC[cl]+'</div><div class="f">'+b.fF+'\u00b0</div><div class="d">'+(dn>=8?('<b>'+dn+'</b> down'):'&nbsp;')+'</div></div>');}
+      if(cols.length<2)return "";
+      open=pkI>=0?pkI:(live?cols.length-1:0); /* THE INCIDENT LEADS: a wave day opens on its peak hour; a live day on the latest hour; a quiet finished day at its start */
+      return '<div class="pw-st-card pw-hs"><div class="pw-lh"><span class="nm">Hour by hour</span><span class="st q">'+(tm?'temperature':'feels-like')+'</span></div><div class="pw-lrule"></div><div class="pw-hsw" id="pwHsw" data-open="'+open+'"><div class="pw-hsr">'+cols.join("")+'</div></div><div class="pw-pl" id="pwWxPl"><button type="button" data-m="t"'+(tm?' class="on"':'')+'>Temp</button><button type="button" data-m="f"'+(tm?'':' class="on"')+'>Feels like</button></div></div>';
+    }
+    function skyStripOpen(){ /* 0728en: bring the opening hour to the middle of the strip (the page itself never moves) */
+      var w=$id("pwHsw");if(!w)return;var r=w.firstChild,c=r&&r.children[+w.getAttribute("data-open")||0];if(!c)return;
+      var cr=c.getBoundingClientRect(),wr=w.getBoundingClientRect(); /* measured against the strip itself (offsetLeft answers to the page) */
+      w.scrollLeft=Math.max(0,(cr.left-wr.left+w.scrollLeft)-(w.clientWidth-cr.width)/2);
+    }
+    function skyMono(P){ /* 0728el THE NUMBERS RIDE THE LINE: a monotone cubic through the banked readings \u2014 the curve passes through every reading and never rises above or dips below the two it runs between */
+      var n=P.length,i,d=[],m=[],s;
+      if(n<3){s="";for(i=0;i<n;i++)s+=(i?" L":"M")+P[i][0].toFixed(1)+" "+P[i][1].toFixed(1);return s;}
+      for(i=0;i<n-1;i++)d.push((P[i+1][1]-P[i][1])/(P[i+1][0]-P[i][0]));
+      m[0]=d[0];m[n-1]=d[n-2];
+      for(i=1;i<n-1;i++)m[i]=(d[i-1]*d[i]<=0)?0:(d[i-1]+d[i])/2;
+      for(i=0;i<n-1;i++){if(d[i]===0){m[i]=0;m[i+1]=0;}else{var a=m[i]/d[i],b=m[i+1]/d[i],hy=Math.sqrt(a*a+b*b);if(hy>3){m[i]=3*a/hy*d[i];m[i+1]=3*b/hy*d[i];}}}
+      s="M"+P[0][0].toFixed(1)+" "+P[0][1].toFixed(1);
+      for(i=0;i<n-1;i++){var h3=(P[i+1][0]-P[i][0])/3;s+=" C"+(P[i][0]+h3).toFixed(1)+" "+(P[i][1]+m[i]*h3).toFixed(1)+" "+(P[i+1][0]-h3).toFixed(1)+" "+(P[i+1][1]-m[i+1]*h3).toFixed(1)+" "+P[i+1][0].toFixed(1)+" "+P[i+1][1].toFixed(1);}
+      return s;
+    }
+    function skyLanes(x,ltg,live,tm){
       var series=x.series;if(!series.length)return null;
       var LT=ltg||[],lastT=series[series.length-1][0];
       /* 0713c: first-signal domain (owner pick B) \u2014 T0 anchors to the first SIGNAL (first weather
@@ -13179,48 +13303,60 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
       function tx(t){return (((t-T0)/(T1-T0))*720).toFixed(1);}
       var h="";
+      /* 0728el ONE CLOCK, DRAWN LIKE WEATHER (owner-ruled W-C Oct 5 on wC-light.png; this is its chart, stage 1): the axis\u2019s own steps run as hairlines through every lane; the numbers ride the line; a quiet lightning lane folds to its header; the glow lands on the band. */
+      var GT=[],gt;for(gt=T0;gt<=T1;gt+=180)GT.push(gt);if(T1-GT[GT.length-1]>=120)GT.push(T1);
+      function grid(y0,y1){var g="",q;for(q=0;q<GT.length;q++)g+='<line class="g" x1="'+tx(GT[q])+'" y1="'+y0+'" x2="'+tx(GT[q])+'" y2="'+y1+'"/>';return g;}
+      function lx(v){return Math.max(18,Math.min(702,v)).toFixed(1);}
       /* lane 1 \u2014 attractions down */
-      var DMAX=Math.max(10,Math.ceil((x.downPeak*1.12)/10)*10);
-      function dy(v){return (158-(v/DMAX)*150).toFixed(1);} /* 0712r: taller lanes (owner call) \u2014 the stack owns the page */
-      var calmDay=true,i;for(i=0;i<series.length;i++)if(series[i][1]>=8){calmDay=false;break;}
-      var s0=0;while(s0<series.length-1&&series[s0][0]<T0)s0++; /* 0713c: draw from the domain edge \u2014 trimmed silent zeros stay banked, not painted */
+      var DMAX=Math.max(10,Math.ceil((x.downPeak*1.25)/10)*10);
+      function dy(v){return (144-(v/DMAX)*120).toFixed(1);}
+      var i,s0=0;while(s0<series.length-1&&series[s0][0]<T0)s0++; /* 0713c: draw from the domain edge \u2014 trimmed silent zeros stay banked, not painted */
       var area="M "+tx(series[s0][0])+" "+dy(0),line="";
       for(i=s0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i>s0?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
       area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
-      var l1='<svg class="pw-lane" viewBox="0 0 720 168" preserveAspectRatio="none">';
-      l1+='<line x1="0" y1="'+dy(DMAX/2)+'" x2="720" y2="'+dy(DMAX/2)+'" stroke="#eef0f6" stroke-width="1"/>';
-      l1+='<path d="'+area+'" fill="rgba(226,59,84,.12)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.5" stroke-linejoin="round"/>';
+      var l1='<svg class="pw-lane" viewBox="0 0 720 150" preserveAspectRatio="none"><defs><linearGradient id="pwDg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e23b54" stop-opacity=".34"/><stop offset="1" stop-color="#e23b54" stop-opacity=".03"/></linearGradient></defs>'+grid(0,150)+'<line class="g" x1="0" y1="144" x2="720" y2="144"/>';
+      l1+='<path d="'+area+'" fill="url(#pwDg)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.6" stroke-linejoin="round"/>';
       if(x.onset)l1+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';
-      if(x.peakPt)l1+='<circle cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="4.5" fill="#e23b54"/>';
-      if(calmDay)l1+='<text x="360" y="70" text-anchor="middle" font-family="ui-rounded,Space Grotesk,sans-serif" font-weight="700" font-size="22" fill="#9aa0b8">no hold waves'+((x.downPeak>0&&x.peakPt)?(' \u2014 peak '+x.downPeak+' \u00b7 '+pwClk(x.peakPt.t)):'')+'</text>'; /* 0713c: Q2 (owner pick) \u2014 the calm says so; provable from the dp>=8 gate, gone the moment a wave exists */
+      if(x.peakPt)l1+='<circle class="pt" cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="5.5" stroke="#e23b54"/><text class="val hi" x="'+lx(parseFloat(tx(x.peakPt.t)))+'" y="'+(parseFloat(dy(x.peakPt.tot))-13).toFixed(1)+'" text-anchor="middle">'+x.peakPt.tot+'</text>'; /* 0728el: the peak wears its own number; the calm-day note retired (N-A: the header already says the peak, and the page never defined a hold wave) */
       l1+='</svg>';
-      var v1=x.peakPt?('peak '+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak);
+      var v1=x.peakPt?('peak '+(live?'so far ':'')+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak); /* 0728el: a live peak is the peak so far (TENSE FLIPS WHOLE) */
       h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div><div class="pw-lrule"></div>'+l1;
       /* lane 2 \u2014 strikes */
       var tot=0,mx=null,LM=0,LR=0,lz;
       for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];var rr2=LT[lz].n/(LT[lz].w||60);if(rr2>LR)LR=rr2;}
-      var l2='<svg class="pw-lane" viewBox="0 0 720 92" preserveAspectRatio="none">';
+      var strk=(tot>0&&!!mx);
+      var l2='<svg class="pw-lane" viewBox="0 0 720 84" preserveAspectRatio="none"><defs><linearGradient id="pwLg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#fcd34d"/></linearGradient></defs>'+grid(0,84);
       for(lz=0;lz<LT.length;lz++){var ln=LT[lz].n,lx1=Math.max(parseFloat(tx(LT[lz].t-(LT[lz].w||60))),0),lx2=parseFloat(tx(LT[lz].t));
-        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="84" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="4" rx="2" fill="#fbbf24" fill-opacity="0.30"/>'; /* 0712w: F2 sampled floor (owner call) \u2014 a stub per banked window; the floor IS the ledger, card and page in one language. Zero days become a listening baseline (tweak #2 resolved). */
-        if(ln>0){var lh2=Math.max(6,((ln/(ltg[lz].w||60))/(LR||1))*84); /* 0713g: W2 density \u2014 skyLanes twin */
-        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(88-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="2" fill="#fbbf24" fill-opacity="0.85"/>';}}
+        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="79" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="3" rx="1.5" fill="#fbbf24" fill-opacity="0.32"/>'; /* 0712w: F2 sampled floor \u2014 a stub per banked window */
+        if(ln>0){var lh2=Math.max(6,((ln/(LT[lz].w||60))/(LR||1))*72); /* 0713g: W2 density */
+        l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(82-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="3" fill="url(#pwLg)"/>';}}
       l2+='</svg>';
-      var v2=(tot>0&&mx)?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):'none within 10 mi';
-      h+='<div class="pw-lh"><span class="nm">Lightning strikes \u00b7 10 mi</span><span class="st'+((tot>0&&mx)?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+l2; /* 0712x: word header (owner call) \u2014 headers are labels and labels state their measure; the \u26a1 vocabulary lives in the ribbon + legend. One language with the card. */
+      var lfull=LT.length&&LT[0].t<=540; /* 0728el: the fold speaks the hero row\u2019s four voices (SAME QUESTION SAME SENTENCE) \u2014 \u201call day\u201d only when the checks began by 9 AM */
+      var v2=strk?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):((live&&lfull)?'none detected today':('none \u00b7 '+(live?('quiet from '+pwClk(LT.length?LT[0].t:0)):(lfull?'quiet all day':('quiet from '+pwClk(LT.length?LT[0].t:0)+' to close')))));
+      if(LT.length)h+='<div class="pw-lh"><span class="nm">'+(strk?'Lightning strikes \u00b7 10 mi':'Lightning \u00b7 10 mi')+'</span><span class="st'+(strk?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+(strk?l2:''); /* 0728el: A QUIET LANE FOLDS (DISCLOSURE FOLLOWS THE DATA) \u2014 no strikes, no empty chart; no samples, no claim */
       /* lane 3 \u2014 feels-like */
       var S3=x.samples;
       if(S3.length>1){var flo=1e9,fhi=-1e9,fz;
         for(fz=0;fz<S3.length;fz++){var ff=S3[fz].fF;if(ff<flo)flo=ff;if(ff>fhi)fhi=ff;}
         if(fhi-flo<4)fhi=flo+4;
-        var fy=function(f){return (8+(1-(f-flo)/(fhi-flo))*76).toFixed(1);};
-        var fpts="",fpk=0;
-        for(fz=0;fz<S3.length;fz++){if(S3[fz].fF>S3[fpk].fF)fpk=fz;fpts+=(fz?" ":"")+tx(S3[fz].t)+","+fy(S3[fz].fF);}
-        var l3='<svg class="pw-lane" viewBox="0 0 720 92" preserveAspectRatio="none">';
-        if(fhi>=100)l3+='<line x1="0" y1="'+fy(105)+'" x2="720" y2="'+fy(105)+'" stroke="#f97316" stroke-width="1" stroke-dasharray="4 5" stroke-opacity=".4"/>';
-        l3+='<polyline fill="none" stroke="#f97316" stroke-width="2" stroke-opacity="0.9" points="'+fpts+'"/>';
-        l3+='<circle cx="'+tx(S3[0].t)+'" cy="'+fy(S3[0].fF)+'" r="3.5" fill="#f97316"/><circle cx="'+tx(S3[fpk].t)+'" cy="'+fy(S3[fpk].fF)+'" r="4" fill="#f97316"/><circle cx="'+tx(S3[S3.length-1].t)+'" cy="'+fy(S3[S3.length-1].fF)+'" r="3.5" fill="#f97316"/>';
+        var fx=(!tm&&fhi>=103);if(fx&&fhi<109)fhi=109; /* 0728er: the rule is the verdict\u2019s bar, 108\u00b0, drawn once the day comes within 5\u00b0 of it */ /* 0728el: the 105 rule always sits inside its lane (it drew over the header on a 100\u2013104 day) */
+        var fyn=function(f){return 38+(1-(f-flo)/(fhi-flo))*98;},fy=function(f){return fyn(f).toFixed(1);};
+        var FP=[],FS=[],fpk=0;
+        for(fz=0;fz<S3.length;fz++){if(S3[fz].fF>S3[fpk].fF)fpk=fz;var fpx=parseFloat(tx(S3[fz].t));if(!FP.length||fpx>FP[FP.length-1][0]){FP.push([fpx,fyn(S3[fz].fF)]);FS.push(S3[fz]);}}
+        var fpath=skyMono(FP);
+        var l3='<svg class="pw-lane" viewBox="0 0 720 150" preserveAspectRatio="none"><defs><linearGradient id="pwTg" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="'+fy(60)+'" y2="'+fy(112)+'"><stop offset="0%" stop-color="#38bdf8"/><stop offset="23.1%" stop-color="#2dd4bf"/><stop offset="38.5%" stop-color="#facc15"/><stop offset="57.7%" stop-color="#fb923c"/><stop offset="73.1%" stop-color="#f4511e"/><stop offset="86.5%" stop-color="#dc2626"/><stop offset="100%" stop-color="#9f1239"/></linearGradient><linearGradient id="pwTgF" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="pwTgM"><rect x="0" y="28" width="720" height="122" fill="url(#pwTgF)"/></mask></defs>'+grid(4,150); /* the line is coloured by its own temperature (60\u00b0 teal \u2192 80\u00b0 yellow \u2192 90\u00b0 orange \u2192 105\u00b0 red); the numbers carry the meaning (COLOR NEVER CARRIES ALONE) */
+        l3+='<path d="'+fpath+' L'+FP[FP.length-1][0].toFixed(1)+' 150 L'+FP[0][0].toFixed(1)+' 150 Z" fill="url(#pwTg)" fill-opacity=".30" mask="url(#pwTgM)"/>';
+        if(fx)l3+='<line x1="0" y1="'+fy(108)+'" x2="720" y2="'+fy(108)+'" stroke="#dc2626" stroke-width="1" stroke-dasharray="3 5" stroke-opacity=".55"/><text class="sc" x="712" y="'+(fyn(108)-6).toFixed(1)+'" text-anchor="end">extreme \u00b7 108\u00b0</text>';
+        l3+='<path d="'+fpath+'" fill="none" stroke="url(#pwTg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>';
+        var fmk=[],fq,fb,fg; /* a number at the banked reading nearest each grid hour (within 45 min, clear of the high); the high always */
+        for(fg=0;fg<GT.length;fg++){fb=null;for(fq=0;fq<FS.length;fq++)if(!fb||Math.abs(FS[fq].t-GT[fg])<Math.abs(fb.t-GT[fg]))fb=FS[fq];
+          if(fb&&Math.abs(fb.t-GT[fg])<=45&&Math.abs(fb.t-S3[fpk].t)>80&&fmk.indexOf(fb)<0)fmk.push(fb);}
+        for(fq=0;fq<fmk.length;fq++){var mX=parseFloat(tx(fmk[fq].t)),mY=fyn(fmk[fq].fF),mB=(fx&&Math.abs(mY-fyn(108))<26);
+          l3+='<circle class="pt" cx="'+mX.toFixed(1)+'" cy="'+mY.toFixed(1)+'" r="4.5" stroke="url(#pwTg)"/><text class="val" x="'+lx(mX)+'" y="'+(mB?mY+26:mY-12).toFixed(1)+'" text-anchor="middle">'+fmk[fq].fF+'\u00b0</text>';}
+        var hX=parseFloat(tx(S3[fpk].t)),hY=fyn(S3[fpk].fF),hB=(fx&&Math.abs(hY-fyn(108))<30);
+        l3+='<circle class="pt" cx="'+hX.toFixed(1)+'" cy="'+hY.toFixed(1)+'" r="6.5" stroke="url(#pwTg)"/><text class="val hi" x="'+lx(hX)+'" y="'+(hB?hY+30:hY-14).toFixed(1)+'" text-anchor="middle">'+S3[fpk].fF+'\u00b0</text>';
         l3+='</svg>';
-        h+='<div class="pw-lh"><span class="nm">Feels-like</span><span class="st">'+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
+        h+='<div class="pw-lh"><span class="nm">'+(tm?'Temperature':'Feels-like')+'</span><span class="st">high '+(live?'so far ':'')+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
       }
       /* the floor \u2014 ribbon (sensor-upgraded) + hour axis */
       var cols=PW_RIBBON; /* 0712t: labels retired for icons (owner call) \u2014 see the icon pass below */
@@ -13231,7 +13367,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
       var rb='<svg class="pw-lane" viewBox="0 0 720 64" preserveAspectRatio="none">'; /* 0712u: taller floor (owner call) \u2014 room for fs30 icons; band stays y2 h13 */
       for(var sg=0;sg<segs.length;sg++){var Sg=segs[sg],w2=parseFloat(tx(Sg.b))-parseFloat(tx(Sg.a));
-        rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>';
+        rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2-(sg<segs.length-1?2:0)).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>'; /* 0728el: a hair of card between the sky\u2019s states */
       }
       /* 0712t: icons-only ribbon (owner call, mock-ratified I1) \u2014 one vocabulary all day; the
          0712s tier/collision/measurer machinery retires. A centered color glyph per segment;
@@ -13245,8 +13381,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         rb+='<text x="'+icx.toFixed(1)+'" y="44" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="30">'+ICONS[Sg2.cl]+'</text>';lastR=icx+16;}
       /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
       var axLast=T0;
-      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="'+(t2===T0?"start":t2>=T1?"end":"middle")+'" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(t2%1440)+'</text>';axLast=t2;} /* 0728dw THE LABELS STAY INSIDE THE CHART (owner glass 11:20 AM Oct 3: 7a and 12a hung past the band’s ends): the first hour starts at the left edge, the last ends at the right edge, the rest stay centred */
-      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" fill="#8a90ab">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
+      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="'+(t2===T0?"start":t2>=T1?"end":"middle")+'" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" class="ax">'+pwClkS(t2%1440)+'</text>';axLast=t2;} /* 0728dw THE LABELS STAY INSIDE THE CHART (owner glass 11:20 AM Oct 3: 7a and 12a hung past the band’s ends): the first hour starts at the left edge, the last ends at the right edge, the rest stay centred */
+      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" class="ax">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
       /* 0712r: the glow marks the EVENT, not the sky (owner call) \u2014 windows = contiguous runs of
          concurrent downs >= 8, straight from the series the chart draws. Cause-neutral by construction:
@@ -13275,7 +13411,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)used[segs[lgi].cl]=1;
       for(lgi=0;lgi<LEG_ORD.length;lgi++){if(used[LEG_ORD[lgi]])lg.push(LEG_TXT[LEG_ORD[lgi]]);}
       var leg=lg.length?('<div class="pw-sleg">'+lg.join(" \u00b7 ")+'</div>'):"";
-      return {html:zones+h+rb,leg:leg,T0:T0,T1:T1};
+      return {html:'<div class="pw-sgl">'+zones+h+'<div class="pw-lh"><span class="nm">Sky</span></div><div class="pw-lrule"></div></div>'+rb,leg:leg,T0:T0,T1:T1}; /* 0728el: the sky band is its own lane, named; the glow\u2019s box ends where the band begins, on every width */
     }
     /* ===== 0712e: the Sky lens \u2014 one hairline, every ledger. Silent-when-zero;
        hour-grain honesty ("this hr") until v3.8.2 sharpens it. Reader is pure. ===== */
@@ -13287,7 +13423,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var parts=[];
       if(v>0)parts.push("<b>"+v+"</b> down");
       if(n>0)parts.push("\u26a1<b>"+n+"</b> this "+(nw>=50?"hr":nw+" min"));
-      if(w)parts.push("feels <b>"+w.fF+"\u00b0</b>");
+      if(w)parts.push(D.tm?("<b>"+w.tF+"\u00b0</b>"):("feels <b>"+w.fF+"\u00b0</b>")); /* 0728es: on the Temp pill the lens reads the temperature (a bare degree); on Feels like it says so */
       if(w&&w.gust>=15)parts.push("gust "+w.gust);
       return {t:t,clk:pwClk(t),parts:parts};
     }
@@ -13315,9 +13451,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var wv=$id("wrapView");if(!wv||!lastData)return;
       if(lastTab==="week")return;
       var fin=isFinal(lastData),live=(!fin);
+      pwWxMode="t"; /* 0728es: every door opens the page on the temperature */
       var x=wxDerive(lastData);
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackS"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+(pwVisitDate()?esc(pwMonD(pwVisitDate())):"Wrap")+'</button></div>';
-      html+='<div class="pw-crumb"><b>Wrap</b> › '+(pwVisitDate()?esc(pwMonDY(pwVisitDate()))+' › ':'')+'Sky</div>';
+      html+='<div class="pw-crumb"><b>Wrap</b> › '+(pwVisitDate()?esc(pwMonDY(pwVisitDate()))+' › ':'')+'Weather</div>';
       var sub,ttl,kicker;
       var chReal=wxChip(lastData,live),ch=chReal||{kind:"storm"};
       var stx=skyStrikes(lastData),op=skyObsPeak(x); /* 0713c: skyFl retired with the quiet skin */
@@ -13328,7 +13465,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var lead=(LD[ch.kind]||["Weather moving over Walt Disney World","Weather moved over Walt Disney World"])[live?0:1];
       sub=lead+(x.downPeak>=8?(live?" \u2014 "+x.downPeak+" attractions paused so far.":". "+x.downPeak+" attractions paused at the peak."):".");
       if(!chReal||!TT[chReal.kind]){ /* 0712c: heat/cold aren't timeline chips \u2014 they take the sky vocabulary; heat leads (owner call) */
-        kicker="Sky timeline";
+        kicker="Weather timeline"; /* 0728eo: the page is named Weather (owner-ruled Oct 5) on its door, its crumb and its kicker */
         var ltgCl=(stx&&stx.tot>0)?(stx.tot+" strike"+(stx.tot===1?"":"s")+" within 10 mi"):"no lightning within 10 mi";
         if(chReal&&chReal.kind==="hold"){
           var hhNow=(x.series&&x.series.length)?x.series[x.series.length-1][1]:0;
@@ -13344,7 +13481,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           ttl="A scorcher, end to end";
           sub="Feels-like "+(live?("has peaked at "+op.fF+"\u00b0 so far"):("peaked at "+op.fF+"\u00b0"))+" \u2014 "+ltgCl+((!live&&!(stx&&stx.tot>0))?" all day":"")+".";
         }else{
-          ttl="The day's sky";
+          ttl="The day's weather"; /* 0728ep THE NAME IS WEATHER, EVERYWHERE IT IS SAID (owner-ruled Oct 5): the page\u2019s own headline */
           sub=(stx&&stx.tot>0)?(ltgCl+(live?" so far today.":" across the day.")):("No lightning within 10 mi \u2014 quiet "+(live?"so far today.":"all day."));
           if(op&&op.fF>=100)sub+=" Feels-like peaked at "+op.fF+"\u00b0.";
         }
@@ -13353,9 +13490,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var showDown=!!x.series.length&&x.downPeak>=8; /* 0713c: no longer a layout gate \u2014 dp>=8 gates only the earned story blocks (park rows), the same observable as the glow */
       if(!x.series.length&&!stx){html+='<div class="pw-msg">No timeline data for this day yet.</div>';}
       else{
-        var LN=null;
-        if(x.series.length){LN=skyLanes(x,(lastData.ltg&&lastData.ltg.samples)||null); /* 0713c: ONE stack, every day (owner call) \u2014 the layout never changes; the day does */
-          if(LN)html+='<div class="pw-st-card"><div class="pw-lens-wrap" id="pwSkyWrap">'+LN.html+'<div class="pw-lens-line" id="pwLensL" hidden></div><div class="pw-lens-pill" id="pwLensP" hidden></div></div>'+(LN.leg||"")+'</div>';}
+        var LN=null,WB=null;
+        if(x.series.length){WB=skyBody(lastData,x,live);LN=WB.LN;html+=skyTiles(lastData,x,live,op)+'<div id="pwWxBody">'+WB.html+'</div>';} /* 0713c: ONE stack, every day (owner call) \u2014 the layout never changes; the day does */ /* 0728es: the strip and the chart are one body the pills repaint */
         var BB=skyBeats(lastData,x,live,op),bi;
         for(bi=0;bi<BB.length;bi++)html+=pwCall(BB[bi].c,BB[bi].h,BB[bi].b);
         if(showDown){var parks=[];for(var pk in x.parkPeaks){if(x.parkPeaks[pk]>0)parks.push(pk);}
@@ -13374,10 +13510,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var lgSW=(lastData.ltg&&lastData.ltg.samples)?lastData.ltg.samples.filter(function(sv){return (sv.w||60)<=20;}):[];
       var lgMix=lgSW.length>=2;
       var chk=(stx&&lastData.ltg&&lastData.ltg.samples.length)?("Checked "+(lgMix?("hourly \u00b7 15-min "+(lgSW.some(function(sv){return sv.n>0;})?"through the storm":"at close watch")+" "+pwClk(lgSW[0].t)+"\u2013"+pwClk(lgSW[lgSW.length-1].t)):"hourly")+", "+pwClk(lastData.ltg.samples[0].t)+" \u2013 "+pwClk(lastData.ltg.samples[lastData.ltg.samples.length-1].t)+" \u00b7 "):""; /* 0712y: "through the storm" is EARNED (strikes inside a true 15-min window); hold-driven cadence says "at close watch" \u2014 cause-neutral */
-      html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+'Weather by Open-Meteo \u00b7 Lightning by Vaisala Xweather</div>';
+      html+='<div class="pw-foot">'+((chReal&&TT[chReal.kind])?('Reliability '+(live?"today carries ":"that day carried ")+wxW+' \u00b7 '):"")+chk+(x.src==="xw"?'Weather and lightning by Vaisala Xweather \u00b7 Gusts by Open-Meteo':'Weather by Open-Meteo \u00b7 Lightning by Vaisala Xweather')+'</div>'; /* 0728eq: the credit follows the source that drew the day */
       wv.innerHTML=html;topw();
-      if(LN){var TLc=Math.max(x.series.length?x.series[x.series.length-1][0]:0,x.samples.length?x.samples[x.samples.length-1].t:0,(lastData.ltg&&lastData.ltg.samples&&lastData.ltg.samples.length)?lastData.ltg.samples[lastData.ltg.samples.length-1].t:0);
-      pwSkyBind({T0:LN.T0,T1:LN.T1,TL:TLc,series:x.series,ltg:(lastData.ltg&&lastData.ltg.samples)||[],wx:x.samples});} /* 0712l: one clock. 0713d: not a storm privilege. 0713g: TL = the last banked moment \u2014 the lens\u2019s future fence */
+      if(WB)skyBodyBind(lastData,x,live,LN,true); /* 0728es: the lens, the strip's opening and the pills bind together */
       var bk=$id("pwBackS");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
       var ss=$id("pwShareS");if(ss)ss.addEventListener("click",function(){shareStormCard();});
     }
@@ -13388,7 +13523,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var fin=isFinal(lastData),live=(!fin);
       var ch=wxChip(lastData,live)||{kind:null}; /* 0713b: the storm-era fallback retired \u2014 a chip-less day speaks the quiet voice; it never again claims a storm it cannot prove */
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
-      var D={x:x,ltg:(lastData.ltg&&lastData.ltg.samples)||[],kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"ridecue-sky.png",shareTitle:"RideCue \u2014 Sky"}; /* 0712v: ltg rides along. 0712y: Sky-named \u2014 the card serves every day now, not just storms */
+      var D={x:x,ltg:(lastData.ltg&&lastData.ltg.samples)||[],kind:ch.kind,badge:fin?"FINAL":"SO FAR TODAY",date:fmtDate(dateStr),fname:"ridecue-weather.png",shareTitle:"RideCue \u2014 Weather"}; /* 0712v: ltg rides along. 0712y: Sky-named \u2014 the card serves every day now, not just storms */
       var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var ctx=cv.getContext("2d"); /* 0712v: 4:5 IG-portrait canvas (owner call) */
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
@@ -13432,7 +13567,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var modelStorm=false;for(lz=0;lz<x.samples.length;lz++)if(x.samples[lz].code>=95)modelStorm=true;
       var kind=(ltot>0)?"storm":D.kind;
       var TT={storm:"Riding out the storm",wind:"Riding out the wind",rain:"Riding out the rain",hold:"A holding pattern",heat:"Riding out the heat",cold:"Riding out the cold"};
-      T(ell(TT[kind]||"The day\u0027s sky",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
+      T(ell(TT[kind]||"The day\u0027s weather",R-L,SG("700",54)),L,206,SG("700",54),C.ink,"left");
       /* 0713a: tense flips WHOLE (owner rule, finally applied to the leads) \u2014 every lead is a
          live/FINAL pair; past tense on a SO FAR TODAY badge was the pre-lane card\u2019s oldest
          latent bug, exposed by the first live share. */
@@ -13535,7 +13670,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       ctx.strokeStyle="rgba(255,255,255,0.09)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
       T("Reliability "+(D.badge==="FINAL"?"that day carried ":"today carries ")+({storm:"the storm",wind:"the wind",rain:"the rain",hold:"the holds",heat:"the heat",cold:"the cold"}[kind]||"the weather"),L,fy+36,IN("500",22),C.muted2,"left");
       T("ridecue.live",R,fy+36,IN("700",26),C.green,"right");
-      T("Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Vaisala Xweather",L,fy+66,IN("500",20),C.muted2,"left");
+      T(x.src==="xw"?"Weather and lightning by Vaisala Xweather \u00b7 Gusts: Open-Meteo \u00b7 Data: ThemeParks.wiki":"Weather by Open-Meteo \u00b7 Data: ThemeParks.wiki \u00b7 Lightning: Vaisala Xweather",L,fy+66,IN("500",20),C.muted2,"left");
       ctx.restore();
     }
 
