@@ -771,6 +771,7 @@
   .rm-lane i{flex:1;border-radius:2px;opacity:.85}
   .rm-lane i.t-short{background:var(--short)} .rm-lane i.t-medium{background:var(--medium)} .rm-lane i.t-long{background:var(--long)} .rm-lane i.t-packed{background:var(--packed)}
   .rm-lane i.sp{background:var(--card-2);opacity:1}
+  .rm-key{display:flex;flex-wrap:wrap;gap:5px 13px;font:600 var(--fs-meta) var(--font-body);color:var(--muted);padding:2px 0 10px} .rm-key span{white-space:nowrap} .rm-key i{display:inline-block;width:14px;height:8px;border-radius:2px;margin-right:5px;vertical-align:1px;opacity:.85} .rm-key i.ln{height:2.5px;border-radius:0;background:var(--ink);opacity:1;vertical-align:3px} .rm-key i.sp{background:var(--card-2);opacity:1;box-shadow:inset 0 0 0 1px var(--line)} .rm-key i.k-s{background:var(--short)} .rm-key i.k-m{background:var(--medium)} .rm-key i.k-l{background:var(--long)} .rm-key i.k-p{background:var(--packed)} /* 0728ei K-B THE KEY SITS WHERE THE EYE STARTS (owner glass 12:35 PM Oct 5: "not sure if people read that"; ruled on evening-clock-mock.html): THE LEGEND NAMES, THE FINE PRINT EXPLAINS */
   .rm-lane.rail{margin-bottom:6px} .rm-lane.rail i.wo{position:relative} .rm-lane.rail i.wo:after{content:"";position:absolute;left:-.75px;right:-.75px;bottom:-5px;height:2.5px;background:var(--ink)} /* 0728eg S-D THE LINE BENEATH IS THE WALK-ON (strip-walkon-mock.html): the cells are tier-coloured; the line marks every half-hour at 10m or under, in ink (COLOR NEVER CARRIES ALONE) */
   .rm-axis{display:flex;justify-content:space-between;font:700 var(--fs-micro) var(--font-body);color:var(--muted-2);padding:0 0 6px;letter-spacing:.04em}
   /* ===== 0714i: Compare (L-28 cut 9, lean) \u2014 identity is contained, tiers stay tiers ===== */
@@ -2498,7 +2499,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eh</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ei</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5169,7 +5170,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     never.sort(function(a,b){return (b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     burn.sort(function(a,b){return (a.cv.front-b.cv.front)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);});
     defer.sort(function(a,b){return (b.cv.typ-a.cv.typ)||((a.cv.front==null?9999:a.cv.front)-(b.cv.front==null?9999:b.cv.front))||a.nm.localeCompare(b.nm);});
-    var fl=defer.filter(function(x){return x.cls==="flat";}).sort(function(a,b){return a.nm.localeCompare(b.nm);}),df=defer.filter(function(x){return x.cls!=="flat";}); return never.concat(burn,df,fl); /* 0714f: flats sit last \u2014 the least actionable rows */
+    var fl=defer.filter(function(x){return x.cls==="flat";}).sort(function(a,b){return a.nm.localeCompare(b.nm);}),df=defer.filter(function(x){return x.cls!=="flat";}); var bk9=df.filter(function(x){return !x.cv.allday;}).sort(function(a,b){return (a.cv.back-b.cv.back)||(b.cv.typ-a.cv.typ)||a.nm.localeCompare(b.nm);}),ad9=df.filter(function(x){return x.cv.allday;}); return never.concat(burn,bk9,ad9,fl); /* 0728ei L-C: the rides that come back run in the order of the clock they show (0728eg's law), then the all-days */ /* 0714f: flats sit last \u2014 the least actionable rows */
   }
   function rmCoach(it,first){ /* clause-derived; every headline provable from its own why · 0714e: one rope drop per morning — later never-easies say Then (owner-caught: four Rope drops is an instruction you can’t follow) */
     var cv=it.cv;
@@ -5195,6 +5196,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!outs.length)return "";
     return '<div class="rpc"><div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 this window ran too thin for a day shape: '+outs.map(function(o){return esc(o.nm);}).join(", ")+'.</div></div>';
   }
+  function rmKeyHTML(){ /* 0728ei K-B + G-B: the strips' key \u2014 four tiers, the walk-on line, and gray in plain words ("slot hidden by the n-floor" meant nothing to a guest) */
+    return '<div class="rm-key"><span><i class="k-s"></i>20m or under</span><span><i class="k-m"></i>to 45</span><span><i class="k-l"></i>to 70</span><span><i class="k-p"></i>over 70</span><span><i class="ln"></i>walk-on</span><span><i class="sp"></i>too few days</span></div>';}
   function rmLanesHTML(ord){
     var rows='',i,j;
     for(i=0;i<ord.length;i++){
@@ -5207,9 +5210,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
       rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
     }
-    return '<div class="rpc"><div class="lbl">Their mornings, side by side \u00b7 9 AM \u2013 1 PM</div>'+
+    return '<div class="rpc"><div class="lbl">Their mornings, side by side \u00b7 9 AM \u2013 1 PM</div>'+rmKeyHTML()+
       '<div class="rm-axis"><span>9A</span><span>10A</span><span>11A</span><span>12P</span><span>1P</span></div>'+rows+
-      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under'+rpWalkNote(ord)+' \u00b7 gray = slot hidden by the n-floor</div></div>';
+      '<div class="pf-basis">Typical half-hour medians \u00b7 walk-on = 10m or under'+rpWalkNote(ord)+'</div></div>';
   }
   function rmMorningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),lf9=tdLaneEBW(days,rpPark),EBW=lf9.E,face9=lf9.face; /* 0727k f-i: the eyebrow discloses the pool (last N days · ordinary / party nights · N this season / party nights · last season's N) */
@@ -5227,13 +5230,17 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!cv){outs.push(stars[i]);continue;}
       items.push({id:stars[i].id,nm:stars[i].nm,cv:cv,cls:rmClass(cv)});}
     if(!items.length)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">'+(rpWin==="all"?'Not enough banked mornings yet for your stars.':'This window is too thin for a plan \u2014 try All.')+'</div></div>'+rmOuts(outs);
-    var ord=rmPlanOrder(items),rec='',started=false,gOpen=false,gBurn=false,anyNever=false,firstNever=true; /* 0728bi A MORNING IS A GUIDE, NOT A ROUTE (owner-ruled G-1 on morning-guide-mock.html, Sep 12): the Today board numbers the walk; here the never-easies are the choice at open (one Rope drop, the rest "or"), the walk-ons lead with their clock and say what a rope drop costs them, Later stays. rmClass, rmPlanOrder's two keys and the receipts are untouched. */
+    var ord=rmPlanOrder(items),rec='',flats=[],gBack=false,gAll=false,gOpen=false,gBurn=false,anyNever=false,firstNever=true; /* 0728bi A MORNING IS A GUIDE, NOT A ROUTE (owner-ruled G-1 on morning-guide-mock.html, Sep 12): the Today board numbers the walk; here the never-easies are the choice at open (one Rope drop, the rest "or"), the walk-ons lead with their clock and say what a rope drop costs them, Later stays. rmClass, rmPlanOrder's two keys and the receipts are untouched. */
     for(i=0;i<ord.length;i++)if(ord[i].cls==="never")anyNever=true;
     for(i=0;i<ord.length;i++){
       var it=ord[i];
-      if(it.cls==="defer"||it.cls==="flat"){
-        if(!started){rec+='<div class="later">Later</div>';started=true;}
-        rec+='<div class="row tail"><div class="n">\u00b7</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+rmTailWhy(it)+'</div></div></div>';
+      if(it.cls==="flat"){flats.push(it); /* 0728ei L-C (owner glass 12:45 PM Oct 5, the circled dots: "why there's no time for these two"): Later held three kinds of ride under one dot. The rides that come back lead with the clock walk-on returns (BACK TONIGHT); the all-days stand apart (EASY ALL DAY \u00b7 any); a flat line has no morning story and says so in the rope-drop board's own sentence */
+      }else if(it.cls==="defer"&&!it.cv.allday){
+        if(!gBack){rec+='<div class="grp">Back tonight<small>the clock walk-on returns</small></div>';gBack=true;}
+        rec+='<div class="row"><div class="n t">'+rpClk(it.cv.back)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">Walk-on until '+rpClk(it.cv.front)+', again after '+rpClk(it.cv.back)+' \u00b7 typical '+it.cv.typ+'m, crest '+it.cv.pk+'m.</div></div></div>';
+      }else if(it.cls==="defer"){
+        if(!gAll){rec+='<div class="grp">Easy all day<small>timing never mattered</small></div>';gAll=true;}
+        rec+='<div class="row"><div class="n any">any</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+rmTailWhy(it)+'</div></div></div>';
       }else if(it.cls==="never"){
         if(!gOpen){rec+='<div class="grp">Never a walk-on<small>rope-drop one</small></div>' /* 0728eg W-B THE MORNING WEARS THE READ'S NAME (owner glass Oct 4: Haunted Mansion, opened near 13m, typical 18m, under Worth the open \u2014 the case 0728ea ruled on the Today read): SAME QUESTION SAME SENTENCE; the name is true of every row */;gOpen=true;}
         var c=rmCoach(it,firstNever);
@@ -5242,8 +5249,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(!gBurn){rec+='<div class="grp">Walk-on until<small>the typical edge \u00b7 no evening return</small></div>';gBurn=true;}
         rec+='<div class="row"><div class="n t">'+rpClk(cv.front)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">Walk-on until '+rpClk(cv.front)+' on typical days'+(anyNever?' \u00b7 <span class="miss">likely gone after a rope drop</span>':'')+' \u00b7 typical '+cv.typ+'m.</div></div></div>';}
     }
-    var plan='<div class="rpc rm-rec"><div class="lbl">Your morning</div>'+rec+
-      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 never a walk-on = the typical line never dipped to 10m; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first'+rpWalkNote(ord)+'</div></div>';
+    var plan='<div class="rpc rm-rec"><div class="lbl">Your morning</div>'+rec+(flats.length?'<div class="pf-more" style="border-top:0;padding-top:2px">One typical number all day \u2014 no morning story to tell: '+flats.map(function(o){return esc(o.nm)+" ("+o.cv.bs[0].med+"m)";}).join(", ")+'.</div>':'')+
+      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 never a walk-on = the typical line never dipped to 10m; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 back tonight = the clock walk-on returns \u00b7 easy all day = walk-on at every hour \u00b7 priciest miss listed first'+rpWalkNote(ord)+'</div></div>';
     return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
   }
 /* ===== 0719l (ME): MY EVENING \u2014 engine + landing =========================
@@ -5274,7 +5281,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var W9=cv.walk||10,mn=1e9,tm=null,mx=-1e9,e0=bs[0].med,lastB=bs[bs.length-1],wk=null;
     for(q=0;q<bs.length;q++){if(bs[q].med<mn){mn=bs[q].med;tm=bs[q].t;}if(bs[q].med>mx)mx=bs[q].med;}
     for(q=0;q<bs.length;q++){if(bs[q].med<=W9){wk=bs[q].t;break;}}
-    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>W9),walk:W9};}
+    /* 0728ei C-B AFTER MEANS IT HOLDS (owner glass 12:35 PM Oct 5: Tiana's read walk-on after 9 PM over one walk-on half-hour while the morning page said no evening return; Haunted Mansion read 9:30 here and 10:30 there): the clock is where the walk-on run that reaches this ride's last kept half-hour begins \u2014 rpCurveOf's own rule for the morning's "again after", so the two pages cannot disagree. A ride that touches walk-on and climbs again keeps its first touch and says around. */
+    var tch=wk,hold=false,h9=bs.length;while(h9>0&&bs[h9-1].med<=W9)h9--;if(h9<bs.length){hold=true;wk=bs[h9].t;}
+    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,tch:tch,hold:hold,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>W9),walk:W9};}
   function meXN(rid,t,pre,face,walk){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v; /* 0727k: the receipt drinks the lane's pool — party digest days only on a party face, neither on the ordinary face; undefined stays 0725w */ /* 0725w: the odds drink ordinary days only (THE FILTER LAW) */
     for(i=0;i<days.length;i++){if(face===undefined){if(!tdOrd(days[i].d))continue;}else if(face){if(days[i].pt!==face)continue;}else{if(!tdOrd(days[i].d)||days[i].pt)continue;}idx=(t/30)-days[i].hs;if(idx<0||idx>=days[i].hm.length)continue;
       v=days[i].hm[idx];if(v===null)continue;n++;if(v<=(walk||10))x++;}
@@ -5293,17 +5302,18 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function meCoach(it,isLast,boardMn,boardTm,pre,fdN){var e=it.ev,hd,why;
     if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
       why="Eases, but never to walk-on \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
-    else{var rc="",rcT="";
-      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark),e.walk);if(xn.n>0){rcT=(e.walk||10)+" or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";rc=" \u00b7 "+rcT;}} /* 0719o: the receipt speaks the definition */
-      var t0=e.bs[0].t,fromStart=(e.wk===t0);
+    else{var rc="",rcT="",xr=null;
+      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark),e.walk);if(xn.n>0){xr=xn;rcT=(e.walk||10)+" or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";rc=" \u00b7 "+rcT;}} /* 0719o: the receipt speaks the definition */
+      var t0=e.bs[0].t,fromStart=(e.wk===t0&&e.hold!==false),touch=(e.hold===false),late9=(e.hold===true&&e.tch!=null&&e.tch<e.wk);
       var fall=fromStart
         ?("Typically ~"+e.e0+"m already at "+rpClk(t0)+(e.tm>t0&&e.mn<e.e0?" \u2014 drifting to ~"+e.mn+"m by "+rpClk(e.tm):"")) /* 0719o: no fall grammar for a ride that starts at its floor */
         :("Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 falls to ~"+e.mn+"m by "+rpClk(e.tm));
       if(!fromStart&&rcT){fall="Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 "+rcT+" \u00b7 lowest ~"+e.mn+"m by "+rpClk(e.tm);rc="";} /* 0728eg O-C: the row's clock is the walk-on clock, so the sentence leads with it; the low follows. No receipt, the fall sentence stands */
+      if(touch){fall="Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 touches walk-on around "+rpClk(e.wk)+(xr?", "+(e.walk||10)+" or under on "+xr.x+" of its "+xr.n+" nights":"")+", then climbs \u00b7 lowest ~"+e.mn+"m";rc="";} /* 0728ei C-B: a touch is not an after */
       if(isLast&&fdN>1&&e.tm>t0&&e.mn===boardMn&&e.tm===boardTm){hd="Save "+esc(it.nm)+" for last"; /* 0719o: the crown needs a comparison set and a low the window didn\u2019t open with */
         why=fall+rc+" \u00b7 the deepest dip on the board, and it comes latest.";}
-      else{hd=(fromStart?esc(it.nm)+" \u2014 easy from the start":"Then "+esc(it.nm)+(e.wk!==null?" \u2014 after "+rpClk(e.wk):""));
-        why=fall+rc+".";}}
+      else{hd=(fromStart?esc(it.nm)+" \u2014 easy from the start":"Then "+esc(it.nm)+(e.wk!==null?" \u2014 "+(touch?"around ":"after ")+rpClk(e.wk):""));
+        why=((late9&&rcT)?("Typically ~"+e.e0+"m at "+rpClk(t0)+" \u2014 "+rcT+" \u00b7 first touches it around "+rpClk(e.tch)):(fall+rc))+".";}} /* 0728ei C-B: when the hold begins after the first touch, the row says both clocks */
     return {hd:hd,why:why};}
   function meCtx(items,pre){ /* 0725w: T3-A RETIRED BY THE FILTER LAW \u2014 the clause guarded a polluted pool ("typicals lean with it"), and once the pool drinks ordinary its premise can never again be true. Its successor \u2014 the marked-TODAY clause, for guests walking the parks ON an anchor day while the tape honestly describes ordinary weeks \u2014 is the L3 seat, awaiting its own design round (ordering holds at anchors, \u03c1 0.96; levels speak in words there, per the Aug 5 study). Signature kept: three call sites, one epitaph. */
     return "";}
@@ -5316,13 +5326,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(j=win.a;j<win.b;j+=30){var m=by[j];
         cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=(it.ev.walk||10)?' wo':'')+'"></i>';}
       var edge=it.ev.ne?'<span class="rm-edge mut">eases, never a walk-on</span>'
-        :(it.ev.wk<=win.a?'<span class="rm-edge">walk-on from the start</span>':'<span class="rm-edge">walk-on after '+rpClk(it.ev.wk)+'</span>'); /* 0719p: the lane speaks the from-start voice too */
+        :(it.ev.hold===false?'<span class="rm-edge">walk-on around '+rpClk(it.ev.wk)+'</span>':it.ev.wk<=win.a?'<span class="rm-edge">walk-on from the start</span>':'<span class="rm-edge">walk-on after '+rpClk(it.ev.wk)+'</span>'); /* 0719p: the lane speaks the from-start voice too */
       rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
     }
     var ax='',t;for(t=win.a;t<=win.b;t+=60)ax+='<span>'+meAx(t)+'</span>';
-    return '<div class="rpc"><div class="lbl">Their evenings, side by side \u00b7 '+rpClk(win.a)+' \u2013 '+rpClk(win.b)+'</div>'+
+    return '<div class="rpc"><div class="lbl">Their evenings, side by side \u00b7 '+rpClk(win.a)+' \u2013 '+rpClk(win.b)+'</div>'+rmKeyHTML()+
       '<div class="rm-axis">'+ax+'</div>'+rows+
-      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under'+rpWalkNote(ord)+' \u00b7 gray = slot hidden by the n-floor</div></div>';
+      '<div class="pf-basis">Typical half-hour medians \u00b7 walk-on = 10m or under'+rpWalkNote(ord)+'</div></div>';
   }
   function meEveningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),lf9=tdLaneEBW(days,rpPark),EBW=lf9.E,face9=lf9.face; /* 0727k f-i: the eyebrow discloses the pool (last N days · ordinary / party nights · N this season / party nights · last season's N) */
@@ -5349,21 +5359,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!evs.length)return crumb+hero+lens+'<div class="rpc"><div class="fc-empty">The evening ran too thin for a plan here \u2014 try All.</div></div>'+rmOuts(outs);
     var ord=mePlanOrder(evs),boardMn=1e9,boardTm=-1,fdN=0;
     for(i=0;i<ord.length;i++){if(!ord[i].ev.ne){fdN++;if(ord[i].ev.mn<boardMn)boardMn=ord[i].ev.mn;if(ord[i].ev.tm>boardTm)boardTm=ord[i].ev.tm;}}
-    var rec='',gNe=false,gAft=false,gFs=false,gLast=false; /* 0728bj AN EVENING IS A GUIDE, NOT A ROUTE (owner-ruled E-1 on evening-guide-mock.html, Sep 12; the morning's law, 0728bi, on its twin): the openers are a set (WHENEVER SUITS YOU \u00b7 any), the fallers lead with their clock (EASIER AFTER / EASY FROM THE START), the crown keeps its imperative (SAVE FOR LAST \u2014 the one order an evening honestly has). meView, meWindow, mePlanOrder, meCoach's receipts, the lanes: untouched. */
+    var rec='',gNe=false,gAft=false,gFs=false,gLast=false,gTch=false; /* 0728bj AN EVENING IS A GUIDE, NOT A ROUTE (owner-ruled E-1 on evening-guide-mock.html, Sep 12; the morning's law, 0728bi, on its twin): the openers are a set (WHENEVER SUITS YOU \u00b7 any), the fallers lead with their clock (EASIER AFTER / EASY FROM THE START), the crown keeps its imperative (SAVE FOR LAST \u2014 the one order an evening honestly has). meView, meWindow, mePlanOrder, meCoach's receipts, the lanes: untouched. */
     for(i=0;i<ord.length;i++){var it=ord[i],e=it.ev,c=meCoach(it,i===ord.length-1,boardMn,boardTm,rpWin,fdN);
       if(e.ne){if(!gNe){rec+='<div class="grp">Whenever suits you<small>they cost the same now</small></div>';gNe=true;}
         rec+='<div class="row"><div class="n any">any</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+c.why+'</div></div></div>';}
       else if(c.hd.indexOf("Save ")===0){if(!gLast){rec+='<div class="grp">Save for last<small>the deepest dip, and it comes latest</small></div>';gLast=true;}
         rec+='<div class="row"><div class="n last">LAST</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+c.why+'</div></div></div>';}
-      else{var t0=e.bs[0].t,fromStart=(e.wk===t0);
+      else{var t0=e.bs[0].t,fromStart=(e.wk===t0&&e.hold!==false);if(e.hold===false)gTch=true;
         if(fromStart){if(!gFs){rec+='<div class="grp">Easy from the start<small>from '+rpClk(t0)+'</small></div>';gFs=true;}
           rec+='<div class="row"><div class="n t">'+rpClk(t0)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+c.why+'</div></div></div>';}
         else{if(!gAft){rec+='<div class="grp">Easier after<small>the clock a line falls to walk-on</small></div>';gAft=true;}
-          rec+='<div class="row"><div class="n t">'+(e.wk!==null?rpClk(e.wk):'by '+rpClk(e.tm))+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+c.why+'</div></div></div>';}}}
+          rec+='<div class="row"><div class="n t">'+(e.wk!==null?(e.hold===false?'~':'')+rpClk(e.wk):'by '+rpClk(e.tm))+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">'+c.why+'</div></div></div>';}}}
     var tail='';
     if(thin.length)tail='<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 the evening ran too thin here: '+thin.map(function(o){return esc(o.nm);}).join(", ")+'.</div>';
     var plan='<div class="rpc rm-rec"><div class="lbl">Your evening</div>'+rec+tail+
-      '<div class="pf-basis">What typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 whenever suits you = rides that ease least, so they cost the same now \u00b7 easier after = the clock a line typically falls to walk-on \u00b7 save for last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+rpWalkNote(items)+meCtx(items,rpWin)+'</div></div>';
+      '<div class="pf-basis">What typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 whenever suits you = rides that ease least, so they cost the same now \u00b7 easier after = the clock a line typically falls to walk-on and stays'+(gTch?' \u00b7 ~ = it touches walk-on around then, and climbs again':'')+' \u00b7 save for last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+rpWalkNote(items)+meCtx(items,rpWin)+'</div></div>';
     return crumb+hero+lens+plan+meLanesHTML(ord,win)+rmOuts(outs);
   }
   function mdLandingHTML(){
