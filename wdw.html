@@ -2498,7 +2498,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eh</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2669,6 +2669,14 @@ var CATEGORY_TAGS={
   };
   function normName(n){return String(n).toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]/g,"")
     .replace(/\bthe\b/g," ").replace(/\bdisneys?\b/g," ").replace(/\s+/g," ").trim();}
+  /* 0728eh THE RIDE KNOWS ITS OWN WALK-ON (owner-caught Oct 5 on strip-walkon-mock.html: "Seven Dwarfs is, but not Haunted, makes no sense"; ruled H-B). Two rides post 13m where every other ride posts 5 or 10: on the banked 28-day baseline Haunted Mansion sat at exactly 13 in 142 of 804 half-hours and at 10 or under in 11; Tower of Terror in 44 of 750 and never below; the other 66 rides, zero. So a 10m test could never see them as walk-on. A curated table by normalized name; the posted numbers are untouched, only the test moves; the copy says what the ride posts, never why (cause-neutral). Per ride, never "13 anywhere": another ride's 13m median is a 10 and a 15 averaging out. The mark rides the curve (cv.walk), so every reader folds at the source. */
+  function rpWalkNm(nm){var W={"haunted mansion":13,"twilight zone tower of terror":13};return (nm&&W[normName(nm)])||10;}
+  function rpWalkOf(rid){var r=(typeof roster!=="undefined"&&roster)?roster[rid]:null;return rpWalkNm(r&&r.name);}
+  function rpWalkNote(its){ /* the fine print's earned clause: only when a marked ride is on the page */
+    var out="",seen={},i,w,r;
+    for(i=0;i<(its?its.length:0);i++){if(!its[i]||seen[its[i].id])continue;seen[its[i].id]=1;w=rpWalkOf(its[i].id);if(w===10)continue;r=roster[its[i].id];
+      out+=" \u00b7 "+esc(r.name)+"\u2019s walk-on is "+w+"m \u2014 what it posts when the line is short";}
+    return out;}
   function categoryFor(name,kind){return kind==="show"?"Show":(CATEGORY_TAGS[normName(name)]||"Untagged");}
   /* Curated layer: entities the feed files as ATTRACTION but are really shows/
      films — no real queue, so the API marks them DOWN all day and they'd
@@ -4672,7 +4680,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var A=rpClk(a),B=rpClk(b);
     return (A.slice(-2)===B.slice(-2)?A.slice(0,-3):A)+"\u2013"+B;
   }
-  function rpCurveOf(b){ /* the curve math, feed-agnostic (0713v: verbatim from rpCurve, r.b -> b): qualifying
+  function rpCurveOf(b,walk){ /* the curve math, feed-agnostic (0713v: verbatim from rpCurve, r.b -> b): qualifying
        buckets in time order (n-floor 10) + typ/peak + clause-earned windows.
        Walk-on threshold 10m; crest = the first contiguous run of max-median
        buckets. allday when the walk-on run IS the day. */
@@ -4684,12 +4692,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(bs.length<6)return null;
     var typ=Math.round(rpMed(bs.map(function(x){return x.med;}))),pk=0;
     for(i=0;i<bs.length;i++)if(bs[i].med>pk)pk=bs[i].med;
-    var WALK=10,f=0;while(f<bs.length&&bs[f].med<=WALK)f++;
+    var WALK=walk||10,f=0; /* 0728eh: the ride's own mark; 10 when the caller has none */while(f<bs.length&&bs[f].med<=WALK)f++;
     var allday=(f===bs.length);
     var bkI=bs.length;while(!allday&&bkI>0&&bs[bkI-1].med<=WALK)bkI--;
     var c0=-1,c1=-1;
     for(i=0;i<bs.length;i++){if(bs[i].med===pk){c0=i;c1=i;while(c1+1<bs.length&&bs[c1+1].med===pk)c1++;break;}}
-    return {bs:bs,typ:typ,pk:pk,allday:allday,
+    return {bs:bs,typ:typ,pk:pk,allday:allday,walk:WALK,
       front:(f>0&&!allday)?bs[f-1].t+30:null,
       back:(!allday&&bkI<bs.length)?bs[bkI].t:null,
       crest:[bs[c0].t,bs[c1].t+30]};
@@ -4874,11 +4882,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function rpWinCurve(rid,pre,face){ /* 0727k f-i THE LANES WEAR THE FENCE (owner-ruled Sep 4): face undefined = a measured read (the profile, Compare, the record — never filtered); null = the ordinary face (party digest days and anchor weeks leave the window); a season key = the party face (the season pool through the ladder; rung 3 falls to the fenced window). The lens is inert on a party pool — a season is a set, not a window. */ /* 0713v: the windowed profile model — digest-fed on foldDay's bucket law,
        D2's floors intact (slots under 10 days hidden, >=6 qualifying buckets). All reproduces the
        baseline-fed curve byte-for-byte (the L-23 parity gate, machine-proven at cut time). */
-    if(face){var P9=tdPool(rid,face);if(P9.rung<3){var cvp=rpCurveOf(P9.b);if(cvp)return cvp;}}
+    if(face){var P9=tdPool(rid,face);if(P9.rung<3){var cvp=rpCurveOf(P9.b,rpWalkOf(rid));if(cvp)return cvp;}}
     var days=rpHmWindow(rpHmDays(rid),pre),b={},i,j,x,v,k;
     for(i=0;i<days.length;i++){x=days[i];if(face!==undefined&&(x.pt||!tdOrd(x.d)))continue;
       for(j=0;j<x.hm.length;j++){v=x.hm[j];if(v===null)continue;k=x.hs+j;(b[k]=b[k]||[]).push(v);}}
-    return rpCurveOf(b);
+    return rpCurveOf(b,rpWalkOf(rid));
   }
   function rpHmPool(days,diary){ /* key = col+"-"+hour; diary cols = day index, pattern cols = weekday */
     var m={},i,j,x,v,h,k;
@@ -5138,7 +5146,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var foot='<div class="rpc">'+
       (C.flat.length?'<div class="pf-more" style="border-top:0;padding-top:2px">One typical number all day \u2014 no morning story to tell: '+C.flat.map(function(o){return esc(o.nm)+" ("+o.flatV+"m)";}).join(", ")+'.</div>':'')+
       (C.out.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 this window ran too thin for a day shape: '+C.out.map(function(o){return esc(o.nm);}).join(", ")+'.</div>':'')+
-      '<div class="pf-basis"'+((C.out.length||C.flat.length)?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+(tdPoolWord(lf9.pr,rpPark)?('over '+tdPoolWord(lf9.pr,rpPark)):({all:'over '+tdOrdWord(tdOrdWinN("all",rpPark)||days,!!(pfBase&&pfBase.bv)),last7:'over the last 7 days',month:'this month',wkend:'on weekends',trip:'on your trip\u2019s weekdays'})[rpWin])+' while operating \u00b7 walk-on = 10m or under \u00b7 times describe typical days, not today \u00b7 slots under 10 days hidden</div></div>'; /* 0728ea THE FINE PRINT NAMES THE POOL THE EYEBROW NAMES (owner glass Oct 4: PARTY DAYS \u00b7 24 THIS SEASON over a footer saying the last 28 days; ordinary boards said 25 above and 28 below): the basis speaks the pool\u2019s own words \u2014 tdPoolWord on a party face, tdOrdWord on the window\u2019s own ordinary count */
+      '<div class="pf-basis"'+((C.out.length||C.flat.length)?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+(tdPoolWord(lf9.pr,rpPark)?('over '+tdPoolWord(lf9.pr,rpPark)):({all:'over '+tdOrdWord(tdOrdWinN("all",rpPark)||days,!!(pfBase&&pfBase.bv)),last7:'over the last 7 days',month:'this month',wkend:'on weekends',trip:'on your trip\u2019s weekdays'})[rpWin])+' while operating \u00b7 walk-on = 10m or under'+rpWalkNote(C.never.concat(C.until,C.allday))+' \u00b7 times describe typical days, not today \u00b7 slots under 10 days hidden</div></div>'; /* 0728ea THE FINE PRINT NAMES THE POOL THE EYEBROW NAMES (owner glass Oct 4: PARTY DAYS \u00b7 24 THIS SEASON over a footer saying the last 28 days; ordinary boards said 25 above and 28 below): the basis speaks the pool\u2019s own words \u2014 tdPoolWord on a party face, tdOrdWord on the window\u2019s own ordinary count */
     return crumb+hero+lens+body+foot;
   }
   /* ===== 0714c \u00b7 MY MORNING (L-28 cut 2) ====================================
@@ -5166,7 +5174,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function rmCoach(it,first){ /* clause-derived; every headline provable from its own why · 0714e: one rope drop per morning — later never-easies say Then (owner-caught: four Rope drops is an instruction you can’t follow) */
     var cv=it.cv;
     if(it.cls==="never")return {hd:(first?"Rope drop ":"Then ")+esc(it.nm),
-      why:"Never under 10m \u2014 opened near "+cv.bs[0].med+"m, typical "+cv.typ+"m."};
+      why:"Never under "+(cv.walk||10)+"m \u2014 opened near "+cv.bs[0].med+"m, typical "+cv.typ+"m."};
     return {hd:esc(it.nm)+" by "+rpClk(cv.front),
       why:"Walk-on until "+rpClk(cv.front)+" on typical days, with no evening return."};
   }
@@ -5193,7 +5201,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var it=ord[i],cells='',by={};
       for(j=0;j<it.cv.bs.length;j++)by[it.cv.bs[j].t]=it.cv.bs[j].med;
       for(j=540;j<780;j+=30){var m=by[j];
-        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=10?' wo':'')+'"></i>';}
+        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=(it.cv.walk||10)?' wo':'')+'"></i>';}
       var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">never a walk-on</span>'
         :(it.cv.allday?'<span class="rm-edge">all day</span>'
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
@@ -5201,7 +5209,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
     return '<div class="rpc"><div class="lbl">Their mornings, side by side \u00b7 9 AM \u2013 1 PM</div>'+
       '<div class="rm-axis"><span>9A</span><span>10A</span><span>11A</span><span>12P</span><span>1P</span></div>'+rows+
-      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under \u00b7 gray = slot hidden by the n-floor</div></div>';
+      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under'+rpWalkNote(ord)+' \u00b7 gray = slot hidden by the n-floor</div></div>';
   }
   function rmMorningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),lf9=tdLaneEBW(days,rpPark),EBW=lf9.E,face9=lf9.face; /* 0727k f-i: the eyebrow discloses the pool (last N days · ordinary / party nights · N this season / party nights · last season's N) */
@@ -5235,7 +5243,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         rec+='<div class="row"><div class="n t">'+rpClk(cv.front)+'</div><div class="m"><div class="hd">'+esc(it.nm)+'</div><div class="why">Walk-on until '+rpClk(cv.front)+' on typical days'+(anyNever?' \u00b7 <span class="miss">likely gone after a rope drop</span>':'')+' \u00b7 typical '+cv.typ+'m.</div></div></div>';}
     }
     var plan='<div class="rpc rm-rec"><div class="lbl">Your morning</div>'+rec+
-      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 never a walk-on = the typical line never dipped to 10m; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first</div></div>';
+      '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 never a walk-on = the typical line never dipped to 10m; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 Later = short all day, or a window that came back \u00b7 priciest miss listed first'+rpWalkNote(ord)+'</div></div>';
     return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
   }
 /* ===== 0719l (ME): MY EVENING \u2014 engine + landing =========================
@@ -5263,13 +5271,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function meView(cv,win){var bs=[],q;
     for(q=0;q<cv.bs.length;q++)if(cv.bs[q].t>=win.a)bs.push(cv.bs[q]);
     if(bs.length<2)return null;
-    var mn=1e9,tm=null,mx=-1e9,e0=bs[0].med,lastB=bs[bs.length-1],wk=null;
+    var W9=cv.walk||10,mn=1e9,tm=null,mx=-1e9,e0=bs[0].med,lastB=bs[bs.length-1],wk=null;
     for(q=0;q<bs.length;q++){if(bs[q].med<mn){mn=bs[q].med;tm=bs[q].t;}if(bs[q].med>mx)mx=bs[q].med;}
-    for(q=0;q<bs.length;q++){if(bs[q].med<=10){wk=bs[q].t;break;}}
-    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>10)};}
-  function meXN(rid,t,pre,face){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v; /* 0727k: the receipt drinks the lane's pool — party digest days only on a party face, neither on the ordinary face; undefined stays 0725w */ /* 0725w: the odds drink ordinary days only (THE FILTER LAW) */
+    for(q=0;q<bs.length;q++){if(bs[q].med<=W9){wk=bs[q].t;break;}}
+    return {bs:bs,e0:e0,mn:mn,tm:tm,mx:mx,wk:wk,lastT:lastB.t,lastLo:lastB.lo,lastHi:lastB.hi,ne:(mn>W9),walk:W9};}
+  function meXN(rid,t,pre,face,walk){var days=rpHmWindow(rpHmDays(rid),pre),x=0,n=0,i,idx,v; /* 0727k: the receipt drinks the lane's pool — party digest days only on a party face, neither on the ordinary face; undefined stays 0725w */ /* 0725w: the odds drink ordinary days only (THE FILTER LAW) */
     for(i=0;i<days.length;i++){if(face===undefined){if(!tdOrd(days[i].d))continue;}else if(face){if(days[i].pt!==face)continue;}else{if(!tdOrd(days[i].d)||days[i].pt)continue;}idx=(t/30)-days[i].hs;if(idx<0||idx>=days[i].hm.length)continue;
-      v=days[i].hm[idx];if(v===null)continue;n++;if(v<=10)x++;}
+      v=days[i].hm[idx];if(v===null)continue;n++;if(v<=(walk||10))x++;}
     return {x:x,n:n};}
   function mePlanOrder(evs){var ne=[],fd=[],i;
     for(i=0;i<evs.length;i++)(evs[i].ev.ne?ne:fd).push(evs[i]);
@@ -5286,7 +5294,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(e.ne){hd=esc(it.nm)+" \u2014 whenever suits you";
       why="Eases, but never to walk-on \u2014 typically "+(e.lastLo===e.lastHi?("~"+e.lastLo):(e.lastLo+"\u2013"+e.lastHi))+"m even at "+rpClk(e.lastT)+", so waiting buys you little here."; /* 0719n: a collapsed band speaks one number */}
     else{var rc="",rcT="";
-      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark));if(xn.n>0){rcT="10 or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";rc=" \u00b7 "+rcT;}} /* 0719o: the receipt speaks the definition */
+      if(e.wk!==null){var xn=meXN(it.id,e.wk,pre,tdFaceNow(rpPark),e.walk);if(xn.n>0){rcT=(e.walk||10)+" or under in the "+rpClk(e.wk)+" half-hour on "+xn.x+" of its "+xn.n+" nights";rc=" \u00b7 "+rcT;}} /* 0719o: the receipt speaks the definition */
       var t0=e.bs[0].t,fromStart=(e.wk===t0);
       var fall=fromStart
         ?("Typically ~"+e.e0+"m already at "+rpClk(t0)+(e.tm>t0&&e.mn<e.e0?" \u2014 drifting to ~"+e.mn+"m by "+rpClk(e.tm):"")) /* 0719o: no fall grammar for a ride that starts at its floor */
@@ -5306,7 +5314,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var it=ord[i],cells='',by={};
       for(j=0;j<it.ev.bs.length;j++)by[it.ev.bs[j].t]=it.ev.bs[j].med;
       for(j=win.a;j<win.b;j+=30){var m=by[j];
-        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=10?' wo':'')+'"></i>';}
+        cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=(it.ev.walk||10)?' wo':'')+'"></i>';}
       var edge=it.ev.ne?'<span class="rm-edge mut">eases, never a walk-on</span>'
         :(it.ev.wk<=win.a?'<span class="rm-edge">walk-on from the start</span>':'<span class="rm-edge">walk-on after '+rpClk(it.ev.wk)+'</span>'); /* 0719p: the lane speaks the from-start voice too */
       rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
@@ -5314,7 +5322,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var ax='',t;for(t=win.a;t<=win.b;t+=60)ax+='<span>'+meAx(t)+'</span>';
     return '<div class="rpc"><div class="lbl">Their evenings, side by side \u00b7 '+rpClk(win.a)+' \u2013 '+rpClk(win.b)+'</div>'+
       '<div class="rm-axis">'+ax+'</div>'+rows+
-      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under \u00b7 gray = slot hidden by the n-floor</div></div>';
+      '<div class="pf-basis">Typical half-hour medians \u00b7 green = 20m or under, amber to 45, orange to 70, red above \u00b7 the line beneath = walk-on, 10m or under'+rpWalkNote(ord)+' \u00b7 gray = slot hidden by the n-floor</div></div>';
   }
   function meEveningHTML(){
     var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),lf9=tdLaneEBW(days,rpPark),EBW=lf9.E,face9=lf9.face; /* 0727k f-i: the eyebrow discloses the pool (last N days · ordinary / party nights · N this season / party nights · last season's N) */
@@ -5355,7 +5363,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var tail='';
     if(thin.length)tail='<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 the evening ran too thin here: '+thin.map(function(o){return esc(o.nm);}).join(", ")+'.</div>';
     var plan='<div class="rpc rm-rec"><div class="lbl">Your evening</div>'+rec+tail+
-      '<div class="pf-basis">What typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 whenever suits you = rides that ease least, so they cost the same now \u00b7 easier after = the clock a line typically falls to walk-on \u00b7 save for last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+meCtx(items,rpWin)+'</div></div>';
+      '<div class="pf-basis">What typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 whenever suits you = rides that ease least, so they cost the same now \u00b7 easier after = the clock a line typically falls to walk-on \u00b7 save for last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+rpWalkNote(items)+meCtx(items,rpWin)+'</div></div>';
     return crumb+hero+lens+plan+meLanesHTML(ord,win)+rmOuts(outs);
   }
   function mdLandingHTML(){
@@ -5370,7 +5378,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(rpDigs&&pfBase&&pfBase.rides){var cnt=0,anyLate=false;
       for(id in roster){r=roster[id];if(!rpCuratedRide(r)||r.park!==rpPark)continue;
         var cv=rpWinCurve(id,"all",tdFaceNow(rpPark));if(!cv)continue;var hit=false; /* 0727k f-i */
-        for(q=0;q<cv.bs.length;q++){if(cv.bs[q].t>=1320){anyLate=true;if(cv.bs[q].med<=10){hit=true;break;}}}
+        for(q=0;q<cv.bs.length;q++){if(cv.bs[q].t>=1320){anyLate=true;if(cv.bs[q].med<=(cv.walk||10)){hit=true;break;}}}
         if(hit)cnt++;}
       if(anyLate&&cnt>0)rcpt=' \u00b7 <b>'+cnt+' ride'+(cnt===1?'':'s')+' walk-on past 10</b> lately'; /* the number only where the claim can form (AK\u2019s nights end early \u2014 no false zero) */}
     var party=(rpPark==="Magic Kingdom"&&window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[meTodayDs()]);
@@ -6446,7 +6454,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function pfMetaR3(c){return (c&&c.rung===3)?" \u00b7 ordinary typical \u2014 no party history for this ride yet":"";} /* rung 3: the disclosed clause, on the card itself (owner-ruled) */
   window.__tdPartyOf=tdPartyOf;window.__tdFace=tdFace;window.__tdLadder=tdLadder;window.__tdPool=tdPool;window.__tdPartyLighter=tdPartyLighter;window.__tdPartyN=tdPartyN;window.__tdParkRung=tdParkRung;window.__tdSeasonKey=tdSeasonKey; /* the export seam (the __slAnchorOf idiom): one function each, every consumer and the fleet's lf seat */
   function tdCurve(rid,wd,wds,face){ /* the day's window: its weekday first, the trip's whole arc when thin — rpCurveOf's floors intact. 0727k THE PARTY FENCE: a party face reads the season pool through the ladder (rung 1/2) — one pool for row and receipt (THE TWO TYPICALS, lean D); rung 3 falls to the ordinary walk, disclosed by the caller. Ordinary targets drop party digest days from both tapes (THE DAY IS THE UNIT). */
-    if(face){var P9=tdPool(rid,face);if(P9.rung<3){var cvp=rpCurveOf(P9.b);if(cvp)return {cv:cvp,arc:false,rung:P9.rung,sn:P9.sn};}}
+    if(face){var P9=tdPool(rid,face);if(P9.rung<3){var cvp=rpCurveOf(P9.b,rpWalkOf(rid));if(cvp)return {cv:cvp,arc:false,rung:P9.rung,sn:P9.sn};}}
     var days=rpHmDays(rid),a={},b={},i,j,x,v,k,g;
     for(i=0;i<days.length;i++){x=days[i];if(!tdOrd(x.d)||x.pt)continue;g=rpHmWd(x.d); /* 0725w: both tapes (weekday AND arc) drink ordinary days only */
       var inWd=(g===wd),inArc=(wds[(g+1)%7]===1); /* Mon-first -> getDay map, the rpWinDates("trip") idiom */
@@ -6454,8 +6462,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(j=0;j<x.hm.length;j++){v=x.hm[j];if(v===null)continue;k=x.hs+j;
         if(inWd)(a[k]=a[k]||[]).push(v);
         if(inArc)(b[k]=b[k]||[]).push(v);}}
-    var cv=rpCurveOf(a);if(cv)return {cv:cv,arc:false,rung:face?3:0};
-    cv=rpCurveOf(b);return cv?{cv:cv,arc:true,rung:face?3:0}:null;
+    var cv=rpCurveOf(a,rpWalkOf(rid));if(cv)return {cv:cv,arc:false,rung:face?3:0};
+    cv=rpCurveOf(b,rpWalkOf(rid));return cv?{cv:cv,arc:true,rung:face?3:0}:null;
   }
   function tdEng(rows,startMin,ct,pins,pinClock,fullCt,geo){ /* 0719h: fullCt = the published close when ct wears a leave clamp; absent or equal \u2192 every new branch is inert */ /* one engine, start-aware: seat rides near their lows — deterministic, name-tiebroken */ /* 0723v THE SWEEP (G1+G3, owner-ratified): geo={Z,a} rotates the anytime walk; null (trip days, mine) = name order, untouched by construction */
     pins=pins||{};if(pinClock===undefined||pinClock===null)pinClock=startMin; /* 0715h: the dim gate reads the REAL clock in From-now, mid-bucket honesty */
@@ -6473,8 +6481,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(!rem.length){N.push({id:r.id,nm:r.nm,why:"No wait history this far into the day \u2014 go by the line itself."});continue;}
       var base=rem[0].med,mn=1e9,tm=null,mx=-1,tmx=null;
       for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mx){mx=rem[q].med;tmx=rem[q].t;}}
-      var f=0;while(f<rem.length&&rem[f].med<=10)f++;
-      if(remL.length&&mn>10){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=10){lt=remL[q].t;break;}}
+      var wk9=cv.walk||10,f=0;while(f<rem.length&&rem[f].med<=wk9)f++; /* 0728eh: the engine asks the curve's own mark */
+      if(remL.length&&mn>wk9){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=wk9){lt=remL[q].t;break;}}
         if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,wo:rpClk(lt),why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
       var ch5=mn+5,dqA=-1,ws9=null;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){ws9=rem[q].t;dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
       var dl9=(dqA>=0)?rem[dqA].t+30:null,dlw9=false;if(dl9!==null&&ct!==null&&dl9>=ct){dlw9=true;if(dl9>ct)dl9=ct;} /* 0724a W-B: ws = the cheap window's own open; dlw = the run reached the wall, so the footer says the word close, never a clock past it */ /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
@@ -13832,7 +13840,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
       var lst=(su&&!isWeek)?pwLowStamp(r.id,park,su):null; /* 0721r: A' — stamps only where a single day's circumstance exists */
-      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")),(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')); /* 0721s: the stamp rides tileV's NOTE slot (raw-HTML by design) — ctx is escaped (owner-caught) */
+      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=rpWalkNm(r.name)?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")),(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')); /* 0721s: the stamp rides tileV's NOTE slot (raw-HTML by design) — ctx is escaped (owner-caught) */
       html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
       html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
       html+='</div>';
@@ -13881,7 +13889,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tiles=[];
       var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
       tiles.push({label:"PEAK WAIT",pre:"peak",big:(puV!=null?String(puV):"–"),post:"m",cls:tier(puV||0),name:(su?"Highest sustained":"Highest of the day"),ctx:(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch"))});
-      tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=10?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
+      tiles.push({label:"LOWEST",pre:"low",big:(loV!=null?String(loV):"–"),post:"m",cls:"pw-s",name:(loV!=null&&loV<=rpWalkNm(r.name)?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
       emitCard({W:1080,H:(bm?(lane?1592:1472):1132),lane:lane,lgIv:lgIv,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-"+dateStr+".png",shareTitle:"RideCue — "+r.name});
