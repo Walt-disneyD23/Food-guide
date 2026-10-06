@@ -1554,11 +1554,12 @@
   .pw-wkmini i.today{border:1.5px dashed var(--muted-2)}
   .pw-wkmini i.off{border:1px dashed var(--line)}
   /* ===== monthly wrap (0713i): calendar grid + board tiles ===== */
-  .pw-mnav{border:0;background:none;color:var(--accent);font-family:var(--font-body);font-weight:700;font-size:20px;line-height:1;padding:0 4px;cursor:pointer;vertical-align:-1px}
-  .pw-mnav:disabled{color:var(--muted-2);opacity:.5;cursor:default}
+  .pw-mhd{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px} /* 0728fk THE MONTH TURNS AS PLAN’S DOES (owner-ruled A Oct 6): the bare arrows (.pw-mnav) retire for Plan’s .pc-arr */
+  .pw-mhd .pc-arr:disabled{opacity:.35;cursor:default}
+  .pw-date.pw-msub{align-items:center}
   /* ===== 0715w (T5-B): the month title is a door \u2014 jump-to-month picker sheet ===== */
-  .pw-mtitle{border:0;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);color:var(--accent);background:var(--accent-soft);border-radius:var(--r-pill);padding:2px 13px;display:inline-flex;align-items:center;gap:6px;vertical-align:-2px;-webkit-tap-highlight-color:transparent}
-  .pw-mtitle i{font-style:normal;font-size:10px;line-height:1;opacity:.7}
+  .pw-mtitle{border:0;cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--ink);background:none;border-radius:var(--r-pill);padding:5px 16px;display:inline-flex;align-items:center;gap:7px;-webkit-tap-highlight-color:transparent} /* 0728fk: the month in ink at Plan’s size; its triangle says it opens */
+  .pw-mtitle i{font-style:normal;font-size:11px;line-height:1;color:var(--accent)}
   .pw-ym-t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title);text-align:center;margin:2px 0 12px}
   .pw-ymy{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
   .pw-ymy button{border:0;cursor:pointer;font-family:var(--font-body);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:var(--accent-soft);border-radius:var(--r-pill);padding:7px 0;-webkit-tap-highlight-color:transparent}
@@ -2551,7 +2552,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fk</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11327,7 +11328,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var canPrev=(m.cur>PW_MONTH_MIN); /* 0715w */
       var monthDone=(m.finals>=m.inMonthTotal);
       var badge=monthDone?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+m.finals+' of '+m.inMonthTotal+' final</span>';
-      html+='<div class="pw-date"><div><div class="d"><button class="pw-mnav" id="pwMPrev" type="button"'+(canPrev?'':' disabled')+'>\u2039</button> <button class="pw-mtitle" id="pwMTitle" type="button">'+esc(m.label)+'<i>\u25be</i></button> <button class="pw-mnav" id="pwMNext" type="button"'+(canNext?'':' disabled')+'>\u203a</button></div><div class="s">Walt Disney World \u00b7 monthly wrap</div></div>'+badge+'</div>';
+      html+='<div class="pw-mhd"><button class="pc-arr" id="pwMPrev" type="button" aria-label="Earlier month"'+(canPrev?'':' disabled')+'>\u2039</button><button class="pw-mtitle" id="pwMTitle" type="button">'+esc(m.label)+'<i>\u25be</i></button><button class="pc-arr" id="pwMNext" type="button" aria-label="Later month"'+(canNext?'':' disabled')+'>\u203a</button></div><div class="pw-date pw-msub"><div class="s">Walt Disney World \u00b7 monthly wrap</div>'+badge+'</div>'; /* 0728fk THE MONTH TURNS AS PLAN\u2019S DOES (owner glass 11:53 AM Oct 6: \u201clooks a little unpolished, and the arrows are hard to tap with your thumb\u201d; ruled A on month-header-mock.png): the Plan calendar\u2019s own arrows (.pc-arr, grown for in-park thumbs at 0727v) at the two edges, the month centred in ink and still the picker\u2019s door, the subtitle and the badge on the line beneath \u2014 ONE CONTROL GRAMMAR for turning a month */
       if(!m.finals){
         html+=pwMonSkelHTML(m); /* 0716f (1B): the month has its shape from day one */
         html+=pwAlmDoorHTML(pwAlmData&&pwAlmData.cells); /* 0716d: the Almanac door seats on the empty board too */
