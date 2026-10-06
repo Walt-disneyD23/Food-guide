@@ -1161,6 +1161,9 @@
     font-variant-numeric:tabular-nums;color:#fff}
   .banner-stat .bs-v .u{font-size:.55em;color:var(--pwh-muted);font-weight:600}
   .banner-stat .bs-k{font-size:var(--fs-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--pwh-muted);font-weight:700;margin-top:3px}
+  .banner-stat .bs-wx{margin-top:8px;font-family:var(--font-display);font-weight:700;font-size:16px;line-height:1.1;color:#fff;white-space:nowrap;font-variant-numeric:tabular-nums} /* 0728fj THE SKY OVER THE BOARD (G-D): the glyph and the temperature, the feels-like beneath when it differs */
+  .banner-stat .bs-wx .g{font-size:15px;margin-right:5px}
+  .banner-stat .bs-wx .bs-wf{font-family:var(--font-body);font-weight:500;font-size:11px;color:var(--pwh-muted);margin-top:3px}
   /* crowd aura (0709a): color rides --cl from s.crowd.color (one source); tier class sets ramp depth only.
      The estimate is labeled "· est." in the subline it rims. */
   .banner.tier-1::after,.banner.tier-2::after,.banner.tier-3::after,.banner.tier-4::after{
@@ -2548,7 +2551,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fh</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fj</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3779,8 +3782,40 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var win=l.w===60?"in the last hour":"in the last "+l.w+" minutes";
     return '<div class="rd-row"><span class="ic" style="color:#fbbf24">\u26a1</span><div class="tx"><b>Lightning within 10 mi</b> \u2014 <b>'+l.n+' strike'+(l.n===1?"":"s")+'</b> '+win+'.</div></div>';
   }
+  /* ===== THE SKY OVER THE BOARD (rdWx-, 0728fj; owner-ruled G-D Oct 6) — the
+     current sky and temperature under the hero’s stat. ONE FEED: /ltgnow
+     (Worker v3.27 adds the day’s two newest weather readings, wx and bl,
+     to the answer the lightning clause already polls). ONE DOOR: the readings
+     pass through wxDerive, so the hero says what the Weather page’s Now
+     column says — Xweather’s temperature when it is banked, the sky by
+     the band’s own rule (wxClass, strikes from the ledger, the night by
+     wxSun). GATES: the reading must be TODAY’S and no more than 35 minutes
+     old (cadence 15 plus the poll’s grace) or the seat is empty — an
+     expired observation is not a now-truth; an older Worker sends no wx and
+     the seat stays hidden. The feels-like line is drawn only when it differs
+     from the air temperature (every clause earns its slot). A pure read: no
+     door (the hero’s only door is the share glyph, 0718k). */
+  function rdWxRead(){
+    if(!rdLtg||!rdLtg.wx||!rdLtg.wx.length)return null;
+    var W=window.__pwWx;if(!W||typeof pfEtMin!=="function"||typeof tpToday!=="function")return null; /* the Wrap module lends its weather door (wxDerive, wxClass, wxSun) */
+    if(rdLtg.date!==tpToday())return null;
+    var l=rdLtg.last,x=W.derive({wx:{samples:rdLtg.wx},blend:{samples:rdLtg.bl||[]},ltg:{samples:l?[l]:[]}}),S=(x&&x.samples)||[],sm=S.length?S[S.length-1]:null;
+    if(!sm||sm.tF==null)return null;
+    var nowM=pfEtMin();if(nowM<sm.t||nowM-sm.t>35)return null;
+    var cl=W.cls(sm),sn=W.sun(rdLtg.date);
+    if(l&&l.n>0&&l.t-(l.w||60)<sm.t&&sm.t<=l.t&&cl!=="core"&&cl!=="rain")cl="storm";
+    if(cl==="clear"&&sn&&(sm.t<sn.rise||sm.t>=sn.set))cl="night";
+    return {cl:cl,tF:sm.tF,fF:sm.fF,t:sm.t};
+  }
+  function rdWxPaint(){
+    var el=document.getElementById("bsWx");if(!el)return;
+    var r=rdWxRead();if(!r){el.hidden=true;el.innerHTML="";return;}
+    var IC={clear:"\u2600\ufe0f",night:"\ud83c\udf19",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
+    el.innerHTML='<span class="g">'+IC[r.cl]+'</span><b>'+r.tF+'\u00b0</b>'+((r.fF!=null&&r.fF!==r.tF)?('<div class="bs-wf">feels '+r.fF+'\u00b0</div>'):'');el.hidden=false;
+  }
   function renderRead(){
     var el=document.getElementById("rdRead");if(!el)return;
+    rdWxPaint(); /* 0728fj: the sky rides the read\u2019s own tick, so it expires on the live poll too */
     if(typeof pfEnsureBase==="function")pfEnsureBase();
     /* the banner\u2019s own law transfers (0705e): expanded state + list scroll survive the innerHTML rebuild */
     var prevL=el.querySelector("#rdDnList");
@@ -4223,7 +4258,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var key=def.key;
       var root=document.createElement("div");root.className=(key==="all")?"banner":"banner lt";root.setAttribute("data-key",key); /* the park root is now ONLY the expanded card (T5 face) */
       var bg=def.img?"background-image:url('"+def.img+"')":"";
-      var statHTML='<div class="banner-stat"><div class="bs-v">\u2013</div><div class="bs-k">Headliner avg</div>';
+      var statHTML='<div class="banner-stat"><div class="bs-v">\u2013</div><div class="bs-k">Headliner avg</div><div class="bs-wx" id="bsWx" hidden></div>'; /* 0728fj THE SKY OVER THE BOARD (owner-ruled G-D Oct 6 on live-glance-light.png: \u201ceasy to see and doesnt blend in\u201d): the weather\u2019s seat, under the hero\u2019s stat; empty and hidden until a fresh reading fills it */
       root.innerHTML=
         '<div class="banner-art'+(def.img?'':(key==="all"?' bnr-ed':' bnr-lt'))+'" style="'+bg+'">'+
           (key==="all"?'<div class="banner-eb">Walt Disney World \u00b7 Live</div><button type="button" class="rb-share" aria-label="Share the board">\u21e7</button>':'')+
@@ -12528,6 +12563,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwClk(m){var h=Math.floor(m/60),mm=m%60,ap=h<12?"AM":"PM",h12=((h+11)%12)+1;return h12+":"+(mm<10?"0":"")+mm+" "+ap;}
     function pwClkS(m){var h=Math.floor(m/60),ap=h<12?"a":"p",h12=((h+11)%12)+1;return h12+ap;}
     function pwPA(p){return ({"Magic Kingdom":"MK","Hollywood Studios":"HS","Animal Kingdom":"AK","EPCOT":"EPCOT"})[p]||p;}
+    window.__pwWx={derive:wxDerive,cls:wxClass,sun:wxSun}; /* 0728fj THE SKY OVER THE BOARD: the Live hero reads the current sky through this module’s own door, so the hero and the Weather page cannot disagree */
     function wxDerive(d){
       var wx=(d&&d.wx)||{},roll=wx.roll||{},samples=wx.samples||[],snap=(d&&d.snap)||{},rows=snap.rows||[];
       /* 0728eq THE WEATHER READS WHAT HAPPENED AT THE PARKS (owner-ruled Oct 5 on the three-day study, real-2026-09-21.png: Open-Meteo held 85\u00b0 and partly cloudy through 197 strikes in 15 minutes and 30 attractions down; Xweather read 73\u00b0, Strong Thunderstorms, 1.98 in/hr). ONE DOOR: when the day banked Xweather\u2019s readings (rec.blend, every 15 min since Worker v3.11) for at least four fifths of its weather samples, the air temperature, the feels-like, the rain and the clear/cloud states come from them; gusts and the forecast roll stay Open-Meteo\u2019s (the readings carry none); a day without them reads Open-Meteo whole, as before. Rain is the banked RATE: a reading is wet at 0.02 in/hr or more, and its amount is the rate held for the gap since the last reading (an estimate, labelled where it prints). A reading is a thunderstorm only when it is raining AND the lightning ledger counted strikes in that window \u2014 two observations; Xweather\u2019s weather words (\u201cChance of Thunderstorms\u201d sat on 13 readings on Oct 3, hours after the last strike) are forecasts and paint nothing; only its clear/cloud cover is read. As of 0728er the heat verdict reads these same samples; omFeelsHigh, omDayHigh and omSamples remain as the record of what Open-Meteo said. */
@@ -13398,8 +13434,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var fmk=[],fq,fb,fg; /* a number at the banked reading nearest each grid hour (within 45 min, clear of the high); the high always */
         for(fg=0;fg<GN.length;fg++){fb=null;for(fq=0;fq<FS.length;fq++)if(!fb||Math.abs(FS[fq].t-GN[fg])<Math.abs(fb.t-GN[fg]))fb=FS[fq];
           if(fb&&Math.abs(fb.t-GN[fg])<=45&&(FIT?(Math.abs(parseFloat(tx(fb.t))-parseFloat(tx(S3[fpk].t)))>110&&!(fmk.length&&parseFloat(tx(fb.t))-parseFloat(tx(fmk[fmk.length-1].t))<80)):Math.abs(fb.t-S3[fpk].t)>80)&&fmk.indexOf(fb)<0)fmk.push(fb);}
+        function cY(xq){var c2;if(xq<=FP[0][0])return FP[0][1];for(c2=1;c2<FP.length;c2++)if(xq<=FP[c2][0])return FP[c2-1][1]+(FP[c2][1]-FP[c2-1][1])*(xq-FP[c2-1][0])/(FP[c2][0]-FP[c2-1][0]);return FP[FP.length-1][1];}
+        function crowd(xc,yb){for(var c3=xc-20;c3<=xc+20;c3+=4)if(cY(c3)<yb)return true;return false;} /* 0728fi A NUMBER CLEARS THE LINE (owner glass 10:38 and 11:25 AM Oct 6: the 78\u00b0 near 10p and the 82\u00b0 at 10a touched the curve; owner: never \u201cone of the temps below the line and the rest above, or one a lot higher than the others\u201d): every number keeps its seat above its reading at the one offset; where the line climbs through that seat the number steps a little to the side, and where neither side is clear the number is not drawn. The high always is. */
         for(fq=0;fq<fmk.length;fq++){var mX=parseFloat(tx(fmk[fq].t)),mY=fyn(fmk[fq].fF),mB=(fx&&mX>540&&Math.abs(mY-fyn(108))<26);
-          l3+='<circle class="pt" cx="'+mX.toFixed(1)+'" cy="'+mY.toFixed(1)+'" r="4.5" stroke="url(#pwTg)"/><text class="val" x="'+lx(mX)+'" y="'+(mB?mY+26:mY-12).toFixed(1)+'" text-anchor="middle">'+fmk[fq].fF+'\u00b0</text>';}
+          var tX=parseFloat(lx(mX)),tS=[tX,parseFloat(lx(mX+22)),parseFloat(lx(mX-22))],tI;if(!mB){for(tI=0;tI<3;tI++)if(!crowd(tS[tI],mY-13))break;if(tI===3)continue;tX=tS[tI];}
+          l3+='<circle class="pt" cx="'+mX.toFixed(1)+'" cy="'+mY.toFixed(1)+'" r="4.5" stroke="url(#pwTg)"/><text class="val" x="'+tX.toFixed(1)+'" y="'+(mB?mY+26:mY-12).toFixed(1)+'" text-anchor="middle">'+fmk[fq].fF+'\u00b0</text>';}
         var hX=parseFloat(tx(S3[fpk].t)),hY=fyn(S3[fpk].fF),hB=(fx&&hX>540&&Math.abs(hY-fyn(108))<30); /* 0728et (owner glass 7:37 PM Oct 5: the high\u2019s 110\u00b0 and 105\u00b0 sat on the curve): a number rides ABOVE its reading; it drops below only at the right edge, where the rule\u2019s own label lives */
         l3+='<circle class="pt" cx="'+hX.toFixed(1)+'" cy="'+hY.toFixed(1)+'" r="6.5" stroke="url(#pwTg)"/><text class="val hi" x="'+lx(hX)+'" y="'+(hB?hY+30:hY-14).toFixed(1)+'" text-anchor="middle">'+S3[fpk].fF+'\u00b0</text>';
         l3+='</svg>';
