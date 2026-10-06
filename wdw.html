@@ -1797,7 +1797,8 @@
   .pw-hsw{overflow-x:auto;overflow-y:hidden;margin:6px -12px 0;padding:0 12px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
   .pw-hsw::-webkit-scrollbar{display:none}
   .pw-hsr{display:flex;width:max-content;padding-right:12px} /* 0728eu: the last column (Now, on a live day) clears the edge fade */
-  .pw-hc{flex:none;width:50px;text-align:center;padding:6px 0 4px;border-radius:12px}
+  .pw-hc{flex:none;width:50px;text-align:center;padding:6px 0 4px;border-radius:12px;scroll-snap-align:start}
+  .pw-hsw{scroll-snap-type:x proximity;scroll-padding-left:12px} /* 0728ev: a thumb's swipe comes to rest on a whole hour too */
   .pw-hc.ev{background:rgba(99,102,241,.10)}
   .pw-hc.now{box-shadow:inset 0 0 0 1.5px var(--accent)} /* 0728eu: Now is an outline and a word; a hold wave is a tint \u2014 the two can share a column */
   .pw-hc.now .h{color:var(--accent);font-weight:700}
@@ -2539,7 +2540,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728eu</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ev</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2951,7 +2952,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
       return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open");}
-    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,#alertsPop,#helpSheet,#setPop,#igPop,#statusPop,#proofPop,.dn-list.open,.rc-sheet,.td-sheet,.td-grip"));}
+    function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,.pw-hsw,#alertsPop,#helpSheet,#setPop,#igPop,#statusPop,#proofPop,.dn-list.open,.rc-sheet,.td-sheet,.td-grip"));}
     function setPull(px){
       ptr.classList.add("pull");
       ptr.style.opacity=Math.min(px/40,1);
@@ -13226,7 +13227,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!S.length)h+=tl('Rain','\u2013','no readings banked',1);
       else if(x.src==="xw"){var rk=null;for(i=0;i<S.length;i++)if(S[i].rIn>=0.02&&(!rk||S[i].rIn>rk.rIn))rk=S[i];
         /* 0728eq: on a day read from Xweather the tile is the day\u2019s total, added up from the banked rate and labelled an estimate (owner-ruled Oct 5: the heaviest reading was the stand-in until the rain was wired) */
-        if(rk)h+=tl('Rain',x.precip>=0.05?(x.precip.toFixed(1)+'\u2033'):'trace','estimated'+sf+' \u00b7 heaviest '+pwClk(rk.t),x.precip<0.05);
+        if(rk)h+=tl('Rain',x.precip>=0.05?(x.precip.toFixed(1)+'\u2033'):'trace',(live?'est. so far':'estimated')+' \u00b7 heaviest '+pwClk(rk.t),x.precip<0.05);
         else h+=tl('Rain','none','in any reading'+sf,1);}
       else{var rm=null;for(i=0;i<S.length;i++)if(S[i].pIn>0&&(!rm||S[i].pIn>rm.pIn))rm=S[i];
         /* the heaviest single reading, never the day\u2019s total (the daily sum is the number the page already distrusts); a reading that would print 0.0 prints as a trace */
@@ -13254,7 +13255,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(!b||b===pl)return;var m=b.getAttribute("data-m");if(m===pwWxMode)return;
         var w=$id("pwHsw"),keep=w?w.scrollLeft:0,box=$id("pwWxBody");if(!box)return;
         pwWxMode=m;var B=skyBody(d,x,live);box.innerHTML=B.html; /* only the strip and the chart repaint: the page stays where the thumb left it */
-        w=$id("pwHsw");if(w)w.scrollLeft=keep;
+        skyStripOpen(keep); /* 0728ev: back to the column it was on, on a whole hour */
         skyBodyBind(d,x,live,B.LN,false);
       });
     }
@@ -13283,10 +13284,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       open=pkI>=0?pkI:(live?cols.length-1:0); /* THE INCIDENT LEADS: a wave day opens on its peak hour; a live day on the latest hour; a quiet finished day at its start */
       return '<div class="pw-st-card pw-hs"><div class="pw-lh"><span class="nm">Hour by hour</span><span class="st q">'+(tm?'temperature':'feels-like')+'</span></div><div class="pw-lrule"></div><div class="pw-hsw" id="pwHsw" data-open="'+open+'"><div class="pw-hsr">'+cols.join("")+'</div></div><div class="pw-pl" id="pwWxPl"><button type="button" data-m="t"'+(tm?' class="on"':'')+'>Temp</button><button type="button" data-m="f"'+(tm?'':' class="on"')+'>Feels like</button></div></div>';
     }
-    function skyStripOpen(){ /* 0728en: bring the opening hour to the middle of the strip (the page itself never moves) */
-      var w=$id("pwHsw");if(!w)return;var r=w.firstChild,c=r&&r.children[+w.getAttribute("data-open")||0];if(!c)return;
-      var cr=c.getBoundingClientRect(),wr=w.getBoundingClientRect(); /* measured against the strip itself (offsetLeft answers to the page) */
-      w.scrollLeft=Math.max(0,(cr.left-wr.left+w.scrollLeft)-(w.clientWidth-cr.width)/2);
+    function skyStripOpen(keep){ /* 0728ev THE STRIP RESTS ON A WHOLE HOUR (owner glass 7:56 PM Oct 5, the circled 1p: opened on Now, the strip sat at its far end and its first hour was cut by the edge fade; a finished day, at scroll 0, was not): the strip is always placed so a whole column sits at its left edge. The opening hour is centred where it can be and the strip is never left half empty; the row's trailing space is set so that position can be reached even at the far end. With keep (a pill's repaint), it returns to the column it was on. */
+      var w=$id("pwHsw");if(!w)return;var r=w.firstChild,kids=r&&r.children,n=kids?kids.length:0,i=+w.getAttribute("data-open")||0;if(!n||!kids[i])return;
+      var cw=kids[i].getBoundingClientRect().width||50,vis=w.clientWidth-24,per=Math.max(1,Math.floor(vis/cw)),k;
+      if(keep!=null)k=Math.round(keep/cw);
+      else{k=Math.round(i-(per-1)/2);if(k>i)k=i;if(k<i-per+1)k=i-per+1;}
+      if(k>n-per)k=n-per;if(k<0)k=0;
+      var pad=k*cw+vis+12-n*cw;r.style.paddingRight=(pad>12?pad:12)+"px";
+      w.scrollLeft=k*cw;
     }
     function skyMono(P){ /* 0728el THE NUMBERS RIDE THE LINE: a monotone cubic through the banked readings \u2014 the curve passes through every reading and never rises above or dips below the two it runs between */
       var n=P.length,i,d=[],m=[],s;
