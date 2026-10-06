@@ -2541,7 +2541,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fa</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fb</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13584,8 +13584,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(ltgM)M.push(ltgM);if(hi)M.push([hi.tF+"\u00b0","high"+sf]);if(op)M.push([op.fF+"\u00b0","feels-like"+sf]);
         return {big:""+(x.downPeak||0),l1:"attractions paused at once"+sf,l2:x.peakPt?pwClk(x.peakPt.t):"",minis:M,chart:"down"};
       }
-      if(ltgM)M.push(ltgM);M.push([""+(x.downPeak||0),"most down at once"+sf]);
-      return {big:hi.tF+"\u00b0",l1:live?"high so far":"the day\u2019s high",l2:op?("feels-like "+(op.lone?"touched ":"peaked at ")+op.fF+"\u00b0"):"",minis:M,chart:"temp"};
+      if(ltgM)M.push(ltgM);if(op)M.push([op.fF+"\u00b0","feels-like"+(op.lone?", touched":"")+sf]);M.push([""+(x.downPeak||0),"most down at once"+sf]);
+      return {big:hi.tF+"\u00b0",l1:live?"high so far":"the day\u2019s high",l2:pwClk(hi.t),minis:M,chart:"temp"};
     }
     function shareStormCard(){
       if(!lastData)return;
@@ -13642,8 +13642,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       y+=26;
       function panel(Y,h){rr(L-18,Y,R-L+36,h,26);ctx.fillStyle="rgba(255,255,255,0.045)";ctx.fill();ctx.strokeStyle="rgba(255,255,255,0.07)";ctx.lineWidth=2;ctx.stroke();}
       var ICONS={clear:"\u2600\ufe0f",night:"\ud83c\udf19",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
+      function EM(s,X,Y,px){var f=px+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif',w=MW("\ud83c\udf19",f);T(s,X-w/2,Y,f,C.ink,"left");return w;} /* 0728fb A GLYPH IS CENTRED BY HAND (owner glass Oct 6: on iOS every glyph carrying the emoji selector sat half its width right of its hour, the moon and the bolt sat true): the painter measures the one glyph the phone measures right and starts every glyph half that width left of its mark */
       /* every hour, one row */
       var HC=(D.hours&&D.hours.cols)||[];
+      if(HC.length<4)HC=[];
       if(HC.length>=2){var anyEv=false;for(i=0;i<HC.length;i++)if(HC[i].dn>=8)anyEv=true;
         var ph=anyEv?196:156;panel(y,ph);
         T("HOUR BY HOUR \u00b7 TEMPERATURE",L,y+34,IN("700",17),"#8fa1b8","left");
@@ -13652,7 +13654,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           if(h.dn>=8){rr(hx-cwd/2+2,cb,cwd-4,chg,12);ctx.fillStyle="rgba(129,140,248,0.17)";ctx.fill();}
           if(h.now){rr(hx-cwd/2+2,cb,cwd-4,chg,12);ctx.strokeStyle="#818cf8";ctx.lineWidth=2.5;ctx.stroke();}
           T(h.h,hx,y+72,IN(h.now?"800":"600",17),h.now?"#a5b4fc":C.muted,"center");
-          T(ICONS[h.cl]||"",hx,y+108,'28px -apple-system,BlinkMacSystemFont,"Inter",sans-serif',C.ink,"center");
+          EM(ICONS[h.cl]||"",hx,y+108,28);
           T(h.f+"\u00b0",hx,y+140,SG("700",tf),C.ink,"center");
           if(h.dn>=8){T(""+h.dn,hx,y+166,IN("800",19),"#ff7389","center");T("down",hx,y+182,IN("600",12),C.muted,"center");}}
         y+=ph+18;}
@@ -13662,9 +13664,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(S3.length){firstT=firstT==null?S3[0].t:Math.min(firstT,S3[0].t);lastT=lastT==null?S3[S3.length-1].t:Math.max(lastT,S3[S3.length-1].t);}
       if(LT.length){firstT=Math.min(firstT,LT[0].t);lastT=Math.max(lastT,LT[LT.length-1].t);}
       if(firstT!=null){
-        var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
+        var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;var shortD=(lastT-firstT)<120&&lastT>firstT;if(shortD){T0=firstT;T1=lastT;} /* 0728fb THE MORNING FILLS ITS CARD (owner glass 8:01 AM Oct 6: the early card "looks bare, and almost broken"; owner-ruled B on mock-1): a day under two hours old fits its axis to its own readings, so the line and the band run rail to rail; with no hour row (it waits for four columns) the plot takes the room, and a line under three hours wears one label, as the page does */
         var PL=L+4,PR=R-4,TX=function(t){return PL+(t-T0)/(T1-T0)*(PR-PL);},sf=D.live?" so far":"";
-        var cTop=y,hd=cTop+44,pT=hd+26,pB=pT+Math.max(128,Math.min(250,1188-cTop-314)),skH=pB+52,ry=skH+22,rh=24,iy=ry+rh+50,axY=iy+34,legY=axY+40,cBot=legY+22; /* the plot takes the room the card has left (128 to 250 tall), so the footer sits on one line on every card */
+        var cTop=y,hd=cTop+44,pT=hd+26,pB=pT+Math.max(128,Math.min(HC.length>=2?250:420,1188-cTop-314)),skH=pB+52,ry=skH+22,rh=24,iy=ry+rh+50,axY=iy+34,legY=axY+40,cBot=legY+22; /* the plot takes the room the card has left (128 to 250 tall), so the footer sits on one line on every card */
         panel(cTop,cBot-cTop);
         function laneHead(Y,name){T(name,L,Y,IN("700",19),"#b6c2d4","left");ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,Y+10);ctx.lineTo(R,Y+10);ctx.stroke();}
         function laneStat(Y,segs){var tw=0,si;for(si=0;si<segs.length;si++)tw+=MW(segs[si][0],segs[si][1]);var sx=R-tw;for(si=0;si<segs.length;si++){T(segs[si][0],sx,Y,segs[si][1],segs[si][2],"left");sx+=MW(segs[si][0],segs[si][1]);}}
@@ -13700,7 +13702,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           trace();ctx.strokeStyle=tg;ctx.lineWidth=5;ctx.lineJoin="round";ctx.lineCap="round";ctx.stroke();
           var mk=[0,fpk,S3.length-1],mi2,done={};
           for(mi2=0;mi2<mk.length;mi2++){var q2=mk[mi2];if(done[q2])continue;done[q2]=1;var qx=TX(S3[q2].t),qy=FY(S3[q2].fF),isPk=(q2===fpk);
-            if(!isPk&&Math.abs(qx-TX(S3[fpk].t))<70)continue;
+            if(!isPk&&(S3[S3.length-1].t-S3[0].t)<180)continue;if(!isPk&&Math.abs(qx-TX(S3[fpk].t))<70)continue;
             ctx.beginPath();ctx.arc(qx,qy,isPk?6.5:5,0,6.2832);ctx.fillStyle="#0c1a2c";ctx.fill();ctx.strokeStyle=tg;ctx.lineWidth=3;ctx.stroke();
             T(S3[q2].fF+"\u00b0",Math.max(PL+26,Math.min(PR-26,qx)),qy-14,SG("700",isPk?30:23),C.ink,"center");}
         }
@@ -13709,17 +13711,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var ltgAt2=function(tq){for(var lq=0;lq<LT.length;lq++){var lwq=LT[lq].w||60;if(LT[lq].t-lwq<tq&&tq<=LT[lq].t)return LT[lq].n;}return 0;};
         var segs=[],sm0=x.samples||[],s2;
         for(s2=0;s2<sm0.length;s2++){var cl=wxSkyCl(sm0[s2]);if(ltgAt2(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
-          var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);
+          var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);if(bnd<=a2&&segs.length)continue;
           if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
         for(s2=0;s2<segs.length;s2++){var sx2=TX(segs[s2].a),sw2=TX(segs[s2].b)-TX(segs[s2].a);rr(sx2,ry,Math.max(sw2-2,2),rh,5);ctx.fillStyle=PW_RIBBON[segs[s2].cl];ctx.fill();}
-        var icf='36px -apple-system,BlinkMacSystemFont,"Inter",sans-serif',lastIR=-1e9;
+        var lastIR=-1e9;
         for(s2=0;s2<segs.length;s2++){var sw3=TX(segs[s2].b)-TX(segs[s2].a);if(sw3<16)continue;
-          var icx=(TX(segs[s2].a)+TX(segs[s2].b))/2,ihalf=MW(ICONS[segs[s2].cl],icf)/2;
+          var icx=(TX(segs[s2].a)+TX(segs[s2].b))/2,ihalf=MW("\ud83c\udf19",'36px -apple-system,BlinkMacSystemFont,"Inter",sans-serif')/2;
           if(icx-ihalf<lastIR+10)continue;
-          T(ICONS[segs[s2].cl],icx,iy,icf,C.ink,"center");lastIR=icx+ihalf;}
-        var axLast=T0;
-        for(var t2=T0;t2<=T1;t2+=180){T(pwClkS(t2%1440),TX(t2),axY,IN("600",19),C.muted2,t2===T0?"left":(t2>=T1?"right":"center"));axLast=t2;}
-        if(T1-axLast>=120)T(pwClkS(T1%1440),TX(T1),axY,IN("600",19),C.muted2,"right");
+          EM(ICONS[segs[s2].cl],icx,iy,36);lastIR=icx+ihalf;}
+        var axLast=T0,axC=function(t){t=Math.round(t/5)*5;var m=t%60,b=pwClkS((t-m)%1440);return m?(b.slice(0,-1)+":"+(m<10?"0":"")+m+b.slice(-1)):b;};
+        if(shortD){T(axC(T0),TX(T0),axY,IN("600",19),C.muted2,"left");T(axC(T1),TX(T1),axY,IN("600",19),C.muted2,"right");
+          for(var t3=Math.ceil(T0/30)*30;t3<T1;t3+=30){if(TX(t3)-PL>150&&PR-TX(t3)>150)T(axC(t3),TX(t3),axY,IN("600",19),C.muted2,"center");}}
+        else{for(var t2=T0;t2<=T1;t2+=180){T(pwClkS(t2%1440),TX(t2),axY,IN("600",19),C.muted2,t2===T0?"left":(t2>=T1?"right":"center"));axLast=t2;}
+        if(T1-axLast>=120)T(pwClkS(T1%1440),TX(T1),axY,IN("600",19),C.muted2,"right");}
         var LEG_ORD=["clear","night","cloud","storm","rain","core"],LEG_TXT={clear:"\u2600\ufe0f clear",night:"\ud83c\udf19 clear night",cloud:"\u2601\ufe0f clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27\ufe0f rain",core:"\u26c8\ufe0f rain core"};
         var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)used[segs[lgi].cl]=1;
         for(lgi=0;lgi<LEG_ORD.length;lgi++){if(used[LEG_ORD[lgi]])lg.push(LEG_TXT[LEG_ORD[lgi]]);}
