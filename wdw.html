@@ -2541,7 +2541,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fd</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fe</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13721,8 +13721,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           if(icx-ihalf<lastIR+10)continue;
           EM(ICONS[segs[s2].cl],icx,iy,36);lastIR=icx+ihalf;}
         var axLast=T0,axC=function(t){t=Math.round(t/5)*5;var m=t%60,b=pwClkS((t-m)%1440);return m?(b.slice(0,-1)+":"+(m<10?"0":"")+m+b.slice(-1)):b;};
-        if(shortD){T(axC(T0),TX(T0),axY,IN("600",19),C.muted2,"left");T(axC(T1),TX(T1),axY,IN("600",19),C.muted2,"right");
-          for(var t3=Math.ceil(T0/30)*30;t3<T1;t3+=30){if(TX(t3)-PL>150&&PR-TX(t3)>150)T(axC(t3),TX(t3),axY,IN("600",19),C.muted2,"center");}}
+        if(shortD){var stp=(Math.floor((T1+4)/30)-Math.ceil((T0-4)/30)>=1)?30:15,t3,tx3; /* 0728fe THE AXIS MARKS REAL CLOCKS (owner glass 9:17 AM Oct 6 on 0728fd: the badge said AS OF 9:17 while the axis\u2019s rounded end said 9:15a \u2014 one moment, two clocks): a short day\u2019s axis marks the half-hours (the quarters when it holds no two) where they truly fall; the ends are not labelled, the badge is the card\u2019s only \u201cas of\u201d */
+          for(t3=Math.ceil((T0-4)/stp)*stp;t3<=T1+4;t3+=stp){tx3=Math.max(PL,Math.min(PR,TX(t3)));T(axC(t3),tx3,axY,IN("600",19),C.muted2,tx3-PL<40?"left":(PR-tx3<40?"right":"center"));}}
         else{for(var t2=T0;t2<=T1;t2+=180){T(pwClkS(t2%1440),TX(t2),axY,IN("600",19),C.muted2,t2===T0?"left":(t2>=T1?"right":"center"));axLast=t2;}
         if(T1-axLast>=120)T(pwClkS(T1%1440),TX(T1),axY,IN("600",19),C.muted2,"right");}
         var LEG_ORD=["clear","night","cloud","storm","rain","core"],LEG_TXT={clear:"\u2600\ufe0f clear",night:"\ud83c\udf19 clear night",cloud:"\u2601\ufe0f clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27\ufe0f rain",core:"\u26c8\ufe0f rain core"};
