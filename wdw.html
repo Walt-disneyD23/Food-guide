@@ -1786,6 +1786,10 @@
   .pw-lane .pt{fill:var(--card);stroke-width:2.5}
   .pw-sgl{position:relative}
   .pw-sgl .pw-lh,.pw-sgl .pw-lrule,.pw-sgl .pw-lane{position:relative;z-index:1}
+  .pw-sgl .pw-lh{margin:4px 2px 6px}.pw-sgl .pw-lh .st{font-size:14px} /* 0728fg THE WEATHER LEADS: the chart’s own headers carry no rule; a section is parted from the one above it by a hairline */
+  .pw-lsec{position:relative;z-index:1;margin-top:14px;padding-top:11px;border-top:1px solid var(--line)}
+  .pw-lsub{position:relative;z-index:1;font:600 10.5px Inter,sans-serif;color:var(--muted);text-align:right;margin:-3px 2px 4px}
+  .pw-lax{margin-top:2px}
   /* 0728em THE DAY IN FOUR NUMBERS: the Sky page\u2019s tiles */
   .pw-tl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
   .pw-tl .t{background:var(--card);border-radius:var(--r-tile);box-shadow:var(--shadow-sm);padding:12px 13px 11px;min-width:0}
@@ -2541,7 +2545,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ff</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fg</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13336,28 +13340,33 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(firstT==null)firstT=lastT;
       if(x.samples.length){firstT=Math.min(firstT,x.samples[0].t);lastT=Math.max(lastT,x.samples[x.samples.length-1].t);}
       if(LT.length){firstT=Math.min(firstT,LT[0].t);lastT=Math.max(lastT,LT[LT.length-1].t);} /* 0713d: seed by the window\u2019s END \u2014 its ARRIVAL is the signal; the first bucket\u2019s hour-long reach-back resurrected the 6a dead space through the back door. Partial first stubs clamp at the domain edge; the footer states exact coverage. */
-      var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60;
+      var T0=Math.floor(firstT/60)*60,T1=Math.ceil(lastT/60)*60;if(T1<=T0)T1=T0+60; /* 0728fg THE WEATHER LEADS (owner glass 9:50 AM Oct 6: the bottom of the page \u201cisnt up to the caliber of the rest\u201d; ruled B + D-2 on bottom-1-morning.png, bottom-2-storm.png, bottom-3-nothing-down.png): the temperature and its sky lead, the strikes and the attractions follow, the clock is the card\u2019s foot. A day in progress fits its clock to its own readings, rail to rail, as the share card does (ff); a finished day keeps the whole-hour clock. */
+      var FIT=!!live&&lastT>firstT;if(FIT){T0=firstT;T1=lastT;if(T1-T0<30)T1=T0+30;}
+      var SPAN=T1-T0,STEP=SPAN>=540?180:(SPAN>=300?120:(SPAN>=150?60:((Math.floor((T1+4)/30)-Math.ceil((T0-4)/30)>=1)?30:15))); /* the card\u2019s own thinning: half-hours under 2\u00bd h, hourly to 5 h, 2-hourly to 9 h, then 3-hourly */
+      function ck(t){var m=t%1440,c=pwClkS(m);return m%60?(c.slice(0,-1)+":"+("0"+(m%60)).slice(-2)+c.slice(-1)):c;} /* a mark is a real clock: 8a, 8:30a */
       function tx(t){return (((t-T0)/(T1-T0))*720).toFixed(1);}
       var h="";
       /* 0728el ONE CLOCK, DRAWN LIKE WEATHER (owner-ruled W-C Oct 5 on wC-light.png; this is its chart, stage 1): the axis\u2019s own steps run as hairlines through every lane; the numbers ride the line; a quiet lightning lane folds to its header; the glow lands on the band. */
-      var GT=[],gt;for(gt=T0;gt<=T1;gt+=180)GT.push(gt);if(T1-GT[GT.length-1]>=120)GT.push(T1);
+      var GT=[],GN=[],gt; /* GT: the hairlines, never the card\u2019s own edges (a lane is not a box); GN: the hours a number may ride the curve */
+      if(FIT){for(gt=Math.ceil(T0/STEP)*STEP;gt<=T1;gt+=STEP)if(gt-T0>=STEP*0.2&&T1-gt>=STEP*0.2)GT.push(gt);GN=SPAN<180?[T0]:[T0].concat(GT);}
+      else{for(gt=T0;gt<=T1;gt+=180)GN.push(gt);if(T1-GN[GN.length-1]>=120)GN.push(T1);for(gt=0;gt<GN.length;gt++)if(GN[gt]>T0&&GN[gt]<T1)GT.push(GN[gt]);}
       function grid(y0,y1){var g="",q;for(q=0;q<GT.length;q++)g+='<line class="g" x1="'+tx(GT[q])+'" y1="'+y0+'" x2="'+tx(GT[q])+'" y2="'+y1+'"/>';return g;}
       function lx(v){return Math.max(18,Math.min(702,v)).toFixed(1);}
       /* lane 1 \u2014 attractions down */
-      var DMAX=Math.max(10,Math.ceil((x.downPeak*1.25)/10)*10);
-      function dy(v){return (144-(v/DMAX)*120).toFixed(1);}
+      var DMAX=Math.max(6,Math.ceil((x.downPeak*1.2)/2)*2);
+      function dy(v){return (104-(v/DMAX)*84).toFixed(1);}
       var i,s0=0;while(s0<series.length-1&&series[s0][0]<T0)s0++; /* 0713c: draw from the domain edge \u2014 trimmed silent zeros stay banked, not painted */
       var area="M "+tx(series[s0][0])+" "+dy(0),line="";
       for(i=s0;i<series.length;i++){area+=" L "+tx(series[i][0])+" "+dy(series[i][1]);line+=(i>s0?" L ":"M ")+tx(series[i][0])+" "+dy(series[i][1]);}
       area+=" L "+tx(series[series.length-1][0])+" "+dy(0)+" Z";
-      var l1='<svg class="pw-lane" viewBox="0 0 720 150" preserveAspectRatio="none"><defs><linearGradient id="pwDg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e23b54" stop-opacity=".34"/><stop offset="1" stop-color="#e23b54" stop-opacity=".03"/></linearGradient></defs>'+grid(0,150)+'<line class="g" x1="0" y1="144" x2="720" y2="144"/>';
+      var l1='<svg class="pw-lane" viewBox="0 0 720 110" preserveAspectRatio="none"><defs><linearGradient id="pwDg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e23b54" stop-opacity=".34"/><stop offset="1" stop-color="#e23b54" stop-opacity=".03"/></linearGradient></defs>'+grid(0,110)+'<line class="g" x1="0" y1="104" x2="720" y2="104"/>';
       l1+='<path d="'+area+'" fill="url(#pwDg)"/><path d="'+line+'" fill="none" stroke="#e23b54" stroke-width="2.6" stroke-linejoin="round"/>';
       if(x.onset)l1+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';
       if(x.peakPt)l1+='<circle class="pt" cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="5.5" stroke="#e23b54"/><text class="val hi" x="'+lx(parseFloat(tx(x.peakPt.t)))+'" y="'+(parseFloat(dy(x.peakPt.tot))-13).toFixed(1)+'" text-anchor="middle">'+x.peakPt.tot+'</text>'; /* 0728el: the peak wears its own number; the calm-day note retired (N-A: the header already says the peak, and the page never defined a hold wave) */
       l1+='</svg>';
       var v1=x.peakPt?('peak '+(live?'so far ':'')+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak); /* 0728el: a live peak is the peak so far (TENSE FLIPS WHOLE) */
       var dq=!(x.downPeak>0); /* 0728fd A QUIET LANE FOLDS, THIS ONE TOO (owner glass 8:07 AM Oct 6, ruled on mock-7): nothing down yet, no empty chart \u2014 the lane folds to its header as the lightning lane beneath it does, and returns with the first attraction down */
-      h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st'+(dq?' q':'')+'">'+(dq?('none'+(live?' so far today':' all day')):v1)+'</span></div><div class="pw-lrule"></div>'+(dq?'':l1);
+      var HD=dq?'':('<div class="pw-lsec"><div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div>'+l1+'</div>'); /* 0728fg D-2 (owner-ruled Oct 6, reversing fd\u2019s folded header the same morning): nothing down, no line \u2014 the lane arrives with the first attraction down, as the strikes do */
       /* lane 2 \u2014 strikes */
       var tot=0,mx=null,LM=0,LR=0,lz;
       for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];var rr2=LT[lz].n/(LT[lz].w||60);if(rr2>LR)LR=rr2;}
@@ -13368,9 +13377,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(ln>0){var lh2=Math.max(6,((ln/(LT[lz].w||60))/(LR||1))*72); /* 0713g: W2 density */
         l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(82-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="3" fill="url(#pwLg)"/>';}}
       l2+='</svg>';
-      var lfull=LT.length&&LT[0].t<=540; /* 0728el: the fold speaks the hero row\u2019s four voices (SAME QUESTION SAME SENTENCE) \u2014 \u201call day\u201d only when the checks began by 9 AM */
-      var v2=strk?(tot+' <i>\u00b7 peak '+mx.n+', '+pwW(mx.w)+' ending '+pwClk(mx.t)+'</i>'):((live&&lfull)?'none detected today':('none \u00b7 '+(live?('quiet from '+pwClk(LT.length?LT[0].t:0)):(lfull?'quiet all day':('quiet from '+pwClk(LT.length?LT[0].t:0)+' to close')))));
-      if(LT.length)h+='<div class="pw-lh"><span class="nm">'+(strk?'Lightning strikes \u00b7 10 mi':'Lightning \u00b7 10 mi')+'</span><span class="st'+(strk?'':' q')+'">'+v2+'</span></div><div class="pw-lrule"></div>'+(strk?l2:''); /* 0728el: A QUIET LANE FOLDS (DISCLOSURE FOLLOWS THE DATA) \u2014 no strikes, no empty chart; no samples, no claim */
+      var HL=strk?('<div class="pw-lsec"><div class="pw-lh"><span class="nm">Lightning \u00b7 10 mi</span><span class="st">'+tot+(tot===1?' strike':' strikes')+(live?' so far':'')+'</span></div><div class="pw-lsub">peak '+mx.n+' in '+((mx.w||60)>=50?'an hour':(mx.w+' min'))+' ending '+pwClk(mx.t)+'</div>'+l2+'</div>'):''; /* 0728fg (owner Oct 6: \u201cthe lightning lane should probably be gone all together unless there is lightning\u201d): the fold and its four voices retire from the chart \u2014 the tile above still answers a quiet day; a strike day\u2019s header no longer wraps (the count, then the peak on its own line, in the tile\u2019s words) */ /* 0728el: A QUIET LANE FOLDS (DISCLOSURE FOLLOWS THE DATA) \u2014 no strikes, no empty chart; no samples, no claim */
       /* lane 3 \u2014 feels-like */
       var S3=x.samples;
       if(S3.length>1){var flo=1e9,fhi=-1e9,fz;
@@ -13386,14 +13393,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(fx)l3+='<line x1="0" y1="'+fy(108)+'" x2="720" y2="'+fy(108)+'" stroke="#dc2626" stroke-width="1" stroke-dasharray="3 5" stroke-opacity=".55"/><text class="sc" x="712" y="'+(fyn(108)-6).toFixed(1)+'" text-anchor="end">extreme \u00b7 108\u00b0</text>';
         l3+='<path d="'+fpath+'" fill="none" stroke="url(#pwTg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>';
         var fmk=[],fq,fb,fg; /* a number at the banked reading nearest each grid hour (within 45 min, clear of the high); the high always */
-        for(fg=0;fg<GT.length;fg++){fb=null;for(fq=0;fq<FS.length;fq++)if(!fb||Math.abs(FS[fq].t-GT[fg])<Math.abs(fb.t-GT[fg]))fb=FS[fq];
-          if(fb&&Math.abs(fb.t-GT[fg])<=45&&Math.abs(fb.t-S3[fpk].t)>80&&fmk.indexOf(fb)<0)fmk.push(fb);}
+        for(fg=0;fg<GN.length;fg++){fb=null;for(fq=0;fq<FS.length;fq++)if(!fb||Math.abs(FS[fq].t-GN[fg])<Math.abs(fb.t-GN[fg]))fb=FS[fq];
+          if(fb&&Math.abs(fb.t-GN[fg])<=45&&(FIT?(Math.abs(parseFloat(tx(fb.t))-parseFloat(tx(S3[fpk].t)))>110&&!(fmk.length&&parseFloat(tx(fb.t))-parseFloat(tx(fmk[fmk.length-1].t))<80)):Math.abs(fb.t-S3[fpk].t)>80)&&fmk.indexOf(fb)<0)fmk.push(fb);}
         for(fq=0;fq<fmk.length;fq++){var mX=parseFloat(tx(fmk[fq].t)),mY=fyn(fmk[fq].fF),mB=(fx&&mX>540&&Math.abs(mY-fyn(108))<26);
           l3+='<circle class="pt" cx="'+mX.toFixed(1)+'" cy="'+mY.toFixed(1)+'" r="4.5" stroke="url(#pwTg)"/><text class="val" x="'+lx(mX)+'" y="'+(mB?mY+26:mY-12).toFixed(1)+'" text-anchor="middle">'+fmk[fq].fF+'\u00b0</text>';}
         var hX=parseFloat(tx(S3[fpk].t)),hY=fyn(S3[fpk].fF),hB=(fx&&hX>540&&Math.abs(hY-fyn(108))<30); /* 0728et (owner glass 7:37 PM Oct 5: the high\u2019s 110\u00b0 and 105\u00b0 sat on the curve): a number rides ABOVE its reading; it drops below only at the right edge, where the rule\u2019s own label lives */
         l3+='<circle class="pt" cx="'+hX.toFixed(1)+'" cy="'+hY.toFixed(1)+'" r="6.5" stroke="url(#pwTg)"/><text class="val hi" x="'+lx(hX)+'" y="'+(hB?hY+30:hY-14).toFixed(1)+'" text-anchor="middle">'+S3[fpk].fF+'\u00b0</text>';
         l3+='</svg>';
-        h+='<div class="pw-lh"><span class="nm">'+(tm?'Temperature':'Feels-like')+'</span><span class="st">high '+(live?'so far ':'')+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div><div class="pw-lrule"></div>'+l3;
+        h+='<div class="pw-lh"><span class="nm">'+(tm?'Temperature':'Feels-like')+'</span><span class="st">high '+(live?'so far ':'')+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div>'+l3;
       }
       /* the floor \u2014 ribbon (sensor-upgraded) + hour axis */
       var cols=PW_RIBBON; /* 0712t: labels retired for icons (owner call) \u2014 see the icon pass below */
@@ -13402,7 +13409,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(s2=0;s2<sm0.length;s2++){var cl=wxSkyCl(sm0[s2]);if(ltgAt2(sm0[s2].t)>0&&cl!=="core"&&cl!=="rain")cl="storm";
         var a2=sm0[s2].t,bnd=(s2+1<sm0.length?sm0[s2+1].t:lastT);
         if(segs.length&&segs[segs.length-1].cl===cl)segs[segs.length-1].b=bnd;else segs.push({cl:cl,a:a2,b:bnd});}
-      var rb='<svg class="pw-lane" viewBox="0 0 720 64" preserveAspectRatio="none">'; /* 0712u: taller floor (owner call) \u2014 room for fs30 icons; band stays y2 h13 */
+      var rb='<svg class="pw-lane" viewBox="0 0 720 50" preserveAspectRatio="none">'; /* 0712u: taller floor (owner call) \u2014 room for fs30 icons; band stays y2 h13 */
       for(var sg=0;sg<segs.length;sg++){var Sg=segs[sg],w2=parseFloat(tx(Sg.b))-parseFloat(tx(Sg.a));
         rb+='<rect x="'+tx(Sg.a)+'" y="2" width="'+Math.max(0,w2-(sg<segs.length-1?2:0)).toFixed(1)+'" height="13" rx="3" fill="'+cols[Sg.cl]+'"/>'; /* 0728el: a hair of card between the sky\u2019s states */
       }
@@ -13417,10 +13424,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(icx-16<lastR+6)continue;
         rb+='<text x="'+icx.toFixed(1)+'" y="44" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="30">'+ICONS[Sg2.cl]+'</text>';lastR=icx+16;}
       /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
-      var axLast=T0;
-      for(var t2=T0;t2<=T1;t2+=180){rb+='<text x="'+tx(t2)+'" y="62" text-anchor="'+(t2===T0?"start":t2>=T1?"end":"middle")+'" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" class="ax">'+pwClkS(t2%1440)+'</text>';axLast=t2;} /* 0728dw THE LABELS STAY INSIDE THE CHART (owner glass 11:20 AM Oct 3: 7a and 12a hung past the band’s ends): the first hour starts at the left edge, the last ends at the right edge, the rest stay centred */
-      if(T1-axLast>=120)rb+='<text x="'+tx(T1)+'" y="62" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" class="ax">'+pwClkS(T1%1440)+'</text>'; /* %1440: midnight is 12a, not 12p */
       rb+='</svg>';
+      var AF=' font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="17" font-weight="600" class="ax">',ax='<svg class="pw-lane pw-lax" viewBox="0 0 720 22" preserveAspectRatio="none">',axLast=T0;
+      if(FIT){for(var ga=0;ga<GT.length;ga++){var gx2=parseFloat(tx(GT[ga]));ax+='<text x="'+gx2.toFixed(1)+'" y="17" text-anchor="'+(gx2<26?"start":gx2>694?"end":"middle")+'"'+AF+ck(GT[ga])+'</text>';}} /* 0728fg: a day in progress marks real clocks where they fall; its ends are not labelled */
+      else{for(var t2=T0;t2<=T1;t2+=180){ax+='<text x="'+tx(t2)+'" y="17" text-anchor="'+(t2===T0?"start":t2>=T1?"end":"middle")+'"'+AF+pwClkS(t2%1440)+'</text>';axLast=t2;} /* 0728dw THE LABELS STAY INSIDE THE CHART (owner glass 11:20 AM Oct 3: 7a and 12a hung past the band’s ends): the first hour starts at the left edge, the last ends at the right edge, the rest stay centred */
+      if(T1-axLast>=120)ax+='<text x="'+tx(T1)+'" y="17" text-anchor="end"'+AF+pwClkS(T1%1440)+'</text>';} /* %1440: midnight is 12a, not 12p */
+      ax+='</svg>';
       /* 0712r: the glow marks the EVENT, not the sky (owner call) \u2014 windows = contiguous runs of
          concurrent downs >= 8, straight from the series the chart draws. Cause-neutral by construction:
          wind holds, rain holds, lightning holds all get their frame; the ribbon keeps telling the sky\u2019s
@@ -13445,10 +13454,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
          ribbon stopped speaking live here, under the stack, only for the states the day used.
          Canonical order so it never reshuffles; rain and rain core split \ud83c\udf27 vs \u26c8. */
       var LEG_ORD=["clear","night","cloud","storm","rain","core"],LEG_TXT={clear:"\u2600\ufe0f clear",night:"\ud83c\udf19 clear night",cloud:"\u2601\ufe0f clouds",storm:"\u26a1 lightning in the area",rain:"\ud83c\udf27\ufe0f rain",core:"\u26c8\ufe0f rain core"};
-      var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)used[segs[lgi].cl]=1;
+      var used={},lg=[],lgi;for(lgi=0;lgi<segs.length;lgi++)if(segs[lgi].b>segs[lgi].a)used[segs[lgi].cl]=1;
       for(lgi=0;lgi<LEG_ORD.length;lgi++){if(used[LEG_ORD[lgi]])lg.push(LEG_TXT[LEG_ORD[lgi]]);}
       var leg=lg.length?('<div class="pw-sleg">'+lg.join(" \u00b7 ")+'</div>'):"";
-      return {html:'<div class="pw-sgl">'+zones+h+'<div class="pw-lh"><span class="nm">Sky</span></div><div class="pw-lrule"></div></div>'+rb,leg:leg,T0:T0,T1:T1}; /* 0728el: the sky band is its own lane, named; the glow\u2019s box ends where the band begins, on every width */
+      return {html:'<div class="pw-sgl">'+zones+h+rb+HL+HD+'</div>'+ax,leg:leg,T0:T0,T1:T1}; /* 0728el: the sky band is its own lane, named; the glow\u2019s box ends where the band begins, on every width */
     }
     /* ===== 0712e: the Sky lens \u2014 one hairline, every ledger. Silent-when-zero;
        hour-grain honesty ("this hr") until v3.8.2 sharpens it. Reader is pure. ===== */
