@@ -1786,9 +1786,12 @@
   .pw-lane .pt{fill:var(--card);stroke-width:2.5}
   .pw-sgl{position:relative}
   .pw-sgl .pw-lh,.pw-sgl .pw-lrule,.pw-sgl .pw-lane{position:relative;z-index:1}
-  .pw-sgl .pw-lh{margin:4px 2px 6px}.pw-sgl .pw-lh .st{font-size:14px} /* 0728fg THE WEATHER LEADS: the chart’s own headers carry no rule; a section is parted from the one above it by a hairline */
+  .pw-sgl .pw-lh{margin:2px 2px 6px;align-items:flex-start;gap:10px}.pw-sgl .pw-lh .nm{padding-top:8px} /* 0728fh THE ANSWER SITS IN A PILL (owner-ruled E-1 Oct 6): the name stays bare, the answer wears the pill; the peak’s own line (.pw-lsub) retires into it */
   .pw-lsec{position:relative;z-index:1;margin-top:14px;padding-top:11px;border-top:1px solid var(--line)}
-  .pw-lsub{position:relative;z-index:1;font:600 10.5px Inter,sans-serif;color:var(--muted);text-align:right;margin:-3px 2px 4px}
+  .pw-lp{background:var(--bg);border-radius:12px;padding:6px 11px 7px;text-align:right;flex:none}
+  .pw-lp .v{font-family:var(--font-display);font-weight:700;font-size:17px;line-height:20px;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pw-lp .v span{font:600 11.5px Inter,sans-serif;color:var(--muted)}
+  .pw-lp .s{font:500 10.5px/1.35 Inter,sans-serif;color:var(--muted);white-space:nowrap}
   .pw-lax{margin-top:2px}
   /* 0728em THE DAY IN FOUR NUMBERS: the Sky page\u2019s tiles */
   .pw-tl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
@@ -2545,7 +2548,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fh</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13364,9 +13367,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(x.onset)l1+='<line x1="'+tx(x.onset.t)+'" y1="'+dy(x.onset.tot)+'" x2="'+tx(x.onset.t)+'" y2="'+dy(0)+'" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="'+tx(x.onset.t)+'" cy="'+dy(x.onset.tot)+'" r="4.5" fill="#6366f1"/>';
       if(x.peakPt)l1+='<circle class="pt" cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="5.5" stroke="#e23b54"/><text class="val hi" x="'+lx(parseFloat(tx(x.peakPt.t)))+'" y="'+(parseFloat(dy(x.peakPt.tot))-13).toFixed(1)+'" text-anchor="middle">'+x.peakPt.tot+'</text>'; /* 0728el: the peak wears its own number; the calm-day note retired (N-A: the header already says the peak, and the page never defined a hold wave) */
       l1+='</svg>';
-      var v1=x.peakPt?('peak '+(live?'so far ':'')+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak); /* 0728el: a live peak is the peak so far (TENSE FLIPS WHOLE) */
+      var v1='<div class="pw-lp"><div class="v">'+(x.peakPt?x.peakPt.tot:x.downPeak)+' <span>at once'+(live?' so far':'')+'</span></div>'+(x.peakPt?('<div class="s">'+pwClk(x.peakPt.t)+'</div>'):'')+'</div>'; /* 0728fh THE ANSWER SITS IN A PILL (owner glass 10:42 AM Oct 6, his circles on the three headers: \u201cyour eye had to search to find it\u201d; ruled E-1 on headers-E-1.png): each header keeps its bare name on the left; its answer sits in a pill on the right that hugs its own words \u2014 the number and its word, then the clock beneath. The count speaks the tile\u2019s phrase (N at once), SAME QUESTION SAME SENTENCE. */ /* 0728el: a live peak is the peak so far (TENSE FLIPS WHOLE) */
       var dq=!(x.downPeak>0); /* 0728fd A QUIET LANE FOLDS, THIS ONE TOO (owner glass 8:07 AM Oct 6, ruled on mock-7): nothing down yet, no empty chart \u2014 the lane folds to its header as the lightning lane beneath it does, and returns with the first attraction down */
-      var HD=dq?'':('<div class="pw-lsec"><div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div>'+l1+'</div>'); /* 0728fg D-2 (owner-ruled Oct 6, reversing fd\u2019s folded header the same morning): nothing down, no line \u2014 the lane arrives with the first attraction down, as the strikes do */
+      var HD=dq?'':('<div class="pw-lsec"><div class="pw-lh"><span class="nm">Attractions down</span>'+v1+'</div>'+l1+'</div>'); /* 0728fg D-2 (owner-ruled Oct 6, reversing fd\u2019s folded header the same morning): nothing down, no line \u2014 the lane arrives with the first attraction down, as the strikes do */
       /* lane 2 \u2014 strikes */
       var tot=0,mx=null,LM=0,LR=0,lz;
       for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];var rr2=LT[lz].n/(LT[lz].w||60);if(rr2>LR)LR=rr2;}
@@ -13377,7 +13380,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(ln>0){var lh2=Math.max(6,((ln/(LT[lz].w||60))/(LR||1))*72); /* 0713g: W2 density */
         l2+='<rect x="'+(lx1+1).toFixed(1)+'" y="'+(82-lh2).toFixed(1)+'" width="'+Math.max(2,(lx2-lx1-2)).toFixed(1)+'" height="'+lh2.toFixed(1)+'" rx="3" fill="url(#pwLg)"/>';}}
       l2+='</svg>';
-      var HL=strk?('<div class="pw-lsec"><div class="pw-lh"><span class="nm">Lightning \u00b7 10 mi</span><span class="st">'+tot+(tot===1?' strike':' strikes')+(live?' so far':'')+'</span></div><div class="pw-lsub">peak '+mx.n+' in '+((mx.w||60)>=50?'an hour':(mx.w+' min'))+' ending '+pwClk(mx.t)+'</div>'+l2+'</div>'):''; /* 0728fg (owner Oct 6: \u201cthe lightning lane should probably be gone all together unless there is lightning\u201d): the fold and its four voices retire from the chart \u2014 the tile above still answers a quiet day; a strike day\u2019s header no longer wraps (the count, then the peak on its own line, in the tile\u2019s words) */ /* 0728el: A QUIET LANE FOLDS (DISCLOSURE FOLLOWS THE DATA) \u2014 no strikes, no empty chart; no samples, no claim */
+      var HL=strk?('<div class="pw-lsec"><div class="pw-lh"><span class="nm">Lightning \u00b7 10 mi</span><div class="pw-lp"><div class="v">'+tot+' <span>'+(tot===1?'strike':'strikes')+(live?' so far':'')+'</span></div><div class="s">peak '+mx.n+' in '+((mx.w||60)>=50?'an hour':(mx.w+' min'))+'</div><div class="s">'+pwClk(mx.t)+'</div></div></div>'+l2+'</div>'):''; /* 0728fg (owner Oct 6: \u201cthe lightning lane should probably be gone all together unless there is lightning\u201d): the fold and its four voices retire from the chart \u2014 the tile above still answers a quiet day; a strike day\u2019s header no longer wraps (the count, then the peak on its own line, in the tile\u2019s words) */ /* 0728el: A QUIET LANE FOLDS (DISCLOSURE FOLLOWS THE DATA) \u2014 no strikes, no empty chart; no samples, no claim */
       /* lane 3 \u2014 feels-like */
       var S3=x.samples;
       if(S3.length>1){var flo=1e9,fhi=-1e9,fz;
@@ -13400,7 +13403,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var hX=parseFloat(tx(S3[fpk].t)),hY=fyn(S3[fpk].fF),hB=(fx&&hX>540&&Math.abs(hY-fyn(108))<30); /* 0728et (owner glass 7:37 PM Oct 5: the high\u2019s 110\u00b0 and 105\u00b0 sat on the curve): a number rides ABOVE its reading; it drops below only at the right edge, where the rule\u2019s own label lives */
         l3+='<circle class="pt" cx="'+hX.toFixed(1)+'" cy="'+hY.toFixed(1)+'" r="6.5" stroke="url(#pwTg)"/><text class="val hi" x="'+lx(hX)+'" y="'+(hB?hY+30:hY-14).toFixed(1)+'" text-anchor="middle">'+S3[fpk].fF+'\u00b0</text>';
         l3+='</svg>';
-        h+='<div class="pw-lh"><span class="nm">'+(tm?'Temperature':'Feels-like')+'</span><span class="st">high '+(live?'so far ':'')+S3[fpk].fF+'\u00b0 <i>\u00b7 '+pwClk(S3[fpk].t)+'</i></span></div>'+l3;
+        h+='<div class="pw-lh"><span class="nm">'+(tm?'Temperature':'Feels-like')+'</span><div class="pw-lp"><div class="v">'+S3[fpk].fF+'\u00b0 <span>high'+(live?' so far':'')+'</span></div><div class="s">'+pwClk(S3[fpk].t)+'</div></div></div>'+l3;
       }
       /* the floor \u2014 ribbon (sensor-upgraded) + hour axis */
       var cols=PW_RIBBON; /* 0712t: labels retired for icons (owner call) \u2014 see the icon pass below */
@@ -13420,7 +13423,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var ICONS={clear:"\u2600\ufe0f",night:"\ud83c\udf19",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"};
       var lastR=-1e9;
       for(sg=0;sg<segs.length;sg++){var Sg2=segs[sg],w3=parseFloat(tx(Sg2.b))-parseFloat(tx(Sg2.a));if(w3<12)continue;
-        var icx=(parseFloat(tx(Sg2.a))+parseFloat(tx(Sg2.b)))/2;
+        var icx=Math.max(16,Math.min(704,(parseFloat(tx(Sg2.a))+parseFloat(tx(Sg2.b)))/2)); /* 0728fh A GLYPH STAYS INSIDE THE RAIL (owner glass 10:38 AM Oct 6: the newest reading\u2019s cloud hung half off the card) */
         if(icx-16<lastR+6)continue;
         rb+='<text x="'+icx.toFixed(1)+'" y="44" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Inter,system-ui,sans-serif" font-size="30">'+ICONS[Sg2.cl]+'</text>';lastR=icx+16;}
       /* 0712m: sparse axis (owner call) \u2014 the verdicts carry precise times; the floor only needs rhythm. Every 3 hours from open, plus the far edge when it's \u22652h clear of the last step. */
