@@ -2552,7 +2552,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fk</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fl</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2984,6 +2984,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       gl.textContent="↻";
       ptr.style.opacity="1";ptr.style.transform="translateY(18px)";
       var p=load(true),done=false;
+      if(window.__pwTodayFresh)window.__pwTodayFresh(true); /* 0728fl TODAY KEEPS UP: a pull-down on the Wrap re-reads its Today as well (it re-read only the live waits) */
       function end(){if(done)return;done=true;setTimeout(settle,350);}
       if(p&&p.then)p.then(end,end);
       setTimeout(end,8000);
@@ -11991,9 +11992,35 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(active&&curTab==="month"){wv.innerHTML=tabsHTML("month")+'<div class="pw-msg">Couldn\u2019t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
       });
     }
+    /* ===== 0728fl TODAY KEEPS UP (owner glass 12:52 PM Oct 6: the Wrap’s weather card read “as of 12:17 PM”
+       while the Live hero, new that hour, was current; ruled 1 + 2: “Yes that sounds like a plan”). Wrap › Today was
+       fetched once and kept for as long as the app stayed open; only the card’s ↻ update re-read it. Now the day
+       is re-read (a) on a pull-down while the Wrap is showing, always, and (b) when it is more than five minutes
+       old and the guest opens the Today tab, opens its Weather page, or comes back to the app. Never on a timer: the
+       page does not redraw under a thumb that is reading or scrubbing. The copy on screen stays until the new one
+       lands (no Loading face); the screen that is open is the one redrawn — the recap, or the Weather page; a park
+       or ride page is left as it is and reads the new day at its next door. A failed read keeps the old copy and
+       its honest “as of”. The ↻ update link is unchanged. ===== */
+    var pwTodayBusy=false,PW_TODAY_STALE=300000;
+    function pwTodayFresh(force){
+      if(!active||curTab!=="today"||pwTodayBusy)return;
+      if(!cache.today||!cacheAt.today)return; /* the first read is loadTab’s */
+      if(!force&&Date.now()-cacheAt.today<PW_TODAY_STALE)return;
+      pwTodayBusy=true;
+      fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();}).then(function(d){
+        pwTodayBusy=false;pwCleanData(d);
+        cache.today=d;cacheAt.today=Date.now();
+        if(!active||curTab!=="today"||lastTab!=="today")return;
+        if($id("pwBackS")){lastData=d;showStorm();}
+        else if($id("pwBack")||$id("pwBackR")){lastData=d;}
+        else renderWrap(d,"today");
+      })["catch"](function(){pwTodayBusy=false;});
+    }
+    window.__pwTodayFresh=pwTodayFresh;
+    document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")pwTodayFresh(false);});
     function loadTab(tab){
       curTab=tab;var wv=$id("wrapView");if(!wv)return;
-      if(cache[tab]){renderWrap(cache[tab],tab);return;}
+      if(cache[tab]){renderWrap(cache[tab],tab);if(tab==="today")pwTodayFresh(false);return;}
       wv.innerHTML=tabsHTML(tab)+'<div class="pw-msg">Loading the day…</div>';wireTabs();
       if(tab==="week"){pwLoadWeek();return;} /* 0713a: calendar week = digests + today live */
       if(tab==="month"){pwLoadMonth();return;} /* 0713i: calendar month from digests, ‹ › paged */
@@ -13579,6 +13606,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function showStorm(){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       if(lastTab==="week")return;
+      if(lastTab==="today")pwTodayFresh(false); /* 0728fl TODAY KEEPS UP: a stale day is re-read as the page opens; the page redraws once when it lands */
       var fin=isFinal(lastData),live=(!fin);
       pwWxMode="t"; /* 0728es: every door opens the page on the temperature */
       var x=wxDerive(lastData);
