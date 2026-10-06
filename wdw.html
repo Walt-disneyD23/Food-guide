@@ -2541,7 +2541,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fd</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13356,7 +13356,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(x.peakPt)l1+='<circle class="pt" cx="'+tx(x.peakPt.t)+'" cy="'+dy(x.peakPt.tot)+'" r="5.5" stroke="#e23b54"/><text class="val hi" x="'+lx(parseFloat(tx(x.peakPt.t)))+'" y="'+(parseFloat(dy(x.peakPt.tot))-13).toFixed(1)+'" text-anchor="middle">'+x.peakPt.tot+'</text>'; /* 0728el: the peak wears its own number; the calm-day note retired (N-A: the header already says the peak, and the page never defined a hold wave) */
       l1+='</svg>';
       var v1=x.peakPt?('peak '+(live?'so far ':'')+x.peakPt.tot+' <i>\u00b7 '+pwClk(x.peakPt.t)+'</i>'):('peak '+x.downPeak); /* 0728el: a live peak is the peak so far (TENSE FLIPS WHOLE) */
-      h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st">'+v1+'</span></div><div class="pw-lrule"></div>'+l1;
+      var dq=!(x.downPeak>0); /* 0728fd A QUIET LANE FOLDS, THIS ONE TOO (owner glass 8:07 AM Oct 6, ruled on mock-7): nothing down yet, no empty chart \u2014 the lane folds to its header as the lightning lane beneath it does, and returns with the first attraction down */
+      h+='<div class="pw-lh"><span class="nm">Attractions down</span><span class="st'+(dq?' q':'')+'">'+(dq?('none'+(live?' so far today':' all day')):v1)+'</span></div><div class="pw-lrule"></div>'+(dq?'':l1);
       /* lane 2 \u2014 strikes */
       var tot=0,mx=null,LM=0,LR=0,lz;
       for(lz=0;lz<LT.length;lz++){tot+=LT[lz].n;if(LT[lz].n>LM)LM=LT[lz].n;if(!mx||LT[lz].n>mx.n)mx=LT[lz];var rr2=LT[lz].n/(LT[lz].w||60);if(rr2>LR)LR=rr2;}
@@ -13584,7 +13585,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(ltgM)M.push(ltgM);if(hi)M.push([hi.tF+"\u00b0","high"+sf]);if(op)M.push([op.fF+"\u00b0","feels-like"+sf]);
         return {big:""+(x.downPeak||0),l1:"attractions paused at once"+sf,l2:x.peakPt?pwClk(x.peakPt.t):"",minis:M,chart:"down"};
       }
-      if(ltgM)M.push(ltgM);if(op)M.push([op.fF+"\u00b0","feels-like"+(op.lone?", touched":"")+sf]);M.push([""+(x.downPeak||0),"most down at once"+sf]);
+      if(ltgM)M.push(ltgM);if(op)M.push([op.fF+"\u00b0","feels-like"+(op.lone?", touched":"")+sf]);M.push([""+(x.downPeak||0),"attraction"+(x.downPeak===1?"":"s")+" down at most"+sf]); /* 0728fd (owner glass Oct 6: "someone receiving that card may not know what five down means"): the stat names what was down, as the live card\u2019s "attractions down now" does */
       return {big:hi.tF+"\u00b0",l1:live?"high so far":"the day\u2019s high",l2:pwClk(hi.t),minis:M,chart:"temp"};
     }
     function shareStormCard(){
@@ -13645,7 +13646,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function EM(s,X,Y,px){var f=px+'px -apple-system,BlinkMacSystemFont,"Inter",sans-serif',w=MW("\ud83c\udf19",f);T(s,X-w/2,Y,f,C.ink,"left");return w;} /* 0728fb A GLYPH IS CENTRED BY HAND (owner glass Oct 6: on iOS every glyph carrying the emoji selector sat half its width right of its hour, the moon and the bolt sat true): the painter measures the one glyph the phone measures right and starts every glyph half that width left of its mark */
       /* every hour, one row */
       var HC=(D.hours&&D.hours.cols)||[];
-      if(HC.length<4)HC=[];
+      /* 0728fd THE ROW STARTS AT TWO (owner-ruled B on mock-4, Oct 6: "I don\u2019t mind B \u2026 give it a go"): the hour row is drawn from two columns, each taking an equal share of the rail and narrowing as the hours arrive */
       if(HC.length>=2){var anyEv=false;for(i=0;i<HC.length;i++)if(HC[i].dn>=8)anyEv=true;
         var ph=anyEv?196:156;panel(y,ph);
         T("HOUR BY HOUR \u00b7 TEMPERATURE",L,y+34,IN("700",17),"#8fa1b8","left");
