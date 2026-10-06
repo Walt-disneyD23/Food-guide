@@ -35,7 +35,8 @@
   html{height:100%;-webkit-text-size-adjust:100%;overscroll-behavior-y:none} /* 0724z: escalation step 2 (dvh alone failed on glass Aug 24) \u2014 the page edge never rubber-bands; PTR is custom so nothing is lost, sheets keep their own -y:contain */
   body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.5;overscroll-behavior-y:none;
     height:100%;overflow:hidden; /* 0725n Z-B THE SHELL: the body is locked — the shell below owns all scrolling */letter-spacing:-.005em;-webkit-font-smoothing:antialiased;touch-action:manipulation}
-  #shell{height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior-y:contain;padding:0 0 calc(110px + env(safe-area-inset-bottom))} /* 0725r THE BELT WAS THE TRAP: -webkit-overflow-scrolling retired — it forced a stacking context that buried every in-shell fixed sheet (z89) beneath the body-level nav (z25); modern WebKit momentum is native and overscroll-behavior is the idiom (glass: the compare picker’s buried confirm, Aug 26). */ /* 0725n Z-B THE SHELL: one scroller owns the page — the spring lives here (contain: it never chains to the locked body); sticky toolbars stick to THIS root. /* 0724v: dvh never moves when iOS collapses its chrome mid-rubber-band — the vh re-layout under a pinned thumb WAS the bounce (owner glass Aug 22, predating the recent cuts); vh stays as the old-engine fallback */
+  #shell{height:100vh;height:100dvh;overflow-y:auto;overscroll-behavior-y:contain;padding:0 0 calc(110px + env(safe-area-inset-bottom))}
+  #shell{scrollbar-width:none}#shell::-webkit-scrollbar{display:none} /* 0728ey THE PAGE WEARS NO SCROLL BAR (owner glass 11:25 PM Oct 5, Harbor: the system's scroll indicator showing down the right edge of the page while it moves): the shell scrolls as before and draws no indicator, in either engine's spelling; its own rule, so the 0725r shell rule stands byte for byte */ /* 0725r THE BELT WAS THE TRAP: -webkit-overflow-scrolling retired — it forced a stacking context that buried every in-shell fixed sheet (z89) beneath the body-level nav (z25); modern WebKit momentum is native and overscroll-behavior is the idiom (glass: the compare picker’s buried confirm, Aug 26). */ /* 0725n Z-B THE SHELL: one scroller owns the page — the spring lives here (contain: it never chains to the locked body); sticky toolbars stick to THIS root. /* 0724v: dvh never moves when iOS collapses its chrome mid-rubber-band — the vh re-layout under a pinned thumb WAS the bounce (owner glass Aug 22, predating the recent cuts); vh stays as the old-engine fallback */
   .wrap{max-width:1180px;margin:0 auto;padding:0 12px}
 
   header.board-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:26px 0 16px}
@@ -2540,7 +2541,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ex</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ey</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
