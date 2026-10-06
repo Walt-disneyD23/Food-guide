@@ -1763,7 +1763,7 @@
   .pw-fl-vt{font-family:var(--font-display);font-weight:700;font-size:11px;fill:#f97316}
   .pw-fl-vm{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:var(--muted)}
   .pw-fl-ex{font-family:Inter,sans-serif;font-weight:600;font-size:10px;fill:#f97316;fill-opacity:.7}
-  .pw-lens-wrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none} /* 0712j: the chart is a scrub surface \u2014 vertical drift must not scroll the page out from under a read */
+  .pw-lens-wrap{position:relative;touch-action:pan-y; /* 0728ew THE CHART LETS THE PAGE PASS: an up-and-down drag belongs to the page again; pwSkyBind keeps a sideways drag, and a held finger, for the read */-webkit-user-select:none;user-select:none} /* 0712j: the chart is a scrub surface \u2014 vertical drift must not scroll the page out from under a read */
   .pw-lens-line{position:absolute;top:2px;bottom:20px;width:0;border-left:1.5px solid var(--muted);pointer-events:none;z-index:4} /* 0712l: one hairline through every lane */ /* 0712u: +4px \u2014 the floor grew 56\u219264u for bigger icons; same landing at the band */
   .pw-lens-pill{position:absolute;top:-4px;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 11px;box-shadow:0 4px 14px rgba(20,24,44,.18);pointer-events:none;white-space:nowrap;z-index:5}
   .pw-lens-pill .pt{font-family:var(--font-display);font-weight:700;font-size:12.5px;color:var(--ink);margin-right:7px}
@@ -2540,7 +2540,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ev</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ew</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13188,11 +13188,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         bars+=n>0?('<i style="height:'+Math.max(6,Math.round(n/max*100))+'%;flex:'+sw+'" data-n="'+n+'"></i>'):('<i class="z" style="flex:'+sw+'"></i>');}
       return {tot:tot,max:max,html:'<div class="pw-sky-lab">Lightning within 10 mi</div><div class="pw-sky-bars">'+bars+'</div><div class="pw-sky-hrs">'+skyAxis(S)+'</div>'};
     }
-    function skyObsPeak(x){
+    function skyObsPeak(x){ /* 0728ew A LONE PEAK IS TOUCHED (owner-ruled Oct 5 on Oct 4's 110\u00b0: one 2:01 PM reading, its neighbours 7\u00b0 and more below): lone = the readings on both sides of the peak, each within 20 minutes of it, are 5\u00b0 or more under it (a gap in the readings is not a neighbour). The number stays what was measured; only the word changes. The newest reading is never lone \u2014 nothing has followed it yet. */
       var S=x.samples;if(!S||!S.length)return null;
-      var m=S[0],a=S[0].tF,i;
-      for(i=1;i<S.length;i++){if(S[i].fF>m.fF)m=S[i];if(S[i].tF>a)a=S[i].tF;}
-      return {fF:m.fF,t:m.t,airHi:a};
+      var m=S[0],a=S[0].tF,i,mi=0;
+      for(i=1;i<S.length;i++){if(S[i].fF>m.fF){m=S[i];mi=i;}if(S[i].tF>a)a=S[i].tF;}
+      return {fF:m.fF,t:m.t,airHi:a,lone:mi>0&&mi<S.length-1&&m.t-S[mi-1].t<=20&&S[mi+1].t-m.t<=20&&S[mi-1].fF<=m.fF-5&&S[mi+1].fF<=m.fF-5};
     }
     function skyStrikePeak(d){
       var L=d&&d.ltg,S=L&&L.samples;if(!S)return null;
@@ -13205,7 +13205,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var sp=skyStrikePeak(d);
       if(sp){var spw=(sp.w||60);B.push({t:sp.t-spw/2,c:"#f59e0b",h:"\u26a1 "+sp.n+" strike"+(sp.n===1?"":"s")+" in "+(spw===60?"an hour":(spw+" minutes")),b:"The heaviest stretch of the day, ending "+pwClk(sp.t)+"."});} /* 0713g: sort at the TRUE window midpoint (the -30 back-dated storm windows by ~25 min and reshuffled beats between refreshes) + headline A (owner pick): the peak states its own measure, not the radius */
       if(x.core){var cb=pwCoreBeat(x);if(cb)B.push({t:(x.core.t!=null?x.core.t:1e9),c:PW_RIBBON.core,h:cb.h,b:cb.b});}
-      if(!sp&&op&&op.fF>=100)B.push({t:op.t,c:"#f97316",h:pwClk(op.t)+" \u2014 feels-like peaked at "+op.fF+"\u00b0",b:"Off a "+op.airHi+"\u00b0 air high."});
+      if(!sp&&op&&op.fF>=100)B.push({t:op.t,c:"#f97316",h:pwClk(op.t)+" \u2014 feels-like "+(op.lone?"touched ":"peaked at ")+op.fF+"\u00b0",b:"Off a "+op.airHi+"\u00b0 air high."});
       B.sort(function(a,b){return a.t-b.t;});
       return B;
     }
@@ -13218,7 +13218,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function skyTiles(d,x,live,op){ /* 0728em THE DAY IN FOUR NUMBERS (owner-ruled W-C Oct 5 on wC-light.png; stage 2, the tiles): feels-like high \u00b7 attractions down \u00b7 lightning \u00b7 rain, each from the readings the chart beneath draws. The keys never change; the tense rides the line under the number (TENSE FLIPS WHOLE). A measure with no banked readings says so and claims nothing. */
       function tl(k,v,u,w){return '<div class="t"><div class="k">'+k+'</div><div class="v'+(w?' w':'')+'">'+v+'</div><div class="u">'+u+'</div></div>';}
       var sf=live?' so far':'',S=x.samples||[],L=(d&&d.ltg&&d.ltg.samples)||[],i,h='';
-      h+=op?tl('Feels-like high',op.fF+'\u00b0',(live?'so far \u00b7 ':'')+pwClk(op.t)+' \u00b7 air high '+op.airHi+'\u00b0'):tl('Feels-like high','\u2013','no readings banked',1);
+      h+=op?tl('Feels-like high',op.fF+'\u00b0',(op.lone?'touched ':(live?'so far \u00b7 ':''))+pwClk(op.t)+' \u00b7 air high '+op.airHi+'\u00b0'):tl('Feels-like high','\u2013','no readings banked',1);
       h+=x.peakPt?tl('Attractions down',String(x.peakPt.tot),'at once'+sf+' \u00b7 '+pwClk(x.peakPt.t)):tl('Attractions down','0',live?'so far today':'all day');
       if(!L.length)h+=tl('Lightning \u00b7 10 mi','\u2013','no checks banked',1);
       else{var tot=0,mx=null,full=L[0].t<=540;for(i=0;i<L.length;i++){tot+=L[i].n;if(L[i].n>0&&(!mx||L[i].n>mx.n))mx=L[i];}
@@ -13461,6 +13461,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function end(){act=false;ln.hidden=true;pl.hidden=true;}
       wrap.addEventListener("pointerdown",function(e){act=true;try{wrap.setPointerCapture(e.pointerId);}catch(_e){}place(e.clientX);});
       wrap.addEventListener("pointermove",function(e){if(act)place(e.clientX);});
+      var sx=0,sy=0,st=0,mode=0; /* 0728ew THE CHART LETS THE PAGE PASS (owner glass 8:21 PM Oct 5: the whole chart was dead to an up-and-down drag, and the page is long now). One gesture, one owner, decided on its first 6px: sideways, or after a quarter-second hold, it is a read and the page is held still for the rest of it (0712j's promise kept where it matters); up or down at once, it is the page's, and the lens steps aside. A tap still reads. */
+      wrap.addEventListener("touchstart",function(e){var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now();mode=0;},{passive:true});
+      wrap.addEventListener("touchmove",function(e){var t=e.touches[0];
+        if(!mode){var dx=Math.abs(t.clientX-sx),dy=Math.abs(t.clientY-sy);if(dx<6&&dy<6)return;
+          mode=(dx>=dy||Date.now()-st>=250)?1:2;if(mode===2)end();}
+        if(mode===1&&e.cancelable)e.preventDefault();},{passive:false});
       wrap.addEventListener("pointerup",end);wrap.addEventListener("pointercancel",end); /* 0712j: pointerleave retired \u2014 capture holds the read until the finger lifts */
     }
     function showStorm(){
@@ -13499,7 +13505,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         }else{
           ttl="The day's weather"; /* 0728ep THE NAME IS WEATHER, EVERYWHERE IT IS SAID (owner-ruled Oct 5): the page\u2019s own headline */
           sub=(stx&&stx.tot>0)?(ltgCl+(live?" so far today.":" across the day.")):("No lightning within 10 mi \u2014 quiet "+(live?"so far today.":"all day."));
-          if(op&&op.fF>=100)sub+=" Feels-like peaked at "+op.fF+"\u00b0.";
+          if(op&&op.fF>=100)sub+=" Feels-like "+(op.lone?"touched ":"peaked at ")+op.fF+"\u00b0.";
         }
       }
       html+='<div class="pw-hero"><div class="k">'+kicker+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div><div class="ttl">'+esc(ttl)+'</div><div class="sub">'+esc(sub)+'</div></div>';
