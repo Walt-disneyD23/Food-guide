@@ -2554,13 +2554,13 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fm</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fn</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
       <a class="set-row" href="https://themeparks.wiki" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>Live waits</span><span class="v"><b class="lnk">ThemeParks.wiki</b><i class="chv">›</i></span></a>
-      <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg></span>Weather</span><span class="v"><b class="lnk">Open-Meteo</b><i class="chv">›</i></span></a>
-      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span>Lightning</span><span class="v"><span class="stk"><small>Powered by</small><b class="lnk">Vaisala Xweather</b></span><i class="chv">›</i></span></a>
+      <a class="set-row" href="https://www.xweather.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15.5a4 4 0 0 1 .7-7.94A5.5 5.5 0 0 1 18.3 9.2a3.4 3.4 0 0 1-.6 6.3"/><path d="M12.6 11.5l-2.4 4h3.2l-1.6 4"/></svg></span>Weather &amp; lightning</span><span class="v"><span class="stk"><small>Powered by</small><b class="lnk">Vaisala Xweather</b></span><i class="chv">›</i></span></a> <!-- 0728fn THE ROW NAMES THE SOURCE (owner glass 8:04 AM Oct 7, ruled W-C): the page’s temperatures and rain have been Xweather’s since 0728eq, so one row says Weather & lightning and Open-Meteo keeps the measure it still supplies — the weather card’s own footer, SAME QUESTION SAME SENTENCE -->
+      <a class="set-row" href="https://open-meteo.com" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h10.5a2.75 2.75 0 1 0-2.75-2.75M3 12.5h15a2.75 2.75 0 1 1-2.75 2.75M3 16.5h6.5"/></svg></span>Gusts</span><span class="v"><b class="lnk">Open-Meteo</b><i class="chv">›</i></span></a>
     </div>
     <div class="set-foot">Live waits refresh every 3 minutes while parks are open — or pull down any time · history, never a promise.</div> <!-- information sits in a footnote, never in a row that looks like a control -->
     <div class="set-lab">Legal &amp; support</div>
@@ -11227,6 +11227,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        \u2014 the 0713k screenshot-self-dating law extended to the deep past. */
     function pwYr(ds){return (ds&&(""+ds).slice(0,4)!==etDate(0).slice(0,4))?", "+(""+ds).slice(0,4):"";}
     function pwMonDY(ds){return pwMonD(ds)+pwYr(ds);}
+    function pwDowMonD(ds){return asDate(ds).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+pwYr(ds);} /* 0728fn THE PAGE SAYS ITS DAY: the Weather hero’s date — Sat, Oct 3 — the year by the stamps’ own rule (0715z) */
     function pwDigDay(g,tmp){
       /* ONE rollup for every zoom (week, month, whatever comes): curated
          read-time pool -> park avgs, tiers, headliners, day totals.
@@ -13235,8 +13236,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        rendered value, not the raw float); the fall clause only appears when the
        prior sample proves a real drop, and the minutes are the true elapsed gap. */
     function pwAn(n){return /^(8|11|18|8\d)$/.test(""+n)?"an":"a";}
-    function pwCoreBeat(x){
+    function pwCoreBeat(x,live){
       var c=x.core;if(!c)return null;
+      var hw=(c.rIn!=null&&c.rIn<0.3)?("the heaviest rain"+(live?" so far":"")):"the rain core arrived"; /* 0728fn A CORE IS HEAVY RAIN (owner glass 7:50 AM Oct 7: “the rain core arrived” over a Rain tile that read trace; ruled R-C): under the page’s own heavy-rain line (0.3 in/hr, wxDerive’s code 65) the headline names what the moment is — the day’s heaviest reading, “so far” while the day runs — and keeps “the rain core arrived” for heavy rain. An Open-Meteo day (no rate banked) is unchanged. Not “rain began”: x.core is the wettest reading, not the first wet one. */
       if(c.rIn!=null&&c.rIn<0.05)return null; /* 0728eq: a drizzle is not a rain core \u2014 the rate must print as more than 0.0 to earn the beat */
       var dry=(c.rIn!=null)?false:(c.pIn.toFixed(1)==="0.0");
       var fall=(c.prevTF!=null&&c.prevTF>c.tF)?("Temperature fell "+c.prevTF+"\u00b0 \u2192 "+c.tF+"\u00b0 in "+c.mins+" minutes"):null;
@@ -13253,10 +13255,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         return {h:pwClk(c.t)+" — the cool crash swept through",b:fall+" — the storm's dry leading edge."};
       }
       var rain=(c.rIn!=null)?("rain falling at "+c.rIn.toFixed(1)+"\" an hour"):(c.pIn.toFixed(1)+"\" of rain"); /* 0728eq: on Xweather the banked fact is a rate, so the beat says the rate (no amount is claimed for a moment) */
-      if(fall&&g)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", "+gustC+", and "+rain+"."};
-      if(fall)return {h:pwClk(c.t)+" — the rain core arrived",b:fall+", with "+rain+"."};
-      if(g)return {h:pwClk(c.t)+" — the rain core arrived",b:GustC+" and "+rain+"."};
-      return {h:pwClk(c.t)+" — the rain core arrived",b:rain.charAt(0).toUpperCase()+rain.slice(1)+"."}; /* 0728et (owner glass 7:37 PM Oct 5: \u201crain falling at 0.9" an hour.\u201d): a sentence that is only the rain starts with a capital */
+      if(fall&&g)return {h:pwClk(c.t)+" — "+hw,b:fall+", "+gustC+", and "+rain+"."};
+      if(fall)return {h:pwClk(c.t)+" — "+hw,b:fall+", with "+rain+"."};
+      if(g)return {h:pwClk(c.t)+" — "+hw,b:GustC+" and "+rain+"."};
+      return {h:pwClk(c.t)+" — "+hw,b:rain.charAt(0).toUpperCase()+rain.slice(1)+"."}; /* 0728et (owner glass 7:37 PM Oct 5: \u201crain falling at 0.9" an hour.\u201d): a sentence that is only the rain starts with a capital */
     }
     function pwCall(color,h,b){return '<div class="pw-st-call"><span class="dot" style="background:'+color+'"></span><div><div class="h">'+esc(h)+'</div><div class="b">'+esc(b)+'</div></div></div>';}
     /* ===== 0712a: the Sky Page — the storm timeline evolved into the one sky surface.
@@ -13294,7 +13296,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(x.onset)B.push({t:x.onset.t,c:"#6366f1",h:pwClk(x.onset.t)+" \u2014 "+x.onset.park+" went first",b:x.onset.n+" rides held at once across "+x.onset.park+". "+x.downPeak+" paused across the resort at the peak."});
       var sp=skyStrikePeak(d);
       if(sp){var spw=(sp.w||60);B.push({t:sp.t-spw/2,c:"#f59e0b",h:"\u26a1 "+sp.n+" strike"+(sp.n===1?"":"s")+" in "+(spw===60?"an hour":(spw+" minutes")),b:"The heaviest stretch of the day, ending "+pwClk(sp.t)+"."});} /* 0713g: sort at the TRUE window midpoint (the -30 back-dated storm windows by ~25 min and reshuffled beats between refreshes) + headline A (owner pick): the peak states its own measure, not the radius */
-      if(x.core){var cb=pwCoreBeat(x);if(cb)B.push({t:(x.core.t!=null?x.core.t:1e9),c:PW_RIBBON.core,h:cb.h,b:cb.b});}
+      if(x.core){var cb=pwCoreBeat(x,live);if(cb)B.push({t:(x.core.t!=null?x.core.t:1e9),c:PW_RIBBON.core,h:cb.h,b:cb.b});}
       if(!sp&&op&&op.fF>=100)B.push({t:op.t,c:"#f97316",h:pwClk(op.t)+" \u2014 feels-like "+(op.lone?"touched ":"peaked at ")+op.fF+"\u00b0",b:"Off a "+op.airHi+"\u00b0 air high."});
       B.sort(function(a,b){return a.t-b.t;});
       return B;
@@ -13616,7 +13618,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<div class="pw-crumb"><b>Wrap</b> › '+(pwVisitDate()?esc(pwMonDY(pwVisitDate()))+' › ':'')+'Weather</div>';
       var HR=skyHero(lastData,x,live),sub=HR.sub,ttl=HR.ttl,kicker=HR.kicker,chReal=HR.chReal,stx=HR.stx,op=HR.op; /* 0728ez: one door for the page and its card */
       var ch=chReal||{kind:"storm"},TT={storm:1,wind:1,rain:1}; /* 0728fa THE PAGE OPENS (owner glass 7:49 AM Oct 6: the door on Wrap would not open): 0728ez lifted the title into skyHero and left these two names behind \u2014 the footer below still reads ch.kind and TT[...], so showStorm threw before it drew. They are back, and a harness now RUNS the page. */
-      html+='<div class="pw-hero"><div class="k">'+kicker+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div><div class="ttl">'+esc(ttl)+'</div><div class="sub">'+esc(sub)+'</div></div>';
+      html+='<div class="pw-hero"><div class="k">'+kicker+' · '+esc(pwDowMonD(pwVisitDate()||(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0)))+'</div><div class="ttl">'+esc(ttl) /* 0728fn THE PAGE SAYS ITS DAY (owner glass 7:32 AM Oct 7: “on the actual page, I don’t see a date. Maybe one in the hero would be nice?”; ruled A on weather-date-options.png): the kicker carries the date at every door — Yesterday, Today and a visited day — in one form, weekday first; the day is the share card’s own (shareStormCard’s dateStr). Rejected: B the card’s line (loses Storm / Rain / Wind timeline) · C the crumb (it fades under the header). */+'</div><div class="sub">'+esc(sub)+'</div></div>';
       var showDown=!!x.series.length&&x.downPeak>=8; /* 0713c: no longer a layout gate \u2014 dp>=8 gates only the earned story blocks (park rows), the same observable as the glow */
       if(!x.series.length&&!stx){html+='<div class="pw-msg">No timeline data for this day yet.</div>';}
       else{
