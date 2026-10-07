@@ -2554,7 +2554,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fn</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fo</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3161,11 +3161,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function load(manual){
     if(manual){var b=$("refreshBtn");if(b){b.disabled=true;setTimeout(function(){b.disabled=false;},1500);}}
     setPulse("ok");
+    var done9=false,slow9=setTimeout(function(){if(done9||!usingFallback)return;setPulse("error");elStatusText.textContent="Lineup";render();},(typeof navigator!=="undefined"&&navigator.onLine===false)?0:12000); /* 0728fo OFFLINE SAYS OFFLINE (owner glass 11:57 AM Oct 7, the shell review: a minute in airplane mode and the status still read “Live — Wait times are connected and refreshing automatically”). In the shell a request made with no connection never fails — it waits — so the catch below never ran and the pulse set above stood. While the board has nothing but the lineup, a load that has not answered in 12 seconds (at once when the phone itself says it is offline) wears the catch’s own face: Offline, the lineup without wait times, still retrying. The waiting request is left alone; when it lands the pulse returns. A board that already holds waits is untouched (the 6-minute “Catching up” is its judge). */
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
+      done9=true;clearTimeout(slow9);if(liveState==="error")setPulse("ok");
       usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();sbSweep();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
     }).catch(function(err){
+      done9=true;clearTimeout(slow9);
       setPulse("error");
       elStatusText.textContent=usingFallback?"Lineup":"Offline";
       scheduleNext();render();console.error(err);
