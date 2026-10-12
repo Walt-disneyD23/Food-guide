@@ -222,11 +222,13 @@
   /* 0728gc THE STAR IS ENOUGH (owner-ruled on the glass, Oct 12: "a starred ride highlights the whole row… I think the gold star is enough"): the starred row's fill and outline retire; the row's colour is the wait's alone. */
 
   /* ===== PREVIEW ONLY — park tabs on Live (P-B). Not a build. ===== */
-  .lp-tabs{pointer-events:auto;position:relative;z-index:3;display:flex;gap:3px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;margin:8px 0 0}
-  .lp-tabs button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:600;font-size:var(--fs-small);color:var(--muted);padding:5px 0 6px;border-radius:var(--r-pill);cursor:pointer;line-height:1.15}
-  .lp-tabs button small{display:block;font:600 10.5px var(--font-body);opacity:.75}
-  .lp-tabs button.on{background:rgba(79,70,229,.13);color:var(--accent)}
-  .lp-note{font:600 10px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);text-align:center;margin-top:4px}
+  .lp-tabs{pointer-events:auto;position:relative;z-index:3;display:flex;gap:6px;margin:8px 0 0}
+  .lp-tabs button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:7px 0 8px;box-shadow:var(--shadow-sm);font:700 12.5px var(--font-body);color:var(--ink);cursor:pointer;line-height:1.1}
+  .lp-tabs button small{display:block;font:700 15px var(--font-display);margin-top:2px}
+  .lp-tabs button small.t-short{color:var(--short)}.lp-tabs button small.t-medium{color:var(--medium)}.lp-tabs button small.t-long{color:var(--long)}.lp-tabs button small.t-packed{color:var(--packed)}
+  .lp-tabs button.on{background:linear-gradient(135deg,var(--pwh-bg),var(--pwh-bg2));border-color:var(--pwh-bg);color:#fff}
+  .lp-tabs button.on small{color:#fff}
+  .lp-note{display:none}
   body.lp-park #banners>.banner,body.lp-park #banners>.pb-board{display:none}
   body.lp-on #bk2top{display:none!important}
   .ride.rs-on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-sm)} /* 0728gc THE OUTLINE ANSWERS THE TAP (owner's idea, Oct 12): the row you tapped wears the accent outline while its sheet is open, and gives it back when the sheet closes */
@@ -9457,7 +9459,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   /* ===== PREVIEW ONLY — park tabs on Live (P-B) ===== */
   var lpEl=null,LP_AB={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"};
-  function lpGo(k){expanded=k;store.set("expanded",expanded);render();try{window.ppShl().scrollTo(0,0);}catch(_){}}
+  function lpGo(k){try{hlScope=k||"all";uxState.pk=k||"all";}catch(_){}expanded=k;store.set("expanded",expanded);render();try{window.ppShl().scrollTo(0,0);}catch(_){}}
   function lpSync(){
     try{var cw=document.querySelector(".controls-wrap");if(!cw)return;
       if(!lpEl){lpEl=document.createElement("div");cw.appendChild(lpEl);
@@ -9466,10 +9468,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var h='<div class="lp-tabs">';
       for(i=0;i<its.length;i++){var st=null;try{st=bannerStats(its[i][0]);}catch(_){}
         var on=(its[i][0]==="all")?(expanded===null||expanded===undefined||expanded==="all"):(expanded===its[i][0]);
-        h+='<button type="button" data-lp="'+esc(its[i][0])+'" class="'+(on?"on":"")+'">'+esc(its[i][1])+'<small>'+((st&&st.headAvg!==null&&st.headAvg!==undefined)?st.headAvg+'m':'–')+'</small></button>';}
+        h+='<button type="button" data-lp="'+esc(its[i][0])+'" class="'+(on?"on":"")+'">'+esc(its[i][1])+'<small class="'+((st&&st.headAvg!==null&&st.headAvg!==undefined)?'t-'+tierOfWait(st.headAvg):'')+'">'+((st&&st.headAvg!==null&&st.headAvg!==undefined)?st.headAvg+'m':'–')+'</small></button>';}
       lpEl.innerHTML=h+'</div><div class="lp-note">preview · park tabs</div>';
       var inPark=!!(expanded&&expanded!=="all");
-      if(lpEl.getAttribute("data-k")!==String(expanded)){lpEl.setAttribute("data-k",String(expanded));setTimeout(function(){try{window.ppShl().scrollTo(0,0);}catch(_){}},140);}
+      if(lpEl.getAttribute("data-k")!==String(expanded)){lpEl.setAttribute("data-k",String(expanded));try{var k9=(expanded&&expanded!=="all")?expanded:"all";hlScope=k9;uxState.pk=k9;if(typeof renderUpNext==="function")renderUpNext();if(typeof renderCrowdPulse==="function")renderCrowdPulse();}catch(_){}
+        try{var kids=[].slice.call(cw.querySelectorAll("button,select,.search-box")).filter(function(e){return e.offsetParent&&!lpEl.contains(e);}),cr=cw.getBoundingClientRect(),L=1e9,R=-1e9;kids.forEach(function(e){var b=e.getBoundingClientRect();if(b.left<L)L=b.left;if(b.right>R)R=b.right;});if(R>L){lpEl.style.marginLeft=Math.max(0,L-cr.left)+"px";lpEl.style.marginRight=Math.max(0,cr.right-R)+"px";}}catch(_){}setTimeout(function(){try{window.ppShl().scrollTo(0,0);}catch(_){}},140);}
       document.body.classList.add("lp-on");document.body.classList.toggle("lp-park",inPark&&navTab==="live");
     }catch(e){}
   }
