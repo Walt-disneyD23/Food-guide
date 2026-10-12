@@ -203,7 +203,7 @@
   .rs-read{font-size:var(--fs-body);color:var(--muted);line-height:1.45;margin:0 0 10px;padding:10px 12px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-tile)}
   .rs-hero{padding:14px 16px 12px;margin-bottom:9px}
   .rs-hero .pw-band{margin-top:9px;padding-top:0;border-top:0}
-  .rs-hero .pw-scrub{display:none} /* the sheet's chart is a picture; the scrub lens stays the Wrap page's */
+  /* 0728gb: the sheet's chart scrubs (owner, Oct 12: "You can scrub on the wrap page. Not on the live ride pop out. Should we do that?") */
   .rs-hero .sub{font-size:var(--fs-small);color:var(--pwh-sub);margin-top:7px}
   .rs-sheet .pw-tile{min-height:80px;padding:11px 13px}
   .rs-d{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:9px;margin-top:11px}
@@ -219,7 +219,8 @@
   .rs-ll .f b{color:var(--ink);font-weight:700}
   /* 0728fw: .pw-typl retired with its label (the legend names) */
   .pw-legend .pw-typk::before{content:"";display:inline-block;width:14px;border-top:1.5px dashed var(--pwh-sub);margin-right:4px;vertical-align:middle}
-  .ride.watched{background:var(--accent-soft);border-color:var(--accent)}
+  /* 0728gc THE STAR IS ENOUGH (owner-ruled on the glass, Oct 12: "a starred ride highlights the whole row… I think the gold star is enough"): the starred row's fill and outline retire; the row's colour is the wait's alone. */
+  .ride.rs-on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-sm)} /* 0728gc THE OUTLINE ANSWERS THE TAP (owner's idea, Oct 12): the row you tapped wears the accent outline while its sheet is open, and gives it back when the sheet closes */
   .ride .wt{font-family:var(--font-display);font-weight:700;font-size:var(--fs-wait);line-height:1;
     font-variant-numeric:tabular-nums;min-width:60px;text-align:center;color:var(--closed)}
   .wt.short{color:var(--short)} .wt.medium{color:var(--medium)} .wt.long{color:var(--long)}
@@ -1115,7 +1116,7 @@
   .appnav .it{position:relative} /* 0710t: badge anchor for the dock door */
   .appnav .it .nbadge{position:absolute;top:2px;right:50%;margin-right:-26px;min-width:16px;height:16px;border-radius:var(--r-pill);background:var(--packed);color:#fff;font:800 9.5px var(--font-body);display:none;place-items:center;padding:0 4px}
   .appnav .it .nbadge.show{display:grid}
-  .banner.lt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cl,transparent);z-index:2;pointer-events:none}
+  /* 0728gc: the park card's full-height crowd strip retired (owner-ruled on the glass, Oct 12): it ran beside every ride's own wait bar, two colour meanings side by side; the crowd colour keeps its labelled seats on the row and the card's top */
   /* ===== T1 (0710c) ticket die-cut: RETIRED 0721z with its stub — the board's hairline rows
      carry the collapsed duty now (Live-Board-Spec Cut 1); .bnr-wrap survives for the expanded card only. */
   .bnr-wrap{filter:var(--shadow-tk);margin-bottom:14px}
@@ -1648,9 +1649,13 @@
   .pw-scrub{position:absolute;left:0;top:0;right:0;bottom:-14px;touch-action:none;z-index:5}
   .pw-scl{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.30);opacity:0;transition:opacity .16s;pointer-events:none}
   .pw-scd{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent-tint);border:2px solid #fff;transform:translate(-50%,-50%);opacity:0;transition:opacity .16s;pointer-events:none;box-sizing:content-box}
-  .pw-scp{position:absolute;top:2px;transform:translateX(-50%);background:rgba(10,14,26,.94);border:1px solid rgba(150,161,242,.32);border-radius:var(--r-pill);padding:3px 10px;font-size:var(--fs-meta);font-weight:600;color:var(--pwh-muted);white-space:nowrap;opacity:0;transition:opacity .16s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:6}
-  .pw-scp b{font-family:var(--font-display);font-weight:700;margin-left:5px}
+  .pw-scp{position:absolute;top:-25px;right:0;background:rgba(18,29,58,.96);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:2px 9px 3px;text-align:right;white-space:nowrap;opacity:0;transition:opacity .16s;pointer-events:none;z-index:6} /* 0728gb THE READOUT TAKES THE CORNER (owner-ruled R-A, Oct 12, on scrub-readout-mock.png: the pill rode the line, over the peak and under the thumb; the weather page's corner readout reads clear of both). One line, seated in the gap ABOVE the plot's right end — the heading's row on the Live sheet, the rule's row on the Wrap's page — so it never covers the line it reads, on either side of the finger. */
+  .pw-scp .v{font:700 14.5px/17px var(--font-display);color:#fff;font-variant-numeric:tabular-nums}
+  .pw-scp .v i{font:600 11px var(--font-body);font-style:normal;color:var(--pwh-sub);margin-left:6px}
+  .pw-scp .s{font:500 11px/17px var(--font-body);color:var(--pwh-sub);margin-left:8px}
   .pw-scp em{font-style:normal;margin-left:4px}
+  .pw-sct{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--pwh-bg);border:1.5px solid #e6e9fb;transform:translate(-50%,-50%);opacity:0;transition:opacity .16s;pointer-events:none;box-sizing:content-box}
+  .pw-sc-on .pw-sct{opacity:1}
   .pw-sc-on .pw-scl,.pw-sc-on .pw-scd,.pw-sc-on .pw-scp{opacity:1}
   .pw-pulse{position:absolute;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4}
   .pw-pulse::before,.pw-pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.6px solid currentColor;animation:pwPulse 1s ease-out forwards}
@@ -2580,7 +2585,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ga</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gc</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2861,6 +2866,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function sheetDragDismiss(sh,sc,after){
     var sy=0,dy=0,drag=false,engaged=false,swallow=false;
     sh.addEventListener("touchstart",function(e){
+      if(e.target&&e.target.closest&&e.target.closest(".pw-scrub")){drag=false;return;} /* 0728gb: a touch that begins on a chart's lens is a read — the sheet does not take it for a drag */
       sy=e.touches[0].clientY;dy=0;engaged=false;drag=true;swallow=false;
     },{passive:true});
     sh.addEventListener("touchmove",function(e){
@@ -9400,6 +9406,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function rsShTop(){try{var sh=window.ppShl();sh.scrollTop=1;sh.scrollTop=0;}catch(_){}} /* 0728fv: the shell to its top, by a nudge that MOVES (the 0723k recipe: a same-position scroll is one WebKit may skip) */
   function rsPaint(anim){
     if(!rsId||!rsEl)return;
+    if(!anim&&rsEl.querySelector(".pw-sc-on"))return; /* 0728gb: the poll does not repaint the chart out from under a finger that is reading it; the next render catches up */
     var old=rsEl.querySelector(".rs-sheet"),st=old?old.scrollTop:0;
     rsEl.innerHTML=rsHTML(rsId,anim);
     var sh=rsEl.querySelector(".rs-sheet"),sc=rsEl.querySelector(".rs-scrim");if(sh&&st)sh.scrollTop=st;
@@ -9422,19 +9429,22 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function rsOpen(rid){
     if(!roster[rid])return;
     if(!rsEl){rsEl=document.createElement("div");rsEl.id="rsHost";document.body.appendChild(rsEl);}
-    rsId=rid;rsData=undefined;rsY=undefined;rsPaint(true);
+    rsId=rid;rsData=undefined;rsY=undefined;rsMark();rsPaint(true);
     rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();
     rsFetch();
     clearInterval(rsPoll);
     if(!rpDigs){var n9=0;rsPoll=setInterval(function(){n9++;if(rsId!==rid||n9>20){clearInterval(rsPoll);return;}if(rpDigs){clearInterval(rsPoll);rsFetch();}},500);} /* the read and the typical line arrive with the day ledger */
   }
-  function rsClose(){rsId=null;rsTok++;clearInterval(rsPoll);if(rsEl)rsEl.innerHTML="";}
+  function rsMark(){ /* 0728gc: the tapped row's outline, re-seated after every Live render */
+    try{var L=document.querySelectorAll(".ride[data-rs]"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("rs-on",!!rsId&&L[i].getAttribute("data-rs")===rsId);}catch(e){}
+  }
+  function rsClose(){rsId=null;rsTok++;clearInterval(rsPoll);if(rsEl)rsEl.innerHTML="";rsMark();}
   function rsBind(scope){ /* every Live render re-binds its rows; an open sheet repaints so its wait and its read keep up with the poll */
     if(scope===rsEl)return;
     Array.prototype.forEach.call(scope.querySelectorAll(".ride[data-rs]"),function(el){
       el.addEventListener("click",function(){rsOpen(el.getAttribute("data-rs"));});
       el.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();rsOpen(el.getAttribute("data-rs"));}});});
-    if(rsId)rsPaint();
+    if(rsId){rsMark();rsPaint();}
   }
   function bindStars(scope){
 rsBind(scope); /* 0728fr: the rows are doors */
@@ -11365,13 +11375,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     };
     window.__ppRideSheet=function(rid,park,typ,cb){ /* 0728fr: the Live sheet's day so far — today's chart and tiles from the REAL builders (pwSparkBand, pwRideTiles, pwSustained, findRide), never re-implemented. They read lastData, so today's day is lent to them for one synchronous pass and what was there is put back whatever happens; the scrub registration is put back too. Reuses the Wrap's today cache only while FRESH (5 min) and never writes it (the __ppTodayRide law). */
       function go(d){
-        var out=null,kD=lastData,kT=lastTab,kR=pwScrubReg[rid],hadR=(rid in pwScrubReg);
+        var out=null,kD=lastData,kT=lastTab,kR=pwScrubReg[rid],hadR=(rid in pwScrubReg); /* 0728gb: the sheet's chart scrubs under its OWN key ("rs:"+rid), so the Wrap page's lens for the same ride is never disturbed */
         try{lastData=d;lastTab="today";
           var r=findRide(park,rid);
           if(r){var live=!isFinal(d),su=pwSustained(r.id),rK=pwRideWxK(false,live),rC=rK?pwWxClause(r.id,wxDerive(d),rK):"";
             out={band:pwSparkBand(r.id,su,typ),tiles:pwRideTiles(r,su,park,false,live,rC,rK)};out.live=live; /* 0728ft: the sheet's heading takes its tense from the same flag the tiles do */}
         }catch(e){out=null;}
-        finally{lastData=kD;lastTab=kT;if(hadR)pwScrubReg[rid]=kR;else delete pwScrubReg[rid];}
+        finally{lastData=kD;lastTab=kT;var mine9=pwScrubReg[rid];if(hadR)pwScrubReg[rid]=kR;else delete pwScrubReg[rid];
+          if(out&&out.band&&mine9&&mine9!==kR){pwScrubReg["rs:"+rid]=mine9;out.band=out.band.replace('data-pwsc="'+rid+'"','data-pwsc="rs:'+rid+'"');}}
         cb(out);
       }
       var c=cache["today"];
@@ -13105,6 +13116,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
             if(!to.length)to.push([tx0,tw?ta[1]+(tb[1]-ta[1])*(tx0-ta[0])/tw:ta[1]]);
             to.push([tx1,tw?ta[1]+(tb[1]-ta[1])*(tx1-ta[0])/tw:ta[1]]);}
           if(to.length>1)tyR.push(to);}}
+      m.tyR=tyR; /* 0728gb: the lens reads the typical off the very runs the chart drew */
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
       var lineD="",glowD="";
@@ -13156,7 +13168,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         :('<div class="pw-times"><span>'+pwClkSm(t0)+'</span><span>'+pwClkSm(t1)+'</span></div>'); /* 0728fz THE ENDS SAY THEIR MINUTES (owner glass 8:44 AM Oct 12: a 7:30–8:44 chart was labelled 7a and 8a) */
       var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i style="background:'+PW_TIER.down+'"></i>down</span></div>';
       pwScrubReg[rid]={m:m,su:su};pwScrubInit();
-      var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-scd"></b><span class="pw-scp"></span></div>';
+      var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-sct"></b><b class="pw-scd"></b><span class="pw-scp"></span></div>';
       var tyD="",tyL="",tk;for(k=0;k<tyR.length;k++)for(tk=0;tk<tyR[k].length;tk++)tyD+=(tk?"L":"M")+X(tyR[k][tk][0])+" "+Y(tyR[k][tk][1]); /* 0728fw THE LEGEND NAMES (owner-ruled on the glass, Oct 11): the word on the chart sat where today's line ends and was buried by it; the legend's dashed key carries the name alone */
       return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
@@ -13256,27 +13268,34 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var res=pwScrubRes(m,t);
       var lx=(res.t!=null?res.t:t);
       var xPx=((lx-m.t0)/(m.t1-m.t0))*rect.width;
-      var line=sc.querySelector(".pw-scl"),dot=sc.querySelector(".pw-scd"),pill=sc.querySelector(".pw-scp");
+      var line=sc.querySelector(".pw-scl"),dot=sc.querySelector(".pw-scd"),pill=sc.querySelector(".pw-scp"),tdot=sc.querySelector(".pw-sct");
       line.style.left=xPx.toFixed(1)+"px";
+      var pad=3,ih=76-pad*2,ty9=(res.t!=null)?pwScrubTyp(m,res.t):null; /* 0728gb: the typical at this moment, where the chart drew one (today, live) */
+      if(tdot){if(ty9!==null&&res.v!=null){tdot.style.left=xPx.toFixed(1)+"px";tdot.style.top=(pad+ih-(ty9/m.vMax)*ih).toFixed(1)+"px";tdot.style.display="";}else tdot.style.display="none";}
       if(res.v!=null){
-        var pad=3,ih=76-pad*2,y=pad+ih-(res.v/m.vMax)*ih;
+        var y=pad+ih-(res.v/m.vMax)*ih;
         dot.style.left=xPx.toFixed(1)+"px";dot.style.top=y.toFixed(1)+"px";dot.style.display="";
         var c=pwWaitCol(res.v);
         var g=pwScrubWx(res.t);
-        pill.innerHTML=pwClkM(res.t)+'<b style="color:'+c+'">'+res.v+'m</b>'+(g?'<em>'+g+'</em>':'');
+        pill.innerHTML='<span class="v"><b style="color:'+c+'">'+res.v+'m</b>'+(ty9!==null?'<i>typical '+Math.round(ty9)+'m</i>':'')+'</span><span class="s">'+pwClk(res.t)+(g?'<em>'+g+'</em>':'')+'</span>';
       }else{
         dot.style.display="none";
         if(res.down){
           /* the sky keeps talking during outages (0705n): same descriptive
              nearest-sample glyph the wait branch wears — context, never cause */
           var gd=pwScrubWx(res.t);
-          pill.innerHTML=pwClkM(res.t)+'<b style="color:#8c96b9">Down</b>'+(gd?'<em>'+gd+'</em>':'');
+          pill.innerHTML='<span class="v"><b style="color:#8c96b9">Down</b></span><span class="s">'+pwClk(res.t)+(gd?'<em>'+gd+'</em>':'')+'</span>';
         }else{
-          pill.innerHTML='<b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":res.kind==="refurb"?"Refurb":"No data")+'</b>';
+          pill.innerHTML='<span class="v"><b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":res.kind==="refurb"?"Refurb":"No data")+'</b></span>';
         }
       }
-      var pw2=pill.offsetWidth||60,half=pw2/2+2;
-      pill.style.left=Math.min(Math.max(xPx,half),rect.width-half).toFixed(1)+"px";
+      pill.style.left="";
+    }
+    function pwScrubTyp(m,t){ /* 0728gb: the typical at minute t, read off the drawn runs (m.tyR) by the same straight lines; null where no typical was drawn */
+      var R=m&&m.tyR,i,j;if(!R)return null;
+      for(i=0;i<R.length;i++){var r=R[i];if(t<r[0][0]||t>r[r.length-1][0])continue;
+        for(j=0;j<r.length-1;j++){var a=r[j],b=r[j+1];if(t>=a[0]&&t<=b[0])return b[0]===a[0]?a[1]:a[1]+(b[1]-a[1])*(t-a[0])/(b[0]-a[0]);}}
+      return null;
     }
     function pwScrubShow(sc,clientX){
       var rid=sc.getAttribute("data-pwsc"),reg=pwScrubReg[rid];if(!reg)return;
