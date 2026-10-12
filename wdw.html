@@ -2580,7 +2580,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fy</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fz</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9362,11 +9362,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var c=new Date(inf.close).getTime();if(isNaN(c)||Date.now()<=c)return false;
       return !tySweep(r.park);}catch(e){return false;}
   }
-  function rsPre(rid){ /* 0728fy: {park,at} while this ride's park has not yet opened today (the published open, on the absolute clock), else null. Unknown hours answer null and the sheet speaks as it did. */
+  function rsPre(rid){ /* 0728fy/fz: {park,at,ee} while this ride has not yet started today, else null. 0728fz SAME QUESTION, SAME ANSWER (owner glass 2:53 AM Oct 12: the card said 9 AM beside the sentence's and the Today board's 8:30 AM): the clock is the Today board rail's own rule (tdNvRail, 0723m) — a ride whose banked tape starts before the gate, on a morning with an earlier window, opens with that window and wears its name; every other ride opens with its park. Unknown hours answer null and the sheet speaks as it did. */
     try{var r=roster[rid],inf=r&&parkInfo[r.park],lv=liveById[rid];if(!inf||!inf.open)return null;
       if(lv&&lv.status==="REFURBISHMENT")return null; /* a ride in refurbishment does not start with its park */
-      var o=new Date(inf.open).getTime();if(isNaN(o)||Date.now()>=o)return null;
-      var at=fmtClock(inf.open);return at?{park:r.park,at:at}:null;}catch(e){return null;}
+      var o=new Date(inf.open).getTime();if(isNaN(o))return null;
+      var ty=rsTyp(rid),ts=(ty&&ty.length)?ty[0][0]-15:null,ee=null,ei;
+      if(ts!==null&&ts<rcEtMin(new Date(inf.open))&&inf.extras){for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&new Date(ex.open).getTime()<o){ee=ex;break;}}}
+      var st=ee?new Date(ee.open).getTime():o;if(isNaN(st)||Date.now()>=st)return null;
+      var at=fmtClock(ee?ee.open:inf.open);return at?{park:r.park,at:at,ee:ee?(ee.desc||"Early Entry"):null}:null;}catch(e){return null;}
   }
   function rsHTML(rid,anim){
     var r=roster[rid]||{},lv=liveById[rid],has=lv&&lv.status==="OPERATING"&&lv.wait!==null,rd=rsRead(rid),prof=rpCuratedRide(r);
@@ -9376,7 +9379,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'★':'☆')+'</button></div>';
     if(rd.why||rd.brg)h+='<div class="rs-read">'+(rd.brg?'<span class="td-brg">'+esc(rd.brg)+'</span> ':'')+esc(rd.why)+'</div>';
     var pre=(rsData===null)?rsPre(rid):null; /* 0728fy THE HERO EXPLAINS THE MORNING (owner-ruled C on before-opening-mock-C.png, Oct 11): before its park opens, with nothing banked, the card says when the park opens instead of reporting a gap, and the recap door points at yesterday */
-    if(pre)h+='<div class="pw-hero rs-hero"><div class="k">Today</div><div class="sub">'+esc(pre.park)+' opens at '+esc(pre.at)+'. Today’s waits start then.</div></div>';
+    if(pre)h+='<div class="pw-hero rs-hero"><div class="k">Today</div><div class="sub">'+(pre.ee?'Opens at '+esc(pre.at)+' with '+esc(pre.ee):esc(pre.park)+' opens at '+esc(pre.at))+'. Today’s waits start then.</div></div>';
     else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':'Today · so far')+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">No samples yet today.</div>'))+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
     if(rsData&&rsData.tiles)h+=rsData.tiles;
     h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
@@ -12780,6 +12783,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwW(w){w=w||60;return w>=50?"hour":w+" min";} /* 0712h: window phrase \u2014 v3.8.2 samples carry w; legacy defaults to the hour */
     function pwClk(m){var h=Math.floor(m/60),mm=m%60,ap=h<12?"AM":"PM",h12=((h+11)%12)+1;return h12+":"+(mm<10?"0":"")+mm+" "+ap;}
     function pwClkS(m){var h=Math.floor(m/60),ap=h<12?"a":"p",h12=((h+11)%12)+1;return h12+ap;}
+    function pwClkSm(m){m=Math.round(m);var h=Math.floor(m/60)%24,mm=m%60,ap=h<12?"a":"p",h12=((h+11)%12)+1;return h12+(mm?":"+(mm<10?"0":"")+mm:"")+ap;} /* 0728fz: the short clock with its minutes, for a chart end that is not on the hour */
     function pwPA(p){return ({"Magic Kingdom":"MK","Hollywood Studios":"HS","Animal Kingdom":"AK","EPCOT":"EPCOT"})[p]||p;}
     window.__pwWx={derive:wxDerive,cls:wxClass,sun:wxSun}; /* 0728fj THE SKY OVER THE BOARD: the Live hero reads the current sky through this module’s own door, so the hero and the Weather page cannot disagree */
     function wxDerive(d){
@@ -13089,7 +13093,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var m=pwBandModel(rid,su);if(!m)return"";
       var t0=m.t0,t1=m.t1,vMax=m.vMax,H=76,pad=3,ih=H-pad*2,i,j,k;
       var tyP=[]; /* 0728fr THE DAY AGAINST ITS TYPICAL (owner-ruled T-2, Oct 11): typ = [[minute, median]] from the Today board's own curve, or absent. Drawn only when a caller hands it (today, live); the scale grows to hold it, and the model carries the new scale so the scrub lens still lands on the line. */
-      if(typ&&typ.length){for(i=0;i<typ.length;i++)if(typ[i][0]>=t0&&typ[i][0]<=t1)tyP.push(typ[i]);if(tyP.length<2)tyP=[];for(i=0;i<tyP.length;i++)if(tyP[i][1]>vMax)vMax=tyP[i][1];m.vMax=vMax;}
+      var tyR=[]; /* 0728fz THE TYPICAL REACHES THE EDGES (owner glass 8:44 AM Oct 12: on a 75-minute chart the dashed line floated in the middle). A typical point is one half-hour's median, drawn at the half-hour's middle; the line now holds that value out to its own half-hour's ends, joins only neighbouring half-hours, and is cut at the chart's edges. tyR = the runs to draw. */
+      if(typ&&typ.length){for(i=0;i<typ.length;i++)if(typ[i][0]+15>t0&&typ[i][0]-15<t1)tyP.push(typ[i]);if(tyP.length<2)tyP=[];for(i=0;i<tyP.length;i++)if(tyP[i][1]>vMax)vMax=tyP[i][1];m.vMax=vMax;
+        var tyRun=[],tyAll=[];for(i=0;i<tyP.length;i++){if(tyRun.length&&tyP[i][0]-tyRun[tyRun.length-1][0]>30){tyAll.push(tyRun);tyRun=[];}tyRun.push(tyP[i]);}if(tyRun.length)tyAll.push(tyRun);
+        for(i=0;i<tyAll.length;i++){var tp=[[tyAll[i][0][0]-15,tyAll[i][0][1]]].concat(tyAll[i]).concat([[tyAll[i][tyAll[i].length-1][0]+15,tyAll[i][tyAll[i].length-1][1]]]),to=[],tq;
+          for(tq=0;tq<tp.length-1;tq++){var ta=tp[tq],tb=tp[tq+1];if(tb[0]<=t0||ta[0]>=t1)continue;
+            var tx0=Math.max(ta[0],t0),tx1=Math.min(tb[0],t1),tw=tb[0]-ta[0];
+            if(!to.length)to.push([tx0,tw?ta[1]+(tb[1]-ta[1])*(tx0-ta[0])/tw:ta[1]]);
+            to.push([tx1,tw?ta[1]+(tb[1]-ta[1])*(tx1-ta[0])/tw:ta[1]]);}
+          if(to.length>1)tyR.push(to);}}
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
       var lineD="",glowD="";
@@ -13138,11 +13150,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         ticks+='<i style="left:'+X(m.ticks[i].t)+'%"></i><span style="left:'+X(m.ticks[i].t)+'%">'+m.ticks[i].label+'</span>';
       }
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
-        :('<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div>');
+        :('<div class="pw-times"><span>'+pwClkSm(t0)+'</span><span>'+pwClkSm(t1)+'</span></div>'); /* 0728fz THE ENDS SAY THEIR MINUTES (owner glass 8:44 AM Oct 12: a 7:30–8:44 chart was labelled 7a and 8a) */
       var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i style="background:'+PW_TIER.down+'"></i>down</span></div>';
       pwScrubReg[rid]={m:m,su:su};pwScrubInit();
       var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-scd"></b><span class="pw-scp"></span></div>';
-      var tyD="",tyL="";if(tyP.length){for(k=0;k<tyP.length;k++)tyD+=(k?"L":"M")+X(tyP[k][0])+" "+Y(tyP[k][1]);} /* 0728fw THE LEGEND NAMES (owner-ruled on the glass, Oct 11): the word on the chart sat where today's line ends and was buried by it; the legend's dashed key carries the name alone */
+      var tyD="",tyL="",tk;for(k=0;k<tyR.length;k++)for(tk=0;tk<tyR[k].length;tk++)tyD+=(tk?"L":"M")+X(tyR[k][tk][0])+" "+Y(tyR[k][tk][1]); /* 0728fw THE LEGEND NAMES (owner-ruled on the glass, Oct 11): the word on the chart sat where today's line ends and was buried by it; the legend's dashed key carries the name alone */
       return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
         +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
