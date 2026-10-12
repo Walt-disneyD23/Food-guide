@@ -193,6 +193,32 @@
   .ride.s-long::before{background:var(--long)} .ride.s-packed::before{background:var(--packed)}
   .ride.s-closed::before{background:var(--closed)}
   .ride:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+  /* ===== 0728fr THE RIDE'S OWN SHEET (owner-ruled S-A · T-2, Oct 11, on live-row-S-light.png / live-row-read-light.png): a ride row on Live is a door; the sheet wears the sheet family's dress (td-scrim / td-sheet / rc-grab) and the Wrap's own chart and tiles ===== */
+  .ride[data-rs]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .rs-h{display:flex;align-items:center;gap:14px;margin:0 2px 12px}
+  .rs-h .wt{font-family:var(--font-display);font-weight:700;font-size:var(--fs-wait);line-height:1;font-variant-numeric:tabular-nums;min-width:60px;text-align:center;color:var(--closed)}
+  .rs-n{flex:1;min-width:0}
+  .rs-n .nm{font:700 var(--fs-head)/1.2 var(--font-display);color:var(--ink)}
+  .rs-n .sub{font-size:var(--fs-meta);color:var(--muted);margin-top:3px}
+  .rs-read{font-size:var(--fs-body);color:var(--muted);line-height:1.45;margin:0 0 10px;padding:10px 12px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-tile)}
+  .rs-hero{padding:14px 16px 12px;margin-bottom:9px}
+  .rs-hero .pw-band{margin-top:9px;padding-top:0;border-top:0}
+  .rs-hero .pw-scrub{display:none} /* the sheet's chart is a picture; the scrub lens stays the Wrap page's */
+  .rs-hero .sub{font-size:var(--fs-small);color:var(--pwh-sub);margin-top:7px}
+  .rs-sheet .pw-tile{min-height:80px;padding:11px 13px}
+  .rs-d{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:9px;margin-top:11px}
+  .rs-door{font:600 var(--fs-body) var(--font-body);color:var(--accent);background:var(--accent-soft);border:0;border-radius:var(--r-tile);padding:13px 8px;cursor:pointer}
+  /* ===== 0728fs THE LANE AS POSTED (owner-ruled L-C · P-2, Oct 11, on live-row-final-light.png): what Disney is posting for this ride's Lightning Lane, in the sheet only. Information, never a sale. ===== */
+  .rs-ll{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:12px 13px 11px;box-shadow:var(--shadow-sm);margin-top:9px}
+  .rs-ll .k{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+  .rs-ll .r{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:6px}
+  .rs-ll .s{font-size:var(--fs-title);color:var(--ink)}
+  .rs-ll .s b{font-weight:700}
+  .rs-ll .p{font:700 var(--fs-stat)/1 var(--font-display);color:var(--ink);font-variant-numeric:tabular-nums}
+  .rs-ll .f{font-size:var(--fs-meta);color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--line);line-height:1.4}
+  .rs-ll .f b{color:var(--ink);font-weight:700}
+  .pw-band .pw-typl{position:absolute;right:0;transform:translateY(-125%);font:600 var(--fs-micro) var(--font-body);color:var(--pwh-sub);pointer-events:none}
+  .pw-legend .pw-typk::before{content:"";display:inline-block;width:14px;border-top:1.5px dashed var(--pwh-sub);margin-right:4px;vertical-align:middle}
   .ride.watched{background:var(--accent-soft);border-color:var(--accent)}
   .ride .wt{font-family:var(--font-display);font-weight:700;font-size:var(--fs-wait);line-height:1;
     font-variant-numeric:tabular-nums;min-width:60px;text-align:center;color:var(--closed)}
@@ -2554,7 +2580,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fo</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ft</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3251,11 +3277,17 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
             if(!nextShow&&times.length){var prs=uxShowsOf(e),wE=null,x;if(prs)for(x=0;x<prs.length;x++){if(prs[x].s<=now&&prs[x].e!=null&&prs[x].e>now&&(wE==null||prs[x].e>wE))wE=prs[x].e;}
             if(wE!=null)winEnd=fmtClock(new Date(wE).toISOString());else showsDone=true;} /* 0726m THE WINDOW ISN'T DONE (owner-ruled N-A): inside a still-open window speaks NOW until <end>; DONE means every window closed and every set passed */ /* 0726j C-B: the dead clock retires - a passed slate banks DONE, never the morning's first show re-worn */
           }
-          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,nextShow:nextShow,winEnd:winEnd,showsDone:showsDone,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
+          liveById[e.id]={status:e.status||"CLOSED",wait:standby,single:single,ll:ll,lane:rsLane(q),nextShow:nextShow,winEnd:winEnd,showsDone:showsDone,shows:uxShowsOf(e)}; /* L-32: full pairs banked off the same poll */
           if(e.entityType==="RESTAURANT")dineCapture(e,p.short); /* D1 0710b: dining rides the same poll — no new fetches */
         });
       }).catch(function(){});
     }));
+  }
+  function rsLane(q){ /* 0728fs THE LANE AS POSTED: {k,at,price} or null, from the same queue record the row's "Next LL" reads (the same pick, so the row and the sheet can never name two different times). k = which lane the feed carries: PAID_RETURN_TIME is the one sold per ride (Single Pass), RETURN_TIME the one that comes with Multi Pass — the feed's docs name the fields, not Disney's products, so the mapping is ours and was checked against the Disney app on Oct 11. at = the earliest return the feed is posting, or null when its state is anything but AVAILABLE. price = the posted per-ride price; whole dollars print bare. */
+    var rt=q&&(q.RETURN_TIME||q.PAID_RETURN_TIME);if(!rt)return null;
+    var paid=!q.RETURN_TIME,pr=(paid&&rt.price&&typeof rt.price.amount==="number"&&rt.price.amount>0)?rt.price:null;
+    return {k:paid?"single":"multi",at:(rt.state==="AVAILABLE"&&rt.returnStart)?fmtClock(rt.returnStart):null,
+      price:pr?((pr.currency==="USD"&&pr.amount%100===0)?"$"+(pr.amount/100):(pr.formatted||null)):null};
   }
   function fmtClock(iso){try{var m9=rcEtMin(new Date(iso));return isNaN(m9)?null:rpClk(m9);}catch(e){return null;}} /* 0724b 6A ONE CLOCK DIALECT (owner-lettered): bare hour on the hour, minutes only when real \u2014 tyClkIso\u2019s exact recipe, one dialect everywhere */
 
@@ -9296,27 +9328,105 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(show)sub+='<span class="show">Show</span>';
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
     var llLn=(lv&&lv.ll)?'<div class="ll-ln">Next LL '+esc(lv.ll)+'</div>':''; /* 0726l THE LL TAKES ITS OWN LANE (owner-ruled): out of the sub's wrap, one line always */
-    return '<div class="ride s-'+cls+(watched?' watched':'')+'">'+
+    return '<div class="ride s-'+cls+(watched?' watched':'')+'"'+(r.kind==="ride"?' data-rs="'+esc(r.id)+'" role="button" tabindex="0"':'')+'>'+ /* 0728fr: a ride row opens its sheet; shows and meets stay as they were (owner: rides only) */
+
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div>'+llLn+'</div>'+
       (r.kind==="ride"?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':'')+ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
 '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
+  /* ===== 0728fr THE RIDE'S OWN SHEET. Tap a ride row on Live: its day so far (the Wrap's own chart and four tiles, in live tense, through __ppRideSheet) and its read (the Today board's own sentence for this one ride). ONE ENGINE: nothing here computes a wait, a typical or a sentence of its own — rsRead CALLS tdCurve, tdEng, tdWhy and tdBridgeFace exactly as the board's row does and changes none of them (owner, Oct 11: the board's engines stay as they are). The sheet never says GO NOW, crowns nothing and orders nothing; the board's "— anytime" tail is its advice about order, so the sheet leaves it off. ===== */
+  var rsId=null,rsEl=null,rsData,rsTok=0,rsPoll=null;
+  function rsTyp(rid){ /* today's typical by half-hour, the board's own curve: [[minute at the half-hour's middle, median]] or null */
+    try{var r=roster[rid];if(!r||!rpCuratedRide(r)||!rpDigs)return null;
+      var ds=tpToday(),cx=tdCurve(rid,rpHmWd(ds),tpWdSet(tyT()),tdFace(ds,r.park));if(!cx)return null;
+      return cx.cv.bs.map(function(b){return [b.t+15,b.med];});}catch(e){return null;}
+  }
+  function rsRead(rid){ /* {why,brg}: the board row's two lines for this ride, right now; empty strings where the board itself would have nothing to say */
+    var o={why:"",brg:""},r=roster[rid];if(!r||!rpCuratedRide(r)||!rpDigs)return o;
+    try{
+      var pk=r.park,ds=tpToday(),hrs=tdHours(ds,pk),inf=parkInfo[pk]||null,swp=tySweep(pk);
+      if(hrs.o===null&&inf&&inf.open){var c9=inf.close?rcEtMin(new Date(inf.close)):null;if(c9!==null&&c9<360)c9+=1440;hrs={o:rcEtMin(new Date(inf.open)),c:c9};} /* the month not warmed yet: today's own published hours, the same clock */
+      if(swp)hrs={o:hrs.o,c:swp.c};
+      var nowT=tdNow(),sm=nowT-(nowT%30),cx=tdCurve(rid,rpHmWd(ds),tpWdSet(tyT()),tdFace(ds,pk));if(!cx)return o;
+      var it=tdEng([{id:rid,nm:r.name,cvx:cx}],sm,hrs.c,{},nowT,hrs.c,null).ord[0];if(!it||!it.cv)return o;
+      var keep=tdWhy.pk;tdWhy.pk=pk;var w=tdWhy(it,sm,hrs.o,false);tdWhy.pk=keep;
+      o.why=w.replace(" — anytime.",".");
+      var lv=liveById[rid],bs=it.cv.bs,q,ty=null;for(q=0;q<bs.length;q++)if(bs[q].t<=nowT&&nowT<bs[q].t+30){ty=bs[q].med;break;}
+      if(lv&&lv.status==="OPERATING"&&lv.wait!==null){var sp=tdBridgeFace(lv.wait,ty);if(sp)o.brg="Today’s running "+sp+" typical.";}
+    }catch(e){}
+    return o;
+  }
+  function rsHTML(rid,anim){
+    var r=roster[rid]||{},lv=liveById[rid],has=lv&&lv.status==="OPERATING"&&lv.wait!==null,rd=rsRead(rid),prof=rpCuratedRide(r);
+    var h='<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
+      '<div class="rs-h"><div class="wt '+tierOf(lv)+'">'+(has?lv.wait+'<small>min</small>':'<span style="font-size:18px">—</span><small>'+statusLabel(lv)+'</small>')+'</div>'+
+      '<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' · '+esc(r.category):'')+'</div></div>'+
+      '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'★':'☆')+'</button></div>';
+    if(rd.why||rd.brg)h+='<div class="rs-read">'+(rd.brg?'<span class="td-brg">'+esc(rd.brg)+'</span> ':'')+esc(rd.why)+'</div>';
+    if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&rsData.live===false)?'Today':'Today · so far')+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">No samples yet today.</div>'))+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */
+    if(rsData&&rsData.tiles)h+=rsData.tiles;
+    h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
+    h+='<div class="rs-d"><button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>'+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':'')+'</div></div>';
+    return h;
+  }
+  function rsLL(rid){ /* 0728fs THE LANE AS POSTED (owner-ruled, Oct 11 — L-C: the time and the price · P-2: the price always shown · one earliest time, never a window · "Not offered right now" · rides only). The guest SEES what is on offer; nothing here sells, links or books — the stamp sends them to Disney's app. Silent for a ride whose record carries no lane. The stamp's clock is this app's last read of the feed. */
+    var lv=liveById[rid],l=lv&&lv.lane;if(!l)return "";
+    var at=lastUpdated?fmtClock(lastUpdated.toISOString()):null;
+    return '<div class="rs-ll"><div class="k">Lightning Lane · '+(l.k==="single"?"Single Pass":"Multi Pass")+'</div>'+
+      '<div class="r"><span class="s">'+(l.at?'Earliest time <b>'+esc(l.at)+'</b>':'<b>Not offered right now</b>')+'</span>'+(l.price?'<span class="p">'+esc(l.price)+'</span>':'')+'</div>'+
+      '<div class="f"><b>As posted'+(at?' '+esc(at):'')+'.</b> Times and prices change. Check and book in the Disney app.</div></div>';
+  }
+  function rsPaint(anim){
+    if(!rsId||!rsEl)return;
+    var old=rsEl.querySelector(".rs-sheet"),st=old?old.scrollTop:0;
+    rsEl.innerHTML=rsHTML(rsId,anim);
+    var sh=rsEl.querySelector(".rs-sheet"),sc=rsEl.querySelector(".rs-scrim");if(sh&&st)sh.scrollTop=st;
+    if(sc)sc.addEventListener("click",rsClose);
+    if(sh)sheetDragDismiss(sh,sc,rsClose); /* one implementation, every sheet (0714q) */
+    bindStars(rsEl);
+    Array.prototype.forEach.call(rsEl.querySelectorAll("[data-rsd]"),function(b){b.addEventListener("click",function(){
+      var id=rsId,r=roster[id]||{},k=b.getAttribute("data-rsd");rsClose();
+      if(k==="prof")rpOpenProfileFrom(id);else if(window.__ppRideToday)window.__ppRideToday(id,r.park);});});
+  }
+  function rsFetch(){ /* the day so far, from the Wrap's own engines; a late answer for a sheet that has moved on is dropped */
+    var id=rsId,r=roster[id]||{},tok=++rsTok;
+    if(!window.__ppRideSheet){rsData=null;rsPaint();return;}
+    window.__ppRideSheet(id,r.park,rsTyp(id),function(o){if(tok!==rsTok||rsId!==id)return;rsData=o||null;rsPaint();});
+  }
+  function rsOpen(rid){
+    if(!roster[rid])return;
+    if(!rsEl){rsEl=document.createElement("div");rsEl.id="rsHost";document.body.appendChild(rsEl);}
+    rsId=rid;rsData=undefined;rsPaint(true);
+    rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();
+    rsFetch();
+    clearInterval(rsPoll);
+    if(!rpDigs){var n9=0;rsPoll=setInterval(function(){n9++;if(rsId!==rid||n9>20){clearInterval(rsPoll);return;}if(rpDigs){clearInterval(rsPoll);rsFetch();}},500);} /* the read and the typical line arrive with the day ledger */
+  }
+  function rsClose(){rsId=null;rsTok++;clearInterval(rsPoll);if(rsEl)rsEl.innerHTML="";}
+  function rsBind(scope){ /* every Live render re-binds its rows; an open sheet repaints so its wait and its read keep up with the poll */
+    if(scope===rsEl)return;
+    Array.prototype.forEach.call(scope.querySelectorAll(".ride[data-rs]"),function(el){
+      el.addEventListener("click",function(){rsOpen(el.getAttribute("data-rs"));});
+      el.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();rsOpen(el.getAttribute("data-rs"));}});});
+    if(rsId)rsPaint();
+  }
   function bindStars(scope){
+rsBind(scope); /* 0728fr: the rows are doors */
 /* Cut 3 (0719w) — two channels, one grammar: ★ collects (the container), the bell arms the
    threshold rule INSIDE it. Un-starring removes the rule with the star (breadcrumbed, undoable);
    the bell on an unstarred ride stars + arms in one gesture (mrBellTap owns that path). */
 Array.prototype.forEach.call(scope.querySelectorAll(".star"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
 var adding=!watch[id];var r=roster[id],nm=r?r.name:"Ride";
-if(adding){watch[id]=true;store.set("watch",Object.keys(watch));pushToast("★ Starred",nm+" — seated in MY RIDES");render();return;}
+if(adding){watch[id]=true;store.set("watch",Object.keys(watch));tyStarSync(id,true);pushToast("★ Starred",nm);render();return;}
 var hadRule=!!armed[id];
 var hadWatch=!!reopen[id],hadOnly=!!reopenOnly[id],hadHand=!!handArm[id]; /* 0720q (S4x): capture before the take - a transition-born watch cannot re-derive itself */
-delete watch[id];store.set("watch",Object.keys(watch));
+delete watch[id];store.set("watch",Object.keys(watch));var seat9=tyStarSync(id,false); /* 0728fp: the seat leaves today’s board with the star; seat9 is where it sat */
 if(hadRule){delete armed[id];delete alertState[id];saveArmed();saveAlertState();logAlertEv(id,"unstar-disarmed");}
 if(hadWatch||hadOnly){delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();saveReopen();saveReopenOnly();logAlertEv(id,"unstar-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
 updateAlertBadge();
-pushUndoToast("Removed from My Rides",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(hadRule){armed[id]=true;saveArmed();}if(hadWatch){reopen[id]=true;saveReopen();if(hadHand){handArm[id]=Date.now();saveHandArm();}}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Back in My Rides",nm);render();});
+pushUndoToast("Star removed",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(seat9)tyStarSync(id,true,seat9);if(hadRule){armed[id]=true;saveArmed();}if(hadWatch){reopen[id]=true;saveReopen();if(hadHand){handArm[id]=Date.now();saveHandArm();}}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Starred",nm);render();});
 render();});});
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
@@ -9395,6 +9505,28 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyRec(){return tyRaw()||{ds:tyDs(),park:null,byPark:{}};}
   function tyCell(o,pk){var b=o.byPark||(o.byPark={});return b[pk]||(b[pk]={rides:null,done:[],pins:{}});} /* rides null = never seeded; [] = the user's own emptying stands */
   function tyCellRead(o,pk){return (o.byPark||{})[pk]||{rides:null,done:[],pins:{}};}
+  function tyStarSync(rid,on,back){ /* 0728fp A STAR IS A SEAT ON TODAY'S BOARD (owner-ruled Q-A, Oct 11; owner glass Oct 8 while recording for App Review: two Animal Kingdom rides re-starred and never returned to Today — "that's how we advertise it"). The board was seeded from the stars ONCE (Today-Spec §3, 0721d, 0728ch); a star tapped after that never reached it. Now the TAP is the event: starring seats the ride on today's board for its park, unstarring takes it off, UNDO puts it back where it sat. Nothing is re-read in the background, so the guest's own edits stand: a ride added for today only was never starred and no star event touches it; a starred ride removed by hand stays off until it is starred again. A never-seeded board is left to its seed (THE EMPTY SEED NEVER PLANTS stands). ONE DAY, ONE TRUTH: a trip that plans today at this park owns the list. Today only — planned days ahead are banked. Returns the seat it took on an unstar ({i,pin,done}) for the undo; null otherwise. */
+    var r=roster[rid];if(!r||!rpCuratedRide(r))return null;
+    var pk=r.park,ds=tyDs(),t=tyBridge(pk),a,j;
+    if(t){
+      a=(t.rides||{})[ds];if(!a)return null;j=a.indexOf(rid);
+      if(!on){if(j<0)return null;var m={i:j,pin:((t.pins||{})[ds]||{})[rid]||null,done:((t.done||{})[ds]||[]).indexOf(rid)>=0};tdRemove(t.id,ds,rid);return m;}
+      if(j>=0)return null;
+      var ts=tpTrips(),i;
+      for(i=0;i<ts.length;i++)if(ts[i].id===t.id){
+        var b=(ts[i].rides||{})[ds];if(!b||b.indexOf(rid)>=0)return null;
+        b.splice((back&&back.i>=0&&back.i<=b.length)?back.i:b.length,0,rid);
+        if(back&&back.pin){if(!ts[i].pins)ts[i].pins={};(ts[i].pins[ds]||(ts[i].pins[ds]={}))[rid]=back.pin;}
+        if(back&&back.done){if(!ts[i].done)ts[i].done={};var d=ts[i].done[ds]||(ts[i].done[ds]=[]);if(d.indexOf(rid)<0)d.push(rid);}
+        store.set("ppTrips",ts);return null;}
+      return null;
+    }
+    var o=tyRaw();if(!o)return null;var c=(o.byPark||{})[pk];if(!c||!c.rides)return null;
+    j=c.rides.indexOf(rid);
+    if(!on){if(j<0)return null;c.rides.splice(j,1);tySave(o);return {i:j};}
+    if(j>=0)return null;
+    c.rides.splice((back&&back.i>=0&&back.i<=c.rides.length)?back.i:c.rides.length,0,rid);tySave(o);return null;
+  }
   function tySeed(pk){ /* stars ∩ the park's curated roster (B) */
     var out=[],id;for(id in watch){var r=roster[id];if(r&&r.park===pk&&rpCuratedRide(r))out.push(id);}
     out.sort(function(a,b){return (((roster[a]||{}).name)||"").localeCompare((((roster[b]||{}).name)||""));});
@@ -10428,7 +10560,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var r=roster[id],nm=r?r.name:"Ride";
     if(r&&r.kind&&r.kind!=="ride")return; /* 0726j: no bell renders on a KNOWN show; a stray tap arms nothing - kindless keeps the doubt */
     if(!armed[id]){
-      if(!watch[id]){watch[id]=true;store.set("watch",Object.keys(watch));logAlertEv(id,"star-armed");}
+      if(!watch[id]){watch[id]=true;store.set("watch",Object.keys(watch));tyStarSync(id,true);logAlertEv(id,"star-armed");}
       armed[id]=true;delete alertState[id];saveAlertState();saveArmed();
       var o=overrides[id],rl=((o&&o.dir)||settings.dir)+" "+((o&&o.thresh)||settings.thresh)+"m"+((o&&(o.dir||o.thresh))?"":" (default)"); /* 0723b F: per-field - a dnup-only override still speaks the default rule, tagged honestly; inline so the bell keeps its collaborator set */
       pushToast("Alert set",nm+" — "+rl) /* 0726b: the toast family speaks emoji-free */;
@@ -10923,7 +11055,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var cache={},cacheAt={},curTab="yesterday",active=false,lastData=null,lastTab=null;
     function $id(id){return document.getElementById(id);}
     function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-    function tier(m){return m>=45?"pw-p":m>=30?"pw-l":m>=15?"pw-m":"pw-s";}
+    function tier(m){var b9=tierOfWait(m);return b9==="packed"?"pw-p":b9==="long"?"pw-l":b9==="medium"?"pw-m":"pw-s";} /* 0728fq THE WRAP JOINS LIVE'S BANDS (owner-ruled B-1, Oct 11, on live-row-bands-light.png; ONE BAND VOCABULARY): Live has painted waits by 20 / 45 / 70 since 0728cn (tierOfWait, the four bands' one home); the Wrap still painted by 15 / 30 / 45 — its tiles, its average rows, its day band, its scrub pill and the ride share card. A 30-minute wait was amber on the Live row and orange one tap away. The Wrap asks the one home now. */
+    function pwWaitCol(v){return PW_TIER[tierOfWait(v)];} /* 0728fq: the day band and the scrub pill ask here — one door for a wait's colour on the Wrap */
     function topw(){try{window.ppShl().scrollTo(0,0);}catch(e){}}
 
     function etDate(off){
@@ -11204,6 +11337,30 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();}).then(function(d){
         pwCleanData(d);go(d);
       })["catch"](function(){cb(null);});
+    };
+    window.__ppRideSheet=function(rid,park,typ,cb){ /* 0728fr: the Live sheet's day so far — today's chart and tiles from the REAL builders (pwSparkBand, pwRideTiles, pwSustained, findRide), never re-implemented. They read lastData, so today's day is lent to them for one synchronous pass and what was there is put back whatever happens; the scrub registration is put back too. Reuses the Wrap's today cache only while FRESH (5 min) and never writes it (the __ppTodayRide law). */
+      function go(d){
+        var out=null,kD=lastData,kT=lastTab,kR=pwScrubReg[rid],hadR=(rid in pwScrubReg);
+        try{lastData=d;lastTab="today";
+          var r=findRide(park,rid);
+          if(r){var live=!isFinal(d),su=pwSustained(r.id),rK=pwRideWxK(false,live),rC=rK?pwWxClause(r.id,wxDerive(d),rK):"";
+            out={band:pwSparkBand(r.id,su,typ),tiles:pwRideTiles(r,su,park,false,live,rC,rK)};out.live=live; /* 0728ft: the sheet's heading takes its tense from the same flag the tiles do */}
+        }catch(e){out=null;}
+        finally{lastData=kD;lastTab=kT;if(hadR)pwScrubReg[rid]=kR;else delete pwScrubReg[rid];}
+        cb(out);
+      }
+      var c=cache["today"];
+      if(c&&cacheAt["today"]&&Date.now()-cacheAt["today"]<5*60*1000){go(c);return;}
+      fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();}).then(function(d){
+        pwCleanData(d);go(d);
+      })["catch"](function(){cb(null);});
+    };
+    window.__ppRideToday=function(rid,park){ /* 0728fr: the sheet's door to the page that already exists — Wrap › Today › park › ride; walks the real nav path (0716o) */
+      var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
+      loadTab("today");
+      function land(){if(active&&curTab==="today"&&lastTab==="today"&&lastData)showRide(rid,park);}
+      if(cache["today"]){land();return;}
+      var n9=0,iv=setInterval(function(){n9++;if(cache["today"]){clearInterval(iv);land();}else if(n9>40||curTab!=="today")clearInterval(iv);},250);
     };
     window.__ppVisitRideDay=function(ds,rid,park){ /* 0721k: the profile chip door — a door lands where it points; reuses the real nav path (0716o) */
       var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
@@ -12827,7 +12984,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var runs=[],cur=null,prevT=null;
       for(i=0;i<raw.length;i++){
         var rt2=raw[i][0],v2=raw[i][1];
-        var cc=v2<0?PW_TIER.down:(v2>=45?PW_TIER.packed:v2>=30?PW_TIER.long:v2>=15?PW_TIER.medium:PW_TIER.short);
+        var cc=v2<0?PW_TIER.down:pwWaitCol(v2);
         if(cur&&rt2-prevT>17.5){cur.end=prevT+5;runs.push(cur);cur=null;}
         if(!(cur&&cur.c===cc)){if(cur)runs.push(cur);cur={c:cc,t0:rt2};}
         prevT=rt2;
@@ -12901,9 +13058,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
        x = time in 0-100 viewBox units stretched to the card width
        (vector-effect keeps the stroke crisp); y = 0..day max. */
-    function pwSparkBand(rid,su){
+    function pwSparkBand(rid,su,typ){
       var m=pwBandModel(rid,su);if(!m)return"";
       var t0=m.t0,t1=m.t1,vMax=m.vMax,H=76,pad=3,ih=H-pad*2,i,j,k;
+      var tyP=[]; /* 0728fr THE DAY AGAINST ITS TYPICAL (owner-ruled T-2, Oct 11): typ = [[minute, median]] from the Today board's own curve, or absent. Drawn only when a caller hands it (today, live); the scale grows to hold it, and the model carries the new scale so the scrub lens still lands on the line. */
+      if(typ&&typ.length){for(i=0;i<typ.length;i++)if(typ[i][0]>=t0&&typ[i][0]<=t1)tyP.push(typ[i]);if(tyP.length<2)tyP=[];for(i=0;i<tyP.length;i++)if(tyP[i][1]>vMax)vMax=tyP[i][1];m.vMax=vMax;}
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
       var lineD="",glowD="";
@@ -12953,17 +13112,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
         :('<div class="pw-times"><span>'+pwClkS(t0)+'</span><span>'+pwClkS(t1)+'</span></div>');
-      var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>&lt;15m</span><span><i style="background:'+PW_TIER.medium+'"></i>15-29</span><span><i style="background:'+PW_TIER.long+'"></i>30-44</span><span><i style="background:'+PW_TIER.packed+'"></i>45m+</span><span><i style="background:'+PW_TIER.down+'"></i>down</span></div>';
+      var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i style="background:'+PW_TIER.down+'"></i>down</span></div>';
       pwScrubReg[rid]={m:m,su:su};pwScrubInit();
       var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-scd"></b><span class="pw-scp"></span></div>';
+      var tyD="",tyL="";if(tyP.length){for(k=0;k<tyP.length;k++)tyD+=(k?"L":"M")+X(tyP[k][0])+" "+Y(tyP[k][1]);tyL='<span class="pw-typl" style="top:'+Y(tyP[tyP.length-1][1])+'px">typical</span>';}
       return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
         +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
+        +(tyD?'<path class="pw-typ" d="'+tyD+'" fill="none" stroke="#e6e9fb" stroke-opacity=".8" stroke-width="1.2" stroke-dasharray="3 2.5" vector-effect="non-scaling-stroke"/>':'')
         +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
-        +'</svg>'+dots+vl+scrub+'</div>'
+        +'</svg>'+dots+vl+tyL+scrub+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
         +pwSkyLane(m)
-        +tickRow+leg+'</div>';
+        +tickRow+(tyD?leg.replace('</div>','<span class="pw-typk">typical</span></div>'):leg)+'</div>';
     }
     function pwDayStrikes(){
       var S=lastData&&lastData.ltg&&lastData.ltg.samples;if(!S)return 0;
@@ -13057,7 +13218,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(res.v!=null){
         var pad=3,ih=76-pad*2,y=pad+ih-(res.v/m.vMax)*ih;
         dot.style.left=xPx.toFixed(1)+"px";dot.style.top=y.toFixed(1)+"px";dot.style.display="";
-        var c=res.v>=45?PW_TIER.packed:res.v>=30?PW_TIER.long:res.v>=15?PW_TIER.medium:PW_TIER.short;
+        var c=pwWaitCol(res.v);
         var g=pwScrubWx(res.t);
         pill.innerHTML=pwClkM(res.t)+'<b style="color:'+c+'">'+res.v+'m</b>'+(g?'<em>'+g+'</em>':'');
       }else{
@@ -14011,7 +14172,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           ctx.textAlign="left";ctx.fillText(pwClkS(m.t0),bx,ty+36);
           ctx.textAlign="right";ctx.fillText(pwClkS(m.t1),bx+bw,ty+36);
         }
-        var lyg=ty+58,lx2=bx,IT=[["#15a36b","<15m"],["#dc8a06","15-29"],["#ef6c3b","30-44"],["#e23b54","45m+"],["#4d5578","down"]];
+        var lyg=ty+58,lx2=bx,IT=[["#15a36b","20 or less"],["#dc8a06","21-45"],["#ef6c3b","46-70"],["#e23b54","over 70"],["#4d5578","down"]];
         ctx.font=IN("500",20);ctx.textAlign="left";
         for(i=0;i<IT.length;i++){
           rr(lx2,lyg,16,16,5);ctx.fillStyle=IT[i][0];ctx.fill();
@@ -14116,6 +14277,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(lo>=cMin-60)return {w:"near close",em:""};
       return null;
     }
+    function pwRideTiles(r,su,park,isWeek,live,rClause,rKind){ /* 0728fr: the ride page's four tiles, moved here WHOLE from showRide so the Live sheet draws the same tiles from the same lines (ONE ENGINE); the statements are showRide's own, unchanged */
+      var html='';
+      html+='<div class="pw-grid">';
+      var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
+      html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
+      var lst=(su&&!isWeek)?pwLowStamp(r.id,park,su):null; /* 0721r: A' — stamps only where a single day's circumstance exists */
+      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=rpWalkNm(r.name)?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")),(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')); /* 0721s: the stamp rides tileV's NOTE slot (raw-HTML by design) — ctx is escaped (owner-caught) */
+      html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
+      html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
+      html+='</div>';
+      return html;
+    }
+    function pwRideWxK(isWeek,live){return (!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:(pwDayStrikes()>0?"storm":null);})():null;} /* 0728fr: showRide's own trigger, given a name so the Live sheet asks the same question */
     function showRide(rid,park){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       var isWeek=(lastTab==="week");
@@ -14128,7 +14302,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(rz&&pwRefurbRow(rz,park)){r=rz;r._refurb=true;}
         else{showDetail(park);return;}
       }
-      var rKind=(!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:(pwDayStrikes()>0?"storm":null);})():null; /* 0713l: sensor fallback — observed strikes earn the storm trigger; pwStormWin (dp≥8) still gates the window, so no resort hold ⇒ no clause */
+      var rKind=pwRideWxK(isWeek,live); /* 0713l: sensor fallback — observed strikes earn the storm trigger; pwStormWin (dp≥8) still gates the window, so no resort hold ⇒ no clause */
       var rClause=rKind?pwWxClause(r.id,wxDerive(lastData),rKind):"";
       var su=(!isWeek)?pwSustained(r.id):null;
       var noAvg=(r.avgWait==null);
@@ -14140,17 +14314,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button>'+(hasProf?'<button class="pw-back" type="button" id="pwFullRec">Full record \u203a</button>':'')+'</div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause)))+'</div>';
-      var band=(!isWeek)?pwSparkBand(r.id,su):"";
+      var band=(!isWeek)?pwSparkBand(r.id,su,(live&&lastTab==="today"&&!pwVisitDate())?rsTyp(r.id):null):""; /* 0728fr: today’s page draws today against its typical; a finished or visited day draws as it always has */
       html+=band+'</div>';
       if(!r._refurb){
-      html+='<div class="pw-grid">';
-      var puV=su?su.peak:r.maxWait,loV=su?su.low:r.minWait;
-      html+=tileV("Peak wait",'<span class="u">peak</span> '+(puV!=null?puV:'–')+'m',tier(puV||0),(su?"Highest sustained":"Highest of the day"),(su?("around "+pwClk(su.peakAt)):(!isWeek&&r.peakAt?("around "+fmtTime(r.peakAt)):"busiest stretch")));
-      var lst=(su&&!isWeek)?pwLowStamp(r.id,park,su):null; /* 0721r: A' — stamps only where a single day's circumstance exists */
-      html+=tileV("Lowest",'<span class="u">low</span> '+(loV!=null?loV:'–')+'m',"pw-s",(loV!=null&&loV<=rpWalkNm(r.name)?"Walk-on window":(su?"Lowest sustained":"Shortest line")),(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait")),(lst?' \u00b7 <span class="pw-stamp">'+(lst.em?lst.em+" ":"")+lst.w+'</span>':'')); /* 0721s: the stamp rides tileV's NOTE slot (raw-HTML by design) — ctx is escaped (owner-caught) */
-      html+=tileV("Reliability",(r.uptimePct!=null?r.uptimePct:'—')+'%<span class="u"> uptime</span>',relCls(r),(r.downMinutes>0?"Up vs. down":"No downtime"),(r.downMinutes>0?r.downMinutes+" min down":"ran clean"));
-      html+=tileV("Outages",r.downEvents+"×",(r.downEvents>0?"pw-l":"pw-s"),pwOutName(r,rClause,rKind),(r.downMinutes>0?r.downMinutes+" min total":"clean run"));
-      html+='</div>';
+      html+=pwRideTiles(r,su,park,isWeek,live,rClause,rKind);
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
       html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min (quick blips still show in the chart) · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
       }
