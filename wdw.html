@@ -2580,7 +2580,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ft</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fv</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9377,6 +9377,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '<div class="r"><span class="s">'+(l.at?'Earliest time <b>'+esc(l.at)+'</b>':'<b>Not offered right now</b>')+'</span>'+(l.price?'<span class="p">'+esc(l.price)+'</span>':'')+'</div>'+
       '<div class="f"><b>As posted'+(at?' '+esc(at):'')+'.</b> Times and prices change. Check and book in the Disney app.</div></div>';
   }
+  function rsShTop(){try{var sh=window.ppShl();sh.scrollTop=1;sh.scrollTop=0;}catch(_){}} /* 0728fv: the shell to its top, by a nudge that MOVES (the 0723k recipe: a same-position scroll is one WebKit may skip) */
   function rsPaint(anim){
     if(!rsId||!rsEl)return;
     var old=rsEl.querySelector(".rs-sheet"),st=old?old.scrollTop:0;
@@ -9387,7 +9388,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     bindStars(rsEl);
     Array.prototype.forEach.call(rsEl.querySelectorAll("[data-rsd]"),function(b){b.addEventListener("click",function(){
       var id=rsId,r=roster[id]||{},k=b.getAttribute("data-rsd");rsClose();
-      if(k==="prof")rpOpenProfileFrom(id);else if(window.__ppRideToday)window.__ppRideToday(id,r.park);});});
+      try{var a9=document.activeElement;if(a9&&a9.blur&&a9!==document.body)a9.blur();}catch(_){} /* 0728fv: the tapped row lets go of focus before its list leaves */
+      rsShTop(); /* 0728fv BOTH DOORS LAND AT THE TOP (owner glass 9:20 PM Oct 11, iPhone: the profile door landed past the page's end, or at its foot, until a thumb moved it — the recap door's fault, 0728fu, on the other door). The shell is carried to its top while the long list still stands, and nudged again as the new page settles. */
+      if(k==="prof"){rpOpenProfileFrom(id);rsShTop();setTimeout(rsShTop,120);setTimeout(rsShTop,450);}else if(window.__ppRideToday)window.__ppRideToday(id,r.park);});});
   }
   function rsFetch(){ /* the day so far, from the Wrap's own engines; a late answer for a sheet that has moved on is dropped */
     var id=rsId,r=roster[id]||{},tok=++rsTok;
@@ -11356,9 +11359,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       })["catch"](function(){cb(null);});
     };
     window.__ppRideToday=function(rid,park){ /* 0728fr: the sheet's door to the page that already exists — Wrap › Today › park › ride; walks the real nav path (0716o) */
+      function top9(){try{var sh=window.ppShl();sh.scrollTop=1;sh.scrollTop=0;}catch(_){}} /* 0728fu THE DOOR LANDS AT THE TOP (owner glass 9:06 and 9:18 PM Oct 11, iPhone: the recap door opened from a ride deep in the Live list landed on a blank page until a thumb pulled it down). The shell is carried to its top BEFORE the long list leaves, and nudged again once the ride page stands — the 0723k recipe: the nudge must move, a same-position scroll is one WebKit may skip. */
+      try{window.ppShl().scrollTop=0;}catch(_){}
       var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
       loadTab("today");
-      function land(){if(active&&curTab==="today"&&lastTab==="today"&&lastData)showRide(rid,park);}
+      function land(){if(active&&curTab==="today"&&lastTab==="today"&&lastData){showRide(rid,park);top9();setTimeout(top9,120);setTimeout(top9,450);}}
       if(cache["today"]){land();return;}
       var n9=0,iv=setInterval(function(){n9++;if(cache["today"]){clearInterval(iv);land();}else if(n9>40||curTab!=="today")clearInterval(iv);},250);
     };
