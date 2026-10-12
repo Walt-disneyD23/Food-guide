@@ -217,7 +217,7 @@
   .rs-ll .p{font:700 var(--fs-stat)/1 var(--font-display);color:var(--ink);font-variant-numeric:tabular-nums}
   .rs-ll .f{font-size:var(--fs-meta);color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--line);line-height:1.4}
   .rs-ll .f b{color:var(--ink);font-weight:700}
-  .pw-band .pw-typl{position:absolute;right:0;transform:translateY(-125%);font:600 var(--fs-micro) var(--font-body);color:var(--pwh-sub);pointer-events:none}
+  /* 0728fw: .pw-typl retired with its label (the legend names) */
   .pw-legend .pw-typk::before{content:"";display:inline-block;width:14px;border-top:1.5px dashed var(--pwh-sub);margin-right:4px;vertical-align:middle}
   .ride.watched{background:var(--accent-soft);border-color:var(--accent)}
   .ride .wt{font-family:var(--font-display);font-weight:700;font-size:var(--fs-wait);line-height:1;
@@ -2580,7 +2580,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728fx</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9357,6 +9357,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     }catch(e){}
     return o;
   }
+  function rsParkDone(rid){ /* 0728fx: has this ride's park closed for the day? Past the published close on the absolute clock (tySweep's own fence), and no later window of its night still running — the board's sweep answers that, and is only asked. Unknown hours answer no; after the schedule rolls to the new day the close is ahead again. */
+    try{var r=roster[rid],inf=r&&parkInfo[r.park];if(!inf||!inf.close)return false;
+      var c=new Date(inf.close).getTime();if(isNaN(c)||Date.now()<=c)return false;
+      return !tySweep(r.park);}catch(e){return false;}
+  }
   function rsHTML(rid,anim){
     var r=roster[rid]||{},lv=liveById[rid],has=lv&&lv.status==="OPERATING"&&lv.wait!==null,rd=rsRead(rid),prof=rpCuratedRide(r);
     var h='<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
@@ -9364,10 +9369,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' · '+esc(r.category):'')+'</div></div>'+
       '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'★':'☆')+'</button></div>';
     if(rd.why||rd.brg)h+='<div class="rs-read">'+(rd.brg?'<span class="td-brg">'+esc(rd.brg)+'</span> ':'')+esc(rd.why)+'</div>';
-    if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&rsData.live===false)?'Today':'Today · so far')+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">No samples yet today.</div>'))+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */
+    if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':'Today · so far')+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">No samples yet today.</div>'))+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
     if(rsData&&rsData.tiles)h+=rsData.tiles;
     h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
-    h+='<div class="rs-d"><button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>'+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':'')+'</div></div>';
+    var drs=(rsData?'<button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>':'')+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':''); /* 0728fw A DOOR NEEDS A ROOM (owner-ruled, Oct 11): the recap door stands only once today has something banked for this ride — a refurbished or all-day-closed ride has no page behind it */
+    h+=(drs?'<div class="rs-d">'+drs+'</div>':'')+'</div>';
     return h;
   }
   function rsLL(rid){ /* 0728fs THE LANE AS POSTED (owner-ruled, Oct 11 — L-C: the time and the price · P-2: the price always shown · one earliest time, never a window · "Not offered right now" · rides only). The guest SEES what is on offer; nothing here sells, links or books — the stamp sends them to Disney's app. Silent for a ride whose record carries no lane. The stamp's clock is this app's last read of the feed. */
@@ -13120,7 +13126,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i style="background:'+PW_TIER.down+'"></i>down</span></div>';
       pwScrubReg[rid]={m:m,su:su};pwScrubInit();
       var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-scd"></b><span class="pw-scp"></span></div>';
-      var tyD="",tyL="";if(tyP.length){for(k=0;k<tyP.length;k++)tyD+=(k?"L":"M")+X(tyP[k][0])+" "+Y(tyP[k][1]);tyL='<span class="pw-typl" style="top:'+Y(tyP[tyP.length-1][1])+'px">typical</span>';}
+      var tyD="",tyL="";if(tyP.length){for(k=0;k<tyP.length;k++)tyD+=(k?"L":"M")+X(tyP[k][0])+" "+Y(tyP[k][1]);} /* 0728fw THE LEGEND NAMES (owner-ruled on the glass, Oct 11): the word on the chart sat where today's line ends and was buried by it; the legend's dashed key carries the name alone */
       return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
         +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
@@ -13135,6 +13141,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var S=lastData&&lastData.ltg&&lastData.ltg.samples;if(!S)return 0;
       var t=0;for(var i=0;i<S.length;i++)t+=S[i].n||0;return t;
     }
+    function pwLaneDay(){return (lastTab==="today"&&lastData&&!isFinal(lastData)&&!pwVisitDate())?"today":"that day";} /* 0728fw TENSE FLIPS WHOLE (owner-ruled, Oct 11): a day still running counts its strikes "today"; a finished or visited day keeps "that day" */
     function pwSkyLane(m){
       /* 0713l (L-16, owner-ratified A3): the ride card's strike lane — the Sky
          Page's W2 strip, one lane, aligned to the band's own time window by
@@ -13160,7 +13167,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         pos=cb;
       }
       if(pos<t1)bars+='<i class="z sp" style="flex:'+(t1-pos)+'"></i>';
-      return '<div class="pw-rlanehead"><span>\u26a1 Lightning strikes \u00b7 10 mi</span><span>'+tot+' that day</span></div>'
+      return '<div class="pw-rlanehead"><span>\u26a1 Lightning strikes \u00b7 10 mi</span><span>'+tot+' '+pwLaneDay()+'</span></div>'
         +'<div class="ltg-strip" id="pwRLane">'+bars+'</div>';
     }
     function pwCardLane(m){
@@ -14190,7 +14197,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
              per-bar labels stay an app-side tap-reveal. */
           var ly0=by+BH,lh2=44,lby=ly0+56;
           T("\u26a1 LIGHTNING STRIKES \u00b7 10 MI",bx,ly0+28,IN("700",22),C.muted2,"left");
-          T(D.lane.tot+" that day",bx+bw,ly0+28,IN("600",22),C.muted2,"right");
+          T(D.lane.tot+" "+pwLaneDay(),bx+bw,ly0+28,IN("600",22),C.muted2,"right"); /* 0728fw: the card twin speaks the same tense */
           for(i=0;i<D.lane.bars.length;i++){
             var lb2=D.lane.bars[i],lxa=BX(lb2.a),lxb=BX(lb2.b);
             if(lb2.n>0){
