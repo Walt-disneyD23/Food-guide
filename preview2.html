@@ -229,6 +229,8 @@
   .lp-tabs button.on{background:linear-gradient(135deg,var(--pwh-bg),var(--pwh-bg2));border-color:var(--pwh-bg);color:#fff}
   .lp-tabs button.on small{color:#fff}
   .lp-note{display:none}
+  .lp-wrap{padding-bottom:8px}
+  .controls-wrap.pinned .lp-wrap{background:var(--bg);box-shadow:0 8px 10px -8px rgba(20,24,60,.18)}
   body.lp-park .ux-pks{display:none} /* preview 2: on a park page the tab is the one park control; both cards' own park chips step aside */
   body.lp-park #banners>.banner,body.lp-park #banners>.pb-board{display:none}
   body.lp-on #bk2top{display:none!important}
@@ -4028,7 +4030,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!haveShows){el.innerHTML="";return;} /* pre-poll or no showtime data: the seat stays empty */
     var now=Date.now(),res=uxRows(now,uxState.pk,uxState.all),cap=uxState.open?15:5,next=res.next.slice(0,cap);
     uxLast={now:now,pk:uxState.pk,all:uxState.all,next:res.next};
-    var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT &middot; '+(lpNm(uxState.pk)?esc(uxState.pk).toUpperCase():'LIVE SHOWS')+'</span><span>'+esc(uxClk(now))+'</span></div>';
+    var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT &middot; '+(lpNm(uxState.pk)?esc(LP_AB[uxState.pk]||uxState.pk).toUpperCase():'LIVE SHOWS')+'</span><span>'+esc(uxClk(now))+'</span></div>';
     h+='<div class="ux-pks"><button type="button" data-uxpk="all"'+(uxState.pk==="all"?' class="on"':'')+'>ALL</button>';
     PARK_DEF.forEach(function(p){h+='<button type="button" data-uxpk="'+esc(p.key)+'"'+(uxState.pk===p.key?' class="on"':'')+'>'+esc(BANNER_MONO[p.key]||p.key)+'</button>';});
     h+='</div><div class="ux-typ"><button type="button" data-uxall="0"'+(uxState.all?'':' class="on"')+'>PERFORMANCES</button><button type="button" data-uxall="1"'+(uxState.all?' class="on"':'')+'>EVERYTHING</button></div>';
@@ -4305,7 +4307,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     elBanners.innerHTML="";bannerEls={};
     function pbToggle(key,root){ /* PB (0721y): the sole expanded writer — rows and the expanded card's art share this one door */
       expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
-      if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
+      /* preview: the row tap no longer glides to the card — the park page opens at its top (this glide, then the preview's own jump to the top, was the bounce) */
     }
     pbSegA=document.createElement("div");pbSegA.className="pb-board";
     pbSegA.innerHTML='<div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliners \u00b7 All rides</span></div>'; /* S2-a eyebrow; LABELS MOVE WITH VALUES — the column label seats once; its \u24d8 explainer stays in the expanded fine print */
@@ -9459,7 +9461,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(rsId){rsMark();rsPaint();}
   }
   /* ===== PREVIEW ONLY — park tabs on Live (P-B) ===== */
-  function lpNm(k){return (document.body.classList.contains("lp-park")&&k&&k!=="all")?" \u00b7 "+esc(k):"";} /* preview 2: on a park page the card headings name the park */
+  function lpNm(k){return (document.body.classList.contains("lp-park")&&k&&k!=="all")?" \u00b7 "+esc(LP_AB[k]||k):"";} /* preview 2: on a park page the card headings name the park */
   var lpEl=null,LP_AB={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"};
   function lpGo(k){try{hlScope=k||"all";uxState.pk=k||"all";}catch(_){}expanded=k;store.set("expanded",expanded);render();try{window.ppShl().scrollTo(0,0);}catch(_){}}
   function lpSync(){
@@ -9474,7 +9476,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       lpEl.innerHTML=h+'</div><div class="lp-note">preview · park tabs</div>';
       var inPark=!!(expanded&&expanded!=="all");
       if(lpEl.getAttribute("data-k")!==String(expanded)){lpEl.setAttribute("data-k",String(expanded));try{var k9=(expanded&&expanded!=="all")?expanded:"all";hlScope=k9;uxState.pk=k9;document.body.classList.toggle("lp-park",k9!=="all"&&navTab==="live");if(typeof renderUpNext==="function")renderUpNext();if(typeof renderCrowdPulse==="function")renderCrowdPulse();}catch(_){}
-        try{var kids=[].slice.call(cw.querySelectorAll("button,select,.search-box")).filter(function(e){return e.offsetParent&&!lpEl.contains(e);}),cr=cw.getBoundingClientRect(),L=1e9,R=-1e9;kids.forEach(function(e){var b=e.getBoundingClientRect();if(b.left<L)L=b.left;if(b.right>R)R=b.right;});if(R>L){lpEl.style.marginLeft=Math.max(0,L-cr.left)+"px";lpEl.style.marginRight=Math.max(0,cr.right-R)+"px";}}catch(_){}setTimeout(function(){try{window.ppShl().scrollTo(0,0);}catch(_){}},140);}
+        try{var kids=[].slice.call(cw.querySelectorAll("button,select,.search-box")).filter(function(e){return e.offsetParent&&!lpEl.contains(e);}),cr=cw.getBoundingClientRect(),L=1e9,R=-1e9;kids.forEach(function(e){var b=e.getBoundingClientRect();if(b.left<L)L=b.left;if(b.right>R)R=b.right;});if(R>L){lpEl.className="lp-wrap";lpEl.style.paddingLeft=Math.max(0,L-cr.left)+"px";lpEl.style.paddingRight=Math.max(0,cr.right-R)+"px";}}catch(_){}try{window.ppShl().scrollTo(0,0);}catch(_){}}
       document.body.classList.add("lp-on");document.body.classList.toggle("lp-park",inPark&&navTab==="live");
     }catch(e){}
   }
