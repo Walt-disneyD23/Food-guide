@@ -1243,34 +1243,45 @@
   
   .lstat .ctx{font-size:var(--fs-caps);color:var(--muted);margin-top:3px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   
-  .lfine{display:flex;gap:14px;flex-wrap:wrap;font-size:var(--fs-meta);color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
-  .lfine b{color:var(--ink);font-weight:600}
-  /* 0709d regression fix: the fine-row ⓘ lost its styling when the old .pstat rules were swept.
-     Proper rule, 18px visual, ~34px padded tap area. */
-  .lfine .info-i{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;
+  /* 0728gh M-3 THE FINE PRINT GETS TILES (owner-ruled Oct 13 on park-card-mock.png; glass 1:31 PM, EPCOT: "everything is small"): with the share pill gone the block under Hours was the smallest type on the card. Headliner avg and Crowd take two tiles in the dress of Shortest and Longest; each keeps its ⓘ, Crowd keeps "· est." in its label. */
+  .lstat.lst-f{min-height:0}
+  .lstat.lst-f .lbl{display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .lstat.lst-f.wide .v{margin-top:9px}
+  .lstat .info-i{display:inline-grid;place-items:center;flex:none;width:18px;height:18px;border-radius:50%;
     border:1px solid var(--muted-2);color:var(--muted);background:none;padding:0;cursor:pointer;
-    position:relative;vertical-align:-3px;font:700 var(--fs-caps)/1 Inter,system-ui,sans-serif}
-  .lfine .info-i::after{content:"";position:absolute;inset:-8px}
-  .spread{padding:2px 2px 14px;border-bottom:1px solid var(--line);margin-bottom:14px}
-  .spread .k{font-size:var(--fs-caps);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
-  .spread-bar{display:flex;height:16px;border-radius:var(--r-el-sm);overflow:hidden;gap:2px;cursor:pointer}
-  .spread-bar i{display:block;height:100%;min-width:34px;transition:opacity .15s}
-  .spread-bar i.s{background:var(--short)}.spread-bar i.m{background:var(--medium)}.spread-bar i.l{background:var(--long)}.spread-bar i.p{background:var(--packed)} /* 0728ci: the fourth band */
-  .spread-bar.sel i{opacity:.28}
-  .spread-bar.sel i.active{opacity:1}
+    position:relative;font:700 var(--fs-caps)/1 Inter,system-ui,sans-serif;letter-spacing:0;text-transform:none}
+  .lstat .info-i::after{content:"";position:absolute;inset:-8px}
+  .info-note+.presult{margin-top:14px}
+  .spread{padding:2px 0 14px;border-bottom:1px solid var(--line);margin:16px 0 14px}
+  .spread .k{font-size:var(--fs-meta);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 2px 10px}
+  /* 0728gh M-3: the bar and its legend become four band tiles — each says its count and its range in words (COLOR NEVER CARRIES ALONE) and is the filter's own button, so "tap a band" names something that looks tappable. A band with no rides keeps its seat and takes no tap. */
+  .spread-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .spread-tiles .bt{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;border-radius:var(--r-tile);padding:11px 4px 10px;margin:0;
+    background:var(--card-2);font:600 var(--fs-meta) var(--font-body);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+  .spread-tiles .bt b{font:700 var(--fs-stat)/1 var(--font-display);font-variant-numeric:tabular-nums}
+  .spread-tiles .bt.s{color:var(--short);background:color-mix(in srgb,var(--short) 14%,var(--card))}
+  .spread-tiles .bt.m{color:var(--medium);background:color-mix(in srgb,var(--medium) 14%,var(--card))}
+  .spread-tiles .bt.l{color:var(--long);background:color-mix(in srgb,var(--long) 14%,var(--card))}
+  .spread-tiles .bt.p{color:var(--packed);background:color-mix(in srgb,var(--packed) 14%,var(--card))}
+  .spread-tiles .bt:not([data-band]){cursor:default}
+  .spread-tiles.sel .bt{opacity:.38}
+  .spread-tiles.sel .bt.active{opacity:1;box-shadow:inset 0 0 0 2px currentColor}
   .spread-active{display:flex;align-items:center;gap:10px;margin-top:11px;font-size:var(--fs-small)}
   .spread-active .pill{display:inline-flex;align-items:center;gap:7px;background:var(--accent-soft);color:var(--accent);border-radius:var(--r-pill);padding:5px 11px;font-weight:700}
   .spread-active .pill .d{width:8px;height:8px;border-radius:var(--r-dot);display:inline-block}
   .spread-active .clear{color:var(--accent);font-weight:700;cursor:pointer}
-  .spread-legend{display:flex;gap:15px;margin-top:10px;font-size:var(--fs-meta);color:var(--muted);flex-wrap:wrap}
-  .spread-legend b{color:var(--ink);font-weight:700}
-  .spread-legend .d{display:inline-block;width:8px;height:8px;border-radius:var(--r-dot);margin-right:6px;vertical-align:middle}
-  .spread-legend .lg{cursor:pointer}
-  .grp-head{display:flex;align-items:center;gap:8px;margin:16px 2px 8px;font-size:var(--fs-meta);font-weight:700;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
-  .grp-head span{background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:1px 8px;
-    font-size:var(--fs-meta);font-weight:600;color:var(--muted);letter-spacing:.02em}
-  .grid+.grp-head{margin-top:18px}
+  /* 0728gh R-2 · D-b THE ROOMS HAVE DOORS (owner-ruled Oct 13 on park-card-mock.png and room-buttons-dining-mock.png): a row of buttons under the result count, one per room that has something in it, each with its count. A tap only scrolls; the list is whole and scrolls as it always did. */
+  .rm-nav{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:7px;margin:0 0 4px}
+  .rm-b{min-height:48px;border:1px solid var(--line);border-radius:var(--r-tile);padding:9px 2px 8px;margin:0;background:var(--card);box-shadow:var(--shadow-sm);
+    font:700 var(--fs-small)/1.15 var(--font-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .rm-b b{display:block;margin-top:2px;font:700 var(--fs-title) var(--font-display);color:var(--muted);font-variant-numeric:tabular-nums}
+  .rm-b:active{background:var(--card-2)}
+  /* 0728gh R-4: a room's heading is a bar you can see you have arrived at — the name in the display face, the count in a pill at the right. The search results wear the same bar (one heading, one dress). */
+  .grp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 10px;padding:10px 14px;border-radius:var(--r-tile);
+    background:var(--card-2);border:1px solid var(--line);font:700 var(--fs-title) var(--font-display);color:var(--ink)}
+  .grp-head span{flex:none;background:var(--card);border:1px solid var(--line);border-radius:var(--r-pill);padding:2px 11px;
+    font:700 var(--fs-body) var(--font-display);color:var(--muted);font-variant-numeric:tabular-nums}
+  .grid+.grp-head{margin-top:20px}
   @media (max-width:540px){
     .banner-art{min-height:112px;padding:16px}
     .banner-icon,.banner-emoji{width:42px;height:42px}
@@ -2598,7 +2609,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gh</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -8658,11 +8669,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         extra=info.extras.map(function(e){return esc(e.desc)+' '+fmtClock(e.open)+'\u2013'+fmtClock(e.close);}).join(" \u00b7 ");
       tiles+='<div class="lstat wide"><div class="lbl">Hours</div><div class="v txt">'+esc(line)+'</div><div class="ctx">'+extra+'</div></div>';
     }
+    /* 0728gh M-3: Headliner avg and Crowd are tiles in the face's own grid (they were the fine-print row). Each keeps its ⓘ; the headliner tile says how many are running, which is what its ⓘ has always promised. No crowd read → the headliner tile takes the row. */
+    tiles+='<div class="lstat lst-f'+(s.crowd?'':' wide')+'"><div class="lbl"><span>Headliner avg</span><button type="button" class="info-i" data-info="headPark" aria-label="How this is calculated">i</button></div>'+
+      '<div class="v">'+(s.headAvg===null?'\u2013':s.headAvg+'<span class="u">m</span>')+'</div><div class="ctx">'+(s.headTot?(s.headRun+' of '+s.headTot+' running'):'')+'</div></div>'+
+      (s.crowd?'<div class="lstat lst-f"><div class="lbl"><span>Crowd \u00b7 est.</span><button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></div>'+
+        '<div class="v txt" style="color:'+s.crowd.color+'">'+s.crowd.label+'</div><div class="ctx"></div></div>':'');
     var face='<div class="lstat-grid">'+tiles+'</div>';
-    var fine='<div class="lfine">'+
-      '<span>Headliner avg <b>'+(s.headAvg===null?'\u2013':s.headAvg+'m')+'</b> <button type="button" class="info-i" data-info="headPark" aria-label="How this is calculated">i</button></span>'+
-      (s.crowd?'<span>Crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est. <button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></span>':'')+
-      '</div>';
+    var fine=""; /* 0728gh: the fine-print row retired into the two tiles above */
     /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
     var ws=scopeWaits(key),spreadHTML="";
     if(!usingFallback&&ws.length){
@@ -8670,25 +8683,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       ws.forEach(function(w){if(w<=20)bnd.short++;else if(w<=45)bnd.medium++;else if(w<=70)bnd.long++;else bnd.packed++;}); /* 0728ci: four bands */
       var sel=f.band;
       var BANDS=[{k:"short",c:"s",lbl:"≤20 min"},{k:"medium",c:"m",lbl:"21–45"},{k:"long",c:"l",lbl:"46–70"},{k:"packed",c:"p",lbl:"70+"}];
-      var segs=BANDS.filter(function(x){return bnd[x.k]>0;}).map(function(x){
-        return '<i class="'+x.c+(sel===x.k?" active":"")+'" data-band="'+x.k+'" style="flex:'+bnd[x.k]+'"></i>';
+      var segs=BANDS.map(function(x){ /* 0728gh M-3: four tiles, always four seats; only a band with rides takes the tap */
+        var on=bnd[x.k]>0;
+        return '<button type="button" class="bt '+x.c+(sel===x.k?" active":"")+'"'+(on?' data-band="'+x.k+'" aria-pressed="'+(sel===x.k?"true":"false")+'"':' aria-disabled="true"')+'><b>'+bnd[x.k]+'</b><span>'+x.lbl+'</span></button>';
       }).join("");
       spreadHTML='<div class="spread"><div class="k">'+(sel==="all"?"Wait spread · tap a band to filter":"Wait spread")+'</div>'+
-        '<div class="spread-bar'+(sel!=="all"?" sel":"")+'">'+segs+'</div>';
+        '<div class="spread-tiles'+(sel!=="all"?" sel":"")+'">'+segs+'</div>';
       if(sel!=="all"){
         var lbl=sel==="short"?"≤20 min":sel==="medium"?"21–45 min":sel==="long"?"46–70 min":"70+ min",
             cnt=bnd[sel],col="var(--"+sel+")";
         spreadHTML+='<div class="spread-active"><span class="pill"><span class="d" style="background:'+col+'"></span>Showing '+lbl+' · '+cnt+'</span><span class="clear" data-band="all">✕ Clear</span></div>';
-      }else{
-        spreadHTML+='<div class="spread-legend">'+BANDS.map(function(x){
-          var on=bnd[x.k]>0;
-          return '<span'+(on?' class="lg" data-band="'+x.k+'"':'')+'><span class="d" style="background:var(--'+x.k+')"></span><b>'+bnd[x.k]+'</b> '+x.lbl+'</span>';
-        }).join("")+'</div>';
-      }
+      } /* 0728gh: the legend retired — each tile carries its own count and range */
       spreadHTML+='</div>';
     }
     var list=rows(key);
-    var body;
+    var body,rooms=[];
     if(!list.length){
       body='<div class="state"><h3>Nothing matches those filters</h3><p>Try widening the type, status, or wait filters.</p></div>';
     } else if(usingFallback){
@@ -8696,17 +8705,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     } else {
       var groups={waits:[],down:[],other:[]};
       list.forEach(function(o){groups[groupOf(o)].push(o);});
-      body=[{k:"waits",l:"Wait Times"},{k:"down",l:"Down or Closed"},{k:"other",l:"Shows &amp; Experiences"}]
+      body=[{k:"waits",l:"Wait Times",b:"Waits"},{k:"down",l:"Down or Closed",b:"Down"},{k:"other",l:"Shows &amp; Experiences",b:"Shows"}]
         .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
-          return '<div class="grp-head">'+sec.l+' <span>'+g.length+'</span></div>'+
+          rooms.push('<button type="button" class="rm-b" data-rm="'+sec.k+'" aria-label="Jump to '+sec.l+', '+g.length+'">'+sec.b+'<b>'+g.length+'</b></button>');
+          return '<div class="grp-head" data-rmh="'+sec.k+'">'+sec.l+' <span>'+g.length+'</span></div>'+
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
     var dineHTML=(key!=="all"&&!usingFallback)?dineSectionHTML(key,Date.now()):""; /* D1 0710b: per-park only; needs live data */
+    /* 0728gh R-2 · D-b: the rooms' doors. One button per room that has something in it; Dining joins when a walk-up board is posting (its number is boards open now — no boards, no button: nobody taps into a dead end). One room alone needs no row. */
+    if(dineHTML){var dnb=dineBoards(key,Date.now()).length;rooms.push('<button type="button" class="rm-b" data-rm="dine" aria-label="Jump to Walk-Up Dining, '+dnb+' board'+(dnb===1?'':'s')+' open">Dining<b>'+dnb+'</b></button>');}
+    var roomsHTML=rooms.length>1?'<div class="rm-nav" role="group" aria-label="Jump to a section">'+rooms.join("")+'</div>':"";
     var shareHTML=""; /* 0728ge B-3: the purple pill retired — the door is the glyph in the park card's header (buildBanners) */
     el.innerHTML=face+fine+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
-      (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body+dineHTML;
+      (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+roomsHTML+body+dineHTML;
     bindStars(el);
     bindDine(el,key); /* D1 0710b */
     var _note=el.querySelector(".info-note");
@@ -8716,6 +8729,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         var k=btn.getAttribute("data-info");
         if(_note&&!_note.hidden&&_note.getAttribute("data-k")===k){_note.hidden=true;return;}
         if(_note){_note.textContent=INFO_COPY[k]||"";_note.setAttribute("data-k",k);_note.hidden=false;}
+      });
+    });
+    Array.prototype.forEach.call(el.querySelectorAll(".rm-nav [data-rm]"),function(b){ /* 0728gh R-2: a door only scrolls. The room's heading lands under the pinned row; Dining opens its fold on the way. */
+      b.addEventListener("click",function(){
+        var k=b.getAttribute("data-rm"),t;
+        if(k==="dine"){t=el.querySelector("[data-dine-t]");if(t&&!dineOpen[key])t.click();}
+        else t=el.querySelector('[data-rmh="'+k+'"]');
+        if(!t)return;
+        var sh=window.ppShl(),cw=document.querySelector(".controls-wrap"),pad=(cw?cw.offsetHeight:0)+10;
+        var y=Math.max(0,sh.scrollTop+t.getBoundingClientRect().top-sh.getBoundingClientRect().top-pad);
+        try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}
       });
     });
     var _sb=el.querySelector(".sharebtn");
