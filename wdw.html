@@ -139,6 +139,18 @@
   /* 0728dd: the row\u2019s own frost (0728dc) retired \u2014 ONE PLATE, below */ #sbPlate{position:fixed;left:0;right:0;top:0;height:calc(env(safe-area-inset-top,0px) + var(--sb-s,0px) + var(--sb-f,32px));z-index:22;pointer-events:none;opacity:0;background:var(--bg);background:color-mix(in srgb,var(--bg) 20%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - var(--sb-f,32px)),rgba(0,0,0,.94) calc(100% - var(--sb-f,32px)*.85),rgba(0,0,0,.78) calc(100% - var(--sb-f,32px)*.7),rgba(0,0,0,.5) calc(100% - var(--sb-f,32px)*.5),rgba(0,0,0,.22) calc(100% - var(--sb-f,32px)*.3),rgba(0,0,0,.06) calc(100% - var(--sb-f,32px)*.15),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - var(--sb-f,32px)),rgba(0,0,0,.94) calc(100% - var(--sb-f,32px)*.85),rgba(0,0,0,.78) calc(100% - var(--sb-f,32px)*.7),rgba(0,0,0,.5) calc(100% - var(--sb-f,32px)*.5),rgba(0,0,0,.22) calc(100% - var(--sb-f,32px)*.3),rgba(0,0,0,.06) calc(100% - var(--sb-f,32px)*.15),transparent)} /* 0728df THE FADE HAS NO CORNERS (owner glass on de, 8:08 PM: two faint lines circled on Today\u2019s hero \u2014 measured at the two ends of the straight ramp, where its slope starts and stops): the fade is eased (smoothstep, seven stops), so its slope begins and ends at zero */ /* 0728de THE FROST FOLLOWS THE FINGER (owner glass on dd, 7:50\u20137:57 PM: \u201cinstant blur, not a transition\u201d, \u201cstarts lower than it should\u201d \u2014 measured: the frost reached 137pt down Today\u2019s hero and swallowed the whole header at 7px of scroll). ONE plate still (0728dd: no seam), but: full only behind the clock with a 28px fade; its strength is the scroll\u2019s (sbSync sets opacity, 0 \u2192 1 over the first 30px \u2014 no switch, no timer); and on LIVE the full zone GROWS to the pills\u2019 foot as the row travels its last 60px to the top (--sb-s 0 \u2192 48px, --sb-f 28 \u2192 40px), so the pinned row sits on the dd ramp and nothing is tall before it pins. 50% tint of --bg, 8px blur; the first background line is the fallback; no env() in a gradient stop (0728cl) */
   html:not(.sb-live) #sbPlate{max-height:calc(env(safe-area-inset-top,0px)*9999)} /* no clock to clear (inset 0: Safari, desktop) and no pills to back \u2192 no plate */
   .controls-wrap.pinned{background-origin:padding-box} /* 0728cl: pinned, the gradient starts at the box's top \u2014 the plate paints under the clock */
+  /* 0728gd THE PARKS GET TABS (owner-ruled Oct 12 on the previews and park-tabs-open-items-mock.png: P-B · T-3 · K-1 · G-1 · P-1 · D-2 · C-1 · L-1 · R-2; "I've never loved the accordion"): All + the four parks under the search row, pinned with it; a tab shows that park alone, All is the overview and the way back. The row lives inside .controls-inner, so it keeps the search row's edges and takes taps. */
+  .pt-tabs{display:flex;gap:6px;margin:8px 0 0}
+  .pt-tabs:empty{display:none}
+  .pt-tab{flex:1 1 0;min-width:0;min-height:48px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-tile);padding:7px 0 8px;box-shadow:var(--shadow-sm);font:700 var(--fs-small) var(--font-body);color:var(--ink);cursor:pointer;line-height:1.1;-webkit-tap-highlight-color:transparent}
+  .pt-tab b{display:block;font:700 var(--fs-title) var(--font-display);margin-top:2px;color:var(--muted)}
+  .pt-tab b.short{color:var(--short)}.pt-tab b.medium{color:var(--medium)}.pt-tab b.long{color:var(--long)}.pt-tab b.packed{color:var(--packed)} /* C-1: the average wears its band; the number is printed, so the colour never carries alone */
+  .pt-tab.on{background:linear-gradient(135deg,var(--pwh-bg),var(--pwh-bg2));border-color:var(--pwh-bg);color:#fff}
+  .pt-tab.on b{color:#fff}
+  html.dark .pt-tab.on{background:linear-gradient(135deg,#213d6b,#2c4d86);border-color:var(--accent-tint);box-shadow:0 0 0 1px var(--accent-tint)} /* D-2: navy on the navy page vanished; lifted, with a light outline */
+  .controls-wrap::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;z-index:-1;pointer-events:none;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 10px 16px -12px rgba(10,14,40,.35);opacity:var(--pt-k,0)} /* P-1 THE SOLID PLATE: the page's own colour behind both pinned rows; sbSync fades it in over the row's last steps to its seat, so nothing is plated at rest */
+  body.pt-park #banners>.banner,body.pt-park #banners>.pb-board{display:none} /* a park tab shows that park alone: the hero and the four-park list are All's */
+  body.pt-park #cpCard .ux-pks,body.pt-park #upNextCard .ux-pks,body.pt-park #cpCard .pf-pk,body.pt-park #upNextCard .ux-pk{display:none} /* K-1 + G-1: on a park tab the tab is the one park control; the cards' own park chips and per-row park tags step aside */
   .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px;pointer-events:auto}
   .filterbar{display:flex;align-items:center;gap:8px}
@@ -1089,17 +1101,7 @@
   .banner.lt.expanded .banner-sub{color:var(--pwh-muted)}
   .banner.lt.expanded .banner-sub b{color:#fff}
   .banner.lt.expanded .banner-mono{color:#fff;opacity:.07}
-  /* P1 (0710l): return pill — the expanded header’s runaway chip. Appears only while an expanded park’s navy header is scrolled off; the tap rides the same scrollIntoView landing as the expand tap (scroll-margin-top 74). Hidden whenever #banners is (search, or any non-Live tab) via the offsetParent gate in bk2Sync, and under any sheet via the body classes below. */
-  .bk2top{position:fixed;left:50%;bottom:calc(94px + var(--nav-lift));z-index:58;
-    display:flex;align-items:center;gap:7px;padding:11px 16px;border-radius:var(--r-pill);
-    color:#fff;background:linear-gradient(135deg,var(--pwh-bg2),var(--pwh-bg));
-    border:1px solid var(--pwh-line);box-shadow:0 8px 22px -8px rgba(10,20,40,.5);
-    font-family:var(--font-display);font-weight:700;font-size:14px;letter-spacing:.02em;line-height:1;
-    cursor:pointer;opacity:0;transform:translate(-50%,10px);pointer-events:none;
-    transition:opacity .22s ease,transform .22s ease}
-  .bk2top.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-  .bk2top .up{font-size:13px;line-height:1}
-  body.alerts-open .bk2top,body.set-open .bk2top,body.help-open .bk2top,body.pane-open .bk2top{opacity:0;pointer-events:none} /* 0711e: pane paint gate — fav/pulse leave the Live list attached, so the IO keeps its truth; the pill just may not paint over another pane */
+  /* 0728gd: the return pill (0710l) retired with the accordion — the pinned tabs are the way back, from anywhere in the list */
   /* ===== NAV (0710n): four-tab floating dock — skin B from the approved IA mock, verbatim geometry.
      Phase 1 of the bottom-nav arc: Live/Wrap route through setMode; Favorites/Pulse are shell panes
      until their phases land. Always visible; sheets (z88+) slide over it and their scrims dim it;
@@ -2585,7 +2587,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gd</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2657,6 +2659,7 @@ document.documentElement.classList.add("dark");}catch(e){}
       <div class="frow" data-frow="cat"><span class="lab">Category</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="Thrill">Thrill</div><div class="chip-toggle" data-v="Family">Family</div><div class="chip-toggle" data-v="Kids">Kids</div><div class="chip-toggle" data-v="Water">Water</div><div class="chip-toggle" data-v="Show">Show</div></div>
       <div class="frow"><span class="lab">Also</span><div class="chip-toggle" id="llChip">Lightning Lane</div><div class="chip-toggle" id="srChip">Single Rider</div><div class="chip-toggle" id="watchChip">★ Starred</div><span class="clear" id="clearF">Clear all</span></div>
     </div>
+    <div class="pt-tabs" id="ptTabs" role="tablist" aria-label="Parks"></div> <!-- 0728gd THE PARKS GET TABS: filled by ptSync -->
   </div>
 </div>
 
@@ -2669,7 +2672,7 @@ document.documentElement.classList.add("dark");}catch(e){}
   <div id="pgToday" class="pg-today" hidden></div>
 </div>
 </div><!-- /shell (0725n) -->
-<button id="bk2top" class="bk2top" type="button" aria-label="Back to park header"><span class="up">&#9650;</span><span class="mo"></span></button>
+<!-- 0728gd: the return pill (#bk2top) retired with the accordion -->
 <nav id="appNav" class="appnav" aria-label="Sections">
   <button class="it on" data-pg="live" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="2 12 7 12 10 5 14 19 17 12 22 12"/></svg><span>LIVE</span></button>
   <button class="it" data-pg="today" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.2A6.5 6.5 0 0 1 12 4.3a6.5 6.5 0 0 1 6.5 6.5C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.8" r="2.3"/></svg><span>TODAY</span></button>
@@ -3091,6 +3094,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(inn)k=Math.max(0,Math.min(1,1-(inn.getBoundingClientRect().top-(ins+8))/60));}
     document.documentElement.classList.toggle("sb-live",live);
     pl.style.setProperty("--sb-s",Math.round(48*k)+"px");pl.style.setProperty("--sb-f",Math.round(32+12*k)+"px");
+    if(cw)cw.style.setProperty("--pt-k",String(live?Math.max(0,Math.min(1,Math.round((k-.6)*250)/100)):0)); /* 0728gd P-1: the solid plate arrives over the row’s last 24px to its seat */
     pl.style.opacity=String(Math.round(Math.max(0,Math.min(1,(st-2)/30))*100)/100);
   }
   window.__sbSync=sbSync;window.ppShl().addEventListener("scroll",sbSync,{passive:true});
@@ -3926,7 +3930,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         '<span class="pf-now '+it.tier+'">'+it.wait+'<small> MIN</small></span></span></div>'; /* 0721t: the right rail rhymes with Crowd Pulse (owner pick B) — pf-now/pf-pk faces verbatim, share seat omitted (no card behind it) */
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
     var feed=pfFeedHTML(hlScope,seg);
-    el.innerHTML=feed+'<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines</span>'+tabs+'</div>'+(feed?'':seg)+body+'</div>';
+    el.innerHTML=feed+'<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines'+((typeof ptNm==="function")?ptNm(hlScope):"")+'</span>'+tabs+'</div>'+(feed?'':seg)+body+'</div>';
     el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
       hlLens=b.getAttribute("data-lens");renderCrowdPulse();});});
     el.querySelectorAll("[data-cpscope]").forEach(function(b){b.addEventListener("click",function(){ /* scoped binder - the 0719r lesson; hlScope keeps its name + persistence */
@@ -4016,7 +4020,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!haveShows){el.innerHTML="";return;} /* pre-poll or no showtime data: the seat stays empty */
     var now=Date.now(),res=uxRows(now,uxState.pk,uxState.all),cap=uxState.open?15:5,next=res.next.slice(0,cap);
     uxLast={now:now,pk:uxState.pk,all:uxState.all,next:res.next};
-    var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT &middot; LIVE SHOWS</span><span>'+esc(uxClk(now))+'</span></div>';
+    var uxNm=(typeof ptNm==="function")?ptNm(uxState.pk):""; /* 0728gd: on a park tab the heading names the park */
+    var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT'+(uxNm?uxNm.toUpperCase():' &middot; LIVE SHOWS')+'</span><span>'+esc(uxClk(now))+'</span></div>';
     h+='<div class="ux-pks"><button type="button" data-uxpk="all"'+(uxState.pk==="all"?' class="on"':'')+'>ALL</button>';
     PARK_DEF.forEach(function(p){h+='<button type="button" data-uxpk="'+esc(p.key)+'"'+(uxState.pk===p.key?' class="on"':'')+'>'+esc(BANNER_MONO[p.key]||p.key)+'</button>';});
     h+='</div><div class="ux-typ"><button type="button" data-uxall="0"'+(uxState.all?'':' class="on"')+'>PERFORMANCES</button><button type="button" data-uxall="1"'+(uxState.all?' class="on"':'')+'>EVERYTHING</button></div>';
@@ -4291,10 +4296,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
 
   function buildBanners(){
     elBanners.innerHTML="";bannerEls={};
-    function pbToggle(key,root){ /* PB (0721y): the sole expanded writer — rows and the expanded card's art share this one door */
-      expanded=(expanded===key)?null:key;store.set("expanded",expanded);render();
-      if(expanded===key)setTimeout(function(){root.scrollIntoView({behavior:"smooth",block:"start"});},60);
-    }
+    /* 0728gd: pbToggle (0721y) retired — ptGo is the sole writer of the selected park */
     pbSegA=document.createElement("div");pbSegA.className="pb-board";
     pbSegA.innerHTML='<div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliners \u00b7 All rides</span></div>'; /* S2-a eyebrow; LABELS MOVE WITH VALUES — the column label seats once; its \u24d8 explainer stays in the expanded fine print */
     pbWrapX=document.createElement("div");pbWrapX.className="bnr-wrap pb-xwrap";pbWrapX.hidden=true; /* E1-a: the die-cut shadow survives ONLY on the expanded card */
@@ -4312,7 +4314,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           '<div class="banner-sub"></div></div>'+(key==="all"?statHTML+'</div>':'')+'</div>'+ /* 0721z: the stat is hero-only — the avg speaks on the row and in the fine print */
         '</div>'+
         (key==="all"?'':'<div class="banner-panel" hidden></div>'); /* 0718u: the hero never expands (0718k) — no panel */
-      if(key!=="all")root.querySelector(".banner-art").addEventListener("click",function(){pbToggle(key,root);}); /* the expanded card's art is the collapse door — tap wiring unchanged (E1-a) */
+      /* 0728gd: the park card’s head no longer collapses it — All is the way back */
       var row=null;
       if(key==="all"){elBanners.appendChild(root);} /* the hero mounts as ever; park roots stay detached until their row opens */
       else{
@@ -4320,7 +4322,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         row.innerHTML='<div class="pb-m"><div class="pb-nm">'+esc(key)+'</div>'+ /* 0728cj: the tick retired (D2) \u2014 the tile is the row's one colour */
           '<div class="pb-sub"><i class="dot"></i>Live</div></div>'+
           '<div class="pb-rr" data-pbproof="'+esc(key)+'">'+pbTileHTML(null,null)+'</div><span class="pb-chv">\u25be</span>'; /* 0728ck: the column is the proof card's door */ /* CARDS ARE DOORS, HAIRLINES ARE READOUTS; 0728ca: the column holds the tile */
-        row.addEventListener("click",function(){pbToggle(key,root);});
+        row.addEventListener("click",function(){ptGo(key);}); /* 0728gd: the row is the second way in — it opens the park’s tab */
         pbSegA.appendChild(row);
       }
       bannerEls[key]={root:root,panel:root.querySelector(".banner-panel"),sub:root.querySelector(".banner-sub"),statV:root.querySelector(".bs-v"),
@@ -4502,7 +4504,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var m=pfCallouts(scope);
     if(m.state==="nobase")return "";
     var clock=fmtClock(new Date().toISOString())||"";
-    var head='<div class="fc-head"><span class="sec-lab">Callouts</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
+    var head='<div class="fc-head"><span class="sec-lab">Callouts'+((typeof ptNm==="function")?ptNm(scope):"")+'</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
     if(m.state==="closed")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.</div></div>';
     var basis=m.moreN>0
       ?'<div class="pf-basis">Showing the biggest departures from typical · '+esc(m.pool.short)+'</div>'
@@ -8397,6 +8399,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     renderUpNext(); /* L-32 Cut 1: the board refreshes on any tab \u2014 the favPage rule */
     renderRead(); /* L-32 Cut 2: the read refreshes with the board — same rule */
     renderCrowdPulse(); /* Cut 2 (0719u): the section refreshes on any tab - the favPage rule */
+    ptSync(); /* 0728gd: the tabs repaint with every poll, search or not */
     if(window.__pwActive){return;}
     if(!Object.keys(roster).length)buildFallbackRoster();
     var n=activeFilterCount();$("fcount").textContent=n;$("filtersToggle").classList.toggle("has",n>0);
@@ -8433,36 +8436,33 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     });
     pbRegroup(); /* E1-a: the board splits around the expanded park */
     renderFavTeaser();
-    bk2Sync(); /* P1 (0710l): return pill tracks the expanded header */
+    /* 0728gd: bk2Sync retired with the return pill */
   }
 
-  /* P1 (0710l): return pill. One observer, re-targeted only when the expanded park changes;
-     the art node is stable across renders (bannerEls cache), so the observer survives the 5-min
-     refresh. offsetParent gates out hidden #banners (search, Wrap tab) so display:none never
-     reads as "scrolled away". No IntersectionObserver, no pill — the feature is purely additive. */
-  var bk2Key=null,bk2IO=null;
-  function bk2Set(show){var p=$("bk2top");if(p)p.classList.toggle("show",!!show);}
-  function bk2Sync(){
-    var p=$("bk2top");if(!p)return;
-    if(expanded===bk2Key)return; /* same target: observer already live */
-    bk2Key=expanded;
-    if(bk2IO){bk2IO.disconnect();bk2IO=null;}
-    bk2Set(false);
-    if(!expanded)return;
-    var el=bannerEls[expanded];if(!el||!el.root)return;
-    var art=el.root.querySelector(".banner-art");if(!art)return;
-    p.querySelector(".mo").textContent=BANNER_MONO[expanded]||"";
-    if(!("IntersectionObserver" in window))return;
-    var ins=0;try{ins=Math.max(0,Math.round((parseFloat(getComputedStyle(document.querySelector(".controls-wrap")).paddingTop)||8)-8));}catch(_){} /* 0728dt THE LANDING CLEARS THE CLOCK: the pinned row’s own top inset (its padding beyond the resting 8px, sbSync’s measure) — the header is gone once it is under the row where the row now rests */
-    bk2IO=new IntersectionObserver(function(es){
-      var e=es[es.length-1];
-      bk2Set(!e.isIntersecting && art.offsetParent!==null);
-    },{rootMargin:"-"+(64+ins)+"px 0px 0px 0px"}); /* header counts as gone once it’s under the 60px sticky toolbar (+4 buffer); the 74px scroll-margin landing then reads cleanly as "back" */
-    bk2IO.observe(art);
+  /* 0728gd THE PARKS GET TABS. `expanded` is the selected park (null = All); ptGo is its sole writer. Callouts, Hot Lines and Up Next follow the tab and take their own chip picks back on All (ptHold). The tab is saved but never read at boot: the app reopens on All (R-2; R-1 is one line in the boot path). One scroll per navigation: to the top, no glide. */
+  var ptHold=null,PT_LAB={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"};
+  function ptNm(k){return (expanded&&k===expanded)?" \u00b7 "+esc(PT_LAB[k]||k):"";}
+  function ptGo(k){
+    k=(k&&k!=="all"&&bannerEls[k])?k:null;
+    if(k!==expanded){
+      if(k&&!expanded)ptHold={hl:hlScope,ux:uxState.pk};
+      expanded=k;store.set("expanded",expanded);
+      if(k){hlScope=k;uxState.pk=k;}else if(ptHold){hlScope=ptHold.hl;uxState.pk=ptHold.ux;ptHold=null;}
+      render();
+    }
+    try{window.ppShl().scrollTo(0,0);}catch(_){}
   }
-  (function(){var p=$("bk2top");if(!p)return;p.addEventListener("click",function(){
-    var el=expanded&&bannerEls[expanded];
-    if(el&&el.root)el.root.scrollIntoView({behavior:"smooth",block:"start"}); /* lands on the solved 0709q scroll-margin-top */
+  function ptSync(){
+    var el=$("ptTabs");if(!el)return;
+    var its=[["all","All"]],i,h="";for(i=0;i<PARK_DEF.length;i++)its.push([PARK_DEF[i].key,PT_LAB[PARK_DEF[i].key]||PARK_DEF[i].key]);
+    for(i=0;i<its.length;i++){var k=its[i][0],st=null,on=(k==="all")?!expanded:(expanded===k);try{st=bannerStats(k);}catch(_){}
+      var v=(st&&st.headAvg!==null&&st.headAvg!==undefined&&(k==="all"||st.isOpen===true))?st.headAvg:null; /* the row tile’s rule: a closed park prints the dash */
+      h+='<button type="button" role="tab" class="pt-tab'+(on?' on':'')+'" aria-selected="'+(on?'true':'false')+'" data-pt="'+esc(k)+'">'+esc(its[i][1])+'<b'+(v!==null?' class="'+tierOfWait(v)+'"':'')+'>'+(v!==null?v+'m':'\u2013')+'</b></button>';}
+    if(el.__h!==h){el.innerHTML=h;el.__h=h;}
+    document.body.classList.toggle("pt-park",!!expanded);
+  }
+  (function(){var el=$("ptTabs");if(!el)return;el.addEventListener("click",function(e){
+    var b=e.target&&e.target.closest?e.target.closest("[data-pt]"):null;if(b)ptGo(b.getAttribute("data-pt"));
   });})();
 
   /* 0711e: zoom lockdown + keyboard re-pin net (paint-level, no engine contact).
