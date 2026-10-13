@@ -224,6 +224,13 @@
   .banner.lt .pk-share{position:static;flex:none;align-self:center;margin-right:14px;width:40px;height:40px;line-height:40px} /* 0728ge B-3 (owner-ruled Oct 13 on share-button-mock.png): the park card's share door is the hero's own glyph, seated in the navy header; the purple pill and its row retire */
   .pw-row .a.tl{width:58px;padding:7px 4px 6px;border-radius:12px;background:color-mix(in srgb,currentColor 16%,var(--card))} /* 0728ge V-3 (owner-ruled Oct 13): THE RIDE WEARS INK, THE PARK WEARS THE TILE reaches the Wrap's by-park rows — a park's average sits on its band's tint, no longer bare band ink */
   .pw-row .a.tl small{color:inherit;opacity:.85}
+  /* 0728gf W-2 THE ROW SAYS WHAT IT SHOWS (owner-ruled Oct 13 on wrap-park-rows-mock.png; glass 9:22 AM: a stray "· 96" on its own line, a red pill that named a ride without saying why): two labelled lines under the park — Busiest with its average, Most down with its minutes. The name gives way (ellipsis), the number never wraps, the pill retires from this row. */
+  .pw-row .ln{display:flex;align-items:baseline;gap:6px;margin-top:3px;font-size:var(--fs-meta);color:var(--muted)}
+  .pw-row .ln .k{flex:none;width:78px;white-space:nowrap;font:700 var(--fs-micro) var(--font-body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted-2)}
+  .pw-row .ln .n{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+  .pw-row .ln .v{flex:none;white-space:nowrap;font-weight:600}
+  .pw-row .ln .v.dn{color:var(--packed)}
+  .pw-row[data-park]>.m>.nm{font:700 var(--fs-lead) var(--font-display)} /* 0728gf K-3 (owner glass on the staged rows, Oct 13: "the park names are a bit small… lost in the busiest/most down wording"): the park heads its own row — the tile number's face, one step up */
   /* ===== 0728fs THE LANE AS POSTED (owner-ruled L-C · P-2, Oct 11, on live-row-final-light.png): what Disney is posting for this ride's Lightning Lane, in the sheet only. Information, never a sale. ===== */
   .rs-ll{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:12px 13px 11px;box-shadow:var(--shadow-sm);margin-top:9px}
   .rs-ll .k{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
@@ -2591,7 +2598,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ge</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gf</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -12700,9 +12707,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
       html+='<div class="pw-sec">By park · tap for the full breakdown</div>';
       c.parks.forEach(function(p){
-        var fl=p.worst?'<span class="pw-flag warn">'+esc(shortName(p.worst.name))+' ⚠</span>':'<span class="pw-flag ok">100%</span>';
-        var ctx=p.busiest?(esc(shortName(p.busiest.name))+" · "+p.busiest.avgWait):"";
-        html+='<div class="pw-row" data-park="'+esc(p.park)+'" role="button" tabindex="0"><div class="a tl '+tier(p.headAvg)+'"><b>'+p.headAvg+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(p.park)+'</div><div class="ctx">'+ctx+'</div>'+(isWeek?pwWeekMini(d,p.park):"")+'</div>'+fl+'<span class="chev">›</span></div>';
+        var fl=""; /* 0728gf W-2: the unlabelled pill retired from the by-park row — the ride it named has its own labelled line */
+        var ctx=(p.busiest?'<div class="ln"><span class="k">Busiest</span><span class="n">'+esc(p.busiest.name)+'</span><span class="v">'+p.busiest.avgWait+'m avg</span></div>':'')+
+          (p.worst?'<div class="ln"><span class="k">Most down</span><span class="n">'+esc(p.worst.name)+'</span><span class="v dn">'+p.worst.downMinutes+' min</span></div>'
+                  :'<div class="ln"><span class="k">Most down</span><span class="n">None</span><span class="v">100% up</span></div>'); /* 0728gf W-2: LABELS STATE THEIR MEASURE — the average says avg, the minutes say min; the full name rides and the row trims it */
+        html+='<div class="pw-row" data-park="'+esc(p.park)+'" role="button" tabindex="0"><div class="a tl '+tier(p.headAvg)+'"><b>'+p.headAvg+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(p.park)+'</div>'+ctx+(isWeek?pwWeekMini(d,p.park):"")+'</div>'+fl+'<span class="chev">›</span></div>';
       });
 
       html+='<button class="pw-share" id="pwShare" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(tab==="week"?"Share this week":"Share this Wrap")+'</button>';
