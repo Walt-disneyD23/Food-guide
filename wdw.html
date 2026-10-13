@@ -220,6 +220,10 @@
   .rs-sheet .pw-tile{min-height:80px;padding:11px 13px}
   .rs-d{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:9px;margin-top:11px}
   .rs-door{font:600 var(--fs-body) var(--font-body);color:var(--accent);background:var(--accent-soft);border:0;border-radius:var(--r-tile);padding:13px 8px;cursor:pointer}
+  .rs-hold{visibility:hidden} /* 0728ge P-3 THE SEAT IS HELD, EMPTY (owner-ruled Oct 13 on p-and-h-mock.png): while today's read is on its way the recap door's seat stands empty, so Ride profile never changes width; nothing dims, nothing moves */
+  .banner.lt .pk-share{position:static;flex:none;align-self:center;margin-right:14px;width:40px;height:40px;line-height:40px} /* 0728ge B-3 (owner-ruled Oct 13 on share-button-mock.png): the park card's share door is the hero's own glyph, seated in the navy header; the purple pill and its row retire */
+  .pw-row .a.tl{width:58px;padding:7px 4px 6px;border-radius:12px;background:color-mix(in srgb,currentColor 16%,var(--card))} /* 0728ge V-3 (owner-ruled Oct 13): THE RIDE WEARS INK, THE PARK WEARS THE TILE reaches the Wrap's by-park rows — a park's average sits on its band's tint, no longer bare band ink */
+  .pw-row .a.tl small{color:inherit;opacity:.85}
   /* ===== 0728fs THE LANE AS POSTED (owner-ruled L-C · P-2, Oct 11, on live-row-final-light.png): what Disney is posting for this ride's Lightning Lane, in the sheet only. Information, never a sale. ===== */
   .rs-ll{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:12px 13px 11px;box-shadow:var(--shadow-sm);margin-top:9px}
   .rs-ll .k{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
@@ -2587,7 +2591,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gd</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ge</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3296,7 +3300,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function rsLane(q){ /* 0728fs THE LANE AS POSTED: {k,at,price} or null, from the same queue record the row's "Next LL" reads (the same pick, so the row and the sheet can never name two different times). k = which lane the feed carries: PAID_RETURN_TIME is the one sold per ride (Single Pass), RETURN_TIME the one that comes with Multi Pass — the feed's docs name the fields, not Disney's products, so the mapping is ours and was checked against the Disney app on Oct 11. at = the earliest return the feed is posting, or null when its state is anything but AVAILABLE. price = the posted per-ride price; whole dollars print bare. */
     var rt=q&&(q.RETURN_TIME||q.PAID_RETURN_TIME);if(!rt)return null;
     var paid=!q.RETURN_TIME,pr=(paid&&rt.price&&typeof rt.price.amount==="number"&&rt.price.amount>0)?rt.price:null;
-    return {k:paid?"single":"multi",at:(rt.state==="AVAILABLE"&&rt.returnStart)?fmtClock(rt.returnStart):null,
+    return {k:paid?"single":"multi",full:rt.state==="TEMP_FULL", /* 0728ge F-2: the feed's own "temporarily full" is not "not offered" */ at:(rt.state==="AVAILABLE"&&rt.returnStart)?fmtClock(rt.returnStart):null,
       price:pr?((pr.currency==="USD"&&pr.amount%100===0)?"$"+(pr.amount/100):(pr.formatted||null)):null};
   }
   function fmtClock(iso){try{var m9=rcEtMin(new Date(iso));return isNaN(m9)?null:rpClk(m9);}catch(e){return null;}} /* 0724b 6A ONE CLOCK DIALECT (owner-lettered): bare hour on the hour, minutes only when real \u2014 tyClkIso\u2019s exact recipe, one dialect everywhere */
@@ -4311,10 +4315,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           (key==="all"?'<div class="banner-eb">Walt Disney World \u00b7 Live</div><button type="button" class="rb-share" aria-label="Share the board">\u21e7</button>':'')+
           (def.img?'<div class="banner-scrim"></div>':(BANNER_MONO[key]?'<div class="banner-mono">'+esc(BANNER_MONO[key])+'</div>':''))+
           '<div class="banner-head"><div class="banner-id"><div class="banner-name">'+esc(key==="all"?"All Parks":key)+'</div>'+
-          '<div class="banner-sub"></div></div>'+(key==="all"?statHTML+'</div>':'')+'</div>'+ /* 0721z: the stat is hero-only — the avg speaks on the row and in the fine print */
+          '<div class="banner-sub"></div></div>'+(key==="all"?statHTML+'</div>':'')+'</div>'+(key==="all"?'':'<button type="button" class="rb-share pk-share" aria-label="Share this park\u2019s card">\u21e7</button>')+ /* 0728ge B-3: the park card's share door */ /* 0721z: the stat is hero-only — the avg speaks on the row and in the fine print */
         '</div>'+
         (key==="all"?'':'<div class="banner-panel" hidden></div>'); /* 0718u: the hero never expands (0718k) — no panel */
       /* 0728gd: the park card’s head no longer collapses it — All is the way back */
+      if(key!=="all"){var pks=root.querySelector(".pk-share");if(pks)pks.addEventListener("click",function(ev){ev.stopPropagation();if(!usingFallback)shareCardSnapshot(key);});} /* 0728ge B-3: one door, the same card */
       var row=null;
       if(key==="all"){elBanners.appendChild(root);} /* the hero mounts as ever; park roots stay detached until their row opens */
       else{
@@ -8431,6 +8436,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         }
       var isExp=expanded===key;
       el.root.classList.toggle("expanded",isExp);
+      var pk9=el.root.querySelector(".pk-share");if(pk9)pk9.hidden=!!usingFallback; /* 0728ge: no live data, no card, no door (the pill's own rule) */
       if(isExp){el.panel.hidden=false;renderPanel(key,el.panel);}
       else if(el.panel){el.panel.hidden=true;el.panel.innerHTML="";} /* 0718u: the hero has no panel — guard the collapse path */
     });
@@ -8690,7 +8696,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         .join("");
     }
     var dineHTML=(key!=="all"&&!usingFallback)?dineSectionHTML(key,Date.now()):""; /* D1 0710b: per-park only; needs live data */
-    var shareHTML=(!usingFallback)?'<div style="margin:12px 0 4px"><button type="button" class="sharebtn" style="display:inline-flex;align-items:center;gap:7px;font:600 var(--fs-body)/1 Inter,system-ui,sans-serif;color:#fff;background:var(--accent-fill);border:none;border-radius:var(--r-pill);padding:10px 16px;cursor:pointer;box-shadow:0 8px 20px -10px rgba(79,70,229,.6)">Share this card</button></div>':"";
+    var shareHTML=""; /* 0728ge B-3: the purple pill retired — the door is the glyph in the park card's header (buildBanners) */
     el.innerHTML=face+fine+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
       (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+body+dineHTML;
@@ -9336,7 +9342,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(meet)sub+='<span class="show">Character Experience</span>';
     else if(show)sub+='<span class="show">Show</span>';
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
-    var llLn=(lv&&lv.ll)?'<div class="ll-ln">Next LL '+esc(lv.ll)+'</div>':''; /* 0726l THE LL TAKES ITS OWN LANE (owner-ruled): out of the sub's wrap, one line always */
+    var llLn=(lv&&lv.ll)?'<div class="ll-ln">Next LL '+esc(lv.ll)+(lv.lane?' \u00b7 '+(lv.lane.k==="single"?"Single Pass":"Multi Pass"):'')+'</div>':''; /* 0728ge N-2 (owner-ruled Oct 13): the row names the pass after the time, in the sheet's own two names */ /* 0726l THE LL TAKES ITS OWN LANE (owner-ruled): out of the sub's wrap, one line always */
     return '<div class="ride s-'+cls+(watched?' watched':'')+'"'+(r.kind==="ride"?' data-rs="'+esc(r.id)+'" role="button" tabindex="0"':'')+'>'+ /* 0728fr: a ride row opens its sheet; shows and meets stay as they were (owner: rides only) */
 
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
@@ -9389,10 +9395,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(rd.why||rd.brg)h+='<div class="rs-read">'+(rd.brg?'<span class="td-brg">'+esc(rd.brg)+'</span> ':'')+esc(rd.why)+'</div>';
     var pre=(rsData===null)?rsPre(rid):null; /* 0728fy THE HERO EXPLAINS THE MORNING (owner-ruled C on before-opening-mock-C.png, Oct 11): before its park opens, with nothing banked, the card says when the park opens instead of reporting a gap, and the recap door points at yesterday */
     if(pre)h+='<div class="pw-hero rs-hero"><div class="k">Today</div><div class="sub">'+(pre.ee?'Opens at '+esc(pre.at)+' with '+esc(pre.ee):esc(pre.park)+' opens at '+esc(pre.at))+'. Today’s waits start then.</div></div>';
-    else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':'Today · so far')+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">No samples yet today.</div>'))+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
+    else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':((rsData===null&&!(lv&&lv.status==="OPERATING"))?'Today':'Today · so far'))+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">'+((lv&&lv.status==="OPERATING")?'No samples yet today.':'No waits posted today.')+'</div>')) /* 0728ge T-2 (owner-ruled Oct 13): a ride that is not running and has banked nothing says what the feed shows — no "so far", no "yet"; a running ride's first minutes keep the old words */+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
     if(rsData&&rsData.tiles)h+=rsData.tiles;
     h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
-    var drs=(rsData?'<button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>':((pre&&rsY===true)?'<button class="rs-door" data-rsd="yday" type="button">Yesterday’s recap ›</button>':''))+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':''); /* 0728fw A DOOR NEEDS A ROOM (owner-ruled, Oct 11): the recap door stands only once today has something banked for this ride — a refurbished or all-day-closed ride has no page behind it */
+    var drs=(rsData?'<button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>':((pre&&rsY===true)?'<button class="rs-door" data-rsd="yday" type="button">Yesterday’s recap ›</button>':((prof&&(rsData===undefined||(pre&&rsY===undefined)))?'<span class="rs-door rs-hold" aria-hidden="true">&nbsp;</span>':'')))+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':''); /* 0728fw A DOOR NEEDS A ROOM (owner-ruled, Oct 11): the recap door stands only once today has something banked for this ride — a refurbished or all-day-closed ride has no page behind it */
     h+=(drs?'<div class="rs-d">'+drs+'</div>':'')+'</div>';
     return h;
   }
@@ -9400,8 +9406,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var lv=liveById[rid],l=lv&&lv.lane;if(!l)return "";
     var at=lastUpdated?fmtClock(lastUpdated.toISOString()):null;
     return '<div class="rs-ll"><div class="k">Lightning Lane · '+(l.k==="single"?"Single Pass":"Multi Pass")+'</div>'+
-      '<div class="r"><span class="s">'+(l.at?'Earliest time <b>'+esc(l.at)+'</b>':'<b>Not offered right now</b>')+'</span>'+(l.price?'<span class="p">'+esc(l.price)+'</span>':'')+'</div>'+
-      '<div class="f"><b>As posted'+(at?' '+esc(at):'')+'.</b> Times and prices change. Check and book in the Disney app.</div></div>';
+      '<div class="r"><span class="s">'+(l.at?'Earliest time <b>'+esc(l.at)+'</b>':(l.full?'<b>Full right now</b>':'<b>Not offered right now</b>'))+'</span>'+(l.price?'<span class="p">'+esc(l.price)+'</span>':'')+'</div>'+
+      '<div class="f"><b>As posted'+(at?' '+esc(at):'')+'.</b> '+(l.k==="single"?'Times and prices change.':'Times change.')+' Check and book in the Disney app.</div></div>'; /* 0728ge W-2 (owner-ruled Oct 13): Multi Pass carries no price here, so its stamp promises none */
   }
   function rsShTop(){try{var sh=window.ppShl();sh.scrollTop=1;sh.scrollTop=0;}catch(_){}} /* 0728fv: the shell to its top, by a nudge that MOVES (the 0723k recipe: a same-position scroll is one WebKit may skip) */
   function rsPaint(anim){
@@ -12696,7 +12702,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       c.parks.forEach(function(p){
         var fl=p.worst?'<span class="pw-flag warn">'+esc(shortName(p.worst.name))+' ⚠</span>':'<span class="pw-flag ok">100%</span>';
         var ctx=p.busiest?(esc(shortName(p.busiest.name))+" · "+p.busiest.avgWait):"";
-        html+='<div class="pw-row" data-park="'+esc(p.park)+'" role="button" tabindex="0"><div class="a"><b class="'+tier(p.headAvg)+'">'+p.headAvg+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(p.park)+'</div><div class="ctx">'+ctx+'</div>'+(isWeek?pwWeekMini(d,p.park):"")+'</div>'+fl+'<span class="chev">›</span></div>';
+        html+='<div class="pw-row" data-park="'+esc(p.park)+'" role="button" tabindex="0"><div class="a tl '+tier(p.headAvg)+'"><b>'+p.headAvg+'</b><small>avg</small></div><div class="m"><div class="nm">'+esc(p.park)+'</div><div class="ctx">'+ctx+'</div>'+(isWeek?pwWeekMini(d,p.park):"")+'</div>'+fl+'<span class="chev">›</span></div>';
       });
 
       html+='<button class="pw-share" id="pwShare" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(tab==="week"?"Share this week":"Share this Wrap")+'</button>';
