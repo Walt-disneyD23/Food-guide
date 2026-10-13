@@ -248,6 +248,9 @@
     font-variant-numeric:tabular-nums;min-width:60px;text-align:center;color:var(--closed)}
   .wt.short{color:var(--short)} .wt.medium{color:var(--medium)} .wt.long{color:var(--long)}
   .wt.packed{color:var(--packed)} .wt.closed{color:var(--closed)}
+  .wt .sw{display:block;font-size:var(--fs-title);letter-spacing:.04em;text-transform:uppercase;color:var(--closed)} /* 0728gi B-5 THE WORD FAMILY REACHES LIVE (owner-ruled Oct 13 on down-word-mock.png; glass 2:44 PM, Seven Dwarfs: "not a huge fan of the gray dash with the word down under it"): a ride that is not running prints its status word in the wait slot the way My Rides has since 0722p — OPEN green, DOWN red, CLOSED and REFURB grey, the display face, no dash. Shows keep their own faces (next show · until · done). */
+  .wt .sw.down{color:var(--packed)} .wt .sw.open{color:var(--short)} /* 0728gi: OPEN wears My Rides' green (0722p V1-a) — a trail or meet that is open with no number */
+  .rs-dn{color:var(--packed);font-weight:700} /* 0728gi L-3: the sheet's read leads with the status while the ride is down */
   .wt small{display:block;font-family:var(--font-body);font-size:var(--fs-caps);font-weight:600;letter-spacing:.07em;
     text-transform:uppercase;color:var(--muted-2);margin-top:3px}
   .ride .info{flex:1;min-width:0;min-height:78px;display:flex;flex-direction:column;justify-content:center} /* 0726k H-B (owner-ruled): EVERY CARD EARNS THE SAME SEAT - the 0722w R-A law reaches the Live board; the seat covers the full stack (two-line name + sub + LL), lighter cards center, a freak stack still grows (min, never fixed) */
@@ -2609,7 +2612,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gh</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gi</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9366,7 +9369,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(hasWait){num=lv.wait;unit='<small>min</small>';}
     else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.winEnd)?'<span style="font-size:15px">NOW</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span style="font-size:18px">—</span>';
       unit='<small>'+(lv&&lv.nextShow?"next show":(lv&&lv.winEnd)?"until "+lv.winEnd:(lv&&lv.showsDone)?"for today":statusLabel(lv))+'</small>';}
-    else{num='<span style="font-size:18px">—</span>';unit='<small>'+statusLabel(lv)+'</small>';}
+    else{var sw9=statusLabel(lv);num='<span class="sw '+sw9.toLowerCase()+'">'+sw9+'</span>';unit='';} /* 0728gi B-5: the status word, My Rides' way */
     var cls=(show&&!hasWait)?"closed":tier;
     var sub='<span class="park">'+esc(r.park)+'</span>';
     if(!show&&!meet&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
@@ -9417,13 +9420,18 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var st=ee?new Date(ee.open).getTime():o;if(isNaN(st)||Date.now()>=st)return null;
       var at=fmtClock(ee?ee.open:inf.open);return at?{park:r.park,at:at,ee:ee?(ee.desc||"Early Entry"):null}:null;}catch(e){return null;}
   }
+  function rsDownWhy(w){ /* 0728gi L-3: the board's sentence, spoken after "Down right now ·" — its first letter lowered; "Holds near Nm…" becomes "typically Nm…" (every other shape already says typical). The engine's sentence is not touched; this is the sheet's own door. */
+    if(w.indexOf("Holds near ")===0)return "typically "+w.slice(11);
+    return w.charAt(0).toLowerCase()+w.slice(1);
+  }
   function rsHTML(rid,anim){
     var r=roster[rid]||{},lv=liveById[rid],has=lv&&lv.status==="OPERATING"&&lv.wait!==null,rd=rsRead(rid),prof=rpCuratedRide(r);
     var h='<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
-      '<div class="rs-h"><div class="wt '+tierOf(lv)+'">'+(has?lv.wait+'<small>min</small>':'<span style="font-size:18px">—</span><small>'+statusLabel(lv)+'</small>')+'</div>'+
+      '<div class="rs-h"><div class="wt '+tierOf(lv)+'">'+(has?lv.wait+'<small>min</small>':'<span class="sw '+statusLabel(lv).toLowerCase()+'">'+statusLabel(lv)+'</span>')+'</div>'+ /* 0728gi B-5: the status word, My Rides' way */
       '<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' · '+esc(r.category):'')+'</div></div>'+
       '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'★':'☆')+'</button></div>';
-    if(rd.why||rd.brg)h+='<div class="rs-read">'+(rd.brg?'<span class="td-brg">'+esc(rd.brg)+'</span> ':'')+esc(rd.why)+'</div>';
+    if(lv&&lv.status==="DOWN"&&rd.why)h+='<div class="rs-read"><b class="rs-dn">Down right now</b> \u00b7 '+esc(rsDownWhy(rd.why))+'</div>'; /* 0728gi L-3 THE STATUS LEADS THE READ (owner-ruled Oct 13 on sheet-down-mock.png; glass 2:44 PM: a DOWN badge beside "Holds near 39m from here."): the typical read is history, not a promise, so while the ride is down the status speaks first and the read follows in its own words */
+    else if(rd.why||rd.brg)h+='<div class="rs-read">'+(rd.brg?'<span class="td-brg">'+esc(rd.brg)+'</span> ':'')+esc(rd.why)+'</div>';
     var pre=(rsData===null)?rsPre(rid):null; /* 0728fy THE HERO EXPLAINS THE MORNING (owner-ruled C on before-opening-mock-C.png, Oct 11): before its park opens, with nothing banked, the card says when the park opens instead of reporting a gap, and the recap door points at yesterday */
     if(pre)h+='<div class="pw-hero rs-hero"><div class="k">Today</div><div class="sub">'+(pre.ee?'Opens at '+esc(pre.at)+' with '+esc(pre.ee):esc(pre.park)+' opens at '+esc(pre.at))+'. Today’s waits start then.</div></div>';
     else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':((rsData===null&&!(lv&&lv.status==="OPERATING"))?'Today':'Today · so far'))+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">'+((lv&&lv.status==="OPERATING")?'No samples yet today.':'No waits posted today.')+'</div>')) /* 0728ge T-2 (owner-ruled Oct 13): a ride that is not running and has banked nothing says what the feed shows — no "so far", no "yet"; a running ride's first minutes keep the old words */+'</div>'; /* the chart needs about an hour of readings (pwBandModel’s own floor); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
