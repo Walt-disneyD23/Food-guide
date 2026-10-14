@@ -1666,7 +1666,7 @@
   .pw-plot{position:relative}
   .pw-band .pw-line{display:block;width:100%;height:76px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid var(--pwh-deep);transform:translate(-50%,-50%);box-sizing:content-box}
-  .pw-band .pw-cap{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--pwh-deep);border:1.5px solid var(--accent-tint);transform:translate(-50%,-50%);box-sizing:content-box}
+  .pw-legend .pw-dnk{width:14px;height:0;border-top:2px dashed #8f93ad;border-radius:0;vertical-align:middle} /* 0728gk THE LEGEND NAMES (owner-ruled W-3, Oct 13): the down key is the floor's own dashed slate line; the cap dot's rule retired with the caps (neither painter draws m.caps) */
   .pw-band .pw-dotv{position:absolute;margin-left:8px;transform:translateY(-50%);font-family:var(--font-display);font-size:var(--fs-meta);font-weight:700;text-shadow:0 0 2px var(--pwh-bg),0 0 2px var(--pwh-bg),0 0 4px var(--pwh-bg),0 0 4px var(--pwh-bg),0 0 7px var(--pwh-bg),0 0 7px var(--pwh-bg)} /* 0713n: halo dense enough to beat the line (owner catch: 130 in the stroke) — the card twin's shadow treatment, in CSS */
   .pw-band .pw-dotvl{margin-left:-8px;transform:translate(-100%,-50%)}
   .pw-band .pw-voidlbl{position:absolute;top:50%;transform:translate(-50%,-50%);font-size:var(--fs-micro);font-weight:600;color:var(--pwh-dim);text-align:center;line-height:1.4;white-space:nowrap;pointer-events:none}
@@ -2615,7 +2615,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gk</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13221,6 +13221,28 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
        x = time in 0-100 viewBox units stretched to the card width
        (vector-effect keeps the stroke crisp); y = 0..day max. */
+    function pwMonoCubic(p){ /* 0728gk THE LINE IS SMOOTH BUT NEVER LIES (owner-ruled W-3, Oct 13 on day-chart-mock.png: "the chart also feels dated"): Fritsch–Carlson monotone cubic through the samples — the curve never overshoots a sample, so the peak marker still sits on the true high. Computed in (time, value) space; each painter maps the control points with its own scale (affine, so it is the same curve). Returns one [c1, c2, end] per piece after p[0]; a two-point segment is one straight piece. */
+      var n=p.length,i,d=[],m=[],h=[],out=[];if(n<2)return out;
+      for(i=0;i<n-1;i++){h.push(p[i+1][0]-p[i][0]);d.push(h[i]?(p[i+1][1]-p[i][1])/h[i]:0);}
+      m[0]=d[0];m[n-1]=d[n-2];
+      for(i=1;i<n-1;i++)m[i]=(d[i-1]*d[i]<=0)?0:(d[i-1]+d[i])/2;
+      for(i=0;i<n-1;i++){if(!d[i]){m[i]=0;m[i+1]=0;continue;}var a=m[i]/d[i],b=m[i+1]/d[i],s2=a*a+b*b;if(s2>9){var t=3/Math.sqrt(s2);m[i]=t*a*d[i];m[i+1]=t*b*d[i];}}
+      for(i=0;i<n-1;i++){var x0=p[i][0],y0=p[i][1],x1=p[i+1][0],y1=p[i+1][1],hh=h[i]/3;out.push([[x0+hh,y0+m[i]*hh],[x1-hh,y1-m[i+1]*hh],[x1,y1]]);}
+      return out;
+    }
+    function pwBandGaps(m){ /* 0728gk AN OUTAGE RIDES THE FLOOR · A CLOSED VOID IS NOT AN OUTAGE (owner-ruled W-3 + X-1, Oct 13; the owner's own shape): the chart's interruptions, one list for both painters so they agree gap for gap. Each entry {a,b,drop,climb} is an outage span that rides the plot floor as a dashed slate line — the line drops straight to the floor at the last sample before it (drop) and climbs straight back at the first sample after (climb). A gap between two line segments is an outage unless one of the model's voids sits inside it (closed · no data · refurb — those just end and resume); the trimmed edges around a void are observed down ticks, outages too; the domain's extended ends are outages (the model extends only over DOWN ticks) and run the floor to the chart's edge. m.caps stays in the model; neither painter draws it. */
+      var out=[],i,segs=[];for(i=0;i<m.segs.length;i++)if(m.segs[i].length)segs.push(m.segs[i]);
+      if(!segs.length)return out;
+      function vin(a,b){for(var q=0;q<m.voids.length;q++){var v=m.voids[q];if(v.t0>=a-0.01&&v.t1<=b+0.01)return v;}return null;}
+      var f0=segs[0][0][0],lS=segs[segs.length-1],l1=lS[lS.length-1][0];
+      if(f0>m.t0+0.01)out.push({a:m.t0,b:f0,drop:false,climb:true});
+      for(i=0;i+1<segs.length;i++){var a=segs[i][segs[i].length-1][0],b=segs[i+1][0][0],v=vin(a,b);
+        if(!v){out.push({a:a,b:b,drop:true,climb:true});continue;}
+        if(v.t0>a+0.01)out.push({a:a,b:v.t0,drop:true,climb:false});
+        if(v.t1<b-0.01)out.push({a:v.t1,b:b,drop:false,climb:true});}
+      if(l1<m.t1-0.01)out.push({a:l1,b:m.t1,drop:true,climb:false});
+      return out;
+    }
     function pwSparkBand(rid,su,typ){
       var m=pwBandModel(rid,su);if(!m)return"";
       var t0=m.t0,t1=m.t1,vMax=m.vMax,H=76,pad=3,ih=H-pad*2,i,j,k;
@@ -13237,14 +13259,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       m.tyR=tyR; /* 0728gb: the lens reads the typical off the very runs the chart drew */
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
-      var lineD="",glowD="";
+      var lineD="",glowD="",floorD="",fl=pwBandGaps(m),FY=(H-1.5).toFixed(1); /* 0728gk: the floor sits a stroke's width inside the plot so the dashed slate is not clipped at the edge */
+      function flAt(t,k){for(var q=0;q<fl.length;q++)if(fl[q][k]&&Math.abs(fl[q][k==="climb"?"b":"a"]-t)<0.01)return true;return false;}
+      for(i=0;i<fl.length;i++)floorD+="M"+X(fl[i].a)+" "+FY+"L"+X(fl[i].b)+" "+FY;
       for(j=0;j<m.segs.length;j++){
         var p=m.segs[j];if(!p.length)continue;
-        for(k=0;k<p.length;k++)lineD+=(k?"L":"M")+X(p[k][0])+" "+Y(p[k][1]);
-        if(p.length>1){
-          for(k=0;k<p.length;k++)glowD+=(k?"L":"M")+X(p[k][0])+" "+Y(p[k][1]);
-          glowD+="L"+X(p[p.length-1][0])+" "+H+"L"+X(p[0][0])+" "+H+"Z";
-        }
+        var cv=pwMonoCubic(p),x0=X(p[0][0]),y0=Y(p[0][1]),cd="",xl=X(p[p.length-1][0]);
+        for(k=0;k<cv.length;k++)cd+="C"+X(cv[k][0][0])+" "+Y(cv[k][0][1])+" "+X(cv[k][1][0])+" "+Y(cv[k][1][1])+" "+X(cv[k][2][0])+" "+Y(cv[k][2][1]);
+        lineD+=(flAt(p[0][0],"climb")?"M"+x0+" "+FY+"L"+x0+" "+y0:"M"+x0+" "+y0)+cd+(flAt(p[p.length-1][0],"drop")?"L"+xl+" "+FY:""); /* the drops and climbs are the line's own colour; the floor between them is slate */
+        if(p.length>1)glowD+="M"+x0+" "+y0+cd+"L"+xl+" "+H+"L"+x0+" "+H+"Z";
       }
       var dots="";
       for(i=0;i<m.dots.length;i++){
@@ -13253,15 +13276,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         dots+='<span class="pw-dot" style="left:'+xS+'%;top:'+yS+'px;background:'+dt.c+'"></span>';
         dots+='<span class="pw-dotv'+(xN>86?' pw-dotvl':'')+'" style="left:'+xS+'%;top:'+(yN+(above?-13:13)).toFixed(1)+'px;color:'+dt.c+'">'+dt.val+'</span>';
       }
-      for(i=0;i<m.caps.length;i++){
-        var cp=m.caps[i];
-        dots+='<span class="pw-cap" style="left:'+X(cp.t)+'%;top:'+Y(cp.v)+'px"></span>';
-      }
-      var vl="";
+      var vl="",hl=""; /* 0728gk: no cap dots. X-1 A CLOSED VOID IS NOT AN OUTAGE: the line just ends and resumes; two faint dashed hairlines mark the close and the reopen; "park closed" prints when the void is ≥ 5% of the chart (was 10%), the one word "closed" when tight. "No data" voids keep their label (≥ 10%), no hairlines — no door closed. Refurb voids as before. */
       for(i=0;i<m.voids.length;i++){
-        var vv=m.voids[i];if(vv.pct<10)continue;
+        var vv=m.voids[i];
+        if(vv.kind==="closed")hl+='<line x1="'+X(vv.t0)+'" y1="0" x2="'+X(vv.t0)+'" y2="'+H+'" stroke="#e6e9fb" stroke-opacity=".28" stroke-width="1" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"/><line x1="'+X(vv.t1)+'" y1="0" x2="'+X(vv.t1)+'" y2="'+H+'" stroke="#e6e9fb" stroke-opacity=".28" stroke-width="1" stroke-dasharray="2 3" vector-effect="non-scaling-stroke"/>';
+        var lb=(vv.kind==="closed")?(vv.pct>=10?"park<br>closed":(vv.pct>=5?"closed":"")):(vv.pct>=10?(vv.kind==="refurb"?"refurb":"no data"):"");
+        if(!lb)continue;
         var vcx=(((vv.t0+vv.t1)/2-t0)/(t1-t0)*100).toFixed(2);
-        vl+='<span class="pw-voidlbl" style="left:'+vcx+'%">'+(vv.kind==="closed"?"park<br>closed":vv.kind==="refurb"?"refurb":"no data")+'</span>';
+        vl+='<span class="pw-voidlbl" style="left:'+vcx+'%">'+lb+'</span>';
       }
       var rib="";
       var lgS=(lastData&&lastData.ltg&&lastData.ltg.samples)||[],lgIv=[],li;
@@ -13284,15 +13306,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
         :('<div class="pw-times"><span>'+pwClkSm(t0)+'</span><span>'+pwClkSm(t1)+'</span></div>'); /* 0728fz THE ENDS SAY THEIR MINUTES (owner glass 8:44 AM Oct 12: a 7:30–8:44 chart was labelled 7a and 8a) */
-      var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i style="background:'+PW_TIER.down+'"></i>down</span></div>';
+      var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i class="pw-dnk"></i>down</span></div>'; /* 0728gk THE LEGEND NAMES: the down key is the floor's dashed line */
       pwScrubReg[rid]={m:m,su:su};pwScrubInit();
       var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-sct"></b><b class="pw-scd"></b><span class="pw-scp"></span></div>';
       var tyD="",tyL="",tk;for(k=0;k<tyR.length;k++)for(tk=0;tk<tyR[k].length;tk++)tyD+=(tk?"L":"M")+X(tyR[k][tk][0])+" "+Y(tyR[k][tk][1]); /* 0728fw THE LEGEND NAMES (owner-ruled on the glass, Oct 11): the word on the chart sat where today's line ends and was buried by it; the legend's dashed key carries the name alone */
       return '<div class="pw-band"><div class="pw-plot">'
         +'<svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true">'
-        +'<path d="'+glowD+'" fill="#96a1f2" fill-opacity=".13"/>'
+        +'<defs><linearGradient id="pwg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="'+H+'"><stop offset="0" stop-color="#96a1f2" stop-opacity=".34"/><stop offset="1" stop-color="#96a1f2" stop-opacity="0"/></linearGradient></defs>' /* 0728gk W-3: the fill is a vertical gradient over the whole plot, .34 at the top to nothing at the floor */
+        +'<path d="'+glowD+'" fill="url(#pwg)"/>'+hl
         +(tyD?'<path class="pw-typ" d="'+tyD+'" fill="none" stroke="#e6e9fb" stroke-opacity=".8" stroke-width="1.2" stroke-dasharray="3 2.5" vector-effect="non-scaling-stroke"/>':'')
-        +'<path d="'+lineD+'" fill="none" stroke="#96a1f2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
+        +'<path d="'+floorD+'" fill="none" stroke="#8f93ad" stroke-width="2.2" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>' /* 0728gk: the outages ride the floor in the ribbon's down slate */
+        +'<path d="'+lineD+'" fill="none" stroke="#b4bcff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
         +'</svg>'+dots+vl+tyL+scrub+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
         +pwSkyLane(m)
@@ -14310,16 +14334,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var pT=by+26,pH=190,pB=pT+pH,vpad=8;
         function BX(t){return bx+(t-m.t0)/(m.t1-m.t0)*bw;}
         function BY(v){return pT+vpad+(pH-2*vpad)*(1-v/m.vMax);}
+        var fl=pwBandGaps(m),FY=pB-3,q9; /* 0728gk: the same interruptions the page draws, from the same list */
+        function flAt(t,k){for(q9=0;q9<fl.length;q9++)if(fl[q9][k]&&Math.abs(fl[q9][k==="climb"?"b":"a"]-t)<0.01)return true;return false;}
+        ctx.save();var gfill=ctx.createLinearGradient(0,pT,0,pB);gfill.addColorStop(0,"rgba(150,161,242,0.34)");gfill.addColorStop(1,"rgba(150,161,242,0)");
         for(i=0;i<m.segs.length;i++){
-          var p=m.segs[i];if(p.length<2)continue;
-          ctx.beginPath();ctx.moveTo(BX(p[0][0]),BY(p[0][1]));
-          for(j=1;j<p.length;j++)ctx.lineTo(BX(p[j][0]),BY(p[j][1]));
-          ctx.lineTo(BX(p[p.length-1][0]),pB);ctx.lineTo(BX(p[0][0]),pB);ctx.closePath();
-          ctx.fillStyle="rgba(150,161,242,0.13)";ctx.fill();
-          ctx.beginPath();ctx.moveTo(BX(p[0][0]),BY(p[0][1]));
-          for(j=1;j<p.length;j++)ctx.lineTo(BX(p[j][0]),BY(p[j][1]));
-          ctx.strokeStyle=C.accent;ctx.lineWidth=4.5;ctx.lineJoin="round";ctx.lineCap="round";ctx.stroke();
+          var p=m.segs[i];if(!p.length)continue;
+          var cv=pwMonoCubic(p),xa0=BX(p[0][0]),ya0=BY(p[0][1]),pl=p[p.length-1];
+          if(p.length>1){ctx.beginPath();ctx.moveTo(xa0,ya0);for(j=0;j<cv.length;j++)ctx.bezierCurveTo(BX(cv[j][0][0]),BY(cv[j][0][1]),BX(cv[j][1][0]),BY(cv[j][1][1]),BX(cv[j][2][0]),BY(cv[j][2][1]));ctx.lineTo(BX(pl[0]),pB);ctx.lineTo(xa0,pB);ctx.closePath();ctx.fillStyle=gfill;ctx.fill();}
+          ctx.beginPath();if(flAt(p[0][0],"climb")){ctx.moveTo(xa0,FY);ctx.lineTo(xa0,ya0);}else ctx.moveTo(xa0,ya0);
+          for(j=0;j<cv.length;j++)ctx.bezierCurveTo(BX(cv[j][0][0]),BY(cv[j][0][1]),BX(cv[j][1][0]),BY(cv[j][1][1]),BX(cv[j][2][0]),BY(cv[j][2][1]));
+          if(flAt(pl[0],"drop"))ctx.lineTo(BX(pl[0]),FY);
+          ctx.strokeStyle="#b4bcff";ctx.lineWidth=6;ctx.lineJoin="round";ctx.lineCap="round";ctx.stroke();
         }
+        ctx.setLineDash([10,7.5]);ctx.strokeStyle="#8f93ad";ctx.lineWidth=5.5;ctx.lineCap="butt";
+        for(q9=0;q9<fl.length;q9++){ctx.beginPath();ctx.moveTo(BX(fl[q9].a),FY);ctx.lineTo(BX(fl[q9].b),FY);ctx.stroke();}
+        ctx.setLineDash([]);ctx.restore();
         var ry=pB+8,rh=20;
         ctx.save();rr(bx,ry,bw,rh,6);ctx.clip();
         for(i=0;i<m.runs.length;i++){
@@ -14344,20 +14373,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           ctx.fillText(String(dt.val),lx,ly);ctx.fillText(String(dt.val),lx,ly);
           ctx.restore();ctx.textBaseline="alphabetic";
         }
-        for(i=0;i<m.caps.length;i++){
-          var cp2=m.caps[i];
-          ctx.beginPath();ctx.arc(BX(cp2.t),BY(cp2.v),5.5,0,Math.PI*2);
-          ctx.fillStyle="#0e1e31";ctx.fill();
-          ctx.lineWidth=3;ctx.strokeStyle="#96a1f2";ctx.stroke();
-        }
-        for(i=0;i<m.voids.length;i++){
-          var vv=m.voids[i];if(vv.pct<10)continue;
+        for(i=0;i<m.voids.length;i++){ /* 0728gk: no cap dots; a closed void wears two hairlines and prints at ≥ 5% ("closed" alone when tight); no-data and refurb voids as before */
+          var vv=m.voids[i];
+          if(vv.kind==="closed"){ctx.save();ctx.setLineDash([5,7.5]);ctx.strokeStyle="rgba(230,233,251,0.28)";ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(BX(vv.t0),pT);ctx.lineTo(BX(vv.t0),pB);ctx.moveTo(BX(vv.t1),pT);ctx.lineTo(BX(vv.t1),pB);ctx.stroke();ctx.restore();}
+          if(vv.pct<(vv.kind==="closed"?5:10))continue;
           var vx=(BX(vv.t0)+BX(vv.t1))/2,vroom=BX(vv.t1)-BX(vv.t0)-12,vmid=pT+pH/2;
           ctx.font=IN("600",22);
           var vwide=Math.max(ctx.measureText("closed").width,ctx.measureText("no data").width,ctx.measureText("refurb").width);
           if(vwide>vroom)continue;
           ctx.fillStyle="#7a88aa";ctx.textAlign="center";ctx.textBaseline="middle";
-          if(vv.kind==="closed"){ctx.fillText("park",vx,vmid-15);ctx.fillText("closed",vx,vmid+15);}
+          if(vv.kind==="closed"){if(vv.pct>=10){ctx.fillText("park",vx,vmid-15);ctx.fillText("closed",vx,vmid+15);}else ctx.fillText("closed",vx,vmid);}
           else if(vv.kind==="refurb")ctx.fillText("refurb",vx,vmid);
           else ctx.fillText("no data",vx,vmid);
           ctx.textAlign="left";ctx.textBaseline="alphabetic";
@@ -14373,13 +14398,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           ctx.textAlign="left";ctx.fillText(pwClkS(m.t0),bx,ty+36);
           ctx.textAlign="right";ctx.fillText(pwClkS(m.t1),bx+bw,ty+36);
         }
-        var lyg=ty+58,lx2=bx,IT=[["#15a36b","20 or less"],["#dc8a06","21-45"],["#ef6c3b","46-70"],["#e23b54","over 70"],["#4d5578","down"]];
+        var lyg=ty+58,lx2=bx,IT=[["#15a36b","20 or less"],["#dc8a06","21-45"],["#ef6c3b","46-70"],["#e23b54","over 70"]]; /* 0728gk THE LEGEND NAMES: the down key is the floor's own dashed line, drawn after the four bands */
         ctx.font=IN("500",20);ctx.textAlign="left";
         for(i=0;i<IT.length;i++){
           rr(lx2,lyg,16,16,5);ctx.fillStyle=IT[i][0];ctx.fill();
           lx2+=24;ctx.fillStyle=C.muted;ctx.fillText(IT[i][1],lx2,lyg+15);
           lx2+=ctx.measureText(IT[i][1]).width+30;
         }
+        ctx.save();ctx.setLineDash([6,4]);ctx.strokeStyle="#8f93ad";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(lx2,lyg+8);ctx.lineTo(lx2+22,lyg+8);ctx.stroke();ctx.restore();
+        lx2+=30;ctx.fillStyle=C.muted;ctx.fillText("down",lx2,lyg+15);
         if(D.lane){ /* 0713m: the strike lane, card twin — bars share BX so app
              and card can never disagree on where the sky sat. Static medium:
              counts live in the header line (the storm card's resolution);
