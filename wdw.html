@@ -2616,7 +2616,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gn</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728go</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13425,7 +13425,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var line=sc.querySelector(".pw-scl"),dot=sc.querySelector(".pw-scd"),pill=sc.querySelector(".pw-scp"),tdot=sc.querySelector(".pw-sct");
       line.style.left=xPx.toFixed(1)+"px";
       var pad=3,ih=76-pad*2,ty9=(res.t!=null)?pwScrubTyp(m,res.t):null; /* 0728gb: the typical at this moment, where the chart drew one (today, live) */
-      if(tdot){if(ty9!==null&&res.v!=null){tdot.style.left=xPx.toFixed(1)+"px";tdot.style.top=(pad+ih-(ty9/m.vMax)*ih).toFixed(1)+"px";tdot.style.display="";}else tdot.style.display="none";}
+      if(tdot){if(ty9!==null&&(res.v!=null||res.down)){tdot.style.left=xPx.toFixed(1)+"px";tdot.style.top=(pad+ih-(ty9/m.vMax)*ih).toFixed(1)+"px";tdot.style.display="";}else tdot.style.display="none";}
       if(res.v!=null){
         var y=pad+ih-(res.v/m.vMax)*ih;
         dot.style.left=xPx.toFixed(1)+"px";dot.style.top=y.toFixed(1)+"px";dot.style.display="";
@@ -13438,7 +13438,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           /* the sky keeps talking during outages (0705n): same descriptive
              nearest-sample glyph the wait branch wears — context, never cause */
           var gd=pwScrubWx(res.t);
-          pill.innerHTML='<span class="v"><b style="color:#8c96b9">Down</b></span><span class="s">'+pwClk(res.t)+(gd?'<em>'+gd+'</em>':'')+'</span>';
+          pill.innerHTML='<span class="v"><b style="color:#8c96b9">Down</b>'+(ty9!==null?'<i>typical '+Math.round(ty9)+'m</i>':'')+'</span><span class="s">'+pwClk(res.t)+(gd?'<em>'+gd+'</em>':'')+'</span>'; /* 0728go THE LENS READS WHAT THE CHART DREW (owner-ruled A, Oct 14; Pirates glass 12:25 PM): a down tick reads the typical beside the word, as a wait does — the dashed line is under the finger either way */
         }else{
           pill.innerHTML='<span class="v"><b style="color:#8c96b9">'+(res.kind==="closed"?"Park closed":res.kind==="refurb"?"Refurb":"No data")+'</b></span>';
         }
