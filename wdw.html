@@ -2616,7 +2616,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728go</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gp</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9461,7 +9461,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function lrcShare(rid){ /* 0728gj D-1: the sheet's share door → the live ride card, drawn by the Wrap module's own drawers */
     var r=roster[rid],o=lrcModel(rid);if(!r||!o||!window.__ppLiveRideCard)return;
-    window.__ppLiveRideCard(rid,r.park,o);
+    window.__ppLiveRideCard(rid,r.park,o,rsTyp(rid)); /* 0728gp: the typical rides the door as it rides the sheet’s (__ppRideSheet) */
   }
   function rsHTML(rid,anim){
     var r=roster[rid]||{},lv=liveById[rid],has=lv&&lv.status==="OPERATING"&&lv.wait!==null,rd=rsRead(rid),prof=rpCuratedRide(r);
@@ -11491,9 +11491,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(cache["yesterday"]){go(cache["yesterday"]);return;}
       fetch(WRAP_URL+"/history?date="+etDate(1)).then(function(r){return r.json();}).then(function(d){pwCleanData(d);go(d);})["catch"](function(){cb(false);});
     };
-    window.__ppLiveRideCard=function(rid,park,o){ /* 0728gj THE LIVE RIDE CARD: the sheet's live parts (o, lrcModel) joined to the day by the REAL builders — findRide, pwSustained, pwBandModel, pwCardLane, the Wrap ride card's own tile lines — and sent through emitCard/drawCard. Today's day is lent and handed back as __ppRideSheet lends it; the Wrap's today cache is reused only while FRESH (5 min) and never written. A ride with nothing banked still sends: the headline, the read and the lane, no chart, no tiles. */
+    window.__ppLiveRideCard=function(rid,park,o,typ){ /* 0728gj THE LIVE RIDE CARD: the sheet's live parts (o, lrcModel) joined to the day by the REAL builders — findRide, pwSustained, pwBandModel, pwCardLane, the Wrap ride card's own tile lines — and sent through emitCard/drawCard. Today's day is lent and handed back as __ppRideSheet lends it; the Wrap's today cache is reused only while FRESH (5 min) and never written. A ride with nothing banked still sends: the headline, the read and the lane, no chart, no tiles. */
       function go(d){var kD=lastData,kT=lastTab,D=null;
-        try{if(d){lastData=d;lastTab="today";}var r=d?findRide(park,rid):null;D=lrcCard(r,d,o);}catch(e){D=null;}
+        try{if(d){lastData=d;lastTab="today";}var r=d?findRide(park,rid):null;D=lrcCard(r,d,o,typ);}catch(e){D=null;}
         finally{lastData=kD;lastTab=kT;}
         if(D)lrcEmit(D);
       }
@@ -11501,11 +11501,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(c&&cacheAt["today"]&&Date.now()-cacheAt["today"]<5*60*1000){go(c);return;}
       fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();}).then(function(d){pwCleanData(d);go(d);})["catch"](function(){go(null);});
     };
-    function lrcCard(r,d,o){ /* the live ride card's descriptor (Live-Ride-Card-Spec §3). The four tiles are the Wrap ride card's own lines, byte for byte (shareRideCard stands untouched; the twin is pinned). */
+    function lrcCard(r,d,o,typ){ /* the live ride card's descriptor (Live-Ride-Card-Spec §3). 0728gp: typ is today’s typical, handed through the door as the sheet’s is; the model draws it while the day is live. The four tiles are the Wrap ride card's own lines, byte for byte (shareRideCard stands untouched; the twin is pinned). */
       var tiles=[],bm=null,lane=null,lgIv=null,su=null;
       if(r&&d){
         var live=!isFinal(d),cKind=pwRideWxK(false,live),cClause=cKind?pwWxClause(r.id,wxDerive(d),cKind):"";
-        su=pwSustained(r.id);bm=pwBandModel(r.id,su);lane=bm?pwCardLane(bm):null;
+        su=pwSustained(r.id);bm=pwBandModel(r.id,su,live?typ:null);lane=bm?pwCardLane(bm):null;
         if(lane){lgIv=[];var lgS0=(lastData.ltg&&lastData.ltg.samples)||[],lq;
           for(lq=0;lq<lgS0.length;lq++)if(lgS0[lq].n>0)lgIv.push([lgS0[lq].t-(lgS0[lq].w||60),lgS0[lq].t]);}
         var isWeek=false;
@@ -13058,7 +13058,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        renderings can never drift. Null until the feed has banked about an
        hour of the ride — operating or DOWN ticks (0728gn); pwSustained keeps
        its own floor of twelve operating samples. */
-    function pwBandModel(rid,su){ /* 0728gn THE BANKED DAY EARNS THE CHART (owner-ruled option B, Oct 14; glass 10:59 AM: Slinky Dog Dash down 7:00–10:41, up 18 min, no chart): the hour floor counts the day the feed banked — operating ticks and DOWN ticks alike (12 ticks ≈ an hour; CLOSED and REFURB never count) — where it counted operating samples alone (the Jun 30–Jul 2 bake-off floor, written when a gap was invisible; since gk an outage is the chart's own dashed floor). The line needs three samples of its own before it draws; until then the chart is the floor alone, its domain the outage itself. The tiles' sustained floor is untouched. */
+    function pwBandModel(rid,su,typ){ /* 0728gp SAME DRESS (owner-ruled A, Oct 14; the Slinky card 12:26 PM ran 95 against nothing while the sheet showed it crossing the typical): typ = [[minute, median]] from the Today board’s own curve, or absent — the typical’s runs (tyR) and the scale that holds them now live in the model, read by both painters as pwBandGaps already is, so the sheet and the card can never draw the day against two different typicals. 0728gn THE BANKED DAY EARNS THE CHART (owner-ruled option B, Oct 14; glass 10:59 AM: Slinky Dog Dash down 7:00–10:41, up 18 min, no chart): the hour floor counts the day the feed banked — operating ticks and DOWN ticks alike (12 ticks ≈ an hour; CLOSED and REFURB never count) — where it counted operating samples alone (the Jun 30–Jul 2 bake-off floor, written when a gap was invisible; since gk an outage is the chart's own dashed floor). The line needs three samples of its own before it draws; until then the chart is the floor alone, its domain the outage itself. The tiles' sustained floor is untouched. */
       /* full-day scan of the column: numeric ticks feed the ribbon; down-tick
          times classify gaps. Three states per tick: operating (v>=0), down
          (v<0), and NO DATA (null cell / missed snapshot row). */
@@ -13222,7 +13222,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(leftGap>=capMin&&!pwDotAt(aT))caps.push({t:aT,v:sg2[0][1]});
         if(rightGap>=capMin&&!pwDotAt(bT))caps.push({t:bT,v:sg2[sg2.length-1][1]});
       }
-      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut,samples:raw,caps:caps};
+      var tyP=[]; /* 0728fr THE DAY AGAINST ITS TYPICAL (owner-ruled T-2, Oct 11): typ = [[minute, median]] from the Today board's own curve, or absent. Drawn only when a caller hands it (today, live); the scale grows to hold it, and the model carries the new scale so the scrub lens still lands on the line. */
+      var tyR=[]; /* 0728fz THE TYPICAL REACHES THE EDGES (owner glass 8:44 AM Oct 12: on a 75-minute chart the dashed line floated in the middle). A typical point is one half-hour's median, drawn at the half-hour's middle; the line now holds that value out to its own half-hour's ends, joins only neighbouring half-hours, and is cut at the chart's edges. tyR = the runs to draw. */
+      if(typ&&typ.length){for(i=0;i<typ.length;i++)if(typ[i][0]+15>t0&&typ[i][0]-15<t1)tyP.push(typ[i]);if(tyP.length<2)tyP=[];for(i=0;i<tyP.length;i++)if(tyP[i][1]>vMax)vMax=tyP[i][1];
+        var tyRun=[],tyAll=[];for(i=0;i<tyP.length;i++){if(tyRun.length&&tyP[i][0]-tyRun[tyRun.length-1][0]>30){tyAll.push(tyRun);tyRun=[];}tyRun.push(tyP[i]);}if(tyRun.length)tyAll.push(tyRun);
+        for(i=0;i<tyAll.length;i++){var tp=[[tyAll[i][0][0]-15,tyAll[i][0][1]]].concat(tyAll[i]).concat([[tyAll[i][tyAll[i].length-1][0]+15,tyAll[i][tyAll[i].length-1][1]]]),to=[],tq;
+          for(tq=0;tq<tp.length-1;tq++){var ta=tp[tq],tb=tp[tq+1];if(tb[0]<=t0||ta[0]>=t1)continue;
+            var tx0=Math.max(ta[0],t0),tx1=Math.min(tb[0],t1),tw=tb[0]-ta[0];
+            if(!to.length)to.push([tx0,tw?ta[1]+(tb[1]-ta[1])*(tx0-ta[0])/tw:ta[1]]);
+            to.push([tx1,tw?ta[1]+(tb[1]-ta[1])*(tx1-ta[0])/tw:ta[1]]);}
+          if(to.length>1)tyR.push(to);}}
+      return {t0:t0,t1:t1,vMax:vMax,segs:segs,dots:dots,runs:runs,ticks:ticks,voids:voidsOut,samples:raw,caps:caps,tyR:tyR}; /* 0728gp: tyR the typical’s runs, [] when no typical was handed or none meets the chart; vMax already grown to hold them */
     }
     /* ---- SVG emitter for the ride-detail hero: pure drawing over the model.
        x = time in 0-100 viewBox units stretched to the card width
@@ -13256,19 +13266,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       return out;
     }
     function pwSparkBand(rid,su,typ){
-      var m=pwBandModel(rid,su);if(!m)return"";
+      var m=pwBandModel(rid,su,typ);if(!m)return"";
       var t0=m.t0,t1=m.t1,vMax=m.vMax,H=76,pad=3,ih=H-pad*2,i,j,k;
-      var tyP=[]; /* 0728fr THE DAY AGAINST ITS TYPICAL (owner-ruled T-2, Oct 11): typ = [[minute, median]] from the Today board's own curve, or absent. Drawn only when a caller hands it (today, live); the scale grows to hold it, and the model carries the new scale so the scrub lens still lands on the line. */
-      var tyR=[]; /* 0728fz THE TYPICAL REACHES THE EDGES (owner glass 8:44 AM Oct 12: on a 75-minute chart the dashed line floated in the middle). A typical point is one half-hour's median, drawn at the half-hour's middle; the line now holds that value out to its own half-hour's ends, joins only neighbouring half-hours, and is cut at the chart's edges. tyR = the runs to draw. */
-      if(typ&&typ.length){for(i=0;i<typ.length;i++)if(typ[i][0]+15>t0&&typ[i][0]-15<t1)tyP.push(typ[i]);if(tyP.length<2)tyP=[];for(i=0;i<tyP.length;i++)if(tyP[i][1]>vMax)vMax=tyP[i][1];m.vMax=vMax;
-        var tyRun=[],tyAll=[];for(i=0;i<tyP.length;i++){if(tyRun.length&&tyP[i][0]-tyRun[tyRun.length-1][0]>30){tyAll.push(tyRun);tyRun=[];}tyRun.push(tyP[i]);}if(tyRun.length)tyAll.push(tyRun);
-        for(i=0;i<tyAll.length;i++){var tp=[[tyAll[i][0][0]-15,tyAll[i][0][1]]].concat(tyAll[i]).concat([[tyAll[i][tyAll[i].length-1][0]+15,tyAll[i][tyAll[i].length-1][1]]]),to=[],tq;
-          for(tq=0;tq<tp.length-1;tq++){var ta=tp[tq],tb=tp[tq+1];if(tb[0]<=t0||ta[0]>=t1)continue;
-            var tx0=Math.max(ta[0],t0),tx1=Math.min(tb[0],t1),tw=tb[0]-ta[0];
-            if(!to.length)to.push([tx0,tw?ta[1]+(tb[1]-ta[1])*(tx0-ta[0])/tw:ta[1]]);
-            to.push([tx1,tw?ta[1]+(tb[1]-ta[1])*(tx1-ta[0])/tw:ta[1]]);}
-          if(to.length>1)tyR.push(to);}}
-      m.tyR=tyR; /* 0728gb: the lens reads the typical off the very runs the chart drew */
+      var tyR=m.tyR; /* 0728gp: the typical’s runs are the model’s (0728fr/0728fz, lifted out of this painter); the card’s painter reads the same list and the lens still reads the typical off the very runs the chart drew (0728gb) */
       function X(t){return ((t-t0)/(t1-t0)*100).toFixed(2);}
       function Y(v){return (pad+ih-(v/vMax)*ih).toFixed(1);}
       var lineD="",glowD="",floorD="",fl=pwBandGaps(m),FY=(H-1.5).toFixed(1); /* 0728gk: the floor sits a stroke's width inside the plot so the dashed slate is not clipped at the edge */
@@ -14350,6 +14350,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var fl=pwBandGaps(m),FY=pB-3,q9; /* 0728gk: the same interruptions the page draws, from the same list */
         function flAt(t,k){for(q9=0;q9<fl.length;q9++)if(fl[q9][k]&&Math.abs(fl[q9][k==="climb"?"b":"a"]-t)<0.01)return true;return false;}
         ctx.save();var gfill=ctx.createLinearGradient(0,pT,0,pB);gfill.addColorStop(0,"rgba(150,161,242,0.34)");gfill.addColorStop(1,"rgba(150,161,242,0)");
+        var tyR=m.tyR||[],tq9,tr9; /* 0728gp SAME DRESS: the day against its typical, the page’s dashed #e6e9fb line at the card’s scale (1.2 → 3 wide, 3 2.5 → 7.5 6.25), drawn before the fill, the floor and the line as the SVG stacks it */
+        if(tyR.length){ctx.save();ctx.setLineDash([7.5,6.25]);ctx.strokeStyle="rgba(230,233,251,0.8)";ctx.lineWidth=3;ctx.lineCap="butt";ctx.beginPath();
+          for(tq9=0;tq9<tyR.length;tq9++)for(tr9=0;tr9<tyR[tq9].length;tr9++){if(tr9)ctx.lineTo(BX(tyR[tq9][tr9][0]),BY(tyR[tq9][tr9][1]));else ctx.moveTo(BX(tyR[tq9][tr9][0]),BY(tyR[tq9][tr9][1]));}
+          ctx.stroke();ctx.restore();}
         for(i=0;i<m.segs.length;i++){
           var p=m.segs[i];if(!p.length)continue;
           var cv=pwMonoCubic(p),xa0=BX(p[0][0]),ya0=BY(p[0][1]),pl=p[p.length-1];
@@ -14408,8 +14412,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
             ctx.beginPath();ctx.moveTo(tx2,ty);ctx.lineTo(tx2,ty+8);ctx.stroke();
             ctx.fillText(m.ticks[i].label,tx2,ty+36);}
         }else{
-          ctx.textAlign="left";ctx.fillText(pwClkS(m.t0),bx,ty+36);
-          ctx.textAlign="right";ctx.fillText(pwClkS(m.t1),bx+bw,ty+36);
+          ctx.textAlign="left";ctx.fillText(pwClkSm(m.t0),bx,ty+36); /* 0728gp E-1 THE ENDS SAY THEIR MINUTES (0728fz, on the page since; the card’s no-grid ends floored the hour — 8:06 read 8a): the short clock with its minutes, as the page’s ends say them */
+          ctx.textAlign="right";ctx.fillText(pwClkSm(m.t1),bx+bw,ty+36);
         }
         var lyg=ty+58,lx2=bx,IT=[["#15a36b","20 or less"],["#dc8a06","21-45"],["#ef6c3b","46-70"],["#e23b54","over 70"]]; /* 0728gk THE LEGEND NAMES: the down key is the floor's own dashed line, drawn after the four bands */
         ctx.font=IN("500",20);ctx.textAlign="left";
@@ -14420,6 +14424,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         }
         ctx.save();ctx.setLineDash([6,4]);ctx.strokeStyle="#8f93ad";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(lx2,lyg+8);ctx.lineTo(lx2+22,lyg+8);ctx.stroke();ctx.restore();
         lx2+=30;ctx.fillStyle=C.muted;ctx.fillText("down",lx2,lyg+15);
+        if(tyR.length){lx2+=ctx.measureText("down").width+30; /* 0728gp THE LEGEND NAMES: the typical’s key is its own dashed line, after the down key, as the page’s legend ends */
+          ctx.save();ctx.setLineDash([6,4]);ctx.strokeStyle="rgba(230,233,251,0.8)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx2,lyg+8);ctx.lineTo(lx2+22,lyg+8);ctx.stroke();ctx.restore();
+          lx2+=30;ctx.fillStyle=C.muted;ctx.fillText("typical",lx2,lyg+15);}
         if(D.lane){ /* 0713m: the strike lane, card twin — bars share BX so app
              and card can never disagree on where the sky sat. Static medium:
              counts live in the header line (the storm card's resolution);
