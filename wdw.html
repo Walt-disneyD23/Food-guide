@@ -2640,7 +2640,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gt</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gu</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10522,6 +10522,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(alertState[id]){ /* the one-shot latch doubles as the ✓ Hit time; the re-check rides ruleMet — one predicate, one truth */
       var ru=ruleFor(id),still=ruleMet(id,liveById[id]);
       if(still)return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="fresh"><span class="mr-p phit">✓ Hit '+mrClk(alertState[id])+' · '+'at '+ru.thresh+(ru.dir==="below"?" or less":" or more")+'</span></div>';
+      if(!mrOpNow(id))return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+'</span></div>'; /* 0728gu THE PILL MAY NOT NAME A WAIT IT DOESN'T HAVE (owner glass 11:08 PM Oct 14, the parks closed: "back above 20" on a CLOSED ride): a ride that is not running has no wait to have moved \u2014 the clock alone; the row's own word says why */
       return '<div class="mr-rl" data-id="'+esc(id)+'" data-rule="stale"><span class="mr-p pstale">Hit '+mrClk(alertState[id])+' · back '+(ru.dir==="below"?"above":"below")+' '+ru.thresh+'</span></div>';
     }
     var o=overrides[id];
@@ -10832,6 +10833,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(armed[id]){var ru=ruleFor(id),tail=ru.thresh+(ru.dir==="below"?" or less":" or more");
       if(alertState[id]){ /* 0728gt THE SHEET LEARNS THE HIT (owner-ruled H-A, Oct 14): the latch and the live re-check the pill reads (0720z) \u2014 fresh while the wait still satisfies the rule, stale once it no longer does; SAME QUESTION SAME SENTENCE with the My Rides pill */
         if(ruleMet(id,liveById[id]))h+='<span class="hitF">\u2713 hit '+mrClk(alertState[id])+'</span> \u00b7 <span class="on">at '+tail+'</span>';
+        else if(!mrOpNow(id))h+='<span class="hitS">hit '+mrClk(alertState[id])+'</span>'; /* 0728gu: not running \u2014 the clock alone; the head's word (CLOSED / DOWN) says why */
         else h+='<span class="hitS">hit '+mrClk(alertState[id])+'</span> \u00b7 <span class="on">back '+(ru.dir==="below"?"above":"below")+' '+ru.thresh+'</span>';
       }else h+='<span class="on">alert on \u00b7 '+tail+'</span>';}
     else h+='alert off';
