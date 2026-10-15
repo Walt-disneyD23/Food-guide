@@ -271,7 +271,7 @@
   .flagbtn{flex:none;cursor:pointer;width:32px;height:32px;border-radius:var(--r-el-sm);display:grid;place-items:center;
     background:var(--card-2);border:1px solid var(--line);color:var(--muted-2);transition:.15s;font-size:var(--fs-title)}
   .flagbtn:hover{background:var(--line);color:var(--muted)}
-  .flagbtn.on{background:var(--accent-fill);border-color:var(--accent-fill);color:#fff;box-shadow:0 3px 10px -3px rgba(79,70,229,.55)}
+  .flagbtn.on{background:var(--accent-soft);border-color:rgba(139,135,255,.45);color:var(--accent)} /* 0728gt ONE BELL ONE DRESS (owner-ruled B-1, Oct 14): armed = the soft tint on both surfaces (the state's dress); the solid accent fill stays for doors */
   /* ===== The Down Door (L-32 Cut 3, 0718h). The card-banner retires into
      the hero \u2014 its organs transfer whole: the SAME rows (watch buttons and
      all; the alerts lifecycle is not edited), the SAME shareDownNow flow,
@@ -2078,7 +2078,7 @@
      everything else consumes the app vars so Harbor gets it free. */
   .pg-myrides{margin-top:8px}
   .flagbtn svg{width:17px;height:17px;stroke:currentColor;fill:none}
-  .flagbtn.on svg{fill:#fff}
+  .flagbtn.on svg{fill:var(--accent);stroke:var(--accent)}
   .mr-hero{background:linear-gradient(160deg,#1b2d4d,#10243a 62%);border:1px solid #24425c;border-radius:var(--r-hero);padding:18px 16px;color:#e6e9fb;margin-bottom:10px} /* 0721x: padding bump for hero breathing room */
   .mr-hero .eb{font-family:var(--font-display);font-weight:600;font-size:var(--fs-caps);letter-spacing:.18em;text-transform:uppercase;color:#9bf7c9}
   .mr-hero h2{font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:-.02em;margin:4px 0 0}
@@ -2201,6 +2201,8 @@
   #mrSheet .mo{font:500 14px var(--font-body);color:var(--muted-2);margin-top:3px;letter-spacing:.02em}
   #mrSheet .mo b{font-weight:700;color:var(--ink)} /* the typical wears ink; the wait is the header's number */
   #mrSheet .mo .on{color:var(--accent);font-weight:600}
+  #mrSheet .mo .hitF{color:var(--short);font-weight:700} /* 0728gt H-A: the fresh hit in the pill's own mint */
+  #mrSheet .mo .hitS{color:var(--muted-2);font-weight:600}
   #mrSheet .fldlab{font-size:12px}
   #mrSheet .shz+.shz{padding-top:16px}
   #mrSheet .sent{font-size:16px;gap:8px}
@@ -2638,7 +2640,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gs</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gt</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10827,7 +10829,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function mrShMomentHTML(id){ /* 0728gs SH-A: the line under the name \u2014 "typically 50 \u00b7 alert off" / "typically 50 \u00b7 alert on \u00b7 30 or less"; the wait itself is the header's number (W-B), so the line starts at the typical, or at the alert's state when the ride has none */
     var ty=rsTypNow(id),h=(ty!==null)?'typically <b class="ty">'+ty+'</b> \u00b7 ':'';
-    if(armed[id]){var ru=ruleFor(id);h+='<span class="on">alert on \u00b7 '+ru.thresh+(ru.dir==="below"?" or less":" or more")+'</span>';}
+    if(armed[id]){var ru=ruleFor(id),tail=ru.thresh+(ru.dir==="below"?" or less":" or more");
+      if(alertState[id]){ /* 0728gt THE SHEET LEARNS THE HIT (owner-ruled H-A, Oct 14): the latch and the live re-check the pill reads (0720z) \u2014 fresh while the wait still satisfies the rule, stale once it no longer does; SAME QUESTION SAME SENTENCE with the My Rides pill */
+        if(ruleMet(id,liveById[id]))h+='<span class="hitF">\u2713 hit '+mrClk(alertState[id])+'</span> \u00b7 <span class="on">at '+tail+'</span>';
+        else h+='<span class="hitS">hit '+mrClk(alertState[id])+'</span> \u00b7 <span class="on">back '+(ru.dir==="below"?"above":"below")+' '+ru.thresh+'</span>';
+      }else h+='<span class="on">alert on \u00b7 '+tail+'</span>';}
     else h+='alert off';
     return h;
   }
