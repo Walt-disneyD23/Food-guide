@@ -246,7 +246,8 @@
   /* 0728fw: .pw-typl retired with its label (the legend names) */
   .pw-legend .pw-typk::before{content:"";display:inline-block;width:14px;border-top:1.5px dashed var(--pwh-sub);margin-right:4px;vertical-align:middle}
   /* 0728gc THE STAR IS ENOUGH (owner-ruled on the glass, Oct 12: "a starred ride highlights the whole row… I think the gold star is enough"): the starred row's fill and outline retire; the row's colour is the wait's alone. */
-  .ride.rs-on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-sm)} /* 0728gc THE OUTLINE ANSWERS THE TAP (owner's idea, Oct 12): the row you tapped wears the accent outline while its sheet is open, and gives it back when the sheet closes */
+  .ride.rs-on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow-sm)}
+  .mr-bell.sh-on,.flagbtn.sh-on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),0 0 0 3.5px var(--accent)} /* 0728gv THE BELL ANSWERS THE TAP (owner-ruled R-2): the halo on the bell whose sheet is open, both surfaces */ /* 0728gc THE OUTLINE ANSWERS THE TAP (owner's idea, Oct 12): the row you tapped wears the accent outline while its sheet is open, and gives it back when the sheet closes */
   .ride .wt{font-family:var(--font-display);font-weight:700;font-size:var(--fs-wait);line-height:1;
     font-variant-numeric:tabular-nums;min-width:60px;text-align:center;color:var(--closed)}
   .wt.short{color:var(--short)} .wt.medium{color:var(--medium)} .wt.long{color:var(--long)}
@@ -2640,7 +2641,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gu</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gv</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9558,6 +9559,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       el.addEventListener("click",function(){rsOpen(el.getAttribute("data-rs"));});
       el.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();rsOpen(el.getAttribute("data-rs"));}});});
     if(rsId){rsMark();rsPaint();}
+    if(mrShId)mrShMark(mrShId); /* 0728gv: Live re-renders on every poll while the rule sheet is up \u2014 the halo is re-seated as rs-on is */
   }
   function bindStars(scope){
 rsBind(scope); /* 0728fr: the rows are doors */
@@ -10763,6 +10765,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(typeof pfEnsureBase==="function")pfEnsureBase();
     el.innerHTML=mrPageHTML();
     bindMyRides(el);
+    if(mrShId)mrShMark(mrShId); /* 0728gv: a repaint with the sheet up (the guard above lets none through today; kept for the seam) */
   }
   function bindMyRides(el){
     function each(sel,fn){Array.prototype.forEach.call(el.querySelectorAll(sel),fn);}
@@ -10859,11 +10862,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     mrShGate(el);
     var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
     if(sh)sh.classList.add("open");if(sc)sc.classList.add("open");
+    mrShMark(id); /* 0728gv THE BELL ANSWERS THE TAP */
     clearInterval(mrShPoll); /* the typical arrives with the day ledger, as the ride sheet waits for it (rsOpen) — the moment line fills in when it lands */
     if(typeof rpEnsureDigs==="function"){rpEnsureDigs();if(!rpDigs){var n8=0;mrShPoll=setInterval(function(){n8++;if(mrShId!==id||n8>20){clearInterval(mrShPoll);return;}if(rpDigs){clearInterval(mrShPoll);var mo2=el.querySelector("#mrShMo");if(mo2)mo2.innerHTML=mrShMomentHTML(id);}},500);}}
   }
+  function mrShMark(id){ /* 0728gv THE BELL ANSWERS THE TAP (owner-ruled R-2, Oct 15): the bell that opened the sheet wears the halo while the sheet is open \u2014 on My Rides and on Live, the one sheet's one door; the 0728gc law (the tapped row's outline) applied to the bell. Re-seated after every Live render (rsBind) and My Rides render; cleared at close. */
+    try{var L=document.querySelectorAll(".mr-bell,.flagbtn"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("sh-on",!!id&&L[i].getAttribute("data-id")===id);}catch(e){}
+  }
   function mrCloseSheet(){
-    var el=mrShEl;mrShId=null;clearInterval(mrShPoll);if(!el)return;
+    var el=mrShEl;mrShId=null;clearInterval(mrShPoll);mrShMark(null);if(!el)return;
     var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
     if(sh)sh.classList.remove("open");if(sc)sc.classList.remove("open");
   }
