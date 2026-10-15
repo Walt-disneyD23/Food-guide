@@ -1237,7 +1237,7 @@
   .banner-panel[hidden]{display:none}
 .info-note{margin:10px 2px 2px;padding:9px 12px;border-radius:var(--r-el);background:rgba(79,70,229,.08);color:var(--accent-deep);font-size:var(--fs-meta);line-height:1.45}
 .info-note[hidden]{display:none}
-  .presult{font-size:var(--fs-small);color:var(--muted);margin:0 2px 10px}
+  .presult{font-size:var(--fs-meta);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 2px 10px} /* 0728gx D-J: the count line wears the spread's whisper (.spread .k) — one voice for the two sentences */
   .presult .src{color:var(--medium)}
   /* Live board face (0709b) — tile grammar on the shared tokens, both themes automatic */
   .lstat-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;margin-bottom:2px}
@@ -1279,10 +1279,11 @@
   .spread-active .pill .d{width:8px;height:8px;border-radius:var(--r-dot);display:inline-block}
   .spread-active .clear{color:var(--accent);font-weight:700;cursor:pointer}
   /* 0728gh R-2 · D-b THE ROOMS HAVE DOORS (owner-ruled Oct 13 on park-card-mock.png and room-buttons-dining-mock.png): a row of buttons under the result count, one per room that has something in it, each with its count. A tap only scrolls; the list is whole and scrolls as it always did. */
-  .rm-nav{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:7px;margin:0 0 4px}
-  .rm-b{min-height:48px;border:1px solid var(--line);border-radius:var(--r-tile);padding:9px 2px 8px;margin:0;background:var(--card);box-shadow:var(--shadow-sm);
-    font:700 var(--fs-small)/1.15 var(--font-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .rm-b b{display:block;margin-top:2px;font:700 var(--fs-title) var(--font-display);color:var(--muted);font-variant-numeric:tabular-nums}
+  .rm-nav{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;margin:0 0 4px}
+  .rm-nav.rm-4{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))} /* 0728gx (owner-ruled D-J Oct 15 on doors2-sheet.png · doors3-row-sheet.png): the doors go across; four take two rows */
+  .rm-b{min-height:62px;border:1px solid var(--line);border-radius:var(--r-tile);padding:10px 4px 9px;margin:0;background:var(--card);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+    font:700 var(--fs-small)/1.15 var(--font-body);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0728gx: the full name over the count; THE COUNTS SHARE A LINE — a wrapped name grows upward, the number keeps the row's line */
+  .rm-b b{display:block;margin-top:1px;font:700 var(--fs-stat-lg) var(--font-display);color:var(--muted);font-variant-numeric:tabular-nums}
   .rm-b:active{background:var(--card-2)}
   /* 0728gh R-4: a room's heading is a bar you can see you have arrived at — the name in the display face, the count in a pill at the right. The search results wear the same bar (one heading, one dress). */
   .grp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 10px;padding:10px 14px;border-radius:var(--r-tile);
@@ -2642,7 +2643,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gw</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gx</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -8738,21 +8739,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     } else {
       var groups={waits:[],down:[],other:[]};
       list.forEach(function(o){groups[groupOf(o)].push(o);});
-      body=[{k:"waits",l:"Wait Times",b:"Waits"},{k:"down",l:"Down or Closed",b:"Down"},{k:"other",l:"Shows &amp; Experiences",b:"Shows"}]
+      body=[{k:"waits",l:"Wait Times"},{k:"down",l:"Down or Closed"},{k:"other",l:"Shows &amp; Experiences"}] /* 0728gx THE DOOR WEARS THE ROOM'S NAME (owner glass 6:50 PM Oct 15: "Down 16" read as what's down now): the short-label table retired — a door says its heading's own words */
         .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
-          rooms.push('<button type="button" class="rm-b" data-rm="'+sec.k+'" aria-label="Jump to '+sec.l+', '+g.length+'">'+sec.b+'<b>'+g.length+'</b></button>');
+          rooms.push('<button type="button" class="rm-b" data-rm="'+sec.k+'" aria-label="Jump to '+sec.l+', '+g.length+'">'+sec.l+'<b>'+g.length+'</b></button>');
           return '<div class="grp-head" data-rmh="'+sec.k+'">'+sec.l+' <span>'+g.length+'</span></div>'+
                  '<div class="grid">'+g.map(cardHTML).join("")+'</div>';})
         .join("");
     }
     var dineHTML=(key!=="all"&&!usingFallback)?dineSectionHTML(key,Date.now()):""; /* D1 0710b: per-park only; needs live data */
     /* 0728gh R-2 · D-b: the rooms' doors. One button per room that has something in it; Dining joins when a walk-up board is posting (its number is boards open now — no boards, no button: nobody taps into a dead end). One room alone needs no row. */
-    if(dineHTML){var dnb=dineBoards(key,Date.now()).length;rooms.push('<button type="button" class="rm-b" data-rm="dine" aria-label="Jump to Walk-Up Dining, '+dnb+' board'+(dnb===1?'':'s')+' open">Dining<b>'+dnb+'</b></button>');}
-    var roomsHTML=rooms.length>1?'<div class="rm-nav" role="group" aria-label="Jump to a section">'+rooms.join("")+'</div>':"";
+    if(dineHTML){var dnb=dineBoards(key,Date.now()).length;rooms.push('<button type="button" class="rm-b" data-rm="dine" aria-label="Jump to Walk-Up Dining, '+dnb+' board'+(dnb===1?'':'s')+' open">Walk-Up Dining<b>'+dnb+'</b></button>');}
+    var roomsHTML=rooms.length>1?'<div class="rm-nav'+(rooms.length>3?' rm-4':'')+'" role="group" aria-label="Jump to a section">'+rooms.join("")+'</div>':""; /* 0728gx: the doors go across; four take two rows */
     var shareHTML=""; /* 0728ge B-3: the purple pill retired — the door is the glyph in the park card's header (buildBanners) */
     el.innerHTML=face+fine+'<div class="info-note" hidden></div>'+shareHTML+spreadHTML+
       '<div class="presult">'+list.length+' result'+(list.length===1?"":"s")+
-      (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+'</div>'+roomsHTML+body+dineHTML;
+      (usingFallback?' · <span class="src">lineup only (live feed not connected)</span>':"")+(roomsHTML?' · tap a section to jump':"")+'</div>'+roomsHTML+body+dineHTML; /* 0728gx D-J: the count line carries the doors' sentence, the spread's way ("tap a band to filter") */
     bindStars(el);
     bindDine(el,key); /* D1 0710b */
     var _note=el.querySelector(".info-note");
