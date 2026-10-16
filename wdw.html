@@ -2657,7 +2657,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ha</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hb</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -12630,18 +12630,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var pk=c.busiestPark;
       if(!pk)return {k:"Daily Wrap",l:"A quiet day at Walt Disney World.",sub:""};
       var rnd=seeded((seed||"x")+(isWeek?"w":""));
-      var live=(!isWeek&&!fin); /* in-progress "today" view → present/ongoing voice (day isn't final yet) */
+      var live=!fin; /* in-progress "today" view → present/ongoing voice (day isn't final yet); 0728hb: the week too — fin is the week's own (pwWeekFin) when isWeek */
       /* Tense listens to fin; DAY-WORDS listen to the date. A night-final day
          is finished but still TODAY until midnight (owner catch, 11:56 PM):
          "ran hottest today", not "yesterday". */
       var isToday=(seed===etDate(0)),dw=pwDayWord(seed); /* 0713o: three-way */
       /* in-app uses relative day words (today/yesterday/this week); share cards are frozen
          images, so they drop the day word — the date + badge carry the "when" instead. */
-      var opts=forCard?(isWeek?[
+      var opts=forCard?((isWeek&&!live)?[
         pk.park+" ran hottest.",
         "Busiest park: "+pk.park+".",
         pk.park+" led for crowds."
-      ]:live?[
+      ]:live?[ /* 0728hb THE WEEK KEEPS ITS OWN WORDS: a running week's card speaks in the present, as the day's does — the badge says which week */
         pk.park+" is running hottest so far.",
         "Busiest park so far: "+pk.park+".",
         pk.park+" is drawing the biggest crowds."
@@ -12649,10 +12649,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         pk.park+" ran hottest.",
         "Busiest park: "+pk.park+".",
         pk.park+" drew the biggest crowds."
-      ]):(isWeek?[
+      ]):((isWeek&&!live)?[
         pk.park+" ran hottest this week.",
         "Busiest park this week: "+pk.park+".",
         pk.park+" led the week for crowds."
+      ]:isWeek?[
+        pk.park+" is running hottest so far this week.",
+        "Busiest park so far this week: "+pk.park+".",
+        pk.park+" is drawing the biggest crowds this week."
       ]:live?[
         pk.park+" is running hottest so far.",
         "Busiest park so far today: "+pk.park+".",
@@ -12664,7 +12668,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       ]);
       var line=opts[Math.floor(rnd()*opts.length)];
       var sub="Headliners "+(live?"averaging ":"averaged ")+pk.headAvg+" min";
-      sub+=pk.worst?".":(isWeek?" — and stayed remarkably reliable.":live?" — and running clean so far.":" — and it stayed rock-solid, no breakdowns all day.");
+      sub+=pk.worst?".":(isWeek?(live?" — and running clean so far this week.":" — and stayed remarkably reliable."):live?" — and running clean so far.":" — and it stayed rock-solid, no breakdowns all day."); /* 0728hb: the week's clean clause follows the tense */
       return {k:isWeek?"The week in one line":((live||isToday)?"Today in one line":(seed===etDate(1)?"Yesterday in one line":pwMonD(seed)+" in one line")),l:line,sub:sub};
     }
 
@@ -12884,13 +12888,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"",c.leastRel.id,c.leastRel.park);
       if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"",c.mostOut.id,c.mostOut.park);
       if(c.walk){var wWhen=(c.walk.walkAt!=null)?((c.walk.walkEarly?"rope drop":(c.walk.walkLate?"near close":pwClk(c.walk.walkAt)))+" \u00b7 "):"";
-        html+=tileV("Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?(wWhen+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park,null,c.walk.id,c.walk.park);}
+        html+=tileV(isWeek?"Walk-on of the week":"Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?(wWhen+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park,null,c.walk.id,c.walk.park);}
       if(c.steady)html+=tileV("Steadiest line",'<span class="u">swing</span> '+c.steady.stSw+'m',"pw-s",c.steady.name,"held near "+c.steady.avgWait+(isWeek?" this week":(live?" so far":" all day")),null,c.steady.id,c.steady.park);
       html+='</div>';
 
       if(c.story){var st=c.story,sw=st.sw;
         html+='<div class="pw-story pw-tile-go" tabindex="0" role="button" data-rid="'+st.id+'" data-rpark="'+esc(st.park)+'">'
-          +'<div class="lbl">Swing of the day</div>'
+          +'<div class="lbl">'+(isWeek?"Swing of the week":"Swing of the day")+'</div>'
           +'<div class="srow">'
             +'<div class="sid"><div class="nm">'+esc(st.name)+'</div><div class="pk">'+esc(st.park)+'</div></div>'
             +'<div class="arc"><span class="col"><span class="v">'+sw.hi+'<span class="u">m</span></span><span class="t">'+pwClk(sw.hiT)+'</span></span>'
@@ -14369,7 +14373,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(D.story){
         var s=D.story,sy=gt+Math.ceil(D.tiles.length/2)*(th+gap)+4,sbh=s.chip?250:196;
         rr(L,sy,R-L,sbh,20);ctx.fillStyle="rgba(255,255,255,0.045)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.07)";ctx.stroke();
-        T("SWING OF THE DAY",L+26,sy+42,IN("600",21),C.muted2,"left");
+        T(D.wk?"SWING OF THE WEEK":"SWING OF THE DAY",L+26,sy+42,IN("600",21),C.muted2,"left"); /* 0728hb: the week's story says the week */
         /* arc measured first so the name knows its lane */
         ctx.font=SG("700",54);var hiW=ctx.measureText(String(s.hi)).width,loW=ctx.measureText(String(s.lo)).width;
         ctx.font=IN("600",26);var mW=ctx.measureText("m").width;
@@ -14548,7 +14552,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tab=lastTab,isWeek=(tab==="week"),d=lastData,c=compute(d);
       if(!c.busiestPark)return;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
-      var h=hero(c,dateStr,isWeek,isFinal(d),true),tiles=[];
+      var h=hero(c,dateStr,isWeek,isWeek?pwWeekFin(d):isFinal(d),true),tiles=[]; /* 0728hb: the week's own fin (gz's one predicate) */
       var live=!isFinal(d);
       var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
       if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park});
@@ -14556,13 +14560,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(c.leastRel.id,wxX,wxKind):""});
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
       if(c.walk){var wWhen2=(c.walk.walkAt!=null)?((c.walk.walkEarly?"rope drop":(c.walk.walkLate?"near close":pwClk(c.walk.walkAt)))+" \u00b7 "):"";
-        tiles.push({label:"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?(wWhen2+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park});}
+        tiles.push({label:isWeek?"WALK-ON OF THE WEEK":"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?(wWhen2+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park});}
       if(c.steady)tiles.push({label:"STEADIEST LINE",pre:"swing",big:String(c.steady.stSw),post:"m",cls:"pw-s",name:c.steady.name,ctx:"held near "+c.steady.avgWait+(isWeek?" this week":(isFinal(d)?" all day":" so far"))});
       var sb=null;
       if(c.story){var ssw=c.story.sw;
         sb={name:c.story.name,park:c.story.park,hi:ssw.hi,lo:ssw.lo,hiT:pwClk(ssw.hiT),loT:pwClk(ssw.loT),
             chip:(ssw.near&&ssw.downMin?(ssw.downN>1?(ssw.downMin+" min of holds \u2014 last ended "+pwClk(ssw.downEnd)):(ssw.downMin+"-min hold ended "+pwClk(ssw.downEnd))):null)};}
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:pwBadge(d,isWeek),line:h.l,sub:h.sub,tiles:tiles,story:sb,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — Wrap"});
+      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:pwBadge(d,isWeek),line:h.l,sub:h.sub,tiles:tiles,story:sb,wk:isWeek,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — Wrap"});
     }
 
     function shareParkCard(park){
