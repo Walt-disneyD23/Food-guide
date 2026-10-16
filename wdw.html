@@ -2625,7 +2625,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
     <div class="set-lab">What live can do</div>
     <div class="ig-row"><span class="ig-key">↑ Crown</span><span>The single best gift in the park right now rises to <b>#1</b>. One crown, always.</span></div>
-    <div class="ig-row"><span class="ig-key">↑ Early</span><span>A later ride whose easy hour <b>arrived early</b> — tonight’s, or even one past your leave — rises above the walk until the deal fades.</span></div>
+    <div class="ig-row"><span class="ig-key">↑ Early</span><span>A later ride whose easy hour <b>arrived early</b> — tonight’s, or even one past your leave — rises above the walk until the deal fades. A line that is already easy, or under its typical, counts.</span></div>
     <div class="ig-row"><span class="ig-key">Voice</span><span><span class="td-brg gv">GO NOW — 16 under typical.</span> A confirmed gift on a ride already well-seated just says so.</span></div>
     <div class="set-lab">Reading a row</div>
     <div class="ig-p">↑ means live moved it · <span class="td-brg gv">green</span> means go · <b style="color:var(--accent)">blue</b> is a quiet heads-up · a dim row doesn’t fit the day you set · the <b>WINDOW</b> footer is that ride’s own clock. A dim row can still carry <span class="td-brg gv">green</span> — a rare deal doesn’t wait for your schedule.</div>
@@ -2686,7 +2686,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hi</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hj</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6733,7 +6733,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mx){mx=rem[q].med;tmx=rem[q].t;}}
       var wk9=cv.walk||10,f=0;while(f<rem.length&&rem[f].med<=wk9)f++; /* 0728eh: the engine asks the curve's own mark */
       if(remL.length&&mn>10){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=10){lt=remL[q].t;break;}} /* 0728ej THE MARK NEVER MOVES A SEAT (found Oct 5 by today-diff.js, the 0728ef and 0728ei engines side by side on the banked tapes: with a leave before 10 PM, 0728eh pulled Haunted Mansion off its seat as "easy window opens after you leave" over 15m against 13m): this branch sinks a ride and tells the guest to save it for another visit, so it stays on the bare 10 it was ratified with (0719h O3-A); the mark still words the row (walk-on until) and never changes a lane or an order */
-        if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,wo:rpClk(lt),why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
+        if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,cvd:cv,wo:rpClk(lt),why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
       var ch5=mn+5,dqA=-1,ws9=null;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){ws9=rem[q].t;dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
       var dl9=(dqA>=0)?rem[dqA].t+30:null,dlw9=false;if(dl9!==null&&ct!==null&&dl9>=ct){dlw9=true;if(dl9>ct)dl9=ct;} /* 0724a W-B: ws = the cheap window's own open; dlw = the run reached the wall, so the footer says the word close, never a clock past it */ /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
       var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,rung:r.cvx.rung,dl:dl9,ws:ws9,dlw:dlw9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
@@ -6970,7 +6970,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var lvOn=(lvM!==null&&(fcx===null||ct2<fcx));
       var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,fcx,(today?tdGeo(pk,t,ds):null)),n=0,ridden="",rdn=0; /* 0723v: the map rides only the living day */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
-        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&it.cv){var _tb=it.cv.bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
+        var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&(it.cv||it.cvd)){var _tb=(it.cv||it.cvd).bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
         var _fll=_dlx?(it.ws>it.st0?'Window':'Window closes'):'',_flc=_dlx?(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?(it.lvw?'~'+rpClk(it.dl):'close'):'~'+rpClk(it.dl))):('~'+rpClk(it.dl))):''; /* 0727g: the footer's two words, ONE computation \u2014 the markup and the channel both drink it (LABELS MOVE WITH VALUES) */ /* 0728ak THE FOOTER NAMES ITS WALL (owner glass AK 9:18 AM Sep 10, Safaris \u201c~1:30 PM \u2013 close\u201d under a 3 PM leave): dlw = the run reached the wall; under a leave clamp (lvw) the wall is the leave, so the footer speaks the span\u2019s own clock (~3 PM) \u2014 THE LABEL FOLLOWS THE WALKER kin, 0719i\u2019s \u201cnear your leave\u201d for the footer */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),fl:_dlx?{l:_fll,c:_flc}:null,sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
         return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(it.dead&&it.wo?' data-tdwo="'+esc(it.wo)+'"':'')+(it.tier?' data-tdtr="'+it.tier+'"':'')+(it.tier===3?' data-tdws="'+it.ws+'"':'')+(it.tier===1&&it.dl!=null?' data-tddl="'+it.dl+'"':'')+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+_fll+'</span><b>'+_flc+'</b></div>':'')+'</div>';};
@@ -10121,7 +10121,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     pp={id:top.id,ticks:1,on:true,miss:0,typ:top.typ,delta:top.delta};tyPro[pk]=pp; /* 0724n P-3: the crown seats at FIRST sight — instant-on; the demotion branch above keeps the two-clean-poll walk home (damped-off), so flap can never oscillate the seat */
     return pp;
   }
-  var tyRelPoll=-1,tyRel={}; /* 0724k L-1b THE EARLY WINDOW (owner-ruled Aug 21): per-card confirmation for every OTHER GO card — the crown’s discipline, plural (two polls up, two clean polls back); in-memory only — the rebreak precedent. pf’s GO gate is snapshot math (read from the bytes first, the handoff’s own check), so this second gate earns its seat; the crown’s tyProEval stays crown-only, untouched. */
+  var tyRelPoll=-1,tyRel={};
+  var tyEzPoll=-1,tyEz={}; /* 0728hj THE SEAT FOLLOWS THE SENTENCE: the dissolved rows the live line has freed — in-memory, instant-on, two clean polls home (tyRel's idiom) */ /* 0724k L-1b THE EARLY WINDOW (owner-ruled Aug 21): per-card confirmation for every OTHER GO card — the crown’s discipline, plural (two polls up, two clean polls back); in-memory only — the rebreak precedent. pf’s GO gate is snapshot math (read from the bytes first, the handoff’s own check), so this second gate earns its seat; the crown’s tyProEval stays crown-only, untouched. */
   function tyRelEval(cards){ /* advances ONLY on a fresh poll \u2014 renders between polls never tick the gate */
     if(cards===null)return tyRel; /* 0724o: the absent model consumes nothing here either */
     var fr8=(tyRelPoll!==tyPollN);if(fr8)tyRelPoll=tyPollN; /* 0724p THE MISS IS THE ONLY CLOCK — the release splits the same way as the crown */
@@ -10135,18 +10136,44 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       e2.miss=(e2.miss||0)+1;if(e2.miss>=2)delete tyRel[id];}); /* 0724n P-3 · 0724p: absence counts once per POLL, never per render — only the two-clean-poll walk home remains (damped-off) */
     return tyRel;
   }
+  function tyEzEval(q){ /* 0728hj THE SEAT FOLLOWS THE SENTENCE (owner glass Oct 16 10:48 AM, AK: Everest 15m and Kali 10m dimmed in PAST YOUR DAY; ruled on td-seat-ABC.png): q = the dissolved rows whose live line beats the room's premise right now (easy, or under typical by the bridge's own bar). Seats at first sight (P-3), walks home on two clean POLLS (THE MISS IS THE ONLY CLOCK); renders between polls never tick. */
+    var fr8=(tyEzPoll!==tyPollN);if(fr8)tyEzPoll=tyPollN;
+    var id;for(id in q){var e=tyEz[id];if(e){e.miss=0;e.k=q[id].k;e.ty=q[id].ty;}else tyEz[id]={on:true,miss:0,k:q[id].k,ty:q[id].ty};}
+    if(fr8)Object.keys(tyEz).forEach(function(id2){if(q[id2])return;var e2=tyEz[id2];e2.miss=(e2.miss||0)+1;if(e2.miss>=2)delete tyEz[id2];});
+    return tyEz;
+  }
   function tyCrossRefs(el,T,ds,pk){ /* the DOM pass \u2014 the walker file untouched (\u00a78 build shape) */
     var dn=tdDoneList(T,ds),dset={},i;for(i=0;i<dn.length;i++)dset[dn[i]]=1;
     var snk=tySinkEval(T,ds,pk); /* 0723q C1: the sink's clock ticks in every lens \u2014 only App's moves rows (state tracks the sky; the glass picks its manners) */
     var dead9={};[].slice.call(el.querySelectorAll(".td-sl.pdead")).forEach(function(r9){dead9[r9.getAttribute("data-tdpd")]=1;}); /* 0726u THE VACANT SEAT: the dissolved room as the walker rendered it - read before W-2 sheds any pdead */
     var cds9=tyGoCards(T,ds),pro=tyProEval(cds9,pk,dead9),rel=tyRelEval(cds9),relRows=[]; /* 0724k L-1b: one card read feeds both gates */ /* 0724o: cds9 may be null pre-baseline — both gates return their standing state untouched */
     var rows=[].slice.call(el.querySelectorAll(".td-sl")),proRow=null;
+    var ezq={};rows.forEach(function(row){ /* 0728hj THE SEAT FOLLOWS THE SENTENCE: who qualifies this render — a dissolved, operating, unpinned, unridden row with no receipt of its own (W-2 owns those), whose line is easy or under its typical-now */
+      var rid=row.getAttribute("data-tdpd"),lv=liveById[rid];
+      if(!rid||!row.classList.contains("pdead")||row.classList.contains("pin")||dset[rid]||!lv||lv.status!=="OPERATING"||lv.wait===null||rel[rid])return;
+      var ty9=row.getAttribute("data-tdty"),fc9=tdBridgeFace(lv.wait,ty9);
+      if(fc9==="under")ezq[rid]={k:"under",ty:Math.round(+ty9)};else if(lv.wait<=15)ezq[rid]={k:"easy",ty:(ty9!==null&&ty9!=="")?Math.round(+ty9):null};
+    });
+    var ez=tyEzEval(ezq); /* the state ticks in every lens; only App's order moves a seat (0720j) */
+    if(tdLens!=="mine")rows.forEach(function(row){
+      var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx"),e9=ez[rid];
+      if(!why||!rid||!e9||!row.classList.contains("pdead")||row.classList.contains("pin")||dset[rid]||!lv||lv.status!=="OPERATING"||lv.wait===null||rel[rid])return;
+      var q9=ezq[rid],k9=q9?q9.k:e9.k,ty9=q9?q9.ty:e9.ty; /* a held seat on its walk home speaks its last bar with the live wait — W-2's own grace */
+      row.classList.remove("pdead");row.setAttribute("data-tdez",k9);
+      var sn0=row.querySelector(".td-sn");if(sn0&&sn0.textContent==="\u00b7")sn0.textContent="0"; /* joins the numbering — the mover's renumber pass assigns the true digit */
+      why.textContent="\u2191 ";var gvz=row.ownerDocument.createElement("span");gvz.className="td-brg gv";
+      if(k9==="under"&&ty9!==null){gvz.textContent="Under typical \u2014 "+lv.wait+"m right now, typically ~"+ty9+"m through here.";why.appendChild(gvz);why.appendChild(row.ownerDocument.createTextNode(" Its easy window came early \u2014 before your leave."));}
+      else{gvz.textContent="Today\u2019s line is already easy \u2014 "+lv.wait+"m right now";why.appendChild(gvz);why.appendChild(row.ownerDocument.createTextNode(" \u2014 no need to wait for its window."));}
+      relRows.push({row:row,delta:(k9==="under"&&ty9!==null)?Math.max(0,ty9-lv.wait):0}); /* W-2's mover: tier 1's tail, by depth — a receipt's delta always leads */
+    });
     rows.forEach(function(row){
       var rid=row.getAttribute("data-tdpd"),lv=liveById[rid],why=row.querySelector(".td-srx");
-      if(!why||!rid)return;
+      if(!why||!rid||row.getAttribute("data-tdez"))return; /* 0728hj: a risen row is dressed; the loop's faces are for the seated */
+      var j3d=false; /* 0728hj: the basement's own face spoke — the bridge below stays quiet (0728ak: one judge) */
       if(row.classList.contains("pdead")&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15){ /* 0725a J-3 THE NEWS LEADS (owner-ruled Aug 25, the 12:46 pileup frame; supersedes 0724y's append in this room): the moot-window face \u2014 today's truth leads, the premise whispers with its clock. The GO face below outranks by rebuilding the row whole. */
-        var wo9=row.getAttribute("data-tdwo");
-        why.textContent="Today\u2019s line is already easy \u2014 "+lv.wait+"m right now \u2014 no need to wait for its window. Its walk-on hour ("+(wo9?"~"+wo9:"tonight")+") comes after you leave.";
+        var wo9=row.getAttribute("data-tdwo"),tyj=row.getAttribute("data-tdty");j3d=true;
+        if(tdBridgeFace(lv.wait,tyj)==="under"){why.textContent="";var gvj=row.ownerDocument.createElement("span");gvj.className="td-brg gv";gvj.textContent="Under typical \u2014 "+lv.wait+"m right now, typically ~"+Math.round(+tyj)+"m through here.";why.appendChild(gvj);why.appendChild(row.ownerDocument.createTextNode(" Its walk-on hour ("+(wo9?"~"+wo9:"tonight")+") comes after you leave."));} /* 0728hj: the under face (voice only here — My Order and pins never move) */
+        else why.textContent="Today\u2019s line is already easy \u2014 "+lv.wait+"m right now \u2014 no need to wait for its window. Its walk-on hour ("+(wo9?"~"+wo9:"tonight")+") comes after you leave.";
       }
       else if(row.classList.contains("dlx")&&lv&&lv.status==="OPERATING"&&lv.wait!==null&&lv.wait<=15&&!(!(pro&&pro.id===rid)&&!dset[rid]&&tdBridgeFace(lv.wait,row.getAttribute("data-tdty")))){ /* 0728ak THE NEWS YIELDS TO THE VERDICT (owner-ruled A, Sep 10; THE DOUBLE VOICE \u2014 BTM 9:17 / ToT 9:18 said \u201calready easy \u2014 5m right now. Today\u2019s running under typical.\u201d): when the bridge will speak on this row, the easy clause stays quiet \u2014 the bridge is the only judge, the chip carries the number; where the bridge is silent the clause is the only news and stays */ /* 0724t J-1 + 0724w K-1: the windowed rows' clause, untouched \u2014 the append form is theirs alone now */ /* 0724t J-1 (owner-ruled Aug 22, the four-corner specimens; K-1 owner-ruled Aug 23 keeps the accidental wider law \u2014 dlx = deadline rows by birth, tier-1 wild specimens): a windowed ride that is EASY right now says so \u2014 the sentence and the wait seat stop arguing; <=15m is the walk-on-grade bar the tape drew */
         why.appendChild(row.ownerDocument.createTextNode(" But today\u2019s line is already easy \u2014 "+lv.wait+"m right now."));
@@ -10202,7 +10229,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         else brv.className="td-brg gv";
         brv.textContent=" GO NOW \u2014 "+rl9.delta+" under typical.";
       }
-      else if(!(pro&&pro.id===rid)&&!dset[rid]&&lv&&lv.status==="OPERATING"&&lv.wait!==null){
+      else if(!j3d&&!(pro&&pro.id===rid)&&!dset[rid]&&lv&&lv.status==="OPERATING"&&lv.wait!==null){ /* 0728hj: a dissolved row above 15 now bridges too — it carries its typical at last */
         var br7=why.querySelector(".td-brg"),sp7=tdBridgeFace(lv.wait,row.getAttribute("data-tdty")); /* 0728ak: the test lives in tdBridgeFace (0724a THE BRIDGE + 0726p 1-A THE EASY CEILING, verbatim) \u2014 same answer, one home */
         if(sp7){if(!br7){br7=row.ownerDocument.createElement("span");br7.className="td-brg";why.appendChild(br7);}
           br7.textContent=" Today\u2019s running "+sp7+" typical.";}
@@ -10433,7 +10460,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyCardFirst(row){ /* \u00a74 THE FIRST CLAUSE \u2014 crown \u2192 GO receipt \u2192 status \u2192 window clock \u2192 the why's first sentence; no line on the card ends in a period */
     var why=row.querySelector(".td-srx"),tx=why?String(why.textContent||"").replace(/\s+/g," ").trim():"",gv=row.querySelector(".td-brg.gv"),fl=row.querySelector(".td-fl"),m;
     m=/^(\u2191 )?Riding the moment — (\d+) under typical/.exec(tx);if(m)return {t:(m[1]||"")+"Riding the moment — "+m[2]+" under typical",k:"pro"}; /* literal dash here: the ty module counts its two voice sites in the escape dialect */
-    if(gv){m=/GO NOW \u2014 (\d+) under typical/.exec(String(gv.textContent||""));if(m)return {t:(tx.charAt(0)==="\u2191"?"\u2191 ":"")+"GO NOW \u2014 "+m[1]+" under typical",k:"go"};} /* the " \u2014 Nm right now" clause drops: the wait seat carries the wait (ONE NUMBER FAMILY) */
+    if(gv){m=/GO NOW \u2014 (\d+) under typical/.exec(String(gv.textContent||""));if(m)return {t:(tx.charAt(0)==="\u2191"?"\u2191 ":"")+"GO NOW \u2014 "+m[1]+" under typical",k:"go"};}
+    if(gv&&/^(Under typical|Today\u2019s line is already easy) \u2014 /.test(String(gv.textContent||"")))return {t:(tx.charAt(0)==="\u2191"?"\u2191 ":"")+String(gv.textContent||"").split(" \u2014 ")[0],k:"go"}; /* 0728hj THE SEAT FOLLOWS THE SENTENCE: the freed row's first clause, in the receipt's green; the wait seat carries the wait */ /* the " \u2014 Nm right now" clause drops: the wait seat carries the wait (ONE NUMBER FAMILY) */
     if(row.querySelector(".td-nvr .td-dnc, .td-nvr .td-clc")){var s1=tx.split(".")[0].split(" \u2014 your")[0].trim();return {t:s1,k:"dn"};} /* the status sentence verbatim \u2014 cause-neutral, no return promised */
     if(fl){var fs=fl.querySelector("span"),fb=fl.querySelector("b");if(fs&&fb)return {t:String(fs.textContent||"").trim()+" "+String(fb.textContent||"").trim(),k:"win"};}
     return {t:tx.split(/\.(\s|$)/)[0].split(" \u2014 ")[0].trim(),k:""}; /* 0726z: the first clause stops at the dash too \u2014 "\u2026 from here \u2014 anyti\u2026" (owner glass MK 5:53 PM) */
