@@ -792,6 +792,20 @@
   .rp-hmc.s4{background:var(--hm4);color:var(--hmt4)}
   .rp-hmc.thin{opacity:.32}
   .rp-hmc.on{outline:2px solid var(--accent);outline-offset:1px}
+  /* ===== 0728gy THE WEEK WEARS THE RECORD'S CLOTHES — the Wrap week page's hour grid in the Plan grid's dress; the two down marks are the desk site's (wrap-day.html .g .c.dn / .pd), verbatim ===== */
+  .wkv{margin:0 0 12px} .wkv .lbl{font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:600;margin:0 0 10px}
+  .wk-hm .gt.today{color:var(--accent)}
+  .wk-hm .rp-hmc.fut{background:transparent;border:1.5px dashed var(--line);cursor:default}
+  .wk-hm .rp-hmc.dn{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--packed) 34%,transparent) 0 3px,transparent 3px 6px);outline:1px solid color-mix(in srgb,var(--packed) 55%,transparent);outline-offset:-1px;color:var(--packed);font-size:8.5px;letter-spacing:.02em}
+  .wk-hm .rp-hmc.pd:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:0 0 3px 3px;background:var(--packed)}
+  .wk-hm .rp-hmc.on{outline:2px solid var(--accent);outline-offset:1px;z-index:1}
+  .wk-hm .rp-hmc.lit{outline:2px solid var(--packed);outline-offset:1px;z-index:1}
+  .wk-key{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:var(--fs-meta);color:var(--muted);margin:0 0 6px}
+  .wk-key i{display:inline-block;width:18px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px;position:relative;background:var(--hm1)}
+  .wk-key i.dn{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--packed) 34%,transparent) 0 3px,transparent 3px 6px);outline:1px solid color-mix(in srgb,var(--packed) 55%,transparent);outline-offset:-1px}
+  .wk-key i.pd:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:0 0 3px 3px;background:var(--packed)}
+  .wk-fine{font-size:var(--fs-meta);color:var(--muted-2);margin-top:10px;padding-top:10px;border-top:1px solid var(--line);line-height:1.5}
+  .pw-tile.tapped{outline:2px solid var(--packed);outline-offset:-2px} .pw-tile.tapped.acc{outline-color:var(--accent)}
   /* ===== 0714a: the Rope Drop Board (L-28 cut 1) — A Ledger on the ratified sections ===== */
   .rp-door.rd-door{padding:15px 16px;border-radius:var(--r-card);min-height:100px} /* 0721w: even card heights */ /* 0718m: scoped — rd- meant rope-drop here before it meant read; unscoped, this leaked padding+radius onto the hero read's doors (the drift + curved hairlines, owner-caught) */ .rd-door .m{flex:1;min-width:0} .rd-door .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)} .rd-door .sub{display:-webkit-box;font-size:var(--fs-meta);color:var(--muted);margin-top:2px;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal;overflow:hidden} /* 0721w: 2-line clamp, full text shows */ /* 0714b: the marquee — a door that previews its destination; My Morning inherits this chrome */
   .rd-door .ct{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted-2);font-variant-numeric:tabular-nums}
@@ -2643,7 +2657,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gx</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gz</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11383,6 +11397,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var off=(asDate(etDate(0)).getDay()+6)%7;
       return etDate(off);
     }
+    function pwWeekFin(d){ /* 0728gz THE WEEK SPEAKS IN ITS OWN TENSE: a week is final only when every day is final — no future day on the model AND the record final (isFinal). One predicate for the ride page, the park page, the week tab's badge, the week card and the share cards (THE CLOCK FOLDS AT ITS OWN DOOR) */
+      var wk=d&&d.week,i;if(wk&&wk.days)for(i=0;i<wk.days.length;i++)if(wk.days[i].future)return false;
+      return isFinal(d);
+    }
+    function pwBadge(d,isWeek){return isWeek?(pwWeekFin(d)?"FINAL":"SO FAR THIS WEEK"):(isFinal(d)?"FINAL":"SO FAR TODAY");} /* 0728gz: the share cards' badge names the week it is still inside */
     function pwDayLvl(avg,park){ /* 0728cp THE RULERS: the day word is the whole-day park mean on CROWD_RULERS.day — the same bell, calibrated on the Worker's banked day numbers (av1 days, the era); park null (the resort) reads the Resort row. Byte-twin of the Worker's. */
       if(avg==null)return null;
       var R=CROWD_RULERS.day[park]||CROWD_RULERS.day.Resort;
@@ -11402,6 +11421,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         m.downEvents+=f.downEvents||0;m.downMinutes+=f.downMinutes||0;
         m.operatingMinutes+=f.operatingMinutes||0;m.closedMinutes+=f.closedMinutes||0;m.refurbMinutes+=f.refurbMinutes||0;}
       var week={mon:mon,sun:addD(mon,6),days:[],finals:0,tot:{dn:0,dm:0,strikes:0},hero:null};
+      week.digs=digs;week.today=today||null; /* 0728gy THE WEEK WEARS THE RECORD'S CLOTHES: the ride page's hour grid reads the banked half-hours (hs/hm/dwn) and today's 5-min rows from the SAME fetch the merged rides came from — one source, so the picture and the numbers can never disagree */
       for(var i=0;i<7;i++){
         var ds=addD(mon,i);
         if(ds===tod&&today&&today.rides){
@@ -12829,7 +12849,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
       var dLine=isWeek?fmtRange((d.week&&[d.week.mon,d.week.sun])||d.dates):fmtDate(dateStr);
       var dSub=isWeek?"Walt Disney World · this week":"Walt Disney World";
-      var fin=isFinal(d);var live=(!isWeek&&!fin);
+      var fin=isWeek?pwWeekFin(d):isFinal(d);var live=(!isWeek&&!fin); /* 0728gz: the week tab's badge reads Final only when every day is (a weeknight after close is not the week's end) */
       var badge=fin?'<span class="pw-badge">Final</span>':'<span class="pw-badge live">'+(isWeek?"So far this week":"So far today")+'</span>';
       html+='<div class="pw-date"><div><div class="d">'+esc(dLine)+'</div><div class="s">'+esc(dSub)+'</div></div><span class="pw-badges">'+pwRecBadge(d,isWeek)+badge+'</span></div>';
 
@@ -12925,7 +12945,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function showDetail(park){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       var isWeek=(lastTab==="week");
-      var fin=isFinal(lastData),live=(!isWeek&&!fin); /* live = in-progress today → present voice */
+      var fin=isWeek?pwWeekFin(lastData):isFinal(lastData),live=!fin; /* 0728gz THE WEEK SPEAKS IN ITS OWN TENSE: a week still running speaks in the present too (TENSE FLIPS WHOLE) */ /* live = in-progress today → present voice */
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var ctxLabel=isWeek?("last 7 days"):(lastTab==="today"?"so far today":fmtDate(dateStr));
       var pk=computePark(lastData,park);
@@ -14542,7 +14562,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(c.story){var ssw=c.story.sw;
         sb={name:c.story.name,park:c.story.park,hi:ssw.hi,lo:ssw.lo,hiT:pwClk(ssw.hiT),loT:pwClk(ssw.loT),
             chip:(ssw.near&&ssw.downMin?(ssw.downN>1?(ssw.downMin+" min of holds \u2014 last ended "+pwClk(ssw.downEnd)):(ssw.downMin+"-min hold ended "+pwClk(ssw.downEnd))):null)};}
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:h.l,sub:h.sub,tiles:tiles,story:sb,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — Wrap"});
+      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:isWeek?fmtRange(d.dates):fmtDate(dateStr),badge:pwBadge(d,isWeek),line:h.l,sub:h.sub,tiles:tiles,story:sb,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — Wrap"});
     }
 
     function shareParkCard(park){
@@ -14550,7 +14570,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tab=lastTab,isWeek=(tab==="week"),d=lastData;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
       var pk=computePark(d,park);if(!pk.headAvg)return;
-      var live=(!isWeek&&!isFinal(d));
+      var live=!(isWeek?pwWeekFin(d):isFinal(d)); /* 0728gz: the week's own tense */
       var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min.";
       var sub=pk.leastRel?(pk.leastRel.name+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well all day.");
@@ -14559,20 +14579,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(pk.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:pk.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:pk.leastRel.name,ctx:pk.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(pk.leastRel.id,wxX,wxKind):""});
       if(pk.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:pk.mostOut.downEvents+"×",post:"",cls:"pw-l",name:pk.mostOut.name,ctx:pk.mostOut.downMinutes+" min total",note:wxKind?pwWxClause(pk.mostOut.id,wxX,wxKind):""});
       if(pk.drop)tiles.push({label:"BIGGEST SWING",pre:"low",big:String(pk.drop.sw?pk.drop.sw.lo:pk.drop.minWait),post:"m",cls:"pw-s",name:pk.drop.name,ctx:"off a "+(pk.drop.sw?pk.drop.sw.hi:pk.drop.maxWait)+" peak"});
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:park,kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:sub,tiles:tiles,foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(pk.busiest&&pk.busiest.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-"+park.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+dateStr+".png",shareTitle:"RideCue — "+park});
+      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:park,kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:pwBadge(d,isWeek),line:line,sub:sub,tiles:tiles,foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(pk.busiest&&pk.busiest.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-"+park.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+dateStr+".png",shareTitle:"RideCue — "+park});
     }
 
     /* ---- ride detail view (Wrap › Park › Ride) ---- */
-    function rideSub(r,live,clause){
+    function rideSub(r,live,clause,wk){ /* 0728gz THE WEEK SPEAKS IN ITS OWN TENSE (owner-ruled Oct 15): wk names the scope — the week's sentence says "so far this week" / "of the week" / "all week", never "the day" */
+      var scope=wk?"week":"day",sofar=wk?" so far this week":" so far";
       if(r.avgWait==null&&r.downEvents>0){
         var b0="No waits posted — down "+r.downMinutes+" min";
         return clause?(b0+", "+clause+"."):(b0+" across "+r.downEvents+(r.downEvents===1?" outage.":" outages."));
       }
       if(r.downEvents>0){
-        var base=(live?"Running ":"Ran ")+(r.uptimePct!=null?(r.uptimePct+(live?"% so far":"% of the day")):(live?"with some downtime so far":"with some downtime"))+" — down "+r.downMinutes+" min";
+        var base=(live?"Running ":"Ran ")+(r.uptimePct!=null?(r.uptimePct+(live?"%"+sofar:"% of the "+scope)):(live?"with some downtime"+sofar:"with some downtime"))+" — down "+r.downMinutes+" min";
         return clause?(base+", "+clause+"."):(base+" across "+r.downEvents+(r.downEvents===1?" outage.":" outages."));
       }
-      return live?"Running clean so far.":"Ran all day with no downtime.";
+      return live?"Running clean"+sofar+".":"Ran all "+scope+" with no downtime.";
     }
     function relCls(r){return (r.uptimePct==null||r.uptimePct>=98)?"pw-s":(r.uptimePct>=85?"pw-m":"pw-p");}
     function findRide(park,rid){var pk=computePark(lastData,park);for(var i=0;i<pk.rides.length;i++){if(pk.rides[i].id===rid)return pk.rides[i];}return null;}
@@ -14611,10 +14632,100 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       return html;
     }
     function pwRideWxK(isWeek,live){return (!isWeek)?(function(){var ch=wxChip(lastData,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:(pwDayStrikes()>0?"storm":null);})():null;} /* 0728fr: showRide's own trigger, given a name so the Live sheet asks the same question */
+    /* ===== 0728gy THE WEEK WEARS THE RECORD'S CLOTHES (owner-ruled Oct 15 on wk-sheet.png · wk2-sheet.png · wk3-sheet.png) =====
+       The Wrap week ride page's one picture: the Plan grid's diary lens (rpHmHTML's last7 shape — rows are days, columns are hours,
+       cells quantize on rpHmStep, the number printed) aimed at Mon–Sun of THIS week. Finished days come straight from the digest's
+       banked half-hours; today's row is folded from the live ledger the way the desk folds its day (the median of the posted waits in
+       each half-hour; a run of -1 is a down window); future days are dashed. The two down marks are the desk site's (wrap-day.html
+       .g .c.dn / .pd), exactly: a down window that touches the hour and no wait posted = hatched; touches an hour that posted waits =
+       underlined; blank = not operating. The caption reads the merged ride the hero and the tiles read (ONE NUMBER FAMILY). */
+    function pwWkEtDH(ms){try{var p=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",hour:"numeric",hourCycle:"h23"}).formatToParts(new Date(ms)),o={},i;for(i=0;i<p.length;i++)o[p[i].type]=p[i].value;return {d:o.year+"-"+o.month+"-"+o.day,h:(+o.hour)%24};}catch(e){return null;}}
+    function pwWkToday(rid,ds){ /* today's row from the ledger's 5-min rows — the desk's fold (desk-day-model.js strip): median per half-hour of the readings >= 0; a -1 run is a down window [first t, last t] */
+      var t=lastData.week.today,sn=t&&t.snap,rows=(sn&&sn.rows)||[],col=(sn&&sn.ids)?sn.ids.indexOf(rid):-1;
+      var hm={},dwn=[],cur=null,i,v,sl,tr=null;
+      if(col>=0)for(i=0;i<rows.length;i++){v=rows[i].w?rows[i].w[col]:null;
+        if(v>=0){sl=Math.floor(rows[i].t/30);(hm[sl]=hm[sl]||[]).push(v);}
+        if(v===-1){if(!cur)cur=[rows[i].t,rows[i].t];else cur[1]=rows[i].t;}
+        else if(cur){dwn.push(cur);cur=null;}}
+      if(cur)dwn.push(cur);
+      var sls=Object.keys(hm).map(Number).sort(function(a,b){return a-b;}),hs=sls.length?sls[0]:null,arr=[],j,a;
+      if(hs!=null)for(j=hs;j<=sls[sls.length-1];j++){if(!hm[j]){arr.push(null);continue;}a=hm[j].slice().sort(function(p,q){return p-q;});arr.push(a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2);}
+      for(i=0;i<((t&&t.rides)||[]).length;i++)if(t.rides[i].id===rid){tr=t.rides[i];break;}
+      return {d:ds,live:true,hs:hs,hm:arr,dwn:dwn,dm:tr?(tr.downMinutes||0):0};
+    }
+    function pwWkDays(rid){ /* the ride's seven days in the Plan grid's day shape ({hs,hm,dwn}); a finished day with no record is blank (not operating), never a promise */
+      var wk=lastData&&lastData.week;if(!wk||!wk.days)return null;
+      var out=[],i,x,g,r;
+      for(i=0;i<wk.days.length;i++){x=wk.days[i];
+        if(x.future){out.push({d:x.d,future:true});continue;}
+        if(x.live){out.push(pwWkToday(rid,x.d));continue;}
+        g=wk.digs&&wk.digs[x.d];r=g&&g.rides&&g.rides[rid];
+        out.push(r?{d:x.d,fin:true,hs:(r.hs!=null?r.hs:null),hm:r.hm||[],dwn:r.dwn||[],dm:r.dm||0}:{d:x.d,fin:true,none:true,hs:null,hm:[],dwn:[],dm:0});}
+      return out;
+    }
+    function pwWkTouch(x,h){var k;for(k=0;k<(x.dwn||[]).length;k++)if(x.dwn[k][0]<(h+1)*60&&x.dwn[k][1]+5>h*60)return true;return false;} /* the desk's rule: a 5-min down window that overlaps the hour */
+    function pwWkCard(r){
+      var D=pwWkDays(r.id);if(!D)return "";
+      var fin=pwWeekFin(lastData),i,j,k,x,a,b,h; /* TENSE FLIPS WHOLE: every day final — the dashes and the dot go, "so far" drops (0728gz: the one predicate, pwWeekFin, the page's own) */
+      var h0=99,h1=-1;
+      for(i=0;i<D.length;i++){x=D[i];
+        if(x.hs!=null&&x.hm.length){a=Math.floor(x.hs/2);b=Math.floor((x.hs+x.hm.length-1)/2);if(a<h0)h0=a;if(b>h1)h1=b;}
+        for(j=0;j<(x.dwn||[]).length;j++){a=Math.floor(x.dwn[j][0]/60);b=Math.floor((x.dwn[j][1]+4)/60);if(a<h0)h0=a;if(b>h1)h1=b;}}
+      if(h1>23)h1=23;
+      var body;
+      if(h1<h0)body='<div class="fc-empty">The grid fills in as the week runs \u2014 nothing posted for this ride yet.</div>';
+      else{
+        var grid='<div class="rp-hm wk-hm" style="grid-template-columns:44px repeat('+(h1-h0+1)+',1fr)"><i class="gt"></i>';
+        for(h=h0;h<=h1;h++)grid+='<i class="gh">'+(((h+11)%12)+1)+'</i>';
+        for(i=0;i<D.length;i++){x=D[i];var lv=x.live&&!fin;
+          grid+='<i class="gt'+(lv?' today':'')+'">'+RP_WD[i]+(lv?'<span class="rp-reclive"></span>':'')+'</i>';
+          for(h=h0;h<=h1;h++){
+            if(x.future){grid+='<b class="rp-hmc fut"></b>';continue;}
+            var vals=[];for(k=0;k<x.hm.length;k++)if(x.hm[k]!=null&&Math.floor((x.hs+k)/2)===h)vals.push(x.hm[k]);
+            var tch=pwWkTouch(x,h);
+            if(!vals.length){grid+=(tch?'<b class="rp-hmc dn" data-wk="'+i+'-'+h+'" data-dn="1">dn</b>':'<b class="rp-hmc" data-wk="'+i+'-'+h+'"></b>');continue;}
+            var av=0;for(k=0;k<vals.length;k++)av+=vals[k];av=av/vals.length;
+            grid+='<b class="rp-hmc s'+rpHmStep(av)+(tch?' pd':'')+'" data-wk="'+i+'-'+h+'"'+(tch?' data-dn="1"':'')+'>'+Math.round(av)+'</b>';}}
+        grid+='</div>';
+        body=grid+'<div class="wk-key"><span><i class="pd"></i>down for part of it</span><span><i class="dn"></i>down, no wait posted</span><span>blank = not operating</span></div>'+
+          '<div class="rp-dtread" id="wkRead">Tap a cell for the hour\u2019s wait</div>';
+      }
+      var F=0,C=0,O=0,dn;for(i=0;i<D.length;i++){x=D[i];dn=(x.fin&&!x.none)||(x.live&&fin);if(dn){F++;if(x.dm===0)C++;}if((x.fin||x.live)&&x.dm>0)O++;} /* a finished day with a record counts; on the final night today counts too */
+      var cap='';
+      if(F>0)cap+='<b>'+C+' clean '+(C===1?'day':'days')+'</b> of '+F+' finished \u00b7 ';
+      cap+=(r.downMinutes>0)?(O+' outage '+(O===1?'day':'days')+' \u00b7 <b>'+r.downMinutes+' min down</b>'+(fin?'':' so far')):(fin?'ran clean all week':'ran clean so far');
+      var last=D[0].d,fut=[];for(i=0;i<D.length;i++){if(D[i].future)fut.push(RP_WD[i]);else last=D[i].d;}
+      var span=RP_WD[0]+' '+rpDay(D[0].d)+' \u2013 '+RP_WD[D.length-1-fut.length]+' '+rpDay(last);
+      var fine=span+(fin?'':' so far'+(fut.length?' \u00b7 '+(fut.length===1?fut[0]:fut.length===2?fut[0]+' &amp; '+fut[1]:fut[0]+'\u2013'+fut[fut.length-1])+' to come':''))+' \u00b7 each cell one hour of the day itself (n\u22482 half-hour readings)';
+      return '<div class="rpc wkv"><div class="lbl">This week \u00b7 hour by hour</div>'+body+'<div class="rp-ddcap">'+cap+'</div><div class="wk-fine">'+fine+'</div></div>';
+    }
+    function pwWkBind(wv,r){ /* the cell tap reads the hour; THE TILES LIGHT THE GRID — Outages / Reliability ring every down cell, Peak / Lowest ring their own hour; a second tap clears */
+      var hm=wv.querySelector(".wk-hm"),rd=$id("wkRead");if(!hm||!rd)return;
+      var D=pwWkDays(r.id)||[],base=rd.innerHTML;
+      function clear(){var ps=hm.querySelectorAll(".rp-hmc.on,.rp-hmc.lit"),ts=wv.querySelectorAll(".pw-tile.tapped"),q;
+        for(q=0;q<ps.length;q++){ps[q].classList.remove("on");ps[q].classList.remove("lit");}
+        for(q=0;q<ts.length;q++){ts[q].classList.remove("tapped");ts[q].classList.remove("acc");}}
+      hm.addEventListener("click",function(e){var c=e.target;if(!c||!c.getAttribute||c.getAttribute("data-wk")==null)return;
+        var was=c.classList.contains("on");clear();if(was){rd.innerHTML=base;return;}
+        c.classList.add("on");var p=c.getAttribute("data-wk").split("-"),di=+p[0],h=+p[1];
+        var txt=c.classList.contains("dn")?'down, no wait posted':(c.textContent?('<b>'+c.textContent+' min</b>'+(c.classList.contains("pd")?' \u00b7 down for part of it':'')):'not operating');
+        rd.innerHTML='<b>'+RP_WD[di]+' '+rpClk(h*60)+'</b> \u00b7 '+txt;});
+      var gt=wv.querySelectorAll(".pw-grid .pw-tile");
+      function lightDowns(t){t.classList.add("pw-tile-tap");t.addEventListener("click",function(){var was=t.classList.contains("tapped");clear();if(was){rd.innerHTML=base;return;}
+        var cs=hm.querySelectorAll(".rp-hmc[data-dn]"),q;for(q=0;q<cs.length;q++)cs[q].classList.add("lit");t.classList.add("tapped");
+        rd.innerHTML='<b>'+r.downEvents+(r.downEvents===1?' outage':' outages')+'</b> this week \u00b7 lit on the grid \u00b7 tap again to clear';});}
+      if(r.downEvents>0){if(gt[2])lightDowns(gt[2]);if(gt[3])lightDowns(gt[3]);}
+      function ringAt(t,ms,lbl,v){var dh=pwWkEtDH(ms);if(!dh)return;var di=-1,q;for(q=0;q<D.length;q++)if(D[q].d===dh.d)di=q;if(di<0)return;
+        var c=hm.querySelector('.rp-hmc[data-wk="'+di+'-'+dh.h+'"]');if(!c)return;
+        t.classList.add("pw-tile-tap");t.addEventListener("click",function(){var was=t.classList.contains("tapped");clear();if(was){rd.innerHTML=base;return;}
+          c.classList.add("on");t.classList.add("tapped");t.classList.add("acc");rd.innerHTML='<b>'+lbl+' \u00b7 '+RP_WD[di]+' '+rpClk(dh.h*60)+'</b> \u00b7 <b>'+v+' min</b>';});}
+      if(r.maxWait!=null&&r.peakAt&&gt[0])ringAt(gt[0],r.peakAt,"Peak",r.maxWait);
+      if(r.minWait!=null&&r.minAt&&gt[1])ringAt(gt[1],r.minAt,"Lowest",r.minWait);
+    }
     function showRide(rid,park){
       var wv=$id("wrapView");if(!wv||!lastData)return;
       var isWeek=(lastTab==="week");
-      var fin=isFinal(lastData),live=(!isWeek&&!fin);
+      var fin=isWeek?pwWeekFin(lastData):isFinal(lastData),live=!fin; /* 0728gz THE WEEK SPEAKS IN ITS OWN TENSE (owner-ruled Oct 15): "Averaging … this week. Running 71% so far this week" until Sunday night's FINAL */
       var r=findRide(park,rid);
       if(!r){
         /* refurb tail rows aren't in computePark's set — resolve from the raw
@@ -14634,10 +14745,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var hasProf=!!(typeof roster!=="undefined"&&roster[rid]&&(typeof rpCuratedRide!=="function"||rpCuratedRide(roster[rid]))); /* 0721o: the reverse door — only where a profile home exists */
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button>'+(hasProf?'<button class="pw-back" type="button" id="pwFullRec">Full record \u203a</button>':'')+'</div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div>';
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause)))+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause,isWeek)))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su,(live&&lastTab==="today"&&!pwVisitDate())?rsTyp(r.id):null):""; /* 0728fr: today’s page draws today against its typical; a finished or visited day draws as it always has */
       html+=band+'</div>';
       if(!r._refurb){
+      if(isWeek)html+=pwWkCard(r); /* 0728gy: the week's one picture, under the hero sentence, before the tiles (the day page's order) */
       html+=pwRideTiles(r,su,park,isWeek,live,rClause,rKind);
       html+='<button class="pw-share" id="pwShareR" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this ride</button>';
       html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min (quick blips still show in the chart) · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
@@ -14647,6 +14759,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var fr=$id("pwFullRec");if(fr)fr.addEventListener("click",function(){rpOpenProfileFrom(rid);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
       var rl=$id("pwRLane");if(rl)rl.addEventListener("click",function(){rl.classList.toggle("lbl");pwStripGuard(rl);}); /* 0713l: same gesture as the Sky strip — tap reveals counts, guard handles the crowd */
+      if(isWeek&&!r._refurb)pwWkBind(wv,r); /* 0728gy: the week's twin of the day page's tile taps — the tiles light the grid */
       /* Peak / Lowest tiles jump the scrub lens to their sustained moment */
       if(band&&su){
         var gt=wv.querySelectorAll(".pw-grid .pw-tile");
@@ -14668,7 +14781,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var isWeek=(lastTab==="week"),d=lastData;
       var dateStr=(d.dates&&d.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var r=findRide(park,rid);if(!r)return;
-      var live=(!isWeek&&!isFinal(d));
+      var live=!(isWeek?pwWeekFin(d):isFinal(d)); /* 0728gz: the week's own tense */
       var cKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:(pwDayStrikes()>0?"storm":null);})():null; /* 0713m: trigger PARITY with showRide's 0713l sensor fallback — app and card must never disagree on a clause */
       var cClause=cKind?pwWxClause(r.id,wxDerive(d),cKind):"";
       var su=(!isWeek)?pwSustained(r.id):null;
@@ -14687,7 +14800,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       tiles.push((loV==null)?{label:"LOWEST",pre:"",big:"\u2014",post:"",cls:"pw-n",name:(live?"No waits yet":"No waits posted"),ctx:pwNoWaitCtx(r,isWeek,live)}:{label:"LOWEST",pre:"low",big:String(loV),post:"m",cls:"pw-s",name:(loV<=rpWalkNm(r.name)?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:isFinal(d)?"FINAL":"SO FAR TODAY",line:line,sub:rideSub(r,live,cClause),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-"+dateStr+".png",shareTitle:"RideCue — "+r.name});
+      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:pwBadge(d,isWeek),line:line,sub:rideSub(r,live,cClause,isWeek),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-"+dateStr+".png",shareTitle:"RideCue — "+r.name});
     }
 
     /* ---- init: four-tab nav (0710n) — Phase 1 of the bottom-nav arc ----
