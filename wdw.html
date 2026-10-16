@@ -2670,7 +2670,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728he</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hf</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9513,6 +9513,19 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var l=lv&&lv.lane;if(l)o.ll={k:l.k,at:l.at||null,price:l.price||null,full:!!l.full,stamp:lastUpdated?(fmtClock(lastUpdated.toISOString())||null):null}; /* the lane as posted (rsLL's record and clock) */
     return o;
   }
+  function shareShowModel(lv,now,r){ /* 0728hf THE SHOW CARD: everything the card says, composed from the sheet's own reader (rsShowTimes) — the painter is pure */
+    var st=rsShowTimes(lv,now);if(!st.perf.length&&!st.win.length)return null;
+    var ck=function(ms){return fmtClock(new Date(ms).toISOString());},last=st.perf.length?ck(st.perf[st.perf.length-1].s):null,line,sub;
+    if(st.next){line="Next show at "+ck(st.next.s)+".";sub=st.later?(st.later+" more today, last at "+last+"."):"The last one today.";}
+    else if(st.perf.length){line="Today\u2019s shows are done.";sub="The last was at "+last+".";}
+    else{line=rsShowRead(lv,now).replace(/<[^>]+>/g,"");sub="";}
+    var times=st.perf.map(function(x){return {clk:ck(x.s),k:(x===st.next)?"next":(x.s<now)?"done":"later"};});
+    return {W:1080,H:0,tk:1.36,ts:32,title:r.name,kicker:r.park+" \u00b7 Show",badge:"RIGHT NOW",line:line,sub:sub,subBox:!!sub,tiles:[],shows:times.length?{times:times}:null,foot:"As posted by Disney \u00b7 times change",link:"ridecue.live",fname:"ridecue-show-"+tpToday()+".png",shareTitle:"RideCue \u2014 Showtimes"};
+  }
+  function shareShowCard(rid){ /* 0728hf THE DOOR BESIDE THE STAR, for a show: the show sheet's share glyph → the show card, drawn by the Wrap module's own painter */
+    var r=roster[rid],lv=liveById[rid];if(!r||!window.__ppShowCard)return;
+    var D=shareShowModel(lv,Date.now(),r);if(D)window.__ppShowCard(D);
+  }
   function lrcShare(rid){ /* 0728gj D-1: the sheet's share door → the live ride card, drawn by the Wrap module's own drawers */
     var r=roster[rid],o=lrcModel(rid);if(!r||!o||!window.__ppLiveRideCard)return;
     window.__ppLiveRideCard(rid,r.park,o,rsTyp(rid)); /* 0728gp: the typical rides the door as it rides the sheet’s (__ppRideSheet) */
@@ -9554,6 +9567,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var nw=Date.now(),rb=rsShowRead(lv,nw);
       return '<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
         '<div class="rs-h">'+rsShowHead(lv)+'<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' \u00b7 '+esc(r.category):'')+'</div></div>'+
+        '<button class="rs-sh" type="button" data-rssh="'+esc(rid)+'" aria-label="Share these showtimes" title="Share"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></button>'+ /* 0728hf THE SHOW CARD: the door beside the star */
         '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'\u2605':'\u2606')+'</button></div>'+
         (rb?'<div class="rs-read">'+rb+'</div>':'')+rsShowList(lv,nw)+'</div>';
     }
@@ -9589,7 +9603,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(sc)sc.addEventListener("click",rsClose);
     if(sh)sheetDragDismiss(sh,sc,rsClose); /* one implementation, every sheet (0714q) */
     bindStars(rsEl);
-    var shb9=rsEl.querySelector(".rs-sh");if(shb9)shb9.addEventListener("click",function(ev){ev.stopPropagation();lrcShare(shb9.getAttribute("data-rsh"));}); /* 0728gj D-1: the share door */
+    var shb9=rsEl.querySelector(".rs-sh[data-rsh]");if(shb9)shb9.addEventListener("click",function(ev){ev.stopPropagation();lrcShare(shb9.getAttribute("data-rsh"));}); /* 0728gj D-1: the share door */
+    var shs9=rsEl.querySelector(".rs-sh[data-rssh]");if(shs9)shs9.addEventListener("click",function(ev){ev.stopPropagation();shareShowCard(shs9.getAttribute("data-rssh"));}); /* 0728hf: the show's door */
     Array.prototype.forEach.call(rsEl.querySelectorAll("[data-rsd]"),function(b){b.addEventListener("click",function(){
       var id=rsId,r=roster[id]||{},k=b.getAttribute("data-rsd");rsClose();
       try{var a9=document.activeElement;if(a9&&a9.blur&&a9!==document.body)a9.blur();}catch(_){} /* 0728fv: the tapped row lets go of focus before its list leaves */
@@ -11631,6 +11646,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(cache["yesterday"]){go(cache["yesterday"]);return;}
       fetch(WRAP_URL+"/history?date="+etDate(1)).then(function(r){return r.json();}).then(function(d){pwCleanData(d);go(d);})["catch"](function(){cb(false);});
     };
+    window.__ppShowCard=function(D){pwEmitSized(D);}; /* 0728hf THE SHOW CARD: the Wrap module's own sizer and painter, lent to the show sheet as the live ride card borrows them */
     window.__ppLiveRideCard=function(rid,park,o,typ){ /* 0728gj THE LIVE RIDE CARD: the sheet's live parts (o, lrcModel) joined to the day by the REAL builders — findRide, pwSustained, pwBandModel, pwCardLane, the Wrap ride card's own tile lines — and sent through emitCard/drawCard. Today's day is lent and handed back as __ppRideSheet lends it; the Wrap's today cache is reused only while FRESH (5 min) and never written. A ride with nothing banked still sends: the headline, the read and the lane, no chart, no tiles. */
       function go(d){var kD=lastData,kT=lastTab,D=null;
         try{if(d){lastData=d;lastTab="today";}var r=d?findRide(park,rid):null;D=lrcCard(r,d,o,typ);}catch(e){D=null;}
@@ -14414,7 +14430,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(i=0;i<sl.length;i++)T(sl[i],L+sx,ah+12+(ts-27)/2+i*tl,IN("500",ts),C.muted,"left");
       var gt=ah+(D.sub?56+(ts-27):30)+sH,gap=22,tw=(R-L-gap)/2,th=Math.round(252*(D.tk||1)); /* 0728gl C: the tiles grow with their type (343 tall at 1.36) */
       if(D.band){var bTop=ah+(D.sub?52+(ts-27):26)+sH;gt=bTop+bandBlock(L,bTop,R-L,D.band);}
-      if(D.wkpic){gt+=wkPic(L,gt-6,R-L,D.wkpic);} /* 0728hc THE WEEK CARD SHOWS THE FIELD: the week's picture sits between the read and the tiles; the tiles and the footer follow its height */
+      if(D.wkpic){gt+=wkPic(L,gt-6,R-L,D.wkpic);}
+      if(D.shows){gt+=showBlock(L,gt-6,R-L,D.shows);} /* 0728hf THE SHOW CARD: the showtimes block sits where the week picture would; the footer follows through D.end */ /* 0728hc THE WEEK CARD SHOWS THE FIELD: the week's picture sits between the read and the tiles; the tiles and the footer follow its height */
       for(i=0;i<D.tiles.length;i++){var col=i%2,row=(i-col)/2;tile(L+col*(tw+gap),gt+row*(th+gap),tw,th,D.tiles[i]);}
       /* Swing of the Day — full-width story block (Wrap card only). Mirrors
          the in-app Layout A: identity left, arc right, hold chip when the
@@ -14505,6 +14522,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         for(i=0;i<KEY.length;i++){rr(lx,ky-14,16,16,5);ctx.fillStyle=tcol(KEY[i][0]);ctx.fill();lx+=24;ctx.fillStyle=C.muted;ctx.fillText(KEY[i][1],lx,ky);lx+=ctx.measureText(KEY[i][1]).width+28;}
         T("Each cell: the park’s headliner average that day",bx,ky+36,IN("500",20),C.muted2,"left");
         return (ky+44)-by+22;
+      }
+      function showBlock(bx,by,bw,m){ /* 0728hf THE SHOW CARD (owner-ruled C Oct 16 on show-card-ABC.png: "easy to read"; badge RIGHT NOW on Claude's reasoning — the pill names the moment, the headline the measure): today's showtimes as time tiles, three across, the next in the accent wash with NEXT under it, DONE and "later today" under the others; the last row's tiles share its width so no tile stands alone. Returns the block height. */
+        var i,n=m.times.length,NXT="#b4bcff",cols=3,gap=18,th=128,y0=by+48,rows=Math.ceil(n/cols);
+        function wash(hx,a){return "rgba("+parseInt(hx.slice(1,3),16)+","+parseInt(hx.slice(3,5),16)+","+parseInt(hx.slice(5,7),16)+","+a+")";}
+        T("TODAY’S SHOWTIMES · "+n+" SHOW"+(n===1?"":"S"),bx,by+22,IN("600",21),C.muted2,"left");
+        for(i=0;i<n;i++){var t=m.times[i],k=t.k,c=i%cols,r=(i-c)/cols,inRow=Math.min(cols,n-r*cols),tw=(bw-gap*(inRow-1))/inRow,x=bx+c*(tw+gap),y=y0+r*(th+gap),col=k==="next"?NXT:k==="done"?C.muted2:C.ink;
+          rr(x,y,tw,th,20);ctx.fillStyle=k==="next"?wash(NXT,0.14):"rgba(255,255,255,0.045)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle=k==="next"?wash(NXT,0.5):"rgba(255,255,255,0.07)";ctx.stroke();
+          T(t.clk,x+tw/2,y+64,SG(k==="next"?"700":"600",40),col,"center");
+          T(k==="next"?"NEXT":k==="done"?"DONE":"later today",x+tw/2,y+100,IN("600",20),k==="later"?C.muted2:col,"center");}
+        return (y0+rows*(th+gap)-gap)-by+16;
       }
       /* Canvas twin of the ride hero's wait-curve band, drawn from the same
          pwBandModel so app and card can never disagree. Returns block height. */
