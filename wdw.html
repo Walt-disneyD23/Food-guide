@@ -2190,6 +2190,7 @@
   .pg-myrides .t-short{color:var(--short)}.pg-myrides .t-medium{color:var(--medium)}.pg-myrides .t-long{color:var(--long)}.pg-myrides .t-packed{color:var(--packed)}.pg-myrides .t-down{color:var(--packed)}.pg-myrides .t-closed{color:var(--closed)}.pg-myrides .t-open{color:var(--short)} /* 0722p V1-a: open-dot green, status language only */.pg-myrides .t-refurb{color:var(--closed)}
   .mr-bell{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--card-2);border:1px solid var(--line);flex:none;-webkit-tap-highlight-color:transparent}
   .mr-nobell{width:34px;flex:none} /* 0726j: the show row keeps the bell column's width so names align across kinds */
+  .mr-lane-sh{border-top:1px solid var(--line);padding-top:10px;margin-top:4px} /* 0728hl R-1a (owner-ruled Oct 16): the SHOWS & EXPERIENCES lane inside the park card — the .hd dress with a top rule; hidden when the park has no starred shows */
   .sb-rl{font-size:var(--fs-meta);margin-top:2px} /* 0726j: mr-rl's dress without its door */
   .sb-nsu{display:block;font-size:var(--fs-micro);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:2px}
   .mr-bell svg{width:20px;height:20px;stroke:var(--muted-2);fill:none}
@@ -2260,6 +2261,19 @@
   #mrSheet .offr[hidden],#mrSheet .shz[hidden]{display:none}
   #mrSheet .mr-seg b{font-size:14.5px;padding:12px 0}
   #mrSheet .mr-fine{font-size:12.5px}
+  /* 0728hl S-A THE SHOW'S REMINDER SHEET (owner-ruled Oct 16; mock/srmock.js, the mock's bytes): the time tiles and the lead chips */
+  #mrSheet .sh-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  #mrSheet .sh-t{border-radius:var(--r-tile);border:1.5px solid var(--line);background:var(--card-2);padding:10px 4px 8px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #mrSheet .sh-t small{display:block;font:600 11px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:3px}
+  #mrSheet .sh-t.done{color:var(--muted-2);border-style:dashed;background:transparent;cursor:default}
+  #mrSheet .sh-t.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)} #mrSheet .sh-t.sel small{color:var(--accent)}
+  #mrSheet .sh-chips{display:flex;gap:8px;margin-top:8px}
+  #mrSheet .sh-c{flex:1;border-radius:999px;border:1.5px solid var(--line);background:var(--card-2);padding:9px 0;text-align:center;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #mrSheet .sh-c.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+  #mrSheet .sh-oth{margin-top:10px} #mrSheet .sh-oth[hidden]{display:none}
+  #mrSheet .sh-oth input{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--accent);background:var(--accent-soft);border:1px solid rgba(139,135,255,.45);border-radius:999px;padding:0 12px;min-height:44px;width:84px;text-align:center;-webkit-appearance:none;appearance:none;-moz-appearance:textfield} /* the select's dress on the stepper */
+  #mrSheet .sh-oth input::-webkit-inner-spin-button,#mrSheet .sh-oth input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  #mrSheet:not(.sh-show) .shsh{display:none} #mrSheet.sh-show .shz:not(.shsh),#mrSheet.sh-show .acts{display:none} #mrSheet.sh-show .shsh1{border-top:0;padding-top:2px} /* one host, two dresses: the ride's zones sleep under the show's and the show's under the ride's; the first show zone wears no hairline */
   #mrSheet .acts .def{font-size:15px;padding:13px 0}.def[disabled]{opacity:.38;cursor:default} /* 0722o U1-b */
   .mr-hello{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);padding:22px 18px 18px;margin-top:8px} /* 0728bu THE FIRST FACE (replaces .mr-empty) */
   .mr-hello .big{font-size:30px;color:var(--fav);line-height:1}
@@ -2669,6 +2683,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-lab">Reading a row</div>
     <div class="ig-p">The small pills under each name are that ride’s facts — a tinted pill is your armed rule (“30 or less”), a grey whisper is a down &amp; back-up setting you pinned (“down &amp; back-up on”), a bare row has no alert yet (“<b>tap the bell to set an alert</b>”), and on a fresh hit <b>the whole row lights <span class="td-brg gv">mint</span></b> — pill filled, edge glowing — for as long as the wait still satisfies your rule, fading once the moment passes.</div>
     <div class="ig-p"><b>The bell is the door</b> — tap it to set the ride’s own rule, and to switch its <b>down &amp; back-up pings</b> on or off there too (they’re separate from the wait rule — a ride can watch for breakdowns without any wait rule).</div>
+    <div class="ig-p"><b>Shows &amp; experiences</b> sit under the rides in each park. Their bell sets a <b>reminder</b>, not a wait rule — the next show is picked for you, tap another time to aim it there, pick how many minutes before, then <b>Turn reminder on</b>. It pings once. Today only — reminders clear at midnight.</div>
     <div class="ig-p">Pings reach your lock screen <b>with the app closed</b>. A reopen pings once and parks; a ride seen breaking again re-arms itself only on <b>two clean reads</b> — one glitchy signal never costs you an alert.</div>
     <div class="set-lab">Try this</div>
     <div class="ig-p">Watching a rope-drop target? <b>Tap its bell and switch down &amp; back-up on</b> — that setting keeps overnight, so if it breaks in the morning you’ll know before you’ve walked there.</div>
@@ -2686,7 +2701,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hk</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hl</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2898,14 +2913,16 @@ function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.
   function saveClearedTs(){store.set("clearedTs",clearedTs);}
   var echoWm=+store.get("echoWm",0)||0; /* 0722t watermark: the newest worker fire clock already folded — echoes at or before it never re-log (one global scalar, O(1), eviction-proof) */
   function saveEchoWm(){store.set("echoWm",echoWm);}     /* id -> timestamp it came back up; parked in the "Back up" group, silenced */
-var armed=store.get("armed",{})||{};           /* id -> standing threshold rule (the bell). Stars (watch) are quiet unless armed. */
+var armed=store.get("armed",{})||{};
+var remind=store.get("remind",{})||{};  /* 0728hl A REMINDER, NOT A THRESHOLD: id -> {at (ISO start), lead (minutes), fired?} — a show's one-shot reminder; day creature, cleared at the roll, carried to the Worker as rules.remind */
+function saveRemind(){store.set("remind",remind);}           /* id -> standing threshold rule (the bell). Stars (watch) are quiet unless armed. */
 function saveArmed(){store.set("armed",armed);}
 /* every ride the badge cares about: armed thresholds, reopen flags, transients, parked back-ups */
 function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function(m){Object.keys(m).forEach(function(id){if(roster[id])s[id]=1;});});return Object.keys(s);}
   var rebreak={};                                 /* in-memory only: parked rides seen DOWN once, awaiting 2nd-poll confirmation */
   var lastOpSeen={},lastDownSeen={};              /* 0722v in-memory sighting maps: the phone's own eyes, consulted by the fold-back wall */
   function logIncident(id,ev,ts,echo){try{var L=store.get("alertLog",[])||[]; /* 0722t THE WORKER'S PINGS ECHO BACK: one writer for the diary. Local lanes pass now; worker echoes pass the true fire clock. */
-    var fam=(ev==="reopen")?{reopen:1}:(ev==="hit")?{hit:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1}; /* 0723a: hits fold only with hits — and a hit line walls down-folds, because a hit proves the ride was running */var i,e;
+    var fam=(ev==="reopen")?{reopen:1}:(ev==="hit")?{hit:1}:(ev==="remind")?{remind:1}:{down:1,"rebreak-confirmed":1,"rebreak-cold":1}; /* 0728hl: a reminder is its own family, keyed by slate (id@at) — the echo and the local line fold into one */ /* 0723a: hits fold only with hits — and a hit line walls down-folds, because a hit proves the ride was running */var i,e;
     if(echo){var hit=null; /* T'-A THE TRUE CLOCK WINS: fold the echo into the earliest same-family witness line at/after the fire (60s skew grace) — the witness never leads the worker (field: PeopleMover 9:59 vs 10:16, Test Track 7:00 vs 7:54) */
       for(i=0;i<L.length;i++){e=L[i];if(e.id===id&&fam[e.ev]&&e.t>=ts-60000&&(!hit||e.t<hit.t))hit=e;}
       if(hit){if(hit.t!==ts){hit.t=ts;L.sort(function(a,b){return a.t-b.t;});store.set("alertLog",L);}return;}
@@ -3402,8 +3419,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
 
   /* ---- alerts ---- */
   function ruleFor(id){var o=overrides[id];return {dir:(o&&o.dir)||settings.dir,thresh:(o&&o.thresh)||settings.thresh};} /* 0723b F: partial overrides are legal - every field falls back (a dnup-only override must never blank the rule) */
+  function remindCheck(){ /* 0728hl A REMINDER, NOT A THRESHOLD — the app's own lane: a reminder whose moment has come fires once (toast, the diary, the app's own banner when the Worker's push isn't active — one banner, one truth); a reminder whose show has started is spent and clears (LABELS MOVE WITH VALUES); the Worker (v3.28) fires the lock-screen push with the app closed */
+    var now=Date.now(),chg=false;
+    Object.keys(remind).forEach(function(id){var e=remind[id],atMs=e&&e.at?Date.parse(e.at):NaN;
+      if(!(atMs>0)||atMs<=now){delete remind[id];chg=true;return;}
+      if(!e.fired&&now>=atMs-(+e.lead||0)*60000){e.fired=now;chg=true;var r=roster[id];if(r)fireRemind(r,e);}});
+    if(chg)saveRemind();
+  }
+  function fireRemind(r,e){ /* 0728hl: the local ping — SAME QUESTION SAME SENTENCE with the Worker's push (title the show and its time, the minutes left as they stand, the park) */
+    var left=Math.max(1,Math.round((Date.parse(e.at)-Date.now())/60000)),body="show at "+fmtClock(e.at)+" · in "+left+" min · "+r.park;
+    pushToast(r.name,body);logIncident(r.id+"@"+e.at,"remind",Date.now(),false); /* the diary line is keyed by its slate (id@at): two slates of one show keep two lines; the Worker's echo folds into this one */
+    if(settings.notif&&notifGranted()&&!pushActive()){try{new Notification("\ud83d\udd14 "+r.name,{body:body,tag:r.id+":remind"});}catch(e2){}}
+  }
   function checkAlerts(){
     alertsDayGate(); /* 0720r: the roll gates every poll - midnight while open */
+    remindCheck(); /* 0728hl: the reminders' own lane rides the same poll */
     Object.keys(roster).forEach(function(id){
       var r=roster[id];if(r.kind!=="ride")return;var lv=liveById[id];if(!lv)return;
       var cur=lv.status;
@@ -9455,7 +9485,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
 
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div>'+llLn+'</div>'+
-      (r.kind==="ride"?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':'')+ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
+      (r.kind==="ride"?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':(show&&mrRemCan(r.id,lv))?'<button class="flagbtn'+(remind[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Reminder">'+MR_BELL+'</button>':'')+ /* 0728hl THE SHOW GETS ITS BELL: a KNOWN show with a slate to aim at wears the bell on Live too (0726j re-aimed); ONE BELL ONE DRESS — the tint says armed */ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
 '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
   /* ===== 0728fr THE RIDE'S OWN SHEET. Tap a ride row on Live: its day so far (the Wrap's own chart and four tiles, in live tense, through __ppRideSheet) and its read (the Today board's own sentence for this one ride). ONE ENGINE: nothing here computes a wait, a typical or a sentence of its own — rsRead CALLS tdCurve, tdEng, tdWhy and tdBridgeFace exactly as the board's row does and changes none of them (owner, Oct 11: the board's engines stay as they are). The sheet never says GO NOW, crowns nothing and orders nothing; the board's "— anytime" tail is its advice about order, so the sheet leaves it off. ===== */
@@ -9669,9 +9699,10 @@ var hadRule=!!armed[id];
 var hadWatch=!!reopen[id],hadOnly=!!reopenOnly[id],hadHand=!!handArm[id]; /* 0720q (S4x): capture before the take - a transition-born watch cannot re-derive itself */
 delete watch[id];store.set("watch",Object.keys(watch));var seat9=tyStarSync(id,false); /* 0728fp: the seat leaves today’s board with the star; seat9 is where it sat */
 if(hadRule){delete armed[id];delete alertState[id];saveArmed();saveAlertState();logAlertEv(id,"unstar-disarmed");}
+var hadRem=remind[id]||null;if(hadRem){delete remind[id];saveRemind();logAlertEv(id,"unstar-disarmed");} /* 0728hl: the show's reminder goes with its star, the same breadcrumb */
 if(hadWatch||hadOnly){delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();saveReopen();saveReopenOnly();logAlertEv(id,"unstar-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
 updateAlertBadge();
-pushUndoToast("Star removed",nm+(hadRule?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(seat9)tyStarSync(id,true,seat9);if(hadRule){armed[id]=true;saveArmed();}if(hadWatch){reopen[id]=true;saveReopen();if(hadHand){handArm[id]=Date.now();saveHandArm();}}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Starred",nm);render();});
+pushUndoToast("Star removed",nm+((hadRule||hadRem)?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(seat9)tyStarSync(id,true,seat9);if(hadRule){armed[id]=true;saveArmed();}if(hadRem){remind[id]=hadRem;saveRemind();}if(hadWatch){reopen[id]=true;saveReopen();if(hadHand){handArm[id]=Date.now();saveHandArm();}}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Starred",nm);render();});
 render();});});
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
@@ -10662,16 +10693,23 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:["closed","CLOSED"];
     return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
   }
-  function sbRowHTML(id,r,lv){ /* 0726j E-B (owner-ruled, Simple wins): the tag pill is the line in every state - no rule lane, no teach, no bell; sb-rl stays outside the .mr-rl sheet-door delegate by name */
-    return '<div class="mr-rw"><span class="st">★</span>'+
-      '<div class="m"><div class="nm">'+esc(r.name)+'</div><div class="sb-rl"><span class="mr-p poff">'+(isMeet(r)?'Character Experience':'Show')+'</span></div></div>'+
+  function mrRemCan(id,lv){ /* 0728hl: a show earns a bell only with a slate to aim at — a performance still ahead today; a meet with a window and no times, or a show whose day is done, gets none (nothing to aim at) */
+    var r=roster[id];if(!r||r.kind!=="show")return false;
+    try{return !!rsShowTimes(lv,Date.now()).next;}catch(e){return false;}
+  }
+  function mrRemClk(at){var c=fmtClock(at);return c||"";} /* the family's clock dialect on a reminder's slate */
+  function sbRowHTML(id,r,lv,teach){ /* 0728hl R-1a THE SHOW GETS ITS BELL (owner-ruled Oct 16): inside the SHOWS & EXPERIENCES lane the row wears the bell and a readout like a ride's — the armed reminder in the accent tint (10:40 AM · 15 min before), a bare row otherwise, the first bare row teaching once in the screen's words; the body opens the show sheet (M-1). 0726j E-B's kind pill retires — the lane names the kind. A row with nothing to aim at keeps the bell column's width (mr-nobell). */
+    var can=mrRemCan(id,lv),rm=can?remind[id]:null;
+    var ln=rm?'<span class="mr-p prule"><span class="d"></span>'+esc(mrRemClk(rm.at))+' · '+(+rm.lead)+' min before</span>':((teach&&can)?'<span class="mr-teach">tap the bell to set a reminder</span>':'');
+    return '<div class="mr-rw" data-rs="'+esc(id)+'"><span class="st">★</span>'+
+      '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+(ln?'<div class="sb-rl">'+ln+'</div>':'')+'</div>'+
       sbCellHTML(r,lv)+
-      '<span class="mr-nobell"></span>'+
+      (can?'<button class="mr-bell'+(rm?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Reminder">'+MR_BELL+'</button>':'<span class="mr-nobell"></span>')+
       '</div>';
   }
   function mrRowHTML(id,teach){
     var r=roster[id],lv=liveById[id];
-    if(r&&r.kind&&r.kind!=="ride")return sbRowHTML(id,r,lv); /* 0726j THE SHOW KEEPS ITS SEAT - a KNOWN show only; kindless keeps the ride path (benefit of the doubt) */
+    if(r&&r.kind&&r.kind!=="ride")return sbRowHTML(id,r,lv,false); /* 0726j THE SHOW KEEPS ITS SEAT - a KNOWN show only; kindless keeps the ride path (benefit of the doubt); 0728hl: the lane calls sbRowHTML itself with the teach */
     var hitF=!!(armed[id]&&alertState[id]&&ruleMet(id,lv)); /* 0720x (1B, owner-lettered): a fresh hit lights its whole row; stale keeps the quiet line */
     return '<div class="mr-rw'+(hitF?' hitf':'')+'" data-rs="'+esc(id)+'"><span class="st">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
@@ -10680,17 +10718,23 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       '</div>';
   }
   function mrGroupsHTML(ids){
-    var taught=false; /* INSTRUCTION ONCE IS TEACHING, THRICE IS NOISE — the first unarmed row on the page carries the line */
+    var taught=false,taughtSh=false; /* INSTRUCTION ONCE IS TEACHING, THRICE IS NOISE — the first unarmed row on the page carries the line; 0728hl: the shows' lane teaches once in its own words */
     return PARK_DEF.map(function(p){
-      var here=ids.filter(function(id){return roster[id].park===p.key;});
-      if(!here.length)return "";
-      here.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);}); /* 0725m O-a (owner-ruled Aug 26): A to Z within the park \u2014 a management surface wins on findability, and alphabetical is already the family\u2019s law (the shelf, the seed). The starred order was honest but unreadable \u2014 its own author couldn\u2019t decode it. Down-first below stays stable, so each half keeps its alphabet. */
+      var all9=ids.filter(function(id){return roster[id].park===p.key;});
+      if(!all9.length)return "";
+      var isSh=function(id){var r9=roster[id];return !!(r9&&r9.kind&&r9.kind!=="ride");}; /* a KNOWN show only; kindless keeps the ride path (0726j's doubt) */
+      var here=all9.filter(function(id){return !isSh(id);}),sh=all9.filter(isSh); /* 0728hl R-1a (owner-ruled Oct 16): the rides first, then a SHOWS & EXPERIENCES lane and the starred shows; the lane hides when the park has none */
+      here.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);}); /* 0725m O-a (owner-ruled Aug 26): A to Z within the park — a management surface wins on findability, and alphabetical is already the family's law (the shelf, the seed). The starred order was honest but unreadable — its own author couldn't decode it. Down-first below stays stable, so each half keeps its alphabet. */
+      sh.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);});
       var dn=here.filter(function(id){var lv=liveById[id];return lv&&lv.status==="DOWN";});
       here=dn.concat(here.filter(function(id){var lv=liveById[id];return !(lv&&lv.status==="DOWN");})); /* down-first, stable — honest ordering, no control */
       return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(function(id){
         var lvT=liveById[id],teach=!taught&&!armed[id]&&!(lvT&&lvT.status==="DOWN"&&(reopen[id]||mrDnupFor(id)));if(teach)taught=true; /* 0728gs: a covered down row carries no bell line, so the one teaching line passes it; a cold down row teaches with its own "tap the bell" */
         return mrRowHTML(id,teach);
-      }).join("")+'</div>';
+      }).join("")+(sh.length?'<div class="hd mr-lane-sh">Shows &amp; experiences</div>'+sh.map(function(id){
+        var lvS=liveById[id],t9=!taughtSh&&!remind[id]&&mrRemCan(id,lvS);if(t9)taughtSh=true; /* the first bare show row with a slate to aim at teaches once */
+        return sbRowHTML(id,roster[id],lvS,t9);
+      }).join(""):'')+'</div>';
     }).join("");
   }
   function mrShelfHTML(){ /* 0722h THE ROOM (owner-ratified N-b/S-a/L-a, D2-b Model 2): DOWN & BACK UP — one card, two self-gating zones. DOWN NOW is STATUS: every starred ride currently down, covered or not; the ping promise is a clause coverage must earn, and clocks are log-earned (an unwitnessed down stays clockless). BACK UP stays alert-parking — a reopen never pinged needs no Clear. Sentences only; Clear is the room's one control. Supersedes the 0721e shelf; its sentence and hooks (.mr-clear, data-clrall, oldest-first) live on in the BACK UP zone. */
@@ -10717,7 +10761,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     return h+'</div>';
   }
-  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star","rebreak-confirmed":"down again — re-armed","rebreak-cold":"down again"};
+  var mrEvWord={hit:"hit your rule",down:"went down",reopen:"back up","orphan-starred":"kept its live alert — starred for you","star-armed":"alert set from the bell","unstar-disarmed":"alert removed with its star","rebreak-confirmed":"down again — re-armed","rebreak-cold":"down again",remind:"reminder"}; /* 0728hl: the show reminder lands here like a hit */
   var mrLogDaysOpen={}; /* 0721u: session-mortal fold state — survives poll rebuilds, dies with the tab */
   function mrDayKey(t){var d=new Date(t);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
   function mrDayWord(t){ /* the header's word — device-local, the same dialect mrClk speaks */
@@ -10728,7 +10772,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var d=new Date(t);
     return d.toLocaleDateString("en-US",{weekday:"short"})+" \u00b7 "+d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
   }
-  var mrEvTint={hit:"mr-vh",down:"mr-vd",reopen:"mr-vu"}; /* 0721u R2: only the three alert verbs tint; housekeeping breadcrumbs stay plain */
+  var mrEvTint={hit:"mr-vh",down:"mr-vd",reopen:"mr-vu",remind:"mr-vh"}; /* 0728hl: the reminder wears the hit's mint */ /* 0721u R2: only the three alert verbs tint; housekeeping breadcrumbs stay plain */
   function mrLogHTML(){
     var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice(-40).reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
     if(!L.length)return "";
@@ -10739,8 +10783,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var open=today?true:((g.k in mrLogDaysOpen)?mrLogDaysOpen[g.k]:gi===0);
       var rows=g.rows.map(function(e){
         if(e.ev==="moved-home")return '<div class="li">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
-        var r=roster[e.id],tc=mrEvTint[e.ev];
-        var vb=tc?('<span class="'+tc+'">'+mrEvWord[e.ev]+'</span>'):(mrEvWord[e.ev]||esc(e.ev));
+        var eid=e.id,atR=null;if(e.ev==="remind"){var q9=String(eid).indexOf("@");if(q9>0){atR=eid.slice(q9+1);eid=eid.slice(0,q9);}} /* 0728hl: a reminder line is keyed by its slate (id@at) — the show's name, then the slate it was for */
+        var r=roster[eid],tc=mrEvTint[e.ev];
+        var vb=tc?('<span class="'+tc+'">'+mrEvWord[e.ev]+'</span>'):(mrEvWord[e.ev]||esc(e.ev));if(atR){var ck9=fmtClock(atR);if(ck9)vb+=' · '+esc(ck9)+' show';}
         return '<div class="li"><b>'+esc(r?r.name:"Ride")+'</b> '+vb+' · '+mrClk(e.t)+'</div>';
       }).join("");
       return '<div class="mr-day'+(open?'':' closed')+'" data-dk="'+esc(g.k)+'"><div class="mr-dayhd'+(today?'':' fold')+'">'+esc(g.w)+'<span class="cnt">'+g.rows.length+'</span>'+(today?'':'<span class="chv">\u25be</span>')+'</div>'+rows+'</div>';
@@ -10778,6 +10823,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       '<button class="offr" id="mrShOff" type="button" hidden>Turn alert off</button>'+
       '<div class="mr-fine" id="mrShFine">Pings once when the wait crosses this line.</div></div>'+ /* the arm is named, never a side effect; on an unstarred ride the line adds "Stars the ride too." (Rule A) */
       '<div class="shz" id="mrShDnZ"><div class="fldlab">Down &amp; back up alerts<span class="mr-breath" id="mrShBr">\u2713 saved</span></div><div class="mr-seg" id="mrShDn"><b data-dn="def">Default</b><b data-dn="on">On</b><b data-dn="off">Off</b></div><div class="mr-fine">Pings when this ride goes down and when it returns. Default follows the blanket \u2014 currently <span id="mrShDnF">'+(settings.dnup?'on':'off')+'</span>. Applies right away.</div></div>'+ /* 0720y (B): the label names the species; 0723b: the fine print confesses the clock */
+      '<div class="shz shsh shsh1"><div class="fldlab">Which show</div><div class="sh-tiles" id="mrShTiles"></div><div class="mr-fine" id="mrShTfine"></div></div>'+ /* 0728hl S-A THE SHOW'S REMINDER SHEET (owner-ruled Oct 16): today's times as tiles, the next pre-selected — zero input; the fine print and the lead are painted by mrShShowPaint */
+      '<div class="shz shsh"><div class="fldlab">Remind me before it</div><div class="sh-chips" id="mrShChips"></div><div class="sent sh-oth" id="mrShOth" hidden>remind me <input type="number" id="mrShLead" inputmode="numeric" min="1" max="240" step="1"> <span>min before</span></div>'+ /* the chips 5 · 10 · 15 · 30 · Other; Other opens the stepper — any minutes */
+      '<button class="setr" id="mrShRSet" type="button">Turn reminder on</button><button class="offr" id="mrShROff" type="button" hidden>Turn reminder off</button><div class="mr-fine" id="mrShRFine"></div></div>'+ /* Turn reminder on while unarmed, Save reminder once a tile or the lead moves (A BUTTON ONLY WHEN THERE IS WORK); Turn reminder off while armed */
       '<div class="acts"><button class="def" id="mrShDef" type="button">Reset to defaults</button></div></div>';
   }
   function mrPageHTML(){
@@ -10833,7 +10881,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   }
   function mrBellTap(id){ /* 0728gs THE BELL IS THE RIDE'S ALERT DOOR, EVERYWHERE (owner-ruled Oct 14: "when you tap the bell a pop up opens, you could quickly confirm and set the alert as is, or change the rule then confirm" \u2014 "having to tap the pill to change it is confusing"): the bell shows the rule before it arms; Cut 3's one-tap arm is traded for a read promise. The arm rides the sheet's Turn alert on / Save rule (mrShSetTap), the disarm its Turn alert off (mrShOffTap); Rule A's star-and-arm rides Turn alert on. Live's .flagbtn and My Rides' .mr-bell both land here. */
     var r=roster[id];
-    if(r&&r.kind&&r.kind!=="ride")return; /* 0726j: no bell renders on a KNOWN show; a stray tap arms nothing - kindless keeps the doubt */
+    if(r&&r.kind&&r.kind!=="ride"&&!(r.kind==="show"&&mrRemCan(id,liveById[id])))return; /* 0726j: a stray tap on a KNOWN show arms nothing - kindless keeps the doubt; 0728hl: a show with a slate to aim at opens its reminder sheet (THE BELL IS THE RIDE'S ALERT DOOR, EVERYWHERE — the show's too) */
     mrOpenSheet(id);
   }
   function mrShOffTap(id){ /* 0728gs: the disarm, as the bell's second tap did it (0720q S4x A WATCH DIES WITH ITS RULE) */
@@ -10874,6 +10922,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var ds=tpToday();
     if(store.get("alertsDs",null)===ds)return;
     var had=Object.keys(armed).length+Object.keys(alertState).length+Object.keys(reopen).length+Object.keys(reopenOnly).length;
+    had+=Object.keys(remind).length;remind={};saveRemind(); /* 0728hl: reminders are day creatures — a show you wanted today is not a standing order */
     armed={};alertState={};reopen={};reopenOnly={};handArm={};
     saveArmed();saveAlertState();saveReopen();saveReopenOnly();saveHandArm();
     had+=Object.keys(resolved).length;resolved={};saveResolved();clearedTs={};saveClearedTs(); /* 0721g: tombstones are news too - they die at the roll */ /* 0720r: the shelf op - one-line reversible */
@@ -10945,10 +10994,64 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var dirty=!armed[id]||(d&&d.value!==ed)||(t&&+t.value!==et);
     if(dirty){st.removeAttribute("disabled");st.removeAttribute("hidden");}else{st.setAttribute("disabled","");st.setAttribute("hidden","");} /* 0728gs (owner-ruled Oct 14): a button only when there is work \u2014 armed and untouched, Turn alert off stands alone; the moment a picker moves, Save rule appears */
   }
-  var mrShEl=null,mrShPoll=null;
+  var mrShEl=null,mrShPoll=null,mrShR=null; /* 0728hl: mrShR = the reminder sheet's working pick {id, at, lead, oth} while it is open */
+  function mrShShowOpen(el,id){ /* 0728hl S-A THE SHOW'S REMINDER SHEET (owner-ruled Oct 16, "def liking S-A so far"): the show sheet's own head (ONE HEADER FOR A SHOW'S TWO SHEETS), the moment line, today's times as tiles with the next pre-selected (zero input), the lead chips 5·10·15·30·Other (15 default); the working pick is the armed reminder's, else the next show at 15 — an armed slate the feed no longer posts falls back to the next */
+    var r=roster[id],lv=liveById[id],now=Date.now(),st=rsShowTimes(lv,now),rm=remind[id]||null;
+    var t=el.querySelector("#mrShTtl");if(t)t.textContent=r.name;
+    var wt=el.querySelector("#mrShWt");if(wt)wt.innerHTML=rsShowHead(lv);
+    var posted=function(at){var i;for(i=0;i<st.perf.length;i++)if(new Date(st.perf[i].s).toISOString()===at)return true;return false;};
+    mrShR={id:id,at:(rm&&rm.at&&posted(rm.at))?rm.at:(st.next?new Date(st.next.s).toISOString():null),lead:rm?(+rm.lead||15):15,oth:false};
+    mrShShowPaint(el);
+    var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
+    if(sh)sh.classList.add("open");if(sc)sc.classList.add("open");
+    mrShMark(id); /* 0728gv THE BELL ANSWERS THE TAP */
+  }
+  function mrShShowPaint(el){ /* the tiles (done dashed and dead, next, later), the chips, the stepper when the lead is Other, the moment line; then the gate */
+    var id=mrShR.id,lv=liveById[id],now=Date.now(),st=rsShowTimes(lv,now),rm=remind[id]||null,i,h='';
+    for(i=0;i<st.perf.length;i++){var x=st.perf[i],iso=new Date(x.s).toISOString(),k=(x.s<now)?'done':(x===st.next)?'next':'later';
+      h+='<div class="sh-t'+(k==='done'?' done':'')+(iso===mrShR.at?' sel':'')+'" data-at="'+(k==='done'?'':esc(iso))+'">'+esc(mrRemClk(iso))+'<small>'+k+'</small></div>';}
+    var tl=el.querySelector("#mrShTiles");if(tl)tl.innerHTML=h;
+    var tf=el.querySelector("#mrShTfine");if(tf)tf.textContent=rm?'Tap another to move the reminder there.':'The next show is picked for you — tap another to aim the reminder there.';
+    var L=[5,10,15,30],oth=mrShR.oth||L.indexOf(mrShR.lead)<0,c='';for(i=0;i<L.length;i++)c+='<div class="sh-c'+((!oth&&mrShR.lead===L[i])?' sel':'')+'" data-lead="'+L[i]+'">'+L[i]+' min</div>';c+='<div class="sh-c'+(oth?' sel':'')+'" data-lead="other">Other</div>';
+    var ch=el.querySelector("#mrShChips");if(ch)ch.innerHTML=c;
+    var ot=el.querySelector("#mrShOth");if(ot){if(oth)ot.removeAttribute("hidden");else ot.setAttribute("hidden","");}
+    var li=el.querySelector("#mrShLead");if(li&&oth)li.value=mrShR.lead||'';
+    var mo=el.querySelector("#mrShMo");if(mo)mo.innerHTML=(st.next?'next show '+esc(mrRemClk(new Date(st.next.s).toISOString())):'shows done for today')+' · '+(rm?'<span class="on">reminder on · '+(+rm.lead)+' min before</span>':'reminder off');
+    mrShRGate(el);
+  }
+  function mrShRFine(id,rm){ /* the fine print: what will happen, in the sheet's own words — set, pings once N min before, pings right away (a slate sooner than the lead), nothing to aim at */
+    var at=mrShR.at,lead=mrShR.lead,clk=at?mrRemClk(at):'',fire=at?Date.parse(at)-lead*60000:0,now=Date.now(),star=watch[id]?'':' Stars the show too.';
+    var tail=' Today only — reminders clear at midnight. Times as posted by Disney · times change.';
+    if(rm&&rm.at===at&&(+rm.lead)===lead)return 'Set for '+mrRemClk(new Date(fire).toISOString())+' — '+lead+' min before the '+clk+' show. Today only — reminders clear at midnight.';
+    if(!at)return 'No show left to aim at today.';
+    if(!(lead>=1))return 'Pick how many minutes before the '+clk+' show.'+tail;
+    if(fire<=now)return 'Pings right away — the '+clk+' show is less than '+lead+' min out.'+star+tail;
+    return 'Pings once, '+lead+' min before the '+clk+' show.'+star+tail;
+  }
+  function mrShRGate(el){ /* A BUTTON ONLY WHEN THERE IS WORK (0728gs, the show's turn): unarmed → Turn reminder on; armed and untouched → Turn reminder off alone; a moved tile or lead → Save reminder beside it; an empty stepper sleeps the primary */
+    if(!mrShR)return;var id=mrShR.id,rm=remind[id]||null,st=el.querySelector("#mrShRSet"),off=el.querySelector("#mrShROff"),fn=el.querySelector("#mrShRFine");if(!st)return;
+    var dirty=!rm||rm.at!==mrShR.at||(+rm.lead)!==mrShR.lead,can=!!mrShR.at&&mrShR.lead>=1;
+    st.textContent=rm?"Save reminder":"Turn reminder on";
+    if(!dirty){st.setAttribute("hidden","");st.setAttribute("disabled","");}else{st.removeAttribute("hidden");if(can)st.removeAttribute("disabled");else st.setAttribute("disabled","");}
+    if(off){if(rm)off.removeAttribute("hidden");else off.setAttribute("hidden","");}
+    if(fn)fn.textContent=mrShRFine(id,rm);
+  }
+  function bindMrShowSheet(el){ /* 0728hl: the reminder sheet's doors, bound once on the host — a tile re-aims (a done slate is not a target), a chip sets the lead, Other opens the stepper; Turn reminder on / Save reminder arm (Rule A: stars the show), Turn reminder off clears; C-1: every door closes, the toast is the receipt, the board repaints */
+    var tl=el.querySelector("#mrShTiles");if(tl)tl.addEventListener("click",function(ev){var b=ev.target&&ev.target.closest?ev.target.closest(".sh-t"):null;if(!b||!mrShR)return;var at=b.getAttribute("data-at");if(!at)return;mrShR.at=at;mrShShowPaint(el);});
+    var ch=el.querySelector("#mrShChips");if(ch)ch.addEventListener("click",function(ev){var b=ev.target&&ev.target.closest?ev.target.closest(".sh-c"):null;if(!b||!mrShR)return;var v=b.getAttribute("data-lead");
+      if(v==="other"){mrShR.oth=true;mrShShowPaint(el);var li0=el.querySelector("#mrShLead");if(li0){try{li0.focus();li0.select();}catch(_){}}return;}
+      mrShR.oth=false;mrShR.lead=+v;mrShShowPaint(el);});
+    var li=el.querySelector("#mrShLead");if(li)li.addEventListener("input",function(){if(!mrShR)return;var v=Math.floor(+li.value);mrShR.lead=(v>=1)?Math.min(240,v):0;mrShRGate(el);}); /* the stepper gates without repainting — the caret stays */
+    var st=el.querySelector("#mrShRSet");if(st)st.addEventListener("click",function(){var id=mrShR&&mrShR.id;if(!id||st.hasAttribute("disabled")||!mrShR.at||!(mrShR.lead>=1))return;
+      if(!watch[id]){watch[id]=true;store.set("watch",Object.keys(watch));tyStarSync(id,true);logAlertEv(id,"star-armed");} /* Rule A: arming implies starring */
+      remind[id]={at:mrShR.at,lead:mrShR.lead};saveRemind();
+      pushToast("Reminder set",roster[id].name+" — "+mrShR.lead+" min before the "+mrRemClk(mrShR.at)+" show");
+      mrCloseSheet();mrRepaint();});
+    var off=el.querySelector("#mrShROff");if(off)off.addEventListener("click",function(){var id=mrShR&&mrShR.id;if(!id||!remind[id])return;delete remind[id];saveRemind();pushToast("Reminder removed",roster[id].name+" — still starred");mrCloseSheet();mrRepaint();});
+  }
   function mrShHost(){ /* 0728gs L-1 (owner-ruled): the rule sheet leaves the My Rides page for a host on the body, as the ride sheet's rsHost \u2014 Live's bell and My Rides' open the ONE sheet; rendered and bound once */
     if(mrShEl)return mrShEl;
-    mrShEl=document.createElement("div");mrShEl.id="mrShHost";mrShEl.innerHTML=mrSheetHTML();document.body.appendChild(mrShEl);bindMrSheet(mrShEl);return mrShEl;
+    mrShEl=document.createElement("div");mrShEl.id="mrShHost";mrShEl.innerHTML=mrSheetHTML();document.body.appendChild(mrShEl);bindMrSheet(mrShEl);bindMrShowSheet(mrShEl);return mrShEl;
   }
   function rsTypNow(rid){ /* the sheet's own typical (rsTyp's curve, the dashed line) at this half-hour, or null */
     try{var cv=rsTyp(rid);if(!cv)return null;var n=tdNow(),q;for(q=0;q<cv.length;q++)if(cv[q][0]-15<=n&&n<cv[q][0]+15)return cv[q][1];}catch(e){}
@@ -10969,6 +11072,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!roster[id])return;
     var el=mrShHost();
     mrShId=id;
+    var r0=roster[id],sh0=el.querySelector("#mrSheet");if(sh0)sh0.classList.toggle("sh-show",!!(r0&&r0.kind==="show")); /* 0728hl: one host, two dresses */
+    if(r0&&r0.kind==="show"){mrShShowOpen(el,id);return;} /* 0728hl S-A: the show's reminder sheet */
     var t=el.querySelector("#mrShTtl");if(t)t.textContent=roster[id].name;
     var wt=el.querySelector("#mrShWt");if(wt)wt.innerHTML=rsWaitHTML(liveById[id]); /* W-B: the ride sheet's head wait */
     var mo=el.querySelector("#mrShMo");if(mo)mo.innerHTML=mrShMomentHTML(id);
@@ -10993,7 +11098,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     try{var L=document.querySelectorAll(".mr-bell,.flagbtn"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("sh-on",!!id&&L[i].getAttribute("data-id")===id);}catch(e){}
   }
   function mrCloseSheet(){
-    var el=mrShEl;mrShId=null;clearInterval(mrShPoll);mrShMark(null);if(!el)return;
+    var el=mrShEl;mrShId=null;mrShR=null;clearInterval(mrShPoll);mrShMark(null);if(!el)return;
     var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
     if(sh)sh.classList.remove("open");if(sc)sc.classList.remove("open");
   }
@@ -11172,6 +11277,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       reopenOnly:(function(){var m={},k;for(k in watch)if(sbRide(k)&&mrDnupFor(k)&&!armed[k])m[k]=true;for(k in reopenOnly)if(sbRide(k))m[k]=true;return m;})(),
       obs:(function(){var m={},k;for(k in watch)if(sbRide(k)&&!armed[k]&&!mrDnupFor(k)&&!reopen[k])m[k]=true;return m;})(), /* 0723h THE OBSERVER LANE: quiet stars, observation only (worker v3.21 banks, never pushes) */
       resolved:resolved||{},
+      remind:(function(){var m={},k;for(k in remind){var rr=roster[k],e=remind[k];if(rr&&rr.kind==="show"&&e&&e.at&&(+e.lead)>=1)m[k]={at:e.at,lead:+e.lead};}return m;})(), /* 0728hl: the show reminders, a KNOWN show only — {at, lead}; the Worker (v3.28) fires once when now ≥ at − lead and the slate is still posted */
       settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
     };
   }
@@ -11230,6 +11336,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      notified). The Worker's response is post-rearm, so a rule you just changed
      won't be resurrected here. pruneState on the Worker means only still-watched
      rides come back, so adopting is always safe. */
+  function mergeWorkerReminds(wr){ /* 0728hl WHAT THE WORKER SPEAKS, THE PHONE REMEMBERS: the Worker's reminder fire clocks (keyed by slate, id@at) write the diary; the local entry is marked fired so the app's own lane stays quiet */
+    var changed=false;
+    Object.keys(wr||{}).forEach(function(k){var wt=+wr[k];if(!wt||wt<1e12)return;
+      if(wt>echoWm)logIncident(k,"remind",wt,true);
+      var q=k.indexOf("@"),id=q>0?k.slice(0,q):k,e=remind[id];if(e&&q>0&&e.at===k.slice(q+1)&&!e.fired){e.fired=wt;changed=true;}});
+    if(changed){saveRemind();if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
+  }
   function mergeWorkerAlerts(wa){
     var changed=false;
     Object.keys(wa||{}).forEach(function(id){
@@ -11292,6 +11405,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         body:JSON.stringify({subscription:sub.toJSON(),rules:collectRules()})
       }).then(function(r){return r.json();}).then(function(d){
         if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
+        if(d&&d.reminds)mergeWorkerReminds(d.reminds); /* 0728hl */
         if(d&&d.downs)mergeWorkerDowns(d.downs,d.downsRb);
         if(d&&d.reopens)mergeWorkerReopens(d.reopens);
         bumpEchoWm(d);
@@ -11314,7 +11428,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      / apply-all edit without touching the individual handlers. Debounced so a
      burst of edits collapses into one /save. Only fires once subscribed. */
   (function(){
-    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1,dnup:1};
+    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1,dnup:1,remind:1}; /* 0728hl: a reminder set or cleared rides to the Worker like a bell */
     /* 0711d: armed was missing since the bell/star split — saveArmed() writes a key this
        chokepoint never watched, so a fresh threshold arm never scheduled its own sync and
        only reached the Worker by hitchhiking on boot / return / listed-key edits. Both
