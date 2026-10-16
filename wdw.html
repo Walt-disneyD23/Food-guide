@@ -2657,7 +2657,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728gz</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ha</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -14713,12 +14713,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var gt=wv.querySelectorAll(".pw-grid .pw-tile");
       function lightDowns(t){t.classList.add("pw-tile-tap");t.addEventListener("click",function(){var was=t.classList.contains("tapped");clear();if(was){rd.innerHTML=base;return;}
         var cs=hm.querySelectorAll(".rp-hmc[data-dn]"),q;for(q=0;q<cs.length;q++)cs[q].classList.add("lit");t.classList.add("tapped");
-        rd.innerHTML='<b>'+r.downEvents+(r.downEvents===1?' outage':' outages')+'</b> this week \u00b7 lit on the grid \u00b7 tap again to clear';});}
+        rd.innerHTML='<b>'+r.downEvents+(r.downEvents===1?' outage':' outages')+'</b> this week \u00b7 the '+(cs.length===1?'hour it touched is':cs.length+' hours they touched are')+' lit \u00b7 tap again to clear';});} /* 0728ha THE LINE NAMES BOTH NUMBERS (owner-ruled A, Oct 15): the tile counts outages, the grid lights the hours they touched \u2014 the line says both, so nine lit cells never read against a 4\u00d7 */
       if(r.downEvents>0){if(gt[2])lightDowns(gt[2]);if(gt[3])lightDowns(gt[3]);}
       function ringAt(t,ms,lbl,v){var dh=pwWkEtDH(ms);if(!dh)return;var di=-1,q;for(q=0;q<D.length;q++)if(D[q].d===dh.d)di=q;if(di<0)return;
         var c=hm.querySelector('.rp-hmc[data-wk="'+di+'-'+dh.h+'"]');if(!c)return;
         t.classList.add("pw-tile-tap");t.addEventListener("click",function(){var was=t.classList.contains("tapped");clear();if(was){rd.innerHTML=base;return;}
-          c.classList.add("on");t.classList.add("tapped");t.classList.add("acc");rd.innerHTML='<b>'+lbl+' \u00b7 '+RP_WD[di]+' '+rpClk(dh.h*60)+'</b> \u00b7 <b>'+v+' min</b>';});}
+          c.classList.add("on");t.classList.add("tapped");t.classList.add("acc");var ca=c.textContent?+c.textContent:null;rd.innerHTML='<b>'+lbl+' \u00b7 '+RP_WD[di]+' '+rpClk(dh.h*60)+'</b> \u00b7 <b>'+v+' min</b>'+((ca!==null&&ca!==v)?', in an hour that averaged '+ca:'');});} /* 0728ha THE LINE NAMES BOTH NUMBERS (owner-ruled A, Oct 15, on Test Track's glass: "Peak \u00b7 Wed 6 PM \u00b7 135 min" ringing a cell that prints 120): the tile is one 5-minute reading, the cell is the hour's average \u2014 the line says both when they differ */
       if(r.maxWait!=null&&r.peakAt&&gt[0])ringAt(gt[0],r.peakAt,"Peak",r.maxWait);
       if(r.minWait!=null&&r.minAt&&gt[1])ringAt(gt[1],r.minAt,"Lowest",r.minWait);
     }
