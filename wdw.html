@@ -2670,7 +2670,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hf</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hg</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -14408,7 +14408,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         ctx.font=IN("500",20);aw=ctx.measureText(asofT).width;
       }
       var rcol=Math.max(bw+30,aw)+28;
-      T(ell(D.title,R-L-rcol,SG("700",58)),L,206,SG("700",58),C.ink,"left");
+      var tz=[58,50,44],ti=0;for(ti=0;ti<tz.length-1;ti++){ctx.font=SG("700",tz[ti]);if(ctx.measureText(D.title).width<=R-L-rcol)break;} /* 0728hg THE TITLE STEPS DOWN BEFORE IT LOSES A WORD (owner glass 9:11 AM Oct 16, "Tam Tam Drummers of H…"): the calendar card's law reaches the family — the title steps 58 → 50 → 44 before the ellipsis; its seat does not move */
+      T(ell(D.title,R-L-rcol,SG("700",tz[ti])),L,206,SG("700",tz[ti]),C.ink,"left");
       rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
       T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
       if(asofT)T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+24,IN("500",20),C.muted2,"center");
