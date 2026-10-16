@@ -243,6 +243,19 @@
   .rs-ll .s b{font-weight:700}
   .rs-ll .p{font:700 var(--fs-stat)/1 var(--font-display);color:var(--ink);font-variant-numeric:tabular-nums}
   .rs-ll .f{font-size:var(--fs-meta);color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--line);line-height:1.4}
+  /* ===== 0728he THE SHOW'S OWN SHEET (owner-ruled B, Oct 16, on show-sheet-ABC.png): the row's head in the number's seat, today's showtimes as a list — the clock left, its word right; DONE dim, NEXT in the accent, the rest plain ===== */
+  .rs-h .wt.st-t{font-size:17px;color:var(--open)}
+  .rs-h .wt .sb-nsu{margin-top:3px}
+  .rs-st{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:12px 13px 11px;box-shadow:var(--shadow-sm);margin-top:9px}
+  .rs-st .k{font-size:var(--fs-caps);letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);font-weight:700}
+  .rs-st .k span{font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted)}
+  .rs-st .row{display:flex;align-items:center;justify-content:space-between;padding:9px 2px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+  .rs-st .k+.row{margin-top:6px}
+  .rs-st .row .t{font:600 var(--fs-title) var(--font-display);color:var(--ink)}
+  .rs-st .row .w{font-size:var(--fs-meta);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+  .rs-st .row.done .t,.rs-st .row.done .w{color:var(--muted-2)}
+  .rs-st .row.next .t{font-weight:700;color:var(--accent)} .rs-st .row.next .w{color:var(--accent)}
+  .rs-st .f{font-size:var(--fs-meta);color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--line);line-height:1.4}
   .rs-ll .f b{color:var(--ink);font-weight:700}
   /* 0728fw: .pw-typl retired with its label (the legend names) */
   .pw-legend .pw-typk::before{content:"";display:inline-block;width:14px;border-top:1.5px dashed var(--pwh-sub);margin-right:4px;vertical-align:middle}
@@ -2657,7 +2670,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hd</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728he</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3599,7 +3612,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function statusLabel(lv){if(!lv||lv.status==="CLOSED")return "Closed";if(lv.status==="DOWN")return "Down";if(lv.status==="REFURBISHMENT")return "Refurb";return "Open";}
   function groupOf(o){var lv=o.lv,op=lv&&lv.status==="OPERATING";
     if(op&&isOpenNow(parkInfo[o.r.park])===false)op=false; /* park closed per schedule -> treat as not operating */
-    if(op&&lv.wait!==null)return "waits";     /* posting a numeric standby wait — matches Disney's list */
+    if(op&&(lv.wait!==null||rpCuratedRide(o.r)))return "waits";     /* posting a numeric standby wait — matches Disney's list; 0728he THE RIDE STAYS WITH THE RIDES (owner glass 7:47 AM Oct 16, the PeopleMover at early entry filed with the shows): a ride on the owner's list belongs here before its number is posted too (the sort seats an OPEN row after the numbers); the castle, the splash pad and the party's locations are not rides on that list and keep their room */
     if(o.r.kind==="ride"&&!op)return "down";  /* a ride that normally posts a wait but is down/closed now */
     return "other";                            /* shows, character experiences, walk-through trails & exhibits (open, no number) */
   }
@@ -9422,7 +9435,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(show)sub+='<span class="show">Show</span>';
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
     var llLn=(lv&&lv.ll)?'<div class="ll-ln">Next LL '+esc(lv.ll)+(lv.lane?' \u00b7 '+(lv.lane.k==="single"?"Single Pass":"Multi Pass"):'')+'</div>':''; /* 0728ge N-2 (owner-ruled Oct 13): the row names the pass after the time, in the sheet's own two names */ /* 0726l THE LL TAKES ITS OWN LANE (owner-ruled): out of the sub's wrap, one line always */
-    return '<div class="ride s-'+cls+(watched?' watched':'')+'"'+(r.kind==="ride"?' data-rs="'+esc(r.id)+'" role="button" tabindex="0"':'')+'>'+ /* 0728fr: a ride row opens its sheet; shows and meets stay as they were (owner: rides only) */
+    return '<div class="ride s-'+cls+(watched?' watched':'')+'"'+((r.kind==="ride"||r.kind==="show")?' data-rs="'+esc(r.id)+'" role="button" tabindex="0"':'')+'>'+ /* 0728fr: a ride row opens its sheet; shows and meets stay as they were (owner: rides only) */
 
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div>'+llLn+'</div>'+
@@ -9508,8 +9521,42 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var has=!!(lv&&lv.status==="OPERATING"&&lv.wait!==null);
     return '<div class="wt '+tierOf(lv)+'">'+(has?lv.wait+'<small>min</small>':'<span class="sw '+statusLabel(lv).toLowerCase()+'">'+statusLabel(lv)+'</span>')+'</div>';
   }
+  function rsShowTimes(lv,now){ /* 0728he THE SHOW'S OWN SHEET: the feed's showtimes, sorted — performances (a start with no end, or under 20 minutes) apart from windows (a meet's hours) */
+    var sh=(lv&&lv.shows)||[],perf=[],win=[],i;
+    for(i=0;i<sh.length;i++){var x=sh[i];if(x.e==null||x.e-x.s<1200000)perf.push(x);else win.push(x);}
+    perf.sort(function(a,b){return a.s-b.s;});win.sort(function(a,b){return a.s-b.s;});
+    var next=null,later=0,done=0;for(i=0;i<perf.length;i++){if(perf[i].s>=now){if(!next)next=perf[i];else later++;}else done++;}
+    return {perf:perf,win:win,next:next,later:later,done:done};
+  }
+  function rsShowHead(lv){ /* the row's own head words (cardHTML's show seat), in the sheet's number seat */
+    var t=(lv&&lv.nextShow)?'<div class="wt st-t">'+esc(lv.nextShow)+'<span class="sb-nsu">next show</span></div>':(lv&&lv.winEnd)?'<div class="wt st-t">NOW<span class="sb-nsu">until '+esc(lv.winEnd)+'</span></div>':(lv&&lv.showsDone)?'<div class="wt"><span class="sw closed">DONE</span><span class="sb-nsu">for today</span></div>':'<div class="wt"><span class="sw '+statusLabel(lv).toLowerCase()+'">'+statusLabel(lv)+'</span></div>';
+    return t;
+  }
+  function rsShowRead(lv,now){ /* the read box: the next show and what is left, the day done, or a meet's window */
+    var st=rsShowTimes(lv,now);
+    if(st.next)return 'Next show at <b>'+esc(fmtClock(new Date(st.next.s).toISOString()))+'</b> \u00b7 '+(st.later?st.later+' more today, last at '+esc(fmtClock(new Date(st.perf[st.perf.length-1].s).toISOString()))+'.':'the last one today.');
+    if(st.perf.length)return 'Today\u2019s shows are done \u2014 the last was at '+esc(fmtClock(new Date(st.perf[st.perf.length-1].s).toISOString()))+'.';
+    if(st.win.length){var w=st.win[0],i2;for(i2=0;i2<st.win.length;i2++){if(st.win[i2].e>now){w=st.win[i2];break;}} /* the running or next window; else the last */
+      if(w.e<=now)return 'Done for today.';
+      return (w.s<=now?'Meets until ':'Meets '+esc(fmtClock(new Date(w.s).toISOString()))+' \u2013 ')+esc(fmtClock(new Date(w.e).toISOString()))+' today.';}
+    return '';
+  }
+  function rsShowList(lv,now){ /* TODAY'S SHOWTIMES (owner-ruled B on show-sheet-ABC.png): one row per show, the clock left and its word right */
+    var st=rsShowTimes(lv,now);if(!st.perf.length)return '';
+    var h='<div class="rs-st"><div class="k">Today\u2019s showtimes <span>\u00b7 '+st.perf.length+' show'+(st.perf.length===1?'':'s')+'</span></div>',i;
+    for(i=0;i<st.perf.length;i++){var x=st.perf[i],k=(x===st.next)?'next':(x.s<now)?'done':'later';
+      h+='<div class="row '+k+'"><span class="t">'+esc(fmtClock(new Date(x.s).toISOString()))+'</span><span class="w">'+(k==='next'?'next':k==='done'?'done':'')+'</span></div>';}
+    return h+'<div class="f">As posted by Disney \u00b7 times change</div></div>';
+  }
   function rsHTML(rid,anim){
     var r=roster[rid]||{},lv=liveById[rid],has=lv&&lv.status==="OPERATING"&&lv.wait!==null,rd=rsRead(rid),prof=rpCuratedRide(r);
+    if(r.kind==="show"){ /* 0728he THE SHOW'S OWN SHEET: the row's head, the read, the list — nothing the feed did not post; no share glyph, no day card, no doors */
+      var nw=Date.now(),rb=rsShowRead(lv,nw);
+      return '<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
+        '<div class="rs-h">'+rsShowHead(lv)+'<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' \u00b7 '+esc(r.category):'')+'</div></div>'+
+        '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'\u2605':'\u2606')+'</button></div>'+
+        (rb?'<div class="rs-read">'+rb+'</div>':'')+rsShowList(lv,nw)+'</div>';
+    }
     var h='<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
       '<div class="rs-h">'+rsWaitHTML(lv)+ /* 0728gi B-5: the status word, My Rides' way; 0728gs: the one builder, shared with the rule sheet */
       '<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' · '+esc(r.category):'')+'</div></div>'+
@@ -9560,6 +9607,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(!roster[rid])return;
     if(!rsEl){rsEl=document.createElement("div");rsEl.id="rsHost";document.body.appendChild(rsEl);}
     rsId=rid;rsData=undefined;rsY=undefined;rsMark();rsPaint(true);
+    if(roster[rid].kind==="show"){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest */
     rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();
     rsFetch();
     clearInterval(rsPoll);
