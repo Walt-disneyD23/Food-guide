@@ -2657,7 +2657,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hd</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -12683,9 +12683,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(/Walt Disney World Railroad/.test(n))return "WDW Railroad";
       return n.replace(/ – .*/,"").replace(/: .*/,"").replace(/ Starring .*/,"");
     }
-    function tileV(lbl,vHTML,tierCls,nm,ctx,note,rid,rpark){
+    function tileV(lbl,vHTML,tierCls,nm,ctx,note,rid,rpark,pkLine){ /* 0728hd THE PARK RIDES EVERY TILE: pkLine seats the park on its own line under the name, before the context — the card's tile reads the same */
       var attrs=rid?' data-rid="'+esc(rid)+'" data-rpark="'+esc(rpark||"")+'" role="button" tabindex="0"':"";
-      return '<div class="pw-tile'+(rid?' pw-tile-go':'')+'"'+attrs+'><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div><div class="ctx">'+esc(ctx)+(note||"")+'</div></div>';
+      return '<div class="pw-tile'+(rid?' pw-tile-go':'')+'"'+attrs+'><div class="lbl">'+lbl+'</div><div class="v '+tierCls+'">'+vHTML+'</div><div class="nm">'+esc(nm)+'</div>'+(pkLine&&rpark?'<div class="ctx pk">'+esc(rpark)+'</div>':'')+'<div class="ctx">'+esc(ctx)+(note||"")+'</div></div>';
     }
     /* Hero/park stat tiles that name a ride navigate straight to it — same
        grammar as the "tap for the full breakdown" rows and the ride-detail
@@ -12885,11 +12885,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<div class="pw-grid">';
       if(c.toughest)html+=tileV("Toughest line",'<span class="u">avg</span> '+c.toughest.avgWait+'m',tier(c.toughest.avgWait),c.toughest.name,c.toughest.park,null,c.toughest.id,c.toughest.park);
       if(c.longestPeak)html+=tileV("Highest peak",'<span class="u">peak</span> '+(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait)+'m',tier(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait),c.longestPeak.name,c.longestPeak.park,null,c.longestPeak.id,c.longestPeak.park);
-      if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"",c.leastRel.id,c.leastRel.park);
+      if(c.leastRel)html+=tileV("Least reliable",c.leastRel.uptimePct+'%<span class="u"> uptime</span>',"pw-p",c.leastRel.name,c.leastRel.downMinutes+" min down",wxKind?pwWxNote(c.leastRel.id,wxX,wxKind):"",c.leastRel.id,c.leastRel.park,true);
       if(c.mostOut)html+=tileV("Most outages",c.mostOut.downEvents+"×","pw-l",c.mostOut.name,c.mostOut.park,wxKind?pwWxNote(c.mostOut.id,wxX,wxKind):"",c.mostOut.id,c.mostOut.park);
       if(c.walk){var wWhen=(c.walk.walkAt!=null)?((c.walk.walkEarly?"rope drop":(c.walk.walkLate?"near close":pwClk(c.walk.walkAt)))+" \u00b7 "):"";
-        html+=tileV(isWeek?"Walk-on of the week":"Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?(wWhen+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park,null,c.walk.id,c.walk.park);}
-      if(c.steady)html+=tileV("Steadiest line",'<span class="u">swing</span> '+c.steady.stSw+'m',"pw-s",c.steady.name,"held near "+c.steady.avgWait+(isWeek?" this week":(live?" so far":" all day")),null,c.steady.id,c.steady.park);
+        html+=tileV(isWeek?"Walk-on of the week":"Walk-on of the day",'<span class="u">low</span> '+c.walk.minWait+'m',"pw-s",c.walk.name,c.walk.maxWait?(wWhen+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park,null,c.walk.id,c.walk.park,!!c.walk.maxWait);}
+      if(c.steady)html+=tileV("Steadiest line",'<span class="u">swing</span> '+c.steady.stSw+'m',"pw-s",c.steady.name,"held near "+c.steady.avgWait+(isWeek?" this week":(live?" so far":" all day")),null,c.steady.id,c.steady.park,true); /* 0728hd THE PARK RIDES EVERY TILE: the tab's three clause tiles name their park, as the card's do */
       html+='</div>';
 
       if(c.story){var st=c.story,sw=st.sw;
@@ -14430,7 +14430,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(t.post){ctx.font=IN("600",z(26));ctx.fillStyle=C.muted2;ctx.fillText(t.post,vx,vy);}
         var nl=wrap2(t.name,tw-pad*2,IN("600",z(26)),t.note?2:3); /* 0728gq THE FAMILY SPEAKS UP (owner-ruled A, Oct 14): a ride name may take three lines — the tile has the room at the family’s scale; a tile carrying a weather note keeps two so the note keeps its seat */
         for(var j=0;j<nl.length;j++)T(nl[j],tx+pad,ty+z(142)+j*z(30),IN("600",z(26)),C.ink,"left");
-        var ctxY=ty+z(142)+nl.length*z(30)+z(4),cl=wrap2(t.ctx,tw-pad*2,IN("500",z(22)),t.note?1:Math.max(1,4-nl.length)); /* 0728gr E-2 THE CONTEXT KEEPS ITS WORDS (owner glass 7:14 PM Oct 14: "rope drop \u00b7 peaked at 125 la\u2026"): the four slots under the number are shared \u2014 name lines + context lines \u2264 4; a weather note takes one, so beside a note the context stays one line */
+        var ctxY=ty+z(142)+nl.length*z(30)+z(4);if(t.park){T(ell(t.park,tw-pad*2,IN("500",z(22))),tx+pad,ctxY,IN("500",z(22)),C.muted,"left");ctxY+=z(28);} /* 0728hd THE PARK RIDES EVERY TILE (owner-ruled B): a tile that carries a clause names its park on its own line first, in the context's ink; the clause takes the lines left */
+        var cl=wrap2(t.ctx,tw-pad*2,IN("500",z(22)),t.note?1:Math.max(1,4-nl.length-(t.park?1:0))); /* 0728gr E-2 THE CONTEXT KEEPS ITS WORDS (owner glass 7:14 PM Oct 14: "rope drop \u00b7 peaked at 125 la\u2026"): the four slots under the number are shared \u2014 name lines + context lines \u2264 4; a weather note takes one, so beside a note the context stays one line */
         for(var j2=0;j2<cl.length;j2++)T(cl[j2],tx+pad,ctxY+j2*z(28),IN("500",z(22)),C.muted,"left");
         if(t.note)T(ell(t.note,tw-pad*2,IN("600",z(22))),tx+pad,ctxY+z(30),IN("600",z(22)),C.accent,"left");
       }
@@ -14589,11 +14590,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
       if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park});
       if(c.longestPeak)tiles.push({label:"HIGHEST PEAK",pre:"peak",big:String(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait),post:"m",cls:tier(c.longestPeak.suPk!=null?c.longestPeak.suPk:c.longestPeak.maxWait),name:c.longestPeak.name,ctx:c.longestPeak.park});
-      if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,ctx:c.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(c.leastRel.id,wxX,wxKind):""});
+      if(c.leastRel)tiles.push({label:"LEAST RELIABLE",pre:"",big:c.leastRel.uptimePct+"%",post:"uptime",cls:"pw-p",name:c.leastRel.name,park:c.leastRel.park,ctx:c.leastRel.downMinutes+" min down",note:wxKind?pwWxClause(c.leastRel.id,wxX,wxKind):""});
       if(c.mostOut)tiles.push({label:"MOST OUTAGES",pre:"",big:c.mostOut.downEvents+"×",post:"",cls:"pw-l",name:c.mostOut.name,ctx:c.mostOut.park,note:wxKind?pwWxClause(c.mostOut.id,wxX,wxKind):""});
       if(c.walk){var wWhen2=(c.walk.walkAt!=null)?((c.walk.walkEarly?"rope drop":(c.walk.walkLate?"near close":pwClk(c.walk.walkAt)))+" \u00b7 "):"";
-        tiles.push({label:isWeek?"WALK-ON OF THE WEEK":"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,ctx:c.walk.maxWait?(wWhen2+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park});}
-      if(c.steady)tiles.push({label:"STEADIEST LINE",pre:"swing",big:String(c.steady.stSw),post:"m",cls:"pw-s",name:c.steady.name,ctx:"held near "+c.steady.avgWait+(isWeek?" this week":(isFinal(d)?" all day":" so far"))});
+        tiles.push({label:isWeek?"WALK-ON OF THE WEEK":"WALK-ON OF THE DAY",pre:"low",big:String(c.walk.minWait),post:"m",cls:"pw-s",name:c.walk.name,park:c.walk.maxWait?c.walk.park:null,ctx:c.walk.maxWait?(wWhen2+((c.walk.minAt!=null&&c.walk.peakAt!=null&&c.walk.minAt>c.walk.peakAt)?("dipped from "+c.walk.maxWait):("peaked at "+c.walk.maxWait+" later"))):c.walk.park});}
+      if(c.steady)tiles.push({label:"STEADIEST LINE",pre:"swing",big:String(c.steady.stSw),post:"m",cls:"pw-s",name:c.steady.name,park:c.steady.park,ctx:"held near "+c.steady.avgWait+(isWeek?" this week":(isFinal(d)?" all day":" so far"))}); /* 0728hd THE PARK RIDES EVERY TILE: the three clause tiles name their park on its own line, as the park-only three do */
       var sb=null;
       if(c.story){var ssw=c.story.sw;
         sb={name:c.story.name,park:c.story.park,hi:ssw.hi,lo:ssw.lo,hiT:pwClk(ssw.hiT),loT:pwClk(ssw.loT),
