@@ -1647,12 +1647,12 @@
   .pw-wkg .row{grid-column:1/-1;display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
   .pw-wkg .row.lit{padding:6px;margin:0 -6px;border-radius:10px;box-shadow:inset 0 0 0 1.5px rgba(155,247,201,.45);background:rgba(155,247,201,.05)}
   .pw-wkg .c{height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font:700 var(--fs-meta) var(--font-display);font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent}
-  .pw-wkg .c[data-d]{cursor:pointer} .pw-wkg .c[data-d]:active{filter:brightness(1.15)}
+  .pw-wkg .c[data-d]{cursor:pointer} .pw-wkg .c[data-d]:active{filter:brightness(1.15)} .pw-wkg .c.tapped{outline:2px solid var(--accent);outline-offset:2px;filter:brightness(1.2)}
   .pw-wkg .c.pw-s{background:rgba(61,214,140,.16);color:#3dd68c;box-shadow:inset 0 0 0 1px rgba(61,214,140,.4)}
   .pw-wkg .c.pw-m{background:rgba(255,206,92,.16);color:#ffce5c;box-shadow:inset 0 0 0 1px rgba(255,206,92,.4)}
   .pw-wkg .c.pw-l{background:rgba(255,159,107,.16);color:#ff9f6b;box-shadow:inset 0 0 0 1px rgba(255,159,107,.4)}
   .pw-wkg .c.pw-p{background:rgba(255,107,107,.16);color:#ff6b6b;box-shadow:inset 0 0 0 1px rgba(255,107,107,.4)}
-  .pw-wkg .c.live{border:1.5px dashed rgba(230,233,251,.35);cursor:pointer} .pw-wkg .c.live i{width:7px;height:7px;border-radius:50%;background:var(--pwh-key)}
+  .pw-wkg .c.live{border:1.5px dashed rgba(230,233,251,.35);cursor:pointer} .pw-wkg .c.live i{width:7px;height:7px;border-radius:50%;background:var(--pwh-key);animation:pwWkPulse 1.6s ease-in-out infinite}
   .pw-wkg .c.fut{border:1px dashed rgba(230,233,251,.12)}
   .pw-wkkey{display:flex;gap:12px;margin-top:11px;flex-wrap:wrap}
   .pw-wkkey span{display:flex;align-items:center;gap:5px;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-muted)}
@@ -2686,7 +2686,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hk</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13009,8 +13009,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(isWeek){ /* 0713j · 0728hi: the grid's cells visit their day's park page; today's cells jump to Today */
         var wcs=wv.querySelectorAll(".pw-wkg .c[data-d]");
         for(var wi=0;wi<wcs.length;wi++){(function(cell){var dd=cell.getAttribute("data-d"),pk9=cell.getAttribute("data-park");
-          cell.addEventListener("click",function(){pwLoadDay(dd,"week",pk9);});
-          cell.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pwLoadDay(dd,"week",pk9);}});
+          var go9=function(){if(cell.classList.contains("tapped"))return;cell.classList.add("tapped");setTimeout(function(){cell.classList.remove("tapped");pwLoadDay(dd,"week",pk9);},160);}; /* 0728hk THE CELL ANSWERS THE TAP (owner-ruled A, Oct 16): the tiles' ring for a beat, then the day */
+          cell.addEventListener("click",go9);
+          cell.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go9();}});
         })(wcs[wi]);}
         var wts=wv.querySelectorAll(".pw-wkg .c[data-today]");
         for(var wj=0;wj<wts.length;wj++)wts[wj].addEventListener("click",function(){loadTab("today");});
