@@ -2704,7 +2704,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hq</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hr</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3667,9 +3667,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     return tierOfWait(lv.wait);}
   function tierOfWait(w){if(w<=20)return "short";if(w<=45)return "medium";if(w<=70)return "long";return "packed";} /* 0728cj: the four bands' one home \u2014 tierOf reads it for a ride; the park tile reads it for its headliner average */
   function bandOf(lv){return tierOf(lv);} /* 0728ci ONE BAND VOCABULARY: the filter and the spread speak the tile's four bands (was: packed folded into long) */
+  function shRank(lv){ /* 0728hr: the room's bands, the owner's sentence — "what's in its window first, coming up next, open after that and anything done for the day, no shows left or closed at the end" */
+    if(!lv)return 5;if(lv.winEnd)return 0;if(lv.nextShow)return 1;if(lv.showsDone)return 3;if(lv.status==="OPERATING")return 2;if(lv.status==="DOWN")return 4;return 5;}
+  function shNextMs(lv){var sh=(lv&&lv.shows)||[],now=Date.now(),b=null,i;for(i=0;i<sh.length;i++){if(sh[i].s>=now&&(b===null||sh[i].s<b))b=sh[i].s;}return b===null?Infinity:b;} /* the next slate's clock, from the same pairs the row's word reads */
+  function shOrder(a,b){var ra=shRank(a.lv),rb=shRank(b.lv);if(ra!==rb)return ra-rb;if(ra===1){var ma=shNextMs(a.lv),mb=shNextMs(b.lv);if(ma!==mb)return ma-mb;}return a.r.name.localeCompare(b.r.name);} /* soonest first inside the next band; A–Z inside every band (THE ORDER IS EARNED, THEN THE NAME) */
   function statusBucket(lv){if(!lv)return "closed";if(lv.status==="OPERATING")return "open";if(lv.status==="DOWN")return "down";return "closed";}
   function statusLabel(lv){if(!lv||lv.status==="CLOSED")return "Closed";if(lv.status==="DOWN")return "Down";if(lv.status==="REFURBISHMENT")return "Refurb";return "Open";}
   function groupOf(o){var lv=o.lv,op=lv&&lv.status==="OPERATING";
+    if(o.r.kind==="walk")return "other"; /* 0728hr THE NOMINAL NUMBER NEVER SEATS A WALK: a trail's flat 5 is not a line — the room is the lane's, whatever the feed posts */
     if(op&&isOpenNow(parkInfo[o.r.park])===false)op=false; /* park closed per schedule -> treat as not operating */
     if(op&&(lv.wait!==null||rpCuratedRide(o.r)))return "waits";     /* posting a numeric standby wait — matches Disney's list; 0728he THE RIDE STAYS WITH THE RIDES (owner glass 7:47 AM Oct 16, the PeopleMover at early entry filed with the shows): a ride on the owner's list belongs here before its number is posted too (the sort seats an OPEN row after the numbers); the castle, the splash pad and the party's locations are not rides on that list and keep their room */
     if(o.r.kind==="ride"&&!op)return "down";  /* a ride that normally posts a wait but is down/closed now */
@@ -3696,9 +3701,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var s=f.sort;
     list.sort(function(a,b){
       if(s==="name")return a.r.name.localeCompare(b.r.name);
-      var aw=(a.lv&&a.lv.wait!==null)?a.lv.wait:(s==="waitDesc"?-1:99999);
-      var bw=(b.lv&&b.lv.wait!==null)?b.lv.wait:(s==="waitDesc"?-1:99999);
-      return s==="waitDesc"?bw-aw:aw-bw;});
+      var aw=(a.lv&&a.lv.wait!==null&&a.r.kind!=="walk")?a.lv.wait:(s==="waitDesc"?-1:99999); /* 0728hr: a walk's nominal number never sorts it among the rides */
+      var bw=(b.lv&&b.lv.wait!==null&&b.r.kind!=="walk")?b.lv.wait:(s==="waitDesc"?-1:99999);
+      if(aw!==bw)return s==="waitDesc"?bw-aw:aw-bw;
+      return shOrder(a,b);}); /* 0728hr THE ROOM SORTS BY WHAT COMES NEXT (owner-ruled Oct 17): the wait compares first as ever; the tie — every show and experience, and two rides on one number — falls to the room's order */
     return list;
   }
 
