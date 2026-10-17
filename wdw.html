@@ -2686,7 +2686,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-lab">Reading a row</div>
     <div class="ig-p">The small pills under each name are that ride’s facts — a tinted pill is your armed rule (“30 or less”), a grey whisper is a down &amp; back-up setting you pinned (“down &amp; back-up on”), a bare row has no alert yet (“<b>tap the bell to set an alert</b>”), and on a fresh hit <b>the whole row lights <span class="td-brg gv">mint</span></b> — pill filled, edge glowing — for as long as the wait still satisfies your rule, fading once the moment passes.</div>
     <div class="ig-p"><b>The bell is the door</b> — tap it to set the ride’s own rule, and to switch its <b>down &amp; back-up pings</b> on or off there too (they’re separate from the wait rule — a ride can watch for breakdowns without any wait rule).</div>
-    <div class="ig-p"><b>Shows &amp; experiences</b> sit under the rides in each park. Their bell sets a <b>reminder</b>, not a wait rule — the next show is picked for you, tap another time to aim it there, pick how many minutes before, then <b>Turn reminder on</b>. It pings once. Today only — reminders clear at midnight.</div>
+    <div class="ig-p"><b>Shows &amp; experiences</b> sit under the rides in each park. Trails, exhibits and other experiences with no line sit there too — star them; they wear no bell, there is no wait to watch. A show’s bell sets a <b>reminder</b>, not a wait rule — the next show is picked for you, tap another time to aim it there, pick how many minutes before, then <b>Turn reminder on</b>. It pings once. Today only — reminders clear at midnight.</div>
     <div class="ig-p">Pings reach your lock screen <b>with the app closed</b>. A reopen pings once and parks; a ride seen breaking again re-arms itself only on <b>two clean reads</b> — one glitchy signal never costs you an alert.</div>
     <div class="set-lab">Try this</div>
     <div class="ig-p">Watching a rope-drop target? <b>Tap its bell and switch down &amp; back-up on</b> — that setting keeps overnight, so if it breaks in the morning you’ll know before you’ve walked there.</div>
@@ -2704,7 +2704,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hp</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hq</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2770,7 +2770,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     </div>
     <div class="filter-panel" id="filterPanel" hidden>
       <!-- 0728ci THE CONTROLS, SWEPT (owner-ruled B): every choice is a chip; the lit chip is the state; four bands by name (ONE BAND VOCABULARY); Untagged retired; Starred, not Favorites -->
-      <div class="frow" data-frow="type"><span class="lab">Type</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="ride">Rides</div><div class="chip-toggle" data-v="show">Shows</div></div>
+      <div class="frow" data-frow="type"><span class="lab">Type</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="ride">Rides</div><div class="chip-toggle" data-v="show">Shows &amp; experiences</div></div>
       <div class="frow" data-frow="status"><span class="lab">Status</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="open">Open</div><div class="chip-toggle" data-v="down">Down</div><div class="chip-toggle" data-v="closed">Closed</div></div>
       <div class="frow" data-frow="band"><span class="lab">Wait</span><div class="chip-toggle on" data-v="all">Any</div><div class="chip-toggle" data-v="short">Short</div><div class="chip-toggle" data-v="medium">Medium</div><div class="chip-toggle" data-v="long">Long</div><div class="chip-toggle" data-v="packed">Packed</div></div>
       <div class="frow" data-frow="cat"><span class="lab">Category</span><div class="chip-toggle on" data-v="all">All</div><div class="chip-toggle" data-v="Thrill">Thrill</div><div class="chip-toggle" data-v="Family">Family</div><div class="chip-toggle" data-v="Kids">Kids</div><div class="chip-toggle" data-v="Water">Water</div><div class="chip-toggle" data-v="Show">Show</div></div>
@@ -2891,6 +2891,15 @@ var CATEGORY_TAGS={
      normalized-name fragment, same hand-edited approach as CATEGORY_TAGS. */
   var SHOW_OVERRIDE=["vacation fun","impressions de france"]; /* 0711l: film typed ATTRACTION upstream */
   function mislabeledShow(name){var n=normName(name);for(var i=0;i<SHOW_OVERRIDE.length;i++){if(n.indexOf(SHOW_OVERRIDE[i])>=0)return true;}return false;}
+  /* 0728hq W-B THE WALK-THROUGHS ARE EXPERIENCES (owner-ruled W-C, Oct 16): entities the feed types ATTRACTION that are trails, exhibits,
+     galleries, play areas, landmarks, a transport that never posts and the party's locations — no queue to watch, so no bell and no wait
+     sheet; star only; seated with the shows (THE LANE NAMES THE KIND). The Jul 31 census's own SKIP bands on today's four rosters,
+     verified Oct 17 against Disney's tags; the feed carries no attractionType, so this list is the only gate (W-A catches the next one). */
+  var WALK_OVERRIDE=["maharajah jungle trek","gorilla falls exploration trail","discovery island trails","oasis exhibits","tree of life","wilderness explorers","animal care at conservation station","jumping junction","blueys wild world","swiss family treehouse","pirates adventure","main street vehicles","casey jr splash","cinderella castle","trickortreat","journey of water","seabase aquarium","bruces shark world","kidcot fun stops","advanced training lab","imageworks","project tomorrow","stave church gallery","mexico folk art gallery","bijutsukan gallery","american heritage gallery","gallery of arts and history","house of whispering willows","palais du cin"];
+  function curatedWalk(name){var n=normName(name);for(var i=0;i<WALK_OVERRIDE.length;i++){if(n.indexOf(WALK_OVERRIDE[i])>=0)return true;}return false;}
+  var WALK_WORD="Experience"; /* the lane's word on the Live row and the sheet (THE LANE NAMES THE KIND; owner, Oct 17: true of all 29) */
+  var WALK_FACTS={}; /* 0728hq: the walk sheet's facts by normalized name — {what, mins, where}; empty at this cut, the 29 entries land in 0728hr (walk-facts.json must deep-equal this embed) */
+  function rsWalkBox(r){var f=WALK_FACTS[normName(r&&r.name||"")];if(!f)return "";var p=[];if(f.what)p.push(esc(f.what));if(f.mins)p.push("about "+esc(f.mins)+" min");if(f.where)p.push(esc(f.where));return p.length?'<div class="rs-read">'+p.join(" \u00b7 ")+'</div>':"";} /* the head alone until the words exist (A SHEET SAYS ONLY WHAT IT HAS) */
 
 function defFor(k){return k==="all"?ALL_DEF:(PARK_DEF.find(function(p){return p.key===k;})||ALL_DEF);}
 
@@ -3353,6 +3362,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           if(c.entityType!=="ATTRACTION"&&c.entityType!=="SHOW")return;
           var kind=c.entityType==="SHOW"?"show":"ride";
           if(kind==="ride"&&mislabeledShow(c.name))kind="show";
+          else if(kind==="ride"&&curatedWalk(c.name))kind="walk"; /* 0728hq W-B */
           fresh[c.id]={id:c.id,name:c.name,park:p.short,kind:kind,category:categoryFor(c.name,kind),atype:c.attractionType||null};
         });
       }).catch(function(){});
@@ -3674,7 +3684,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var list=Object.keys(roster).map(function(id){return {r:roster[id],lv:liveById[id]||null};});
     list=list.filter(function(o){var r=o.r,lv=o.lv;
       if(pk&&r.park!==pk)return false;
-      if(f.type!=="all"&&r.kind!==f.type)return false;
+      if(f.type!=="all"&&!(r.kind===f.type||(f.type==="show"&&r.kind==="walk")))return false; /* 0728hq: the lane's chip matches the lane */
       if(f.cat!=="all"&&r.category!==f.cat)return false;
       if(f.status!=="all"&&statusBucket(lv)!==f.status)return false;
       if(f.band!=="all"&&bandOf(lv)!==f.band)return false;
@@ -9470,8 +9480,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
 
   function cardHTML(o){
-    var r=o.r,lv=o.lv,tier=tierOf(lv),watched=!!watch[r.id],show=r.kind==="show",meet=isMeet(r);
-    var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null;
+    var r=o.r,lv=o.lv,tier=tierOf(lv),watched=!!watch[r.id],show=r.kind==="show",meet=isMeet(r),walk=r.kind==="walk"; /* 0728hq */
+    var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null&&!walk; /* 0728hq: a walk never speaks a number — a trail's nominal 5 is not a line; the row says OPEN, as My Rides does (SAME QUESTION SAME SENTENCE) */
     var num,unit;
     if(hasWait){num=lv.wait;unit='<small>min</small>';}
     else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.winEnd)?'<span style="font-size:15px">NOW</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span style="font-size:18px">—</span>';
@@ -9479,16 +9489,17 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else{var sw9=statusLabel(lv);num='<span class="sw '+sw9.toLowerCase()+'">'+sw9+'</span>';unit='';} /* 0728gi B-5: the status word, My Rides' way */
     var cls=(show&&!hasWait)?"closed":tier;
     var sub='<span class="park">'+esc(r.park)+'</span>';
-    if(!show&&!meet&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
+    if(!show&&!meet&&!walk&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
     if(meet)sub+='<span class="show">Character Experience</span>';
     else if(show)sub+='<span class="show">Show</span>';
+    else if(walk)sub+='<span class="show">'+WALK_WORD+'</span>'; /* 0728hq W-B: the lane's word, the show pill's dress */
     if(lv&&lv.single!==null)sub+='<span>Single '+lv.single+'m</span>';
     var llLn=(lv&&lv.ll)?'<div class="ll-ln">Next LL '+esc(lv.ll)+(lv.lane?' \u00b7 '+(lv.lane.k==="single"?"Single Pass":"Multi Pass"):'')+'</div>':''; /* 0728ge N-2 (owner-ruled Oct 13): the row names the pass after the time, in the sheet's own two names */ /* 0726l THE LL TAKES ITS OWN LANE (owner-ruled): out of the sub's wrap, one line always */
-    return '<div class="ride s-'+cls+(watched?' watched':'')+'"'+((r.kind==="ride"||r.kind==="show")?' data-rs="'+esc(r.id)+'" role="button" tabindex="0"':'')+'>'+ /* 0728fr: a ride row opens its sheet; shows and meets stay as they were (owner: rides only) */
+    return '<div class="ride s-'+cls+(watched?' watched':'')+'"'+((r.kind==="ride"||r.kind==="show"||r.kind==="walk")?' data-rs="'+esc(r.id)+'" role="button" tabindex="0"':'')+'>'+ /* 0728hq T-2: a walk row is a door too */ /* 0728fr: a ride row opens its sheet; shows and meets stay as they were (owner: rides only) */
 
       '<div class="wt '+cls+'">'+num+unit+'</div>'+
       '<div class="info"><div class="nm">'+esc(r.name)+'</div><div class="sub">'+sub+'</div>'+llLn+'</div>'+
-      (r.kind==="ride"?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':(show&&mrRemCan(r.id,lv))?'<button class="flagbtn'+(remind[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Reminder">'+MR_BELL+'</button>':'')+ /* 0728hl THE SHOW GETS ITS BELL: a KNOWN show with a slate to aim at wears the bell on Live too (0726j re-aimed); ONE BELL ONE DRESS — the tint says armed */ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
+      ((bellCan(r,lv)||armed[r.id])?'<button class="flagbtn'+(armed[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Alerts">'+MR_BELL+'</button>':(show&&mrRemCan(r.id,lv))?'<button class="flagbtn'+(remind[r.id]?' on':'')+'" data-id="'+esc(r.id)+'" title="Reminder">'+MR_BELL+'</button>':'')+ /* 0728hq W-A THE BELL NEEDS A WAIT: the ride branch is gated by bellCan — a wait, or a rule to undo */ /* 0728hl THE SHOW GETS ITS BELL: a KNOWN show with a slate to aim at wears the bell on Live too (0726j re-aimed); ONE BELL ONE DRESS — the tint says armed */ /* 0726j THE BELL KNOWS ITS KIND: the engine was always rides-only (checkAlerts kind gate) - now the button agrees */
 '<button class="star'+(watched?' on':'')+'" data-id="'+esc(r.id)+'" title="Favorite">'+(watched?'★':'☆')+'</button></div>';
   }
   /* ===== 0728fr THE RIDE'S OWN SHEET. Tap a ride row on Live: its day so far (the Wrap's own chart and four tiles, in live tense, through __ppRideSheet) and its read (the Today board's own sentence for this one ride). ONE ENGINE: nothing here computes a wait, a typical or a sentence of its own — rsRead CALLS tdCurve, tdEng, tdWhy and tdBridgeFace exactly as the board's row does and changes none of them (owner, Oct 11: the board's engines stay as they are). The sheet never says GO NOW, crowns nothing and orders nothing; the board's "— anytime" tail is its advice about order, so the sheet leaves it off. ===== */
@@ -9620,6 +9631,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'\u2605':'\u2606')+'</button></div>'+
         (rb?'<div class="rs-read">'+rb+'</div>':'')+rsShowList(lv,nw)+'</div>';
     }
+    if(r.kind==="walk"){ /* 0728hq T-2 THE WALK ROW IS A DOOR (owner-ruled Oct 17): the show sheet's bones — the status word in the number's seat (rsWaitHTML says OPEN/CLOSED when there is no number), the name, the park · the lane's word, the star; no share, no doors; below, the facts box when the entry exists (WALK_FACTS, 0728hr) */
+      return '<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
+        '<div class="rs-h">'+rsWaitHTML(lv)+'<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+' \u00b7 '+WALK_WORD+'</div></div>'+
+        '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'\u2605':'\u2606')+'</button></div>'+rsWalkBox(r)+'</div>';
+    }
     var h='<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
       '<div class="rs-h">'+rsWaitHTML(lv)+ /* 0728gi B-5: the status word, My Rides' way; 0728gs: the one builder, shared with the rule sheet */
       '<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' · '+esc(r.category):'')+'</div></div>'+
@@ -9671,7 +9687,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(!roster[rid])return;
     if(!rsEl){rsEl=document.createElement("div");rsEl.id="rsHost";document.body.appendChild(rsEl);}
     rsId=rid;rsData=undefined;rsY=undefined;rsMark();rsPaint(true);
-    if(roster[rid].kind==="show"){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest */
+    if(roster[rid].kind==="show"||roster[rid].kind==="walk"){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest; 0728hq: a walk's too */
     rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();
     rsFetch();
     clearInterval(rsPoll);
@@ -10698,6 +10714,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var wd=(lv&&lv.status==="DOWN")?["down","DOWN"]:["closed","CLOSED"];
     return '<span class="mr-w word t-'+wd[0]+'">'+wd[1]+'</span>';
   }
+  function bellCan(r,lv){ /* 0728hq W-A THE BELL NEEDS A WAIT (owner-ruled W-C, Oct 16): a ride that is OPERATING with no posted wait wears no bell until a number returns — a promise needs a number to watch (as a show with no slate wears none); a walk never does. A row with a rule already armed keeps its bell: it is the door to Turn alert off */
+    return !!(r&&r.kind==="ride"&&!(lv&&lv.status==="OPERATING"&&lv.wait===null));
+  }
   function mrRemCan(id,lv){ /* 0728hl: a show earns a bell only with a slate to aim at — a performance still ahead today; a meet with a window and no times, or a show whose day is done, gets none (nothing to aim at) */
     var r=roster[id];if(!r||r.kind!=="show")return false;
     try{return !!rsShowTimes(lv,Date.now()).next;}catch(e){return false;}
@@ -10719,7 +10738,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return '<div class="mr-rw'+(hitF?' hitf':'')+'" data-rs="'+esc(id)+'"><span class="st" role="button" aria-label="Starred — tap to remove">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
       mrWaitHTML(lv,mrOpNow(id))+
-      '<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>'+
+      ((bellCan(r,lv)||armed[id])?'<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>':'<span class="mr-nobell"></span>')+ /* 0728hq W-A: an OPEN ride with no number wears no bell (the column keeps its width); an armed row keeps its door */
       '</div>';
   }
   function mrGroupsHTML(ids){
@@ -10734,7 +10753,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var dn=here.filter(function(id){var lv=liveById[id];return lv&&lv.status==="DOWN";});
       here=dn.concat(here.filter(function(id){var lv=liveById[id];return !(lv&&lv.status==="DOWN");})); /* down-first, stable — honest ordering, no control */
       return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(function(id){
-        var lvT=liveById[id],teach=!taught&&!armed[id]&&!(lvT&&lvT.status==="DOWN"&&(reopen[id]||mrDnupFor(id)));if(teach)taught=true; /* 0728gs: a covered down row carries no bell line, so the one teaching line passes it; a cold down row teaches with its own "tap the bell" */
+        var lvT=liveById[id],teach=!taught&&!armed[id]&&bellCan(roster[id],lvT)&&!(lvT&&lvT.status==="DOWN"&&(reopen[id]||mrDnupFor(id))); /* 0728hq: a row with no bell never teaches "tap the bell" */if(teach)taught=true; /* 0728gs: a covered down row carries no bell line, so the one teaching line passes it; a cold down row teaches with its own "tap the bell" */
         return mrRowHTML(id,teach);
       }).join("")+(sh.length?'<div class="hd mr-lane-sh">Shows &amp; experiences</div>'+sh.map(function(id){
         var lvS=liveById[id],t9=!taughtSh&&!remind[id]&&mrRemCan(id,lvS);if(t9)taughtSh=true; /* the first bare show row with a slate to aim at teaches once */
@@ -11259,10 +11278,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      deployed Worker's /save expects. overrides may be empty -> send {}. */
   function sbRide(k){var rr=roster[k];return !rr||!rr.kind||rr.kind==="ride";} /* 0726j THE WIRE CARRIES RIDES: a KNOWN show never crosses - the worker's scan matches the local engine's rides-only law; unknown and kindless ids keep today's benefit of the doubt */
   function sbSweep(){ /* 0726j one-time hygiene: bells armed on shows before the fence disarm with a breadcrumb - the star stays */
-    if(store.get("sbSweep",0)||usingFallback)return;
-    var n=0;Object.keys(armed).forEach(function(id){var rr=roster[id];if(rr&&rr.kind!=="ride"){delete armed[id];delete alertState[id];n++;logAlertEv(id,"show-disarmed");}});
+    if(store.get("sbSweep2",0)||usingFallback)return; /* 0728hq: the key advances — the walk re-kind needs the sweep once more */
+    var n=0;Object.keys(armed).forEach(function(id){var rr=roster[id];if(rr&&rr.kind!=="ride"){delete armed[id];delete alertState[id];n++;logAlertEv(id,rr.kind==="walk"?"walk-disarmed":"show-disarmed");}});
     if(n){saveArmed();saveAlertState();}
-    store.set("sbSweep",1);
+    store.set("sbSweep2",1);
   }
   function collectRules(){
     return {
