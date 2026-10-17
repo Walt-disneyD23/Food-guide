@@ -2217,6 +2217,7 @@
   .mr-rh .cap{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
   .mr-rh .ro{flex:1;font-size:15px;color:var(--muted);text-align:right}
   .mr-rh .ro b{color:var(--ink)}
+  .mr-rh .ro .c{white-space:nowrap} /* 0728hp: a clause never breaks inside itself */
   .mr-rh .chv{color:var(--muted-2);font-weight:700;transition:transform .18s}
   .mr-rh.open .chv{transform:rotate(90deg)}
   .mr-rh .body{display:none;padding-bottom:16px}
@@ -2703,7 +2704,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ho</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hp</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10799,7 +10800,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrReadout(){
     if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
     var cust=Object.keys(overrides).filter(function(id){var oc=overrides[id];return armed[id]&&oc&&(oc.dir||oc.thresh);}).length; /* 0723b: LABELS MOVE WITH VALUES - custom counts RULE overrides only */
-    return "<b>"+settings.thresh+(settings.dir==="below"?" or less":" or more")+"</b> · down & back-up "+(settings.dnup?"on":"off")+(cust?" · "+cust+" custom":"");
+    return "<b>"+settings.thresh+(settings.dir==="below"?" or less":" or more")+"</b>&nbsp;· <span class=\"c\">down & back-up "+(settings.dnup?"on":"off")+"</span>"+(cust?"&nbsp;· <span class=\"c\">"+cust+" custom</span>":""); /* 0728hp THE READOUT BREAKS AT ITS DOT (owner glass 11:51 PM Oct 16): each clause unbreakable, the dot bound to the clause before it — a long readout breaks only after a dot (0728bz's law) */
   }
   function mrRulesHTML(){
     return '<div class="mr-rh'+(mrRulesOpen?' open':'')+'">'+
