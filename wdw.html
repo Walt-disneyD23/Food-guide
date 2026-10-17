@@ -2179,7 +2179,7 @@
   .mr-p.pstale{border:1.5px solid var(--short);color:var(--short);background:transparent;font-weight:700}
   .mr-p .d{width:5px;height:5px;border-radius:99px;background:currentColor;opacity:.75}
   .mr-teach{font-size:12.5px;color:var(--muted-2)}
-  .mr-rw .st{color:var(--fav);font-size:15px;flex:none}
+  .mr-rw .st{color:var(--fav);font-size:17px;flex:none;width:32px;height:32px;display:grid;place-items:center;margin-left:-8px;cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0728hm S-E THE STAR IS LOUD WHERE IT'S A CHOICE (owner-ruled Oct 16): Live keeps its gold tile — the exception in a column of hollow stars; here every row is mine, so the bare glyph stays, at Live's 17 px on a 32 px seat, and the seat is the un-star door (U-1) */
   .mr-rw .m{flex:1;min-width:0;min-height:66px;display:flex;flex-direction:column;justify-content:center} /* 0722w R-A (owner-lettered): every row earns the same seat - the two-line stack sets it, one-liners center in it, a freak three-liner still grows (min, never fixed) */
   .mr-rw .nm{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em}
   .mr-rl{font-size:13px;color:var(--muted-2);margin-top:4px;letter-spacing:.02em} /* 0728gs: in-park size; no longer a door */
@@ -2677,7 +2677,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="g-body">Your one standing rule, folded to a single line (“below 30 · down &amp; back-up on”). <b>Every bell follows it</b> unless you give that ride its own rule. Tap to change it.</div>
     </div>
     <div class="set-lab">Star, bell, ping</div>
-    <div class="ig-row"><span class="ig-key">★ Star</span><span><b>Tap the ★ on any ride on the LIVE board</b> — it earns the ride a seat here and in your plans. A star alone is silent.</span></div>
+    <div class="ig-row"><span class="ig-key">★ Star</span><span><b>Tap the ★ on any ride on the LIVE board</b> — it earns the ride a seat here and in your plans. A star alone is silent. <b>Tap the ★ here to remove it</b> — its alert goes with it, and the toast offers Undo.</span></div>
     <div class="ig-row"><span class="ig-key"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>Bell</span><span><b>Opens this ride’s alert</b> — its wait right now against its typical, then <b>Turn alert on</b>, <b>Save rule</b> or <b>Turn alert off</b>. A wait rule pings once when the line crosses it. <b>Un-starring disarms</b> — no ghost rules. Bells are for today: <b>each morning starts fresh.</b></span></div>
     <div class="ig-row"><span class="ig-key">✓ Hit</span><span><b>Your rule fired</b> — the whole row lights <span class="td-brg gv">mint</span> with the time it hit.</span></div>
     <div class="set-lab">Reading a row</div>
@@ -2701,7 +2701,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hl</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hm</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9686,13 +9686,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(rsId){rsMark();rsPaint();}
     if(mrShId)mrShMark(mrShId); /* 0728gv: Live re-renders on every poll while the rule sheet is up \u2014 the halo is re-seated as rs-on is */
   }
-  function bindStars(scope){
-rsBind(scope); /* 0728fr: the rows are doors */
-/* Cut 3 (0719w) — two channels, one grammar: ★ collects (the container), the bell arms the
-   threshold rule INSIDE it. Un-starring removes the rule with the star (breadcrumbed, undoable);
-   the bell on an unstarred ride stars + arms in one gesture (mrBellTap owns that path). */
-Array.prototype.forEach.call(scope.querySelectorAll(".star"),function(btn){
-btn.addEventListener("click",function(ev){ev.stopPropagation();var id=btn.getAttribute("data-id");
+  function starTap(id){ /* 0728hm ONE ORGAN, TWO DOORS (THE STAR ROUND, owner-ruled S-E + U-1, Oct 16): the star's one path — star, or un-star with its rule, reminder and watch (breadcrumbed, undoable, the Today seat following) — called by Live's .star button AND My Rides' ★ (bindMyRides). The body is 0719w's, moved whole; nothing here changed hands. */
 var adding=!watch[id];var r=roster[id],nm=r?r.name:"Ride";
 if(adding){watch[id]=true;store.set("watch",Object.keys(watch));tyStarSync(id,true);pushToast("★ Starred",nm);render();return;}
 var hadRule=!!armed[id];
@@ -9703,7 +9697,15 @@ var hadRem=remind[id]||null;if(hadRem){delete remind[id];saveRemind();logAlertEv
 if(hadWatch||hadOnly){delete reopen[id];delete reopenOnly[id];delete handArm[id];saveHandArm();saveReopen();saveReopenOnly();logAlertEv(id,"unstar-watch-cleared");} /* 0720q (S4x): A WATCH DIES WITH ITS RULE */
 updateAlertBadge();
 pushUndoToast("Star removed",nm+((hadRule||hadRem)?" — its alert went with it":""),function(){watch[id]=true;store.set("watch",Object.keys(watch));if(seat9)tyStarSync(id,true,seat9);if(hadRule){armed[id]=true;saveArmed();}if(hadRem){remind[id]=hadRem;saveRemind();}if(hadWatch){reopen[id]=true;saveReopen();if(hadHand){handArm[id]=Date.now();saveHandArm();}}if(hadOnly){reopenOnly[id]=true;saveReopenOnly();}updateAlertBadge();pushToast("★ Starred",nm);render();});
-render();});});
+render();
+}
+function bindStars(scope){
+rsBind(scope); /* 0728fr: the rows are doors */
+/* Cut 3 (0719w) — two channels, one grammar: ★ collects (the container), the bell arms the
+   threshold rule INSIDE it. Un-starring removes the rule with the star (breadcrumbed, undoable);
+   the bell on an unstarred ride stars + arms in one gesture (mrBellTap owns that path). */
+Array.prototype.forEach.call(scope.querySelectorAll(".star"),function(btn){
+btn.addEventListener("click",function(ev){ev.stopPropagation();starTap(btn.getAttribute("data-id"));});}); /* 0728hm: the Live door calls the organ */
 Array.prototype.forEach.call(scope.querySelectorAll(".flagbtn"),function(btn){
 btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.getAttribute("data-id"));});});
 }
@@ -10701,7 +10703,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function sbRowHTML(id,r,lv,teach){ /* 0728hl R-1a THE SHOW GETS ITS BELL (owner-ruled Oct 16): inside the SHOWS & EXPERIENCES lane the row wears the bell and a readout like a ride's — the armed reminder in the accent tint (10:40 AM · 15 min before), a bare row otherwise, the first bare row teaching once in the screen's words; the body opens the show sheet (M-1). 0726j E-B's kind pill retires — the lane names the kind. A row with nothing to aim at keeps the bell column's width (mr-nobell). */
     var can=mrRemCan(id,lv),rm=can?remind[id]:null;
     var ln=rm?'<span class="mr-p prule"><span class="d"></span>'+esc(mrRemClk(rm.at))+' · '+(+rm.lead)+' min before</span>':((teach&&can)?'<span class="mr-teach">tap the bell to set a reminder</span>':'');
-    return '<div class="mr-rw" data-rs="'+esc(id)+'"><span class="st">★</span>'+
+    return '<div class="mr-rw" data-rs="'+esc(id)+'"><span class="st" role="button" aria-label="Starred — tap to remove">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+(ln?'<div class="sb-rl">'+ln+'</div>':'')+'</div>'+
       sbCellHTML(r,lv)+
       (can?'<button class="mr-bell'+(rm?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Reminder">'+MR_BELL+'</button>':'<span class="mr-nobell"></span>')+
@@ -10711,7 +10713,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var r=roster[id],lv=liveById[id];
     if(r&&r.kind&&r.kind!=="ride")return sbRowHTML(id,r,lv,false); /* 0726j THE SHOW KEEPS ITS SEAT - a KNOWN show only; kindless keeps the ride path (benefit of the doubt); 0728hl: the lane calls sbRowHTML itself with the teach */
     var hitF=!!(armed[id]&&alertState[id]&&ruleMet(id,lv)); /* 0720x (1B, owner-lettered): a fresh hit lights its whole row; stale keeps the quiet line */
-    return '<div class="mr-rw'+(hitF?' hitf':'')+'" data-rs="'+esc(id)+'"><span class="st">★</span>'+
+    return '<div class="mr-rw'+(hitF?' hitf':'')+'" data-rs="'+esc(id)+'"><span class="st" role="button" aria-label="Starred — tap to remove">★</span>'+
       '<div class="m"><div class="nm">'+esc(r.name)+'</div>'+mrRuleLine(id,teach)+'</div>'+
       mrWaitHTML(lv,mrOpNow(id))+
       '<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>'+
@@ -10945,7 +10947,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
     each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");clearedTs[id]=Date.now();saveClearedTs();delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
     var ca=el.querySelector("[data-clrall]");if(ca)ca.addEventListener("click",function(ev){ev.stopPropagation();var nw=Date.now();Object.keys(resolved).forEach(function(id){clearedTs[id]=nw;});saveClearedTs();resolved={};saveResolved();updateAlertBadge();renderMyRidesPage();}); /* 0721e: still the hand-clear law - just the whole hand */
-    each(".mr-rw[data-rs]",function(w){w.addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest(".mr-bell"))return;rsOpen(w.getAttribute("data-rs"));});}); /* 0728gs M-1: the body is the ride sheet's door (0720z's pill door retired \u2014 the bell opens the rule sheet) */
+    each(".mr-rw[data-rs]",function(w){w.addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&(ev.target.closest(".mr-bell")||ev.target.closest(".st")))return;rsOpen(w.getAttribute("data-rs"));});}); /* 0728hm: the ★ is fenced off the body tap as the bell is */
+    each(".mr-rw .st",function(st){st.addEventListener("click",function(ev){ev.stopPropagation();var w=st.closest(".mr-rw");if(w)starTap(w.getAttribute("data-rs"));});}); /* 0728hm U-1 (owner-ruled Oct 16): the ★ on My Rides un-stars — Live's own path (starTap): the rule, the reminder and the watch go with it, the toast offers Undo */ /* 0728gs M-1: the body is the ride sheet's door (0720z's pill door retired \u2014 the bell opens the rule sheet) */
     var lg=el.querySelector(".mr-log");if(lg)lg.querySelector(".hd2").addEventListener("click",function(){mrLogOpen=!mrLogOpen;lg.classList.toggle("open",mrLogOpen);});
     if(lg)lg.querySelectorAll(".mr-dayhd.fold").forEach(function(h){h.addEventListener("click",function(){ /* 0721u pick B: tap a day header to fold/unfold; state keyed by date, poll-rebuild safe */
       var d=h.parentElement,k=d.getAttribute("data-dk"),isOpen=!d.classList.contains("closed");
