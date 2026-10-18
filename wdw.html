@@ -2704,7 +2704,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hr</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hs</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9490,10 +9490,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var hasWait=lv&&lv.status==="OPERATING"&&lv.wait!==null&&!walk; /* 0728hq: a walk never speaks a number — a trail's nominal 5 is not a line; the row says OPEN, as My Rides does (SAME QUESTION SAME SENTENCE) */
     var num,unit;
     if(hasWait){num=lv.wait;unit='<small>min</small>';}
-    else if(show){num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.winEnd)?'<span style="font-size:15px">NOW</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span style="font-size:18px">—</span>';
-      unit='<small>'+(lv&&lv.nextShow?"next show":(lv&&lv.winEnd)?"until "+lv.winEnd:(lv&&lv.showsDone)?"for today":statusLabel(lv))+'</small>';}
+    else if(show){var swS=statusLabel(lv),clk=!!(lv&&(lv.nextShow||lv.winEnd||lv.showsDone)); /* 0728hs THE ROOM SPEAKS ONE FACE (owner-ruled C, Oct 18): a show with nothing on the clock wears the status word, the lane's dress on My Rides (sbCellHTML) — the dash retires; the clock faces stand */
+      num=(lv&&lv.nextShow)?'<span style="font-size:15px">'+esc(lv.nextShow)+'</span>':(lv&&lv.winEnd)?'<span style="font-size:15px">NOW</span>':(lv&&lv.showsDone)?'<span style="font-size:15px">DONE</span>':'<span class="sw '+swS.toLowerCase()+'">'+swS+'</span>';
+      unit=clk?'<small>'+(lv&&lv.nextShow?"next show":(lv&&lv.winEnd)?"until "+lv.winEnd:"for today")+'</small>':'';}
     else{var sw9=statusLabel(lv);num='<span class="sw '+sw9.toLowerCase()+'">'+sw9+'</span>';unit='';} /* 0728gi B-5: the status word, My Rides' way */
-    var cls=(show&&!hasWait)?"closed":tier;
+    var cls=((show||walk)&&!hasWait)?"closed":tier; /* 0728hs THE NOMINAL NUMBER NEVER COLORS A WALK: a trail's flat 5 lit a green stripe — green is the crowd bands' alone; a walk wears the room's class as every show does */
     var sub='<span class="park">'+esc(r.park)+'</span>';
     if(!show&&!meet&&!walk&&r.category&&r.category!=="Untagged")sub+='<span class="cat">'+esc(r.category)+'</span>';
     if(meet)sub+='<span class="show">Character Experience</span>';
