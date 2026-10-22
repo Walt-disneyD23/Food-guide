@@ -2706,7 +2706,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hw</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hx</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11524,6 +11524,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var WRAP_URL=(typeof PUSH!=="undefined"&&PUSH.WORKER_URL)?PUSH.WORKER_URL:"https://parkpulse-push.walt-disneyd23.workers.dev";
     var MAIN=["Magic Kingdom","EPCOT","Hollywood Studios","Animal Kingdom"];
     var cache={},cacheAt={},curTab="yesterday",active=false,lastData=null,lastTab=null;
+    var pwWayIn=null; /* 0728hx THE DOOR REMEMBERS THE WAY IN: a door that jumps two levels leaves {kind,key,tab,label,go}; the page it opens reads it through pwWayNote and its Back goes home in one tap; any tab change clears it */
+    function pwWayNote(kind,key){var w=pwWayIn;return (w&&w.kind===kind&&w.key===key&&w.tab===lastTab)?w:null;}
     function $id(id){return document.getElementById(id);}
     function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
     function tier(m){var b9=tierOfWait(m);return b9==="packed"?"pw-p":b9==="long"?"pw-l":b9==="medium"?"pw-m":"pw-s";} /* 0728fq THE WRAP JOINS LIVE'S BANDS (owner-ruled B-1, Oct 11, on live-row-bands-light.png; ONE BAND VOCABULARY): Live has painted waits by 20 / 45 / 70 since 0728cn (tierOfWait, the four bands' one home); the Wrap still painted by 15 / 30 / 45 — its tiles, its average rows, its day band, its scrub pill and the ride share card. A 30-minute wait was amber on the Live row and orange one tap away. The Wrap asks the one home now. */
@@ -11742,6 +11744,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       h+='</div><div class="pw-wkkey"><span><i class="pw-s"></i>20 or less</span><span><i class="pw-m"></i>21-45</span><span><i class="pw-l"></i>46-70</span><span><i class="pw-p"></i>over 70</span></div>';
       return h+'<div class="pw-wkfine">Each cell: the park\u2019s headliner average that day</div>';
     }
+    function pwWayBackToPark(park){return {label:park,go:function(){if(cache.week){loadTab("week");showDetail(park);}else loadTab("week");}};} /* 0728hx: the note a park week page writes — Back to <park> re-renders the week from its cache and lands on the park */
     function pwWeekParkStrip(d,park){ /* 0728hw THE PARK WEARS THE LANDING'S ROW (owner-ruled S-A Oct 22): the park's own row of the landing's grid — the same pwWkPic the landing (0728hi) and the week card (0728hc) read, a cell the park's headliner average that day in tier()'s band, today dashed with the dot, the key beneath; each finished cell a door to that park's day (0728hk). Retires the flat strip, which coloured the day by the CROWD tier with no number — the owner's glass showed one day two colours on two surfaces (ONE BAND VOCABULARY · COLOR NEVER CARRIES ALONE). Nothing until a day has finished, as the landing. */
       var m=pwWkPic(d,null);if(!m)return "";
       var TL=["M","T","W","T","F","S","S"],h='<div class="pw-wkg one">',i,pk=null;
@@ -12621,19 +12624,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
          screenshot of any drill page inside a visit can date itself. */
       return (typeof lastTab==="string"&&lastTab.indexOf("visit:")===0)?lastTab.split(":")[2]:null;
     }
-    function pwLoadDay(ds,from,park){ /* 0728hi: an optional park lands the visit on that day's park page */
+    function pwLoadDay(ds,from,park,wayIn){ /* 0728hi: an optional park lands the visit on that day's park page · 0728hx: wayIn {label,go} is the note that park page's Back will read */
       /* 0713j: the day visitor — the custom-ranges foundation. Any banked date
          renders as a full daily Wrap (drills included); the ORIGIN tab keeps
          its pill and a back pill leads home. Past days are immutable, so the
          session cache holds them freely (LRU cap is a ledger item). curTab
          stays the origin on purpose: a visit is an overlay on its zoom. */
       var wv=$id("wrapView");if(!wv)return;
-      if(pwDayCache[ds]){renderWrap(pwDayCache[ds],"visit:"+from+":"+ds);if(park)showDetail(park);return;}
+      if(pwDayCache[ds]){renderWrap(pwDayCache[ds],"visit:"+from+":"+ds);if(park){pwWayIn=wayIn?{kind:"park",key:park,tab:"visit:"+from+":"+ds,label:wayIn.label,go:wayIn.go}:null;showDetail(park);}return;}
       wv.innerHTML=tabsHTML(from)+'<div class="pw-msg">Loading the day\u2026</div>';wireTabs();
       fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}).then(function(d){
         pwCleanData(d);
         pwDayCache[ds]=d;
-        if(active&&curTab===from){renderWrap(d,"visit:"+from+":"+ds);if(park)showDetail(park);}
+        if(active&&curTab===from){renderWrap(d,"visit:"+from+":"+ds);if(park){pwWayIn=wayIn?{kind:"park",key:park,tab:"visit:"+from+":"+ds,label:wayIn.label,go:wayIn.go}:null;showDetail(park);}}
       })["catch"](function(){
         if(active&&curTab===from){wv.innerHTML=tabsHTML(from)+'<div class="pw-msg">Couldn\u2019t load the Wrap just now. Tap a tab to retry.</div>';wireTabs();}
       });
@@ -12680,6 +12683,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     window.__pwTodayFresh=pwTodayFresh;
     document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")pwTodayFresh(false);});
     function loadTab(tab){
+      pwWayIn=null; /* 0728hx: a new tab forgets the way in */
       curTab=tab;var wv=$id("wrapView");if(!wv)return;
       if(cache[tab]){renderWrap(cache[tab],tab);if(tab==="today")pwTodayFresh(false);return;}
       wv.innerHTML=tabsHTML(tab)+'<div class="pw-msg">Loading the day…</div>';wireTabs();
@@ -12935,10 +12939,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     /* Hero/park stat tiles that name a ride navigate straight to it — same
        grammar as the "tap for the full breakdown" rows and the ride-detail
        remote-control tiles. Landing deep keeps the ladder: Back walks up. */
-    function wireGoTiles(){
+    function wireGoTiles(fromLanding){ /* 0728hx: a landing tile jumps past the park page — it leaves the note so the ride page's Back returns to the landing */
       var wv=$id("wrapView");if(!wv)return;
       Array.prototype.forEach.call(wv.querySelectorAll(".pw-tile-go"),function(t){
-        function go(){showRide(t.getAttribute("data-rid"),t.getAttribute("data-rpark"));}
+        function go(){var rid=t.getAttribute("data-rid");if(fromLanding)pwWayIn={kind:"ride",key:rid,tab:lastTab,label:(pwVisitDate()?pwMonD(pwVisitDate()):"Wrap"),go:function(){renderWrap(lastData,lastTab);topw();}};showRide(rid,t.getAttribute("data-rpark"));}
         t.addEventListener("click",go);
         t.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
       });
@@ -13161,12 +13165,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
       html+='<button class="pw-share" id="pwShare" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+(tab==="week"?"Share this week":"Share this Wrap")+'</button>';
       html+='<div class="pw-foot">Numbers are real, logged every 2 min · live data from ThemeParks.wiki</div>';
-      wv.innerHTML=html;wireTabs();wireRows();wireGoTiles();
+      wv.innerHTML=html;wireTabs();wireRows();wireGoTiles(true);
       var vb=$id("pwVisitBack");if(vb)vb.addEventListener("click",function(){if(vFrom==="profile"){var pb=document.querySelector('#appNav .it[data-pg="pulse"]');if(pb)pb.click();}else loadTab(vFrom);});
       if(isWeek){ /* 0713j · 0728hi: the grid's cells visit their day's park page; today's cells jump to Today */
         var wcs=wv.querySelectorAll(".pw-wkg .c[data-d]");
         for(var wi=0;wi<wcs.length;wi++){(function(cell){var dd=cell.getAttribute("data-d"),pk9=cell.getAttribute("data-park");
-          var go9=function(){if(cell.classList.contains("tapped"))return;cell.classList.add("tapped");setTimeout(function(){cell.classList.remove("tapped");pwLoadDay(dd,"week",pk9);},160);}; /* 0728hk THE CELL ANSWERS THE TAP (owner-ruled A, Oct 16): the tiles' ring for a beat, then the day */
+          var go9=function(){if(cell.classList.contains("tapped"))return;cell.classList.add("tapped");setTimeout(function(){cell.classList.remove("tapped");pwLoadDay(dd,"week",pk9,{label:"this week",go:function(){loadTab("week");}});},160);}; /* 0728hx: the note — Back to this week */ /* 0728hk THE CELL ANSWERS THE TAP (owner-ruled A, Oct 16): the tiles' ring for a beat, then the day */
           cell.addEventListener("click",go9);
           cell.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go9();}});
         })(wcs[wi]);}
@@ -13199,12 +13203,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var dateStr=(lastData.dates&&lastData.dates[0])||etDate(lastTab==="yesterday"?1:0);
       var ctxLabel=isWeek?("last 7 days"):(lastTab==="today"?"so far today":fmtDate(dateStr));
       var pk=computePark(lastData,park);
-      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBack"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+(pwVisitDate()?esc(pwMonD(pwVisitDate())):"Wrap")+'</button></div>';
+      var wayIn=pwWayNote("park",park),pwBackGo=wayIn?function(){var g=wayIn.go;pwWayIn=null;g();}:function(){renderWrap(lastData,lastTab);topw();}; /* 0728hx THE DOOR REMEMBERS THE WAY IN: Back wears the origin's name and goes there in one tap */
+      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBack"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+(wayIn?esc(wayIn.label):(pwVisitDate()?esc(pwMonD(pwVisitDate())):"Wrap"))+'</button></div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' · '+esc(ctxLabel)+'</div>';
 
       if(!pk.headAvg){
         html+='<div class="pw-msg">No ride data logged for '+esc(park)+' on this day yet.</div>';
-        wv.innerHTML=html;topw();var bk0=$id("pwBack");if(bk0)bk0.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});return;
+        wv.innerHTML=html;topw();var bk0=$id("pwBack");if(bk0)bk0.addEventListener("click",pwBackGo);return;
       }
 
       var isTod=(lastData&&lastData.dates&&lastData.dates[0]===etDate(0));
@@ -13247,19 +13252,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<div class="pw-foot">'+(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min \u00b7 ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
 
       wv.innerHTML=html;topw();wireGoTiles();
-      var bk=$id("pwBack");if(bk)bk.addEventListener("click",function(){renderWrap(lastData,lastTab);topw();});
+      var bk=$id("pwBack");if(bk)bk.addEventListener("click",pwBackGo);
       var ii=wv.querySelector(".pw-info-i"),inote=$id("pwHeadInfo");
       if(ii&&inote)ii.addEventListener("click",function(){inote.hidden=!inote.hidden;});
       var sp=$id("pwShareP");if(sp)sp.addEventListener("click",function(){shareParkCard(park);});
       if(isWeek){ /* 0728hw: the park's row answers the tap as the landing's does (0728hk) — a finished cell visits that park's day; today's cell the park's today */
         var pcs=wv.querySelectorAll(".pw-wkg .c[data-d]");
         for(var pi9=0;pi9<pcs.length;pi9++){(function(cell){var dd=cell.getAttribute("data-d");
-          var go8=function(){if(cell.classList.contains("tapped"))return;cell.classList.add("tapped");setTimeout(function(){cell.classList.remove("tapped");pwLoadDay(dd,"week",park);},160);};
+          var go8=function(){if(cell.classList.contains("tapped"))return;cell.classList.add("tapped");setTimeout(function(){cell.classList.remove("tapped");pwLoadDay(dd,"week",park,pwWayBackToPark(park));},160);}; /* 0728hx: the note — Back to the park's week page */
           cell.addEventListener("click",go8);
           cell.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go8();}});
         })(pcs[pi9]);}
         var pts=wv.querySelectorAll(".pw-wkg .c[data-today]");
-        for(var pj9=0;pj9<pts.length;pj9++)pts[pj9].addEventListener("click",function(){pwLoadDay(etDate(0),"week",park);});
+        for(var pj9=0;pj9<pts.length;pj9++)pts[pj9].addEventListener("click",function(){pwLoadDay(etDate(0),"week",park,pwWayBackToPark(park));});
       }
       var rrows=wv.querySelectorAll(".pw-rrow[data-rid]");
       for(var ri=0;ri<rrows.length;ri++){(function(row){var rid=row.getAttribute("data-rid");row.addEventListener("click",function(){showRide(rid,park);});row.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showRide(rid,park);}});})(rrows[ri]);}
@@ -15051,7 +15056,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         :((live?"Averaging ":"Averaged ")+r.avgWait+" min"+(isWeek?" this week.":" "+pwDayWord((lastData&&lastData.dates&&lastData.dates[0])||etDate(0))+".")); /* 0713o */
       if(r._refurb)line=(isWeek?"In refurbishment this week.":live?"In refurbishment today.":"In refurbishment.");
       var hasProf=!!(typeof roster!=="undefined"&&roster[rid]&&(typeof rpCuratedRide!=="function"||rpCuratedRide(roster[rid]))); /* 0721o: the reverse door — only where a profile home exists */
-      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(park)+'</button>'+(hasProf?'<button class="pw-back" type="button" id="pwFullRec">Full record \u203a</button>':'')+'</div>';
+      var wayInR=pwWayNote("ride",rid); /* 0728hx: a landing tile's ride page returns to the landing */
+      var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(wayInR?wayInR.label:park)+'</button>'+(hasProf?'<button class="pw-back" type="button" id="pwFullRec">Full record \u203a</button>':'')+'</div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div>';
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause,isWeek)))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su,(live&&lastTab==="today"&&!pwVisitDate())?rsTyp(r.id):null):""; /* 0728fr: today’s page draws today against its typical; a finished or visited day draws as it always has */
@@ -15063,7 +15069,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<div class="pw-foot">'+(su?"Peak & Lowest = waits that held 25+ min (quick blips still show in the chart) · ":"")+'Reliability = % of open time the ride was running (vs. down)</div>';
       }
       wv.innerHTML=html;topw();
-      var bk=$id("pwBackR");if(bk)bk.addEventListener("click",function(){showDetail(park);});
+      var bk=$id("pwBackR");if(bk)bk.addEventListener("click",wayInR?function(){var g=wayInR.go;pwWayIn=null;g();}:function(){showDetail(park);});
       var fr=$id("pwFullRec");if(fr)fr.addEventListener("click",function(){rpOpenProfileFrom(rid);});
       var sr=$id("pwShareR");if(sr)sr.addEventListener("click",function(){shareRideCard(rid,park);});
       var rl=$id("pwRLane");if(rl)rl.addEventListener("click",function(){rl.classList.toggle("lbl");pwStripGuard(rl);}); /* 0713l: same gesture as the Sky strip — tap reveals counts, guard handles the crowd */
