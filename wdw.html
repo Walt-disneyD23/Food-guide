@@ -2704,7 +2704,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ht</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hu</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9061,6 +9061,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       ridesOpen:(s&&s.open)?s.open:0,
       crowd:(s&&s.crowd)?{label:s.crowd.label,color:s.crowd.color}:null,
       verdict:null,race:null,party:null,ltg:null,
+      wx:(typeof rdWxRead==="function")?rdWxRead():null, /* 0728hu THE CARD WEARS THE HERO'S LANE: the current sky through the hero's own gated door (0728fj) — today's reading, ≤35 min old, or null */
       parks:[],early:null,down:null,shows:null};
     if(typeof vdVerdict==="function"){var v=vdVerdict();if(v&&v.state&&v.state!=="none")D.verdict=v;}
     if(ds){
@@ -9240,6 +9241,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     T(statS,sx,y-30,SG("800",64),C.ink);
     if(D.headAvg!=null)T("m",sx+nw2+8,y-30,IN("500",26),C.muted);
     T("HEADLINER AVG",R,y+4,IN("600",22),C.muted2,"right");
+    var wxLane=0; /* 0728hu THE CARD WEARS THE HERO'S LANE (owner-ruled A Oct 22): the sky under the stat, as the hero seats it — glyph + temperature, the feels-like beneath only when it differs; the sub-line yields to this lane */
+    if(D.wx){
+      var WXI={clear:"\u2600\ufe0f",night:"\ud83c\udf19",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"}; /* the hero's own table (rdWxPaint) */
+      var wxT=D.wx.tF+"\u00b0",wxTF=SG("800",44),wxGF=IN("500",40),wxW=MW(wxT,wxTF),wxG=WXI[D.wx.cl]||"",wxGW=wxG?MW(wxG,wxGF):0;
+      T(wxT,R,y+62,wxTF,C.ink,"right");if(wxG)T(wxG,R-wxW-14,y+60,wxGF,C.ink,"right");
+      wxLane=wxW+(wxG?14+wxGW:0);
+      if(D.wx.fF!=null&&D.wx.fF!==D.wx.tF){var wxF="feels "+D.wx.fF+"\u00b0";T(wxF,R,y+98,IN("500",26),C.muted,"right");wxLane=Math.max(wxLane,MW(wxF,IN("500",26)));}
+      wxLane+=40;
+    }
     T(ell("Walt Disney World",sx-L-36,SG("800",72)),L,y,SG("800",72),C.ink);
     /* the hero's own sub law (0718r): one line when it fits, break AFTER the
        parks clause when it doesn't — est. never separates from its value (0709r) */
@@ -9250,9 +9260,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function segRun(x,yy,segs){var si;for(si=0;si<segs.length;si++){T(segs[si][0],x,yy,segs[si][1],segs[si][2]);x+=MW(segs[si][0],segs[si][1]);}}
     var joined=l1.concat(l1.length&&l2.length?[["  \u00b7  ",IN("500",32),C.muted]]:[]).concat(l2);
     if(joined.length){
-      if(segsW(joined)<=CW){segRun(L,y+52,joined);y=y+52+18;}
+      if(segsW(joined)<=CW-wxLane){segRun(L,y+52,joined);y=y+52+18;} /* 0728hu: the lane takes its width from the line */
       else if(l1.length&&l2.length){segRun(L,y+52,l1);segRun(L,y+94,l2);y=y+94+18;}
-      else{segRun(L,y+52,joined.length?[[ell(joined.map(function(s){return s[0];}).join(""),CW,IN("500",32)),IN("500",32),C.muted]]:[]);y=y+52+18;}
+      else{segRun(L,y+52,joined.length?[[ell(joined.map(function(s){return s[0];}).join(""),CW-wxLane,IN("500",32)),IN("500",32),C.muted]]:[]);y=y+52+18;}
     }else y=y+52+18;
     /* verdict marquee — the read's own engine, three states, fit-step 58->46 */
     if(D.verdict){
@@ -9357,7 +9367,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     y+=48;var fy=y;hair(fy);
     if(D.crowd)T("Crowd is an estimate from live wait times",L,fy+42,IN("500",23),C.muted2);
     T("ridecue.live",R,fy+38,IN("700",28),C.green,"right");
-    T("Data: ThemeParks.wiki"+(D.ltg?" \u00b7 Lightning: Vaisala Xweather":""),R,fy+70,IN("500",22),C.muted2,"right");
+    T("Data: ThemeParks.wiki"+(D.wx?" \u00b7 Weather: Vaisala Xweather":(D.ltg?" \u00b7 Lightning: Vaisala Xweather":"")),R,fy+70,IN("500",22),C.muted2,"right"); /* 0728hu: the sky on the card credits its source; one Xweather clause (the weather read carries the lightning) */
     ctx.restore();
     return fy+70+28+36;
   }
