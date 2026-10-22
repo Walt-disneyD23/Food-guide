@@ -1640,6 +1640,7 @@
   .pw-wkleg i{width:8px;height:8px;border-radius:var(--r-dot)}
   /* ===== 0728hi THE HERO SHOWS THE FIELD (owner-ruled H-A, Oct 16, on hero-AB.png): the week card's grid in the hero — the band inks the card's tiles wear, the hero's own dim/key inks ===== */
   .pw-wkg{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px}
+  .pw-wkg.one .row{margin-top:2px} /* 0728hw: the park page's one row, no park-name line */
   .pw-wkg .gh{font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--pwh-dim);text-align:center;text-transform:uppercase}
   .pw-wkg .gh.on{color:var(--pwh-key)}
   .pw-wkg .pn{grid-column:1/-1;font:700 var(--fs-meta) var(--font-display);color:var(--pwh-ink);margin-top:6px;display:flex;justify-content:space-between;align-items:baseline}
@@ -1702,8 +1703,9 @@
   .pw-mc[data-today],.pw-wkc[data-today]{cursor:pointer;-webkit-tap-highlight-color:transparent}
   .pw-wkc[data-d]{cursor:pointer;-webkit-tap-highlight-color:transparent}
   .pw-wkc[data-d]:active i{filter:brightness(1.15)}
-  .pw-meta{display:flex;gap:16px;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)}
-  .pw-meta div{font-size:var(--fs-meta);color:var(--pwh-muted)}
+  .pw-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13)} /* 0728hw: three even columns — the flex hugged its text (a hole beside Slinky, Guardians cut off) */
+  .pw-meta div{font-size:var(--fs-meta);color:var(--pwh-muted);min-width:0}
+  .pw-meta .nm{display:block;font-size:var(--fs-micro);color:var(--pwh-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px} /* 0728hw: the clause under a value */
   .pw-meta b{display:block;font-family:var(--font-display);font-size:var(--fs-lead);color:#fff;font-weight:700;margin-top:2px}
   /* 0711m: a stationary press on the chart belongs to the scrub, not iOS text
      selection — touch-action stops scroll-steal but not the long-press callout,
@@ -2704,7 +2706,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hw</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11740,19 +11742,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       h+='</div><div class="pw-wkkey"><span><i class="pw-s"></i>20 or less</span><span><i class="pw-m"></i>21-45</span><span><i class="pw-l"></i>46-70</span><span><i class="pw-p"></i>over 70</span></div>';
       return h+'<div class="pw-wkfine">Each cell: the park\u2019s headliner average that day</div>';
     }
-    function pwWeekParkStrip(d,park){
-      /* Single park = single-color cells are CORRECT here (the cheeseburger
-         ruling retired multi-slice cells; a park has one tier per day). */
-      var wk=d&&d.week;if(!wk)return "";
-      var cells="",wd="",TL=["M","T","W","T","F","S","S"];
-      wk.days.forEach(function(x,i){
-        wd+='<span class="'+(x.live?"on":"")+'">'+TL[i]+'</span>';
-        if(x.live){cells+='<div class="pw-wkc live"><i></i></div>';return;}
-        if(!x.final||!x.parks[park]||x.parks[park].avg==null){cells+='<div class="pw-wkc off"></div>';return;}
-        var col=CROWD_TIERS[x.parks[park].lvl]?CROWD_TIERS[x.parks[park].lvl].color:PW_TIER.fallback;
-        cells+='<div class="pw-wkc"><i style="height:100%;background:'+col+'"></i></div>';
-      });
-      return '<div class="pw-wkbars flat">'+cells+'</div><div class="pw-wkwd">'+wd+'</div>';
+    function pwWeekParkStrip(d,park){ /* 0728hw THE PARK WEARS THE LANDING'S ROW (owner-ruled S-A Oct 22): the park's own row of the landing's grid — the same pwWkPic the landing (0728hi) and the week card (0728hc) read, a cell the park's headliner average that day in tier()'s band, today dashed with the dot, the key beneath; each finished cell a door to that park's day (0728hk). Retires the flat strip, which coloured the day by the CROWD tier with no number — the owner's glass showed one day two colours on two surfaces (ONE BAND VOCABULARY · COLOR NEVER CARRIES ALONE). Nothing until a day has finished, as the landing. */
+      var m=pwWkPic(d,null);if(!m)return "";
+      var TL=["M","T","W","T","F","S","S"],h='<div class="pw-wkg one">',i,pk=null;
+      for(i=0;i<m.days.length;i++)h+='<div class="gh'+(m.days[i].k==="live"?' on':'')+'">'+TL[i]+'</div>';
+      for(i=0;i<m.parks.length;i++)if(m.parks[i].name===park)pk=m.parks[i];
+      if(!pk)return "";
+      h+='<div class="row">';
+      for(i=0;i<pk.cells.length;i++){var c=pk.cells[i],dd=m.days[i];
+        if(c.k==="live")h+='<div class="c live" data-today="1" role="button" tabindex="0" aria-label="Today"><i></i></div>';
+        else if(c.k!=="fin")h+='<div class="c fut"></div>';
+        else h+='<div class="c '+c.hc+'" data-d="'+esc(dd.d)+'" data-park="'+esc(park)+'" role="button" tabindex="0">'+c.h+'</div>';}
+      return h+'</div></div><div class="pw-wkkey"><span><i class="pw-s"></i>20 or less</span><span><i class="pw-m"></i>21-45</span><span><i class="pw-l"></i>46-70</span><span><i class="pw-p"></i>over 70</span></div>';
     }
     function pwLoadWeek(){
       var wv=$id("wrapView");
@@ -13210,7 +13211,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":" "+pwDayWord(dateStr)+"."); /* 0713o: the date names the day */
       var sub2=pk.leastRel?(pk.leastRel.name+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
       html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
-      html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div>'+(pk.busiest?'<div>Busiest<b>'+esc(shortName(pk.busiest.name))+' '+pk.busiest.avgWait+'</b></div>':'')+'<div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
+      var pkOut=0,pkOutMin=0;pk.rides.forEach(function(r){if(pwShow(r))return;pkOut+=r.downEvents||0;pkOutMin+=r.downMinutes||0;}); /* 0728hw ONE PHENOMENON ONE HOME (owner-ruled R-B Oct 22): Busiest leaves the row — its home is the Toughest line tile beneath; the seat is the park's outages so far (DOWN events, shows excluded, the landing's own sentence for one park) with the ride-hours lost beneath */
+      html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div><div>Outages<b>'+pkOut+'</b><span class="nm">'+(pkOutMin>=60?Math.round(pkOutMin/60)+' ride-hour'+(Math.round(pkOutMin/60)===1?'':'s')+' lost':pkOutMin+' min lost')+'</span></div><div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
       html+='<div class="pw-note" id="pwHeadInfo" hidden>Headliner avg — the average wait across this park\'s headliners (its marquee rides, ratified by RideCue) that ran'+(isWeek?" this week.":live?" so far today.":" that day.")+' An estimate from wait times, not official attendance.</div>';
 
       html+='<div class="pw-grid">';
@@ -13249,6 +13251,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var ii=wv.querySelector(".pw-info-i"),inote=$id("pwHeadInfo");
       if(ii&&inote)ii.addEventListener("click",function(){inote.hidden=!inote.hidden;});
       var sp=$id("pwShareP");if(sp)sp.addEventListener("click",function(){shareParkCard(park);});
+      if(isWeek){ /* 0728hw: the park's row answers the tap as the landing's does (0728hk) — a finished cell visits that park's day; today's cell the park's today */
+        var pcs=wv.querySelectorAll(".pw-wkg .c[data-d]");
+        for(var pi9=0;pi9<pcs.length;pi9++){(function(cell){var dd=cell.getAttribute("data-d");
+          var go8=function(){if(cell.classList.contains("tapped"))return;cell.classList.add("tapped");setTimeout(function(){cell.classList.remove("tapped");pwLoadDay(dd,"week",park);},160);};
+          cell.addEventListener("click",go8);
+          cell.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go8();}});
+        })(pcs[pi9]);}
+        var pts=wv.querySelectorAll(".pw-wkg .c[data-today]");
+        for(var pj9=0;pj9<pts.length;pj9++)pts[pj9].addEventListener("click",function(){pwLoadDay(etDate(0),"week",park);});
+      }
       var rrows=wv.querySelectorAll(".pw-rrow[data-rid]");
       for(var ri=0;ri<rrows.length;ri++){(function(row){var rid=row.getAttribute("data-rid");row.addEventListener("click",function(){showRide(rid,park);});row.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();showRide(rid,park);}});})(rrows[ri]);}
     }
