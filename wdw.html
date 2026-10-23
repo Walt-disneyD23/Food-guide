@@ -2713,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ib</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ic</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5962,7 +5962,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var plan=[];for(i=0;i<head.length;i++){var c=rmCoach(head[i],i===0);plan.push({si:head[i].si,hd:un(c.hd),why:un(c.why)});}
     var later=tail.map(function(t){return {si:t.si,nm:t.nm,why:un(rmTailWhy(t))};});
     var led=wc.map(function(x){var cv=x.cv;return {si:x.si,nm:x.nm,typ:cv.typ+"m",win:cv.allday?"walk-on all day":(cv.front===null?"never a walk-on":(cv.back===null?"walk-on until "+rpClk(cv.front):"until "+rpClk(cv.front)+" · after "+rpClk(cv.back)))};});
-    var read=(rcReadHTML(its).match(/<p>[\s\S]*?<\/p>/g)||[]).map(un); /* SAME QUESTION SAME SENTENCE: the page's read, sentence for sentence */
+    function ent(h){return String(h).replace(/<[^>]*>/g,"").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g," ");} /* entities undone, spaces kept — a run's edges matter */
+    function runs(p){var out=[],re=/<b>([\s\S]*?)<\/b>|([^<]+)/g,m;while((m=re.exec(p))){if(m[1]!=null)out.push({t:ent(m[1]),b:true});else if(m[2])out.push({t:ent(m[2]),b:false});}return out;} /* 0728ic: the page's own bold — the names and the numbers */
+    var read=(rcReadHTML(its).match(/<p>[\s\S]*?<\/p>/g)||[]).map(function(p){return runs(p.replace(/^<p>|<\/p>$/g,""));}); /* SAME QUESTION SAME SENTENCE: the page's read, sentence for sentence */
     var t0=1e9,t1=-1;for(i=0;i<wc.length;i++){var bs=wc[i].cv.bs;if(bs[0].t<t0)t0=bs[0].t;if(bs[bs.length-1].t>t1)t1=bs[bs.length-1].t;}
     var mx=40;for(i=0;i<wc.length;i++){var b2=wc[i].cv.bs;for(j=0;j<b2.length;j++)if(b2[j].med+8>mx)mx=b2[j].med+8;}
     var series=wc.map(function(x){var m={},q;for(q=0;q<x.cv.bs.length;q++)m[x.cv.bs[q].t]=x.cv.bs[q].med;return {si:x.si,nm:x.nm,typ:x.cv.typ,byT:m};});
@@ -6019,8 +6021,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         T(wrapW(r.nm,CW-ww-60,IN("700",33))[0],L+30,y+36,IN("700",33),C.ink);
         T(r.typ,R,y+36,SG("700",36),C.ink,"right");T(r.win,R,y+68,IN("500",24),C.muted,"right");y+=84;}
     }else{
-      y+=48;
-      for(i=0;i<D.read.length;i++){var rl=wrapW(D.read[i],CW,IN("500",31));for(j=0;j<rl.length;j++)T(rl[j],L,y+j*44,IN("500",31),SOFT);y+=rl.length*44+10;}
+      y+=78; /* 0728ic THE READ BREATHES: the section’s own gap under the title */
+      var fR=IN("500",31),fB=IN("700",31),spw=MW(" ",fR);
+      function readLines(rs){var words=[],k,q,lines=[],cur=[],w=0; /* words across runs; a run glues to the word before it only when neither side carries a space (a comma after a bold number; a bracket before one) */
+        for(k=0;k<rs.length;k++){var parts=rs[k].t.split(" ");for(q=0;q<parts.length;q++){if(parts[q]==="")continue;words.push({t:parts[q],b:rs[k].b,glue:(q===0&&k>0&&rs[k].t.charAt(0)!==" "&&rs[k-1].t.slice(-1)!==" "&&words.length>0)});}}
+        for(k=0;k<words.length;k++){var wd=words[k],ww=MW(wd.t,wd.b?fB:fR),add=(cur.length&&!wd.glue)?spw:0;if(cur.length&&w+add+ww>CW&&!wd.glue){lines.push(cur);cur=[];w=0;add=0;}cur.push(wd);w+=add+ww;}
+        if(cur.length)lines.push(cur);return lines;}
+      for(i=0;i<D.read.length;i++){var rl=readLines(D.read[i]);for(j=0;j<rl.length;j++){var xx=L,q;for(q=0;q<rl[j].length;q++){var wd2=rl[j][q];if(q&&!wd2.glue)xx+=spw;T(wd2.t,xx,y+j*44,wd2.b?fB:fR,wd2.b?C.ink:SOFT);xx+=MW(wd2.t,wd2.b?fB:fR);}}y+=rl.length*44+10;} /* 0728ic: the page’s bold, in ink */
       y-=10;
       sec("THE TYPICAL DAY, OVERLAID",D.chart.span);
       var ch0=D.chart,GUT=70,X0=L,X1=R-GUT,Y0=y,CH=440,Y1=Y0+CH,N=Math.round((ch0.t1-ch0.t0)/30)+1,slot=(X1-X0)/N;
