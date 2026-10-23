@@ -2713,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ie</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728if</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5464,7 +5464,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       (C.flat.length?'<div class="pf-more" style="border-top:0;padding-top:2px">One typical number all day \u2014 no morning story to tell: '+C.flat.map(function(o){return esc(o.nm)+" ("+o.flatV+"m)";}).join(", ")+'.</div>':'')+
       (C.out.length?'<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 this window ran too thin for a day shape: '+C.out.map(function(o){return esc(o.nm);}).join(", ")+'.</div>':'')+
       '<div class="pf-basis"'+((C.out.length||C.flat.length)?'':' style="border-top:0;padding-top:2px"')+'>Typical half-hour medians '+(tdPoolWord(lf9.pr,rpPark)?('over '+tdPoolWord(lf9.pr,rpPark)):({all:'over '+tdOrdWord(tdOrdWinN("all",rpPark)||days,!!(pfBase&&pfBase.bv)),last7:'over the last 7 days',month:'this month',wkend:'on weekends',trip:'on your trip\u2019s weekdays'})[rpWin])+' while operating \u00b7 walk-on = 10m or under'+rpWalkNote(C.never.concat(C.until,C.allday))+' \u00b7 times describe typical days, not today \u00b7 slots under 10 days hidden</div></div>'; /* 0728ea THE FINE PRINT NAMES THE POOL THE EYEBROW NAMES (owner glass Oct 4: PARTY DAYS \u00b7 24 THIS SEASON over a footer saying the last 28 days; ordinary boards said 25 above and 28 below): the basis speaks the pool\u2019s own words \u2014 tdPoolWord on a party face, tdOrdWord on the window\u2019s own ordinary count */
-    return crumb+hero+lens+body+foot;
+    return crumb+hero+lens+body+foot+((C.never.length||C.until.length||C.allday.length)?'<button class="pw-share rm-share" data-rdshare type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this board</button>':''); /* 0728if: the board's door */
   }
   /* ===== 0714c \u00b7 MY MORNING (L-28 cut 2) ====================================
      The coach card over the park's starred rides + their mornings side by side.
@@ -6072,6 +6072,96 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     fr.then(function(){
       function emit(shape){var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rcDrawCard(ctx,D,6000,shape));cv.height=Hf;ctx=cv.getContext("2d");rcDrawCard(ctx,D,Hf,shape);return cv;}
       pvOpen({key:"compare",alts:[{cv:emit("plan"),label:"Plan",fname:D.fname+"-plan.png"},{cv:emit("chart"),label:"Chart",fname:D.fname+"-chart.png"}],shareTitle:D.shareTitle});
+    });
+  }
+  /* ===== 0728if THE BOARD'S MORNING (owner-ruled Oct 23 on rd-sheet.png, R-C). The Rope drop board's share card — one shape, no chips. THE CARD READS THE
+     GLASS: rdcCardModel parses rdBoardHTML()'s own render — the hero's eyebrow, sentence and three counts, the sections' titles and captions, every row's name,
+     receipts and edge, the foot's disclosures, the basis. THE CARD PRINTS THE BOARD'S MORNING: the walk-on-until rows whose edge falls before noon print in
+     full; the rest fold into one line that names each ride with its clock; nothing folds, no line. ===== */
+  function rdcCardModel(){
+    var box=document.createElement("div");box.innerHTML=rdBoardHTML();
+    function tx(el){return el?String(el.textContent||"").replace(/\s+/g," ").trim():"";}
+    var heads=box.querySelectorAll(".rd-sechead");if(!heads.length)return null; /* the loading face, or a board with nothing seated: no card */
+    var eb=tx(box.querySelector(".rp-hero .eb")).replace(/^Rope Drop Board\s*·\s*/,""),ebp=eb.split(" · ");
+    var sub=tx(box.querySelector(".rp-hero .sub")),stats=[],hs=box.querySelectorAll(".rp-hero .hstat"),i,j;
+    for(i=0;i<hs.length;i++)stats.push({k:tx(hs[i].querySelector(".k")),v:tx(hs[i].querySelector(".v"))});
+    var secs=[];
+    for(i=0;i<heads.length;i++){var h=heads[i],cap=h.nextElementSibling,card=cap;
+      if(cap&&cap.classList.contains("rd-seccap"))card=cap.nextElementSibling;else cap=null;
+      var rows=[],its=card?card.querySelectorAll(".rd-item"):[];
+      for(j=0;j<its.length;j++){var it=its[j],ed9=it.querySelector(".rd-edge");
+        rows.push({nm:tx(it.querySelector(".rd-nm")),ctx:tx(it.querySelector(".rd-ctx")),v:tx(ed9&&ed9.querySelector("b")),u:tx(ed9&&ed9.querySelector("small")),cls:ed9?String(ed9.className||""):""});}
+      var t=tx(h),kind=/^No walk-on/i.test(t)?"never":/^Walk-on until/i.test(t)?"until":"allday";
+      secs.push({kind:kind,title:t,cap:tx(cap),rows:rows,fold:[]});}
+    for(i=0;i<secs.length;i++)if(secs[i].kind==="until"){var S=secs[i],keep=[],fold=[];
+      for(j=0;j<S.rows.length;j++)((S.rows[j].u==="AM")?keep:fold).push(S.rows[j]); /* before noon prints; noon and later folds, named with its clock */
+      S.rows=keep;S.fold=fold;}
+    var notes=[],pm=box.querySelectorAll(".pf-more");for(i=0;i<pm.length;i++)notes.push(tx(pm[i]));
+    var basis=tx(box.querySelector(".pf-basis")).split(" · ").slice(0,2).join(" · ");
+    var sl=(rpPark||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"park";
+    return {W:1080,park:rpPark||"",badge:(ebp[0]||"").toUpperCase(),pool:ebp.slice(1).join(" · "),date:new Date().toLocaleDateString("en-US",{timeZone:TZ,month:"short",day:"numeric"}),
+      sub:sub,stats:stats,secs:secs,notes:notes,basis:basis,fname:"ridecue-rope-drop-"+sl,shareTitle:"RideCue — Rope drop board · "+(rpPark||"")};
+  }
+  function rdcDrawCard(ctx,D,H){ /* returns where the card ends */
+    var W=D.W,C=PW_CARD_ALT,SOFT="#c8d2e8";
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function para(s,f,c,lh,mw){var ln=wrapW(s,mw||CW,f),q;for(q=0;q<ln.length;q++)T(ln[q],L,y+lh*0.78+q*lh,f,c);y+=ln.length*lh;}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j,q;
+    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    T(D.date,R,139,IN("700",28),C.ink,"right");
+    var bw=MW(D.badge,IN("700",22))+40;ctx.fillStyle="rgba(150,161,242,0.18)";rr(R-bw,160,bw,42,21);ctx.fill();LS("1px");T(D.badge,R-20,189,IN("700",22),"#c3c9ff","right");LS("0px");
+    if(D.pool)T(D.pool,R,236,IN("500",22),C.muted2,"right");
+    LS("3px");T("ROPE DROP BOARD · "+D.park.toUpperCase(),L,218,IN("800",28),C.accent);LS("0px");
+    y=299;T(D.park,L,y,SG("700",66),C.ink);
+    if(D.sub){y+=18;para(D.sub,IN("500",30),C.muted,40);}
+    if(D.stats.length){y+=24;hair(y);y+=22;var sw=CW/D.stats.length,top=y,kls=[],kmax=1;
+      for(i=0;i<D.stats.length;i++){kls.push(wrapW(D.stats[i].k.toUpperCase(),sw-24,IN("600",21)));if(kls[i].length>kmax)kmax=kls[i].length;}
+      for(i=0;i<D.stats.length;i++){var st=D.stats[i],al=i===0?"left":(i===D.stats.length-1?"right":"center"),sx=i===0?L:(i===D.stats.length-1?R:L+CW/2);
+        LS("2px");for(q=0;q<kls[i].length;q++)T(kls[i][q],sx,top+22+q*27,IN("600",21),C.muted2,al);LS("0px");
+        T(st.v,sx,top+22+kmax*27+52,SG("800",52),C.ink,al);} /* one baseline for the three values — the labels wrap, the numbers hold the line */
+      y=top+22+kmax*27+52+10;}
+    for(i=0;i<D.secs.length;i++){var S=D.secs[i];
+      y+=40;hair(y);y+=14;
+      LS("1.6px");T(S.title.toUpperCase(),L,y+30,IN("700",24),C.green);LS("0px");y+=40;
+      if(S.cap){para(S.cap,IN("500",24),C.muted2,32);y+=2;}
+      if(S.kind==="allday"){var by={},ks=[];for(j=0;j<S.rows.length;j++){var r0=S.rows[j];if(!by[r0.ctx]){by[r0.ctx]=[];ks.push(r0.ctx);}by[r0.ctx].push(r0.nm);}
+        for(j=0;j<ks.length;j++){y+=12;para(by[ks[j]].join(", ")+" — "+ks[j]+".",IN("500",27),SOFT,36);}
+        y+=8;continue;}
+      for(j=0;j<S.rows.length;j++){var r=S.rows[j],EW=170,TWD=CW-EW;if(j)hair(y);y+=18;
+        var vc=(S.kind==="until")?C.green:(function(){var m=/t-(short|medium|long|packed)/.exec(r.cls);return m?RME_TIER["t-"+m[1]]:C.ink;})();
+        var y0=y,hl=wrapW(r.nm,TWD,IN("700",31));for(q=0;q<hl.length;q++)T(hl[q],L,y+32+q*40,IN("700",31),C.ink);y+=hl.length*40;
+        var wl=wrapW(r.ctx,TWD,IN("500",25));for(q=0;q<wl.length;q++)T(wl[q],L,y+26+q*33,IN("500",25),SOFT);y+=wl.length*33+16;
+        var mid=(y0+y)/2;T(r.v,R,mid+14,SG("800",40),vc,"right");LS("1.6px");T(r.u.toUpperCase(),R,mid+42,IN("600",20),C.muted2,"right");LS("0px");
+        if(y<y0+88)y=y0+88;}
+      if(S.fold.length){y+=20;var f0=S.fold[0];
+        T("+"+S.fold.length+" more, walk-on until "+f0.v+" "+f0.u+" or later",L,y+26,IN("700",26),SOFT);y+=42;
+        para(S.fold.map(function(x){return x.nm+" ("+x.v+" "+x.u+")";}).join(", ")+".",IN("500",26),C.muted,35);y+=6;}}
+    for(i=0;i<D.notes.length;i++){y+=16;para(D.notes[i],IN("500",24),C.muted2,32);}
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    var bl=wrapW(D.basis,CW-300,IN("500",26));if(bl.length>2)bl=wrapW(D.basis.split(" · ")[0],CW-300,IN("500",26)); /* two lines beside the credit; the tail clause yields */
+    T(bl[0]||"",L,y+59,IN("500",26),C.muted2);T(bl.length>2?bl.slice(1).join(" "):(bl[1]||""),L,y+93,IN("500",26),C.muted2);
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    ctx.restore();
+    return y+98+52+36;
+  }
+  function rdcShareCard(){ /* the family lifecycle: fonts.ready → two-pass self-size → the sheet, one shape */
+    var D=rdcCardModel();if(!D)return;
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rdcDrawCard(ctx,D,6000));cv.height=Hf;ctx=cv.getContext("2d");rdcDrawCard(ctx,D,Hf);
+      pvOpen({key:"board",alts:[{cv:cv,label:"Board",fname:D.fname+".png"}],shareTitle:D.shareTitle});
     });
   }
   /* ===== 0728id THE MORNING AND EVENING CARDS · LIST OR TIMELINE (owner-ruled Oct 23 on me-pairs-sheet.png). THE CARD READS THE GLASS: the model parses
@@ -8580,6 +8670,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     var rcsh=el.querySelector("[data-rcshare]");if(rcsh)rcsh.addEventListener("click",function(){rcShareCard();}); /* 0728ib: the Compare card's door */
     var rmsh=el.querySelector("[data-rmshare]");if(rmsh)rmsh.addEventListener("click",function(){rmeShareCard(rmsh.getAttribute("data-rmshare"));}); /* 0728id: the morning and evening cards' doors */
+    var rdsh=el.querySelector("[data-rdshare]");if(rdsh)rdsh.addEventListener("click",function(){rdcShareCard();}); /* 0728if: the board's door */
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
