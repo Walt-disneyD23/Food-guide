@@ -872,6 +872,12 @@
   .rc-sheet.anim,.td-sheet.anim{animation:rcUp .28s cubic-bezier(.32,.72,0,1)}
   @keyframes rcUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .rc-grab{width:38px;height:4px;border-radius:999px;background:var(--muted-2);opacity:.5;margin:4px auto 12px}
+  /* 0728hz THE CARD SHOWS ITSELF FIRST: the preview sheet wears the ride sheet (td-scrim/td-sheet), above every sheet it can open from; the card scales to fit so the button never hides */
+  .pv-scrim{z-index:92} .pv-sheet{z-index:93;display:flex;flex-direction:column;max-height:92vh;overflow:hidden} .pv-sheet .help-h{margin-bottom:6px}
+  .pv-sub{font-size:var(--fs-small);color:var(--muted);margin-top:1px}
+  .pv-card{flex:0 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;margin-top:6px} .pv-card img{display:block;max-width:100%;max-height:calc(92vh - 178px - env(safe-area-inset-bottom,0px));object-fit:contain} .pv-sheet.two .pv-card img{max-height:calc(92vh - 232px - env(safe-area-inset-bottom,0px))} /* the tall card shrinks to leave the button its seat: the sheet’s chrome (grab, header, button, paddings) measured at 178px, 232px with the chips; a percentage would not bind under a max-height; no radius or shadow of its own — the card carries its corners and its mat is clear */
+  .pv-seg{margin-top:14px;flex:none} .pv-seg b{font-size:13px;padding:9px 0} .pv-share{flex:none}
+  body.pv-open{overflow:hidden}
   .rc-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
   .rc-title .cnt{flex:none;font:700 var(--fs-small) var(--font-body);color:var(--accent);white-space:nowrap} /* 0725u: the seat counter */
   .rc-sub{color:var(--muted);font-size:var(--fs-meta);margin:3px 0 12px}
@@ -2707,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hy</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hz</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2997,6 +3003,43 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      the sheet is scrolled to its top and the finger moves downward; inner
      scrolling wins otherwise. Follows 1:1, fades the scrim with travel,
      springs back under the threshold. One implementation, every sheet. */
+  /* ===== 0728hz THE CARD SHOWS ITSELF FIRST · ONE LIFECYCLE (owner-ruled Oct 23: B — every share card opens a preview first — and dress P-A, the family sheet).
+     Every door hands its drawn canvas to pvOpen; the twelve copies of toBlob → canShare/download fold into pvShare. The sheet is the ride sheet's
+     (td-scrim/td-sheet/rc-grab, sheetDragDismiss), the header the help sheet's, the chips My Rides' pill, the button the Wrap's. The card scales to
+     fit — the button never hides (the hand beats the sink). Chips only where a card has two shapes; the last pick is remembered per door (store
+     pvPick.<key>). The sub-line is the card's own share title — no new copy. The native share sheet opens from the button, so iOS keeps its gesture. ===== */
+  var pvEl=null;
+  function pvSub(t){return String(t||"").replace(/^RideCue(\s*—\s*|$)/,"");}
+  function pvShare(cv,fname,title){ /* the family lifecycle, verbatim, once */
+    cv.toBlob(function(blob){
+      if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
+      var file=new File([blob],fname,{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:title})["catch"](function(){});}
+      else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
+    },"image/png");
+  }
+  function pvClose(){if(pvEl)pvEl.innerHTML="";document.body.classList.remove("pv-open");}
+  function pvOpen(o){ /* o:{alts:[{cv,label,fname,shareTitle}],fname,shareTitle,key} — one alt, no chips */
+    var alts=(o&&o.alts)||[];if(!alts.length||!alts[0].cv)return;
+    if(!pvEl){pvEl=document.createElement("div");pvEl.id="pvHost";document.body.appendChild(pvEl);}
+    var pick=0;if(alts.length>1&&o.key){var p=store.get("pvPick."+o.key,0);if(typeof p==="number"&&p>=0&&p<alts.length)pick=p;}
+    function alt(i){var a=alts[i];return {cv:a.cv,fname:a.fname||o.fname||"ridecue-card.png",title:a.shareTitle||o.shareTitle||"RideCue"};}
+    pvEl.innerHTML='<div class="td-scrim pv-scrim"></div><div class="td-sheet pv-sheet anim'+(alts.length>1?' two':'')+'" role="dialog" aria-label="Share"><div class="rc-grab"></div>'+
+      '<div class="help-h"><div><div class="help-title">Share</div><div class="pv-sub"></div></div><button class="help-x" type="button" data-pv-x aria-label="Close">✕</button></div>'+
+      '<div class="pv-card"><img alt=""></div>'+
+      (alts.length>1?'<div class="mr-seg pv-seg">'+alts.map(function(a,i){return '<b data-pv-alt="'+i+'">'+esc(a.label||("Card "+(i+1)))+'</b>';}).join("")+'</div>':'')+
+      '<button class="pw-share pv-share" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share card</button></div>';
+    var sh=pvEl.querySelector(".pv-sheet"),sc=pvEl.querySelector(".pv-scrim"),img=pvEl.querySelector(".pv-card img"),sub=pvEl.querySelector(".pv-sub"),chips=pvEl.querySelectorAll("[data-pv-alt]");
+    function show(i){pick=i;var a=alt(i);img.src=a.cv.toDataURL("image/png");sub.textContent=pvSub(a.title);
+      Array.prototype.forEach.call(chips,function(b){b.classList.toggle("on",+b.getAttribute("data-pv-alt")===i);});}
+    show(pick);
+    Array.prototype.forEach.call(chips,function(b){b.addEventListener("click",function(){var i=+b.getAttribute("data-pv-alt");show(i);if(o.key)store.set("pvPick."+o.key,i);});});
+    pvEl.querySelector("[data-pv-x]").addEventListener("click",pvClose);
+    sc.addEventListener("click",pvClose);
+    pvEl.querySelector(".pv-share").addEventListener("click",function(){var a=alt(pick);pvShare(a.cv,a.fname,a.title);});
+    sheetDragDismiss(sh,sc,pvClose);
+    document.body.classList.add("pv-open");
+  }
   function sheetDragDismiss(sh,sc,after){
     var sy=0,dy=0,drag=false,engaged=false,swallow=false;
     sh.addEventListener("touchstart",function(e){
@@ -3131,7 +3174,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var startY=0,pulling=false,armed=false,busy=false;
     var THRESH=72,MAX=118,DAMP=0.45;
     function sheetOpen(){var b=document.body.classList;
-      return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open");}
+      return b.contains("alerts-open")||b.contains("help-open")||b.contains("set-open")||b.contains("rc-open")||b.contains("pv-open");} /* 0728hz: the preview sheet locks the pull too */
     function badTarget(t){return !!(t&&t.closest&&t.closest(".pw-scrub,.pw-hsw,#alertsPop,#helpSheet,#setPop,#igPop,#statusPop,#proofPop,.dn-list.open,.rc-sheet,.td-sheet,.td-grip"));}
     function setPull(px){
       ptr.classList.add("pull");
@@ -4322,12 +4365,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       cv.height=Hf; /* resizing resets the context state */
       ctx=cv.getContext("2d");
       uxDrawCard(ctx,D,Hf);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var file=new File([blob],D.fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:D.shareTitle})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-      },"image/png");
+      pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
 
@@ -4765,12 +4803,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       (draw||pfDrawCard)(ctx,D);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var file=new File([blob],D.fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:D.shareTitle})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-      },"image/png");
+      pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
   function pfShareCallout(c,days){
@@ -7180,13 +7213,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=tdDrawCard(D);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var slug=((t.n||"trip").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trip");
-        var fname="ridecue-"+slug+"-"+ds+".png",file=new File([blob],fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:"RideCue \u2014 "+tpWDn(ds)+", "+tpMD(ds)})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();}
-      },"image/png");
+      var slug=((t.n||"trip").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trip");
+      pvOpen({alts:[{cv:cv}],fname:"ridecue-"+slug+"-"+ds+".png",shareTitle:"RideCue \u2014 "+tpWDn(ds)+", "+tpMD(ds)}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
   function tpRangeBig(t){ /* 0717u Cut 2a: the card's condensed big range - OCT 25 \u2013 29 / OCT 30 \u2013 NOV 3 */
@@ -7346,12 +7374,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var D=tpCardData(t);
     document.fonts.ready.then(function(){
       var cv=tpDrawCard(D);
-      cv.toBlob(function(blob){ if(!blob)return;
-        var slug=((t.n||"trip").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trip");
-        var fname="ridecue-"+slug+"-"+t.a+".png",file=new File([blob],fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:"RideCue \u2014 "+(t.n||"My trip")})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();}
-      },"image/png");
+      var slug=((t.n||"trip").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"trip");
+      pvOpen({alts:[{cv:cv}],fname:"ridecue-"+slug+"-"+t.a+".png",shareTitle:"RideCue \u2014 "+(t.n||"My trip")}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
   /* ===== 0728r THE ADVISOR · S2 — THE CARD, HELD (Advisor-Spec.md §12 · Advisor-Doctrine.md · the S2 mock of record advisor-v6-mock.html, owner's toggles Sep 8 11:14 PM: E-B hero · W-A seats + bar · M-C the header is the plan · G-B the row says its answer · X-A rest is a tile on the row · rail header on · kept / your pick · moved = a soft fill · no ties · anchor on re-render).
@@ -8005,13 +8029,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var x=cv.getContext("2d");tfDrawCard(x,D);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var slug=D.range.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"plan";
-        var fname="ridecue-plan-"+slug+".png",file=new File([blob],fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:"RideCue \u2014 "+D.range})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-      },"image/png");
+      var slug=D.range.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"plan";
+      pvOpen({alts:[{cv:cv}],fname:"ridecue-plan-"+slug+".png",shareTitle:"RideCue \u2014 "+D.range}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
   function tpHomeHTML(){ /* 0717d: the planner's HOMEPAGE (owner pick A1) \u2014 the jewel hero + twin doors; both landing states wear it, and it moves whole to the dedicated tab in polish week */
@@ -8261,12 +8280,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=document.createElement("canvas");cv.width=w;cv.height=hh;var x=cv.getContext("2d");draw(x,D);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var file=new File([blob],fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:title})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-      },"image/png");
+      pvOpen({alts:[{cv:cv}],fname:fname,shareTitle:title}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
   function pcBind(el){
@@ -8931,18 +8945,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       drawSnapshot(ctx,d);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var fname="ridecue-"+key.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png";
-        var file=new File([blob],fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){
-          navigator.share({files:[file],url:"https://ridecue.live/c/",title:"RideCue \u2014 "+key}).catch(function(){});
-        }else{
-          var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;
-          document.body.appendChild(a);a.click();a.remove();
-          if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");
-        }
-      },"image/png");
+      pvOpen({alts:[{cv:cv}],fname:"ridecue-"+key.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",shareTitle:"RideCue \u2014 "+key}); /* 0728hz: the preview sheet — one lifecycle */
     });
 
     function drawSnapshot(ctx,d){
@@ -9384,12 +9387,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       cv.height=Hf; /* resizing resets the context state */
       ctx=cv.getContext("2d");
       rbDrawCard(ctx,D,Hf);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var file=new File([blob],D.fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:D.shareTitle})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-      },"image/png");
+      pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
 
@@ -9420,17 +9418,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       drawDownGrouped(ctx,d);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var file=new File([blob],"ridecue-down.png",{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){
-          navigator.share({files:[file],url:"https://ridecue.live/c/",title:"RideCue \u2014 Down right now"}).catch(function(){});
-        }else{
-          var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ridecue-down.png";
-          document.body.appendChild(a);a.click();a.remove();
-          if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");
-        }
-      },"image/png");
+      pvOpen({alts:[{cv:cv}],fname:"ridecue-down.png",shareTitle:"RideCue \u2014 Down right now"}); /* 0728hz: the preview sheet — one lifecycle */
     });
 
     function drawDownGrouped(ctx,d){
@@ -10620,13 +10608,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var x=cv.getContext("2d");tyDrawCard(x,D);
-      cv.toBlob(function(blob){
-        if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-        var slug=D.park.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"park";
-        var fname="ridecue-today-"+slug+"-"+D.clock.replace(/[^0-9]/g,"")+".png",file=new File([blob],fname,{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:"RideCue \u2014 "+D.park+", "+D.clock})["catch"](function(){});}
-        else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-      },"image/png");
+      var slug=D.park.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"park";
+      pvOpen({alts:[{cv:cv}],fname:"ridecue-today-"+slug+"-"+D.clock.replace(/[^0-9]/g,"")+".png",shareTitle:"RideCue \u2014 "+D.park+", "+D.clock}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
   function renderTodayPage(){
@@ -14423,12 +14406,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
         drawStormCard(ctx,D);
-        cv.toBlob(function(blob){
-          if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-          var file=new File([blob],D.fname,{type:"image/png"});
-          if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:D.shareTitle})["catch"](function(){});}
-          else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-        },"image/png");
+        pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
       });
     }
     function drawStormCard(ctx,D){
@@ -14569,12 +14547,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
         drawCard(ctx,D);
-        cv.toBlob(function(blob){
-          if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-          var file=new File([blob],D.fname,{type:"image/png"});
-          if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],url:"https://ridecue.live/c/",title:D.shareTitle})["catch"](function(){});}
-          else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=D.fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-        },"image/png");
+        pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
       });
     }
     function drawCard(ctx,D){
