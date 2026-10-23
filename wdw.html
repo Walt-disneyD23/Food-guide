@@ -2713,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ic</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728id</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5575,7 +5575,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
     var plan='<div class="rpc rm-rec"><div class="lbl">Your morning</div>'+rec+(flats.length?'<div class="pf-more" style="border-top:0;padding-top:2px">One typical number all day \u2014 no morning story to tell: '+flats.map(function(o){return esc(o.nm)+" ("+o.cv.bs[0].med+"m)";}).join(", ")+'.</div>':'')+
       '<div class="pf-basis">What typical mornings suggest \u2014 a pattern, not today\u2019s promise \u00b7 no walk-on at the open = the typical line is over 10m when the park opens; you can rope-drop one \u00b7 walk-on until = the typical edge, with no evening return \u00b7 back later = the clock walk-on returns \u00b7 easy all day = walk-on at every hour \u00b7 priciest miss listed first'+rpWalkNote(ord)+'</div></div>';
-    return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs);
+    return crumb+hero+lens+plan+rmLanesHTML(ord)+rmOuts(outs)+'<button class="pw-share rm-share" data-rmshare="morning" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my morning</button>'; /* 0728id: the morning card's door */
   }
 /* ===== 0719l (ME): MY EVENING \u2014 engine + landing =========================
      The morning's mirror on the same organs: rpWinCurve curves, rpHmDays day
@@ -5699,7 +5699,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(thin.length)tail='<div class="pf-more" style="border-top:0;padding-top:2px">Not placed \u2014 the evening ran too thin here: '+thin.map(function(o){return esc(o.nm);}).join(", ")+'.</div>';
     var plan='<div class="rpc rm-rec"><div class="lbl">Your evening</div>'+rec+tail+
       '<div class="pf-basis">What typical evenings suggest \u2014 a pattern, not tonight\u2019s promise \u00b7 whenever suits you = rides that ease least, so they cost the same now \u00b7 easier after = the clock a line typically falls to walk-on and stays'+(gTch?' \u00b7 ~ = it touches walk-on around then, and climbs again':'')+' \u00b7 save for last = the deepest measured dip, arriving latest \u00b7 evening = '+rpClk(win.a)+' to '+rpClk(win.b)+', the window the record kept \u00b7 walk-on = 10m or under'+rpWalkNote(items)+meCtx(items,rpWin)+'</div></div>';
-    return crumb+hero+lens+plan+meLanesHTML(ord,win)+rmOuts(outs);
+    return crumb+hero+lens+plan+meLanesHTML(ord,win)+rmOuts(outs)+'<button class="pw-share rm-share" data-rmshare="evening" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my evening</button>'; /* 0728id: the evening card's door */
   }
   function mdLandingHTML(){
     var crumb=rpBackBtn(rpDest?"parks":esc(rpPark))+'<div class="rp-crumb">Plan \u203a Parks \u203a '+esc(rpPark)+' \u203a <b>My day</b></div>';
@@ -6066,6 +6066,108 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     fr.then(function(){
       function emit(shape){var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rcDrawCard(ctx,D,6000,shape));cv.height=Hf;ctx=cv.getContext("2d");rcDrawCard(ctx,D,Hf,shape);return cv;}
       pvOpen({key:"compare",alts:[{cv:emit("plan"),label:"Plan",fname:D.fname+"-plan.png"},{cv:emit("chart"),label:"Chart",fname:D.fname+"-chart.png"}],shareTitle:D.shareTitle});
+    });
+  }
+  /* ===== 0728id THE MORNING AND EVENING CARDS · LIST OR TIMELINE (owner-ruled Oct 23 on me-pairs-sheet.png). THE CARD READS THE GLASS: the model parses
+     the page's own rendered HTML — rmMorningHTML / meEveningHTML — so every word on the card is a word the page prints: the groups and their marks (GO · or ·
+     any · LAST · the clock), the rows' sentences, the lanes' cells and edge words, the basis. Two shapes: LIST (the plan) and TIMELINE (the strips); the Up
+     Next card's hand; self-sized in two passes; pvOpen with the pick remembered per door. ===== */
+  var RME_TIER={"t-short":"#3dd68c","t-medium":"#ffce5c","t-long":"#ff9f6b","t-packed":"#ff6b6b"};
+  function rmeCardModel(kind){
+    var html=(kind==="evening")?meEveningHTML():rmMorningHTML(),box=document.createElement("div");box.innerHTML=html;
+    var rec=box.querySelector(".rm-rec");if(!rec)return null; /* the first face, the loading face, a thin window: no plan, no card */
+    function tx(el){return el?String(el.textContent||"").replace(/\s+/g," ").trim():"";}
+    var eb=tx(box.querySelector(".rp-hero .eb")).replace(/^My (Morning|Evening)\s*·\s*/,""),ebp=eb.split(" · ");
+    var h2=box.querySelector(".rp-hero h2"),fs=h2?h2.querySelector(".fs"):null,stars=fs?tx(fs).replace(/★/g,""):"";
+    var groups=[],g=null,i,kids=rec.children;
+    for(i=0;i<kids.length;i++){var k=kids[i];
+      if(k.classList.contains("grp")){var sm=k.querySelector("small");g={lab:tx(k).replace(tx(sm),"").trim(),small:tx(sm),rows:[]};groups.push(g);}
+      else if(k.classList.contains("row")&&g){var n=k.querySelector(".n");g.rows.push({n:tx(n),ncls:n?String(n.className||"").replace(/^n\s*/,""):"",hd:tx(k.querySelector(".hd")),why:tx(k.querySelector(".why"))});}}
+    var flats=tx(rec.querySelector(".pf-more")),basisL=tx(rec.querySelector(".pf-basis")).split(" · ")[0];
+    var lanes=null,lb=null,all=box.querySelectorAll(".rpc");
+    for(i=0;i<all.length;i++)if(all[i].querySelector(".rm-item")){lb=all[i];break;}
+    if(lb){var lbl=tx(lb.querySelector(".lbl")).split(" · "),items=[],its=lb.querySelectorAll(".rm-item"),j;
+      for(i=0;i<its.length;i++){var it=its[i],ed9=it.querySelector(".rm-edge"),cells=[],cs=it.querySelectorAll(".rm-lane i");
+        for(j=0;j<cs.length;j++){var cl=cs[j].className||"",m=/t-(short|medium|long|packed)/.exec(cl);cells.push({t:m?"t-"+m[1]:null,wo:/\bwo\b/.test(cl),sp:/\bsp\b/.test(cl)});}
+        items.push({nm:tx(it.querySelector(".rm-nm")).replace(/\s*★\s*$/,""),edge:tx(ed9),mut:!!(ed9&&/\bmut\b/.test(ed9.className)),cells:cells});}
+      var ax=[],axs=lb.querySelectorAll(".rm-axis span");for(i=0;i<axs.length;i++)ax.push(tx(axs[i]));
+      var key=[],ks=lb.querySelectorAll(".rm-key span");for(i=0;i<ks.length;i++){var ki=ks[i].querySelector("i");key.push({cls:ki?String(ki.className||""):"",t:tx(ks[i])});}
+      lanes={lbl:lbl[0]||"",span:lbl[1]||"",axis:ax,items:items,key:key,basis:tx(lb.querySelector(".pf-basis"))};}
+    var sl=(rpPark||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"park",K=(kind==="evening")?"evening":"morning";
+    return {W:1080,kind:K,park:rpPark||"",stars:stars,badge:(ebp[0]||"").toUpperCase(),pool:ebp.slice(1).join(" · "),date:new Date().toLocaleDateString("en-US",{timeZone:TZ,month:"short",day:"numeric"}),
+      lbl:tx(rec.querySelector(".lbl")),groups:groups,flats:flats,basisL:basisL,lanes:lanes,
+      fname:"ridecue-"+K+"-"+sl,shareTitle:"RideCue — My "+K+" · "+(rpPark||"")};
+  }
+  function rmeDrawCard(ctx,D,H,shape){ /* shape: "list" | "timeline"; returns where the card ends */
+    var W=D.W,C=PW_CARD_ALT,SOFT="#c8d2e8",GOLD="#ffce5c";
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function sec(tx,rt){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);LS("0px");if(rt)T(rt,R,y+24,IN("500",26),C.muted,"right");y+=51;}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j;
+    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    T(D.date,R,139,IN("700",28),C.ink,"right");
+    var bw=MW(D.badge,IN("700",22))+40;ctx.fillStyle="rgba(150,161,242,0.18)";rr(R-bw,160,bw,42,21);ctx.fill();LS("1px");T(D.badge,R-20,189,IN("700",22),"#c3c9ff","right");LS("0px");
+    if(D.pool)T(D.pool,R,236,IN("500",22),C.muted2,"right");
+    LS("3px");T("MY "+D.kind.toUpperCase()+" · "+D.park.toUpperCase(),L,218,IN("800",28),C.accent);LS("0px");
+    y=299;T(D.park,L,y,SG("700",66),C.ink);
+    if(D.stars){var pw9=MW(D.park,SG("700",66))+22;T("★",L+pw9,y-2,SG("700",50),GOLD);T(D.stars,L+pw9+MW("★",SG("700",50))+6,y,SG("700",58),GOLD);}
+    y+=6;
+    if(shape==="list"){
+      sec(D.lbl.toUpperCase());y-=12;
+      for(i=0;i<D.groups.length;i++){var gr=D.groups[i];
+        if(i)y+=10;hair(y);y+=14;
+        LS("1.6px");T(gr.lab.toUpperCase(),L,y+30,IN("700",24),C.green);LS("0px");if(gr.small)T(gr.small,R,y+30,IN("500",24),C.muted2,"right");y+=46;
+        for(j=0;j<gr.rows.length;j++){var r=gr.rows[j],TX=L+110,TWD=R-TX;if(j)hair(y);y+=18;
+          var mk=r.n,mkf=(r.ncls==="pick"||r.ncls==="last")?IN("800",24):IN("700",24),mkc=(r.ncls==="pick"||r.ncls==="last")?C.accent:C.muted;
+          LS((r.ncls==="pick"||r.ncls==="last"||r.ncls==="or"||r.ncls==="any")?"1.5px":"0px");T(mk,L,y+34,mkf,mkc);LS("0px");
+          var hl=wrapW(r.hd,TWD,IN("700",33));for(var q=0;q<hl.length;q++)T(hl[q],TX,y+34+q*42,IN("700",33),C.ink);y+=hl.length*42;
+          var wl=wrapW(r.why,TWD,IN("500",27));for(q=0;q<wl.length;q++)T(wl[q],TX,y+28+q*36,IN("500",27),SOFT);y+=wl.length*36+16;}}
+      if(D.flats){y+=14;var fl=wrapW(D.flats,CW,IN("500",25));for(i=0;i<fl.length;i++)T(fl[i],L,y+28+i*34,IN("500",25),C.muted2);y+=fl.length*34+10;}
+    }else if(D.lanes){var LN=D.lanes;
+      sec(LN.lbl.toUpperCase(),LN.span);y-=22;
+      var ncell=LN.items.length?LN.items[0].cells.length:0,gap=6,cwid=ncell?(CW-gap*(ncell-1))/ncell:0;
+      if(LN.axis.length>1){for(i=0;i<LN.axis.length;i++){var ax=L+(CW)*i/(LN.axis.length-1);T(LN.axis[i],ax,y+20,IN("600",21),C.muted2,i===0?"left":(i===LN.axis.length-1?"right":"center"));}y+=34;}
+      for(i=0;i<LN.items.length;i++){var it=LN.items[i];if(i)hair(y);y+=22;
+        var nf=IN("700",31),ew=MW(it.edge,IN("600",24))+24,nm=ell(it.nm,CW-ew-50,nf);T(nm,L,y+32,nf,C.ink);T("★",L+MW(nm,nf)+12,y+30,SG("700",26),GOLD); /* a long name yields to its edge word, with its ellipsis */
+        T(it.edge,R,y+32,IN("600",24),it.mut?C.muted2:C.green,"right");y+=52;
+        for(j=0;j<it.cells.length;j++){var c9=it.cells[j],x9=L+j*(cwid+gap);
+          ctx.fillStyle=c9.sp?"rgba(255,255,255,0.07)":(c9.t?RME_TIER[c9.t]:C.muted2);ctx.globalAlpha=c9.sp?1:0.85;rr(x9,y,cwid,16,4);ctx.fill();ctx.globalAlpha=1;
+          if(c9.wo){ctx.fillStyle="#ffffff";rr(x9,y+22,cwid,4,2);ctx.fill();}}
+        y+=38;}
+      y+=18;var kx=L;for(i=0;i<LN.key.length;i++){var ke=LN.key[i],m9=/t-(short|medium|long|packed)|\bk-([smlp])\b/.exec(ke.cls),col=null;
+        if(m9){var kk=m9[1]||({s:"short",m:"medium",l:"long",p:"packed"})[m9[2]];col=RME_TIER["t-"+kk];}
+        var kw=MW(ke.t,IN("600",22))+56;if(kx>L&&kx+kw>R){kx=L;y+=36;}
+        if(/\bln\b/.test(ke.cls)){ctx.fillStyle="#ffffff";rr(kx,y+6,28,4,2);ctx.fill();}else{ctx.fillStyle=col||"rgba(255,255,255,0.12)";ctx.globalAlpha=col?0.85:1;rr(kx,y,28,14,4);ctx.fill();ctx.globalAlpha=1;}
+        T(ke.t,kx+40,y+14,IN("600",22),C.muted);kx+=kw+6;}
+      y+=20;
+    }
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    var bw2=CW-300,bt=(shape==="list")?D.basisL:(D.lanes?D.lanes.basis:""),bl=wrapW(bt,bw2,IN("500",26));
+    T(bl[0]||"",L,y+59,IN("500",26),C.muted2);T(bl.length>2?bl.slice(1).join(" "):(bl[1]||""),L,y+93,IN("500",26),C.muted2);
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    ctx.restore();
+    return y+98+52+36;
+  }
+  function rmeShareCard(kind){ /* the family lifecycle: fonts.ready → two-pass self-size, twice → the sheet with both shapes */
+    var D=rmeCardModel(kind);if(!D)return;
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      function emit(shape){var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rmeDrawCard(ctx,D,6000,shape));cv.height=Hf;ctx=cv.getContext("2d");rmeDrawCard(ctx,D,Hf,shape);return cv;}
+      var alts=[{cv:emit("list"),label:"List",fname:D.fname+"-list.png"}];
+      if(D.lanes)alts.push({cv:emit("timeline"),label:"Timeline",fname:D.fname+"-timeline.png"}); /* no strips on the page, no Timeline shape */
+      pvOpen({key:D.kind,alts:alts,shareTitle:D.shareTitle});
     });
   }
   function rpAttrHTML(){
@@ -8471,6 +8573,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     el.querySelectorAll("[data-rclens]").forEach(function(b){b.addEventListener("click",function(){ /* 0714m: the card's lens */
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
     var rcsh=el.querySelector("[data-rcshare]");if(rcsh)rcsh.addEventListener("click",function(){rcShareCard();}); /* 0728ib: the Compare card's door */
+    var rmsh=el.querySelector("[data-rmshare]");if(rmsh)rmsh.addEventListener("click",function(){rmeShareCard(rmsh.getAttribute("data-rmshare"));}); /* 0728id: the morning and evening cards' doors */
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
