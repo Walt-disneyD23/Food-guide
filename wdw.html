@@ -2713,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728hz</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ib</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5942,7 +5942,124 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       '<div class="sub">'+esc(rpPark||"")+' \u00b7 one scale \u00b7 now as of '+rpClk(rcEtMin(new Date()))+' \u00b7 refreshes ~3 min while open</div></div>';
     var lens=!tpLensTrip()?'':'<div class="rp-hmpre">'+[["all","Last 4 weeks"],["trip","Trip days"]].map(function(t){ /* 0728bh ONE WINDOW: the record windows left the lens (they never met the floor); the row exists only beside Trip days */
       return '<button class="hl-tab'+(rpWin===t[0]?' on':'')+'" data-hmp="'+t[0]+'" type="button">'+t[1]+'</button>';}).join("")+'</div>';
-    return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcOrderHTML(its)+rcTableHTML(its,days);
+    var door=(its.filter(function(x){return !!x.cv;}).length>=2)?'<button class="pw-share rc-share" data-rcshare type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this compare</button>':''; /* 0728ib THE COMPARE CARD: the door prints when the order card does (two drawable rides) */
+    return crumb+hero+lens+rcReadHTML(its)+rcChartHTML(its)+rcOrderHTML(its)+rcTableHTML(its,days)+door;
+  }
+  /* ===== 0728ib THE COMPARE CARD · TWO SHAPES, ONE SHEET (owner-ruled Oct 23: Plan · Chart on compare-pair-sheet.png) — the first two-shape door.
+     The model is the page's own: rpWinCurve for the curves, rmClass/rmPlanOrder/rmCoach/rmTailWhy for the order (verbatim calls, as rcDayBody makes
+     them), rcReadHTML's own sentences for the read, the lines the page draws. Jewel dress (a before card), the Up Next card's hand, ONE FOOTER HAND;
+     self-sized in two passes. The sheet offers both shapes and remembers the pick (pvPick.compare). ===== */
+  var RC_INK=["#8b87ff","#22d3ee","#e879f9"]; /* Harbor's --cmp-p1..3: the seat inks the page wears in the dark, bright enough for the jewel field */
+  function rcCardModel(){
+    var w=rpWinDs(rpWin),days=w.n||((pfBase&&pfBase.days)||28),i,j;
+    var EBW={all:(days===28?"LAST 4 WEEKS":"LAST "+days+" DAYS"),last7:"LAST 7 DAYS",month:"THIS MONTH",wkend:"WEEKENDS",trip:"YOUR TRIP DAYS"};
+    var WN={all:"Last "+days+" days",last7:"The last 7 days",month:"This month",wkend:"Weekends",trip:"Your trip days"};
+    var its=[];for(i=0;i<rcIds.length;i++){var rr=roster[rcIds[i]]||{};its.push({id:rcIds[i],nm:rr.name||"",cv:rpWinCurve(rcIds[i],rpWin),si:i});}
+    var wc=its.filter(function(x){return !!x.cv;});if(wc.length<2)return null;
+    function un(h){return String(h).replace(/<[^>]*>/g,"").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g," ").trim();} /* the page's HTML, spoken plain */
+    var items=wc.map(function(x){return {id:x.id,nm:x.nm,cv:x.cv,si:x.si,cls:rmClass(x.cv)};}),ord=rmPlanOrder(items),head=[],tail=[];
+    for(i=0;i<ord.length;i++)(ord[i].cls==="never"||ord[i].cls==="burn"?head:tail).push(ord[i]);
+    var plan=[];for(i=0;i<head.length;i++){var c=rmCoach(head[i],i===0);plan.push({si:head[i].si,hd:un(c.hd),why:un(c.why)});}
+    var later=tail.map(function(t){return {si:t.si,nm:t.nm,why:un(rmTailWhy(t))};});
+    var led=wc.map(function(x){var cv=x.cv;return {si:x.si,nm:x.nm,typ:cv.typ+"m",win:cv.allday?"walk-on all day":(cv.front===null?"never a walk-on":(cv.back===null?"walk-on until "+rpClk(cv.front):"until "+rpClk(cv.front)+" · after "+rpClk(cv.back)))};});
+    var read=(rcReadHTML(its).match(/<p>[\s\S]*?<\/p>/g)||[]).map(un); /* SAME QUESTION SAME SENTENCE: the page's read, sentence for sentence */
+    var t0=1e9,t1=-1;for(i=0;i<wc.length;i++){var bs=wc[i].cv.bs;if(bs[0].t<t0)t0=bs[0].t;if(bs[bs.length-1].t>t1)t1=bs[bs.length-1].t;}
+    var mx=40;for(i=0;i<wc.length;i++){var b2=wc[i].cv.bs;for(j=0;j<b2.length;j++)if(b2[j].med+8>mx)mx=b2[j].med+8;}
+    var series=wc.map(function(x){var m={},q;for(q=0;q<x.cv.bs.length;q++)m[x.cv.bs[q].t]=x.cv.bs[q].med;return {si:x.si,nm:x.nm,typ:x.cv.typ,byT:m};});
+    var sl=(rpPark||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"park";
+    return {W:1080,park:rpPark||"",n:wc.length,badge:EBW[rpWin]||EBW.all,date:new Date().toLocaleDateString("en-US",{timeZone:TZ,month:"short",day:"numeric"}),asof:"as of "+rpClk(rcEtMin(new Date()))+" ET",
+      title:(wc.length===3?"Three":"Two")+" rides, side by side",plan:plan,later:later,ledger:led,read:read,
+      chart:{t0:t0,t1:t1,mx:mx,series:series,span:rpRange(t0,t1)},
+      basis:WN[rpWin]||WN.all,fname:"ridecue-compare-"+sl,shareTitle:"RideCue — Compare · "+(rpPark||"")};
+  }
+  function rcDrawCard(ctx,D,H,shape){ /* shape: "plan" | "chart"; returns where the card ends (the emit's second pass takes it as H) */
+    var W=D.W,C=PW_CARD_ALT,SOFT="#c8d2e8";
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function sec(tx,rt){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);LS("0px");if(rt)T(rt,R,y+24,IN("500",26),C.muted,"right");y+=51;}
+    function ink(si){return RC_INK[si]||C.ink;}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j;
+    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    T(D.date,R,139,IN("700",28),C.ink,"right");
+    var bw=MW(D.badge,IN("700",22))+40;ctx.fillStyle="rgba(150,161,242,0.18)";rr(R-bw,160,bw,42,21);ctx.fill();LS("1px");T(D.badge,R-20,189,IN("700",22),"#c3c9ff","right");LS("0px");
+    T(D.asof,R,236,IN("500",22),C.muted2,"right");
+    LS("3px");T("COMPARE · "+D.park.toUpperCase(),L,218,IN("800",28),C.accent);LS("0px");
+    var tl=wrapW(D.title,CW,SG("700",66));y=299; /* the badge sits above the title’s top */
+    for(i=0;i<tl.length;i++)T(tl[i],L,y+i*76,SG("700",66),C.ink);
+    y+=(tl.length-1)*76+6;
+    if(shape==="plan"){
+      sec("IF YOU’RE RIDING "+(D.n===2?"BOTH":"ALL THREE"),"full day");
+      y-=10;
+      for(i=0;i<D.plan.length;i++){var p=D.plan[i],TX=L+74,TWD=R-TX;
+        if(i)hair(y);y+=20;
+        T((i+1)+".",L,y+34,SG("700",34),ink(p.si));
+        var hl=wrapW(p.hd,TWD,IN("700",35));for(j=0;j<hl.length;j++)T(hl[j],TX,y+34+j*44,IN("700",35),ink(p.si));y+=hl.length*44;
+        var wl=wrapW(p.why,TWD,IN("500",28));for(j=0;j<wl.length;j++)T(wl[j],TX,y+30+j*38,IN("500",28),SOFT);y+=wl.length*38+18;}
+      for(i=0;i<D.later.length;i++){var lt=D.later[i];hair(y);y+=20;
+        var pre="Later: ",pw=MW(pre,IN("500",28)),nw=MW(lt.nm,IN("700",28))+MW(" — ",IN("500",28));
+        T(pre,L,y+34,IN("500",28),C.muted);T(lt.nm,L+pw,y+34,IN("700",28),ink(lt.si));T(" — ",L+pw+MW(lt.nm,IN("700",28)),y+34,IN("500",28),C.muted);
+        var ws=lt.why.split(" "),cur="",lines=[],mw1=CW-pw-nw,k; /* the first line runs on after the name; the rest take the full measure */
+        for(k=0;k<ws.length;k++){var t2=cur?cur+" "+ws[k]:ws[k];if(MW(t2,IN("500",28))>(lines.length?CW:mw1)&&cur){lines.push(cur);cur=ws[k];}else cur=t2;}if(cur)lines.push(cur);
+        T(lines[0]||"",L+pw+nw,y+34,IN("500",28),C.muted);y+=38;
+        for(j=1;j<lines.length;j++){T(lines[j],L,y+30,IN("500",28),C.muted);y+=38;}y+=12;}
+      sec("THE RIDES","typical · walk-on window");y-=10;
+      for(i=0;i<D.ledger.length;i++){var r=D.ledger[i];if(i)hair(y);y+=22;
+        ctx.fillStyle=ink(r.si);ctx.beginPath();ctx.arc(L+8,y+25,8,0,Math.PI*2);ctx.fill();
+        var tw=MW(r.typ,SG("700",36)),ww=Math.max(tw,MW(r.win,IN("500",24)));
+        T(wrapW(r.nm,CW-ww-60,IN("700",33))[0],L+30,y+36,IN("700",33),C.ink);
+        T(r.typ,R,y+36,SG("700",36),C.ink,"right");T(r.win,R,y+68,IN("500",24),C.muted,"right");y+=84;}
+    }else{
+      y+=48;
+      for(i=0;i<D.read.length;i++){var rl=wrapW(D.read[i],CW,IN("500",31));for(j=0;j<rl.length;j++)T(rl[j],L,y+j*44,IN("500",31),SOFT);y+=rl.length*44+10;}
+      y-=10;
+      sec("THE TYPICAL DAY, OVERLAID",D.chart.span);
+      var ch0=D.chart,GUT=70,X0=L,X1=R-GUT,Y0=y,CH=440,Y1=Y0+CH,N=Math.round((ch0.t1-ch0.t0)/30)+1,slot=(X1-X0)/N;
+      function Y(v){return Y1-CH*v/ch0.mx;}function X(k){return X0+slot*k+slot/2;}
+      var BANDS=[[0,20,"61,214,140"],[20,45,"255,206,92"],[45,70,"255,159,107"],[70,1e9,"255,107,107"]];
+      for(i=0;i<BANDS.length;i++){var lo=BANDS[i][0],hi=Math.min(BANDS[i][1],ch0.mx);if(hi<=lo)continue;
+        ctx.fillStyle="rgba("+BANDS[i][2]+",0.07)";ctx.fillRect(X0,Y(hi),X1-X0,Y(lo)-Y(hi));
+        if(lo>0){T(String(lo),R,Y(lo)+8,IN("600",22),C.muted2,"right");}}
+      T("min",R,Y(20)+36,IN("500",19),C.muted2,"right");
+      ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X0,Y1);ctx.lineTo(X1,Y1);ctx.stroke();
+      ctx.lineJoin="round";ctx.lineCap="round";ctx.lineWidth=8;
+      for(i=0;i<ch0.series.length;i++){var sr=ch0.series[i],pen=false;ctx.strokeStyle=ink(sr.si);ctx.beginPath();
+        for(j=0;j<N;j++){var m=sr.byT[ch0.t0+30*j];if(m==null){pen=false;continue;}if(pen)ctx.lineTo(X(j),Y(m));else ctx.moveTo(X(j),Y(m));pen=true;}
+        ctx.stroke();}
+      var cand=[540,720,900,1080,1260];for(i=0;i<cand.length;i++){var t=cand[i];if(t<ch0.t0||t>ch0.t1)continue;var h=t/60;T(((h%12)||12)+(h<12?"A":"P"),X(Math.round((t-ch0.t0)/30)),Y1+34,IN("600",22),C.muted2,"center");}
+      y=Y1+70;
+      var lx=L,ly=y;
+      for(i=0;i<ch0.series.length;i++){var s2=ch0.series[i],w2=44+12+MW(s2.nm,IN("700",27))+10+MW(s2.typ+"m",IN("600",27));
+        if(lx>L&&lx+w2>R){lx=L;ly+=48;}
+        ctx.fillStyle=ink(s2.si);rr(lx,ly-8,44,8,4);ctx.fill();T(s2.nm,lx+56,ly+5,IN("700",27),ink(s2.si));T(s2.typ+"m",lx+56+MW(s2.nm,IN("700",27))+10,ly+5,IN("600",27),C.muted);
+        lx+=w2+40;}
+      y=ly+20;
+    }
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    var bw2=CW-300,bl=wrapW(D.basis+" · typical half-hour medians while operating · one scale, one window — like for like",bw2,IN("500",26)); /* the basis keeps clear of the credit’s column; two lines, the tail clause yields first */
+    if(bl.length>2)bl=wrapW(D.basis+" · typical half-hour medians while operating · one scale, one window",bw2,IN("500",26));
+    T(bl[0]||"",L,y+59,IN("500",26),C.muted2);T(bl[1]||"",L,y+93,IN("500",26),C.muted2);
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    ctx.restore();
+    return y+98+52+36;
+  }
+  function rcShareCard(){ /* the family lifecycle: fonts.ready → two-pass self-size, twice → the sheet with both shapes */
+    var D=rcCardModel();if(!D)return;
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      function emit(shape){var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rcDrawCard(ctx,D,6000,shape));cv.height=Hf;ctx=cv.getContext("2d");rcDrawCard(ctx,D,Hf,shape);return cv;}
+      pvOpen({key:"compare",alts:[{cv:emit("plan"),label:"Plan",fname:D.fname+"-plan.png"},{cv:emit("chart"),label:"Chart",fname:D.fname+"-chart.png"}],shareTitle:D.shareTitle});
+    });
   }
   function rpAttrHTML(){
     if(!rpPark){
@@ -8346,6 +8463,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var id=b.getAttribute("data-rcfoc");rcFoc=(rcFoc===id)?null:id;renderPulsePage();});});
     el.querySelectorAll("[data-rclens]").forEach(function(b){b.addEventListener("click",function(){ /* 0714m: the card's lens */
       var v=b.getAttribute("data-rclens");if(v===rcLens)return;rcLens=v;renderPulsePage();});});
+    var rcsh=el.querySelector("[data-rcshare]");if(rcsh)rcsh.addEventListener("click",function(){rcShareCard();}); /* 0728ib: the Compare card's door */
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
@@ -14856,7 +14974,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(c.story){var ssw=c.story.sw;
         sb={name:c.story.name,park:c.story.park,hi:ssw.hi,lo:ssw.lo,hiT:pwClk(ssw.hiT),loT:pwClk(ssw.loT),
             chip:(ssw.near&&ssw.downMin?(ssw.downN>1?(ssw.downMin+" min of holds \u2014 last ended "+pwClk(ssw.downEnd)):(ssw.downMin+"-min hold ended "+pwClk(ssw.downEnd))):null)};}
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:isWeek?fmtRange((d.week&&[d.week.mon,d.week.sun])||d.dates):fmtDate(dateStr),badge:pwBadge(d,isWeek),line:h.l,sub:h.sub,tiles:tiles,story:sb,wk:isWeek,wkpic:isWeek?pwWkPic(d,c.busiestPark.park):null,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — Wrap"});
+      var wrT=isWeek?fmtRange((d.week&&[d.week.mon,d.week.sun])||d.dates):fmtDate(dateStr); /* 0728ia THE WRAP DOOR NAMES ITS WEEK: the card’s title, once, for the headline and the share title */
+      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:wrT,badge:pwBadge(d,isWeek),line:h.l,sub:h.sub,tiles:tiles,story:sb,wk:isWeek,wkpic:isWeek?pwWkPic(d,c.busiestPark.park):null,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — "+(isWeek?"This week · ":"")+wrT});
     }
 
     function shareParkCard(park){
