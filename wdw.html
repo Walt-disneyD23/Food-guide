@@ -2713,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ig</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ih</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6172,7 +6172,8 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var row4=[];for(i=0;i<D.stats.length;i++)if(/^Clean days/i.test(D.stats[i].k))row4.push({k:"Clean days",v:D.stats[i].v,ctx:""});
       for(i=0;i<D.tiles.length;i++){var tl=D.tiles[i];if(/^On strike/i.test(tl.k))continue;row4.push({k:tl.k.replace(/^Most down in a day$/i,"Most in a day"),v:tl.v,ctx:tl.ctx});}
       if(row4.length){y+=30;hair(y);y+=22;var t4=y,sw=CW/row4.length;
-        for(i=0;i<row4.length;i++){var sx=L+sw*i;LS("1.8px");T(row4[i].k.toUpperCase(),sx,t4+22,IN("600",20),C.muted2);LS("0px");T(row4[i].v,sx,t4+22+58,SG("800",46),C.ink);if(row4[i].ctx)T(row4[i].ctx,sx,t4+22+58+34,IN("500",21),C.muted2);}
+        for(i=0;i<row4.length;i++){var nI=row4.length-1,sx=i===0?L:(i===nI?R:L+CW*i/nI),al=i===0?"left":(i===nI?"right":"center"); /* 0728ih THE ROW REACHES THE EDGE: the family's ends — first left, last right, the rest on the thirds */
+          LS("1.8px");T(row4[i].k.toUpperCase(),sx,t4+22,IN("600",20),C.muted2,al);LS("0px");T(row4[i].v,sx,t4+22+58,SG("800",46),C.ink,al);if(row4[i].ctx)T(row4[i].ctx,sx,t4+22+58+34,IN("500",21),C.muted2,al);}
         y=t4+22+58+34+8;}
     }
     y+=48;hair(y); /* ONE FOOTER HAND */
