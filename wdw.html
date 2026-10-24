@@ -1892,8 +1892,9 @@
   .otd-sharebtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:6px 0 16px;height:44px;border:0;border-radius:var(--r-pill);background:rgba(79,70,229,.10);color:var(--accent);font:700 var(--fs-body) var(--font-display);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .otd-fineprint{font-size:var(--fs-micro);color:var(--muted-2);line-height:1.5;margin:4px 2px 16px;letter-spacing:.02em}
   /* 0728ij D-3 JUMP TO A DATE — the hero's date is the door; the grid wears the sheet's dress and the Wrap calendar's grammar. Every colour a token. */
-  .otd-datebtn{all:unset;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .otd-datebtn i{font-style:normal;margin-left:6px;font-size:12px}
+  .otd-page .rp-hero .otd-eb{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px} /* 0728ik F-1 THE DATE IS THE PILL (owner 6:15 PM Oct 24: the ▾ alone was found by no one; the date “seems small”): the eyebrow is the label, the date is the door, lifted off the headline */
+  .otd-datebtn{all:unset;cursor:pointer;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px;font:700 13px var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 12px;white-space:nowrap;flex:none;margin:-6px 0}
+  .otd-datebtn i{font-style:normal;font-size:13px;opacity:.9}
   .otd-cal .mh{display:flex;align-items:center;justify-content:space-between;margin:10px 0 2px}
   .otd-cal .mh .mt{font:700 var(--fs-head) var(--font-display);color:var(--ink)}
   .otd-cal .mh button{width:40px;height:40px;border:0;border-radius:50%;background:rgba(79,70,229,.12);color:var(--accent);font:700 20px var(--font-body);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
@@ -2759,7 +2760,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ij</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ik</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13118,7 +13119,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        THE PAGE WANDERS A DAY AT A TIME (S-A): ‹ › beside the way back, a Today pill once you've left today; never a feed — one page, one date, one card.
        "SHARE THIS DAY" SHARES THE PAGE'S DAY; the card's corner says the date, never Today. A now clause past its u goes quiet. HISTORY, NEVER A PROMISE.
        0728ij (owner glass 5:02 PM Oct 24, ruled "yes to all"): the park bonus +15 (P-2) · "Also on" oldest first, page and card (A-1) · no data credit on the card (F-1) ·
-       the card’s empty band closed · JUMP TO A DATE (D-3): the hero’s date opens our own grid — the year as a map, every cell its moment count, Today once you’ve left it. ===== */
+       the card’s empty band closed · JUMP TO A DATE (D-3): the hero’s date opens our own grid — the year as a map, every cell its moment count, Today once you’ve left it.
+       0728ik F-1 THE DATE IS THE PILL (owner + Chris glass 5:45–6:15 PM Oct 24, rounds door/door2/door3): the eyebrow reads ON THIS DAY, the date is the pill on the right wearing the ▾, lifted off the headline. ===== */
     var OTD_URL="almanac.json",otdData=null,otdState="idle",otdWait=[],otdFailAt=0,otdFrom="today";
     var OTD_WDW={"Magic Kingdom":1,"EPCOT":1,"Hollywood Studios":1,"Animal Kingdom":1,"Walt Disney World":1};
     var OTD_KW={opened:"Opened",park_opened:"Park opened",land_opened:"Land opened",closed:"Closed",park_closed:"Closed",film:"Film",tv:"Television",born:"Born",died:"Died",award:"Award",event:""};
@@ -13169,9 +13171,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var D=otdDay(ds),today=etDate(0),isToday=ds===today,i;
       var nav='<div class="pw-nav otd-step"><button class="pw-back" type="button" id="otdBack"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Wrap</button>'+
         '<div class="nav"><button type="button" id="otdPrev" aria-label="The day before">‹</button>'+(isToday?'':'<button type="button" class="td" id="otdToday">Today</button>')+'<button type="button" id="otdNext" aria-label="The day after">›</button></div></div>';
-      if(!D)return nav+'<div class="rp-hero"><div class="eb">On this day · <button class="otd-datebtn" type="button" id="otdDateBtn" aria-label="Jump to a date">'+esc(otdLong(ds))+'<i>▾</i></button></div><h2>'+esc(otdMonth(ds))+'</h2><div class="sub">'+(otdData?'Nothing in the almanac for this date yet.':'The almanac didn’t load just now — try again in a moment.')+'</div></div>';
+      if(!D)return nav+'<div class="rp-hero"><div class="eb otd-eb">On this day<button class="otd-datebtn" type="button" id="otdDateBtn" aria-label="Jump to a date">'+esc(otdLong(ds))+'<i>▾</i></button></div><h2>'+esc(otdMonth(ds))+'</h2><div class="sub">'+(otdData?'Nothing in the almanac for this date yet.':'The almanac didn’t load just now — try again in a moment.')+'</div></div>';
       var L=D.lead,sub='<b>'+L.y+'</b> · '+esc(otdAgo(L.y))+(otdCtx(L)?' · '+esc(otdCtx(L)):'');
-      var h=nav+'<div class="rp-hero"><div class="eb">On this day · <button class="otd-datebtn" type="button" id="otdDateBtn" aria-label="Jump to a date">'+esc(otdLong(ds))+'<i>▾</i></button></div><h2>'+esc(L.t)+'</h2><div class="sub">'+sub+'</div>'+
+      var h=nav+'<div class="rp-hero"><div class="eb otd-eb">On this day<button class="otd-datebtn" type="button" id="otdDateBtn" aria-label="Jump to a date">'+esc(otdLong(ds))+'<i>▾</i></button></div><h2>'+esc(L.t)+'</h2><div class="sub">'+sub+'</div>'+
         (L.n?'<div class="otd-hnow"><b>Now</b>'+esc(L.n)+'</div>':'')+
         '<div class="hstats"><div class="hstat"><div class="k">Moments</div><div class="v">'+D.all.length+'</div></div><div class="hstat"><div class="k">Earliest</div><div class="v">'+D.first+'</div></div><div class="hstat"><div class="k">Latest</div><div class="v">'+D.last+'</div></div></div></div>';
       if(D.rest.length){h+='<div class="rd-sechead">Also on '+esc(otdMonth(ds))+'</div><div class="rpc">';
