@@ -2713,7 +2713,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728if</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ig</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5381,7 +5381,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(TL9&&tpLensDay&&(TL9.plan||{})[tpLensDay]===rpPark&&tpDays(TL9).indexOf(tpLensDay)>=0&&rpRide){
       var in9=tdRides(TL9,tpLensDay).indexOf(rpRide)>=0,wd9=tpAsD(tpLensDay).toLocaleDateString("en-US",{weekday:"short"})+", "+tpMD(tpLensDay);
       tdp='<button class="td-addr td-prof" data-tdprof type="button">'+(in9?'\u2713 In '+wd9+' \u2014 tap to remove':'+ Add to '+wd9)+'</button>';}
-    return crumb+hero+tdp+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+rpRecordHTML()+(rcPk?rcSheetHTML():""); /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
+    return crumb+hero+tdp+lens+rpTakeHTML(cv,rel,rpWin)+shape+rpHmHTML()+rpRelHTML(rel,rpWin)+rpRecordHTML()+((cv||rel)?'<button class="pw-share rm-share" data-rpshare type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share this profile</button>':'')+(rcPk?rcSheetHTML():""); /* 0728ig: the profile's door */ /* 0713t: the hour grid seats between shape and reliability · 0713v: the lens seats under the hero */
   }
   var RP_CURATED=null; /* 0714k \u00b7 W-23/L-10: park -> set of normalized curated ride names, built once from PARK_DEF */
   function rpCuratedRide(r){ /* planning surfaces walk the OWNER's ride list, never the feed's typing \u2014 read-time, one-fragment reversible (add a name to PARK_DEF.rides and it seats instantly) */
@@ -6072,6 +6072,127 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     fr.then(function(){
       function emit(shape){var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rcDrawCard(ctx,D,6000,shape));cv.height=Hf;ctx=cv.getContext("2d");rcDrawCard(ctx,D,Hf,shape);return cv;}
       pvOpen({key:"compare",alts:[{cv:emit("plan"),label:"Plan",fname:D.fname+"-plan.png"},{cv:emit("chart"),label:"Chart",fname:D.fname+"-chart.png"}],shareTitle:D.shareTitle});
+    });
+  }
+  /* ===== 0728ig THE PROFILE PAIR · SHAPE OR DOWNTIME (owner-ruled Oct 23 on rp-round2-sheet.png · rp-cal-sizes.png · rp-cal-margins.png: the pair, D-C, C-2, M-2).
+     The Ride profile page has two reads — the line and the days — so its card has two shapes. THE CARD READS THE GLASS: rpcCardModel parses rpProfileHTML()'s
+     own render for every word; the pictures' numbers come from the page's own data functions (rpWinCurve · rpRel), as the Compare card's do. ===== */
+  var RPC_TIER={short:"#3dd68c",medium:"#ffce5c",long:"#ff9f6b",packed:"#ff6b6b"};
+  function rpcCardModel(){
+    var box=document.createElement("div");box.innerHTML=rpProfileHTML();
+    function tx(el){return el?String(el.textContent||"").replace(/\s+/g," ").trim():"";}
+    function runs(el){var out=[],i,k;if(!el)return out;for(i=0;i<el.childNodes.length;i++){k=el.childNodes[i];var t=String(k.textContent||"").replace(/\s+/g," ");if(!t)continue;out.push({t:t,b:k.nodeType===1&&k.tagName==="B"});}
+      if(out.length){out[0].t=out[0].t.replace(/^\s+/,"");out[out.length-1].t=out[out.length-1].t.replace(/\s+$/,"");}return out;}
+    var take=box.querySelector(".rp-take");if(!take)return null; /* the loading face, a young ride: no card */
+    var cv=rpWinCurve(rpRide,rpWin),rel=rpRel(rpRide,rpWin);if(!cv&&!rel)return null;
+    var eb=tx(box.querySelector(".rp-hero .eb")).replace(/^Ride profile\s*·\s*/,""),ebp=eb.split(" · ");
+    var h2=box.querySelector(".rp-hero h2"),star=!!(h2&&h2.querySelector(".fs")),name=tx(h2).replace(/\s*★\s*$/,"");
+    var park=tx(box.querySelector(".rp-hero .rc-hrow .sub")),stats=[],hs=box.querySelectorAll(".rp-hero .hstat"),i;
+    for(i=0;i<hs.length;i++)stats.push({k:tx(hs[i].querySelector(".k")),v:tx(hs[i].querySelector(".v"))});
+    /* the takeaway splits where its clean sentence begins — each shape carries the clause its picture proves */
+    var tr=runs(take),shapeR=[],cleanR=[],seen=false;
+    for(i=0;i<tr.length;i++){var r=tr[i],m=seen?null:/(^|\.\s+)((?:[A-Z][^,.]*,\s+)?[Rr]an clean\b.*)$/.exec(r.t);
+      if(m&&!r.b){var pre=r.t.slice(0,r.t.length-m[2].length).replace(/\s+$/,"");if(pre)shapeR.push({t:pre,b:false});cleanR.push({t:m[2],b:false});seen=true;}
+      else (seen?cleanR:shapeR).push(r);}
+    var chips=[],cs=box.querySelectorAll(".rp-win .w");for(i=0;i<cs.length;i++)chips.push({t:tx(cs[i]),crest:/\bcrest\b/.test(cs[i].className)});
+    var shapeBasis="",rpcs=box.querySelectorAll(".rpc");for(i=0;i<rpcs.length;i++)if(rpcs[i].querySelector(".rp-shwrap")){shapeBasis=tx(rpcs[i].querySelector(".pf-basis"));break;}
+    var tiles=[],ts=box.querySelectorAll(".rp-tiles .pw-tile");for(i=0;i<ts.length;i++)tiles.push({k:tx(ts[i].querySelector(".lbl")),v:tx(ts[i].querySelector(".v")),ctx:tx(ts[i].querySelector(".ctx"))});
+    var dtBasis="",dtc=box.querySelector(".rp-dtcard");if(dtc){var nx=dtc.nextElementSibling;while(nx&&!nx.querySelector(".pf-basis"))nx=nx.nextElementSibling;if(nx)dtBasis=tx(nx.querySelector(".pf-basis"));}
+    var days=null;if(rel){days=[];for(i=0;i<rel.series.length;i++){var d=rel.series[i];days.push({lab:d.lab,dm:d.dm,tier:d.dm===0?"short":d.dm<=30?"medium":d.dm<=120?"long":"packed",txt:d.dm===0?"":rpDtFmt(d.dm)});}}
+    var sl=name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"ride";
+    return {W:1080,name:name,star:star,park:park,badge:(ebp[0]||"").toUpperCase(),pool:ebp.slice(1).join(" · "),date:new Date().toLocaleDateString("en-US",{timeZone:TZ,month:"short",day:"numeric"}),
+      stats:stats,takeShape:shapeR,takeClean:cleanR,chips:chips,cv:cv,shapeBasis:shapeBasis,
+      rel:rel,days:days,tiles:tiles,dtWindow:dtBasis.split(" · ")[0],
+      fname:"ridecue-profile-"+sl,shareTitle:"RideCue — "+name+" · "+park};
+  }
+  function rpcDrawCard(ctx,D,H,shape){ /* shape: "shape" | "downtime"; returns where the card ends */
+    var W=D.W,C=PW_CARD_ALT,SOFT="#c8d2e8",GOLD="#ffce5c";
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function sec(tx,rt){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);var lw=MW(tx,IN("600",27))*1.12;LS("0px");if(rt&&lw+MW(rt,IN("500",26))+40<CW)T(rt,R,y+24,IN("500",26),C.muted,"right");y+=51;} /* the right word yields to the label */
+    function runsPara(rs,sz,lh){ /* the takeaway's runs, bold kept, wrapped word by word across the two faces */
+      var fb=IN("700",sz),fn=IN("500",sz),x=L,k,q;y+=Math.round(lh*0.8);
+      for(k=0;k<rs.length;k++){var f=rs[k].b?fb:fn,ws=rs[k].t.trim().split(/\s+/).filter(function(w){return w;});
+        for(q=0;q<ws.length;q++){var w=ws[q],lead=q>0||(k>0&&(/\s$/.test(rs[k-1].t)||/^\s/.test(rs[k].t))),ww=MW(w,f),sp=MW(" ",f);
+          if(x>L&&x+(lead?sp:0)+ww>R){x=L;y+=lh;lead=false;}
+          if(lead&&x>L)x+=sp;T(w,x,y,f,rs[k].b?C.ink:SOFT);x+=ww;}}
+      y+=Math.round(lh*0.35);}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,q;
+    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    T(D.date,R,139,IN("700",28),C.ink,"right");
+    var bw=MW(D.badge,IN("700",22))+40;ctx.fillStyle="rgba(150,161,242,0.18)";rr(R-bw,160,bw,42,21);ctx.fill();LS("1px");T(D.badge,R-20,189,IN("700",22),"#c3c9ff","right");LS("0px");
+    if(D.pool)T(D.pool,R,236,IN("500",22),C.muted2,"right");
+    LS("3px");T("RIDE PROFILE · "+D.park.toUpperCase(),L,218,IN("800",28),C.accent);LS("0px");
+    y=299;var nf=SG("700",66),nm=D.name,nw=MW(nm,nf),room=CW-(D.star?70:0);if(nw>room){nf=SG("700",54);nw=MW(nm,nf);}if(nw>room){while(nm.length>1&&MW(nm+"…",nf)>room)nm=nm.slice(0,-1);nm+="…";nw=MW(nm,nf);}
+    T(nm,L,y,nf,C.ink);if(D.star)T("★",L+nw+20,y-2,SG("700",50),GOLD);
+    if(shape==="shape"){
+      if(D.stats.length){y+=28;hair(y);y+=22;var top=y;
+        for(i=0;i<D.stats.length;i++){var st=D.stats[i],al=i===0?"left":(i===D.stats.length-1?"right":"center"),sx=i===0?L:(i===D.stats.length-1?R:L+CW/2);
+          LS("2px");T(st.k.toUpperCase(),sx,top+22,IN("600",21),C.muted2,al);LS("0px");T(st.v,sx,top+22+62,SG("800",52),C.ink,al);} /* one line of labels, one baseline of values */
+        y=top+22+62+10;}
+      if(D.takeShape.length){sec("PLANNING TAKEAWAY");y-=10;runsPara(D.takeShape,31,44);}
+      if(D.cv){var cv=D.cv,bs=cv.bs,N=bs.length;
+        sec("SHAPE OF THE LINE","band = the middle half of days");y-=6;
+        var chx=L,chy=y;for(i=0;i<D.chips.length;i++){var c=D.chips[i],cf=IN("700",24),cwid=MW(c.t,cf)+40;if(chx>L&&chx+cwid>R){chx=L;chy+=56;}
+          ctx.fillStyle=c.crest?"rgba(240,162,27,0.14)":"rgba(61,214,140,0.14)";rr(chx,chy,cwid,44,22);ctx.fill();T(c.t,chx+20,chy+30,cf,c.crest?GOLD:"#9bf7c9");chx+=cwid+14;}
+        y=chy+44+30;
+        var GH=300,gT=y,gB=y+GH-30,mx=40;for(i=0;i<N;i++)if(bs[i].hi+8>mx)mx=bs[i].hi+8;mx=Math.ceil(mx/10)*10;
+        function Y(v){return gB-(gB-gT)*v/mx;}function X(i2){return L+CW*(i2+0.5)/N;}
+        var WK=cv.walk||10;for(var tv=10;tv<=mx;tv+=10){ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,Y(tv));ctx.lineTo(R,Y(tv));ctx.stroke();if(Math.abs(tv-WK)>=5)T(tv+"m",R,Y(tv)-8,IN("600",20),C.muted2,"right");} /* a tick beside the walk-on line yields to it */
+        ctx.save();ctx.setLineDash([8,8]);ctx.strokeStyle=C.green;ctx.globalAlpha=0.7;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,Y(WK));ctx.lineTo(R,Y(WK));ctx.stroke();ctx.restore();T("walk-on "+WK+"m",L,Y(WK)-8,IN("600",20),"#9bf7c9");
+        ctx.beginPath();ctx.moveTo(X(0),Y(bs[0].hi));for(i=1;i<N;i++)ctx.lineTo(X(i),Y(bs[i].hi));for(i=N-1;i>=0;i--)ctx.lineTo(X(i),Y(bs[i].lo));ctx.closePath();ctx.fillStyle="rgba(150,161,242,0.18)";ctx.fill();
+        ctx.beginPath();ctx.moveTo(X(0),Y(bs[0].med));for(i=1;i<N;i++)ctx.lineTo(X(i),Y(bs[i].med));ctx.strokeStyle=C.accent;ctx.lineWidth=5;ctx.lineJoin="round";ctx.stroke();
+        var cand=[540,720,900,1080,1260,1440],tk=[];for(i=0;i<cand.length;i++){var t=cand[i];if(t<bs[0].t||t>bs[N-1].t)continue;for(q=0;q<N;q++)if(bs[q].t===t){tk.push({x:X(q),s:rpClk(t)});break;}}
+        for(i=0;i<tk.length;i++)T(tk[i].s,tk[i].x,gB+36,IN("600",22),C.muted2,i===0&&tk[i].x-L<40?"left":(i===tk.length-1&&R-tk[i].x<40?"right":"center"));
+        y=gB+36+16;}
+    }else{
+      if(D.takeClean.length){sec("PLANNING TAKEAWAY");y-=10;runsPara(D.takeClean,31,44);}
+      if(D.days){sec("DOWNTIME BY DAY",D.dtWindow.toLowerCase());y-=4;
+        var BL=22,GL=L-BL,GW=CW+BL*2,gap=8,tw=(GW-gap*6)/7,th=88,row=0,col=0;
+        for(i=0;i<D.days.length;i++){var d=D.days[i],x0=GL+col*(tw+gap),y0=y+row*(th+gap);
+          ctx.fillStyle=d.dm===0?"rgba(61,214,140,0.16)":RPC_TIER[d.tier];rr(x0,y0,tw,th,16);ctx.fill();
+          var ink=d.dm===0?"#9bf7c9":(d.tier==="packed"?"#ffffff":"#1a1200");LS("0px");T(d.lab,x0+10,y0+24,IN("600",17),d.dm===0?"rgba(155,247,201,0.75)":ink);
+          if(d.dm===0){ctx.strokeStyle="#9bf7c9";ctx.lineWidth=4;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x0+tw/2-11,y0+54);ctx.lineTo(x0+tw/2-3,y0+62);ctx.lineTo(x0+tw/2+12,y0+46);ctx.stroke();}
+          else T(d.txt,x0+tw/2,y0+66,IN("700",27),ink,"center");
+          col++;if(col===7){col=0;row++;}}
+        y+=(row+(col?1:0))*(th+gap)-gap+26;
+        var key=[["rgba(61,214,140,0.5)","clean"],[RPC_TIER.medium,"under 30m"],[RPC_TIER.long,"under 2h"],[RPC_TIER.packed,"over 2h"]],kx=L;
+        for(i=0;i<key.length;i++){ctx.fillStyle=key[i][0];rr(kx,y,28,14,4);ctx.fill();T(key[i][1],kx+40,y+14,IN("600",22),C.muted);kx+=MW(key[i][1],IN("600",22))+62;}
+        y+=24;}
+      var row4=[];for(i=0;i<D.stats.length;i++)if(/^Clean days/i.test(D.stats[i].k))row4.push({k:"Clean days",v:D.stats[i].v,ctx:""});
+      for(i=0;i<D.tiles.length;i++){var tl=D.tiles[i];if(/^On strike/i.test(tl.k))continue;row4.push({k:tl.k.replace(/^Most down in a day$/i,"Most in a day"),v:tl.v,ctx:tl.ctx});}
+      if(row4.length){y+=30;hair(y);y+=22;var t4=y,sw=CW/row4.length;
+        for(i=0;i<row4.length;i++){var sx=L+sw*i;LS("1.8px");T(row4[i].k.toUpperCase(),sx,t4+22,IN("600",20),C.muted2);LS("0px");T(row4[i].v,sx,t4+22+58,SG("800",46),C.ink);if(row4[i].ctx)T(row4[i].ctx,sx,t4+22+58+34,IN("500",21),C.muted2);}
+        y=t4+22+58+34+8;}
+    }
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    var bt=(shape==="shape")?D.shapeBasis:(D.dtWindow?D.dtWindow+" · each tile a day it ran · its minutes lost · refurb days excluded":"");
+    var bl=wrapW(bt,CW-300,IN("500",26));if(bl.length>2)bl=wrapW(bt.split(" · ").slice(0,2).join(" · "),CW-300,IN("500",26));if(bl.length>2)bl=wrapW(bt.split(" · ")[0],CW-300,IN("500",26)); /* two lines beside the credit; the tail clauses yield */
+    T(bl[0]||"",L,y+59,IN("500",26),C.muted2);T(bl[1]||"",L,y+93,IN("500",26),C.muted2);
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    ctx.restore();
+    return y+98+52+36;
+  }
+  function rpcShareCard(){ /* the family lifecycle: fonts.ready → two-pass self-size, twice → the sheet with both shapes */
+    var D=rpcCardModel();if(!D)return;
+    var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+    fr.then(function(){
+      function emit(shape){var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;var ctx=cv.getContext("2d");var Hf=Math.ceil(rpcDrawCard(ctx,D,6000,shape));cv.height=Hf;ctx=cv.getContext("2d");rpcDrawCard(ctx,D,Hf,shape);return cv;}
+      var alts=[];
+      if(D.cv)alts.push({cv:emit("shape"),label:"Shape",fname:D.fname+"-shape.png"});
+      if(D.days)alts.push({cv:emit("downtime"),label:"Downtime",fname:D.fname+"-downtime.png"}); /* no record on the page, no Downtime shape; no shape, Downtime alone */
+      pvOpen({key:"profile",alts:alts,shareTitle:D.shareTitle});
     });
   }
   /* ===== 0728if THE BOARD'S MORNING (owner-ruled Oct 23 on rd-sheet.png, R-C). The Rope drop board's share card — one shape, no chips. THE CARD READS THE
@@ -8671,6 +8792,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var rcsh=el.querySelector("[data-rcshare]");if(rcsh)rcsh.addEventListener("click",function(){rcShareCard();}); /* 0728ib: the Compare card's door */
     var rmsh=el.querySelector("[data-rmshare]");if(rmsh)rmsh.addEventListener("click",function(){rmeShareCard(rmsh.getAttribute("data-rmshare"));}); /* 0728id: the morning and evening cards' doors */
     var rdsh=el.querySelector("[data-rdshare]");if(rdsh)rdsh.addEventListener("click",function(){rdcShareCard();}); /* 0728if: the board's door */
+    var rpsh=el.querySelector("[data-rpshare]");if(rpsh)rpsh.addEventListener("click",function(){rpcShareCard();}); /* 0728ig: the profile's door */
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
