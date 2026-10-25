@@ -2761,7 +2761,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728im</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728in</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -9899,88 +9899,96 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
 
   /* ---- Shareable "Down Now" card: resort-wide, grouped by park (worst first).
      Shared from the Live status card's down list. Self-sizing height. ---- */
-  function shareDownNow(){
-    var time=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"});
-    var byPark={};
+  /* ===== 0728in THE DOWN CARD WEARS THE FAMILY'S HAND · DOWN SINCE (owner-ruled V-D Sun Oct 25, 2026, 2:31 PM on dnsince-D-fixed.png — "Like your lean as well, much nicer"):
+     the Down Right Now card, the last card in the old hand, catches up to the family (the Rope drop card's bytes were the dress: the ALT field, the wordmark row with
+     the LIVE badge and the date, the kicker, a stats row on ONE baseline — Down right now · Parks affected · Rides open — green section caps, hairlines between rows,
+     ONE FOOTER HAND) and every down ride carries "since <clock>": THE SNAPSHOT IS THE WITNESS — the clock is the first five-minute bucket of the ride's current down run
+     in today's day record (the same rows the Wrap's day chart draws), for every ride on the resort, starred or not; one source for the whole card. A ride with no
+     running reading before its run says "since park open" (the Wrap's phrase); a ride the live board calls DOWN before the snapshot has a bucket for it says "just now"
+     (within one bucket of the card's own LIVE stamp); no record at all (a dead fetch) prints the rows without clocks and drops the since-key — a clock is never invented.
+     The record is read once per five minutes (dnRec / dnRecAt); the card waits for it alongside fonts.ready. ===== */
+  var dnRec=null,dnRecAt=0,DN_REC_STALE=300000;
+  function dnRecFetch(){ /* today's day record, once per five minutes; resolves null on a dead read — the card still sends */
+    if(dnRec&&Date.now()-dnRecAt<DN_REC_STALE)return Promise.resolve(dnRec);
+    var url=PUSH.WORKER_URL+"/history?date="+tpToday(); /* the Worker hostname is spoken twice in this file and nowhere else (rn pins it) — the door reads PUSH, never repeats it */
+    return fetch(url).then(function(r){return r.json();}).then(function(d){if(d&&d.ok&&d.snap){dnRec=d;dnRecAt=Date.now();}return dnRec;})["catch"](function(){return dnRec;});
+  }
+  function dnSinceMap(rec){ /* id -> {t:minutes} | {open:true} — the current down run's first bucket, from the snapshot; a ride not down at the last bucket is absent */
+    var out={},snap=rec&&rec.snap;if(!snap||!snap.ids||!snap.rows||!snap.rows.length)return out;
+    var ids=snap.ids,rows=snap.rows,col,i;
+    for(col=0;col<ids.length;col++){
+      var last=rows[rows.length-1].w;if(!last||col>=last.length||last[col]!==-1)continue;
+      var start=rows.length-1;for(i=rows.length-2;i>=0;i--){var w=rows[i].w;if(!w||col>=w.length||w[col]!==-1)break;start=i;}
+      var ran=false;for(i=0;i<start;i++){var w2=rows[i].w;if(w2&&col<w2.length&&(w2[col]>=0||w2[col]===-4)){ran=true;break;}}
+      out[ids[col]]=ran?{t:rows[start].t}:{open:true};
+    }
+    return out;
+  }
+  function dnSinceWord(id,since){var s=since[id];if(!s)return "just now";return s.open?"since park open":"since "+rpClk(s.t);}
+  function dnCardModel(rec){ /* the card's words from the live board + the snapshot's clocks */
+    var since=dnSinceMap(rec),byPark={},open=0;
     Object.keys(roster).forEach(function(id){
       var r=roster[id],lv=liveById[id];
-      if(!r||!lv||r.kind!=="ride"||lv.status!=="DOWN")return;
-      (byPark[r.park]=byPark[r.park]||[]).push(r.name);
+      if(!r||!lv||r.kind!=="ride")return;
+      if(lv.status==="OPERATING")open++;
+      if(lv.status!=="DOWN")return;
+      (byPark[r.park]=byPark[r.park]||[]).push({id:id,nm:r.name,c:dnSinceWord(id,since)});
     });
-    var groups=Object.keys(byPark).map(function(pk){
-      return {park:pk,rides:byPark[pk].sort(function(a,b){return a.localeCompare(b);})};
-    });
+    var groups=Object.keys(byPark).map(function(pk){return {park:pk,rides:byPark[pk].sort(function(a,b){return a.nm.localeCompare(b.nm);})};});
     groups.sort(function(a,b){return (b.rides.length-a.rides.length)||a.park.localeCompare(b.park);});
     var count=groups.reduce(function(a,g){return a+g.rides.length;},0);
-    if(!count){if(typeof pushToast==="function")pushToast("Nothing's down","All attractions are running right now");return;}
-    var d={time:time,count:count,parksAffected:groups.length,groups:groups,link:"ridecue.live"};
-
-    var W=1080,L=94,R=986,CW=R-L,INSET=36;
-    var sectionsH=groups.reduce(function(a,g){return a+62+g.rides.length*56+26;},0);
-    var H=362+sectionsH+148;
-
-    var cv=document.createElement("canvas");cv.width=W;cv.height=H;
-    var ctx=cv.getContext("2d");
+    var now=new Date();
+    return {count:count,parks:groups.length,open:open,groups:groups,witnessed:!!rec,
+      time:now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"}),
+      date:now.toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"}),W:1080};
+  }
+  function shareDownNow(){
+    var probe=dnCardModel(null);
+    if(!probe.count){if(typeof pushToast==="function")pushToast("Nothing's down","All attractions are running right now");return;}
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
-    fr.then(function(){
-      drawDownGrouped(ctx,d);
+    Promise.all([fr,dnRecFetch()]).then(function(got){
+      var D=dnCardModel(got[1]);if(!D.count)return;
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=2000;
+      var h1=dnDrawCard(cv.getContext("2d"),D,2000);cv.height=h1;dnDrawCard(cv.getContext("2d"),D,h1); /* two-pass self-size, the family's way */
       pvOpen({alts:[{cv:cv}],fname:"ridecue-down.png",shareTitle:"RideCue \u2014 Down right now"}); /* 0728hz: the preview sheet — one lifecycle */
     });
-
-    function drawDownGrouped(ctx,d){
-      var C=PW_CARD;
-      function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-      function Tx(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
-      function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
-      function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-      function hexA(h,a){var n=parseInt(h.slice(1),16);return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";}
-      function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
-
-      ctx.clearRect(0,0,W,H);
-      var cx=INSET,cy=INSET,cw=W-INSET*2,ch=H-INSET*2;
-      rr(cx,cy,cw,ch,72);ctx.save();ctx.clip();
-      var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#0f2933");g.addColorStop(.58,"#0a1820");g.addColorStop(1,"#081219");
-      ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
-      var gl=ctx.createRadialGradient(W/2,cy-40,40,W/2,cy-40,cw*0.8);gl.addColorStop(0,"rgba(255,107,107,0.10)");gl.addColorStop(1,"rgba(255,107,107,0)");
-      ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
-      ctx.strokeStyle="rgba(255,255,255,0.028)";ctx.lineWidth=1;var gx,gy;
-      for(gx=cx;gx<=cx+cw;gx+=94){ctx.beginPath();ctx.moveTo(gx,cy);ctx.lineTo(gx,cy+ch);ctx.stroke();}
-      for(gy=cy;gy<=cy+ch;gy+=94){ctx.beginPath();ctx.moveTo(cx,gy);ctx.lineTo(cx+cw,gy);ctx.stroke();}
-
-      ctx.font=SG("700",46);ctx.textAlign="left";ctx.textBaseline="alphabetic";
-      var wx=rcMark(ctx,L,76,56);ctx.font=SG("700",46);ctx.fillStyle=C.ink;ctx.fillText("Ride",wx,120);var pw=ctx.measureText("Ride").width;
-      ctx.font=SG("500",46);ctx.fillStyle=C.muted;ctx.fillText("Cue",wx+pw,120);
-      ctx.font=IN("500",27);ctx.textAlign="right";ctx.fillStyle=C.muted;ctx.fillText("Live \u00b7 "+d.time,R,116);
-      var lw=ctx.measureText("Live \u00b7 "+d.time).width;ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(R-lw-18,107,8,0,7);ctx.fill();
-      Tx("Down Right Now",L,200,SG("600",58),C.ink);
-
-      var chY=236,chH=56;var ct=d.count+(d.count===1?" attraction":" attractions")+" down \u00b7 "+d.parksAffected+(d.parksAffected===1?" park":" parks");
-      ctx.font=IN("600",27);var ctw=ctx.measureText(ct).width;
-      rr(L,chY,ctw+78,chH,28);ctx.fillStyle=hexA(C.red,.13);ctx.fill();
-      ctx.beginPath();ctx.arc(L+34,chY+chH/2,9,0,7);ctx.fillStyle=C.red;ctx.fill();
-      Tx(ct,L+56,chY+chH/2+1,IN("600",27),C.red,"left","middle");
-
-      var y=362;
-      d.groups.forEach(function(grp){
-        Tx(grp.park,L,y,SG("600",38),C.ink);
-        Tx(grp.rides.length+" down",R,y-4,IN("600",24),C.muted,"right");
-        ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y+20);ctx.lineTo(R,y+20);ctx.stroke();
-        y+=62;
-        grp.rides.forEach(function(nm){
-          ctx.beginPath();ctx.arc(L+9,y-9,8,0,7);ctx.fillStyle=C.red;ctx.fill();
-          Tx(ell(nm,R-(L+34),IN("500",30)),L+34,y,IN("500",30),C.ink);
-          y+=56;
-        });
-        y+=26;
-      });
-
-      var fy=y+10;
-      ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
-      Tx("Down = temporarily unavailable",L,fy+42,IN("500",21),C.muted2);
-      Tx(d.link,R,fy+34,IN("600",25),C.green,"right");
-      Tx("Data: ThemeParks.wiki",R,fy+62,IN("500",20),C.muted2,"right");
-      ctx.restore();
-    }
+  }
+  function dnDrawCard(ctx,D,H){ /* the family hand — the mock's bytes (mock/dnsince/rig2.js, V-D) as the spec of the dress; returns where the card ends */
+    var W=D.W,C=PW_CARD_ALT;
+    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
+    function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
+    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
+    ctx.clearRect(0,0,W,H);
+    var cx=36,cy=36,cw=W-72,ch=H-72;
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var gl=ctx.createRadialGradient(W/2,cy-40,40,W/2,cy-40,cw*0.8);gl.addColorStop(0,"rgba(255,107,107,0.09)");gl.addColorStop(1,"rgba(255,107,107,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j;
+    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    var badge="LIVE · "+D.time,bw=MW(badge,IN("700",22))+62;ctx.fillStyle="rgba(61,214,140,0.16)";rr(R-bw,104,bw,42,21);ctx.fill();ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(R-bw+22,125,6,0,7);ctx.fill();LS("1px");T(badge,R-20,133,IN("700",22),"#9fe8c4","right");LS("0px");
+    T(D.date,R,184,IN("700",28),C.ink,"right"); /* the pill rides the wordmark's row; the date sits under it, clear of the kicker (owner 2:31 PM: the pill clipped the kicker's D) */
+    LS("3px");T("DOWN RIGHT NOW · WALT DISNEY WORLD",L,236,IN("800",28),C.accent);LS("0px");
+    y=317;T("Down right now",L,y,SG("700",66),C.ink);
+    y+=24;hair(y);y+=22;var top=y,stats=[{k:"Down right now",v:String(D.count)},{k:"Parks affected",v:String(D.parks)},{k:"Rides open",v:String(D.open)}],n=stats.length;
+    for(i=0;i<n;i++){var st=stats[i],al=i===0?"left":(i===n-1?"right":"center"),sx=i===0?L:(i===n-1?R:L+CW/2);LS("2px");T(st.k.toUpperCase(),sx,top+22,IN("600",21),C.muted2,al);LS("0px");T(st.v,sx,top+22+27+52,SG("800",52),i===0?"#ff6b6b":C.ink,al);} /* one baseline for the three values */
+    y=top+22+27+52+10;
+    for(i=0;i<D.groups.length;i++){var G=D.groups[i];y+=40;hair(y);y+=14;LS("1.6px");T(G.park.toUpperCase(),L,y+30,IN("700",24),C.green);LS("0px");T(G.rides.length+" down",R,y+30,IN("600",22),C.muted2,"right");y+=40;
+      for(j=0;j<G.rides.length;j++){var r=G.rides[j];if(j)hair(y);y+=18;
+        ctx.beginPath();ctx.arc(L+9,y+22,8,0,7);ctx.fillStyle="#ff6b6b";ctx.fill();
+        var cs=D.witnessed?r.c:"",cwid=cs?MW(cs,IN("500",26))+24:0;T(ell(r.nm,CW-34-cwid,IN("700",31)),L+34,y+32,IN("700",31),C.ink);if(cs)T(cs,R,y+32,IN("500",26),C.muted,"right");y+=52;}
+      y+=8;}
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    if(D.witnessed){T("Down = temporarily unavailable · since = the first",L,y+59,IN("500",26),C.muted2);T("five-minute reading it was down",L,y+93,IN("500",26),C.muted2);}
+    else T("Down = temporarily unavailable",L,y+59,IN("500",26),C.muted2);
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    ctx.restore();
+    return y+98+52+36;
   }
 
   /* A character meet/greet: prefer the feed's own type, fall back to the name.
@@ -13133,7 +13141,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        0728il THE MORNING NOTE (owner-ruled 7:45–7:55 PM Oct 24, with Worker v3.32): the P-A switch in YOUR RULES ("This day in Disney history") rides rules.settings.otd to the Worker, which sends
        one note in the 8 AM ET hour — the hero's own three lines (N-B + the park). THE NOTIFICATION IS A DOOR, NOT A CARD: a tap (the shell's plugin event, the web's #otd / sw message) lands here, today.
        The fold's order is O-1 — the gate (Notifications), the rule, the two notes — and a rule block that follows a switch row wears the rows' own seam.
-       0728im THE DOOR LANDS COLD (owner + Chris glass 8:01–8:08 AM Oct 25: the first morning note's tap opened Live): otdNoteLand had called ppOtdOpen(etDate(0)) — etDate is this module's, unreachable from the main closure — a swallowed ReferenceError; the door now picks its own day. ===== */
+       0728im THE DOOR LANDS COLD (owner + Chris glass 8:01–8:08 AM Oct 25: the first morning note's tap opened Live): otdNoteLand had called ppOtdOpen(etDate(0)) — etDate is this module's, unreachable from the main closure — a swallowed ReferenceError; the door now picks its own day.
+       0728in THE DOWN CARD WEARS THE FAMILY'S HAND · DOWN SINCE (owner-ruled V-D 2:31 PM Oct 25): the Down Right Now card in the family's dress, every down ride with its clock from today's snapshot — THE SNAPSHOT IS THE WITNESS (the main closure's dnCardModel / dnDrawCard). ===== */
     var OTD_URL="almanac.json",otdData=null,otdState="idle",otdWait=[],otdFailAt=0,otdFrom="today";
     var OTD_WDW={"Magic Kingdom":1,"EPCOT":1,"Hollywood Studios":1,"Animal Kingdom":1,"Walt Disney World":1};
     var OTD_KW={opened:"Opened",park_opened:"Park opened",land_opened:"Land opened",closed:"Closed",park_closed:"Closed",film:"Film",tv:"Television",born:"Born",died:"Died",award:"Award",event:""};
