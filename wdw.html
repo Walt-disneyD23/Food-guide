@@ -2761,7 +2761,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728il</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728im</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3855,7 +3855,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   var ppOtdLead=null,ppOtdOpen=null; /* 0728ii: the Wrap module's two almanac doors (it is nested in this closure and sets them at load) */
   function otdNoteLand(){ /* 0728il THE NOTIFICATION IS A DOOR: the morning note's tap lands on today's On This Day page — once the Wrap module has seated its door (the land-once idiom) */
-    var n=0,iv=setInterval(function(){n++;if(typeof ppOtdOpen==="function"){clearInterval(iv);ppOtdOpen(etDate(0));}else if(n>60)clearInterval(iv);},100);}
+    var n=0,iv=setInterval(function(){n++;if(typeof ppOtdOpen==="function"){clearInterval(iv);ppOtdOpen();}else if(n>60)clearInterval(iv);},100);} /* 0728im THE DOOR LANDS COLD (glass 8:01 AM Oct 25, both phones on Live): etDate is the Wrap module's, not this closure's — the door picks its own day */
   function otdNoteIsDoor(u){return /#otd$/.test(String(u||""));}
   function rdOtdClause(){ /* 0728ii H-A: ON THIS DAY as a row in the Read, the Read's own door grammar (0718k holds — the Read's doors are the Read's); today's lead from the Wrap's almanac door, or nothing until it lands */
     if(typeof ppOtdLead!=="function")return null;var L=ppOtdLead();if(!L)return null;
@@ -13132,7 +13132,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        0728ik F-1 THE DATE IS THE PILL (owner + Chris glass 5:45–6:15 PM Oct 24, rounds door/door2/door3): the eyebrow reads ON THIS DAY, the date is the pill on the right wearing the ▾, lifted off the headline.
        0728il THE MORNING NOTE (owner-ruled 7:45–7:55 PM Oct 24, with Worker v3.32): the P-A switch in YOUR RULES ("This day in Disney history") rides rules.settings.otd to the Worker, which sends
        one note in the 8 AM ET hour — the hero's own three lines (N-B + the park). THE NOTIFICATION IS A DOOR, NOT A CARD: a tap (the shell's plugin event, the web's #otd / sw message) lands here, today.
-       The fold's order is O-1 — the gate (Notifications), the rule, the two notes — and a rule block that follows a switch row wears the rows' own seam. ===== */
+       The fold's order is O-1 — the gate (Notifications), the rule, the two notes — and a rule block that follows a switch row wears the rows' own seam.
+       0728im THE DOOR LANDS COLD (owner + Chris glass 8:01–8:08 AM Oct 25: the first morning note's tap opened Live): otdNoteLand had called ppOtdOpen(etDate(0)) — etDate is this module's, unreachable from the main closure — a swallowed ReferenceError; the door now picks its own day. ===== */
     var OTD_URL="almanac.json",otdData=null,otdState="idle",otdWait=[],otdFailAt=0,otdFrom="today";
     var OTD_WDW={"Magic Kingdom":1,"EPCOT":1,"Hollywood Studios":1,"Animal Kingdom":1,"Walt Disney World":1};
     var OTD_KW={opened:"Opened",park_opened:"Park opened",land_opened:"Land opened",closed:"Closed",park_closed:"Closed",film:"Film",tv:"Television",born:"Born",died:"Died",award:"Award",event:""};
