@@ -2282,6 +2282,7 @@
   .mr-rh select,.mr-sheet select{font-family:var(--font-display);font-weight:700;font-size:var(--fs-body);color:var(--accent);background:var(--accent-soft);border:1px solid rgba(139,135,255,.45);border-radius:999px;padding:5px 10px;-webkit-appearance:none;appearance:none}
   .mr-rh .sw{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:16px;font-weight:600;color:var(--ink)}
   .mr-rh .sw .d{font-size:13px;font-weight:400;color:var(--muted);line-height:1.55;margin-top:3px} /* 0722n F1-c: the fine print earns its ink */
+  .mr-rh .sw+.fldlab{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)} /* 0728il (owner 7:54 PM Oct 24, "a little breathing room"): a rule block after a switch row wears the rows' own seam */
   .mr-rh .tog{width:51px;height:31px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;flex:none;-webkit-tap-highlight-color:transparent} /* 0728ho: the iOS switch's own size */
   .mr-rh .tog::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
   .mr-rh .tog.on{background:var(--accent-fill)}
@@ -2760,7 +2761,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ik</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728il</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3018,7 +3019,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var f={type:store.get("f_type","all"),cat:store.get("f_cat","all"),status:store.get("f_status","all"),
     band:store.get("f_band","all"),ll:store.get("f_ll",false),sr:store.get("f_sr",false),
     watched:store.get("f_watched",false),sort:store.get("sort","wait"),search:""};
-  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false),dnup:store.get("dnup",false)};
+  var settings={notif:store.get("notif",false),dir:store.get("dir","below"),thresh:store.get("thresh",30),all:store.get("all",false),dnup:store.get("dnup",false),otd:store.get("otd",false)}; /* 0728il: otd — the morning note's switch, ships OFF */
   settings.thresh=snap5(settings.thresh);
   var lastUpdated=null,nextRefreshAt=0,timer=null,schedDay=null,rollBusy=false; /* 0726a: schedDay = the park-day the schedule flatten served; rollBusy = one refetch per rollover */
 
@@ -3853,6 +3854,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var c=n.slice(0,29).replace(/\s+\S*$/,"");return (c||n.slice(0,29))+"\u2026";
   }
   var ppOtdLead=null,ppOtdOpen=null; /* 0728ii: the Wrap module's two almanac doors (it is nested in this closure and sets them at load) */
+  function otdNoteLand(){ /* 0728il THE NOTIFICATION IS A DOOR: the morning note's tap lands on today's On This Day page — once the Wrap module has seated its door (the land-once idiom) */
+    var n=0,iv=setInterval(function(){n++;if(typeof ppOtdOpen==="function"){clearInterval(iv);ppOtdOpen(etDate(0));}else if(n>60)clearInterval(iv);},100);}
+  function otdNoteIsDoor(u){return /#otd$/.test(String(u||""));}
   function rdOtdClause(){ /* 0728ii H-A: ON THIS DAY as a row in the Read, the Read's own door grammar (0718k holds — the Read's doors are the Read's); today's lead from the Wrap's almanac door, or nothing until it lands */
     if(typeof ppOtdLead!=="function")return null;var L=ppOtdLead();if(!L)return null;
     return '<div class="rd-row rd-door" id="rdOtdDoor"><span class="ic">\ud83d\udcd6</span><div class="tx"><b>On this day</b> \u2014 '+L.y+' \u00b7 '+esc(L.t)+'</div><span class="chev">\u25b8</span></div>';
@@ -11324,19 +11328,20 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrReadout(){
     if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
     var cust=Object.keys(overrides).filter(function(id){var oc=overrides[id];return armed[id]&&oc&&(oc.dir||oc.thresh);}).length; /* 0723b: LABELS MOVE WITH VALUES - custom counts RULE overrides only */
-    return "<b>"+settings.thresh+(settings.dir==="below"?" or less":" or more")+"</b>&nbsp;· <span class=\"c\">down & back-up "+(settings.dnup?"on":"off")+"</span>"+(cust?"&nbsp;· <span class=\"c\">"+cust+" custom</span>":""); /* 0728hp THE READOUT BREAKS AT ITS DOT (owner glass 11:51 PM Oct 16): each clause unbreakable, the dot bound to the clause before it — a long readout breaks only after a dot (0728bz's law) */
+    return "<b>"+settings.thresh+(settings.dir==="below"?" or less":" or more")+"</b>&nbsp;· <span class=\"c\">down & back-up "+(settings.dnup?"on":"off")+"</span>"+(cust?"&nbsp;· <span class=\"c\">"+cust+" custom</span>":"")+(settings.otd?"&nbsp;· <span class=\"c\">morning note on</span>":""); /* 0728il: the note's clause only when it is on — off says nothing new */ /* 0728hp THE READOUT BREAKS AT ITS DOT (owner glass 11:51 PM Oct 16): each clause unbreakable, the dot bound to the clause before it — a long readout breaks only after a dot (0728bz's law) */
   }
   function mrRulesHTML(){
     return '<div class="mr-rh'+(mrRulesOpen?' open':'')+'">'+
       '<div class="rhhd"><span class="cap">Your rules</span><span class="ro">'+mrReadout()+'</span><span class="chv">›</span></div>'+
       '<div class="body">'+
+        '<div class="sw"><div><div>Notifications</div><div class="d">Master switch — off means total silence.</div></div><span class="tog'+(settings.notif&&notifGranted()?' on':'')+'" id="mrNotif"></span></div>'+ /* 0728il O-1 (owner 7:48 PM Oct 24: "the master switch should be first"): the gate leads */
         '<div class="fldlab">Default wait rule</div>'+ /* 0723d: the room borrows the sheet's dress - one grammar */
         '<div class="sent">notify when wait is '+
           '<select id="mrThr">'+threshOptions(settings.thresh)+'</select> <span>min</span> '+
           '<select id="mrDir"><option value="below"'+(settings.dir==="below"?" selected":"")+'>or less</option><option value="above"'+(settings.dir==="above"?" selected":"")+'>or more</option></select></div>'+
         '<div class="mr-fine">Bell taps arm with this rule. Rides without their own rule follow it.</div>'+ /* 0723d X-a (owner-ratified): both facts, plainest words */
         '<div class="sw"><div><div>Down &amp; back-up alerts</div><div class="d">'+(settings.dnup?'Blanket pings for every starred ride — one when it goes down, one when it returns; returns park above till you clear them.':'Blanket off — rides with their own down &amp; back-up setting, and Notify me taps, still alert.')+'</div></div><span class="tog'+(settings.dnup?' on':'')+'" id="mrDnup"></span></div>'+
-        '<div class="sw"><div><div>Notifications</div><div class="d">Master switch — off means total silence.</div></div><span class="tog'+(settings.notif&&notifGranted()?' on':'')+'" id="mrNotif"></span></div>'+
+        '<div class="sw"><div><div>This day in Disney history</div><div class="d">One morning note a day, around 8 AM — the day’s moment, from the parks’ own history.</div></div><span class="tog'+(settings.otd?' on':'')+'" id="mrOtd"></span></div>'+ /* 0728il P-A (ruled 4:19 PM Oct 24, held for the Worker; cut with v3.32): the morning note's switch, OFF by default */
       '</div></div>';
   }
   function mrPlanDoorHTML(){return '<div class="mr-door"><span class="nm">Plan with your stars</span><span class="chev">›</span></div>';} /* 0728ho THE DOOR WEARS ONE CHEVRON (owner glass 11:28 PM Oct 16: the name carried its own beside the seat's) */
@@ -11485,6 +11490,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var th=el.querySelector("#mrThr");if(th)th.addEventListener("change",function(){settings.thresh=Math.max(0,+this.value||0);store.set("thresh",settings.thresh);resetAlerts();renderMyRidesPage();});
     var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);if(!settings.dnup)mrBlanketOff();renderMyRidesPage();});
     var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
+    var ot=el.querySelector("#mrOtd");if(ot)ot.addEventListener("click",function(){settings.otd=!settings.otd;store.set("otd",settings.otd);renderMyRidesPage();}); /* 0728il: the flip stores, the chokepoint syncs (RULE_KEYS) */
   }
   function bindMrSheet(el){ /* 0728gs L-1: the rule sheet's own binder \u2014 once, on its body host (mrShHost); every door closes and repaints (C-1), the segment commits on tap as before */
     var sc=el.querySelector("#mrScrim");if(sc)sc.addEventListener("click",function(){mrCloseSheet();mrRepaint();}); /* 0723b F: the board repaints at the door - the segment may have committed while the sheet was up */
@@ -11751,6 +11757,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var PN=shellPN();if(!PN||shellListen.done)return;shellListen.done=true;
     PN.addListener("registration",function(t){var v=t&&t.value;if(!v)return;pushSub=shellSubOf(v);if(shellWait){var w=shellWait;shellWait=null;w(pushSub);}});
     PN.addListener("registrationError",function(e){console.error("shell registration failed",e&&e.error);if(shellWait){var w=shellWait;shellWait=null;w(null);}});
+    PN.addListener("pushNotificationActionPerformed",function(a){var d=a&&a.notification&&a.notification.data;if(d&&otdNoteIsDoor(d.url))otdNoteLand();}); /* 0728il: the morning note's tap (userInfo.url) lands on the page; every other tap opens the app as before */
   }
   function shellSub(){ /* the shell's ensureSub: no prompt; the token arrives on the registration event */
     if(pushSub)return Promise.resolve(pushSub);
@@ -11808,7 +11815,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       obs:(function(){var m={},k;for(k in watch)if(sbRide(k)&&!armed[k]&&!mrDnupFor(k)&&!reopen[k])m[k]=true;return m;})(), /* 0723h THE OBSERVER LANE: quiet stars, observation only (worker v3.21 banks, never pushes) */
       resolved:resolved||{},
       remind:(function(){var m={},k;for(k in remind){var rr=roster[k],e=remind[k];if(rr&&rr.kind==="show"&&e&&e.at&&(+e.lead)>=1)m[k]={at:e.at,lead:+e.lead};}return m;})(), /* 0728hl: the show reminders, a KNOWN show only — {at, lead}; the Worker (v3.28) fires once when now ≥ at − lead and the slate is still posted */
-      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all}
+      settings:{dir:settings.dir,thresh:settings.thresh,all:settings.all,otd:!!settings.otd} /* 0728il: the morning note's switch rides the record; the Worker (v3.32) sends only where it is true */
     };
   }
 
@@ -11958,7 +11965,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
      / apply-all edit without touching the individual handlers. Debounced so a
      burst of edits collapses into one /save. Only fires once subscribed. */
   (function(){
-    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1,dnup:1,remind:1}; /* 0728hl: a reminder set or cleared rides to the Worker like a bell */
+    var RULE_KEYS={armed:1,watch:1,reopen:1,overrides:1,all:1,thresh:1,dir:1,reopenOnly:1,resolved:1,dnup:1,remind:1,otd:1}; /* 0728il: the morning note's switch crosses like a bell */ /* 0728hl: a reminder set or cleared rides to the Worker like a bell */
     /* 0711d: armed was missing since the bell/star split — saveArmed() writes a key this
        chokepoint never watched, so a fresh threshold arm never scheduled its own sync and
        only reached the Worker by hitchhiking on boot / return / listed-key edits. Both
@@ -12001,6 +12008,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   /* ---- boot ---- */
   buildFallbackRoster();buildBanners();render();updateAlertBadge();load(false);
   if(shellPush())shellBoot();else if(settings.notif&&pushSupported()&&notifPerm()==="granted")syncPush(); /* 0728bw THE SHELL HEARS THE WORKER: the shell learns its permission first */
+  if(otdNoteIsDoor(location.hash)){try{history.replaceState(null,"",location.pathname+location.search);}catch(e){}otdNoteLand();} /* 0728il: the web note opened the app at #otd (sw.js) */
+  try{if(navigator.serviceWorker)navigator.serviceWorker.addEventListener("message",function(ev){if(ev&&ev.data&&ev.data.go==="otd")otdNoteLand();});}catch(e){} /* 0728il: the app was already open — sw.js focuses it and says where to land */
 
   /* ===================== DAILY WRAP (pw-) — Stage 1+2 ===================== */
   /* Additive: Live/Wrap toggle, recap view (hero + grid + park rows),
@@ -13120,7 +13129,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        "SHARE THIS DAY" SHARES THE PAGE'S DAY; the card's corner says the date, never Today. A now clause past its u goes quiet. HISTORY, NEVER A PROMISE.
        0728ij (owner glass 5:02 PM Oct 24, ruled "yes to all"): the park bonus +15 (P-2) · "Also on" oldest first, page and card (A-1) · no data credit on the card (F-1) ·
        the card’s empty band closed · JUMP TO A DATE (D-3): the hero’s date opens our own grid — the year as a map, every cell its moment count, Today once you’ve left it.
-       0728ik F-1 THE DATE IS THE PILL (owner + Chris glass 5:45–6:15 PM Oct 24, rounds door/door2/door3): the eyebrow reads ON THIS DAY, the date is the pill on the right wearing the ▾, lifted off the headline. ===== */
+       0728ik F-1 THE DATE IS THE PILL (owner + Chris glass 5:45–6:15 PM Oct 24, rounds door/door2/door3): the eyebrow reads ON THIS DAY, the date is the pill on the right wearing the ▾, lifted off the headline.
+       0728il THE MORNING NOTE (owner-ruled 7:45–7:55 PM Oct 24, with Worker v3.32): the P-A switch in YOUR RULES ("This day in Disney history") rides rules.settings.otd to the Worker, which sends
+       one note in the 8 AM ET hour — the hero's own three lines (N-B + the park). THE NOTIFICATION IS A DOOR, NOT A CARD: a tap (the shell's plugin event, the web's #otd / sw message) lands here, today.
+       The fold's order is O-1 — the gate (Notifications), the rule, the two notes — and a rule block that follows a switch row wears the rows' own seam. ===== */
     var OTD_URL="almanac.json",otdData=null,otdState="idle",otdWait=[],otdFailAt=0,otdFrom="today";
     var OTD_WDW={"Magic Kingdom":1,"EPCOT":1,"Hollywood Studios":1,"Animal Kingdom":1,"Walt Disney World":1};
     var OTD_KW={opened:"Opened",park_opened:"Park opened",land_opened:"Land opened",closed:"Closed",park_closed:"Closed",film:"Film",tv:"Television",born:"Born",died:"Died",award:"Award",event:""};

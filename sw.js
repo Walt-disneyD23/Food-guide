@@ -19,7 +19,7 @@ self.addEventListener("push", (event) => {
     icon: "parkpulse-icon.png",   // upload this PNG next to sw.js
     badge: "parkpulse-icon.png",
     tag: data.tag,                // same tag replaces an older banner for the same ride
-    data: { url: "./wdw.html" },
+    data: { url: data.url || "./wdw.html" }, // 0728il THE NOTIFICATION IS A DOOR: a note may carry its own door (the morning note: ./wdw.html#otd)
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
@@ -28,7 +28,7 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
-      for (const c of list) { if ("focus" in c) return c.focus(); }
+      for (const c of list) { if ("focus" in c) { const u = (event.notification.data || {}).url || ""; if (/#otd$/.test(u) && c.postMessage) c.postMessage({ go: "otd" }); return c.focus(); } } // 0728il: an open app is told where to land
       if (self.clients.openWindow) return self.clients.openWindow(event.notification.data.url || "./");
     })
   );
