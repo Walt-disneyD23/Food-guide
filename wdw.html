@@ -2761,7 +2761,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728io</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iq</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -13143,10 +13143,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
        The fold's order is O-1 — the gate (Notifications), the rule, the two notes — and a rule block that follows a switch row wears the rows' own seam.
        0728im THE DOOR LANDS COLD (owner + Chris glass 8:01–8:08 AM Oct 25: the first morning note's tap opened Live): otdNoteLand had called ppOtdOpen(etDate(0)) — etDate is this module's, unreachable from the main closure — a swallowed ReferenceError; the door now picks its own day.
        0728in THE DOWN CARD WEARS THE FAMILY'S HAND · DOWN SINCE (owner-ruled V-D 2:31 PM Oct 25): the Down Right Now card in the family's dress, every down ride with its clock from today's snapshot — THE SNAPSHOT IS THE WITNESS (the main closure's dnCardModel / dnDrawCard).
-       0728io THE CORNERSTONE TIER (owner-ruled K-2 8:23 PM Oct 25, with Worker v3.33 and almanac draft 4): a fourth tier, c = 60, hand-assigned in the canon — Walt, Roy O. and Lillian's births and deaths, Mickey's debut, the opening day of each WDW park and Disneyland; seven leads change (Walt leads Dec 5 and Dec 15). SOME MOMENTS OUTRANK ANY RIDE. ===== */
+       0728io THE CORNERSTONE TIER (owner-ruled K-2 8:23 PM Oct 25, with Worker v3.33 and almanac draft 4): a fourth tier, c = 60, hand-assigned in the canon — Walt, Roy O. and Lillian's births and deaths, Mickey's debut, the opening day of each WDW park and Disneyland; seven leads change (Walt leads Dec 5 and Dec 15). SOME MOMENTS OUTRANK ANY RIDE.
+       0728iq THE SENTENCE SAYS IT · A PERSON OUTRANKS A SHORT (owner Oct 27, with Worker v3.34 and almanac draft 7): the kind word yields on born/died (the people round's lines carry it — OTD_KW, one source for the hero, the rows and the card); the picker's kind ladder gains born/died +1, so an Archives-tier tie goes to the person (Nash · Keane · Clements · Kamen lead their days), never over a ride opening. ===== */
     var OTD_URL="almanac.json",otdData=null,otdState="idle",otdWait=[],otdFailAt=0,otdFrom="today";
     var OTD_WDW={"Magic Kingdom":1,"EPCOT":1,"Hollywood Studios":1,"Animal Kingdom":1,"Walt Disney World":1};
-    var OTD_KW={opened:"Opened",park_opened:"Park opened",land_opened:"Land opened",closed:"Closed",park_closed:"Closed",film:"Film",tv:"Television",born:"Born",died:"Died",award:"Award",event:""};
+    var OTD_KW={opened:"Opened",park_opened:"Park opened",land_opened:"Land opened",closed:"Closed",park_closed:"Closed",film:"Film",tv:"Television",born:"",died:"",award:"Award",event:""};
     function otdLoad(cb){
       if(otdData){if(cb)cb(otdData);return;}
       if(cb)otdWait.push(cb);
@@ -13158,7 +13159,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var w=otdWait;otdWait=[];w.forEach(function(f){f(otdData);});
       })["catch"](function(){otdState="failed";otdFailAt=Date.now();var w=otdWait;otdWait=[];w.forEach(function(f){f(null);});});
     }
-    function otdScore(e){var s={c:60,a:30,m:20,n:10}[e.r]||0; /* 0728io K-2 THE CORNERSTONE TIER (owner 8:23 PM Oct 25): c = the founding family, Mickey’s debut, the parks’ opening days — nothing outranks one on its day */if(e.p&&OTD_WDW[e.p])s+=15; /* 0728ij P-2 (owner glass Oct 24: EPCOT Center’s dedication under a Donald short; 74 days change lead) */s+={park_opened:4,opened:3,closed:2}[e.k]||0;return s;}
+    function otdScore(e){var s={c:60,a:30,m:20,n:10}[e.r]||0; /* 0728io K-2 THE CORNERSTONE TIER (owner 8:23 PM Oct 25): c = the founding family, Mickey’s debut, the parks’ opening days — nothing outranks one on its day */if(e.p&&OTD_WDW[e.p])s+=15; /* 0728ij P-2 (owner glass Oct 24: EPCOT Center’s dedication under a Donald short; 74 days change lead) */s+={park_opened:4,opened:3,closed:2,born:1,died:1}[e.k]||0; /* 0728iq A PERSON OUTRANKS A SHORT (owner Oct 27): born/died +1 — the Archives-tier tie goes to the person, never over a ride opening */return s;}
     function otdNorm(t){var w=String(t).toLowerCase().replace(/^the /,"").replace(/[^a-z0-9 ]/g,"").split(" ");return w[0].length>3?w[0]:w.slice(0,2).join(" ");}
     function otdDay(ds){ /* the day's facts, picked: {lead, rest, all, chrono, first, last} or null */
       var md=String(ds).slice(5),list=(otdData&&otdData.days&&otdData.days[md])||[],today=etDate(0),seen={},facts=[];
