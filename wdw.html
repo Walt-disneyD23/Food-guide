@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iw</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ix</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -7649,7 +7649,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tdStrip(t,model,ds){ /* 0717n (D-1 ratified): one chip per trip day - planned park's tier when planned, else the day's leading tier, neutral when thin; ring = the card's day */
     var days=tpDays(t),out=[],i;
     for(i=0;i<days.length;i++){var d0=days[i],wd=tpAsD(d0).getDay(),pk=(t.plan||{})[d0],lvl=0;
-      if(pk){var c=tpCell(model,pk,wd);if(!c.thin)lvl=c.lvl;}
+      if(pk){var c=tpSznCell(model,pk,wd,d0);if(!c.thin)lvl=c.lvl;} /* 0728ix the chip wears the season too */
       if(!lvl){var Dd=tpDayS(d0,model);lvl=Dd.col.length?Dd.best:0;}
       out.push({ds:d0,dt:+d0.slice(8,10),wd3:tpWDn(d0).slice(0,3).toUpperCase(),lvl:lvl,td:d0===ds});}
     return out;}
@@ -7665,7 +7665,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var strip=tdUnHTML;
     var D=tpDayS(ds,model),pk=(t&&t.plan||{})[ds],wd=tpAsD(ds).getDay();
     var days=tpDays(t),di=days.indexOf(ds);
-    var tier=pk?tpCell(model,pk,wd):null;
+    var tier=pk?tpSznCell(model,pk,wd,ds):null; /* 0728ix THE SEASON REACHES THE STRIP: the card\u2019s tier word and level on the card\u2019s own date */
     var mo=ds.slice(0,7),rec=tpSched[mo],hd=rec&&pk&&rec[pk]&&rec[pk][ds],hrs='',ee='';
     if(pk){if(hd&&hd.open){hrs=tpClk(hd.open)+' \u2013 '+tpClk(hd.close);var EEN={EE:'Early Entry',EEH:'Extended Evening',EVT:'Event'},j,xp=[];
         for(j=0;j<(hd.ext||[]).length;j++){var x=hd.ext[j];xp.push((EEN[x.k]||x.k)+' '+tpClk(x.o));}
@@ -7822,7 +7822,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function tpDayRows(t,model,EV,today){ /* 0717u Cut 2a: one model per trip day - chip via the shipped tdStrip D-1 (ring=today), park/tier word/count, published hours + short badges, chip-borne race/party marks; every field from shipped engines, null-model days keep their plan truths with neutral chips */
     var ds=tpDays(t),strip=model?tdStrip(t,model,today):null,out=[],i;
     for(i=0;i<ds.length;i++){var d0=ds[i],pk=(t.plan||{})[d0],wd=tpAsD(d0).getDay();
-      var tier=(pk&&model)?tpCell(model,pk,wd):null;
+      var tier=(pk&&model)?tpSznCell(model,pk,wd,d0):null; /* 0728ix THE SEASON REACHES THE STRIP: the row\u2019s own date \u2014 the seasonal cell the board\u2019s rows already read (owner glass Oct 28) */
       var mo=d0.slice(0,7),rec=tpSched[mo],hd=rec&&pk&&rec[pk]&&rec[pk][d0],hrs="",ee="";
       if(pk){if(hd&&hd.open){hrs=tpClk(hd.open)+" \u2013 "+tpClk(hd.close);ee=tpRowBadge(hd);}else hrs=rec?"hours TBA":"";}
       out.push({ds:d0,dt:+d0.slice(8,10),wd3:strip?strip[i].wd3:tpWDn(d0).slice(0,3).toUpperCase(),
