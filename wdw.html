@@ -12,7 +12,7 @@
     --bg:#e9ebf4;--bg-fade:rgba(233,235,244,0); --bg-2:#e2e5f1; --card:#ffffff; --card-2:#f4f5fb; --line:#e4e6f1;
     --sh-soft:0 4px 12px -4px rgba(25,26,46,.16); /* 0713w: the door's lift — one tier under the favcard */
     --ink:#191a2e; --muted:#6b6f8c; --muted-2:#9fa3c0;
-    --accent:#4f46e5; --accent-soft:#ecebfd; --accent-fill:#4f46e5; --accent-ink:#ffffff; --toast-glass:rgba(255,255,255,.78);
+    --accent:#4f46e5; --accent-soft:#ecebfd; --seg-on:rgba(79,70,229,.13); --accent-fill:#4f46e5; --accent-ink:#ffffff; --toast-glass:rgba(255,255,255,.78);
     --hm0:#eef0fd; --hm1:#d3d5f8; --hm2:#a8a9f0; --hm3:#7c74e9; --hm4:#4f46e5;
     --hmt0:#191a2e; --hmt1:#191a2e; --hmt2:#191a2e; --hmt3:#ffffff; --hmt4:#ffffff;
     --short:#15a36b; --medium:#dc8a06; --long:#ef6c3b; --packed:#e23b54; --closed:#aab0c6; --pip-off:#e1e2ea; /* 0728a: the unlit pip (ink at ~13% on the card) */ --bar1:#e1e2ea; --bar2:#c3c5d6; --bar3:#8f93ad; --bar4:#191a2e; /* 0728d (E): the ramp \u2014 the bar's fill steps with the band, Light palest, Packed ink */
@@ -437,7 +437,7 @@
   /* 0710q: variant B — the theme-seg rhyme, page-scoped; Hot-lines keeps its small chips by construction */
   .pg-seg{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px}
   .pg-seg button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);cursor:pointer;text-align:center}
-  .pg-seg button.on{background:rgba(79,70,229,.13);color:var(--accent)}
+  .pg-seg button.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE (owner-ruled Oct 28, 6:13 PM on seg-mock.png + two glass shots): every selected pill wears --seg-on \u2014 Light keeps the Wrap\u2019s tint (the darker of the two tones the family had grown), Harbor keeps My Rides\u2019 (the stronger there); the share sheet alone wears the solid fill (A) */
   .pg-seg button.dim{opacity:.45} /* 0710s: Pulse scope — park closed per schedule (the board empties there); Favorites never sets it (favorites still list at closed parks) */
   .pg-pulse{margin-top:8px} /* 0710s: the pg-fav rhyme */
   /* ===== 0713p: Pulse reports rail + Attractions browse (rp-) — the rail wears
@@ -914,7 +914,7 @@
   .pv-scrim{z-index:92} .pv-sheet{z-index:93;display:flex;flex-direction:column;max-height:92vh;overflow:hidden} .pv-sheet .help-h{margin-bottom:6px}
   .pv-sub{font-size:var(--fs-small);color:var(--muted);margin-top:1px}
   .pv-card{flex:0 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;margin-top:6px} .pv-card img{display:block;max-width:100%;max-height:calc(92vh - 178px - env(safe-area-inset-bottom,0px));object-fit:contain} .pv-sheet.two .pv-card img{max-height:calc(92vh - 232px - env(safe-area-inset-bottom,0px))} /* the tall card shrinks to leave the button its seat: the sheet’s chrome (grab, header, button, paddings) measured at 178px, 232px with the chips; a percentage would not bind under a max-height; no radius or shadow of its own — the card carries its corners and its mat is clear */
-  .pv-seg{margin-top:14px;flex:none} .pv-seg b{font-size:13px;padding:9px 0} .pv-share{flex:none}
+  .pv-seg{margin-top:14px;flex:none} .pv-seg b{font-size:13px;padding:9px 0} .mr-seg.pv-seg b.on{background:var(--accent-fill);color:var(--accent-ink,#fff)} .pv-share{flex:none} /* 0728jb THE SHEET\u2019S PILL IS A FILL (owner-ruled A, Oct 28, 6:06 PM on seg-mock-a.png): the one pill that sits beside an action wears the solid accent, white text, both themes \u2014 the app\u2019s fill law */
   body.pv-open{overflow:hidden}
   .rc-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead);letter-spacing:-.01em;color:var(--ink)}
   .rc-title .cnt{flex:none;font:700 var(--fs-small) var(--font-body);color:var(--accent);white-space:nowrap} /* 0725u: the seat counter */
@@ -1376,7 +1376,7 @@
     --bg:#0a141d;--bg-fade:rgba(10,20,29,0); --bg-2:#0d1826; --card:#12202c; --card-2:#17293a; --line:#20374a;
     --sh-soft:0 4px 12px -4px rgba(0,0,0,.42); /* 0713w: Harbor's door-read is the border — the lift is garnish */
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
-    --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --accent-fill:#4f46e5; --toast-glass:rgba(18,32,44,.78);
+    --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --seg-on:rgba(139,135,255,.18); --accent-fill:#4f46e5; --toast-glass:rgba(18,32,44,.78);
     --hm0:#1c2440; --hm1:#2a3163; --hm2:#3c3f96; --hm3:#5a52cf; --hm4:#8b87ff;
     --hmt0:#9db0c0; --hmt1:#9db0c0; --hmt2:#0a141d; --hmt3:#0a141d; --hmt4:#0a141d;
     --t1:#1e2c39; --t2:#2c3d4c; --t3:#4a5d6e; --t4:#7f93a6; --ringc:#b4b0ff; /* 0728e (B): the ramp in Harbor \u2014 lighter = busier, since ink is light here */ /* Cut C (C-2): soft dark \u2014 dimmer, not paler; ringc needs LIGHTER in dark */
@@ -1643,11 +1643,11 @@
   /* ===================== DAILY WRAP (pw-) ===================== */
   .pw-seg{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;gap:2px;max-width:360px;margin:0 auto}
   .pw-seg button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:600;font-size:var(--fs-body);color:var(--muted);padding:9px 0;border-radius:var(--r-pill);cursor:pointer}
-  .pw-seg button.on{background:rgba(79,70,229,.13);color:var(--accent)}
+  .pw-seg button.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE */
   .pw-view{max-width:680px;margin:0 auto;padding:6px 0 48px}
   .pw-tabs{display:flex;gap:3px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:3px;margin:6px 0 14px}
   .pw-tabs button{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:600;font-size:var(--fs-small);color:var(--muted);padding:7px 0;border-radius:var(--r-pill);cursor:pointer}
-  .pw-tabs button.on{background:rgba(79,70,229,.13);color:var(--accent)}
+  .pw-tabs button.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE */
   .pw-date{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 12px}
   .pw-date .d{font-family:var(--font-display);font-weight:700;font-size:var(--fs-lead)}
   .pw-date .s{font-size:var(--fs-meta);color:var(--muted-2)}
@@ -2154,7 +2154,7 @@
   .td-fuse{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);margin:7px 0 11px;overflow:hidden} /* 0724f THE WHEELS (owner-ruled D): the fused control stack — the lens reads the plan, the span writes it, one house; the trip room takes the same face (the cohesion cut arrives with the fuse) */
   .td-fuse .td-tabs{display:flex;background:var(--card-2);border-radius:var(--r-pill);padding:3px;gap:2px;margin:9px 9px 8px}
   .td-fuse .td-tabs .hl-tab{flex:1;border:0;background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-small);letter-spacing:.04em;color:var(--muted);padding:9px 0;border-radius:var(--r-pill);text-align:center;margin:0}
-  .td-fuse .td-tabs .hl-tab.on{background:rgba(79,70,229,.13);color:var(--accent)}
+  .td-fuse .td-tabs .hl-tab.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE */
   .td-spanrow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:12px 15px;-webkit-tap-highlight-color:transparent} /* 0724g THE SEATS: the row hosts the invisible natives — relative anchors them */
   .td-spanrow .t{font-size:var(--fs-small);color:var(--muted)}
   .td-spanrow .t b{color:var(--ink);font-family:var(--font-display)}
@@ -2205,7 +2205,7 @@
   .ty-pgl.win{color:var(--pwh-key)}
   .ty-chips{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px;margin:0 0 10px}
   .ty-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:var(--r-pill);padding:8px 0;cursor:pointer}
-  .ty-chip.on{background:var(--accent-soft);color:var(--accent)}
+  .ty-chip.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE: the Today board\u2019s park chips join */
   .ty-chip.dim{opacity:.45;cursor:default}
   .ty-pline{margin-top:11px;padding-top:10px;border-top:1px solid var(--pwh-line);font-size:var(--fs-meta);color:var(--pwh-muted);line-height:1.5}
   .ty-pline b{color:var(--pwh-sub);font-weight:600}
@@ -2261,7 +2261,7 @@
   .mr-breath.show{opacity:1}
   .mr-seg{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px}
   .mr-seg b{flex:1;text-align:center;font:700 12px var(--font-display);color:var(--muted);padding:8px 0;border-radius:999px;cursor:pointer}
-  .mr-seg b.on{background:var(--accent-soft);color:var(--accent)}
+  .mr-seg b.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE: My Rides\u2019 row joins the Wrap\u2019s Light tint */
   .mr-fine{font-size:var(--fs-fine);color:var(--muted);line-height:1.55;margin:8px 2px 0} /* 0722n F1-c: one family, one token */ /* 0720y */
   .mr-bk .cap{display:flex;align-items:center;justify-content:space-between}
   .mr-clrall{border:0;background:none;color:var(--accent);font:700 12px var(--font-display);cursor:pointer;padding:2px 4px;letter-spacing:0;text-transform:none} /* 0721e */
@@ -2394,7 +2394,7 @@
   /* ===== MY RIDES Stage 2 (0719z) — chips lens + YOUR PULSE, mock v12 grammar */
   .mr-chips{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:5px;margin-bottom:10px}
   .mr-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:999px;padding:8px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .mr-chip.on{background:var(--accent-soft);color:var(--accent)}
+  .mr-chip.on{background:var(--seg-on);color:var(--accent)} /* 0728jb ONE PILL ONE TONE */
   .mr-chip.dim{color:var(--muted-2);opacity:.55}
   .mr-pulse{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);overflow:hidden;margin-bottom:10px}
   .mr-pulse .cap{font:700 var(--fs-caps) var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding:12px 14px 6px} /* 0722s H-b: the smart board keeps its accent */
@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ja</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jb</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -15971,6 +15971,7 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
       if(k==="wrap"&&(curTab!=="yesterday"||pwMonthCursor)){pwMonthCursor=null;loadTab("yesterday");} /* 0728bt: Wrap's month, week and today faces have no crumb \u2014 home is Yesterday, the cursor reset (the tab's own rule, 0716b) */
       try{window.ppShl().scrollTo({top:0,behavior:"smooth"});}catch(_){window.ppShl().scrollTo(0,0);}return;}
       navTab=k;
+      if(k!=="live"){var dd9=$id("rdDnDoor"),dl9=$id("rdDnList");if(dd9)dd9.classList.remove("open");if(dl9)dl9.classList.remove("open");} /* 0728jb THE DOOR CLOSES BEHIND YOU (owner glass Oct 28, 5:09 PM): the rides-down list folds when Live is left, so the return lands on the folded read; folded at departure, not on return, so a re-poll while away (0705e restores the DOM\u2019s open state) cannot carry it back. Inside Live nothing changes \u2014 open stays open across polls, scroll kept. */
       if(k!=="pulse"&&typeof rcPk!=="undefined"&&rcPk){rcPk=false;document.body.classList.remove("rc-open");}
       if(k!=="today"&&typeof closeIgSheet==="function")closeIgSheet(); /* 0724q: the guide never outlives its tab */ /* 0714j: the picker is tab-mortal \u2014 the body lock never outlives its pane */
       var pm=$id("pgMyRides"),pp=$id("pgPulse"),pt=$id("pgToday");
