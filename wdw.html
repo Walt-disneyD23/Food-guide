@@ -1751,7 +1751,7 @@
   .pw-meta div{font-size:var(--fs-meta);color:var(--pwh-muted);min-width:0}
   .pw-meta .nm{display:block;font-size:var(--fs-micro);color:var(--pwh-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px} /* 0728hw: the clause under a value */
   .pw-meta div:nth-child(2){text-align:center} .pw-meta div:last-child{text-align:right} /* 0728hy THE ROW SPANS THE RULE: the page's row takes the card's ends */
-  .pw-meta b{display:block;font-family:var(--font-display);font-size:var(--fs-lead);color:#fff;font-weight:700;margin-top:2px}
+  .pw-meta b{display:block;font-family:var(--font-display);font-size:var(--fs-stat);color:#fff;font-weight:700;margin-top:2px} /* 0728iz A (owner glass Oct 28, 12:22 PM: "make these numbers a little bigger"): the hero\u2019s three stats wear the tiles\u2019 number size \u2014 ONE NUMBER FAMILY */
   /* 0711m: a stationary press on the chart belongs to the scrub, not iOS text
      selection — touch-action stops scroll-steal but not the long-press callout,
      so the band suppresses selection too. Stat tiles stay selectable on purpose. */
@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iy</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iz</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -12421,6 +12421,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       fr.then(function(){try{var mc=document.createElement("canvas");mc.width=1080;mc.height=2400;D.H=2400;D.end=null;drawCard(D.kpark?rcDay(mc.getContext("2d")):mc.getContext("2d"),D);}catch(e){}
         D.H=Math.round((D.end||1050)+(D.ll?((D.tk&&D.tk>1)?366:344):204));emitCard(D);}); /* 0728gl C: the taller lane block (140) asks 366 */
     }
+    function pwEmitPair(A,B,key){ /* 0728iz TWO SHAPES ON THE SHEET (the Compare card\u2019s grammar, 0728ib): two self-sized cards from drawCard, the sheet\u2019s chips named by each shape, the pick remembered per key */
+      var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+      fr.then(function(){function emit(D){try{var mc=document.createElement("canvas");mc.width=1080;mc.height=2400;D.H=2400;D.end=null;drawCard(mc.getContext("2d"),D);}catch(e){}
+          D.H=Math.round((D.end||1050)+(D.ll?((D.tk&&D.tk>1)?366:344):204));var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;drawCard(cv.getContext("2d"),D);return cv;}
+        pvOpen({key:key,alts:[{cv:emit(A),label:A.label,fname:A.fname},{cv:emit(B),label:B.label,fname:B.fname}],shareTitle:A.shareTitle});});
+    }
     window.__ppVisitRideDay=function(ds,rid,park){ /* 0721k: the profile chip door — a door lands where it points; reuses the real nav path (0716o) */
       var nb=document.querySelector('#appNav .it[data-pg="wrap"]');if(nb)nb.click();
       curTab="profile";
@@ -12536,13 +12542,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var prob=null;arr.forEach(function(w){if(w.dn>0&&(!prob||w.dm>prob.dm))prob={n:w.n,dm:w.dm,dn:w.dn,dd:w.dd};});
       var present=arr.filter(function(w){return w.days===finals&&w.c>0;});
       var ironAll=present.filter(function(w){return w.dn===0;}).sort(function(a,b){return b.c-a.c;});
+      var rel=null;present.forEach(function(w){if(w.dn>0&&(!rel||w.dd<rel.dd||(w.dd===rel.dd&&w.dm<rel.dm)))rel={n:w.n,dd:w.dd,dn:w.dn,dm:w.dm};}); /* 0728iz A THE SEAT IS NEVER EMPTY (owner glass Oct 28): the ride with the fewest outage days (then the fewest minutes) among the rides present every finished day \u2014 the seat\u2019s sentence when nobody earned Iron Horse */
       var hero=null;
       if(finals>=2&&mnH&&mxH&&mnH!==mxH&&Math.round(mxH.resortHead)!==Math.round(mnH.resortHead))
         hero={calm:mnH,tough:mxH}; /* rounded-tie guard, same rule as the week hero */
       return {cur:cur,label:pwMonthName(cur),grid:g,cells:cells,finals:finals,
         inMonthTotal:+g.last.slice(8,10),tot:tot,ltgFrom:ltgFrom,
         extremes:{mn:mnA&&mnA.d,mx:mxA&&mxA.d},hero:hero,
-        board:{tough:tough,hiSu:hiSu,prob:prob,iron:{one:ironAll[0]||null,count:ironAll.length,of:present.length}}};
+        board:{tough:tough,hiSu:hiSu,prob:prob,iron:{one:ironAll[0]||null,count:ironAll.length,of:present.length},rel:rel}};
     }
     function pwRenderMonth(m){
       var wv=$id("wrapView");if(!wv)return;
@@ -12587,6 +12594,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(b.hiSu)tiles+=tile('Highest Sustained Peak',b.hiSu.n+' \u00b7 '+b.hiSu.v+'m',pwMonD(b.hiSu.d)+'.');
       if(b.prob)tiles+=tile('Problem Child',b.prob.n,'Down '+b.prob.dd+' of '+m.finals+' days \u00b7 '+b.prob.dn+' outages \u00b7 '+(b.prob.dm/60).toFixed(1)+' ride-hours lost.');
       if(b.iron.one)tiles+=tile('Iron Horse of the Month',b.iron.one.n,(b.iron.count===1?'The only ride':'One of '+b.iron.count+' rides')+' of '+b.iron.of+' to run every day clean.');
+      else if(b.rel)tiles+=tile('Most Reliable',b.rel.n,'Clean '+(m.finals-b.rel.dd)+' of '+m.finals+' days \u00b7 '+b.rel.dn+' outage'+(b.rel.dn===1?'':'s')+' \u00b7 '+(b.rel.dm/60).toFixed(1)+' ride-hours lost.'); /* 0728iz A: the label moves with the truth \u2014 Iron Horse when earned, Most Reliable when not (Problem Child\u2019s mirror); the fourth seat never sits empty */
       if(tiles)html+='<div class="pw-mtiles">'+tiles+'</div>';
       html+=pwAlmDoorHTML(pwAlmData&&pwAlmData.cells); /* 0716d: D3 door at the board tail */
       wv.innerHTML=html;wireTabs();pwWireMonthNav();pwWireMonthCells(wv);pwAlmWireDoor();
@@ -15393,6 +15401,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var gt=ah+(D.sub?56+(ts-27):30)+sH,gap=22,tw=(R-L-gap)/2,th=Math.round(252*(D.tk||1)); /* 0728gl C: the tiles grow with their type (343 tall at 1.36) */
       if(D.band){var bTop=ah+(D.sub?52+(ts-27):26)+sH;gt=bTop+bandBlock(L,bTop,R-L,D.band);}
       if(D.wkpic){gt+=wkPic(L,gt-6,R-L,D.wkpic);}
+      if(D.wkgrid){gt+=wkGrid(L,gt,R-L,D.wkgrid);} /* 0728iz the Grid shape: the week grid sits where the tiles would; the footer follows through D.end */
       if(D.stats){ /* 0728hy THE ROW SPANS THE RULE: the hero's stats on a hairline — flush left, centred, flush right, the rule's own ends */
         var si,sal,ssx,sn=D.stats.length,sclause=false;ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,gt);ctx.lineTo(R,gt);ctx.stroke();
         for(si=0;si<sn;si++){sal=(si===0)?"left":(si===sn-1)?"right":"center";ssx=(sal==="left")?L:(sal==="right")?R:(L+R)/2;
@@ -15473,6 +15482,28 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(t.park)T(ell(t.park,tw-pad*2,IN("500",z(22))),tx+pad,ctxY+cl.length*z(28)+(t.note?z(30):0),IN("500",z(22)),C.muted,"left"); /* 0728hh THE PARK IS THE TILE'S FOOT (owner, 9:48 AM Oct 16: "the park name should always be last, you catch it easier with your eye"): a tile that carries a clause names its park beneath it, in the context's ink — every tile ends with its park (was first under the name, 0728hd) */
       }
 
+      function wkGrid(bx,by,bw,G){ /* 0728iz THE GRID SHAPE (owner Oct 28, 12:56 PM: "maybe make another version with the graph? 2 to choose from on the preview"): the ride page's hour-by-hour week, as the page draws it \u2014 the hour header, seven day rows, the hm steps with the number in every cell (COLOR NEVER CARRIES ALONE), the red underline where a 5-min down window touched the hour, the striped dn cell where no wait was posted, dashed cells for the days to come, today's dot; the page's own key and caption beneath. Returns the block's height. */
+        var FILL=["#1c2440","#2a3163","#3c3f96","#5a52cf","#8b87ff"],INK=["#9db0c0","#c3c9ff","#ffffff","#ffffff","#0a141d"],DD=G.days,h0=G.h0,h1=G.h1,nh=h1-h0+1,lab=74,gap=5,cw=Math.floor((bw-lab-gap*(nh-1))/nh),chh=Math.round(cw*0.92),hdr=34,i,h,k,x,ry,cx,vals,av,tch,st;
+        for(h=h0;h<=h1;h++)T(String(((h+11)%12)+1),bx+lab+(h-h0)*(cw+gap)+cw/2,by+22,IN("600",20),C.muted2,"center");
+        for(i=0;i<7;i++){x=DD[i];ry=by+hdr+i*(chh+gap);var lv=x.live&&!G.fin;
+          T(RP_WD[i],bx,ry+chh/2,IN(lv?"700":"600",22),lv?C.accent:C.muted,"left","middle");
+          if(lv){ctx.beginPath();ctx.arc(bx+lab-16,ry+chh/2,5,0,Math.PI*2);ctx.fillStyle=C.green;ctx.fill();}
+          for(h=h0;h<=h1;h++){cx=bx+lab+(h-h0)*(cw+gap);
+            if(x.future){ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.14)";rr(cx+0.75,ry+0.75,cw-1.5,chh-1.5,8);ctx.stroke();ctx.setLineDash([]);continue;}
+            vals=[];for(k=0;k<(x.hm||[]).length;k++)if(x.hm[k]!=null&&Math.floor((x.hs+k)/2)===h)vals.push(x.hm[k]);
+            tch=pwWkTouch(x,h);
+            if(!vals.length){if(tch){rr(cx,ry,cw,chh,8);ctx.fillStyle="rgba(226,59,84,0.16)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(226,59,84,0.55)";ctx.stroke();T("dn",cx+cw/2,ry+chh/2,IN("700",17),"#ff6b6b","center","middle");}
+              else{rr(cx,ry,cw,chh,8);ctx.fillStyle="rgba(255,255,255,0.035)";ctx.fill();}continue;}
+            av=0;for(k=0;k<vals.length;k++)av+=vals[k];av=av/vals.length;st=rpHmStep(av);
+            rr(cx,ry,cw,chh,8);ctx.fillStyle=FILL[st];ctx.fill();
+            T(String(Math.round(av)),cx+cw/2,ry+chh/2+1,SG("700",22),INK[st],"center","middle");
+            if(tch){ctx.save();rr(cx,ry,cw,chh,8);ctx.clip();ctx.fillStyle="#e23b54";ctx.fillRect(cx,ry+chh-5,cw,5);ctx.restore();}}}
+        var gridH=hdr+7*(chh+gap)+8,ky=by+gridH+30,kx=bx;
+        rr(kx,ky-12,34,18,4);ctx.fillStyle=FILL[1];ctx.fill();ctx.fillStyle="#e23b54";ctx.fillRect(kx,ky+2,34,4);T("down for part of it",kx+44,ky+2,IN("500",21),C.muted,"left","middle");
+        kx+=44+ctx.measureText("down for part of it").width+34;rr(kx,ky-12,34,18,4);ctx.fillStyle="rgba(226,59,84,0.16)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(226,59,84,0.55)";ctx.stroke();T("down, no wait posted",kx+44,ky+2,IN("500",21),C.muted,"left","middle");
+        T(G.cap,bx,ky+56,IN("600",24),C.ink,"left");
+        return gridH+92;
+      }
       function wkPic(bx,by,bw,m){ /* 0728hc THE WEEK CARD SHOWS THE FIELD (owner-ruled C2 Oct 16 on hc-week-card-round2.png: "that does look pretty nice"): the week's picture between the read and the tiles — four parks × seven days, full width; each park's name then one cell per day printing the park's HEADLINER average that day in its band (the number the headline speaks, the ink the park rows wear); today a dashed cell with the dot, the days to come dashed and empty; the busiest park's row lit in the kicker green with its tag following the headline's tense. Returns the block height. */
         var i,j,n=m.days.length,gap=14,hdr=34,rh=66,lh=m.one?0:36,rg=18, /* 0728hy: one park — no name line */cw=(bw-gap*(n-1))/n,y0=by,TL=["M","T","W","T","F","S","S"],KEY=[["pw-s","20 or less"],["pw-m","21-45"],["pw-l","46-70"],["pw-p","over 70"]],KG="#9bf7c9";
         function wash(hx,a){return "rgba("+parseInt(hx.slice(1,3),16)+","+parseInt(hx.slice(3,5),16)+","+parseInt(hx.slice(5,7),16)+","+a+")";}
@@ -15755,6 +15786,19 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
       return out;
     }
     function pwWkTouch(x,h){var k;for(k=0;k<(x.dwn||[]).length;k++)if(x.dwn[k][0]<(h+1)*60&&x.dwn[k][1]+5>h*60)return true;return false;} /* the desk's rule: a 5-min down window that overlaps the hour */
+    function pwWkGridModel(r){ /* 0728iz the Grid shape\u2019s model: the page\u2019s own days (pwWkDays), the page\u2019s own hour span and the page\u2019s own caption \u2014 SAME QUESTION SAME SENTENCE, the card and the page say one thing */
+      var D=pwWkDays(r.id);if(!D)return null;
+      var fin=pwWeekFin(lastData),i,j,x,a,b,h0=99,h1=-1;
+      for(i=0;i<D.length;i++){x=D[i];
+        if(x.hs!=null&&x.hm.length){a=Math.floor(x.hs/2);b=Math.floor((x.hs+x.hm.length-1)/2);if(a<h0)h0=a;if(b>h1)h1=b;}
+        for(j=0;j<(x.dwn||[]).length;j++){a=Math.floor(x.dwn[j][0]/60);b=Math.floor((x.dwn[j][1]+4)/60);if(a<h0)h0=a;if(b>h1)h1=b;}}
+      if(h1>23)h1=23;if(h1<h0)return null;
+      var F=0,C=0,O=0,dn;for(i=0;i<D.length;i++){x=D[i];dn=(x.fin&&!x.none)||(x.live&&fin);if(dn){F++;if(x.dm===0)C++;}if((x.fin||x.live)&&x.dm>0)O++;}
+      var cap='';
+      if(F>0)cap+=C+' clean '+(C===1?'day':'days')+' of '+F+' finished \u00b7 ';
+      cap+=(r.downMinutes>0)?(O+' outage '+(O===1?'day':'days')+' \u00b7 '+r.downMinutes+' min down'+(fin?'':' so far')):(fin?'ran clean all week':'ran clean so far');
+      return {days:D,h0:h0,h1:h1,fin:fin,cap:cap};
+    }
     function pwWkCard(r){
       var D=pwWkDays(r.id);if(!D)return "";
       var fin=pwWeekFin(lastData),i,j,k,x,a,b,h; /* TENSE FLIPS WHOLE: every day final — the dashes and the dot go, "so far" drops (0728gz: the one predicate, pwWeekFin, the page's own) */
@@ -15892,7 +15936,10 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
       tiles.push((loV==null)?{label:"LOWEST",pre:"",big:"\u2014",post:"",cls:"pw-n",name:(live?"No waits yet":"No waits posted"),ctx:pwNoWaitCtx(r,isWeek,live)}:{label:"LOWEST",pre:"low",big:String(loV),post:"m",cls:"pw-s",name:(loV<=rpWalkNm(r.name)?"Walk-on window":(su?"Lowest sustained":"Shortest line")),ctx:(su?("around "+pwClk(su.lowAt)):(!isWeek&&r.minAt?("around "+fmtTime(r.minAt)):"lowest wait"))});
       tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
       tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:pwBadge(d,isWeek),line:line,sub:rideSub(r,live,cClause,isWeek),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-"+dateStr+".png",shareTitle:"RideCue — "+r.name});
+      var D1={W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(r.name),kicker:(isWeek?fmtRange(d.dates):fmtDate(dateStr)),badge:pwBadge(d,isWeek),line:line,sub:rideSub(r,live,cClause,isWeek),band:bm,tiles:tiles,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-"+dateStr+".png",shareTitle:"RideCue \u2014 "+r.name};
+      var G=isWeek?pwWkGridModel(r):null; /* 0728iz TWO SHAPES (owner Oct 28): the week ride card offers Stats and Grid on the sheet; a day card, or a week with nothing posted yet, keeps the one shape */
+      if(G){D1.label="Stats";var D2={W:1080,H:0,tk:1.36,ts:32,title:D1.title,kicker:D1.kicker,badge:D1.badge,line:line,sub:D1.sub,band:null,tiles:[],wkgrid:G,label:"Grid",foot:"Each cell: the hour\u2019s average wait \u00b7 dashed = to come",foot2:"Reliability logged every 2 min",link:"ridecue.live",fname:"ridecue-ride-"+dateStr+"-grid.png",shareTitle:D1.shareTitle};pwEmitPair(D1,D2,"wkride");return;}
+      pwEmitSized(D1);
     }
 
     /* ---- init: four-tab nav (0710n) — Phase 1 of the bottom-nav arc ----
