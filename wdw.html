@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iz</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ja</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -7980,7 +7980,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function adCellFn(model,win){ /* 0728ay: cell(d,p) is tpCell for the tier and the all-day minutes; a windowed park adds avgW (the same-weekday record over the window's buckets, under TP_FLOOR days like the tier) and win; thin in the window \u2192 the all-day cell. cell.w(k,d,p) reads either window for the stay-note. */
     win=win||{};
     var W=function(k,d,p){var mw=tpModelW(k),e=mw&&mw.m[p+"|"+tpAsD(d).getDay()];return (e&&e.n>=TP_FLOOR)?Math.round(e.s/e.n):null;};
-    var f=function(d,p){var c=tpCell(model,p,tpAsD(d).getDay());if(c.thin||!win[p])return c;var aw=W(win[p],d,p);if(aw===null)return c;return {avg:c.avg,lvl:c.lvl,n:c.n,avgW:aw,win:win[p]};};
+    var f=function(d,p){var c=tpSznCell(model,p,tpAsD(d).getDay(),d);if(c.thin||!win[p])return c;var aw=W(win[p],d,p);if(aw===null)return c;return {avg:c.avg,lvl:c.lvl,n:c.n,avgW:(c.q?Math.round(aw*c.q):aw),win:win[p],aw:c.aw,q:c.q};}; /* 0728ja THE SOLVER READS THE SEASON (owner-ruled Oct 28, 2:59 PM on audit/out/solve/solver-sheet.png): the cell the solver ranks with \u2014 and the rail\u2019s chip words and pips read from it \u2014 is the seasonal cell on the day\u2019s own date; a windowed park\u2019s measured minutes lift by the same q, so within a park the window and the day stay in one unit. THE SEASON IS ONE CELL, every reader. */
     f.w=W;return f;
   }
   function adSolveOf(A,days,model,EV){return adSolve(days,adCellFn(model,A.win),EV.night||{},{parks:A.parks,rest:A.rest},A.picks,A.rests,A.avoid);}
@@ -13705,7 +13705,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function titleName(n){
       n=String(n);
       if(/Walt Disney World Railroad/.test(n))return "WDW Railroad";
-      return n.replace(/ – .*/,"").replace(/: .*/,"").replace(/ Starring .*/,"");
+      return n.replace(/ \u2013 .*/,"").replace(/ Starring .*/,""); /* 0728ja THE TITLE RUNS WHOLE (owner glass Oct 28, 2:06 PM: the Grid card said "Star Wars"): a colon name keeps its second half \u2014 the title steps down 58 \u2192 50 \u2192 44 before it loses a word (0728hg) and the family head gave it the full width (0728ir); the dash and Starring cuts stay */
     }
     function tileV(lbl,vHTML,tierCls,nm,ctx,note,rid,rpark,pkLine){ /* 0728hd THE PARK RIDES EVERY TILE: pkLine seats the park on its own line under the name, before the context — the card's tile reads the same */
       var attrs=rid?' data-rid="'+esc(rid)+'" data-rpark="'+esc(rpark||"")+'" role="button" tabindex="0"':"";
@@ -15378,11 +15378,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       var rcol=D.kpark?28:Math.max(bw+30,aw)+28; /* 0728ir R-A: under the family head the title takes the full width */
       var tz=[58,50,44],ti=0;for(ti=0;ti<tz.length-1;ti++){ctx.font=SG("700",tz[ti]);if(ctx.measureText(D.title).width<=R-L-rcol)break;} /* 0728hg THE TITLE STEPS DOWN BEFORE IT LOSES A WORD (owner glass 9:11 AM Oct 16, "Tam Tam Drummers of H…"): the calendar card's law reaches the family — the title steps 58 → 50 → 44 before the ellipsis; its seat does not move */
-      T(ell(D.title,R-L-rcol,SG("700",tz[ti])),L,206,SG("700",tz[ti]),C.ink,"left");
+      ctx.font=SG("700",tz[ti]);var TY=0;if(ctx.measureText(D.title).width>R-L-rcol){var tl2=wrap2(D.title,R-L-rcol,SG("700",tz[ti]),2);T(tl2[0],L,206,SG("700",tz[ti]),C.ink,"left");if(tl2.length>1){T(tl2[1],L,206+Math.round(tz[ti]*1.12),SG("700",tz[ti]),C.ink,"left");TY=Math.round(tz[ti]*1.12);}} /* 0728ja THE TITLE RUNS WHOLE: a name the smallest step cannot hold wraps to a second line (the family head\u2019s way, 0728ir) and everything beneath moves down one line; D.end follows */
+      else T(D.title,L,206,SG("700",tz[ti]),C.ink,"left");
       if(!D.kpark){rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
       T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
       if(asofT)T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+24,IN("500",20),C.muted2,"center");} /* 0728ir R-A: the right column stands only where the family head does not */
-      var hy=288,hl=wrap2(D.line,R-L,SG("700",54));
+      var hy=288+TY,hl=wrap2(D.line,R-L,SG("700",54)); /* 0728ja: the headline and everything after it ride below a two-line title */
       for(var i=0;i<hl.length;i++){ /* 0728gj E-2 THE NUMBER WEARS ITS BAND (owner-ruled Oct 13 on live-card-head-mock.png): a lead (D.lead) opens the first line in its own colour — the wait in its band, "Down right now." in the card's red — and the rest of the line is ink; a card with no lead draws as it always has */
         if(i===0&&D.lead&&hl[0].indexOf(D.lead.t)===0){T(D.lead.t,L,hy,SG("700",54),D.lead.c,"left");ctx.font=SG("700",54);T(hl[0].slice(D.lead.t.length),L+ctx.measureText(D.lead.t).width,hy,SG("700",54),C.ink,"left");}
         else T(hl[i],L,hy+i*62,SG("700",54),C.ink,"left");}
