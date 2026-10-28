@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728ix</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iy</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6679,13 +6679,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function tpPlanClause(t,ds,model,wd){ /* Cut 2 (2b-ratified): acknowledged, never judged — history first, pick second; no tier claim under the day floor */
     var pk=(t&&t.plan||{})[ds];if(!pk)return "";
-    var c=tpCell(model,pk,wd);
+    var c=tpSznCell(model,pk,wd,ds); /* 0728iy the pick\u2019s tier on its own date */
     if(c.thin)return ' Your pick, <b>'+esc(pk)+'</b>, is too thin yet.';
     return ' Your pick, <b>'+esc(pk)+'</b>, ran '+tpTier(c.lvl)+'.';
   }
   function tdDayMarks(model,ds,night){ /* Cut C (C-1): the day's fit - the read box's own best-tier group among non-thin parks; every non-thin park tied = no park stood out = no marks; the party-truth floor only ever REMOVES (Cut A, Law 12). NO cross-park raw-minute comparison anywhere - the tier group IS the lawful fit. */
     var wd=tpAsD(ds).getDay(),best=9,tiers={},nt=0,i;
-    for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)continue;tiers[TP_PARKS[i][0]]=c.lvl;nt++;if(c.lvl<best)best=c.lvl;}
+    for(i=0;i<4;i++){var c=tpSznCell(model,TP_PARKS[i][0],wd,ds);if(c.thin)continue;tiers[TP_PARKS[i][0]]=c.lvl;nt++;if(c.lvl<best)best=c.lvl;} /* 0728iy the fit follows the seasonal tiers */
     var m={},cnt=0,p;
     for(p in tiers)if(tiers[p]===best){m[p]=1;cnt++;}
     if(!nt||cnt===nt)return {};
@@ -6696,7 +6696,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tpPlanRow(t,ds,model,EV){ /* 0728z D-A (owner, Sep 9): the picker retires \u2014 the advisor is the one home for planning a day (ONE PHENOMENON, ONE HOME). The day page keeps the receipt and a door: the day's park (or its rest, or nothing yet) in the rail's own chip, whose it is, and Change \u203a \u2014 which closes the day, opens the advisor and lands on this day's lane. The PARK BY PARK readout beneath stays. Prior: Cut 2 / Cut C (C-1) / 0727r / 0728e \u2014 the square two-line picker chips, retired here. */
     var pk=(t.plan||{})[ds],wd=tpAsD(ds).getDay(),NT=(EV&&EV.night)||{},mk=tdDayMarks(model,ds,NT),A=t.adv||{},rest=!!(A.planned&&A.wrote&&A.wrote[ds]==="rest"),yours=!!((A.picks&&A.picks[ds])||!A.planned),kept=!!(A.planned&&A.picks&&A.picks[ds]&&A.kept&&A.kept[ds]),behind=ds<tpToday(); /* 0728ac (owner, Sep 9): THE RECEIPT NAMES THE AUTHOR \u2014 a kept day was the advisor's idea, and the receipt says so */
     var h='<div class="tp-peb">'+(pk?'Planned':rest?'Rest day':'Plan a park')+' \u00b7 <span class="dayin">'+tpWDn(ds)+', '+tpMD(ds)+'</span></div><div class="tp-plrec">';
-    if(pk){var cc=tpCell(model,pk,wd);h+='<span class="tp-adans plan"><b>'+(TP_P2[pk]||TP_PSHORT[pk]||pk)+'</b><span class="tw">'+(cc.thin?'no record':TP_TW[cc.lvl])+'</span>'+(mk[pk]?'<span class="fx">'+AD_STAR+'</span>':'')+'</span><span class="txt">'+esc(pk)+' \u00b7 '+(kept?'the advisor\u2019s, kept':yours?'your pick':'the advisor\u2019s')+'</span>';}
+    if(pk){var cc=tpSznCell(model,pk,wd,ds);h+='<span class="tp-adans plan"><b>'+(TP_P2[pk]||TP_PSHORT[pk]||pk)+'</b><span class="tw">'+(cc.thin?'no record':TP_TW[cc.lvl])+'</span>'+(mk[pk]?'<span class="fx">'+AD_STAR+'</span>':'')+'</span><span class="txt">'+esc(pk)+' \u00b7 '+(kept?'the advisor\u2019s, kept':yours?'your pick':'the advisor\u2019s')+'</span>';}
     else if(rest)h+='<span class="tp-adans rest yours">Rest day</span><span class="txt">'+((A.rests&&A.rests[ds])?((A.kept&&A.kept[ds])?'the advisor\u2019s, kept':'yours'):'the advisor\u2019s')+'</span>';
     else h+='<span class="tp-adans rest open">\u2014</span><span class="txt">'+(behind?'Behind you':'Not planned yet')+'</span>';
     if(!behind)h+='<button class="tp-plch" type="button" data-tpadv="'+ds+'">'+((pk||rest)?'Change':'Plan it')+' \u203a</button>';
@@ -6966,7 +6966,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function tpRead(ds,model){ tpRead.beats=null; var fut=!(ds.length&&ds[ds.length-1]<tpToday()); function dn(d){var s=tpDayName(d);return fut?s.replace("</b>","s</b>"):s;} /* 0717x (owner-caught on the card): a trip not yet over speaks the PATTERN voice - plural weekdays + present perfect, the race read's own 'have run' dress; a finished trip keeps today's strings. One source: board and card flip together */ /* board-level read (0714v): tier COUNTS with Packed counted apart from Busy — ties named, even hold, Packed leads; receipts only when strictly true; never raw minutes across parks */
     var rows=[],i,j;
     for(i=0;i<ds.length;i++){var wd=tpAsD(ds[i]).getDay(),cs=[],full=true;
-      for(j=0;j<4;j++){var c=tpCell(model,TP_PARKS[j][0],wd);cs.push(c);if(c.thin)full=false;}
+      for(j=0;j<4;j++){var c=tpSznCell(model,TP_PARKS[j][0],wd,ds[i]);cs.push(c);if(c.thin)full=false;} /* 0728iy THE SEASON REACHES THE READ: the tally reads the cell the rows wear (owner glass Oct 28) */
       if(!full)continue;
       var busy=[],light=[],packed=[];
       for(j=0;j<4;j++){if(cs[j].lvl>=3)busy.push(TP_PARKS[j][0]);if(cs[j].lvl===1)light.push(TP_PARKS[j][0]);if(cs[j].lvl===4)packed.push(TP_PARKS[j][0]);}
@@ -7003,7 +7003,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var TP_TSTRONG=["","short","medium","long","packed"]; /* 0717k (owner: A amended): tier -> the trip rail's own dot family */
   function tpDayS(ds,model){ /* 0717m Cut 1: the day-sentence composer - ONE source for the rail and the card (DayCard-Spec §3) */
     var wd=tpAsD(ds).getDay(),wn=tpWDn(ds),thin=[],col=[],i;
-    for(i=0;i<4;i++){var c=tpCell(model,TP_PARKS[i][0],wd);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});}
+    for(i=0;i<4;i++){var c=tpSznCell(model,TP_PARKS[i][0],wd,ds);if(c.thin)thin.push(TP_PARKS[i][0]);else col.push({p:TP_PARKS[i][0],lvl:c.lvl});} /* 0728iy the day sentence on its own date */
     if(!col.length)return {wd:wd,wn:wn,thin:thin,col:col,s:"",best:0,worst:0};
     var best=5,worst=0;col.forEach(function(x){if(x.lvl<best)best=x.lvl;if(x.lvl>worst)worst=x.lvl;});
     var bests=col.filter(function(x){return x.lvl===best;}).map(function(x){return x.p;});
@@ -7040,7 +7040,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
                           : '<div class="crow"><span class="ic">'+(b2.e?'<span class="em">'+b2.e+'</span>':'<i class="dot pnf"></i>')+'</span><span class="v">'+b2.h+'</span></div>';}
     if(!col.length){var pk0=(t&&t.plan||{})[ds];return {line:'<div class="tp-dxbx"><div class="tp-dxeb">'+wn+'\u2019s read</div><div class="tp-readr"><div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">Still filling \u2014 not enough banked '+wn+'s for a read yet.'+(pk0?' Your pick: <b>'+esc(pk0)+'</b>.':'')+'</span></div>'+er+'</div>'+sub+'</div>',sub:""};} /* 0717k: the fallback single-liner = one neutral-dot row */
     var pk2=(t&&t.plan||{})[ds]; /* Cut 2: the pick clause seats after the compare; a thin pick leaves the footnote (already spoken) */
-    var c2=pk2?tpCell(model,pk2,wd):null,pcl=tpPlanClause(t,ds,model,wd); /* 0717k: the pick beat separates - sentence byte-identical, seated on its own row */
+    var c2=pk2?tpSznCell(model,pk2,wd,ds):null,pcl=tpPlanClause(t,ds,model,wd); /* 0728iy */ /* 0717k: the pick beat separates - sentence byte-identical, seated on its own row */
     if(pk2&&c2.thin)thin=thin.filter(function(x){return x!==pk2;});
     var tn=thin.length?' <span class="tp-thnote">'+tpAmp(thin)+' too thin yet.</span>':''; /* 0717k: the thin note rides the LAST row's tail - reading order untouched */
     var rw='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+TP_TSTRONG[best]+')"></i></span><span class="v">'+s+(pcl?'':tn)+'</span></div>'; /* 0717k: the tableau dot wears the trip rail's strong var for the tier the sentence leads with */
@@ -8258,7 +8258,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     host.querySelectorAll("[data-adhelp]").forEach(function(b){b.addEventListener("click",function(){if(tpAdvS.id!==id)tpAdvS={id:id,prev:null,diff:null,cause:null,touched:false,so:false};tpAdvS.help=!tpAdvS.help;adAnchored("slot");});}); /* 0728ae R-B: the slot recalls itself \u2014 a session face, never a write */
     host.querySelectorAll("[data-adgo]").forEach(function(b){b.addEventListener("click",function(){adGo(b.getAttribute("data-adgo"));});}); /* 0728at: the proposal's rows are doors to their controls */
   }
-  function tpViewGet(){if(tpView===null){var v9=store.get("ppTripView","day");tpView=(v9==="all")?"all":"day";}return tpView;} /* 0728iw: By day is the default (quiet first; the strip is the week view); the board remembers the toggle across visits */
+  function tpViewGet(id){var m9=store.get("ppTripView",null),v9=(m9&&typeof m9==="object")?m9[id]:null;return (v9==="all")?"all":"day";} /* 0728iw: By day is the default (quiet first; the strip is the week view). 0728iy M-2 (owner, Oct 28): the toggle is remembered PER TRIP \u2014 the memory lives where the choice was made; every new trip opens By day; the iw-era single value reads as unset */
   function tpDaySelOf(ds,today){ /* 0728iw THE OPEN DAY OPENS ITSELF: the day you tapped this session, else the day the lens doored to, else today, else the first day ahead, else the last day (a trip in the books) */
     if(tpDaySel&&ds.indexOf(tpDaySel)>=0)return tpDaySel;
     if(tpOpen&&ds.indexOf(tpOpen)>=0)return tpOpen;
@@ -8292,7 +8292,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(_rt)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">'+_rt+'</span></div>';
     for(q=0;q<_er.length;q++)_rw+='<div class="crow"><span class="ic">'+(_er[q].c==="race"?'<i class="swbar"></i>':(_er[q].e?'<span class="em">'+_er[q].e+'</span>':'<i class="dot pnf"></i>'))+'</span><span class="v">'+_er[q].h+'</span></div>';
     var adv=tpAdvCardHTML(t,ds,model,EV,_rw); /* 0728r THE ADVISOR \u00b7 S2 (R-A, owner Sep 9): THE READ's card retires \u2014 its rows ride the board's hero as the trip's facts, and the hero is the advisor's door (F-A), opening in place (O-A), closed by default (W-A) */
-    var view9=tpViewGet(),rows9=tpDayRows(t,model,EV,today),sel9=tpDaySelOf(ds,today); /* 0728iw THE WEEK VIEW (D2): the toggle under the hero, the strip under the toggle in both modes; By day shows the selected day\u2019s card alone */
+    var view9=tpViewGet(t.id),rows9=tpDayRows(t,model,EV,today),sel9=tpDaySelOf(ds,today); /* 0728iw THE WEEK VIEW (D2): the toggle under the hero, the strip under the toggle in both modes; By day shows the selected day\u2019s card alone */
     var seg9='<div class="pg-seg tp-seg" role="tablist"><button type="button" data-tpview="all"'+(view9==="all"?' class="on"':'')+'>All days</button><button type="button" data-tpview="day"'+(view9==="day"?' class="on"':'')+'>By day</button></div>';
     var strip9=tpStripHTML(rows9,view9==="day"?sel9:null);
     var gh='',rows='',j; /* 0715o\u21920717h (owner pick A): the lonely top header retires \u2014 every cell wears its park's initials, the week strip's stamped grammar */
@@ -8954,10 +8954,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
     el.querySelectorAll("[data-tpview]").forEach(function(b){b.addEventListener("click",function(){ /* 0728iw the toggle: All days | By day, remembered */
-      var v=b.getAttribute("data-tpview");if(v===tpViewGet())return;tpView=v;store.set("ppTripView",v);tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();});});
+      var v=b.getAttribute("data-tpview");if(v===tpViewGet(tpSel))return;var m9=store.get("ppTripView",null);m9=(m9&&typeof m9==="object")?m9:{};m9[tpSel]=v;store.set("ppTripView",m9);tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();});});
     el.querySelectorAll("[data-tpsq]").forEach(function(b){b.addEventListener("click",function(){ /* 0728iw the strip: tap a day \u2192 go to that day (By day: its card; All days: scroll to its row) */
       var d=b.getAttribute("data-tpsq");
-      if(tpViewGet()==="day"){if(tpDaySel===d&&!tpOpen)return;tpDaySel=d;tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();return;}
+      if(tpViewGet(tpSel)==="day"){if(tpDaySel===d&&!tpOpen)return;tpDaySel=d;tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();return;}
       var r=el.querySelector('.tp-drow[data-tpday="'+d+'"]'),sh=window.ppShl();if(r&&sh){var st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,y=Math.max(0,sh.scrollTop+r.getBoundingClientRect().top-st-12);try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}}});});
     var rl9=el.querySelector(".tp-strip.rail");if(rl9){var sq9=rl9.querySelector(".tp-sq.open")||rl9.querySelector(".tp-sq.today");if(sq9)rl9.scrollLeft=Math.max(0,sq9.offsetLeft-12-57*2); /* 0728iw the rail arrives on the selected day (or today) */
       var fd9=function(){var p9=rl9.parentNode;p9.classList.toggle("at-start",rl9.scrollLeft<4);p9.classList.toggle("at-end",rl9.scrollLeft+rl9.clientWidth>=rl9.scrollWidth-4);};rl9.addEventListener("scroll",fd9);fd9();}
