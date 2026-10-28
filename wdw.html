@@ -617,7 +617,45 @@
   .tp-plcap .chv{font-style:normal;margin-left:auto;flex:none;color:var(--muted-2);font-size:18px;line-height:1}
   .tp-plcap .tp-plrn{margin-left:auto;flex:none;font:600 var(--fs-meta) var(--font-body);color:var(--muted-2);white-space:nowrap} /* 0728aj: your rides, at the row's other end */
   .tp-plcap .tp-plrn+.chv{margin-left:6px}
-  .tp-plcap .tp-plr{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none} .tp-plcap .tp-plr .tp-hols,.tp-plcap .tp-plr .tp-plrn,.tp-plcap .tp-plr .chv{margin-left:0} .tp-plcap .tp-hols{flex:0 0 100%;margin-left:0;align-items:flex-start} .tp-plcap .tp-hols .tp-hol{text-align:left} .tp-hol.hday{color:var(--ink);font-weight:700} .tp-hol .dia{display:inline-block;width:8px;height:8px;transform:rotate(45deg);border-radius:2px;margin:0 7px 1px 7px;vertical-align:middle;box-shadow:none} .tp-plcap .tp-hols .tp-swem{display:inline-block;width:22px;margin-right:0;text-align:center} .tp-plcap .tp-hols .tp-swbar{margin:0 5px 0 4px} /* 0728dm THE MARKS SHARE ONE SLOT (owner glass 12:42 PM Oct 1): the tree drew wider than the diamond on the phone and pushed its line right; every mark on a fact line now sits centred in the same 22 px, so the words share one left edge whatever the glyph's width */ /* 0728dl THE FACTS SIT UNDER THE PLAN (owner glass 10:37 AM Oct 1; ruled L-A + D-B on plan-row-mock.html): line one keeps the plan and the door; the holiday and the party night take their own lines beneath, left. The day itself reads in ink; the season's diamond is its mark. 0728ci's dot between holiday and count retires with the cluster - its doubled backslash printed "\00b7" on glass. */ /* 0728ci: the caption's right seat clusters holiday \u00b7 count \u203a and wraps as one */ /* 0728ab E-A */
+  .tp-plcap .tp-plr{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none} .tp-plcap .tp-plr .tp-hols,.tp-plcap .tp-plr .tp-plrn,.tp-plcap .tp-plr .chv{margin-left:0} .tp-plcap .tp-hols{flex:0 0 100%;margin-left:0;align-items:flex-start} .tp-plcap .tp-hols .tp-hol{text-align:left} .tp-hol.hday{color:var(--ink);font-weight:700} .tp-hol .dia{display:inline-block;width:8px;height:8px;transform:rotate(45deg);border-radius:2px;margin:0 7px 1px 7px;vertical-align:middle;box-shadow:none} .tp-plcap .tp-hols .tp-swem{display:inline-block;width:22px;margin-right:0;text-align:center} .tp-plcap .tp-hols .tp-swbar{margin:0 5px 0 4px}
+/* 0728iw THE WEEK VIEW \u2014 the toggle, the strip, the rail, the door (tokens only; the squares are the ONE CALENDAR cell at 52 pt) */
+.tp-seg{margin:0 0 12px}
+.tp-strip{display:grid;grid-template-columns:repeat(var(--n,7),1fr);gap:7px;margin:0 0 12px}
+.tp-sq{position:relative;height:72px;border-radius:10px;background:var(--card);border:1px solid var(--line);display:grid;grid-template-rows:11px 18px 14px 5px;row-gap:3px;justify-items:center;align-content:center;padding:0;box-sizing:border-box;cursor:pointer;-webkit-tap-highlight-color:transparent;color:var(--ink);font-family:var(--font-body)}
+.tp-sq .w{font:800 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);line-height:1}
+.tp-sq .n{font:700 17px var(--font-display);letter-spacing:-.01em;line-height:1;color:var(--ink)}
+.tp-sq .p{display:flex;align-items:center;gap:2px;font:800 11px var(--font-display);color:var(--accent);line-height:1;height:14px}
+.tp-sq .p .em{font-size:11px;line-height:1}
+.tp-sq .p .pd{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--party)}
+.tp-sq .p.rest{font:800 var(--fs-micro) var(--font-body);letter-spacing:.08em;text-transform:uppercase}
+.tp-sq .p.none{color:var(--muted-2);font-weight:700}
+.tp-sq .s{height:5px;width:27px;position:relative}
+.tp-sq .s:before{content:"";position:absolute;left:0;top:0;width:6px;height:5px;border-radius:2px;--on:var(--ink);--off:var(--pip-off);background:var(--off);box-shadow:7px 0 0 var(--off),14px 0 0 var(--off),21px 0 0 var(--off)}
+.tp-sq.l1 .s:before{background:var(--on)}
+.tp-sq.l2 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--off),21px 0 0 var(--off)}
+.tp-sq.l3 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--off)}
+.tp-sq.l4 .s:before{background:var(--on);box-shadow:7px 0 0 var(--on),14px 0 0 var(--on),21px 0 0 var(--on)}
+.tp-sq.rest .s,.tp-sq:not(.l1):not(.l2):not(.l3):not(.l4) .s{visibility:hidden}
+.tp-sq.l1{background:color-mix(in srgb,var(--t1) 45%,var(--card))}
+.tp-sq.l2{background:color-mix(in srgb,var(--t2) 45%,var(--card))}
+.tp-sq.l3{background:color-mix(in srgb,var(--t3) 45%,var(--card))}
+.tp-sq.l4{background:color-mix(in srgb,var(--t4) 45%,var(--card))}
+.tp-sq.today:not(.open){box-shadow:inset 0 0 0 1.5px var(--accent)}
+.tp-sq.open{background:var(--accent-fill);border-color:transparent;box-shadow:none}
+.tp-sq.open .w,.tp-sq.open .n,.tp-sq.open .p{color:#fff}
+.tp-sq.open .s:before{--on:#fff;--off:rgba(255,255,255,.3)}
+.tp-sq.behind{opacity:.45}
+.tp-sq.behind .p{color:var(--muted-2)}
+.tp-sq.behind .s:before{--on:var(--muted-2)}
+.tp-rail{position:relative;margin:0 -12px 12px}
+.tp-rail .tp-strip{display:flex;gap:5px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 12px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tp-rail .tp-strip::-webkit-scrollbar{display:none}
+.tp-rail .tp-sq{flex:0 0 52px;scroll-snap-align:start}
+.tp-rail:before,.tp-rail:after{content:"";position:absolute;top:0;bottom:0;width:36px;pointer-events:none}
+.tp-rail:before{left:0;background:linear-gradient(270deg,var(--bg-fade),var(--bg))}
+.tp-rail:after{right:0;background:linear-gradient(90deg,var(--bg-fade),var(--bg))}
+.tp-rail.at-start:before,.tp-rail.at-end:after{display:none}
+.tp-plcap .tp-plrn .tp-see{color:var(--accent);font-weight:700} /* 0728dm THE MARKS SHARE ONE SLOT (owner glass 12:42 PM Oct 1): the tree drew wider than the diamond on the phone and pushed its line right; every mark on a fact line now sits centred in the same 22 px, so the words share one left edge whatever the glyph's width */ /* 0728dl THE FACTS SIT UNDER THE PLAN (owner glass 10:37 AM Oct 1; ruled L-A + D-B on plan-row-mock.html): line one keeps the plan and the door; the holiday and the party night take their own lines beneath, left. The day itself reads in ink; the season's diamond is its mark. 0728ci's dot between holiday and count retires with the cluster - its doubled backslash printed "\00b7" on glass. */ /* 0728ci: the caption's right seat clusters holiday \u00b7 count \u203a and wraps as one */ /* 0728ab E-A */
   .tp-dc.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* Cut C (C-2): the strengthened plan ring + theme-card halo */
   .tp-dc.pn.pnx{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717f: the dashed ring survives only as the unrecognized-party fallback */
   .tp-dc{position:relative}
@@ -2761,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iw</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5132,6 +5170,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   /* ---- 0713s: the reliability half — one lazy /digest fetch, day-atom reads ---- */
   var rpDigs=null,rpDigsAt=0;
+  var tpView=null,tpDaySel=null; /* 0728iw THE WEEK VIEW (owner-ruled D2 Tue Oct 27, 2026, 9:23\u20139:45 PM): the board\u2019s view (all | day, remembered in ppTripView, read lazily) and the strip\u2019s selected day (session; the tense picks it when unset) */
   var tpEdit=false,tpNew=false,tpSel=null,tpOpen=null,tpDelArm=false,tpSched={},tpSchedAt={},tpPlanDraft=null,tpPlanPick=null,tpLensSel=null,tpLensDay=null,tdLens="app",tdStart="",tdLeave="cl",tdPk=false,tdPkA=false,tdQ="",tdPin=null,tdPnA=false,tdPnP=null,tdPnS=null,tdPnE=null,tdPnL=null,tpClrArm=null,tpClrT=null,tpDelT=null; /* 0715g adds the pin set (sheet ride \u00b7 entrance \u00b7 part \u00b7 exact minutes \u00b7 fine target); 0715e adds the day-page set (lens \u00b7 start chip \u00b7 lifted ride \u00b7 picker) \u00b7 L-29 (0714w): My Trip session state — edit/new flags, selected trip id, accordion date, month-schedule cache; 0714z adds the creator’s plan draft + the drill-down’s change-mode date; 0715d adds the home-base lens pair (trip id + day) — the door alone writes them, the day feeds the banked weekday-spotlight cut */
   var RP_POOL=42,RP_ALL=28; /* 0713x: the lens pool vs the All-clip — the pool widens so Weekends can clear the curve's 10-day floor (12 weekend days at steady state, first cleared ~Aug 3) and months arrive complete (31<42); All stays the last 28 finished dates, the eyebrow's promise, byte-parity-gated */
   var rpWin="all"; /* 0713v: the profile-wide lookback lens — one window, every consumer; session-sticky, never persisted */
@@ -8219,6 +8258,23 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     host.querySelectorAll("[data-adhelp]").forEach(function(b){b.addEventListener("click",function(){if(tpAdvS.id!==id)tpAdvS={id:id,prev:null,diff:null,cause:null,touched:false,so:false};tpAdvS.help=!tpAdvS.help;adAnchored("slot");});}); /* 0728ae R-B: the slot recalls itself \u2014 a session face, never a write */
     host.querySelectorAll("[data-adgo]").forEach(function(b){b.addEventListener("click",function(){adGo(b.getAttribute("data-adgo"));});}); /* 0728at: the proposal's rows are doors to their controls */
   }
+  function tpViewGet(){if(tpView===null){var v9=store.get("ppTripView","day");tpView=(v9==="all")?"all":"day";}return tpView;} /* 0728iw: By day is the default (quiet first; the strip is the week view); the board remembers the toggle across visits */
+  function tpDaySelOf(ds,today){ /* 0728iw THE OPEN DAY OPENS ITSELF: the day you tapped this session, else the day the lens doored to, else today, else the first day ahead, else the last day (a trip in the books) */
+    if(tpDaySel&&ds.indexOf(tpDaySel)>=0)return tpDaySel;
+    if(tpOpen&&ds.indexOf(tpOpen)>=0)return tpOpen;
+    if(ds.indexOf(today)>=0)return today;
+    var i;for(i=0;i<ds.length;i++)if(ds[i]>today)return ds[i];
+    return ds[ds.length-1]||null;
+  }
+  function tpStripHTML(rows,sel){ /* 0728iw THE STRIP IS THE INDEX: one square per trip day \u2014 the day share card\u2019s date strip in the ONE CALENDAR cell (52 pt seats): three-char day, the date, the planned park\u2019s code (or Rest \u2014 a written rest wears the plan\u2019s dress, 0728an) with the party glyph, the planned park\u2019s pips and wash; the selected day wears the Plan calendar\u2019s own selected-day fill (R-1 \u2014 the ring stays the plan\u2019s, NEVER TWO MEANINGS ON ONE GLYPH); days behind you dim, today keeps a hairline ring. Eight or more days: ONE SEAT SIZE \u2014 the rail scrolls, the next day peeks under a fade. */
+    var n=rows.length,rail=n>7,h='',i;
+    for(i=0;i<n;i++){var r=rows[i],pk2=r.pk?(TP_P2[r.pk]||r.pk):"",lv=(r.pk&&r.tierL)?r.tierL:0;
+      var cls="tp-sq"+(lv?" l"+lv:"")+(r.rest?" rest":"")+(r.ds===sel?" open":"")+(r.behind?" behind":"")+(r.ring?" today":"");
+      var em=(r.pe&&r.pe!=="ring")?'<span class="em">'+r.pe+'</span>':(r.pe==="ring"?'<i class="pd"></i>':'');
+      var p=pk2?'<span class="p">'+esc(pk2)+em+'</span>':(r.rest?'<span class="p rest">Rest'+em+'</span>':'<span class="p none">'+(em||'\u2014')+'</span>');
+      h+='<button class="'+cls+'" type="button" data-tpsq="'+r.ds+'" aria-label="'+esc(tpWDn(r.ds))+', '+esc(tpMD(r.ds))+(r.pk?', '+esc(r.pk):(r.rest?', rest day':''))+'"><span class="w">'+esc(r.wd3)+'</span><span class="n">'+r.dt+'</span>'+p+'<i class="s"></i></button>';}
+    return rail?'<div class="tp-rail at-start"><div class="tp-strip rail">'+h+'</div></div>':'<div class="tp-strip" style="--n:'+n+'">'+h+'</div>';
+  }
   function tpBoardHTML(t){
     var today=tpToday(),model=tpModel(),ds=tpDays(t),i;
     var lad=('<button class="rp-back tp-bkp" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Trips</button>'+'<div class="rp-crumb">Plan \u203a Trip \u203a <b>'+esc(t.n||"My trip")+'</b></div>'); /* 0715b (W-33): the always-on ladder — the list rung always exists beneath every board; — rp-back is CSS clothing only; tp-bkp carries the binder */
@@ -8236,8 +8292,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(_rt)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">'+_rt+'</span></div>';
     for(q=0;q<_er.length;q++)_rw+='<div class="crow"><span class="ic">'+(_er[q].c==="race"?'<i class="swbar"></i>':(_er[q].e?'<span class="em">'+_er[q].e+'</span>':'<i class="dot pnf"></i>'))+'</span><span class="v">'+_er[q].h+'</span></div>';
     var adv=tpAdvCardHTML(t,ds,model,EV,_rw); /* 0728r THE ADVISOR \u00b7 S2 (R-A, owner Sep 9): THE READ's card retires \u2014 its rows ride the board's hero as the trip's facts, and the hero is the advisor's door (F-A), opening in place (O-A), closed by default (W-A) */
+    var view9=tpViewGet(),rows9=tpDayRows(t,model,EV,today),sel9=tpDaySelOf(ds,today); /* 0728iw THE WEEK VIEW (D2): the toggle under the hero, the strip under the toggle in both modes; By day shows the selected day\u2019s card alone */
+    var seg9='<div class="pg-seg tp-seg" role="tablist"><button type="button" data-tpview="all"'+(view9==="all"?' class="on"':'')+'>All days</button><button type="button" data-tpview="day"'+(view9==="day"?' class="on"':'')+'>By day</button></div>';
+    var strip9=tpStripHTML(rows9,view9==="day"?sel9:null);
     var gh='',rows='',j; /* 0715o\u21920717h (owner pick A): the lonely top header retires \u2014 every cell wears its park's initials, the week strip's stamped grammar */
-    for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';
+    for(i=0;i<ds.length;i++){var d0=ds[i],wd=tpAsD(d0).getDay(),behind=d0<today,open=tpOpen===d0,pk=(t.plan||{})[d0],cells='';if(view9==="day"&&d0!==sel9)continue; /* 0728iw By day: one card, the strip\u2019s selected day */
       for(j=0;j<TP_PARKS.length;j++){var c=tpSznCell(model,TP_PARKS[j][0],wd,d0),isPk=(TP_PARKS[j][0]===pk),pe0=(j===0&&EV.night[d0])?(tfPartyEm(d0)||"ring"):"";if(isPk&&pe0==="ring")pe0=""; /* Cut 2 \u00b7 0716m \u00b7 0717f: the party marker is the glyph, the ring only its fallback */ /* 0728an THE TREE STAYS ON THE RING (owner glass 11:37 AM Sep 10): the glyph rides the planned tile too \u2014 only the glyph-less fallback ring yields to the plan ring (0717f's true intent, from when the ring WAS the marker) */
         var pc=(isPk?' plan':'')+(pe0?' pn'+(pe0==="ring"?' pnx':''):'')+((j===1&&EV.race[d0])?' race':'')+(c.aw?' aw':''),pea=((pe0&&pe0!=="ring")?' data-em="'+pe0+'"':'');
         cells+='<span class="tp-dc cc'+(c.thin?' thin':' tint l'+c.lvl)+pc+'"'+pea+'><span class="d">'+TP_P2[TP_PARKS[j][0]]+'</span><span class="mk"'+pea+'></span><i class="s"></i></span>'; /* 0727o THE CALENDAR FAMILY: the board's chip is the calendar's cell (p-B) at a quiet tint (v-B); the planned park is the only surface */}
@@ -8246,12 +8305,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var an9=(typeof tpSznOf==="function")?tpSznOf(d0):null,dia9=an9?'<i class="dia" style="background:var(--'+(an9.a.scopes.resort.q>1?"medium":"short")+')"></i>':''; /* 0728dl D-B: the hero's own mark for the season leads the row's holiday line - only on a seated date, in the hero's colour for that week */
       var hol=(hdn?'<span class="tp-hol hday">'+dia9+esc(hdn==="Thanksgiving"?"Thanksgiving Day":hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+dia9+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early to day guests</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var plv=pk?tpSznCell(model,pk,wd,d0):null,pln=pk?'<b>'+esc(pk)+'</b>'+((plv&&!plv.thin&&plv.lvl)?' \u00b7 '+TP_TW[plv.lvl]+' on '+tpWDn(d0)+'s':''):(behind?'Behind you':(t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest")?'<b>Rest day</b>':'Not planned yet'),rst9=(!pk&&!behind&&t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest"); /* 0728t: a rest the advisor wrote is a rest, not an unplanned day */ /* 0728an A WRITTEN REST WEARS THE PLAN'S FACE (owner glass 11:40 AM Sep 10): the words changed on 0728t, the dress didn't \u2014 a written rest reads in the plan caption's ink; Not planned yet and Behind you keep the muted face, they are absences */ /* 0727o (t-B, q-B): the planned line names the park in ink and carries its tier in the day page\u2019s own sentence */ /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
-      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+((pk||rst9)?'':' none')+'"><span>'+pln+'</span><span class="tp-plr">'+((!open&&pk&&((t.rides||{})[d0]||[]).length)?'<span class="tp-plrn">'+((t.rides||{})[d0]||[]).length+' ride'+(((t.rides||{})[d0]||[]).length===1?'':'s')+'</span>':'')+(open?'':'<i class="chv">\u203a</i>')+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>'; /* 0728dl L-A: the door (count \u203a) keeps line one; the day's facts follow on their own lines, left */ /* 0728ci: the right seat is one cluster \u2014 holiday \u00b7 count \u203a wrap together */ /* 0728aj (owner glass 10:14 PM, Sep 9): THE ROW SAYS WHAT YOU'VE DONE \u2014 a closed row with rides carries the count at the caption's right, beside the \u203a; the open day's header already says it */ /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
+      var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+((pk||rst9)?'':' none')+'"><span>'+pln+'</span><span class="tp-plr">'+(function(){var n9=(!open&&pk)?((t.rides||{})[d0]||[]).length:0,w9=n9?(n9+' ride'+(n9===1?'':'s')):'',d9=(view9==="day"&&!open)?'<b class="tp-see">See the day</b>':'';return (w9||d9)?'<span class="tp-plrn">'+w9+((w9&&d9)?' \u00b7 ':'')+d9+'</span>':'';})()+(open?'':'<i class="chv">\u203a</i>')+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>'; /* 0728dl L-A: the door (count \u203a) keeps line one; the day's facts follow on their own lines, left */ /* 0728ci: the right seat is one cluster \u2014 holiday \u00b7 count \u203a wrap together */ /* 0728aj (owner glass 10:14 PM, Sep 9): THE ROW SAYS WHAT YOU'VE DONE \u2014 a closed row with rides carries the count at the caption's right, beside the \u203a; the open day's header already says it */ /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
       var dx='';
       if(open){var L=tpDayLine(d0,model,t,EV),tdr9=(pk&&d0===tpToday())?'<button class="tp-today" data-tptoday="'+esc(pk)+'" type="button">It\u2019s today \u2014 your live board is on TODAY <span class="chev">\u203a</span></button>':'';dx='<div class="tp-dx">'+L.line+L.sub+tdr9+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0727d THE TRIP KNOWS TODAY (D): on the day itself the trip page names the surface where the waits live \u2014 one door, no input; the two surfaces name each other */ /* 0715e: My Day leads the opened day; the parks demote beneath */
       rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x,ix){if(x)leg+='<span><i style="background:var(--t'+ix+')"></i>'+x.label+'</span>';});leg+='</div>'; /* Cut C (C-2): the board legend follows its own cells onto Soft */
-    return head+adv+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
+    return head+adv+seg9+strip9+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
   }
   var tfOpen=false,tfSel=[],tfLen=5,tfCust=false,tfHand=null,tfCurM=null,tfCurK=null,tfAnchor=1,tfReturn=null; /* 0716z: the seam remembers where it came from (owner-caught) */ /* Cut D (D-3): the calendar\u2019s seat \u2014 month, third, and the bracket anchor */ /* Cut D (D-2): tfOpen is the screen ("s1"/"s2"/false); tfSel+tfLen survive re-entry (playground law); tfHand is the ONE seam value {a,b} \u2014 nothing else crosses. D-1: WHEN\u2192DAYS\u2192PARKS\u2192MORNINGS \u2014 the advisor funnel opens. D-1 ships the door + S1 as a pure record READOUT; the ask, the fits, and the creator seam ride the next cuts (no dead doors). */
   var TF_MN=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
@@ -8894,6 +8953,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     tpAdvBind(el); /* 0728r THE ADVISOR \u00b7 S2: the door and the card's taps */
     el.querySelectorAll("[data-tpday]").forEach(function(b){b.addEventListener("click",function(){ /* L-29: the accordion — one day open at a time */
       var d=b.getAttribute("data-tpday");tpOpen=(tpOpen===d)?null:d;tpPlanPick=null;tdReset();if(tpOpen){tdSpanSeed(tpOpen);var t9=tpCurTrip();if(t9)tdSeedWrite(t9.id,tpOpen);}tdAnchoredRender(d);});}); /* 0728ch: opening a never-seeded day seeds it (a day planned before its stars; a day planned before this build) */ /* 0728l: THE DAY YOU OPENED STAYS WHERE YOU TAPPED IT \u2014 the accordion's collapse above no longer moves the reader */
+    el.querySelectorAll("[data-tpview]").forEach(function(b){b.addEventListener("click",function(){ /* 0728iw the toggle: All days | By day, remembered */
+      var v=b.getAttribute("data-tpview");if(v===tpViewGet())return;tpView=v;store.set("ppTripView",v);tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();});});
+    el.querySelectorAll("[data-tpsq]").forEach(function(b){b.addEventListener("click",function(){ /* 0728iw the strip: tap a day \u2192 go to that day (By day: its card; All days: scroll to its row) */
+      var d=b.getAttribute("data-tpsq");
+      if(tpViewGet()==="day"){if(tpDaySel===d&&!tpOpen)return;tpDaySel=d;tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();return;}
+      var r=el.querySelector('.tp-drow[data-tpday="'+d+'"]'),sh=window.ppShl();if(r&&sh){var st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,y=Math.max(0,sh.scrollTop+r.getBoundingClientRect().top-st-12);try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}}});});
+    var rl9=el.querySelector(".tp-strip.rail");if(rl9){var sq9=rl9.querySelector(".tp-sq.open")||rl9.querySelector(".tp-sq.today");if(sq9)rl9.scrollLeft=Math.max(0,sq9.offsetLeft-12-57*2); /* 0728iw the rail arrives on the selected day (or today) */
+      var fd9=function(){var p9=rl9.parentNode;p9.classList.toggle("at-start",rl9.scrollLeft<4);p9.classList.toggle("at-end",rl9.scrollLeft+rl9.clientWidth>=rl9.scrollWidth-4);};rl9.addEventListener("scroll",fd9);fd9();}
     el.querySelectorAll("[data-tpdoor]").forEach(function(b){b.addEventListener("click",function(){ /* 0715d: the home-base door — the lens's ONLY writer; the trip + day are the ones you're standing in, so the window can never misname its trip. tpSel survives: the TRIP pill walks back to this board. */
       var t2=tpCurTrip();if(!t2)return;
       tpLensSel=t2.id;tpLensDay=b.getAttribute("data-tpdd");
@@ -9009,7 +9076,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         clearTimeout(tpClrT);tpClrT=setTimeout(function(){if(tpClrArm===ds3){tpClrArm=null;renderPulsePage();}},4000);return;}
       clearTimeout(tpClrT);tpClrArm=null;tpSetPlan(t2.id,ds3,null);tpPlanPick=null;tdAnchoredRender(ds3);});});
     el.querySelectorAll("[data-tpsel]").forEach(function(b){b.addEventListener("click",function(){ /* 0714w: open a trip from the list — the board arrives collapsed */
-      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpPlanPick=null;tdReset();tpEnsureSched();renderPulsePage();rpTop();});});
+      tpSel=b.getAttribute("data-tpsel");tpOpen=null;tpDaySel=null;tpPlanPick=null;tdReset();tpEnsureSched();renderPulsePage();rpTop();});});
     var tpb=el.querySelector(".tp-bkp");if(tpb)tpb.addEventListener("click",function(){tpSel=null;tpEdit=false;tpNew=false;tpPlanPick=null;tdReset();renderPulsePage();rpTop();});
     var tpn=el.querySelector(".tp-new");if(tpn)tpn.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfHand=null;tfReturn=null;renderPulsePage();rpTop();});
     el.querySelectorAll("[data-tfnew]").forEach(function(b){b.addEventListener("click",function(){tpEdit=true;tpNew=true;tpDelArm=false;tpPlanDraft=null;tfHand=null;tfReturn=null;renderPulsePage();rpTop();});}); /* Cut D (D-1): the fork's creator door writes the same state + New trip does */
