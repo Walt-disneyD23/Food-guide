@@ -2761,7 +2761,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728it</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728iu</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -4815,8 +4815,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     p.forEach(function(x){if(x.type==="weekday")wd=x.value;if(x.type==="month")mo=x.value;if(x.type==="day")dy=x.value;});
     return clock+" \u00b7 "+(wd+" "+mo+" "+dy).toUpperCase();
   }
-  function pfCardModel(c,days,stamp,pkFull){
-    var D={W:1080,H:1080,stamp:stamp,nm:c.nm,park:pkFull+" \u00b7 Walt Disney World",
+  function pfCardModel(c,days,stamp,pkFull){ /* 0728iu THE CALLOUT CARD WEARS THE FAMILY'S HAND (owner-ruled A + K-2 Tue Oct 27, 2026, 8:20 PM on audit/out/cu1-sheet.png + cu1-A-kicker.png): the family head's fields ride the model \u2014 the park alone (for the kicker), the pill's time, the date; the square's H leaves (the card sizes itself at its door). The kind keeps its own ink on the kicker (kc): THE KICKER WEARS THE KIND on this card, whose subject is the kind, not the surface \u2014 the one family card whose kicker changes ink (K-2; "can always pull it back"). */
+    var now=new Date();
+    var D={W:1080,stamp:stamp,nm:c.nm,pk:pkFull,park:pkFull+" \u00b7 Walt Disney World",
+      time:now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"}),
+      date:now.toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"}),
       fname:"ridecue-callouts-"+c.kind+".png",shareTitle:"RideCue \u2014 "+c.nm,tl:null,d1:null,d2:null};
     if(c.kind==="re"){
       D.kicker="JUST REOPENED";D.kc=PW_CARD_ALT.accent;
@@ -4834,55 +4837,57 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
     return D;
   }
-  function pfDrawCard(ctx,D){
-    var W=D.W,H=D.H,C=PW_CARD_ALT;
+  function pfDrawCard(ctx,D,H){ /* 0728iu THE CALLOUT CARD WEARS THE FAMILY'S HAND \u2014 the mock's bytes (audit/cu1-mock.js: head + drawA + foot, V "A", kicker K-2) as the spec of the dress; the hero stays: today's middle (the number in its band, MIN NOW, the receipt on the right; the reopen timeline) under the family head, the card ending where its words end. Returns where the card ends. */
+    var W=D.W,C=PW_CARD_ALT;
     function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
     function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
-    function wrap2(s,mw,f){ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>2){ln=[ln[0],ell(ln.slice(1).join(" "),mw,f)];}return ln;}
+    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
+    function wrap2(s,mw,f,n){n=n||2;ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
-    rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
-    var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#1b2d4d");g.addColorStop(.55,"#10243a");g.addColorStop(1,"#0c1c30");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
-    var L=cx+64,R=cx+cw-64;
-    LS("4px");T(D.kicker,L,cy+96,IN("800",30),D.kc,"left");LS("0px");
-    T(D.stamp,R,cy+96,IN("700",28),C.ink,"right");
-    var nl=wrap2(D.nm,R-L,SG("700",66)),ny=cy+192,i;
-    for(i=0;i<nl.length;i++)T(nl[i],L,ny+i*76,SG("700",66),C.ink,"left");
-    var py=ny+(nl.length-1)*76+52;
-    T(ell(D.park,R-L,IN("500",30)),L,py,IN("500",30),C.muted,"left");
-    var fy=cy+ch-64;
-    T("Data: ThemeParks.wiki",R,fy,IN("500",25),C.muted2,"right");
-    T("ridecue.live",R,fy-36,IN("700",31),C.green,"right");
-    ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy-96);ctx.lineTo(R,fy-96);ctx.stroke();
-    var by=fy-96-30;
-    T(ell(D.basis,R-L,IN("500",26)),L,by,IN("500",26),C.muted2,"left");
-    var hTop=py+30,hBot=by-60,hMid=(hTop+hBot)/2;
-    var numSize=(D.num==="OPEN")?150:210,numY=hMid+numSize*0.36;
-    T(D.num,L,numY,SG("700",numSize),D.numCol,"left");
-    LS("5px");T(D.sub,L+4,numY+48,IN("800",28),C.muted2,"left");LS("0px");
+    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var gl=ctx.createRadialGradient(W/2,cy-40,40,W/2,cy-40,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i;
+    var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
+    T(D.date,R,184,IN("700",28),C.ink,"right");
+    LS("3px");T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),D.kc);LS("0px"); /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
+    y=317;var nl=wrap2(D.nm,CW,SG("700",66));for(i=0;i<nl.length;i++)T(nl[i],L,y+i*72,SG("700",66),C.ink);y+=(nl.length-1)*72;
+    y+=24;hair(y);
+    var ns=(D.num==="OPEN")?120:168,top=y+40,base=top+Math.round(ns*0.78); /* the hero: 168 under the family head (was 210 on the square), its baseline seated at four-fifths of its size */
+    T(D.num,L,base,SG("700",ns),D.numCol);
+    LS("5px");T(D.sub,L+4,base+44,IN("800",26),C.muted2);LS("0px");
+    var nw=MW(D.num,SG("700",ns))+40,rw=R-(L+nw);
     if(D.tl){
-      LS("4px");T(D.tl.cap,R,hMid-70,IN("800",25),C.accent,"right");LS("0px");
-      T(D.tl.dn,R-176,hMid-4,SG("700",40),C.ink,"right");
-      LS("2px");T("WENT DOWN",R,hMid-4,IN("800",22),C.muted2,"right");LS("0px");
-      T("\u2193",R-64,hMid+42,IN("700",30),C.muted2,"right");
-      T(D.tl.up,R-176,hMid+94,SG("700",40),C.ink,"right");
-      LS("2px");T("BACK UP",R,hMid+94,IN("800",22),C.muted2,"right");LS("0px");
+      LS("4px");T(D.tl.cap,R,top+22,IN("800",24),C.accent,"right");LS("0px");
+      T(D.tl.dn,R-176,top+76,SG("700",40),C.ink,"right");LS("2px");T("WENT DOWN",R,top+76,IN("800",22),C.muted2,"right");LS("0px");
+      T("\u2193",R-64,top+116,IN("700",30),C.muted2,"right");
+      T(D.tl.up,R-176,top+166,SG("700",40),C.ink,"right");LS("2px");T("BACK UP",R,top+166,IN("800",22),C.muted2,"right");LS("0px");
     }else{
-      T(D.d1,R,hMid+4,IN("800",42),C.ink,"right");
-      T(D.d2,R,hMid+48,IN("500",31),C.muted,"right");
+      T(D.d1,R,base-54,IN("800",42),C.ink,"right");
+      var dl=wrap2(D.d2,rw,IN("500",28),2);for(i=0;i<dl.length;i++)T(dl[i],R,base-10+i*34,IN("500",28),C.muted,"right"); /* the receipt keeps its words: two lines beside the hero (a party clause rides here) */
     }
+    y=base+52;
+    y+=48;hair(y); /* ONE FOOTER HAND */
+    var b1=wrap2(D.basis,CW-270,IN("500",26),3),bl=0;for(bl=0;bl<b1.length;bl++)T(b1[bl],L,y+59+bl*34,IN("500",26),C.muted2); /* the basis keeps its words \u2014 up to three lines beside the site */
+    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
     ctx.restore();
+    return y+Math.max(98,59+(bl-1)*34+8)+52+36;
   }
-  function pfEmitCard(D,draw){ /* 0711g: second layout, same emit path */
-    var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;var ctx=rcDay(cv.getContext("2d")); /* 0728is THE LIVE CARD WEARS DAYLIGHT: the single callout card is a live card too */
+  function pfEmitCard(D,draw){ /* 0711g: second layout, same emit path. 0728iu: two-pass self-size, the family's way \u2014 the card ends where its words end */
+    var cv=document.createElement("canvas");
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
-      (draw||pfDrawCard)(ctx,D);
-      pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
+      var dr=draw||pfDrawCard;cv.width=D.W;cv.height=2000;
+      var h1=dr(rcDay(cv.getContext("2d")),D,2000);cv.height=h1;dr(rcDay(cv.getContext("2d")),D,h1); /* 0728is THE LIVE CARD WEARS DAYLIGHT: the single callout card is a live card too */
+      pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet \u2014 one lifecycle */
     });
   }
   function pfShareCallout(c,days){
