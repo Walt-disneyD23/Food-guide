@@ -2296,10 +2296,16 @@
   .mr-log .hd2 .n{font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px}
   .mr-log .body{display:none}
   .mr-log.open .body{display:block}
-  .mr-log .li{font-size:var(--fs-small);color:var(--muted);padding:9px 14px;border-top:1px solid var(--line);line-height:1.5} /* 0721u R1: the banked "bit small" note — fs-meta grew to fs-small */
-  .mr-log .li b{color:var(--ink)}
-  .mr-dayhd{display:flex;align-items:center;gap:6px;padding:11px 14px 8px;border-top:1px solid var(--line);font-family:var(--font-body);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)} /* 0721u pick B: the day header — Today / Yesterday / Wed · Aug 5 */
+  .mr-log .li{font-size:var(--fs-body);color:var(--muted);padding:10px 14px;border-top:1px solid var(--line);line-height:1.5;display:grid;grid-template-columns:66px minmax(0,1fr) auto;gap:10px;align-items:baseline} /* 0728jf A THE VERB IS A COLUMN at T1 THE READOUT'S SIZE (owner-ruled Oct 29 on ra-type-sheet: "happy medium"; "the fonts are small and not easy to read"): the clock in a quiet left lane, the ride's name in the card title's face, the verb flush right in its tint; rows at --fs-body, up from --fs-small (0721u R1) */
+  .mr-log .li.sys{display:block} /* a breadcrumb with no ride runs the full width */
+  .mr-log .li .tm{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap} /* the clock leaves --muted-2 (2.9:1 on white) for --muted */
+  .mr-log .li b{color:var(--ink);font:700 var(--fs-title) var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mr-log .li .vb{white-space:nowrap;text-align:right}
+  .mr-log .li .vb .sl{color:var(--muted);font-weight:500} /* the verb's tail: a reminder's slate, a back-up's span (C2) */
+  .mr-dayhd{display:flex;align-items:center;gap:6px;padding:11px 14px 8px;border-top:1px solid var(--line);font-family:var(--font-body);font-weight:700;font-size:var(--fs-meta);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)} /* 0721u pick B: the day header — Today / Yesterday / Wed · Aug 5; 0728jf T1: caps at --fs-meta */
   .mr-dayhd .cnt{margin-left:auto;letter-spacing:0}
+  .mr-dayhd .sum{margin-left:auto;letter-spacing:0;text-transform:none;font-weight:600;font-size:var(--fs-body);color:var(--muted);text-align:right} /* 0728jf B THE FOLD SAYS WHAT'S INSIDE: a closed day's header counts by kind */
+  .mr-dayhd .sum i{font-style:normal;font-weight:700}
   .mr-dayhd .chv{transition:transform .15s}
   .mr-dayhd.fold{cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
   .mr-day.closed .li{display:none}
@@ -2799,7 +2805,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728je</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jf</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11374,6 +11380,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     return d.toLocaleDateString("en-US",{weekday:"short"})+" \u00b7 "+d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
   }
   var mrEvTint={hit:"mr-vh",down:"mr-vd",reopen:"mr-vu",remind:"mr-vh"}; /* 0728hl: the reminder wears the hit's mint */ /* 0721u R2: only the three alert verbs tint; housekeeping breadcrumbs stay plain */
+  function mrIsDownWord(ev){return ev==="down"||ev==="rebreak-confirmed"||ev==="rebreak-cold";} /* 0728jf: the diary's down family, one predicate for the two readers below (mrLastDownEv keeps its own) */
+  function mrDownBefore(id,ts){ /* 0728jf THE DIARY CLOSES WHAT IT OPENS, the reader: the newest down-family line for the ride before ts with no reopen or hit after it (a hit proves the ride was running; breadcrumbs are not walls) - null when the diary never saw the ride go down. diaryOpenDown asks it before a closing line is written; the back-up line asks it for its span (C2) */
+    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id!==id||e.t>=ts)continue;if(mrIsDownWord(e.ev))return e;if(e.ev==="reopen"||e.ev==="hit")return null;}}catch(e2){}
+    return null;
+  }
+  function mrDayKinds(rows){ /* 0728jf B THE FOLD SAYS WHAT'S INSIDE (owner-ruled Oct 29): a closed day's header counts by kind - hits, downs (the re-break words included), back-ups, reminders - and "more" for any breadcrumbs beside them; a day of breadcrumbs alone keeps its bare count. LABELS MOVE WITH VALUES: a kind absent from the day is not named */
+    var h=0,d=0,u=0,m=0,o=0;rows.forEach(function(e){if(e.ev==="hit")h++;else if(mrIsDownWord(e.ev))d++;else if(e.ev==="reopen")u++;else if(e.ev==="remind")m++;else o++;});
+    var p=[];if(h)p.push("<i>"+h+"</i> hit"+(h>1?"s":""));if(d)p.push("<i>"+d+"</i> down");if(u)p.push("<i>"+u+"</i> back up");if(m)p.push("<i>"+m+"</i> reminder"+(m>1?"s":""));
+    if(!p.length)return "<i>"+rows.length+"</i>";if(o)p.push("<i>"+o+"</i> more");return p.join(" · ");
+  }
   function mrLogHTML(){
     var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice(-40).reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
     if(!L.length)return "";
@@ -11383,15 +11399,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var today=(g.w==="Today");
       var open=today?true:((g.k in mrLogDaysOpen)?mrLogDaysOpen[g.k]:gi===0);
       var rows=g.rows.map(function(e){
-        if(e.ev==="moved-home")return '<div class="li">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
+        if(e.ev==="moved-home")return '<div class="li sys">Alerts moved home — down & back-up pings are off until you turn them on · '+mrClk(e.t)+'</div>';
         var eid=e.id,atR=null;if(e.ev==="remind"){var q9=String(eid).indexOf("@");if(q9>0){atR=eid.slice(q9+1);eid=eid.slice(0,q9);}} /* 0728hl: a reminder line is keyed by its slate (id@at) — the show's name, then the slate it was for */
         var r=roster[eid],tc=mrEvTint[e.ev];
-        var vb=tc?('<span class="'+tc+'">'+mrEvWord[e.ev]+'</span>'):(mrEvWord[e.ev]||esc(e.ev));if(atR){var ck9=fmtClock(atR);if(ck9)vb+=' · '+esc(ck9)+' show';}
-        return '<div class="li"><b>'+esc(r?r.name:"Ride")+'</b> '+vb+' · '+mrClk(e.t)+'</div>';
+        var vb=tc?('<span class="'+tc+'">'+mrEvWord[e.ev]+'</span>'):(mrEvWord[e.ev]||esc(e.ev));if(atR){var ck9=fmtClock(atR);if(ck9)vb+='<span class="sl"> · '+esc(ck9)+' show</span>';}
+        if(e.ev==="reopen"){var dn9=mrDownBefore(eid,e.t);if(dn9&&e.t-dn9.t>=60000)vb+='<span class="sl"> · '+rpDtFmt(Math.round((e.t-dn9.t)/60000))+'</span>';} /* 0728jf C2 THE BACK-UP SAYS HOW LONG: a back-up line that closes a down the diary holds carries the span, in the Downtime card's own dialect (rpDtFmt - ONE NUMBER FAMILY PER MEASURE); an orphan back-up reads bare */
+        return '<div class="li"><span class="tm">'+mrClk(e.t)+'</span><b>'+esc(r?r.name:"Ride")+'</b><span class="vb">'+vb+'</span></div>'; /* 0728jf A: clock · name · verb */
       }).join("");
-      return '<div class="mr-day'+(open?'':' closed')+'" data-dk="'+esc(g.k)+'"><div class="mr-dayhd'+(today?'':' fold')+'">'+esc(g.w)+'<span class="cnt">'+g.rows.length+'</span>'+(today?'':'<span class="chv">\u25be</span>')+'</div>'+rows+'</div>';
+      return '<div class="mr-day'+(open?'':' closed')+'" data-dk="'+esc(g.k)+'"><div class="mr-dayhd'+(today?'':' fold')+'">'+esc(g.w)+(today?'<span class="cnt">'+g.rows.length+'</span>':'<span class="sum">'+mrDayKinds(g.rows)+'</span>')+(today?'':'<span class="chv">\u25be</span>')+'</div>'+rows+'</div>';
     }).join("");
-    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><span class="t">Recent alerts</span><span class="n">'+L.length+'</span></div><div class="body">'+body+'</div></div>';
+    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><span class="t">Recent alerts</span><span class="n">'+(days[0]&&days[0].w==="Today"?days[0].rows.length:0)+' today</span></div><div class="body">'+body+'</div></div>';
   }
   function mrReadout(){
     if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
@@ -11993,8 +12010,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(changed&&navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
   }
   function diaryOpenDown(id,ts){ /* 0728je THE DIARY CLOSES WHAT IT OPENS: a closing line is written only over an open down line - the newest down-family line for the ride at or before ts with no reopen or hit after it (a hit proves the ride was running; housekeeping breadcrumbs are not walls). A comeback the diary never saw go down gets no line: the row's own word already says OPEN, and a half-told incident is not an alert */
-    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id!==id||e.t>ts)continue;if(e.ev==="down"||e.ev==="rebreak-confirmed"||e.ev==="rebreak-cold")return true;if(e.ev==="reopen"||e.ev==="hit")return false;}}catch(e2){}
-    return false;
+    return !!mrDownBefore(id,ts+1); /* 0728jf: one walk - mrDownBefore is the diary's reader, seated beside mrLogHTML; it reads strictly before its clock (a back-up asking for its own down), so the guard asks at-or-before */
   }
   function mergeWorkerUps(wu){ /* 0728je THE DIARY CLOSES WHAT IT OPENS (owner glass Thu Oct 29, 11:13 AM: "went down" with no "back up" on the stars without a down & back-up rule): the /save echo's comeback clocks (Worker v3.35 ups) write the diary's closing line with the Worker's own clock, in the downs' shape - furniture untouched, nothing parked, nothing armed; the watermark fences replays; the guard above keeps the line honest. WHAT THE WORKER SPEAKS, THE PHONE REMEMBERS. */
     var changed=false;
