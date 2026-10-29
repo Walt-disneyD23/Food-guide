@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jd</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728je</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3624,6 +3624,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
          auto-arms its back-up — the switch is the only writer of the reopen channel now.
          Unarmed stars park under BACK UP on return (reopenOnly); armed rides re-arm quietly. */
       if(mrDnupFor(id)&&watch[id]&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN"&&!reopen[id]&&!wasParked){reopen[id]=true;if(!armed[id])reopenOnly[id]=true;saveReopen();saveReopenOnly();fireDown(r);}
+      /* 0728je THE DIARY CLOSES WHAT IT OPENS: a star the phone watches with no down & back-up rule gets witness lines, no ping - the down (the echo's own word, so an open phone no longer waits for the next /save to learn it) and the comeback over an open down line (diaryOpenDown); reopen-covered rides keep their own lanes below, parked rides keep the re-break lane above */
+      if(watch[id]&&!mrDnupFor(id)&&!reopen[id]&&!wasParked&&prevStatus[id]&&prevStatus[id]!=="DOWN"&&cur==="DOWN")logAlertEv(id,"down");
+      if(watch[id]&&!reopen[id]&&!wasParked&&prevStatus[id]==="DOWN"&&cur==="OPERATING"&&diaryOpenDown(id,Date.now()))logAlertEv(id,"reopen");
       /* reopen: a watched, reopen-flagged ride that is now operating has come back.
          Park it either way (so it lands in Back up, not Watched) — even if the flip
          happened while the app was closed. Only re-fire the in-app ping if we
@@ -11989,8 +11992,22 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     });
     if(changed&&navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
   }
+  function diaryOpenDown(id,ts){ /* 0728je THE DIARY CLOSES WHAT IT OPENS: a closing line is written only over an open down line - the newest down-family line for the ride at or before ts with no reopen or hit after it (a hit proves the ride was running; housekeeping breadcrumbs are not walls). A comeback the diary never saw go down gets no line: the row's own word already says OPEN, and a half-told incident is not an alert */
+    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id!==id||e.t>ts)continue;if(e.ev==="down"||e.ev==="rebreak-confirmed"||e.ev==="rebreak-cold")return true;if(e.ev==="reopen"||e.ev==="hit")return false;}}catch(e2){}
+    return false;
+  }
+  function mergeWorkerUps(wu){ /* 0728je THE DIARY CLOSES WHAT IT OPENS (owner glass Thu Oct 29, 11:13 AM: "went down" with no "back up" on the stars without a down & back-up rule): the /save echo's comeback clocks (Worker v3.35 ups) write the diary's closing line with the Worker's own clock, in the downs' shape - furniture untouched, nothing parked, nothing armed; the watermark fences replays; the guard above keeps the line honest. WHAT THE WORKER SPEAKS, THE PHONE REMEMBERS. */
+    var changed=false;
+    Object.keys(wu||{}).forEach(function(id){
+      var wt=+wu[id];if(!wt||wt<1e12)return;
+      if(wt<=echoWm)return;
+      if(!diaryOpenDown(id,wt))return;
+      logIncident(id,"reopen",wt,true);changed=true;
+    });
+    if(changed&&navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
+  }
   function bumpEchoWm(d){ /* one global newest-folded worker clock; the merges run first, the bump seals the batch */
-    var m=echoWm;[d&&d.downs,d&&d.reopens,d&&d.alerts].forEach(function(o){Object.keys(o||{}).forEach(function(id){var t=+o[id];if(t>1e12&&t>m)m=t;});});
+    var m=echoWm;[d&&d.downs,d&&d.ups,d&&d.reopens,d&&d.alerts].forEach(function(o){Object.keys(o||{}).forEach(function(id){var t=+o[id];if(t>1e12&&t>m)m=t;});});
     if(m>echoWm){echoWm=m;saveEchoWm();}
   }
 
@@ -12009,6 +12026,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
         if(d&&d.reminds)mergeWorkerReminds(d.reminds); /* 0728hl */
         if(d&&d.downs)mergeWorkerDowns(d.downs,d.downsRb);
+        if(d&&d.ups)mergeWorkerUps(d.ups); /* 0728je THE DIARY CLOSES WHAT IT OPENS (Worker v3.35) */
         if(d&&d.reopens)mergeWorkerReopens(d.reopens);
         bumpEchoWm(d);
       }).catch(function(e){console.error("syncPush failed",e);});
