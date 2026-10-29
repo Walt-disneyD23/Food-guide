@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jd</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -2932,7 +2932,7 @@ function rcDay(ctx){ /* 0728is THE DRESS IS A DOOR: the Daylight palette door. H
     var m=k.match(/^rgba\((\d+),(\d+),(\d+),([0-9.]+)\)$/);if(m&&m[1]==="255"&&m[2]==="255"&&m[3]==="255"){var a=+m[4];return a<0.07?"#ffffff":a<0.13?"#d9dceb":"#c3c5d6";}return v;}
   function grad(g){var add=g.addColorStop;g.addColorStop=function(o,c){return add.call(g,o,map(c));};return g;} /* the real gradient, its stops mapped at the door — a Proxy would fail the canvas's brand check on fillStyle */
   return new Proxy(ctx,{get:function(t,k){if(k==="raw")return t;var v=t[k];if(k==="createLinearGradient"||k==="createRadialGradient")return function(){return grad(v.apply(t,arguments));};return typeof v==="function"?v.bind(t):v;},
-    set:function(t,k,v){t[k]=(k==="fillStyle"||k==="strokeStyle")?map(v):v;return true;},has:function(t,k){return k in t;}});
+    set:function(t,k,v){t[k]=(k==="fillStyle"||k==="strokeStyle"||k==="shadowColor")?map(v):v;return true;} /* 0728jd THE HALO WEARS THE FIELD (owner glass Oct 28, 11:27 PM: the live ride card\u2019s cap labels \u201cseem to glow\u201d): the door maps shadowColor too \u2014 the chart labels\u2019 navy halo (#0c1a2c, already in the field table) turns to the light field on a Daylight card, a pale cut-out around the digits instead of a smudge; Harbor cards never pass the door and keep their navy */,has:function(t,k){return k in t;}});
 }
 
 var PARK_DEF=[
