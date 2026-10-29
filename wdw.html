@@ -153,6 +153,8 @@
   body.pt-park #banners>.banner,body.pt-park #banners>.pb-board{display:none} /* a park tab shows that park alone: the hero and the four-park list are All's */
   body.pt-park #cpCard .ux-pks,body.pt-park #upNextCard .ux-pks,body.pt-park #cpCard .pf-pk,body.pt-park #upNextCard .ux-pk{display:none} /* K-1 + G-1: on a park tab the tab is the one park control; the cards' own park chips and per-row park tags step aside */
   .cw-sentinel{height:1px;margin-bottom:-1px} /* 0728cl: the row's pin sentinel */
+  .controls-wrap.mr-cw{margin-left:-12px;margin-right:-12px;margin-top:calc(-1*env(safe-area-inset-top,0px) - 8px);padding-bottom:10px} /* 0728jg THE CHIPS PIN (owner-ruled P-A, Thu Oct 29 on pin-sheet: "I think this would really neaten up the page"): My Rides' park chips wear Live's sticky dress (.controls-wrap, the inset as padding, the solid plate, sbSync's hand) inside the wrap - its 12px gutters cancelled so the plate reaches the glass edges, the 8px the clock gets when pinned cancelled at rest so the hero's 10px gap stands; ONE GRAMMAR, TWO TABS */
+  .controls-wrap.mr-cw .mr-chips{margin-bottom:0} /* the wrap's foot is the gap */
   .controls-inner{max-width:1180px;margin:0 auto;padding:0 12px;pointer-events:auto}
   .filterbar{display:flex;align-items:center;gap:8px}
   /* one control grammar: three matched pills, same height, same surface (front-door mock, Jul 5) */
@@ -2805,7 +2807,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jf</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jg</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3375,13 +3377,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   },true);
   window.addEventListener("scroll",closeProofPop,{passive:true});window.ppShl().addEventListener("scroll",closeProofPop,{passive:true});
   function sbSync(){ /* 0728de THE FROST FOLLOWS THE FINGER: opacity is the scroll\u2019s (0 at 2px, 1 at 32px); on LIVE k = how close the controls row is to sticking (0 when its pills are 60px or more from their pinned seat, 1 when pinned) and the plate\u2019s full zone and fade grow with it. Continuous \u2014 no judge, no class to flip mid-scroll; sb-live only says the row is on glass */
-    var sh=window.ppShl(),pl=document.getElementById("sbPlate"),cw=document.querySelector(".controls-wrap");if(!pl)return;
-    var st=sh?sh.scrollTop:0,live=!!(cw&&cw.offsetParent!==null),k=0;
+    var sh=window.ppShl(),pl=document.getElementById("sbPlate"),cws=document.querySelectorAll(".controls-wrap"),cw=null,ci;if(!pl)return;
+    for(ci=0;ci<cws.length;ci++){if(cws[ci].offsetParent!==null&&!cw)cw=cws[ci];else cws[ci].style.setProperty("--pt-k","0");} /* 0728jg ONE GRAMMAR, TWO TABS: the pinned row is whichever sticky row is on glass (Live's controls, My Rides' chips); a row off glass keeps no plate strength, so a tab change never shows a stale plate */
+    var st=sh?sh.scrollTop:0,live=!!cw,k=0; /* 0728jg: live = a sticky row is on glass (sb-live keeps its name) */
     if(live){var inn=cw.firstElementChild,ins=0;try{ins=Math.max(0,(parseFloat(getComputedStyle(cw).paddingTop)||8)-8);}catch(_){}
       if(inn)k=Math.max(0,Math.min(1,1-(inn.getBoundingClientRect().top-(ins+8))/60));}
     document.documentElement.classList.toggle("sb-live",live);
     pl.style.setProperty("--sb-s",Math.round(48*k)+"px");pl.style.setProperty("--sb-f",Math.round(32+12*k)+"px");
-    if(cw)cw.style.setProperty("--pt-k",String(live?Math.max(0,Math.min(1,Math.round((k-.6)*250)/100)):0)); /* 0728gd P-1: the solid plate arrives over the row’s last 24px to its seat */
+    if(cw)cw.style.setProperty("--pt-k",String(Math.max(0,Math.min(1,Math.round((k-.6)*250)/100)))); /* 0728gd P-1: the solid plate arrives over the row’s last 24px to its seat; 0728jg: cw is the row on glass or null */
     pl.style.opacity=String(Math.round(Math.max(0,Math.min(1,(st-2)/30))*100)/100);
   }
   window.__sbSync=sbSync;window.ppShl().addEventListener("scroll",sbSync,{passive:true});
@@ -11468,7 +11471,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var dim=!have[p.key];
       b+='<button class="mr-chip'+(mrLens===p.key?' on':'')+(dim?' dim':'')+'" data-p="'+esc(p.key)+'" type="button"'+(dim?' aria-disabled="true"':'')+'>'+(BANNER_MONO[p.key]||p.key)+'</button>';
     });
-    return '<div class="mr-chips">'+b+'</div>';
+    return '<div class="cw-sentinel" aria-hidden="true"></div><div class="controls-wrap mr-cw"><div class="controls-inner"><div class="mr-chips">'+b+'</div></div></div>'; /* 0728jg THE CHIPS PIN: the row rides Live's sentinel + wrap + inner, so sbSync and the plate read it as they read Live's */
   }
   function mrPulseModel(ids){
     if(typeof pfCallouts!=="function")return {state:"nobase",cards:[]};
@@ -11556,12 +11559,26 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(typeof pfEnsureBase==="function")pfEnsureBase();
     el.innerHTML=mrPageHTML();
     bindMyRides(el);
+    mrPinBind(el); /* 0728jg THE CHIPS PIN */
     if(mrShId)mrShMark(mrShId); /* 0728gv: a repaint with the sheet up (the guard above lets none through today; kept for the seam) */
+  }
+  var mrPinIO=null;
+  function mrPinBind(el){ /* 0728jg THE CHIPS PIN: the page is repainted every poll, so the chip row's sentinel is re-observed on every paint (one observer, asking Live's one judge), and the plate re-reads at once so a repaint under a pinned row never flashes bare */
+    try{var sn=el.querySelector(".cw-sentinel");if(sn&&("IntersectionObserver" in window)){
+      if(!mrPinIO)mrPinIO=new IntersectionObserver(function(){if(window.__sbSync)window.__sbSync();},{root:window.ppShl(),threshold:0});
+      mrPinIO.disconnect();mrPinIO.observe(sn);}}catch(_){}
+    if(window.__sbSync)window.__sbSync();
+  }
+  function mrPinLand(){ /* 0728jg THE LENS LANDS UNDER THE ROW (owner-ruled with P-A): a lens tap while the chips are pinned lands the page at the row's seat, so the first group reads right under the chips; a tap with the row at rest moves nothing. The seat is where the row pins */
+    try{var sh=window.ppShl(),cw=document.querySelector("#pgMyRides .controls-wrap"),sn=document.querySelector("#pgMyRides .cw-sentinel");if(!sh||!cw||!sn)return;
+      var ins=0;try{ins=Math.max(0,(parseFloat(getComputedStyle(cw).paddingTop)||8)-8);}catch(_){}
+      var d=sn.getBoundingClientRect().top-(sh.getBoundingClientRect().top+ins+7); /* the row pins when its top edge meets the shell's: the sentinel's 1px (its -1px margin collapses into the wrap's -(inset+8)) puts that edge 1px under the sentinel's top less inset+8 - so the seat is the sentinel at inset+7 (measured on the rig: 8 left the row 1px shy, the plate at .96) */
+      if(d<0)sh.scrollTop=Math.max(0,sh.scrollTop+d);}catch(_){}
   }
   function bindMyRides(el){
     function each(sel,fn){Array.prototype.forEach.call(el.querySelectorAll(sel),fn);}
     each(".mr-bell",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(b.getAttribute("data-id"));});});
-    each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();});});
+    each(".mr-chip",function(b){b.addEventListener("click",function(){if(b.classList.contains("dim"))return;mrLens=b.getAttribute("data-p");renderMyRidesPage();mrPinLand();});}); /* 0728jg: the lens lands under the row */
     each(".mr-clear",function(b){b.addEventListener("click",function(ev){ev.stopPropagation();var id=b.getAttribute("data-id");clearedTs[id]=Date.now();saveClearedTs();delete resolved[id];saveResolved();updateAlertBadge();renderMyRidesPage();});});
     var ca=el.querySelector("[data-clrall]");if(ca)ca.addEventListener("click",function(ev){ev.stopPropagation();var nw=Date.now();Object.keys(resolved).forEach(function(id){clearedTs[id]=nw;});saveClearedTs();resolved={};saveResolved();updateAlertBadge();renderMyRidesPage();}); /* 0721e: still the hand-clear law - just the whole hand */
     each(".mr-rw[data-rs]",function(w){w.addEventListener("click",function(ev){if(ev.target&&ev.target.closest&&(ev.target.closest(".mr-bell")||ev.target.closest(".st")))return;rsOpen(w.getAttribute("data-rs"));});}); /* 0728hm: the ★ is fenced off the body tap as the bell is */
