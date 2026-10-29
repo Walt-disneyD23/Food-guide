@@ -2293,7 +2293,13 @@
   .mr-bell svg{width:20px;height:20px;stroke:var(--muted-2);fill:none}
   .mr-bell.on{background:var(--accent-soft);border-color:rgba(139,135,255,.45)}
   .mr-bell.on svg{stroke:var(--accent);fill:var(--accent)}
-  .mr-log .hd2{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
+  .mr-log .hd2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 14px;min-height:64px;cursor:pointer} /* 0728jh THE FOLD IS A ROW YOU CAN HIT (owner glass 12:45 PM Oct 29: the folded card "thin and sometimes hard to hit with the thumb"; ruled F-B): the row grows to two lines - the title keeps its face, a readout beneath - and never shrinks under 64px */
+.mr-log .hd2 .tt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.mr-log .hd2 .s{font-size:var(--fs-body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* the readout: today's by-kind sentence (B), or the newest day's when today is quiet */
+.mr-log .hd2 .s i{font-style:normal;font-weight:600;color:var(--ink)}
+.mr-log .hd2 .r{display:flex;align-items:center;gap:10px;flex:none}
+.mr-log .hd2 .chv{color:var(--muted-2);font-weight:700;transition:transform .18s} /* the chevron joins, as Your rules' */
+.mr-log.open .hd2 .chv{transform:rotate(90deg)}
   .mr-log .hd2 .t{font-family:var(--font-display);font-weight:700;font-size:var(--fs-title)}
   .mr-log .hd2 .n{font-family:var(--font-display);font-weight:700;font-size:var(--fs-meta);color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 10px}
   .mr-log .body{display:none}
@@ -2807,7 +2813,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jh</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11411,7 +11417,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }).join("");
       return '<div class="mr-day'+(open?'':' closed')+'" data-dk="'+esc(g.k)+'"><div class="mr-dayhd'+(today?'':' fold')+'">'+esc(g.w)+(today?'<span class="cnt">'+g.rows.length+'</span>':'<span class="sum">'+mrDayKinds(g.rows)+'</span>')+(today?'':'<span class="chv">\u25be</span>')+'</div>'+rows+'</div>';
     }).join("");
-    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><span class="t">Recent alerts</span><span class="n">'+(days[0]&&days[0].w==="Today"?days[0].rows.length:0)+' today</span></div><div class="body">'+body+'</div></div>';
+    var today0=!!(days[0]&&days[0].w==="Today"),sub=today0?mrDayKinds(days[0].rows):(days[0]?esc(days[0].w)+' \u00b7 '+mrDayKinds(days[0].rows):""); /* 0728jh F-B: the readout under the title - today's by-kind sentence, or the newest day's named when today is quiet (LABELS MOVE WITH VALUES: never an empty line) */
+    return '<div class="mr-grp mr-log'+(mrLogOpen?' open':'')+'"><div class="hd2"><div class="tt"><span class="t">Recent alerts</span><span class="s">'+sub+'</span></div><div class="r"><span class="n">'+(today0?days[0].rows.length:0)+' today</span><span class="chv">\u203a</span></div></div><div class="body">'+body+'</div></div>';
   }
   function mrReadout(){
     if(!(settings.notif&&notifGranted()))return "<b>notifications off</b>";
