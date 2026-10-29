@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jb</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jc</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6296,7 +6296,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var row4=[];for(i=0;i<D.stats.length;i++)if(/^Clean days/i.test(D.stats[i].k))row4.push({k:"Clean days",v:D.stats[i].v,ctx:""});
       for(i=0;i<D.tiles.length;i++){var tl=D.tiles[i];if(/^On strike/i.test(tl.k))continue;row4.push({k:tl.k.replace(/^Most down in a day$/i,"Most in a day"),v:tl.v,ctx:tl.ctx});}
       if(row4.length){y+=30;hair(y);y+=22;var t4=y,sw=CW/row4.length;
-        for(i=0;i<row4.length;i++){var nI=row4.length-1,sx=i===0?L:(i===nI?R:L+CW*i/nI),al=i===0?"left":(i===nI?"right":"center"); /* 0728ih THE ROW REACHES THE EDGE: the family's ends — first left, last right, the rest on the thirds */
+        var w4=[],sum4=0;for(i=0;i<row4.length;i++){LS("1.8px");var lw4=MW(row4[i].k.toUpperCase(),IN("600",20));LS("0px");w4[i]=Math.max(lw4,MW(row4[i].v,SG("800",46)),row4[i].ctx?MW(row4[i].ctx,IN("500",21)):0);sum4+=w4[i];}
+        var g4=row4.length>1?Math.max(0,(CW-sum4)/(row4.length-1)):0,cx4=L; /* 0728jc THE ROW SPACES BY ITS CONTENT (owner glass Oct 28, 9:03 PM: the gap between Outages and Hours down): each stat is measured (its widest of label, value, caption) and the leftover splits evenly into the gaps \u2014 ih\u2019s ends still touch the margins, the eye now sees equal air; a row too wide for its gaps butts the columns rather than overlapping */
+        for(i=0;i<row4.length;i++){var nI=row4.length-1,sx=(i===nI&&g4>0)?R:cx4,al=(i===nI&&g4>0)?"right":"left";cx4+=w4[i]+g4; /* 0728ih THE ROW REACHES THE EDGE: first left, last right \u2014 the middle now sits where its content and the even gaps put it (0728jc) */
           LS("1.8px");T(row4[i].k.toUpperCase(),sx,t4+22,IN("600",20),C.muted2,al);LS("0px");T(row4[i].v,sx,t4+22+58,SG("800",46),C.ink,al);if(row4[i].ctx)T(row4[i].ctx,sx,t4+22+58+34,IN("500",21),C.muted2,al);}
         y=t4+22+58+34+8;}
     }
