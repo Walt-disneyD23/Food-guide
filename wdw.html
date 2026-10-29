@@ -582,6 +582,9 @@
   .tp-dc.thin i{color:var(--muted-2)}
   .tp-dc.thin{background:none;border:1.5px dashed var(--muted-2)}
   .tp-dx{border-top:1px solid var(--line);padding:11px 16px 13px;background:var(--card-2)}
+.tp-day.open{background:transparent;border:0;box-shadow:none;overflow:visible;padding:0} /* 0728ji THE OPEN DAY IS A PAGE (owner-ruled W-A, Oct 29, 2:49 PM, on the rig sheet: "that's the right move"): the head stays a card; the day's body - the read, the room, the order card, the ride cards - leaves it and runs on the page at the Today board's own gutter, no field; the two surfaces wear one grammar */
+.tp-day.open>.tp-drow{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft)}
+.tp-day.open>.tp-dx{background:transparent;border-top:0;padding:10px 0 0;margin:0}
   .tp-dxread{font-size:var(--fs-body);line-height:1.5;margin-bottom:7px}
   .tp-dxbx{background:var(--card);border:1px solid var(--line);border-radius:var(--r-tile);padding:11px 13px;margin:2px 0 4px}
   .tp-dxbx .tp-dxread{margin-bottom:0}
@@ -650,7 +653,7 @@
 .tp-sq.behind .p{color:var(--muted-2)}
 .tp-sq.behind .s:before{--on:var(--muted-2)}
 .tp-rail{position:relative;margin:0 -12px 12px}
-.tp-rail .tp-strip{display:flex;gap:5px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 12px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tp-rail .tp-strip{display:flex;gap:5px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding:0 12px;padding:0 12px;margin:0;scrollbar-width:none;-webkit-overflow-scrolling:touch} /* 0728ji THE RAIL OPENS AT THE GUTTER (owner glass Oct 29, 2:26 and 2:29 PM, two cold opens of an 11-day trip: the first pill 6pt in from the edge; the 6-day grid on the gutter): the snap points honour the strip's own gutter, so the opening frame and every snap land the pills on the cards' edge - the fade is for a scrolled rail, not the first frame */
 .tp-rail .tp-strip::-webkit-scrollbar{display:none}
 .tp-rail .tp-sq{flex:0 0 52px;scroll-snap-align:start}
 .tp-rail:before,.tp-rail:after{content:"";position:absolute;top:0;bottom:0;width:36px;pointer-events:none}
@@ -711,7 +714,7 @@
   .td-lgsw.pn{outline:2px dashed var(--muted);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card);background:#f5b544} /* drawn as the shipping party ring (.tp-dc.pn), halo landed (C-2) */
   .td-lgsw.plan{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card);background:#f5b544} /* Cut C (C-2): the strip legend's planned swatch, drawn as the strengthened ring */
   .td-st{display:inline-block;font-size:16.5px;line-height:11px;vertical-align:-1px} /* Cut C (C-2): the chip's \u2726 at size D \u2014 line box pinned to the label's own so the chip never grows */
-  .tp-dtop.solo{grid-template-columns:1fr} /* Cut C (C-2): the clean hero \u2014 the opened day sheds its four tier cells; closed rows always keep theirs */
+  .tp-dtop.solo{grid-template-columns:1fr auto} /* 0728ji THE OPEN DAY'S HEAD IS ONE ROW (owner glass Oct 29, 2:38 PM, the empty block under the date): THE CASCADE IS A SEAM - this later rule won over 0717o's "1fr auto" and dropped the share door (the cells' seat when open) onto a row of its own; the builder already sheds the cells, so the column stays */ /* Cut C (C-2): the clean hero \u2014 the opened day sheds its four tier cells; closed rows always keep theirs */
   .tp-wd.big{font-size:24px;letter-spacing:-.015em} /* Cut C (C-2): big-day typography on the shed hero */
   .tp-dt.big{font-size:var(--fs-title);margin-top:1px}
   .td-wkh{margin-top:12px} /* Cut C (C-2): THE WEEK, PARK BY PARK \u2014 the picker's own columns; a pure readout (the locality law) */
@@ -2813,7 +2816,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.0<small id="setBuild">build 0728jh</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ji</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6608,6 +6611,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   var TP_TW=["","Light","Moderate","Busy","Packed"],TP_FLOOR=3,TP_MAXDAYS=21;
   var TP_PSHORT={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"},TP_P2={"Magic Kingdom":"MK","EPCOT":"EP","Hollywood Studios":"HS","Animal Kingdom":"AK"} /* 0717h: the cell stamps (owner pick A) */; /* Cut 2: the fan vocabulary the 2b chips ratified — full names stay the storage + prose vocabulary */
   function tpTripValid(t){return !!(t&&t.a&&t.b&&t.a<=t.b);}
+  var tpRailKeep=null; /* 0728ji THE RAIL HOLDS STILL UNDER A TAP: the rail's scroll before a day tap repaints the page; the rebuilt rail restores it (see the seat) */
   function tpTrips(){ /* 0714w: the trips array; the legacy single ppTrip migrates silently on first read */
     var ts=store.get("ppTrips",null);
     if(!ts){var old=store.get("ppTrip",null);ts=tpTripValid(old)?[{id:"t1",n:old.n||"",a:old.a,b:old.b}]:[];if(ts.length)store.set("ppTrips",ts);}
@@ -8328,7 +8332,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+((pk||rst9)?'':' none')+'"><span>'+pln+'</span><span class="tp-plr">'+(function(){var n9=(!open&&pk)?((t.rides||{})[d0]||[]).length:0,w9=n9?(n9+' ride'+(n9===1?'':'s')):'',d9=(view9==="day"&&!open)?'<b class="tp-see">See the day</b>':'';return (w9||d9)?'<span class="tp-plrn">'+w9+((w9&&d9)?' \u00b7 ':'')+d9+'</span>':'';})()+(open?'':'<i class="chv">\u203a</i>')+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>'; /* 0728dl L-A: the door (count \u203a) keeps line one; the day's facts follow on their own lines, left */ /* 0728ci: the right seat is one cluster \u2014 holiday \u00b7 count \u203a wrap together */ /* 0728aj (owner glass 10:14 PM, Sep 9): THE ROW SAYS WHAT YOU'VE DONE \u2014 a closed row with rides carries the count at the caption's right, beside the \u203a; the open day's header already says it */ /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
       var dx='';
       if(open){var L=tpDayLine(d0,model,t,EV),tdr9=(pk&&d0===tpToday())?'<button class="tp-today" data-tptoday="'+esc(pk)+'" type="button">It\u2019s today \u2014 your live board is on TODAY <span class="chev">\u203a</span></button>':'';dx='<div class="tp-dx">'+L.line+L.sub+tdr9+tdSecHTML(t,d0)+tpParkRows(d0,model,t,EV)+'</div>';} /* 0727d THE TRIP KNOWS TODAY (D): on the day itself the trip page names the surface where the waits live \u2014 one door, no input; the two surfaces name each other */ /* 0715e: My Day leads the opened day; the parks demote beneath */
-      rows+='<div class="rpc tp-day">'+row+dx+'</div>';}
+      rows+='<div class="rpc tp-day'+(open?' open':'')+'">'+row+dx+'</div>';} /* 0728ji THE OPEN DAY IS A PAGE: the open day's card wears the class its dress reads */
     var leg='<div class="tp-leg">';CROWD_TIERS.forEach(function(x,ix){if(x)leg+='<span><i style="background:var(--t'+ix+')"></i>'+x.label+'</span>';});leg+='</div>'; /* Cut C (C-2): the board legend follows its own cells onto Soft */
     return head+adv+seg9+strip9+gh+rows+leg+'<div class="pf-basis">'+tpBasis(t,model)+(EV.used?' \u00b7 party nights and race dates from verified event calendars':'')+'</div>';
   }
@@ -8977,9 +8981,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var v=b.getAttribute("data-tpview");if(v===tpViewGet(tpSel))return;var m9=store.get("ppTripView",null);m9=(m9&&typeof m9==="object")?m9:{};m9[tpSel]=v;store.set("ppTripView",m9);tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();});});
     el.querySelectorAll("[data-tpsq]").forEach(function(b){b.addEventListener("click",function(){ /* 0728iw the strip: tap a day \u2192 go to that day (By day: its card; All days: scroll to its row) */
       var d=b.getAttribute("data-tpsq");
-      if(tpViewGet(tpSel)==="day"){if(tpDaySel===d&&!tpOpen)return;tpDaySel=d;tpOpen=null;tpPlanPick=null;tdReset();renderPulsePage();return;}
+      if(tpViewGet(tpSel)==="day"){if(tpDaySel===d&&!tpOpen)return;tpDaySel=d;tpOpen=null;tpPlanPick=null;tdReset();tpRailKeep=(function(){var r0=b.closest(".tp-strip.rail");return r0?r0.scrollLeft:null;})();renderPulsePage();return;} /* 0728ji THE RAIL HOLDS STILL UNDER A TAP (owner glass Oct 29, 2:34 PM: tap Wed 11 from a rail resting on Sun 8 and the band slid): the rail remembers where the finger left it before the repaint */
       var r=el.querySelector('.tp-drow[data-tpday="'+d+'"]'),sh=window.ppShl();if(r&&sh){var st=sh.getBoundingClientRect?sh.getBoundingClientRect().top:0,y=Math.max(0,sh.scrollTop+r.getBoundingClientRect().top-st-12);try{sh.scrollTo({top:y,behavior:"smooth"});}catch(_){sh.scrollTop=y;}}});});
-    var rl9=el.querySelector(".tp-strip.rail");if(rl9){var sq9=rl9.querySelector(".tp-sq.open")||rl9.querySelector(".tp-sq.today");if(sq9)rl9.scrollLeft=Math.max(0,sq9.offsetLeft-12-57*2); /* 0728iw the rail arrives on the selected day (or today) */
+    var rl9=el.querySelector(".tp-strip.rail");if(rl9){var sq9=rl9.querySelector(".tp-sq.open")||rl9.querySelector(".tp-sq.today");if(sq9){if(typeof tpRailKeep==="number"){rl9.scrollLeft=tpRailKeep;tpRailKeep=null;var L9=sq9.offsetLeft,R9=L9+sq9.offsetWidth,vw9=rl9.clientWidth;if(L9<rl9.scrollLeft+12)rl9.scrollLeft=Math.max(0,L9-12);else if(R9>rl9.scrollLeft+vw9-12)rl9.scrollLeft=R9+12-vw9;}else rl9.scrollLeft=Math.max(0,sq9.offsetLeft-12-57*2);} /* 0728ji THE RAIL HOLDS STILL UNDER A TAP: a tap keeps the band where it was - restored to its resting place, a snap point, so nothing is left to bounce; only a picked day off the glass moves it, by the least scroll that brings it in. A cold open still seats the day as the third pill (0728iw) */ /* 0728iw the rail arrives on the selected day (or today) */
       var fd9=function(){var p9=rl9.parentNode;p9.classList.toggle("at-start",rl9.scrollLeft<4);p9.classList.toggle("at-end",rl9.scrollLeft+rl9.clientWidth>=rl9.scrollWidth-4);};rl9.addEventListener("scroll",fd9);fd9();}
     el.querySelectorAll("[data-tpdoor]").forEach(function(b){b.addEventListener("click",function(){ /* 0715d: the home-base door — the lens's ONLY writer; the trip + day are the ones you're standing in, so the window can never misname its trip. tpSel survives: the TRIP pill walks back to this board. */
       var t2=tpCurTrip();if(!t2)return;
