@@ -2816,7 +2816,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ji</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jj</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -11395,9 +11395,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   var mrEvTint={hit:"mr-vh",down:"mr-vd",reopen:"mr-vu",remind:"mr-vh"}; /* 0728hl: the reminder wears the hit's mint */ /* 0721u R2: only the three alert verbs tint; housekeeping breadcrumbs stay plain */
   function mrIsDownWord(ev){return ev==="down"||ev==="rebreak-confirmed"||ev==="rebreak-cold";} /* 0728jf: the diary's down family, one predicate for the two readers below (mrLastDownEv keeps its own) */
   function mrDownBefore(id,ts){ /* 0728jf THE DIARY CLOSES WHAT IT OPENS, the reader: the newest down-family line for the ride before ts with no reopen or hit after it (a hit proves the ride was running; breadcrumbs are not walls) - null when the diary never saw the ride go down. diaryOpenDown asks it before a closing line is written; the back-up line asks it for its span (C2) */
-    try{var L=store.get("alertLog",[])||[];for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id!==id||e.t>=ts)continue;if(mrIsDownWord(e.ev))return e;if(e.ev==="reopen"||e.ev==="hit")return null;}}catch(e2){}
+    try{var L=store.get("alertLog",[])||[],w9=mrNightWall(ts);for(var i=L.length-1;i>=0;i--){var e=L[i];if(e.id!==id||e.t>=ts)continue;if(e.t<w9)return null;if(mrIsDownWord(e.ev))return e;if(e.ev==="reopen"||e.ev==="hit")return null;}}catch(e2){}
     return null;
   }
+  function mrNightWall(ts){var d=new Date(ts-4*3600000);d.setHours(4,0,0,0);return d.getTime();} /* 0728jj THE NIGHT IS A WALL (owner glass Oct 29, 8:47 PM: a back-up measured against a two-day-old down): a down line from before the comeback's own operating day (4 AM, local) is not an open down - a park's night sits between them, and overnight the feed says CLOSED, never DOWN. The reader stops at the wall: the comeback reads bare, and diaryOpenDown writes no closing line over it */
   function mrDayKinds(rows){ /* 0728jf B THE FOLD SAYS WHAT'S INSIDE (owner-ruled Oct 29): a closed day's header counts by kind - hits, downs (the re-break words included), back-ups, reminders - and "more" for any breadcrumbs beside them; a day of breadcrumbs alone keeps its bare count. LABELS MOVE WITH VALUES: a kind absent from the day is not named */
     var h=0,d=0,u=0,m=0,o=0;rows.forEach(function(e){if(e.ev==="hit")h++;else if(mrIsDownWord(e.ev))d++;else if(e.ev==="reopen")u++;else if(e.ev==="remind")m++;else o++;});
     var p=[];if(h)p.push("<i>"+h+"</i> hit"+(h>1?"s":""));if(d)p.push("<i>"+d+"</i> down");if(u)p.push("<i>"+u+"</i> back up");if(m)p.push("<i>"+m+"</i> reminder"+(m>1?"s":""));
@@ -12050,6 +12051,23 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     });
     if(changed&&navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
   }
+  function mergeWorkerLedger(inc){ /* 0728jj THE LEDGER FILLS THE DIARY (owner glass Thu Oct 29, 8:47 PM: Slinky Dog Dash "back up - 51h 58m", Rise "20h 40m" - a comeback the phone learned on its next /save paired with a down it never learned, because the Worker deleted the down clock the moment the ride came back and the phone only saves on launch or a rule change; with Worker v3.36 THE WORKER KEEPS THE LEDGER): every incident the Worker banked for this phone - the down and the comeback that closed it, {id,d,u?,n?,rb?} - seats in the diary with the Worker's own clocks, whether the app was open all day or in a pocket. Each line seats by its own incident, never by the global watermark, so a week's ledger replays idempotently: a same-family line of the ride at or after the clock with no other line of the ride between is the phone's witness of this incident and takes the true clock (THE TRUE CLOCK WINS; THE PHONE KEEPS THE WORDS); one within 15 min before it is the phone leading the Worker and stands (THE EARLIEST WITNESS WINS); otherwise the line is new, echo-born. A night-ended entry (n) seats its down alone - nothing came back. The legacy echoes (downs, ups, reopens) still run after this and fold into these lines */
+    try{var L=store.get("alertLog",[])||[],changed=false;
+      var FAMD={down:1,"rebreak-confirmed":1,"rebreak-cold":1},FAMU={reopen:1};
+      function between(id,a,b){var lo=Math.min(a,b),hi=Math.max(a,b);for(var k=0;k<L.length;k++){var e=L[k];if(e.id===id&&e.t>lo&&e.t<hi&&(e.ev==="reopen"||e.ev==="hit"||FAMD[e.ev]))return true;}return false;}
+      function seat(id,fam,t,word){var k,e,after=null,before=null;
+        for(k=0;k<L.length;k++){e=L[k];if(e.id!==id||!fam[e.ev]||between(id,t,e.t))continue;
+          if(e.t>=t-60000){if(!after||e.t<after.t)after=e;}else if(t-e.t<=900000){if(!before||e.t>before.t)before=e;}}
+        if(after){if(after.t!==t){after.t=t;changed=true;}return;}
+        if(before)return;
+        if(L.length>=200&&t<L[0].t)return; /* older than the diary's oldest at the cap: let it lie */
+        L.push({t:t,id:id,ev:word,w:1});changed=true;}
+      (inc||[]).filter(function(e){return !!(e&&e.id&&(+e.d>1e12));}).sort(function(a,b){return (+a.d)-(+b.d);}).forEach(function(e){
+        seat(e.id,FAMD,+e.d,e.rb?"rebreak-cold":"down");
+        if(+e.u>1e12)seat(e.id,FAMU,+e.u,"reopen");});
+      if(changed){L.sort(function(a,b){return a.t-b.t;});if(L.length>200)L=L.slice(-200);store.set("alertLog",L);if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();}
+    }catch(e9){}
+  }
   function bumpEchoWm(d){ /* one global newest-folded worker clock; the merges run first, the bump seals the batch */
     var m=echoWm;[d&&d.downs,d&&d.ups,d&&d.reopens,d&&d.alerts].forEach(function(o){Object.keys(o||{}).forEach(function(id){var t=+o[id];if(t>1e12&&t>m)m=t;});});
     if(m>echoWm){echoWm=m;saveEchoWm();}
@@ -12069,6 +12087,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }).then(function(r){return r.json();}).then(function(d){
         if(d&&d.alerts)mergeWorkerAlerts(d.alerts);
         if(d&&d.reminds)mergeWorkerReminds(d.reminds); /* 0728hl */
+        if(d&&d.inc)mergeWorkerLedger(d.inc); /* 0728jj THE LEDGER FILLS THE DIARY (Worker v3.36): the whole incident record first; the legacy clocks below fold into it */
         if(d&&d.downs)mergeWorkerDowns(d.downs,d.downsRb);
         if(d&&d.ups)mergeWorkerUps(d.ups); /* 0728je THE DIARY CLOSES WHAT IT OPENS (Worker v3.35) */
         if(d&&d.reopens)mergeWorkerReopens(d.reopens);
