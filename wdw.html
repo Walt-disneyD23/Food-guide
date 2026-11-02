@@ -2817,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jo</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jp</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -4674,7 +4674,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var st=PARK_DEF.map(function(p){var o9=isOpenNow(parkInfo[p.key]);return (o9===false&&typeof tySweep==="function"&&tySweep(p.key))?true:o9;}); /* 0721h: the sweep holds this door too */
     var n=st.filter(function(v){return v===true;}).length;
     if(n>0)return {open:true,txt:n+" of "+PARK_DEF.length+" parks open"};
-    if(st.every(function(v){return v===false;}))return {open:false,txt:"Parks closed"};
+    if(st.every(function(v){return v===false;})){var cb=clBack("all");return {open:false,txt:"Parks closed",tail:cb?cb.tail:null};} /* 0728jp: the hero says when the first park opens */
     return {open:false,txt:"Live"};
   }
   function bannerStats(key){
@@ -4834,7 +4834,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(m.state==="nobase")return "";
     var clock=fmtClock(new Date().toISOString())||"";
     var head='<div class="fc-head"><span class="sec-lab">Callouts'+((typeof ptNm==="function")?ptNm(scope):"")+'</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
-    if(m.state==="closed")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.</div></div>';
+    if(m.state==="closed")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">'+(clRoom("Callouts",scope)||'Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.')+'</div></div>'; /* 0728jp: the shared clause leads; the old sentence is the floor when the schedule proves no open */
     var basis=m.moreN>0
       ?'<div class="pf-basis">Showing the biggest departures from typical · '+esc(m.pool.short)+'</div>'
       :'<div class="pf-basis">Typical = '+esc(m.pool.txt)+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>'; /* 0727k b-A + basis (LABELS MOVE WITH VALUES): the line names each pool it drank — the ordinary window's own count, or the season's party nights */
@@ -5070,6 +5070,21 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!best){cand(info.nextOpen,"");cand(info.nextExtraOpen,info.nextExtraKind);}
     return best;
   }
+  function clBack(scope){ /* 0728jp THE CLOSED ROOM SAYS WHEN IT'S BACK, ONCE (owner-ruled C-B in W-2 words, Mon Nov 2, 2026, 5:58 PM; rig: the 4:41 AM Live page carried seven closed rooms in four sentences): ONE clause from the schedule's own clocks, shared by every closed room - the resort hero's tail, the park card's tail, Callouts and Hot Lines. Resort: the first park to admit, by hlNextOpen. Park: the published open, the morning extra riding in the row's own tokens (pbStripAm). null when the schedule proves no open - the rooms keep their bare floors */
+    var now=Date.now();
+    if(scope==="all"){
+      if(PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])!==false;}))return null;
+      var opens=[];PARK_DEF.forEach(function(p){var o=hlNextOpen(parkInfo[p.key]);if(o)opens.push({park:p.key,t:o.t,iso:o.iso,kind:o.kind});});
+      if(!opens.length)return null;opens.sort(function(a,b){return a.t-b.t;});var f=opens[0];
+      return {tail:"first park opens "+fmtClock(f.iso),room:"the first park opens \u2014 "+esc(f.park)+", "+(fmtClock(f.iso)+(f.kind?" "+esc(f.kind):"")).replace(/ /g,"\u00a0")}; /* 0728dp THE CLAUSE WRAPS WHOLE: the clock and its window are one unit */
+    }
+    var info=parkInfo[scope];if(!info||isOpenNow(info)!==false||!info.open)return null;
+    var oAt=new Date(info.open).getTime();if(!(now<oAt))return null;
+    var oT=fmtClock(info.open),eext=null;
+    if(info.extras)info.extras.forEach(function(e){if(!e.open)return;var t=new Date(e.open).getTime();if(t>now&&t<oAt&&(!eext||t<eext.t))eext={t:t,iso:e.open,kind:e.desc};});
+    return {tail:"opens "+oT,room:"the park opens \u2014 "+oT+(eext?" \u00b7 "+(esc(eext.kind)+" "+pbStripAm(fmtClock(eext.iso),oT)).replace(/ /g,"\u00a0"):"")}; /* 0728dp THE CLAUSE WRAPS WHOLE - the row's own binding */
+  }
+  function clRoom(room,scope){var b=clBack(scope);return b?room+" return when "+b.room+".":null;} /* 0728jp: the room names itself, then the shared clause */
   function hlEmptyLine(scope){
     /* Time-aware, plain (locked Jul 8; extras-aware 0709l): the board says when it comes back to life.
        Every time claim is the park's PUBLISHED schedule via fmtClock; extras carry their kind stamp;
@@ -5078,10 +5093,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(scope==="all"){
       var anyOpen=PARK_DEF.some(function(p){return isOpenNow(parkInfo[p.key])!==false;});
       if(anyOpen)return "No posted waits yet.";
-      var opens=[];
-      PARK_DEF.forEach(function(p){var o=hlNextOpen(parkInfo[p.key]);if(o)opens.push({park:p.key,t:o.t,iso:o.iso,kind:o.kind});});
-      if(opens.length){opens.sort(function(a,b){return a.t-b.t;});var f=opens[0];
-        return "Parks are closed \u00b7 "+nm(f.park)+" opens first, "+fmtClock(f.iso)+(f.kind?" \u00b7 "+f.kind:"")+".";}
+      var hb0=clRoom("Hot lines","all");if(hb0)return hb0; /* 0728jp: the shared clause; the bare floor below stays */
       return "Parks are closed.";
     }
     var info=parkInfo[scope];
@@ -5089,11 +5101,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var now=Date.now(),eext=null;
       if(info.extras)info.extras.forEach(function(e){if(!e.open)return;var t=new Date(e.open).getTime();
         if(t>now&&(!eext||t<eext.t))eext={t:t,iso:e.open,kind:e.desc};});
-      if(info.open&&now<new Date(info.open).getTime()){
-        var line=nm(scope)+" opens at "+fmtClock(info.open);
-        if(eext&&eext.t<new Date(info.open).getTime())line+=" \u00b7 "+eext.kind+" "+fmtClock(eext.iso);
-        return line+".";
-      }
+      var hb1=clRoom("Hot lines",scope);if(hb1)return hb1; /* 0728jp: pre-open, the shared clause (the bold park name retired with the shape - C-B) */
       if(eext)return nm(scope)+" is closed \u00b7 "+eext.kind+" at "+fmtClock(eext.iso)+"."; /* gap before a later window today (e.g. ticketed night) */
       if(info.nextOpen&&new Date(info.nextOpen).getTime()>now){
         var l2=nm(scope)+" is closed \u00b7 reopens at "+fmtClock(info.nextOpen);
@@ -9235,8 +9243,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var s=bannerStats(key);
         /* A+ banner (0709a): live subline + labeled stat; aura color = s.crowd.color (one source), tier class = ramp depth only */
         var pc=key==="all"?bkParksClause():null; /* 0718p: the hero states its measure */
-        var sub=[pc?'<i class="dot'+(pc.open?' open':'')+'"></i><span class="cwu">'+esc(pc.txt)+'</span>' /* 0718q: the clause wears its no-break unit — 0709r, wrap BEFORE a clause, never inside (on-glass catch) */
-                   :'<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?(s.sweepWord||"Open"):s.isOpen===false?"Closed":"Live")];
+        var sub=[pc?'<i class="dot'+(pc.open?' open':'')+'"></i><span class="cwu">'+esc(pc.txt)+'</span>'+(pc.tail?'<span class="sep">\u00b7</span><span class="cwu">'+esc(pc.tail)+'</span>':'') /* 0728jp: the tail is its own no-break unit after the sep - the line may wrap before it, never inside it */ /* 0718q: the clause wears its no-break unit — 0709r, wrap BEFORE a clause, never inside (on-glass catch) */
+                   :'<i class="dot'+(s.isOpen===true?' open':'')+'"></i>'+(s.isOpen===true?(s.sweepWord||"Open"):s.isOpen===false?("Closed"+(function(){var cb9=clBack(key);return cb9?'<span class="sep">\u00b7</span><span class="cwu">'+esc(cb9.tail)+'</span>':'';})()):"Live")]; /* 0728jp: the park card's tail - "opens 9 AM" - the same clause the rooms below read */
         if(s.open)sub.push('<span class="cwu">'+s.open+' rides open</span>'); /* 0709s law, noun restored (0718p) */
         if(s.crowd)sub.push('<span class="cwu">crowd <b style="color:'+s.crowd.color+'">'+s.crowd.label+'</b> \u00b7 est.</span>'); /* 0709r: est. never separates from the value it qualifies \u2014 narrow viewports wrap BEFORE the clause, never inside */
         el.sub.innerHTML=pc?sub[0]+'<br>'+sub.slice(1).join('<span class="sep">\u00b7</span>')
