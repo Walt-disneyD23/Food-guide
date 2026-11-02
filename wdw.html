@@ -552,7 +552,7 @@
   .tp-readr .v b{font-weight:700}
   .tp-readr .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-top:2px}
   .tp-readr .dot.pnf{background:none;border:1.5px dashed var(--muted)}
-  .tp-readr .swbar{width:15px;height:4.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);display:inline-block;margin-top:4px}
+  .tp-readr .swbar{width:15px;height:4.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);display:inline-block;margin-top:4px}.tp-readr .swbar.fest{background:#7ee0c0} /* 0728jn: the festival bar wears the share cards' festival ink; the text carries the fact */
   .tp-readr .em{font-size:14px;line-height:1}
   .tp-readr .dot.pl{outline:2.5px solid var(--ringc);outline-offset:2px;box-shadow:0 0 0 1.5px var(--card)} /* 0717k: the planned ring at rail size - the .tp-dc.plan recipe on the 9px dot */
   .tp-tw1{color:#3dd68c;font-weight:700}.tp-tw2{color:#c98d05;font-weight:700}.tp-tw3{color:#ff7a59;font-weight:700}.tp-tw4{color:#ff6b6b;font-weight:700}
@@ -667,7 +667,7 @@
   .tp-dc.pn:before{content:attr(data-em);position:absolute;top:2px;left:4px;font-size:13px;line-height:1;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35));pointer-events:none} /* 0717f (owner pick 1B): ONE party grammar app-wide \u2014 the board adopts the funnel's glyph */
   .tp-dc.race:after,.wc.race:after{content:"";position:absolute;left:4px;right:4px;bottom:3px;height:3.5px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px rgba(255,255,255,.92);pointer-events:none} /* the race bar marks its park on the board too \u2014 cells and tags never disagree */
   .tp-swem{font-style:normal;margin-right:5px;font-size:13px;line-height:1}
-  .tp-swbar{display:inline-block;width:13px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);margin-right:6px;vertical-align:1px}
+  .tp-swbar{display:inline-block;width:13px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card);margin-right:6px;vertical-align:1px}.tp-swbar.fest{background:#7ee0c0} /* 0728jn */
   .td-em{font-style:normal;font-size:13px;line-height:1}
   .td-lgsw.rce{width:14px;height:4px;border-radius:2px;background:var(--short);box-shadow:0 0 0 1.5px var(--card-2);outline:none} /* Cut C (C-2): the party ring gains the halo; plan ring wins in the painter */ /* 0716m: the party-night marker \u2014 dashed so the plan ring stays unmistakable */
   .rd-evrib{background:var(--accent-soft);border-radius:var(--r-card);padding:12px 14px;margin-bottom:11px}
@@ -2452,6 +2452,7 @@
   .cc.race:after,.cc.aw:before,.cc.aw1:before,.cc.hd:after,.cc.pn:before,.cc.pnx:before{display:none!important;content:none} /* the ribbon, the race bar, the corner dot and the corner glyph retire — the slot carries the marks */
   .cc.inb,.cc.plan,.cc.sel{background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--accent);outline:none}
   .cc.inb .d,.cc.plan .d,.cc.sel .d{color:var(--accent)}
+  .cc.inb.race .d,.cc.plan.race .d,.cc.sel.race .d{color:var(--short)} /* 0728jm THE BAND IS THE RING, THE RACE IS THE INK (owner glass Mon Nov 2, 2026, 11:57 AM, Mar 1 inside Mar 1-7; ruled D-A 12:08 PM): the band already says itself twice - the ring and the tint - so the digit keeps saying race weekend, as the legend promises (dates in green). Declared after the band rule on purpose: same specificity, the later wins */
   .cc.thin{border:1.5px dashed var(--muted-2);background:none}.cc.thin .d{color:var(--muted-2)}.cc.thin .s{display:none}
   .cc.tint.l1:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t1) 45%,transparent)}.cc.tint.l2:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t2) 45%,transparent)}.cc.tint.l3:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t3) 45%,transparent)}.cc.tint.l4:not(.plan):not(.sel):not(.inb){background:color-mix(in srgb,var(--t4) 45%,transparent)}
   .tf-cd.cc.tint.inb.l1{background:color-mix(in srgb,var(--t1) 45%,transparent)} .tf-cd.cc.tint.inb.l2{background:color-mix(in srgb,var(--t2) 45%,transparent)} .tf-cd.cc.tint.inb.l3{background:color-mix(in srgb,var(--t3) 45%,transparent)} .tf-cd.cc.tint.inb.l4{background:color-mix(in srgb,var(--t4) 45%,transparent)} /* 0728dn THE CALENDARS WEAR THE DAY ROWS' SHADE (owner-ruled Oct 1 on shade-star-mock.html): the trip calendar and the Plan month take the board tiles' quiet tint (0727o v-B) - never the old colour ramp (owner: 'cartoonish'); the pips still carry the crowd (COLOR NEVER CARRIES ALONE). K-B: up close, your ringed dates KEEP their shade - they are the seven days being chosen. */ /* v-B: the tier at a whisper */
@@ -2816,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jl</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jn</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -6956,9 +6957,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         out.reads.push({dia:(dv.q>1?"medium":"short"),h:"<b>"+esc(tpSznFull(dv.p))+" "+(past?"ran":"runs")+" its own way here</b> \u00b7 has run about "+dp+"% "+(dv.q>1?"over":"quieter")+" while the rest of the resort "+(r.q>1?"climbs":"eases")+(fest?" \u00b7 "+esc(fest)+" "+(past?"ran":"runs")+" then":"")+"."});}}
     return out;}
   var TP_EV_WORD={marathon:"Marathon",princess:"Princess Half",springtime:"Springtime Surprise",winedine:"Wine &amp; Dine"};
+  function tpOrdDay(n){var W9=["first","second","third","fourth","fifth","sixth","seventh","eighth","ninth","tenth"];return W9[n-1]?("your "+W9[n-1]+" day"):("day "+n+" of your trip");} /* 0728jn: the day a festival ends or opens, in words */
   function tpEvCtx(t,ds){
     var T=window.__pwEvT,RSS=window.__pwRS,NN=window.__pwEvN,past=t.b<tpToday();
-    var out={night:{},race:{},read:"",reads:[],used:false},i,j,d; /* 0717j: the beats, separable */
+    var out={night:{},race:{},fest:{},read:"",reads:[],used:false},i,j,d; /* 0717j: the beats, separable */ /* 0728jn: fest[d] = the festivals a day sits in (E-B) */
     if(!T)return out;
     if(NN&&NN.dates)for(i=0;i<ds.length;i++)if(NN.dates[ds[i]])out.night[ds[i]]=1;
     var seen={};
@@ -6984,6 +6986,20 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(NN&&NN.yrs&&NN.yrs[e2.id]&&NN.yrs[e2.id][String(w2.y)])continue;
         var rs3="MK\u2019s party season "+(past?"ran":"runs")+" "+tpMD(w2.from)+" \u2013 "+tpMD(w2.to)+" \u2014 select nights "+(past?"closed":"close")+" early.";out.read+=" "+rs3;out.reads.push({c:"party",e:TF_PARTY_EM[e2.id]||"",h:rs3});
         break;}}
+    var FP9={MK:"Magic Kingdom",EP:"EPCOT",HS:"Hollywood Studios",AK:"Animal Kingdom"},seenF={}; /* 0728jn A TRIP NAMES EVERY VERIFIED EVENT IT TOUCHES (owner Mon Nov 2, 2026, 12:08 PM: "a trip that falls inside a festival or any event for that matter should at least mention it"; ruled E-B 12:34 PM): the festivals join the race weekends and the party nights the Advisor already names, seated after them (the ruled sheet's order) - a schedule fact in the race line's own grammar (SAME QUESTION SAME SENTENCE), from the verified table only, never a crowd claim. Tense flips whole for a trip behind you. The day's record (out.fest) feeds the day row's tag beside the race bar */
+    for(i=0;i<T.events.length;i++){var e3=T.events[i];if(e3.type!=="festival")continue;
+      for(j=0;j<e3.windows.length;j++){var w3=e3.windows[j];
+        if(!(w3.v==="vv"||w3.v==="v"))continue;
+        if(w3.from>t.b||w3.to<t.a)continue;
+        var nm3=(window.__pwFestN&&window.__pwFestN[e3.id])||e3.name,pk3=FP9[e3.park]||e3.park||"";
+        for(d=0;d<ds.length;d++)if(ds[d]>=w3.from&&ds[d]<=w3.to)(out.fest[ds[d]]=out.fest[ds[d]]||[]).push({id:e3.id,n:nm3,edge:(ds[d]===w3.to?"last":ds[d]===w3.from?"first":"")});
+        if(seenF[e3.id])continue;seenF[e3.id]=1;
+        var ins=w3.from<=t.a&&w3.to>=t.b,endIn=w3.from<=t.a&&w3.to<t.b,openIn=w3.from>t.a&&w3.to>=t.b,nmB="<b>"+esc(nm3)+"</b> at "+esc(pk3),rs4;
+        if(ins)rs4="Your dates "+(past?"sat":"sit")+" inside "+nmB+" ("+tpMD(w3.from)+" \u2013 "+tpMD(w3.to)+").";
+        else if(endIn)rs4="Your dates "+(past?"overlapped":"overlap")+" "+nmB+" \u2014 it "+(past?"ran":"runs")+" through "+tpWDn(w3.to).slice(0,3)+" "+tpMD(w3.to)+", "+tpOrdDay(ds.indexOf(w3.to)+1)+".";
+        else if(openIn)rs4="Your dates "+(past?"overlapped":"overlap")+" "+nmB+" \u2014 it "+(past?"opened":"opens")+" "+tpWDn(w3.from).slice(0,3)+" "+tpMD(w3.from)+", "+tpOrdDay(ds.indexOf(w3.from)+1)+".";
+        else rs4="Your dates "+(past?"overlapped":"overlap")+" "+nmB+" \u2014 it "+(past?"ran":"runs")+" "+tpWDn(w3.from).slice(0,3)+" "+tpMD(w3.from)+" \u2013 "+tpWDn(w3.to).slice(0,3)+" "+tpMD(w3.to)+".";
+        out.read+=" "+rs4;out.reads.push({c:"fest",id:e3.id,h:rs4});}}
     out.used=!!(out.read||nn);
     return out;
   }
@@ -8310,11 +8326,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var EV=tpEvCtx(t,ds); /* 0716m: the party-truth layer feeds the read, the badges, and MK's ring */
     if(typeof window.__slGo==="function"&&!(typeof window.__slAnchors==="function"&&window.__slAnchors()))window.__slGo(function(){renderPulsePage();}); /* Cut 2: warm /seasonal; the guard keeps the cached sync path from ever re-entering (0719b\u2019s lesson) */
     var SZ=tpSznCtx(t,ds);
-    var _rt=tpRead(ds,model),_rb=tpRead.beats,_er=(EV.reads||[]),_rw='',q; /* 0717j (owner pick C): the symbol rail \u2014 same gates, beats as rows; an unfired beat has no row */
+    var _rt=tpRead(ds,model),_rb=tpRead.beats,_er=(EV.reads||[]).filter(function(r9){if(r9.c!=="fest")return true;var n9=esc(TF_FEST[r9.id]||""),z9;if(!n9)return true;for(z9=0;z9<SZ.reads.length;z9++)if(SZ.reads[z9].h.indexOf(n9)>=0)return false;return true;}),_rw='',q; /* 0728jn: a festival the season's clause already names gets no second line */ /* 0717j (owner pick C): the symbol rail \u2014 same gates, beats as rows; an unfired beat has no row */
     for(q=0;q<SZ.reads.length;q++)_rw+='<div class="crow"><span class="ic"><i class="dia" style="background:var(--'+SZ.reads[q].dia+')"></i></span><span class="v">'+SZ.reads[q].h+'</span></div>'; /* Cut 2: the season leads the read \u2014 the diamond is its mark */
     if(_rb){for(q=0;q<_rb.length;q++)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--'+_rb[q].c+')"></i></span><span class="v">'+_rb[q].h+'</span></div>';}
     else if(_rt)_rw+='<div class="crow"><span class="ic"><i class="dot" style="background:var(--muted-2)"></i></span><span class="v">'+_rt+'</span></div>';
-    for(q=0;q<_er.length;q++)_rw+='<div class="crow"><span class="ic">'+(_er[q].c==="race"?'<i class="swbar"></i>':(_er[q].e?'<span class="em">'+_er[q].e+'</span>':'<i class="dot pnf"></i>'))+'</span><span class="v">'+_er[q].h+'</span></div>';
+    for(q=0;q<_er.length;q++)_rw+='<div class="crow"><span class="ic">'+(_er[q].c==="race"?'<i class="swbar"></i>':_er[q].c==="fest"?'<i class="swbar fest"></i>':(_er[q].e?'<span class="em">'+_er[q].e+'</span>':'<i class="dot pnf"></i>'))+'</span><span class="v">'+_er[q].h+'</span></div>';
     var adv=tpAdvCardHTML(t,ds,model,EV,_rw); /* 0728r THE ADVISOR \u00b7 S2 (R-A, owner Sep 9): THE READ's card retires \u2014 its rows ride the board's hero as the trip's facts, and the hero is the advisor's door (F-A), opening in place (O-A), closed by default (W-A) */
     var view9=tpViewGet(t.id),rows9=tpDayRows(t,model,EV,today),sel9=tpDaySelOf(ds,today); /* 0728iw THE WEEK VIEW (D2): the toggle under the hero, the strip under the toggle in both modes; By day shows the selected day\u2019s card alone */
     var seg9='<div class="pg-seg tp-seg" role="tablist"><button type="button" data-tpview="all"'+(view9==="all"?' class="on"':'')+'>All days</button><button type="button" data-tpview="day"'+(view9==="day"?' class="on"':'')+'>By day</button></div>';
@@ -8327,7 +8343,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var phe=EV.night[d0]?(tfPartyEm(d0)||"ring"):"";
       var hdn=(HOLIDAYS[d0]&&HOLIDAYS[d0]!=="Christmas week")?HOLIDAYS[d0]:null; /* Cut 3 (O-A): a SPECIFIC day-name wins its own row; the generic stretch label yields to the seasonal tag \u2014 the bars name the week either way */
       var an9=(typeof tpSznOf==="function")?tpSznOf(d0):null,dia9=an9?'<i class="dia" style="background:var(--'+(an9.a.scopes.resort.q>1?"medium":"short")+')"></i>':''; /* 0728dl D-B: the hero's own mark for the season leads the row's holiday line - only on a seated date, in the hero's colour for that week */
-      var hol=(hdn?'<span class="tp-hol hday">'+dia9+esc(hdn==="Thanksgiving"?"Thanksgiving Day":hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+dia9+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early to day guests</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
+      var hol=(hdn?'<span class="tp-hol hday">'+dia9+esc(hdn==="Thanksgiving"?"Thanksgiving Day":hdn)+'</span>':(SZ.tag[d0]?'<span class="tp-hol">'+dia9+esc(SZ.tag[d0])+'</span>':(HOLIDAYS[d0]?'<span class="tp-hol">'+esc(HOLIDAYS[d0])+'</span>':'')))+(EV.race[d0]?'<span class="tp-hol"><i class="tp-swbar"></i>'+(TP_EV_WORD[EV.race[d0]]||EV.race[d0])+'</span>':'')+((EV.fest&&EV.fest[d0])?EV.fest[d0].map(function(f9){return '<span class="tp-hol"><i class="tp-swbar fest"></i>'+esc(f9.n)+(f9.edge==="last"?' \u00b7 last day':f9.edge==="first"?' \u00b7 first day':'')+'</span>';}).join(''):'')+(EV.night[d0]?'<span class="tp-hol">'+(phe!=="ring"?'<i class="tp-swem">'+phe+'</i>':'')+'MK party night \u00b7 closes early to day guests</span>':''); /* 0717f: the tags wear their symbols \u2014 the bar and the glyph, from the same verified truths as the cells */ /* 0716m: race + verified-night badges ride the holiday slot */
       var plv=pk?tpSznCell(model,pk,wd,d0):null,pln=pk?'<b>'+esc(pk)+'</b>'+((plv&&!plv.thin&&plv.lvl)?' \u00b7 '+TP_TW[plv.lvl]+' on '+tpWDn(d0)+'s':''):(behind?'Behind you':(t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest")?'<b>Rest day</b>':'Not planned yet'),rst9=(!pk&&!behind&&t.adv&&t.adv.planned&&t.adv.wrote&&t.adv.wrote[d0]==="rest"); /* 0728t: a rest the advisor wrote is a rest, not an unplanned day */ /* 0728an A WRITTEN REST WEARS THE PLAN'S FACE (owner glass 11:40 AM Sep 10): the words changed on 0728t, the dress didn't \u2014 a written rest reads in the plan caption's ink; Not planned yet and Behind you keep the muted face, they are absences */ /* 0727o (t-B, q-B): the planned line names the park in ink and carries its tier in the day page\u2019s own sentence */ /* 0715o: two decks - day+cells above, the plan line owns the full width; the badge rides deck two so height stays structural */
       var row='<div class="tp-drow'+(behind?' dim':'')+'" data-tpday="'+d0+'"><div class="tp-dtop'+(open?' solo':'')+'"><span><span class="tp-wd'+(open?' big':'')+'">'+tpWDn(d0)+'</span><div class="tp-dt'+(open?' big':'')+'">'+tpMD(d0)+'</div></span>'+(open?((pk&&d0===tpToday())?'':'<button class="td-shg" data-tdshare="'+d0+'" type="button" aria-label="Share this day"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4M8 7l4-4 4 4M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'):cells)+'</div><div class="tp-plcap'+((pk||rst9)?'':' none')+'"><span>'+pln+'</span><span class="tp-plr">'+(function(){var n9=(!open&&pk)?((t.rides||{})[d0]||[]).length:0,w9=n9?(n9+' ride'+(n9===1?'':'s')):'',d9=(view9==="day"&&!open)?'<b class="tp-see">See the day</b>':'';return (w9||d9)?'<span class="tp-plrn">'+w9+((w9&&d9)?' \u00b7 ':'')+d9+'</span>':'';})()+(open?'':'<i class="chv">\u203a</i>')+'</span>'+(hol?'<span class="tp-hols">'+hol+'</span>':'')+'</div></div>'; /* 0728dl L-A: the door (count \u203a) keeps line one; the day's facts follow on their own lines, left */ /* 0728ci: the right seat is one cluster \u2014 holiday \u00b7 count \u203a wrap together */ /* 0728aj (owner glass 10:14 PM, Sep 9): THE ROW SAYS WHAT YOU'VE DONE \u2014 a closed row with rides carries the count at the caption's right, beside the \u203a; the open day's header already says it */ /* 0728ab E-A (owner, Sep 9): THE ROW SAYS IT OPENS \u2014 a muted \u203a at the caption's right, the day page's park rows' own grammar; the open row has no door to point at */
       var dx='';
