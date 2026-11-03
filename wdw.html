@@ -223,7 +223,7 @@
   .rs-hero .pw-band{margin-top:9px;padding-top:0;border-top:0}
   /* 0728gb: the sheet's chart scrubs (owner, Oct 12: "You can scrub on the wrap page. Not on the live ride pop out. Should we do that?") */
   .rs-hero .sub{font-size:var(--fs-small);color:var(--pwh-sub);margin-top:7px}
-  .rs-sheet .pw-tile{min-height:80px;padding:11px 13px}
+  .rs-sheet .pw-tile{min-height:80px;padding:11px 13px} .rs-hero.rs-wait{min-height:189px} .pw-grid.rs-skel .pw-tile{min-height:95px;background:var(--card-2);border-color:transparent;box-shadow:none} /* 0728jw THE SHEET KEEPS ITS SHAPE: the reading card and the quiet tiles stand at the finished sheet's own measures (the rig, 430 wide: hero 189, tile 95); a residual difference glides (0728jv) */
   .rs-d{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:9px;margin-top:11px}
   .rs-door{font:600 var(--fs-body) var(--font-body);color:var(--accent);background:var(--accent-soft);border:0;border-radius:var(--r-tile);padding:13px 8px;cursor:pointer}
   .rs-hold{visibility:hidden} /* 0728ge P-3 THE SEAT IS HELD, EMPTY (owner-ruled Oct 13 on p-and-h-mock.png): while today's read is on its way the recap door's seat stands empty, so Ride profile never changes width; nothing dims, nothing moves */
@@ -2817,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jw</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10309,8 +10309,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var bx9=rsBox(rid,rd,lv);if(bx9)h+='<div class="rs-read">'+bx9+'</div>'; /* 0728gj K-2: one composer for the box (rsBox) — the status while down (0728gi L-3), the feed's callout when the feed has the ride, the bridge, or the read alone; the share card reads from the same composer */
     var pre=(rsData===null)?rsPre(rid):null; /* 0728fy THE HERO EXPLAINS THE MORNING (owner-ruled C on before-opening-mock-C.png, Oct 11): before its park opens, with nothing banked, the card says when the park opens instead of reporting a gap, and the recap door points at yesterday */
     if(pre)h+='<div class="pw-hero rs-hero"><div class="k">Today</div><div class="sub">'+(pre.ee?'Opens at '+esc(pre.at)+' with '+esc(pre.ee):esc(pre.park)+' opens at '+esc(pre.at))+'. Today’s waits start then.</div></div>';
-    else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':((rsData===null&&!(lv&&lv.status==="OPERATING"))?'Today':'Today · so far'))+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">'+((lv&&lv.status==="OPERATING")?'No samples yet today.':'No waits posted today.')+'</div>')) /* 0728ge T-2 (owner-ruled Oct 13): a ride that is not running and has banked nothing says what the feed shows — no "so far", no "yet"; a running ride's first minutes keep the old words */+'</div>'; /* the chart needs about an hour banked — operating or DOWN ticks (pwBandModel’s own floor, 0728gn); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
-    if(rsData&&rsData.tiles)h+=rsData.tiles;
+    else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero'+(rsData===undefined?' rs-wait':'')+'"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':((rsData===null&&!(lv&&lv.status==="OPERATING"))?'Today':'Today · so far'))+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">'+((lv&&lv.status==="OPERATING")?'No samples yet today.':'No waits posted today.')+'</div>')) /* 0728ge T-2 (owner-ruled Oct 13): a ride that is not running and has banked nothing says what the feed shows — no "so far", no "yet"; a running ride's first minutes keep the old words */+'</div>'; /* the chart needs about an hour banked — operating or DOWN ticks (pwBandModel’s own floor, 0728gn); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
+    if(rsData&&rsData.tiles)h+=rsData.tiles;else if(rsData===undefined)h+='<div class="pw-grid rs-skel" aria-hidden="true"><div class="pw-tile"></div><div class="pw-tile"></div><div class="pw-tile"></div><div class="pw-tile"></div></div>'; /* 0728jw THE SHEET KEEPS ITS SHAPE (owner glass 3:19 PM Nov 3; the rig: the reading sheet stood 518 tall, the finished one 802 - the slide carried the short one and the grow finished the trip): four quiet tiles hold the grid's room while today is read, so the first paint is already the finished height and the sheet slides up once */
     h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
     var drs=(rsData?'<button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>':((pre&&rsY===true)?'<button class="rs-door" data-rsd="yday" type="button">Yesterday’s recap ›</button>':((prof&&(rsData===undefined||(pre&&rsY===undefined)))?'<span class="rs-door rs-hold" aria-hidden="true">&nbsp;</span>':'')))+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':''); /* 0728fw A DOOR NEEDS A ROOM (owner-ruled, Oct 11): the recap door stands only once today has something banked for this ride — a refurbished or all-day-closed ride has no page behind it */
     h+=(tyRowRead(rid)?'<div class="rs-d rs-pin"><button class="rs-door" data-rspin="'+esc(rid)+'" type="button">Pin to today\u2019s plan \u203a</button></div>':'')+(drs?'<div class="rs-d">'+drs+'</div>':'')+'</div>'; /* 0728ju S-A: the pin door, only for a ride with a seat on today's board (the composer answers both questions) */
@@ -10349,24 +10349,25 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function rsFetch(){ /* the day so far, from the Wrap's own engines; a late answer for a sheet that has moved on is dropped */
     var id=rsId,r=roster[id]||{},tok=++rsTok;
     if(!window.__ppRideSheet){rsData=null;rsPaint();return;}
-    window.__ppRideSheet(id,r.park,rsTyp(id),function(o){if(tok!==rsTok||rsId!==id)return;rsData=o||null;rsPaint();
+    window.__ppRideSheet(id,r.park,rsTyp(id),function(o){if(tok!==rsTok||rsId!==id)return;rsData=o||null;if(!rsHold)rsPaint(); /* 0728jw: an answer that arrives inside the open rides the open's own paint */
       if(rsData===null&&rsY===undefined&&rsPre(id)&&window.__ppRideHasYday)window.__ppRideHasYday(id,r.park,function(ok){if(tok!==rsTok||rsId!==id)return;rsY=!!ok;rsPaint();}); /* 0728fy: a door needs a room — yesterday's is offered only once yesterday is known to hold this ride */
     });
   }
   function rsOpen(rid){
     if(!roster[rid])return;
     if(!rsEl){rsEl=document.createElement("div");rsEl.id="rsHost";document.body.appendChild(rsEl);}
-    rsId=rid;rsData=undefined;rsY=undefined;rsOpenAt=Date.now();rsMark();rsPaint(true); /* 0728jv THE SHEET FINISHES ITS SLIDE: the open stamps its clock; a repaint inside the slide waits for it */
-    if(roster[rid].kind==="show"||roster[rid].kind==="walk"){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest; 0728hq: a walk's too */
-    rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();
-    rsFetch();
-    clearInterval(rsPoll);
+    rsId=rid;rsData=undefined;rsY=undefined;rsOpenAt=Date.now();rsMark(); /* 0728jv THE SHEET FINISHES ITS SLIDE: the open stamps its clock; a repaint inside the slide waits for it */
+    var leaf9=(roster[rid].kind==="show"||roster[rid].kind==="walk");
+    if(!leaf9){rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();rsHold=true;try{rsFetch();}finally{rsHold=false;}} /* 0728jw THE SHEET OPENS WHOLE (owner glass 3:19 PM Nov 3: "bounces up half way, pauses quickly, then finishes" - the slide and the grow were still two motions): the day is asked for BEFORE the first paint; the Wrap's fresh cache answers synchronously, so the sheet's first paint already holds the chart and slides up once at its full height. Only a true fetch takes the short-then-grow path */
+    rsPaint(true);
+    if(leaf9){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest; 0728hq: a walk's too */
+    clearInterval(rsPoll); /* 0728jw: the fetch moved above the first paint */
     if(!rpDigs){var n9=0;rsPoll=setInterval(function(){n9++;if(rsId!==rid||n9>20){clearInterval(rsPoll);return;}if(rpDigs){clearInterval(rsPoll);rsFetch();}},500);} /* the read and the typical line arrive with the day ledger */
   }
   function rsMark(){ /* 0728gc: the tapped row's outline, re-seated after every Live render */
     try{var L=document.querySelectorAll(".ride[data-rs]"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("rs-on",!!rsId&&L[i].getAttribute("data-rs")===rsId);}catch(e){}
   }
-  var rsOpenAt=0,rsGrowT=null; /* 0728jv: the open's clock; the pending repaint */
+  var rsOpenAt=0,rsGrowT=null,rsHold=false; /* 0728jv: the open's clock; the pending repaint. 0728jw: the open holds the fetch's paint */
   function rsClose(){rsId=null;rsTok++;clearInterval(rsPoll);clearTimeout(rsGrowT);rsGrowT=null;if(rsEl)rsEl.innerHTML="";rsMark();}
   function rsBind(scope){ /* every Live render re-binds its rows; an open sheet repaints so its wait and its read keep up with the poll */
     if(scope===rsEl)return;
