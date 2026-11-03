@@ -1001,7 +1001,7 @@
   .td-colh span{font:700 var(--fs-micro) var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
   .td-done{display:block;width:100%;box-sizing:border-box;text-align:center;border:none;border-radius:var(--r-tile);padding:12px;margin-top:12px;font:700 var(--fs-body) var(--font-body);color:#fff;background:var(--accent-fill);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .td-sl.pin::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:2px;background:var(--accent)}
-  .td-sl.pdead{opacity:.55}
+  .td-sl.pdead,.td-sl.rfdim{opacity:.55} /* 0728jr THE REFURB ROW DIMS (owner-ruled D-A Tue Nov 3, 2026, 7:45 AM): the sunk refurb row wears the basement's ink - both rooms mean "not in your day"; its own class, so pdead keeps the walker's meaning */
   .td-pinb{display:flex;width:fit-content;align-items:center;gap:7px;margin:4px 0 1px;font:700 var(--fs-micro) var(--font-body);letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--r-pill);padding:3px 9px;white-space:nowrap}
   .td-pinb .x{font-style:normal;font-weight:700;cursor:pointer;padding:3px 4px;margin:-3px -4px;-webkit-tap-highlight-color:transparent}
   .td-plab{font:600 var(--fs-caps) var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:12px 0 8px}
@@ -2206,7 +2206,7 @@
   .ty-planned{font:700 10px var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:var(--r-pill);padding:3px 8px;margin-left:8px;vertical-align:2px}
   .tp-today{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:10px 14px;border:0;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);font:700 var(--fs-small) var(--font-display);cursor:pointer}.tp-today .chev{font-size:var(--fs-title)}
   .ty-pgl{margin-top:8px;font-size:var(--fs-body);color:var(--pwh-sub);font-weight:600}
-  .ty-pgl .dn{color:var(--pwh-key)}
+  .ty-pgl .dn{color:var(--pwh-key)} .ty-pgl .rf{color:var(--pwh-muted);font-weight:500} /* 0728jr THE HERO COUNTS SEATS (owner-ruled H-A): the not-running clause wears muted, never the smile's green - COLOR NEVER CARRIES ALONE */
   .ty-pgl.win{color:var(--pwh-key)}
   .ty-chips{display:flex;gap:6px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px;margin:0 0 10px}
   .ty-chip{flex:1;font:700 var(--fs-meta) var(--font-display);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);border-radius:var(--r-pill);padding:8px 0;cursor:pointer}
@@ -2817,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jq</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jr</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10671,6 +10671,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(tr){var dd9=tpDays(tr),dI9=dd9.indexOf(ds);trp='<div class="ty-pline"><b>'+esc(tr.n||'My trip')+' \u00b7 Day '+(dI9+1)+' of '+dd9.length+'</b> \u2014 walking your plan; one day, one truth. Rides you add or mark here ride with the trip.</div>';}
     else{var tdy9=(typeof tyTripDay==="function")?tyTripDay():null;if(tdy9&&tdy9.pk&&tdy9.pk!==pk)trp='<div class="ty-pline">Your trip has <b>'+esc(tdy9.pk)+'</b> planned today \u2014 this board is your stars, and rides you add here stay with today, not the trip.</div><button class="ty-door acc" data-tychip="'+esc(tdy9.pk)+'" type="button">Open my '+esc(tdy9.pk)+' board <span class="chev">\u203a</span></button>';}
     var nD=tdDoneList(T,ds).length,nT=tdRides(T,ds).length,togo=nT-nD,pg='';
+    var nRf=0,rfI;for(rfI=0;rfI<tdRides(T,ds).length;rfI++){var rfL=liveById[tdRides(T,ds)[rfI]];if(rfL&&rfL.status==="REFURBISHMENT")nRf++;} /* 0728jr THE HERO COUNTS SEATS (owner-ruled H-A Tue Nov 3, 2026, 7:45 AM; his 1:29 AM glass: "8 rides on the board" with Tiana's in the refurb room): a refurbishment is not a seat - the count says the seats, the clause says where the rest went. DOWN is not counted here: it is an hour's fact, the sink room speaks it */
+    var nB=nT-nRf,rfC=nRf?' \u00b7 <span class="rf">'+nRf+' not running today</span>':'';
     var lvE=null,lvT=null;if(typeof tdSecHTML==="function"&&tdSecHTML.end){if(tdSecHTML.end.lv)lvE=tdSecHTML.end.c;lvT=tdSecHTML.end.tl||null;} /* 0724m E: the echo drinks the walker’s published horizon (the section composes FIRST in renderTodayPage, so the read is fresh every render); a leave that outruns the park speaks close — the raw day-level pick never over-claims another park’s night (0724f’s raw read retired) */
     var gIds=tdRides(T,ds),gd=null,gSm='',g; /* 0723n (A3+R): the guide reads the live board once \u2014 the pool is the unridden set (a ridden ride's DOWN never earns the line); renders only while the park is open */
     if(open===true&&nT>0){
@@ -10686,8 +10688,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(nD>=nT)pg='<div class="ty-pgl win">All ridden. Victory lap?</div>';
       else if(dn0)pg=(nD>0)?'<div class="ty-pgl">'+nD+' ridden today <span class="dn">\u00b7 '+togo+' for next time</span></div>':''; /* 0720w: past tense on the done day - never a stale "to go" */
       else if(nD>0)pg='<div class="ty-pgl">'+togo+' to go <span class="dn">\u00b7 '+nD+' ridden</span>'+gSm+'</div>';
-      else if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime())pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 <span class="dn">the day starts fresh</span> \u00b7 ordered from typical waits \u2014 live from the gates</div>'; /* 0723n (V2 pre-open): no live claim before the day exists */
-      else pg='<div class="ty-pgl">'+nT+' ride'+(nT===1?'':'s')+' on the board \u00b7 <span class="ty-echo">from now till '+(lvT||(lvE===null?'close':'~'+rpClk(lvE)))+'</span>'+gSm+'</div>'; /* 0724f: the echo — the horizon speaks up top while the door lives in the fuse (D ruling); live during the spin */
+      else if(open===false&&inf&&inf.open&&Date.now()<new Date(inf.open).getTime())pg='<div class="ty-pgl">'+nB+' ride'+(nB===1?'':'s')+' on the board'+rfC+' \u00b7 <span class="dn">the day starts fresh</span> \u00b7 ordered from typical waits \u2014 live from the gates</div>'; /* 0728jr: seats, then the rest */ /* 0723n (V2 pre-open): no live claim before the day exists */
+      else pg='<div class="ty-pgl">'+nB+' ride'+(nB===1?'':'s')+' on the board'+rfC+' \u00b7 <span class="ty-echo">from now till '+(lvT||(lvE===null?'close':'~'+rpClk(lvE)))+'</span>'+gSm+'</div>'; /* 0724f: the echo — the horizon speaks up top while the door lives in the fuse (D ruling); live during the spin */
     }
     var ev=tyEvParty(pk),pl='';
     if(swp)pl='<div class="ty-pline">'+esc(swp.cred)+' \u2014 the plan runs to '+(swp.c===1440?'midnight':rpClk(swp.c))+'.'+(function(){var f=tdFaceNow(pk),pr=f?tdParkRung(pk,f):null;return (pr&&(pr.rung===1||pr.rung===2))?' Typicals tonight: '+esc(tdPoolWord(pr,pk))+'.':'';})()+'</div>'; /* 0727k t-A after the close: the board's rows are on party tape — this line is the reason they read lower */ /* 0720u (S5b): anyone still inside passed the sweep - the credential named, the stale day-guest tense retired */
@@ -10983,6 +10985,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       rows.forEach(function(row){var rid=row.getAttribute("data-tdpd");
         if(!rid||dset[rid]||row.classList.contains("pin"))return; /* HAND BEATS THE SINK \u2014 a pinned seat never moves */
         if(snk[rid]&&snk[rid].on)sunk.push(row);});
+      rows.forEach(function(row){var rl9=liveById[row.getAttribute("data-tdpd")];row.classList.toggle("rfdim",!!(rl9&&rl9.status==="REFURBISHMENT"&&snk[row.getAttribute("data-tdpd")]&&snk[row.getAttribute("data-tdpd")].on&&!row.classList.contains("pin")));}); /* 0728jr THE REFURB ROW DIMS: the dress follows the sink, every render (a pin never dims - HAND BEATS THE SINK) */
       if(sunk.length){var anc=el.querySelector(".td-ridlab")||el.querySelector("[data-tdadd]");
         if(anc){var ln9=el.querySelector(".td-lane.snklane"); /* 0725c THE SUNK ROOM NAMES ITSELF (owner-ruled Aug 25; completes 0725b\u2019s law \u2014 every room names itself): the mover that builds the room names it. Create-once (the bridge precedent), re-seated each pass, removed when the room empties; the dissolved lane above stays pure \u2014 the 0725b known edge retired. */
           if(!ln9){ln9=anc.ownerDocument.createElement("div");ln9.className="td-lane snklane";ln9.setAttribute("data-room","sink");}
