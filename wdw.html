@@ -218,7 +218,7 @@
   .rs-read{font-size:var(--fs-body);color:var(--muted);line-height:1.45;margin:0 0 10px;padding:10px 12px;background:var(--card-2);border:1px solid var(--line);border-radius:var(--r-tile)}
   .rs-read .pf-kick{margin-right:6px} .rs-read .rs-rcpt{color:var(--ink);font-weight:600} /* 0728gj K-2 THE STRONGEST EARNED CLAIM LEADS (owner-ruled Oct 13 on sheet-callout-mock.png): when the Callouts feed holds the ride, its kicker leads the box in the feed's own dress (.pf-kick go/rough/re) and the receipt follows in ink */
   .rs-sh{flex:none;cursor:pointer;width:32px;height:32px;border-radius:var(--r-el-sm);display:grid;place-items:center;background:var(--card-2);border:1px solid var(--line);color:var(--accent);margin-right:8px;padding:0} /* 0728gj D-1 (owner-ruled Oct 13 on live-ride-card-mock.png): the share door beside the star — the star's seat and size, the share glyph in the accent, always in reach at the top of the sheet */
-  .rs-sh:hover{background:var(--line)}
+  .rs-sh:hover{background:var(--line)} .rs-bell svg{width:20px;height:20px;stroke:var(--muted-2);fill:none} .rs-bell.on{background:var(--accent-soft);border-color:rgba(139,135,255,.45)} .rs-bell.on svg{stroke:var(--accent);fill:var(--accent)} .rs-bell.sh-on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft),0 0 0 3.5px var(--accent)} .rs-read .rs-fl{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--line);margin:9px -12px -10px;padding:7px 12px 8px} .rs-read .rs-fl span{font:600 var(--fs-caps) var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)} .rs-read .rs-fl b{font:700 var(--fs-small) var(--font-body);font-variant-numeric:tabular-nums;color:var(--accent)} /* 0728ju S-A: the bell wears the Live card's dress (ONE BELL ONE DRESS); THE SHEET REPEATS THE ROW: the row's footer rides under the sentence in the footer's own dress */
   .rs-hero{padding:14px 16px 12px;margin-bottom:9px}
   .rs-hero .pw-band{margin-top:9px;padding-top:0;border-top:0}
   /* 0728gb: the sheet's chart scrubs (owner, Oct 12: "You can scrub on the wrap page. Not on the live ride pop out. Should we do that?") */
@@ -2817,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jt</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ju</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3008,7 +3008,7 @@ var CATEGORY_TAGS={
     "expedition everest legend of forbidden mountain":"Thrill","dinosaur":"Thrill",
     "kilimanjaro safaris":"Family","kali river rapids":"Water","triceratop spin":"Kids","wildlife express train":"Family"
   };
-  function normName(n){return String(n).toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9 ]/g,"")
+  function normName(n){return String(n).toLowerCase().replace(/\bjingle cruise\b/,"jungle cruise") /* 0728ju N-A THE NAME IS A COSTUME (owner-ruled Tue Nov 3, 2026, 2:19 PM; his 2:16 PM glass: Jingle Cruise's sheet with no read, no profile door, no category): the holiday overlay keeps Disney's name on every row and folds to the base name before any curated layer looks it up */.replace(/&/g," and ").replace(/[^a-z0-9 ]/g,"")
     .replace(/\bthe\b/g," ").replace(/\bdisneys?\b/g," ").replace(/\s+/g," ").trim();}
   /* 0728eh THE RIDE KNOWS ITS OWN WALK-ON (owner-caught Oct 5 on strip-walkon-mock.html: "Seven Dwarfs is, but not Haunted, makes no sense"; ruled H-B). Two rides post 13m where every other ride posts 5 or 10: on the banked 28-day baseline Haunted Mansion sat at exactly 13 in 142 of 804 half-hours and at 10 or under in 11; Tower of Terror in 44 of 750 and never below; the other 66 rides, zero. So a 10m test could never see them as walk-on. A curated table by normalized name; the posted numbers are untouched, only the test moves; the copy says what the ride posts, never why (cause-neutral). Per ride, never "13 anywhere": another ride's 13m median is a 10 and a 15 averaging out. The mark rides the curve (cv.walk), so every reader folds at the source. */
   function rpWalkNm(nm){var W={"haunted mansion":13,"twilight zone tower of terror":13};return (nm&&W[normName(nm)])||10;}
@@ -10188,7 +10188,34 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return "\u2014 "+c.delta+(c.kind==="go"?" under":" over")+" typical"+pfMetaTail(c)+pfMetaR3(c)+"."; /* 0728gl D THE BOARD'S SENTENCE (owner-ruled Oct 14 on gl-box-D.png): the Today board's own GO voice (tyGoCards: "GO NOW — N under typical."), the same judge and the same delta; ROUGH in its mirror (the board crowns no ROUGH — this is the GO sentence's shape, not a borrowed line); the feed's party tails ride along (disclosure follows the data). The half-hour typical no longer repeats the read that follows. */
   }
   function rsKick(k){return k==="go"?"Go now":k==="rough"?"Rough right now":"Just reopened";} /* the feed's three kickers, the feed's words */
+  function tyRowRead(rid){ /* 0728ju THE SHEET REPEATS THE ROW (owner-ruled Tue Nov 3, 2026, 1:38 PM: "make sure the sentences above the chart match what the actual ride card says... exactly"; 1:48 PM one cut, both halves): what this ride's row on today's board says right now - {html, seat} or null when it has no row. Reads the live row when that park's board is on screen; otherwise renders that park's board DETACHED through the board's own two calls (tdSecHTML, then tyCrossRefs) and reads the same row - the same pipeline, the same words, nothing re-derived (ONE ENGINE). tdSecHTML publishes rows/seq/span/pool for Share my board, so a detached render snapshots and restores them. Memoized per paint (rsPaint clears it). A park never opened today has no board and no row: the sheet composes as before (T-2) until the park is picked - a sheet is not a pick. */
+    try{
+      if(tyRowRead.m&&tyRowRead.m.rid===rid)return tyRowRead.m.v;
+      var r=roster[rid];if(!r||r.kind!=="ride"||typeof tdSecHTML!=="function"||typeof tyCrossRefs!=="function"){tyRowRead.m={rid:rid,v:null};return null;}
+      var pk=r.park,ds=tyDs(),tr=tyBridge(pk),T=tr||tyTFor(pk),row=null,el=null;
+      if(tdRides(T,ds).indexOf(rid)<0){tyRowRead.m={rid:rid,v:null};return null;}
+      var pg=document.getElementById("pgToday"),o9=tyRec();
+      if(pg&&!tyHome&&o9.park===pk&&navTab==="today")row=pg.querySelector('.td-sl[data-tdpd="'+rid+'"]');
+      if(!row){var k9={rows:tdSecHTML.rows,seq:tdSecHTML.seq,span:tdSecHTML.span,pool:tdSecHTML.pool};
+        el=document.createElement("div");el.innerHTML=tdSecHTML(T,ds);tyCrossRefs(el,T,ds,pk);
+        tdSecHTML.rows=k9.rows;tdSecHTML.seq=k9.seq;tdSecHTML.span=k9.span;tdSecHTML.pool=k9.pool;
+        row=el.querySelector('.td-sl[data-tdpd="'+rid+'"]');}
+      if(!row){tyRowRead.m={rid:rid,v:null};return null;}
+      var sx=row.querySelector(".td-srx"),fl=row.querySelector(".td-fl"),fs=fl?fl.querySelector("span"):null,fb=fl?fl.querySelector("b"):null;
+      var html=(sx?sx.innerHTML:"")+((fs&&fb)?'<div class="rs-fl"><span>'+fs.innerHTML+'</span><b>'+fb.innerHTML+'</b></div>':'');
+      var v={html:html,seat:true};tyRowRead.m={rid:rid,v:v};return v;
+    }catch(e){tyRowRead.m={rid:rid,v:null};return null;}
+  }
+  function tyPinFrom(rid){ /* 0728ju S-A: the sheet's door to the pin sheet - the plan's own picker, unchanged; from another tab the door walks to Today first (the app's own nav button; a second tap on Today presses home, so the button is pressed only from elsewhere) */
+    var r=roster[rid];if(!r)return;var pk=r.park;rsClose();
+    var o=tyRec();if(o.park!==pk||tyHome)tyPick(pk); /* the pick stamps the day, so the nav's entry lands on the board, not the landing */
+    if(navTab!=="today"){var nb=document.querySelector('#appNav [data-pg="today"]');if(nb)nb.click();} /* pressed FIRST: the entry runs tdReset (it clears any pin state) before it paints */
+    tyHome=false;var ds=tyDs(),tr=tyBridge(pk),p0=tdPins(tr||tyT(),ds)[rid]||null;
+    tdPin=rid;tdPnA=true;tdPk=false;tdPnP=(p0&&p0.k==="part")?p0.w:null;tdPnS=(p0&&p0.k==="win")?p0.a:null;tdPnE=(p0&&p0.k==="win")?p0.b:null;tdPnL=null;
+    renderTodayPage();
+  }
   function rsBox(rid,rd,lv){ /* 0728gj K-2 THE STRONGEST EARNED CLAIM LEADS (owner-ruled Oct 13 on sheet-callout-mock.png): the sheet's read box, inner HTML. While DOWN the status leads (0728gi L-3). Else, when the Callouts feed holds this ride, its kicker and receipt lead in the feed's dress and the bridge sentence steps aside (the feed's bar is the stricter one); else the bridge speaks (tdBridgeFace, as before); else the typical read alone. "" where the board itself would say nothing. Live's Callouts card, the sheet and the share card can never name a different verdict for the same ride at the same moment. */
+    var rr9=tyRowRead(rid);if(rr9)return rr9.html; /* 0728ju THE SHEET REPEATS THE ROW: a seated ride's box is its row, verbatim - the bridge in the row's position, the crown, the sink copy, the leave clock; K-2 and L-3 now compose only for a ride with no row */
     if(lv&&lv.status==="DOWN")return rd.why?'<b class="rs-dn">Down right now</b> \u00b7 '+esc(rsDownWhy(rd.why)):"";
     var c=(lv&&lv.status==="OPERATING")?rsFeedHit(rid):null;
     if(c)return '<span class="pf-kick '+c.kind+'">'+rsKick(c.kind)+'</span><b class="rs-rcpt">'+esc(rsReceipt(c))+'</b>'+(rd.why?' '+esc(rd.why):'');
@@ -10276,6 +10303,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var h='<div class="td-scrim rs-scrim"></div><div class="td-sheet rs-sheet'+(anim?' anim':'')+'"><div class="rc-grab"></div>'+
       '<div class="rs-h">'+rsWaitHTML(lv)+ /* 0728gi B-5: the status word, My Rides' way; 0728gs: the one builder, shared with the rule sheet */
       '<div class="rs-n"><div class="nm">'+esc(r.name||"")+'</div><div class="sub">'+esc(r.park||"")+((r.category&&r.category!=="Untagged")?' · '+esc(r.category):'')+'</div></div>'+
+      (((typeof bellCan==="function"&&bellCan(r,lv))||(typeof armed!=="undefined"&&armed[rid]))?'<button class="rs-sh rs-bell'+((typeof armed!=="undefined"&&armed[rid])?' on':'')+'" type="button" data-rsbell="'+esc(rid)+'" aria-label="Alerts" title="Alerts">'+MR_BELL+'</button>':'')+ /* 0728ju S-A (owner-ruled Tue Nov 3, 2026, 1:37 PM; s-sheet.png): THE BELL IS THE RIDE'S ALERT DOOR, EVERYWHERE gains the sheet - the Live card's glyph and gate (bellCan, armed), opening the rule sheet as the row's bell does */
       '<button class="rs-sh" type="button" data-rsh="'+esc(rid)+'" aria-label="Share this ride" title="Share"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></button>'+ /* 0728gj D-1 THE DOOR BESIDE THE STAR (owner-ruled Oct 13): the live ride card's door — rides only, since the sheet opens for rides only (0728fr) */
       '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'★':'☆')+'</button></div>';
     var bx9=rsBox(rid,rd,lv);if(bx9)h+='<div class="rs-read">'+bx9+'</div>'; /* 0728gj K-2: one composer for the box (rsBox) — the status while down (0728gi L-3), the feed's callout when the feed has the ride, the bridge, or the read alone; the share card reads from the same composer */
@@ -10285,7 +10313,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(rsData&&rsData.tiles)h+=rsData.tiles;
     h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
     var drs=(rsData?'<button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>':((pre&&rsY===true)?'<button class="rs-door" data-rsd="yday" type="button">Yesterday’s recap ›</button>':((prof&&(rsData===undefined||(pre&&rsY===undefined)))?'<span class="rs-door rs-hold" aria-hidden="true">&nbsp;</span>':'')))+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':''); /* 0728fw A DOOR NEEDS A ROOM (owner-ruled, Oct 11): the recap door stands only once today has something banked for this ride — a refurbished or all-day-closed ride has no page behind it */
-    h+=(drs?'<div class="rs-d">'+drs+'</div>':'')+'</div>';
+    h+=(tyRowRead(rid)?'<div class="rs-d rs-pin"><button class="rs-door" data-rspin="'+esc(rid)+'" type="button">Pin to today\u2019s plan \u203a</button></div>':'')+(drs?'<div class="rs-d">'+drs+'</div>':'')+'</div>'; /* 0728ju S-A: the pin door, only for a ride with a seat on today's board (the composer answers both questions) */
     return h;
   }
   function rsLL(rid){ /* 0728fs THE LANE AS POSTED (owner-ruled, Oct 11 — L-C: the time and the price · P-2: the price always shown · one earliest time, never a window · "Not offered right now" · rides only). The guest SEES what is on offer; nothing here sells, links or books — the stamp sends them to Disney's app. Silent for a ride whose record carries no lane. The stamp's clock is this app's last read of the feed. */
@@ -10300,13 +10328,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(!rsId||!rsEl)return;
     if(!anim&&rsEl.querySelector(".pw-sc-on"))return; /* 0728gb: the poll does not repaint the chart out from under a finger that is reading it; the next render catches up */
     var old=rsEl.querySelector(".rs-sheet"),st=old?old.scrollTop:0;
-    rsEl.innerHTML=rsHTML(rsId,anim);
+    tyRowRead.m=null;rsEl.innerHTML=rsHTML(rsId,anim); /* 0728ju: one row read per paint */
     var sh=rsEl.querySelector(".rs-sheet"),sc=rsEl.querySelector(".rs-scrim");if(sh&&st)sh.scrollTop=st;
     if(sc)sc.addEventListener("click",rsClose);
     if(sh)sheetDragDismiss(sh,sc,rsClose); /* one implementation, every sheet (0714q) */
     bindStars(rsEl);
     var shb9=rsEl.querySelector(".rs-sh[data-rsh]");if(shb9)shb9.addEventListener("click",function(ev){ev.stopPropagation();lrcShare(shb9.getAttribute("data-rsh"));}); /* 0728gj D-1: the share door */
     var shs9=rsEl.querySelector(".rs-sh[data-rssh]");if(shs9)shs9.addEventListener("click",function(ev){ev.stopPropagation();shareShowCard(shs9.getAttribute("data-rssh"));}); /* 0728hf: the show's door */
+    var bl9=rsEl.querySelector(".rs-bell[data-rsbell]");if(bl9)bl9.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(bl9.getAttribute("data-rsbell"));}); /* 0728ju S-A: the bell opens the rule sheet */
+    var pn9=rsEl.querySelector("[data-rspin]");if(pn9)pn9.addEventListener("click",function(ev){ev.stopPropagation();tyPinFrom(pn9.getAttribute("data-rspin"));}); /* 0728ju S-A: the pin door */
     Array.prototype.forEach.call(rsEl.querySelectorAll("[data-rsd]"),function(b){b.addEventListener("click",function(){
       var id=rsId,r=roster[id]||{},k=b.getAttribute("data-rsd");rsClose();
       try{var a9=document.activeElement;if(a9&&a9.blur&&a9!==document.body)a9.blur();}catch(_){} /* 0728fv: the tapped row lets go of focus before its list leaves */
@@ -10474,6 +10504,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function tyTripDay(){ /* 0727d THE TRIP KNOWS TODAY: the first real trip whose arc covers today \u2014 {t, di, n, pk, nr}; null when none. Arc scope (a rest day still names the trip); tyBridge keeps its park-match scope untouched */
     var ds=tyDs(),ts=tpTrips(),i;for(i=0;i<ts.length;i++){var t=ts[i];if(!t||!t.id||!t.a||!t.b||ds<t.a||ds>t.b)continue;var dd=tpDays(t),pk=(t.plan||{})[ds]||'';return {t:t,di:dd.indexOf(ds),n:dd.length,pk:pk,nr:pk?tdRides(t,ds).length:0};}
     return null;
+  }
+  function tyTFor(pk){ /* 0728ju THE SHEET REPEATS THE ROW: tyT for a named park - the same pure read of that park's cell; an unseeded cell reads as no rides (never seeds - a sheet is not a pick) */
+    var o=tyRec(),ds=o.ds,c=pk?tyCellRead(o,pk):{rides:null,done:[],pins:{}};
+    var T={id:"__today",a:tpAddD(ds,-6),b:ds,plan:{},rides:{},done:{},pins:{}};
+    if(pk)T.plan[ds]=pk;
+    T.rides[ds]=c.rides||[];T.done[ds]=c.done||[];T.pins[ds]=c.pins||{};
+    return T;
   }
   function tyT(){ /* the virtual trip — a pure read, never mutates the store */
     var o=tyRec(),ds=o.ds,c=o.park?tyCellRead(o,o.park):{rides:null,done:[],pins:{}};
@@ -10932,6 +10969,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var first=null;
       for(i=0;i<rows.length;i++){var sn=rows[i].querySelector(".td-sn");if(sn&&/^\d+$/.test(sn.textContent)){first=rows[i];break;}}
       if(first&&first!==proRow)first.parentNode.insertBefore(proRow,first);
+      var pl9=proRow.previousElementSibling,pn8=proRow.nextElementSibling;if(pl9&&pl9.classList&&pl9.classList.contains("td-lane")&&pn8&&pn8.classList&&pn8.classList.contains("td-sl"))pl9.parentNode.insertBefore(proRow,pl9); /* 0728ju K-A THE CROWN IS LANE-NEUTRAL (owner-ruled Tue Nov 3, 2026, 2:19 PM; his 2:01 PM HS glass: a crowned Tower of Terror as the first row of "Your later windows"): the promoted row rides above a lane that directly precedes it - as pins are lane-neutral - but only when another row of that room follows, so the lane never heads an empty room */
       var k=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(sn){if(/^\d+$/.test(sn.textContent))sn.textContent=String(++k);});
     }
     if(relRows.length&&tdLens!=="mine"){ /* 0724k L-1b THE EARLY WINDOW release: risen to tier 1’s TAIL — after dated deadlines (dl==null already sorts last in the comparator), ordered by depth. DOM-pass motion like the crown; the engine stays tape-pure. Pins are lane-neutral by tyGoCards’ own filter; My Order: voice only, zero motion (0720j law). */
@@ -11087,6 +11125,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var tdd=el.querySelector(".td-done");if(tdd)tdd.addEventListener("click",function(){tdPk=false;renderTodayPage();});
     el.querySelectorAll("[data-tdpd]").forEach(function(b){b.addEventListener("click",function(){
       var rid=b.getAttribute("data-tdpd");
+      if(typeof rsOpen==="function"){rsOpen(rid);return;} /* 0728ju S-A THE TODAY ROW OPENS THE RIDE SHEET (owner-ruled Tue Nov 3, 2026, 1:37 PM: "so they're not jumping around between different boards while walking in the park"): body -> ride sheet, as Live and My Rides (M-1); the pin is a door inside it. The Plan page's trip-day rows keep the pin tap - the sheet is about today */
       var p0=tdPins(tr||tyT(),ds)[rid]||null;
       tdPin=rid;tdPnA=true;tdPk=false;
       tdPnP=(p0&&p0.k==="part")?p0.w:null;tdPnS=(p0&&p0.k==="win")?p0.a:null;tdPnE=(p0&&p0.k==="win")?p0.b:null;tdPnL=null;
@@ -11788,7 +11827,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(typeof rpEnsureDigs==="function"){rpEnsureDigs();if(!rpDigs){var n8=0;mrShPoll=setInterval(function(){n8++;if(mrShId!==id||n8>20){clearInterval(mrShPoll);return;}if(rpDigs){clearInterval(mrShPoll);var mo2=el.querySelector("#mrShMo");if(mo2)mo2.innerHTML=mrShMomentHTML(id);}},500);}}
   }
   function mrShMark(id){ /* 0728gv THE BELL ANSWERS THE TAP (owner-ruled R-2, Oct 15): the bell that opened the sheet wears the halo while the sheet is open \u2014 on My Rides and on Live, the one sheet's one door; the 0728gc law (the tapped row's outline) applied to the bell. Re-seated after every Live render (rsBind) and My Rides render; cleared at close. */
-    try{var L=document.querySelectorAll(".mr-bell,.flagbtn"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("sh-on",!!id&&L[i].getAttribute("data-id")===id);}catch(e){}
+    try{var L=document.querySelectorAll(".mr-bell,.flagbtn,.rs-bell"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("sh-on",!!id&&(L[i].getAttribute("data-id")||L[i].getAttribute("data-rsbell"))===id);}catch(e){} /* 0728ju: the sheet's bell wears the halo too */
   }
   function mrCloseSheet(){
     var el=mrShEl;mrShId=null;mrShR=null;clearInterval(mrShPoll);mrShMark(null);if(!el)return;
