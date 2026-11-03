@@ -2817,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ju</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jv</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10328,8 +10328,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(!rsId||!rsEl)return;
     if(!anim&&rsEl.querySelector(".pw-sc-on"))return; /* 0728gb: the poll does not repaint the chart out from under a finger that is reading it; the next render catches up */
     var old=rsEl.querySelector(".rs-sheet"),st=old?old.scrollTop:0;
+    var since=Date.now()-rsOpenAt;if(!anim&&old&&since<320){clearTimeout(rsGrowT);rsGrowT=setTimeout(function(){rsGrowT=null;rsPaint(false);},330-since);return;} /* 0728jv THE SHEET FINISHES ITS SLIDE (owner glass 3:04 PM Nov 3: "it jumps up maybe half way, then jumps the rest of the way"): the day ledger answers from its cache inside the 280 ms slide, and the repaint used to replace the sheet's node mid-animation - the slide died where the data landed. A repaint inside the slide now waits for the slide to end; the latest state paints once */
+    var h0=(old&&!anim&&since<1600)?old.offsetHeight:0; /* the height before the data landed - the sheet grows from it, never snaps */
     tyRowRead.m=null;rsEl.innerHTML=rsHTML(rsId,anim); /* 0728ju: one row read per paint */
     var sh=rsEl.querySelector(".rs-sheet"),sc=rsEl.querySelector(".rs-scrim");if(sh&&st)sh.scrollTop=st;
+    if(sh&&h0){var h1=sh.offsetHeight;if(h1!==h0){sh.style.overflow="hidden";sh.style.height=h0+"px";void sh.offsetHeight;sh.style.transition="height .26s cubic-bezier(.32,.72,0,1)";sh.style.height=h1+"px";var done9=function(){sh.style.height="";sh.style.overflow="";sh.style.transition="";sh.removeEventListener("transitionend",done9);};sh.addEventListener("transitionend",done9);setTimeout(done9,360);}} /* 0728jv THE SHEET GROWS, NEVER SNAPS: inside the open's first moments a taller sheet glides to its height on the slide's own easing; polls later repaint as before */
     if(sc)sc.addEventListener("click",rsClose);
     if(sh)sheetDragDismiss(sh,sc,rsClose); /* one implementation, every sheet (0714q) */
     bindStars(rsEl);
@@ -10353,7 +10356,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function rsOpen(rid){
     if(!roster[rid])return;
     if(!rsEl){rsEl=document.createElement("div");rsEl.id="rsHost";document.body.appendChild(rsEl);}
-    rsId=rid;rsData=undefined;rsY=undefined;rsMark();rsPaint(true);
+    rsId=rid;rsData=undefined;rsY=undefined;rsOpenAt=Date.now();rsMark();rsPaint(true); /* 0728jv THE SHEET FINISHES ITS SLIDE: the open stamps its clock; a repaint inside the slide waits for it */
     if(roster[rid].kind==="show"||roster[rid].kind==="walk"){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest; 0728hq: a walk's too */
     rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();
     rsFetch();
@@ -10363,7 +10366,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function rsMark(){ /* 0728gc: the tapped row's outline, re-seated after every Live render */
     try{var L=document.querySelectorAll(".ride[data-rs]"),i;for(i=0;i<L.length;i++)L[i].classList.toggle("rs-on",!!rsId&&L[i].getAttribute("data-rs")===rsId);}catch(e){}
   }
-  function rsClose(){rsId=null;rsTok++;clearInterval(rsPoll);if(rsEl)rsEl.innerHTML="";rsMark();}
+  var rsOpenAt=0,rsGrowT=null; /* 0728jv: the open's clock; the pending repaint */
+  function rsClose(){rsId=null;rsTok++;clearInterval(rsPoll);clearTimeout(rsGrowT);rsGrowT=null;if(rsEl)rsEl.innerHTML="";rsMark();}
   function rsBind(scope){ /* every Live render re-binds its rows; an open sheet repaints so its wait and its read keep up with the poll */
     if(scope===rsEl)return;
     Array.prototype.forEach.call(scope.querySelectorAll(".ride[data-rs]"),function(el){
@@ -11112,6 +11116,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var tsh=el.querySelector("[data-tyshare]");if(tsh)tsh.addEventListener("click",function(){tyShareCard();}); /* 0726y: the door's binder \u2014 the card reads the DOM this binder lives in */
     var tdsc=el.querySelector(".td-scrim");if(tdsc)tdsc.addEventListener("click",function(){tdPk=false;tdPin=null;renderTodayPage();});
     var tdsh=el.querySelector(".td-sheet");if(tdsh&&!tdsh.__dd){tdsh.__dd=1;sheetDragDismiss(tdsh,tdsc,function(){tdPk=false;tdPin=null;renderTodayPage();});}
+    tdPkA=false;tdPnA=false; /* 0728jv THE SHEET SLIDES ONCE (owner glass 3:07 PM Nov 3: the pin sheet "sometimes does it too"): Today never cleared its sheets' open-animation flags - the Plan page does (0715e) - so every tap inside the pin sheet or the picker replayed the slide from the bottom. Cleared after the first paint, as there */
     el.querySelectorAll("[data-tdid]").forEach(function(b){b.addEventListener("click",function(){
       var rid=b.getAttribute("data-tdid");
       var sh=el.querySelector(".td-sheet"),st0=sh?sh.scrollTop:0;
