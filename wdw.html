@@ -2817,7 +2817,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728js</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jt</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -5142,6 +5142,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var k=(s.length-1)*p,f=Math.floor(k),c=Math.min(f+1,s.length-1);
     return s[f]+(s[c]-s[f])*(k-f);
   }
+  function tyIncRank(st){return st==="DOWN"?0:(st==="REFURBISHMENT"?2:1);} /* 0728jt THE INCIDENT LEADS, IN THE ROOM TOO (owner-ruled Tue Nov 3, 2026, 12:30 PM Today / 1:07 PM Live): one rank for every not-running room - an outage is news (0), a closure is an hour's fact (1), a refurbishment is a schedule fact you already knew (2); tape or sort order within each kind */
+  function tyDnSeat(g){var ix=g.map(function(o,i){return {o:o,i:i,k:tyIncRank(o.lv&&o.lv.status)};});ix.sort(function(a,b){return (a.k-b.k)||(a.i-b.i);});var i;for(i=0;i<g.length;i++)g[i]=ix[i].o;} /* 0728jt R-A: Live's Down or Closed room, in place and stable - the chosen sort holds within each kind */
+  function tyRfSent(){return "Closed for refurbishment \u2014 no waits posted today. Its seat returns when it reopens.";} /* 0728jt T-A SAME QUESTION SAME SENTENCE: the refurb sentence has one home - the board's room and the ride sheet both read it */
   function rpClk(mn){ /* minutes past midnight -> "10:30 AM" / "12 PM" \u2014 0726r THE CLOCK FOLDS AT ITS OWN DOOR: the day boundary folds HERE, once (1440 -> 12 AM); the 0723w trap was patched at eight call sites and sprang a ninth at the leave picker (owner glass Aug 30: "12 PM \u00b7 Party"). Caller folds retired this cut. */
     mn=((mn%1440)+1440)%1440;var h=Math.floor(mn/60),m=mn%60,ap=h<12?"AM":"PM",h12=h%12;if(h12===0)h12=12;
     return h12+(m?":"+(m<10?"0":"")+m:"")+" "+ap;
@@ -7440,7 +7443,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(q=0;q<rem.length;q++){if(rem[q].med<mn){mn=rem[q].med;tm=rem[q].t;}if(rem[q].med>mx){mx=rem[q].med;tmx=rem[q].t;}}
       var wk9=cv.walk||10,f=0;while(f<rem.length&&rem[f].med<=wk9)f++; var f10=0;while(f10<rem.length&&rem[f10].med<=10)f10++; /* 0728js L-1: the lull key's own walk-on run on the bare 10 - THE MARK NEVER MOVES A SEAT (0728ej): the mark words the row (f, f2), a seat-mover reads the bare 10 like the after-leave sink */ /* 0728eh: the engine asks the curve's own mark */
       if(remL.length&&mn>10){var lt=null;for(q=0;q<remL.length;q++){if(remL[q].med<=10){lt=remL[q].t;break;}} /* 0728ej THE MARK NEVER MOVES A SEAT (found Oct 5 by today-diff.js, the 0728ef and 0728ei engines side by side on the banked tapes: with a leave before 10 PM, 0728eh pulled Haunted Mansion off its seat as "easy window opens after you leave" over 15m against 13m): this branch sinks a ride and tells the guest to save it for another visit, so it stays on the bare 10 it was ratified with (0719h O3-A); the mark still words the row (walk-on until) and never changes a lane or an order */
-        if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,cvd:cv,wo:rpClk(lt),why:"Its easy window opens after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
+        if(lt!==null){L.push({id:r.id,nm:r.nm,lv:true,dead:true,cvd:cv,wo:rpClk(lt),why:"It eases only after you leave \u00b7 typically a walk-on only after "+rpClk(lt)+" \u00b7 ride it at today\u2019s line, or save it for another visit."});continue;}} /* 0719h (O3-A ratified): clause-earned \u2014 never easy inside the window, provably easy after it */
       var ch5=mn+5,dqA=-1,ws9=null;for(q=0;q<rem.length;q++){if(rem[q].med<=ch5){ws9=rem[q].t;dqA=q;while(dqA+1<rem.length&&rem[dqA+1].med<=ch5)dqA++;break;}}
       var dl9=(dqA>=0)?rem[dqA].t+30:null,dlw9=false;if(dl9!==null&&ct!==null&&dl9>=ct){dlw9=true;if(dl9>ct)dl9=ct;} /* 0724a W-B: ws = the cheap window's own open; dlw = the run reached the wall, so the footer says the word close, never a clock past it */ /* 0723y A2: the cheap window's close \u2014 within 5m of the remaining low counts as the low (owner tolerance ruling); a run reaching the wall wears the close */
       var it={id:r.id,nm:r.nm,cv:cv,arc:r.cvx.arc,rung:r.cvx.rung,dl:dl9,ws:ws9,dlw:dlw9,base:base,mn:mn,tm:tm,mx:mx,tmx:tmx,
@@ -7680,13 +7683,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var eng=tdEng(rows,sm,ct2,pns,isNow?nowT:sm,fcx,(today?tdGeo(pk,t,ds):null),op9),n=0,ridden="",rdn=0; /* 0723v: the map rides only the living day */
       var slA=function(it,dnf){ /* 0715h: one slot builder - done rides keep the engine's own order, crossed off in the tail */
         var _st=dnf?'\u2713':(it.lv?'\u00b7':(it.pin?'':(++n)));var _dlx=(it.dl!=null&&(it.k==="A"||it.k==="B")&&!dnf);var _ty=null;if(today&&isNow&&!dnf&&(it.cv||it.cvd)){var _tb=(it.cv||it.cvd).bs,_q7;for(_q7=0;_q7<_tb.length;_q7++)if(_tb[_q7].t<=nowT&&nowT<_tb[_q7].t+30){_ty=_tb[_q7].med;break;}} /* 0724a THE BRIDGE: typical-now rides the row as data \u2014 the live layer reads it back (THE GLYPH IS DATA NOT CODE kin) */ /* 0723z L-C: the footer's earn, computed once \u2014 pool rows only, never the anytime tail, pins, or done */ /* 0719h: after-leave rows keep the honest dot, never a seat */ /* 0717n: the seat computes once - same value, now capturable */
-        var _fll=_dlx?(it.ws>it.st0?'Window':'Window closes'):'',_flc=_dlx?(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?(it.lvw?'~'+rpClk(it.dl):'close'):'~'+rpClk(it.dl))):('~'+rpClk(it.dl))):''; /* 0727g: the footer's two words, ONE computation \u2014 the markup and the channel both drink it (LABELS MOVE WITH VALUES) */ /* 0728ak THE FOOTER NAMES ITS WALL (owner glass AK 9:18 AM Sep 10, Safaris \u201c~1:30 PM \u2013 close\u201d under a 3 PM leave): dlw = the run reached the wall; under a leave clamp (lvw) the wall is the leave, so the footer speaks the span\u2019s own clock (~3 PM) \u2014 THE LABEL FOLLOWS THE WALKER kin, 0719i\u2019s \u201cnear your leave\u201d for the footer */
+        var _fll=_dlx?(it.ws>it.st0?'Typical low':'Typical low until'):'' /* 0728jt W-B' (owner-ruled Tue Nov 3, 2026, 1:04 PM; w-sheet-2.png): the footer states its measure - history, and a span of the ride's own low; the lane keeps Your later windows as shorthand */,_flc=_dlx?(it.ws>it.st0?('~'+rpClk(it.ws)+' \u2013 '+(it.dlw?(it.lvw?'~'+rpClk(it.dl):'close'):'~'+rpClk(it.dl))):('~'+rpClk(it.dl))):''; /* 0727g: the footer's two words, ONE computation \u2014 the markup and the channel both drink it (LABELS MOVE WITH VALUES) */ /* 0728ak THE FOOTER NAMES ITS WALL (owner glass AK 9:18 AM Sep 10, Safaris \u201c~1:30 PM \u2013 close\u201d under a 3 PM leave): dlw = the run reached the wall; under a leave clamp (lvw) the wall is the leave, so the footer speaks the span\u2019s own clock (~3 PM) \u2014 THE LABEL FOLLOWS THE WALKER kin, 0719i\u2019s \u201cnear your leave\u201d for the footer */
         _cr.push({seat:String(_st),pin:!!it.pin,badge:it.pin?tdPinTxt(it.pin):'',nm:tdNmShort(it.nm),fl:_dlx?{l:_fll,c:_flc}:null,sub:String(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why))).replace(/<[^>]*>/g,'')});
         return '<div class="td-sl'+(it.pin?' pin':'')+(it.dead&&!dnf?' pdead':'')+(dnf?' done':'')+(_dlx?' dlx':'')+'" data-tdpd="'+esc(it.id)+'"'+(it.dead&&it.wo?' data-tdwo="'+esc(it.wo)+'"':'')+(it.tier?' data-tdtr="'+it.tier+'"':'')+(it.tier===3?' data-tdws="'+it.ws+'"':'')+(it.tier===1&&it.dl!=null?' data-tddl="'+it.dl+'"':'')+(_ty!==null?' data-tdty="'+_ty+'"':'')+' role="button"><span class="td-sn'+(dnf?' ck':'')+'">'+_st+'</span><div class="td-sm"><div class="td-snm">'+esc(tdNmShort(it.nm))+'</div>'+(it.pin?tdPinBadge(it.id,it.pin):'')+'<div class="td-srx">'+(dnf?'Ridden \u2014 your mark.':(it.pin?it.why:(it.cv?tdWhy(it,sm,hrs.o,mixed):it.why)))+'</div></div>'+(today?tdNvRail(it.id,cvT[it.id]):'')+(today?'<button class="td-ckc'+(dnf?' on':'')+'" data-tdck="'+esc(it.id)+'" type="button">\u2713</button>':'')+(_dlx?'<div class="td-fl"><span>'+_fll+'</span><b>'+_flc+'</b></div>':'')+'</div>';};
       var _lt=0,_dl9=0; /* 0724j THE B CUT (B-2, ratified wording from option-b-mock.html): thin lanes at the tier seams — labels render at BOUNDARIES only, so an all-anytime board stays bare and a leave that outruns every future window never shows the evening lane (its absence is information). Pins are lane-neutral; done rides ride to their tail untouched. */
       eng.ord.concat(eng.outs).forEach(function(it){if(dset[it.id]){rdn++;ridden+=slA(it,true);return;}
         var t9=it.pin?0:(it.tier||0);
-        if(t9&&_lt&&t9!==_lt){
+        if(t9&&t9!==_lt&&(_lt||t9!==1)){ /* 0728jt L-A THE FIRST ROOM NAMES ITSELF (owner-ruled Tue Nov 3, 2026, 1:04 PM; his 12:33 HS glass: a board that was all later windows opened on bare footers): a lane renders at every seam AND at the top when the board does not start in the open tier - the open tier alone stays unnamed, as 0724j drew it */
           if(t9===2)body+='<div class="td-lane" data-room="anytime"><span>Anytime</span><b>grouped by walk</b></div>'; /* 0728n w-E (owner-ruled Sep 5): the right side is a WHY, true at every hour; Ride now lives on in the GO voice and the crown */
           else if(t9===3)body+='<div class="td-lane" data-room="later"><span>Your later windows</span><b>from ~'+rpClk(eng.fw)+'</b></div>';} /* 0728n A (owner-ruled Sep 8; sightings Sep 3 EPCOT 3:53 PM, Sep 8 MK party day at noon): a day guest's day can end at 6 PM — "later" is true on every day */
         if(t9)_lt=t9;
@@ -9356,7 +9359,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       body='<div class="state"><h3>No matches for &ldquo;'+esc(q)+'&rdquo;</h3><p>Try a shorter word or check the spelling.</p></div>';
     } else {
       var groups={waits:[],down:[],other:[]};
-      list.forEach(function(o){groups[groupOf(o)].push(o);});
+      list.forEach(function(o){groups[groupOf(o)].push(o);});tyDnSeat(groups.down); /* 0728jt R-A */
       body=[{k:"waits",l:"Wait Times"},{k:"other",l:"Shows &amp; Experiences"},{k:"down",l:"Down or Closed"}]
         .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
           return '<div class="grp-head">'+sec.l+' <span>'+g.length+'</span></div>'+
@@ -9515,7 +9518,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       body='<div class="grid">'+list.map(cardHTML).join("")+'</div>';
     } else {
       var groups={waits:[],down:[],other:[]};
-      list.forEach(function(o){groups[groupOf(o)].push(o);});
+      list.forEach(function(o){groups[groupOf(o)].push(o);});tyDnSeat(groups.down); /* 0728jt R-A THE INCIDENT LEADS, IN THE ROOM TOO (owner glass 12:32 PM: Tiana's REFURB above the Railroad's CLOSED, alphabetical) */
       body=[{k:"waits",l:"Wait Times"},{k:"down",l:"Down or Closed"},{k:"other",l:"Shows &amp; Experiences"}] /* 0728gx THE DOOR WEARS THE ROOM'S NAME (owner glass 6:50 PM Oct 15: "Down 16" read as what's down now): the short-label table retired — a door says its heading's own words */
         .map(function(sec){var g=groups[sec.k];if(!g.length)return "";
           rooms.push('<button type="button" class="rm-b" data-rm="'+sec.k+'" aria-label="Jump to '+sec.l+', '+g.length+'">'+sec.l+'<b>'+g.length+'</b></button>');
@@ -10144,6 +10147,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function rsRead(rid){ /* {why,brg}: the board row's two lines for this ride, right now; empty strings where the board itself would have nothing to say */
     var o={why:"",brg:""},r=roster[rid];if(!r||!rpCuratedRide(r)||!rpDigs)return o;
+    var lvR=liveById[rid];if(lvR&&lvR.status==="REFURBISHMENT"){o.why=tyRfSent();return o;} /* 0728jt T-A (owner-ruled Tue Nov 3, 2026, 1:07 PM; his 12:36 glass: Tiana's sheet read a typical day for a ride in the shop): a refurbishment speaks the board's own sentence, no bridge; DOWN and CLOSED keep their typical line - they may come back today */
     try{
       var pk=r.park,ds=tpToday(),hrs=tdHours(ds,pk),inf=parkInfo[pk]||null,swp=tySweep(pk);
       if(hrs.o===null&&inf&&inf.open){var c9=inf.close?rcEtMin(new Date(inf.close)):null;if(c9!==null&&c9<360)c9+=1440;hrs={o:rcEtMin(new Date(inf.open)),c:c9};} /* the month not warmed yet: today's own published hours, the same clock */
@@ -10875,14 +10879,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       if((st9==="CLOSED"||st9==="REFURBISHMENT")&&!dset[rid]&&snk[rid]){ /* 0723q C1: honest copy only once the sink clock holds the ride (park-open, first tick) \u2014 pre-open the map is empty and the plan's whys stand; "for the night" is clause-earned by the published close alone */
         var inf9=parkInfo[pk];
-        why.textContent=(st9==="REFURBISHMENT"?"Closed for refurbishment \u2014 no waits posted today. Its seat returns when it reopens.":((inf9&&inf9.close&&Date.now()>new Date(inf9.close).getTime())?"Closed for the night.":"Closed right now."))+skC; /* 0728jq THE REFURB SEAT: the mock's sentence (refurb-sheet.png R-A) */
+        why.textContent=(st9==="REFURBISHMENT"?tyRfSent():((inf9&&inf9.close&&Date.now()>new Date(inf9.close).getTime())?"Closed for the night.":"Closed right now."))+skC; /* 0728jq THE REFURB SEAT: the mock's sentence (refurb-sheet.png R-A) */
         return;
       }
       if(pro&&pro.id===rid&&!dset[rid]&&!(lv&&lv.status==="DOWN")&&!row.classList.contains("pdead")){ /* 0725a J-3 rider: the crown never seats in the dissolved room \u2014 the deepest-under dissolved ride speaks the J-3 GO face below instead (fixture-caught: the motion machinery would have promoted a dissolved row) */
         var mine=(tdLens==="mine"); /* 0720j: TWO ORDERS law (\u00a78) \u2014 live SPEAKS in both, it STEERS only in App's */
         if(pro.on){
           if(mine)why.textContent="Riding the moment \u2014 "+pro.delta+" under typical right now \u00b7 your order stands.";
-          else{why.textContent="\u2191 Riding the moment \u2014 "+pro.delta+" under typical right now. Back to its seat when the window closes.";proRow=row; /* 0724n: the clause follows the law — no wait, no wait-claim */}
+          else{why.textContent="\u2191 Riding the moment \u2014 "+pro.delta+" under typical right now. Back to its seat when the moment passes."; /* 0728jt C-B THE CROWN NAMES ITS OWN CLOCK (owner-ruled Tue Nov 3, 2026, 1:01 PM; his 12:30 Harbor glass: a crowned Mansion over a 9 PM footer): the crown walks home when the live deal fades (two clean polls) or a deeper ride passes it - never when a typical window closes; the sentence now says so, and leaves the footer to speak the typical low alone */proRow=row; /* 0724n: the clause follows the law — no wait, no wait-claim */}
         }
       }
       /* 0724a THE BRIDGE (S-A, owner-blessed): absorbs the hold hint + the Aug-11 Disagreement Clause + crest-beside-green \u2014 ONE PHENOMENON ONE PALETTE. Clause-earned at >=25% AND >=5m from the row's own typical-now; the promotion voice always outranks; ridden rows never bridge; the down/closed branches returned above. A span, created once and updated \u2014 never appended twice across ticks. Silence is the default face. */
@@ -10994,7 +10998,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           var allR9=sunk.every(function(r9){var l9=liveById[r9.getAttribute("data-tdpd")];return !!(l9&&l9.status==="REFURBISHMENT");}); /* 0728jq THE REFURB SEAT: the room names its tenants - all refurbs, Not running today / refurbishment; any down or closed, the standing words */
           ln9.innerHTML=allR9?'<span>Not running today</span><b>refurbishment</b>':'<span>Not running</span><b>seats return on reopen</b>';
           anc.parentNode.insertBefore(ln9,anc);
-          sunk.forEach(function(row){var s9=row.querySelector(".td-sn");if(s9)s9.textContent="\u00b7";anc.parentNode.insertBefore(row,anc);}); /* glass order walks top-down \u2014 relative tape order preserved among the sunk; below the outs, above the ridden */
+          var rk9=function(r9){var l9=liveById[r9.getAttribute("data-tdpd")];return tyIncRank(l9&&l9.status);},ix9=sunk.map(function(r9,i9){return {r:r9,i:i9,k:rk9(r9)};});ix9.sort(function(a9,b9){return (a9.k-b9.k)||(a9.i-b9.i);});sunk=ix9.map(function(o9){return o9.r;}); /* 0728jt THE INCIDENT LEADS, IN THE ROOM TOO (owner-ruled Tue Nov 3, 2026, 12:30 PM; his 12:21 glass: Mansion DOWN above Tiana's REFURB on the 3 PM board, below it till close - the tape order flipped them): an outage is news, a closure is an hour's fact, a refurbishment is a schedule fact you already knew - DOWN first, then CLOSED, then REFURB; tape order within each kind (a stable sort over the glass order). Pins untouched (HAND BEATS THE SINK) */
+          sunk.forEach(function(row){var s9=row.querySelector(".td-sn");if(s9)s9.textContent="\u00b7";anc.parentNode.insertBefore(row,anc);}); /* glass order walks top-down \u2014 within each kind, relative tape order preserved among the sunk; below the outs, above the ridden */
           var k9=0;[].slice.call(el.querySelectorAll(".td-sl .td-sn")).forEach(function(s9){if(/^\d+$/.test(s9.textContent))s9.textContent=String(++k9);});}}
       else{var ln8=el.querySelector(".td-lane.snklane");if(ln8)ln8.parentNode.removeChild(ln8);} /* 0725c: the room emptied \u2014 the name goes with it (belt for the fresh-rebuild suspenders) */
     }
