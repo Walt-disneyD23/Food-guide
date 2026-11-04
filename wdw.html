@@ -1404,6 +1404,7 @@
     padding:10px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -14px 44px rgba(20,22,50,.26);
     max-height:86vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)} /* 0724r: the guide wears the sheet's WHOLE dress — the fixed seat, the slide, the scroll (0724q shared only the card base, and the sheet froze as a flat card behind the scrim; owner glass 11:05 AM). sheetDragDismiss was already scroll-aware, waiting for exactly this. */
   #setPop.show,#igPop.show{transform:translateY(0)}
+  #igPop{padding-top:0} #igPop .help-grab{position:sticky;top:0;z-index:5;width:auto;height:46px;margin:0 -18px 0;border-radius:0;background:none;pointer-events:none} #igPop .help-grab::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;opacity:var(--ig-f,0);background:var(--card);background:color-mix(in srgb,var(--card) 20%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(180deg,#000 14px,rgba(0,0,0,.94) 19px,rgba(0,0,0,.78) 24px,rgba(0,0,0,.5) 30px,rgba(0,0,0,.22) 37px,rgba(0,0,0,.06) 42px,transparent 46px);mask-image:linear-gradient(180deg,#000 14px,rgba(0,0,0,.94) 19px,rgba(0,0,0,.78) 24px,rgba(0,0,0,.5) 30px,rgba(0,0,0,.22) 37px,rgba(0,0,0,.06) 42px,transparent 46px)} #igPop .help-grab::after{content:"";position:relative;z-index:1;display:block;width:38px;height:5px;border-radius:var(--r-pill);background:var(--track);margin:10px auto 0} /* 0728kb THE SHEET WEARS THE PLATE (owner-ruled T-B, Wed Nov 4, 2026, 7:27 AM, from his 7:18 glass: the guide's text cut hard at the sheet's top edge): the grab handle rides a sticky strip at the sheet's top and the strip wears sbPlate's own frost (0728dd/de: the surface at 20%, 6px blur, the eased foot) on the sheet's paper; THE FROST FOLLOWS THE FINGER - --ig-f is the scroll's (0 at 2px, 1 at 32px, igEdge), so the unscrolled sheet is plain paper and the handle never leaves. The guide sheet only; Settings and the ride sheet may inherit it once it has passed glass */
   #alertsPop,#setPop,#igPop,#helpSheet,.rc-sheet,.td-sheet{overscroll-behavior-y:contain}
   body.set-open{overflow:hidden}
   body.rc-open{overflow:hidden} /* 0714j: the compare picker joins the sheet body-lock family */
@@ -2791,7 +2792,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ka</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kb</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3292,12 +3293,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function openIgSheet(){closeStatusPop();closeSetSheet();
     var mr9=(navTab==="myrides");var tb9=$("igTodayBody"),mb9=$("igMrBody");if(tb9)tb9.hidden=mr9;if(mb9)mb9.hidden=!mr9; /* 0725j: one sheet, one door, the body follows the tab */
     var p=$("igPop"),sc=$("igScrim");
-    p.removeAttribute("hidden");sc.removeAttribute("hidden");
+    p.removeAttribute("hidden");sc.removeAttribute("hidden");igEdge(); /* 0728kb: a re-opened sheet keeps its scroll, so the plate reads it at once */
     igRowPaint();mrRowPaint(); /* 0728jx: the row is cloned once the sheet has its width; the pins are re-measured after the slide */ /* 0728ka: the My Rides body's painter beside it - each paints its own host and the other tab's stays hidden */
     requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});setTimeout(function(){igRowPins();mrRowPins();},360);
     document.body.classList.add("set-open");$("igBtn").classList.add("active");}
   $("igBtn").addEventListener("click",function(){
     $("igPop").hasAttribute("hidden")?openIgSheet():closeIgSheet();});
+  function igEdge(){var p=$("igPop");if(!p)return;var k=Math.max(0,Math.min(1,(p.scrollTop-2)/30));p.style.setProperty("--ig-f",k.toFixed(3));} /* 0728kb THE FROST FOLLOWS THE FINGER: the plate's opacity is the sheet's scroll - 0 at 2px, 1 at 32px, continuous (sbPlate's law, 0728de) */
+  $("igPop").addEventListener("scroll",igEdge,{passive:true});
   $("igScrim").addEventListener("click",closeIgSheet);
   sheetDragDismiss($("igPop"),$("igScrim"),function(){
     document.body.classList.remove("set-open");$("igBtn").classList.remove("active");});
