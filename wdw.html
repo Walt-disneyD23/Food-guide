@@ -2794,7 +2794,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kd</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ke</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -15796,6 +15796,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         ctx.setLineDash([10,7.5]);ctx.strokeStyle="#8f93ad";ctx.lineWidth=5.5;ctx.lineCap="butt";
         for(q9=0;q9<fl.length;q9++){ctx.beginPath();ctx.moveTo(BX(fl[q9].a),FY);ctx.lineTo(BX(fl[q9].b),FY);ctx.stroke();}
         ctx.setLineDash([]);ctx.restore();
+        var tvC=[[20,PW_TIER.short],[45,PW_TIER.medium],[70,PW_TIER.long]],tq9; /* 0728ke THE CARD WEARS ITS TIERS (owner-ruled A, Wed Nov 4, 2026, 10:13 AM, on tier-letters.png): the sheet\u2019s dress on the card - the 20 / 45 / 70 lines dashed in the legend\u2019s colours at the sheet\u2019s 38%, only under the chart\u2019s top, numbered in the card\u2019s margin (the ribbon and the ends already run edge to edge); drawn after the line, before the dots, as the sheet stacks them. One block, both ride cards. THE MOCK\u2019S BYTES ARE THE SPEC OF THE DRESS (tier-rig.html, letter A) */
+        ctx.save();ctx.setLineDash([10,7.5]);ctx.lineWidth=2.5;ctx.globalAlpha=0.38;
+        for(tq9=0;tq9<tvC.length;tq9++){if(tvC[tq9][0]>m.vMax)continue;ctx.strokeStyle=tvC[tq9][1];ctx.beginPath();ctx.moveTo(bx,BY(tvC[tq9][0]));ctx.lineTo(bx+bw,BY(tvC[tq9][0]));ctx.stroke();}
+        ctx.restore();
+        ctx.save();ctx.font=SG("700",25);ctx.textAlign="right";ctx.textBaseline="middle";
+        for(tq9=0;tq9<tvC.length;tq9++){if(tvC[tq9][0]>m.vMax)continue;ctx.fillStyle=tvC[tq9][1];ctx.fillText(String(tvC[tq9][0]),bx-10,BY(tvC[tq9][0]));}
+        ctx.restore();ctx.textAlign="left";ctx.textBaseline="alphabetic";
         var ry=pB+8,rh=20;
         ctx.save();rr(bx,ry,bw,rh,6);ctx.clip();
         for(i=0;i<m.runs.length;i++){
