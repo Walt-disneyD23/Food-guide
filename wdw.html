@@ -2794,7 +2794,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kf</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kg</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -10722,6 +10722,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(tdy){var tn9=esc(tdy.t.n||'My trip')+' \u00b7 Day '+(tdy.di+1)+' of '+tdy.n;
       tl9=tdy.pk?('<div class="ty-trip"><div class="teb">'+tn9+'</div><div class="tl"><b>'+esc(tdy.pk)+'</b> is planned today \u2014 '+(tdy.nr?tdy.nr+' ride'+(tdy.nr===1?'':'s')+' on the board.':'no rides saved yet.')+'</div><button class="ty-door" data-typk="'+esc(tdy.pk)+'" type="button">Open my '+esc(tdy.pk)+' board <span class="chev">\u203a</span></button></div>')
         :('<div class="ty-trip"><div class="teb">'+tn9+'</div><div class="tl">No park planned today \u2014 pick one below; your stars seed the board.</div></div>');}
+    if(!night&&!tdy){ /* 0728kg THE LANDING REMEMBERS (owner-ruled R-A THE DAY'S DOOR, Wed Nov 4, 2026, 12:39 PM, on land-letters.png): since 0728kd every return lands here, so the plan that stands gets the trip block's own grammar - eyebrow, the board's own progress words (tyHeadHTML's ty-pgl: to go / ridden / All ridden / ridden today / on the board), the door the trip day already has (data-typk, the row's own tap). Clause-earned: a pick made TODAY with rides on its board; a trip day keeps its own block; the night face stays silent; a done day with nothing ridden has nothing to resume. THE ONE SOURCE: tyT() - the same virtual trip the board counts from, so the two can never drift */
+      var o9=tyRec(),ds9=tyDs();
+      if(o9.park&&o9.ds===ds9){var T9=tyT(),nT9=tdRides(T9,ds9).length,nD9=tdDoneList(T9,ds9).length,tg9=nT9-nD9,dn9=tyDone(o9.park),pl9=null;
+        if(nT9>0){
+          if(dn9)pl9=nD9>0?('<b>'+nD9+' ridden today</b> \u00b7 '+tg9+' for next time.'):null;
+          else if(nD9>=nT9)pl9='<b>All ridden.</b> Victory lap?';
+          else if(nD9>0)pl9='<b>'+tg9+' to go</b> \u00b7 '+nD9+' ridden.';
+          else pl9='<b>'+nT9+' ride'+(nT9===1?'':'s')+' on the board</b>.';
+        }
+        if(pl9)tl9='<div class="ty-trip ty-day"><div class="teb">Today\u2019s plan \u00b7 '+esc(o9.park)+'</div><div class="tl">'+pl9+'</div><button class="ty-door" data-typk="'+esc(o9.park)+'" type="button">Open my '+esc(o9.park)+' board <span class="chev">\u203a</span></button></div>';
+      }
+    }
     return '<div class="tph ty-tph"><div class="eb">Today \u00b7 '+wd+', '+md+'</div>'+
       /* 0728bk THE HERO SAYS WHAT THE BOARD IS (owner-ruled T-1, Sep 12): the facts stay; one guide line beneath them, by day */'<h2>'+(night?'The parks are asleep.':'Where are you today?')+'</h2><div class="sub">'+sub+'</div>'+bvh+(night?'':'<div class="guide">Pick a park and the board builds your day from your stars \u2014 <b>which rides to hit</b>, <b>in what order</b>, and <b>what\u2019s down</b> right now \u2014 and keeps up as you go.</div>')+pline+tl9+(night?'<button class="ty-wrapdoor" data-tywrap type="button">See today\u2019s Wrap <span class="chev">\u203a</span></button>':'')+'</div>'+ /* 0723t rider (owner, Aug 18): the hero both names and opens the door \u2014 .ty-wrapdoor rides the 0723r delegation anywhere */
       '<div class="pb-board ty-board"><div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliners \u00b7 All rides</span></div>'+PARK_DEF.map(tyRowHTML).join("")+'</div>'; /* 0722e: one board, both tabs */
