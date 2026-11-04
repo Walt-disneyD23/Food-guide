@@ -1405,6 +1405,19 @@
     max-height:86vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)} /* 0724r: the guide wears the sheet's WHOLE dress — the fixed seat, the slide, the scroll (0724q shared only the card base, and the sheet froze as a flat card behind the scrim; owner glass 11:05 AM). sheetDragDismiss was already scroll-aware, waiting for exactly this. */
   #setPop.show,#igPop.show{transform:translateY(0)}
   #igPop,#setPop,.rc-sheet,.td-sheet{padding-top:0} #igPop .help-grab,#setPop .help-grab,.rc-sheet .rc-grab,.td-sheet .rc-grab{position:sticky;top:0;z-index:5;width:auto;height:46px;margin:0 -18px 0;border-radius:0;background:none;opacity:1;pointer-events:none} .rc-sheet .rc-grab,.td-sheet .rc-grab{margin:0 -16px -18px} #igPop .help-grab::before,#setPop .help-grab::before,.rc-sheet .rc-grab::before,.td-sheet .rc-grab::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;opacity:var(--ig-f,0);background:var(--card);background:color-mix(in srgb,var(--card) 20%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(180deg,#000 14px,rgba(0,0,0,.94) 19px,rgba(0,0,0,.78) 24px,rgba(0,0,0,.5) 30px,rgba(0,0,0,.22) 37px,rgba(0,0,0,.06) 42px,transparent 46px);mask-image:linear-gradient(180deg,#000 14px,rgba(0,0,0,.94) 19px,rgba(0,0,0,.78) 24px,rgba(0,0,0,.5) 30px,rgba(0,0,0,.22) 37px,rgba(0,0,0,.06) 42px,transparent 46px)} #igPop .help-grab::after,#setPop .help-grab::after{content:"";position:relative;z-index:1;display:block;width:38px;height:5px;border-radius:var(--r-pill);background:var(--track);margin:10px auto 0} .rc-sheet .rc-grab::after,.td-sheet .rc-grab::after{content:"";position:relative;z-index:1;display:block;width:38px;height:4px;border-radius:999px;background:var(--muted-2);opacity:.5;margin:12px auto 0} /* 0728kb THE SHEET WEARS THE PLATE (owner-ruled T-B, Wed Nov 4, 2026, 7:27 AM, from his 7:18 glass: the guide's text cut hard at the sheet's top edge): the grab handle rides a sticky strip at the sheet's top and the strip wears sbPlate's own frost (0728dd/de: the surface at 20%, 6px blur, the eased foot) on the sheet's paper; THE FROST FOLLOWS THE FINGER - --ig-f is the scroll's (0 at 2px, 1 at 32px, sheetEdge), so the unscrolled sheet is plain paper and the handle never leaves. 0728kf THE FAMILY WEARS THE PLATE (owner glass 10:31 AM the same morning - the ride sheet's head cut hard mid-scroll; "apply that blur to the rest of the family"): one strip, one frost, one ramp for every sheet - Settings beside the guide (the help-grab, its padding folded into the strip), and every rc-/td-sheet (the ride sheet, the pin and rule sheets, the preview, the date and month pickers) through the rc-grab: the sheet's 8px top padding folds into the strip (a sticky box cannot rise above its parent's content edge, so the padding had to go, as the guide's did) and the strip lends 18px back, so every head keeps its seat (46 - 18 = the old 8 + 20); each family keeps its own handle (track 5px / muted 4px at .5) */
+  /* 0728kh THE FIRST RUN - THE WELCOME SHEET (owner-ruled F-3 + D-2, Wed Nov 4, 2026, 2:28-2:47 PM, on first-letters.png: "A user opens the app on day one and is blind"): one sheet, once, on the first open of a never-starred install, in the family dress (td-scrim / td-sheet / rc-grab); three numbered taps in the app's own words; the four park chips are the door (D-2: a park they pick, never one shown to them) and land on that park's rides on Live; Look around first, the scrim and the swipe dismiss it; any dismissal retires it; Settings keeps one quiet door back */
+  .wl-eb{font-family:var(--font-display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--accent);margin-top:2px}
+  .wl-h{margin:6px 0 8px;font:700 24px/1.2 var(--font-display);color:var(--ink);letter-spacing:-.01em}
+  .wl-p{margin:0 0 16px;font-size:var(--fs-body);line-height:1.5;color:var(--muted)}
+  .wl-steps{list-style:none;margin:0 0 4px;padding:0}
+  .wl-steps li{display:flex;gap:14px;align-items:flex-start;font-size:var(--fs-body);line-height:1.5;color:var(--muted);margin-bottom:14px}
+  .wl-steps li b{color:var(--ink)}
+  .wl-steps li i{flex:none;width:24px;height:24px;margin-top:2px;border-radius:50%;background:var(--accent-fill);color:#fff;font:700 12px var(--font-body);font-style:normal;display:grid;place-items:center}
+  .wl-ask{font-family:var(--font-display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:var(--fs-caps);color:var(--muted);margin:14px 0 8px}
+  .wl-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .wl-chips button{min-height:48px;border:1px solid var(--line);border-radius:var(--r-tile);background:var(--card-2);color:var(--ink);font:700 var(--fs-small) var(--font-display);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .wl-skip{display:block;width:100%;margin-top:10px;padding:10px;border:0;background:none;color:var(--muted);font:600 var(--fs-small) var(--font-display);cursor:pointer}
+  button.set-row{width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
   #alertsPop,#setPop,#igPop,#helpSheet,.rc-sheet,.td-sheet{overscroll-behavior-y:contain}
   body.set-open{overflow:hidden}
   body.rc-open{overflow:hidden} /* 0714j: the compare picker joins the sheet body-lock family */
@@ -2794,7 +2807,8 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kh</small></b></div>
+      <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">\u203a</i></span></button> <!-- 0728kh: the first-run sheet, on request -->
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3301,6 +3315,37 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     document.body.classList.add("set-open");$("igBtn").classList.add("active");}
   $("igBtn").addEventListener("click",function(){
     $("igPop").hasAttribute("hidden")?openIgSheet():closeIgSheet();});
+  /* ===== 0728kh THE FIRST RUN - THE WELCOME SHEET (owner-ruled F-3 + D-2, Wed Nov 4, 2026, 2:28-2:47 PM). Due once: a never-starred install that has never dismissed it (wlSeen); it rises after the first live paint, over Live, where step 1 happens. THE MANUAL INVENTS NOTHING: the three taps borrow the board's face (Star the rides you care about) and the hero's sentence (which rides to hit, in what order, and what's down right now). D-2: the four park chips are the door - the pick lands on that park's tab and its Wait Times room (ptGo + the room's own door), so the first screen under the sheet is a list of rides with a star on every row. Any way out retires it (store wlSeen); Settings keeps one door back. ===== */
+  var wlEl=null;
+  function wlDue(){try{if(store.get("wlSeen",false))return false;return Object.keys(watch).length===0;}catch(e){return false;}}
+  function wlHTML(){
+    var pks=["Magic Kingdom","EPCOT","Hollywood Studios","Animal Kingdom"],chips="";
+    for(var i=0;i<pks.length;i++)chips+='<button type="button" data-wl="'+esc(pks[i])+'">'+esc(pks[i])+'</button>';
+    return '<div class="rc-grab"></div><div class="wl-eb">Welcome to RideCue</div><h2 class="wl-h">Your park day, built from your stars.</h2>'+
+      '<p class="wl-p">Live waits for every ride are already here. Three taps turn them into a plan:</p>'+
+      '<ol class="wl-steps">'+
+      '<li><i>1</i><span><b>Star the rides you care about.</b> Tap \u2605 beside a ride on Live \u2014 pick a park up top to see its rides.</span></li>'+
+      '<li><i>2</i><span><b>Open Today and tap a park.</b> The board builds your day from your stars \u2014 which rides to hit, in what order, and what\u2019s down right now.</span></li>'+
+      '<li><i>3</i><span><b>Walk.</b> Mark rides as you ride them and the board keeps up. The <b>?</b> on any screen explains it.</span></li>'+
+      '</ol><div class="wl-ask">Which park first?</div><div class="wl-chips">'+chips+'</div><button type="button" class="wl-skip" data-wl="">Look around first</button>';
+  }
+  function wlOpen(){
+    if(wlEl)return;
+    wlEl=document.createElement("div");wlEl.id="wlHost";
+    wlEl.innerHTML='<div class="td-scrim" id="wlScrim"></div><div class="td-sheet wl-sheet anim" id="wlPop" role="dialog" aria-label="Welcome to RideCue">'+wlHTML()+'</div>';
+    document.body.appendChild(wlEl);
+    var sh=$("wlPop"),sc=$("wlScrim");
+    sc.addEventListener("click",wlClose);
+    sh.addEventListener("click",function(e){var b=e.target&&e.target.closest?e.target.closest("[data-wl]"):null;if(!b)return;var pk=b.getAttribute("data-wl");wlClose();if(pk)wlLand(pk);});
+    sheetDragDismiss(sh,sc,wlClose);
+  }
+  function wlClose(){try{store.set("wlSeen",true);}catch(e){}if(wlEl){try{wlEl.remove();}catch(e){}wlEl=null;}}
+  function wlLand(pk){ /* the chip's promise: that park's rides, stars showing */
+    if(navTab!=="live"){var nb=document.querySelector('#appNav [data-pg="live"]');if(nb)nb.click();}
+    ptGo(pk);
+    setTimeout(function(){var el=bannerEls[pk]&&bannerEls[pk].root,b=el&&el.querySelector('.rm-b[data-rm="waits"]');if(b)b.click();},80);
+  }
+  (function(){var b=$("setWelcome");if(b)b.addEventListener("click",function(){closeSetSheet();setTimeout(wlOpen,120);});})();
   function sheetEdge(p){var k=Math.max(0,Math.min(1,(p.scrollTop-2)/30));p.style.setProperty("--ig-f",k.toFixed(3));} /* 0728kf THE FAMILY WEARS THE PLATE: one ramp for every sheet - 0 at 2px, 1 at 32px, continuous (sbPlate's law, 0728de; the guide's since 0728kb) */
   function igEdge(){var p=$("igPop");if(!p)return;sheetEdge(p);} /* 0728kb THE FROST FOLLOWS THE FINGER: the plate's opacity is the sheet's scroll */
   $("igPop").addEventListener("scroll",igEdge,{passive:true});
@@ -3538,6 +3583,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();sbSweep();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
       rsWarm(); /* 0728kc THE DAY IS WARM BEFORE THE TAP: every live poll warms the ride sheet's day copy (the file is 40-130 KB; the poll already pulls ~230 KB a cycle); nothing in the background */
+      if(typeof wlDue==="function"&&wlDue())wlOpen(); /* 0728kh THE FIRST RUN: the welcome rises once, after the first live paint (wlOpen is idempotent; a dismissal retires it) */
     }).catch(function(err){
       done9=true;clearTimeout(slow9);
       setPulse("error");
