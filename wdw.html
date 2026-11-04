@@ -2799,7 +2799,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jx</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728jy</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3245,10 +3245,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     p.classList.remove("show");sc.classList.remove("show");
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
     document.body.classList.remove("set-open");$("igBtn").classList.remove("active");}
-  function igRowPaint(){ /* 0728jx THE GUIDE SHOWS THE BOARD: the sheet's example row is a clone of the board's own first row - live data, never a frozen exemplar (0725k THE MANUAL CARRIES NO DATA); no row on screen, no lesson */
+  function igRowPaint(){ /* 0728jx THE GUIDE SHOWS THE BOARD: the sheet's example row is a clone of the board's own first row - live data, never a frozen exemplar (0725k THE MANUAL CARRIES NO DATA); no row on screen, no picture - the legend stays (0728jy) */
     var host=$("igRowHost"),lab=$("igRowLab"),st=$("igRowSteps");if(!host)return;
     host.innerHTML="";var row=(navTab!=="myrides")?document.querySelector("#pgToday .td-sl"):null;var on=!!row;
-    host.hidden=!on;if(lab)lab.hidden=!on;if(st)st.hidden=!on;if(!on)return;
+    host.hidden=!on;if(lab)lab.textContent=on?"Reading a row \u2014 your #1 right now":"Reading a row";if(st){var li0=st.querySelectorAll("li[data-n]"),k0;for(k0=0;k0<li0.length;k0++)li0[k0].hidden=false;}if(!on)return; /* 0728jy THE LESSON OUTLIVES THE BOARD (owner-ruled Tue Nov 3, 2026, 10:27 PM; his 10:23 PM glass: a done day seats the Wrap door, no rows, and the whole lesson had folded): no row to clone, the legend still teaches - the label drops its clause, the five lines stand on their own, every line shown; the pinned clone returns with the next board */
     var c=row.cloneNode(true);c.removeAttribute("id");var ids=c.querySelectorAll("[id]"),i;for(i=0;i<ids.length;i++)ids[i].removeAttribute("id");
     c.setAttribute("aria-hidden","true");host.appendChild(c);igRowPins();}
   function igRowPins(){ /* 0728jx: five pins, each on the box it names - the seat digit, the sentence's last line (held 34px clear of the seat), the NOW wait, the footer label, the circle; a missing box drops its pin AND its legend line */
