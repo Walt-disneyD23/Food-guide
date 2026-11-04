@@ -1763,6 +1763,8 @@
      selection — touch-action stops scroll-steal but not the long-press callout,
      so the band suppresses selection too. Stat tiles stay selectable on purpose. */
   .pw-band{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.13);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pw-band{margin-left:-14px;margin-right:-12px;padding-left:30px;padding-right:12px} .pw-band .pw-legend{margin-left:-16px;margin-right:-12px} .pw-plot{position:relative} .pw-tier{position:absolute;left:0;right:0;border-top:1px dashed;opacity:.38;pointer-events:none} .pw-tiern{position:absolute;left:-30px;width:26px;text-align:right;transform:translateY(-55%);font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.04em;pointer-events:none;text-shadow:0 0 3px var(--pwh-bg),0 0 3px var(--pwh-bg)} .pw-times{position:relative} .pw-tmark{position:absolute;transform:translateX(-50%)} /* 0728kc THE CHART WEARS ITS TIERS \u00b7 THE GUTTER TAKES THE PADDING (owner 9:17\u20139:20 AM Nov 4: "the chart gets a little bit smaller due to that gutter" - measured 370 \u2192 340; the band now bleeds into the hero\u2019s own side padding and the plot stands 354, the labels in the paper) */
+.rs-ghost .rs-gh-rib{height:8px;border-radius:var(--r-dot);background:rgba(255,255,255,.10);margin-top:3px} .rs-ghost .rs-gh-cap{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:var(--fs-small);color:var(--pwh-sub)} .rs-ghost .rs-gh-cap i{display:inline-block;width:18px;height:0;border-top:2px dashed #8f93ad;flex:none} .rs-ghost .pw-tiern,.rs-ghost .pw-tier{display:none} /* 0728kc THE CARD KEEPS ITS ROOM: the ghost\u2019s dress - the empty ribbon track, the caption with the dashed key; no tier lines on a typical */
   .pw-plot{position:relative}
   .pw-band .pw-line{display:block;width:100%;height:76px}
   .pw-band .pw-dot{position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid var(--pwh-deep);transform:translate(-50%,-50%);box-sizing:content-box}
@@ -2792,7 +2794,7 @@ document.documentElement.classList.add("dark");}catch(e){}
     <div class="set-cap">Auto follows your iPhone.</div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kb</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kc</small></b></div>
     </div>
     <div class="set-lab">Data</div>
     <div class="set-rows">
@@ -3533,6 +3535,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       done9=true;clearTimeout(slow9);if(liveState==="error")setPulse("ok");
       usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();sbSweep();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
+      rsWarm(); /* 0728kc THE DAY IS WARM BEFORE THE TAP: every live poll warms the ride sheet's day copy (the file is 40-130 KB; the poll already pulls ~230 KB a cycle); nothing in the background */
     }).catch(function(err){
       done9=true;clearTimeout(slow9);
       setPulse("error");
@@ -10196,6 +10199,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var c=new Date(inf.close).getTime();if(isNaN(c)||Date.now()<=c)return false;
       return !tySweep(r.park);}catch(e){return false;}
   }
+  function rsGhostOn(rid,lv){ /* 0728kc THE CARD KEEPS ITS ROOM (owner-ruled G-A, Wed Nov 4, 2026, 9:05 AM: "That looks good"; his 8:53 thought: "what if the chart shell does come up but it just says something in there, letting the user know it will fill in after it\u2019s been open for an hour"): a running ride with a typical and no chart yet (the banked hour still earning - pwBandModel\u2019s own floor, 12 ticks) keeps the chart\u2019s room; a ride that is not running, or has no typical, speaks as before */
+    try{if(!(lv&&lv.status==="OPERATING"))return false;var ty=rsTyp(rid);return !!(ty&&ty.length>=2&&window.__ppGhostBand);}catch(e){return false;}}
+  function rsGhostHTML(rid){return window.__ppGhostBand?window.__ppGhostBand(rid,rsTyp(rid)):"";} /* the ghost is the chart\u2019s own sibling, painted in the Wrap module through its door */
   function rsPre(rid){ /* 0728fy/fz: {park,at,ee} while this ride has not yet started today, else null. 0728fz SAME QUESTION, SAME ANSWER (owner glass 2:53 AM Oct 12: the card said 9 AM beside the sentence's and the Today board's 8:30 AM): the clock is the Today board rail's own rule (tdNvRail, 0723m) — a ride whose banked tape starts before the gate, on a morning with an earlier window, opens with that window and wears its name; every other ride opens with its park. Unknown hours answer null and the sheet speaks as it did. */
     try{var r=roster[rid],inf=r&&parkInfo[r.park],lv=liveById[rid];if(!inf||!inf.open)return null;
       if(lv&&lv.status==="REFURBISHMENT")return null; /* a ride in refurbishment does not start with its park */
@@ -10337,10 +10343,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '<button class="rs-sh" type="button" data-rsh="'+esc(rid)+'" aria-label="Share this ride" title="Share"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13"/></svg></button>'+ /* 0728gj D-1 THE DOOR BESIDE THE STAR (owner-ruled Oct 13): the live ride card's door — rides only, since the sheet opens for rides only (0728fr) */
       '<button class="star'+(watch[rid]?' on':'')+'" data-id="'+esc(rid)+'" title="Favorite">'+(watch[rid]?'★':'☆')+'</button></div>';
     var bx9=rsBox(rid,rd,lv);if(bx9)h+='<div class="rs-read">'+bx9+'</div>'; /* 0728gj K-2: one composer for the box (rsBox) — the status while down (0728gi L-3), the feed's callout when the feed has the ride, the bridge, or the read alone; the share card reads from the same composer */
-    var pre=(rsData===null)?rsPre(rid):null; /* 0728fy THE HERO EXPLAINS THE MORNING (owner-ruled C on before-opening-mock-C.png, Oct 11): before its park opens, with nothing banked, the card says when the park opens instead of reporting a gap, and the recap door points at yesterday */
+    var pre=(rsData===null||rsData===undefined)?rsPre(rid):null; /* 0728kc THE SKELETON KNOWS THE MORNING (owner glass 8:36 AM Nov 4: Haunted Mansion before open slid tall and shrank to one card): before the ride\u2019s start the card is the schedule\u2019s, known before any file - drawn at the first paint, never after it */ /* 0728fy THE HERO EXPLAINS THE MORNING (owner-ruled C on before-opening-mock-C.png, Oct 11): before its park opens, with nothing banked, the card says when the park opens instead of reporting a gap, and the recap door points at yesterday */
     if(pre)h+='<div class="pw-hero rs-hero"><div class="k">Today</div><div class="sub">'+(pre.ee?'Opens at '+esc(pre.at)+' with '+esc(pre.ee):esc(pre.park)+' opens at '+esc(pre.at))+'. Today’s waits start then.</div></div>';
-    else if(rsData===undefined||!rsData||rsData.band)h+='<div class="pw-hero rs-hero'+(rsData===undefined?' rs-wait':'')+'"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':((rsData===null&&!(lv&&lv.status==="OPERATING"))?'Today':'Today · so far'))+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">'+((lv&&lv.status==="OPERATING")?'No samples yet today.':'No waits posted today.')+'</div>')) /* 0728ge T-2 (owner-ruled Oct 13): a ride that is not running and has banked nothing says what the feed shows — no "so far", no "yet"; a running ride's first minutes keep the old words */+'</div>'; /* the chart needs about an hour banked — operating or DOWN ticks (pwBandModel’s own floor, 0728gn); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
-    if(rsData&&rsData.tiles)h+=rsData.tiles;else if(rsData===undefined)h+='<div class="pw-grid rs-skel" aria-hidden="true"><div class="pw-tile"></div><div class="pw-tile"></div><div class="pw-tile"></div><div class="pw-tile"></div></div>'; /* 0728jw THE SHEET KEEPS ITS SHAPE (owner glass 3:19 PM Nov 3; the rig: the reading sheet stood 518 tall, the finished one 802 - the slide carried the short one and the grow finished the trip): four quiet tiles hold the grid's room while today is read, so the first paint is already the finished height and the sheet slides up once */
+    else if(rsData===undefined||!rsData||rsData.band||rsGhostOn(rid,lv))h+='<div class="pw-hero rs-hero'+((rsData===undefined||(rsData&&!rsData.band))?' rs-wait':'')+'"><div class="k">'+((rsData&&(rsData.live===false||rsParkDone(rid)))?'Today · final':((rsData===null&&!(lv&&lv.status==="OPERATING"))?'Today':'Today · so far'))+'</div>'+ /* 0728ft TENSE FLIPS WHOLE: once the day is final the tiles speak in the past, and the heading stops saying "so far" */(((rsData===undefined||(rsData&&!rsData.band))&&rsGhostOn(rid,lv))?rsGhostHTML(rid):(rsData===undefined?'<div class="sub">Reading today…</div>':(rsData?rsData.band:'<div class="sub">'+((lv&&lv.status==="OPERATING")?'No samples yet today.':'No waits posted today.')+'</div>'))) /* 0728ge T-2 (owner-ruled Oct 13): a ride that is not running and has banked nothing says what the feed shows — no "so far", no "yet"; a running ride's first minutes keep the old words */+'</div>'; /* the chart needs about an hour banked — operating or DOWN ticks (pwBandModel’s own floor, 0728gn); until then the tiles speak alone and the card is not drawn — no tenants, no room */ /* 0728fx THE PARK'S OWN CLOSE (owner-ruled on the glass, Oct 11 9:42 PM: Kali River Rapids read "so far" hours after Animal Kingdom closed, because the Wrap's day is not final while another park's night runs). The sheet's heading flips at ITS park's close; the finished word is "final", the share card's own. */
+    if(rsData&&rsData.tiles)h+=rsData.tiles;else if(rsData===undefined&&!pre)h+='<div class="pw-grid rs-skel" aria-hidden="true"><div class="pw-tile"></div><div class="pw-tile"></div><div class="pw-tile"></div><div class="pw-tile"></div></div>'; /* 0728kc: a pre-open card never has tiles - the skeleton knows the morning too */ /* 0728jw THE SHEET KEEPS ITS SHAPE (owner glass 3:19 PM Nov 3; the rig: the reading sheet stood 518 tall, the finished one 802 - the slide carried the short one and the grow finished the trip): four quiet tiles hold the grid's room while today is read, so the first paint is already the finished height and the sheet slides up once */
     h+=rsLL(rid); /* 0728fs: the lane as posted, under the day */
     var drs=(rsData?'<button class="rs-door" data-rsd="recap" type="button">Today’s full recap ›</button>':((pre&&rsY===true)?'<button class="rs-door" data-rsd="yday" type="button">Yesterday’s recap ›</button>':((prof&&(rsData===undefined||(pre&&rsY===undefined)))?'<span class="rs-door rs-hold" aria-hidden="true">&nbsp;</span>':'')))+(prof?'<button class="rs-door" data-rsd="prof" type="button">Ride profile ›</button>':''); /* 0728fw A DOOR NEEDS A ROOM (owner-ruled, Oct 11): the recap door stands only once today has something banked for this ride — a refurbished or all-day-closed ride has no page behind it */
     h+=(tyRowRead(rid)?'<div class="rs-d rs-pin"><button class="rs-door" data-rspin="'+esc(rid)+'" type="button">Pin to today\u2019s plan \u203a</button></div>':'')+(drs?'<div class="rs-d">'+drs+'</div>':'')+'</div>'; /* 0728ju S-A: the pin door, only for a ride with a seat on today's board (the composer answers both questions) */
@@ -10389,7 +10395,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     rsId=rid;rsData=undefined;rsY=undefined;rsOpenAt=Date.now();rsMark(); /* 0728jv THE SHEET FINISHES ITS SLIDE: the open stamps its clock; a repaint inside the slide waits for it */
     var leaf9=(roster[rid].kind==="show"||roster[rid].kind==="walk");
     if(!leaf9){rpEnsureDigs();if(typeof tyEnsureSched==="function")tyEnsureSched();rsHold=true;try{rsFetch();}finally{rsHold=false;}} /* 0728jw THE SHEET OPENS WHOLE (owner glass 3:19 PM Nov 3: "bounces up half way, pauses quickly, then finishes" - the slide and the grow were still two motions): the day is asked for BEFORE the first paint; the Wrap's fresh cache answers synchronously, so the sheet's first paint already holds the chart and slides up once at its full height. Only a true fetch takes the short-then-grow path */
-    rsPaint(true);
+    rsPaint(true);rsWarm(); /* 0728kc: the open warms the copy for the next tap too */
     if(leaf9){clearInterval(rsPoll);return;} /* 0728he: a show's sheet reads the feed alone — no day ledger, no digest; 0728hq: a walk's too */
     clearInterval(rsPoll); /* 0728jw: the fetch moved above the first paint */
     if(!rpDigs){var n9=0;rsPoll=setInterval(function(){n9++;if(rsId!==rid||n9>20){clearInterval(rsPoll);return;}if(rpDigs){clearInterval(rsPoll);rsFetch();}},500);} /* the read and the typical line arrive with the day ledger */
@@ -11904,6 +11910,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
   /* ---- freshness ---- */
   function setPulse(state){liveState=state;elPill.className="status-pill "+(state==="error"?"error":state==="stale"?"stale":"ok");}
+  function rsWarm(){try{if(window.__ppRideWarm&&document.visibilityState!=="hidden")window.__ppRideWarm();}catch(e){}} /* 0728kc THE DAY IS WARM BEFORE THE TAP: the live poll and the boards warm the ride sheet's day copy; nothing when the app is in the background */
   function refreshDelay(){ /* 0724c THE 3-MINUTE BASELINE (owner-lettered): faster only for someone actually looking during operating hours \u2014 a calm 5 stays the ceiling; courteous to the free API */
     var vis=(typeof document!=="undefined"&&document.visibilityState==="visible"),op=false,k9;
     if(vis&&typeof isOpenNow==="function"){for(k9 in parkInfo){if(isOpenNow(parkInfo[k9])===true){op=true;break;}}}
@@ -12570,10 +12577,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       var c=cache["today"];
       if(c&&cacheAt["today"]&&Date.now()-cacheAt["today"]<5*60*1000){go(c);return;}
-      fetch(WRAP_URL+"/history?date="+etDate(0)).then(function(r){return r.json();}).then(function(d){
-        pwCleanData(d);go(d);
-      })["catch"](function(){cb(null);});
+      var ds9=etDate(0),w9=rsDay.ds===ds9?rsDay:null,age9=w9?Date.now()-w9.at:Infinity,fresh9=age9<rsDayTtl(); /* 0728kc THE DAY IS WARM BEFORE THE TAP (owner-ruled D-A, Wed Nov 4, 2026, 8:52 AM; his 8:36 glass: a tap before the chart loads still bumped the sheet up and pulled it down): the sheet keeps its OWN copy of today's file - never the Wrap's cache (the __ppTodayRide law) - warmed when a board renders and on the live poll; a copy younger than the live cadence answers the tap synchronously, so the first paint carries the chart and the sheet slides once; an older copy still answers at once and the newer file repaints quietly behind the open */
+      if(w9){go(w9.d);if(fresh9)return;}
+      rsWarmFetch(ds9,function(d){if(d){go(d);}else if(!w9)cb(null);});
     };
+    var rsDay={ds:null,at:0,d:null},rsDayBusy=false; /* 0728kc: the sheet's day copy - {ds, at, d}; one in flight at a time */
+    function rsDayTtl(){return (typeof refreshDelay==="function")?refreshDelay():5*60*1000;} /* the live poll's own cadence: 3 min in the park, 5 otherwise */
+    function rsWarmFetch(ds,cb){if(rsDayBusy){if(cb)cb(null);return;}rsDayBusy=true;
+      fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}).then(function(d){pwCleanData(d);rsDay={ds:ds,at:Date.now(),d:d};rsDayBusy=false;if(cb)cb(d);})["catch"](function(){rsDayBusy=false;if(cb)cb(null);});}
+    window.__ppRideWarm=function(){ /* 0728kc: warm the sheet's day copy - called when a board renders and on the live poll; a copy still inside the cadence is kept */
+      var ds=etDate(0);if(rsDay.ds===ds&&Date.now()-rsDay.at<rsDayTtl())return;rsWarmFetch(ds,null);};
     window.__ppRideToday=function(rid,park,tab){tab=(tab==="yesterday")?"yesterday":"today"; /* 0728fy: the same door reaches Yesterday for the morning sheet */ /* 0728fr: the sheet's door to the page that already exists — Wrap › Today › park › ride; walks the real nav path (0716o) */
       function top9(){try{var sh=window.ppShl();sh.scrollTop=1;sh.scrollTop=0;}catch(_){}} /* 0728fu THE DOOR LANDS AT THE TOP (owner glass 9:06 and 9:18 PM Oct 11, iPhone: the recap door opened from a ride deep in the Live list landed on a blank page until a thumb pulled it down). The shell is carried to its top BEFORE the long list leaves, and nudged again once the ride page stands — the 0723k recipe: the nudge must move, a same-position scroll is one WebKit may skip. */
       try{window.ppShl().scrollTop=0;}catch(_){}
@@ -14652,7 +14665,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         ticks+='<i style="left:'+X(m.ticks[i].t)+'%"></i><span style="left:'+X(m.ticks[i].t)+'%">'+m.ticks[i].label+'</span>';
       }
       var tickRow=ticks?('<div class="pw-ticks">'+ticks+'</div>')
-        :('<div class="pw-times"><span>'+pwClkSm(t0)+'</span><span>'+pwClkSm(t1)+'</span></div>'); /* 0728fz THE ENDS SAY THEIR MINUTES (owner glass 8:44 AM Oct 12: a 7:30–8:44 chart was labelled 7a and 8a) */
+        :('<div class="pw-times"><span>'+pwClkSm(t0)+'</span>'+pwEarlyMark(t0,t1)+'<span>'+pwClkSm(t1)+'</span></div>');
+      var tiers="",tv=[[20,PW_TIER.short],[45,PW_TIER.medium],[70,PW_TIER.long]],ti; /* 0728kc THE CHART WEARS ITS TIERS (owner-ruled Y-B, Wed Nov 4, 2026, 9:20 AM): the band edges the legend already names, 20 \u00b7 45 \u00b7 70, as faint lines in the legend\u2019s own colours with their numbers in the gutter - ONE BAND VOCABULARY on the plot; a tier above the chart\u2019s top is not drawn */
+      for(ti=0;ti<tv.length;ti++)if(tv[ti][0]<=vMax)tiers+='<i class="pw-tier" style="top:'+Y(tv[ti][0])+'px;border-color:'+tv[ti][1]+'"></i><span class="pw-tiern" style="top:'+Y(tv[ti][0])+'px;color:'+tv[ti][1]+'">'+tv[ti][0]+'</span>'; /* 0728fz THE ENDS SAY THEIR MINUTES (owner glass 8:44 AM Oct 12: a 7:30–8:44 chart was labelled 7a and 8a) */
       var leg='<div class="pw-legend"><span><i style="background:'+PW_TIER.short+'"></i>20 or less</span><span><i style="background:'+PW_TIER.medium+'"></i>21-45</span><span><i style="background:'+PW_TIER.long+'"></i>46-70</span><span><i style="background:'+PW_TIER.packed+'"></i>over 70</span><span><i class="pw-dnk"></i>down</span></div>'; /* 0728gk THE LEGEND NAMES: the down key is the floor's dashed line */
       pwScrubReg[rid]={m:m,su:su};pwScrubInit();
       var scrub='<div class="pw-scrub" data-pwsc="'+rid+'"><i class="pw-scl"></i><b class="pw-sct"></b><b class="pw-scd"></b><span class="pw-scp"></span></div>';
@@ -14664,11 +14679,24 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         +(tyD?'<path class="pw-typ" d="'+tyD+'" fill="none" stroke="#e6e9fb" stroke-opacity=".8" stroke-width="1.2" stroke-dasharray="3 2.5" vector-effect="non-scaling-stroke"/>':'')
         +'<path d="'+floorD+'" fill="none" stroke="#8f93ad" stroke-width="2.2" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>' /* 0728gk: the outages ride the floor in the ribbon's down slate */
         +'<path d="'+lineD+'" fill="none" stroke="#b4bcff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'
-        +'</svg>'+dots+vl+tyL+scrub+'</div>'
+        +'</svg>'+tiers+dots+vl+tyL+scrub+'</div>'
         +'<div class="pw-ribbon"><svg viewBox="0 0 100 8" preserveAspectRatio="none" shape-rendering="crispEdges" aria-hidden="true">'+rib+'</svg></div>'
         +pwSkyLane(m)
         +tickRow+(tyD?leg.replace('</div>','<span class="pw-typk">typical</span></div>'):leg)+'</div>';
     }
+    function pwGhostBand(rid,ty){ /* 0728kc THE CARD KEEPS ITS ROOM: the ghost - the ride\u2019s typical day as the chart\u2019s own dashed line (the Today board\u2019s [[minute, median]]), the ribbon\u2019s empty track, the day\u2019s ends, one captioned line; scrubbable - the lens reads the typical and says so (registered under the ghost\u2019s own key) */
+      if(!ty||ty.length<2)return "";var i,t0=ty[0][0],t1=ty[ty.length-1][0],vMax=20;for(i=0;i<ty.length;i++)if(ty[i][1]>vMax)vMax=ty[i][1];if(t1<=t0)return "";
+      var H=76,pad=3,ih=H-pad*2,X=function(t){return ((t-t0)/(t1-t0)*100).toFixed(2);},Y=function(v){return (pad+ih-(v/vMax)*ih).toFixed(1);},d="";
+      for(i=0;i<ty.length;i++)d+=(i?"L":"M")+X(ty[i][0])+" "+Y(ty[i][1]);
+      var key="gh:"+rid;pwScrubReg[key]={m:{t0:t0,t1:t1,vMax:vMax,voids:[],samples:[],tyR:[ty],ghost:true},su:null};pwScrubInit();
+      return '<div class="pw-band rs-ghost"><div class="pw-plot"><svg class="pw-line" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true"><path class="pw-typ" d="'+d+'" fill="none" stroke="#8f93ad" stroke-width="2.2" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/></svg>'
+        +'<div class="pw-scrub" data-pwsc="'+key+'"><i class="pw-scl"></i><b class="pw-sct"></b><b class="pw-scd"></b><span class="pw-scp"></span></div></div>'
+        +'<div class="rs-gh-rib"></div><div class="pw-times"><span>'+pwClkSm(t0)+'</span><span>'+pwClkSm(t1)+'</span></div>'
+        +'<div class="rs-gh-cap"><i></i><span>Typical day. Today\u2019s line draws once an hour is banked.</span></div></div>';}
+    window.__ppGhostBand=function(rid,ty){try{return pwGhostBand(rid,ty);}catch(e){return "";}}; /* 0728kc: the sheet\u2019s door to the ghost */
+    function pwEarlyMark(t0,t1){ /* 0728kc THE EARLY HOURS PRINT THEIR MARK (owner 9:07 AM Nov 4: the finished day has its ticks, the early hours only their ends): a span too short for the tick grid prints the one hour mark that fits, between the end times */
+      var q=Math.floor(t0/60)+1;if(q*60>=t1||t1-t0<30)return "";var m=q*60;if(m-t0<12||t1-m<12)return "";
+      return '<span class="pw-tmark" style="left:'+((m-t0)/(t1-t0)*100).toFixed(1)+'%">'+((q+11)%12+1)+(q<12?"a":"p")+'</span>';}
     function pwDayStrikes(){
       var S=lastData&&lastData.ltg&&lastData.ltg.samples;if(!S)return 0;
       var t=0;for(var i=0;i<S.length;i++)t+=S[i].n||0;return t;
@@ -14734,6 +14762,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(var i=0;i<m.voids.length;i++){var v=m.voids[i];if(t>=v.t0&&t<=v.t1)return {kind:v.kind};}
       var best=null,bd=1e9;
       for(i=0;i<m.samples.length;i++){var d=Math.abs(m.samples[i][0]-t);if(d<bd){bd=d;best=m.samples[i];}}
+      if(m.ghost){var g9=pwScrubTyp(m,t);return g9===null?{kind:"nodata"}:{t:t,typ:g9};} /* 0728kc: the ghost card\u2019s lens - the typical at this minute, named as the typical */
       if(!best||bd>17.5)return {kind:"nodata"};
       if(best[1]<0)return {t:best[0],down:true};
       return {t:best[0],v:best[1]};
@@ -14755,6 +14784,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var rid=sc.getAttribute("data-pwsc"),reg=pwScrubReg[rid];if(!reg)return;
       var m=reg.m,rect=sc.getBoundingClientRect();if(rect.width<10)return;
       var res=pwScrubRes(m,t);
+      if(res.typ!=null){var xG=((res.t-m.t0)/(m.t1-m.t0))*rect.width,yG=3+70-(res.typ/m.vMax)*70,lG=sc.querySelector(".pw-scl"),dG=sc.querySelector(".pw-scd"),pG=sc.querySelector(".pw-scp"),tG=sc.querySelector(".pw-sct");lG.style.left=xG.toFixed(1)+"px";if(tG)tG.style.display="none";dG.style.left=xG.toFixed(1)+"px";dG.style.top=yG.toFixed(1)+"px";dG.style.display="";pG.innerHTML='<span class="v"><b style="color:#8c96b9">typically ~'+Math.round(res.typ)+'m</b></span><span class="s">'+pwClk(res.t)+'</span>';pG.style.left="";return;} /* 0728kc THE LENS NAMES THE TYPICAL: on the ghost the readout says what it reads */
       var lx=(res.t!=null?res.t:t);
       var xPx=((lx-m.t0)/(m.t1-m.t0))*rect.width;
       var line=sc.querySelector(".pw-scl"),dot=sc.querySelector(".pw-scd"),pill=sc.querySelector(".pw-scp"),tdot=sc.querySelector(".pw-sct");
