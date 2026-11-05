@@ -1758,7 +1758,7 @@
   .pw-mc.today i{width:7px;height:7px;border-radius:50%;background:var(--pwh-key);animation:pwWkPulse 1.6s ease-in-out infinite}
   .pw-mleg{display:flex;gap:12px;margin-top:11px;flex-wrap:wrap}
   .pw-mleg span{display:flex;align-items:center;gap:5px;font-size:var(--fs-micro);font-weight:600;color:var(--pwh-muted)}
-  .pw-mleg i{width:8px;height:8px;border-radius:var(--r-dot)}
+  .pw-mleg i{width:8px;height:8px;border-radius:var(--r-dot)} html.cq .pw-mleg i{box-shadow:0 0 0 1px rgba(230,233,251,.45)} /* 0728kl (owner glass 9:26 PM, Quiet on the navy card): the Quiet legend's dots wear a hairline ring so the darkest slate (Light) still shows against the card - the legend names, the ring lets it (COLOR NEVER CARRIES ALONE) */
   .pw-mleg .sh{color:var(--pwh-dim)}
   .pw-mtiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
   .pw-mtile{background:var(--card);border-radius:var(--r-tile);padding:13px;box-shadow:var(--shadow-sm)}
@@ -2821,7 +2821,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kk</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kl</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -8971,7 +8971,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function foot(H,l1,l2){HL(H-160,C.hair);T(l1,L,H-116,RB(500,24),C.muted);if(l2)T(l2,L,H-84,RB(500,24),C.muted);T("ridecue.live",R,H-76,RB(700,31),C.green,"right");T("Data: ThemeParks.wiki",R,H-41,RB(500,25),C.muted2,"right");}
     return {T:T,MW:MW,ell:ell,rr:rr,HL:HL,SP:SP,wrap:wrap,pill:pill,diamond:diamond,diamondF:diamondF,foot:foot};
   }
-  var PC_TINT=["","#f7f8fb","#eef0f6","#dee0eb","#cdd0de"]; /* 0728ee: the screen's --t1..--t4 at its own 45% on the white panel (0728dn's quiet tint) */
+  var PC_TINT_Q=["","#f7f8fb","#eef0f6","#dee0eb","#cdd0de"]; /* 0728ee: the screen's --t1..--t4 at its own 45% on the white panel (0728dn's quiet tint) - 0728kl: the Quiet face */
+  var PC_TINT_C=["","#a8edcb","#fbdeab","#ffc3b4","#ffbcbc"]; /* 0728kl THE CARD WEARS THE SCREEN'S SHADE, AGAIN (owner-ruled K-A, Nov 4, 2026, 9:24 PM): the Color face - the screen's C-80 hues (--c1..--c4) at the card's own 45% on its white panel, the very cells the owner is looking at; cards keep their own palette, so the same in Harbor */
+  function pcTint(lv){var q=false;try{q=document.documentElement.classList.contains("cq");}catch(e){}return (q?PC_TINT_Q:PC_TINT_C)[lv]||"";} /* the card follows the screen's face (the html.cq class, read here - the Wrap's pwCrowdQuiet lives inside its own IIFE), never a constant of its own */
   var PC_PIP={w:10,g:3,h:8}; /* 0728c: the room\u2019s 6\u00b71\u00b75 at the date\u2019s scale (\u00d7~1.6) \u2014 a meter on the card, not dots */ /* was {w:7,g:2,h:6} */ /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
   function pcMonthCardData(){ /* the month's field, from the same resolvers the room uses */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),today=tpToday(),pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m),d,cells=[],hols=[],hasHw=false,hasRace=false,pset={};
@@ -9006,7 +9008,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var gl=L+22,gr=R-22,cw=(gr-gl)/7,py=y+40;
     "SMTWTFS".split("").forEach(function(wd,j){h.T(wd,gl+cw*j+cw/2,py,RB(700,20),C.muted2,"center");});py+=24;
     for(i=0;i<D.cells.length;i++){var c=D.cells[i],col=(D.fd+c.d-1)%7,row=Math.floor((D.fd+c.d-1)/7),cx=gl+cw*col+cw/2,cy=py+row*ch;
-      if(c.lv){ctx.fillStyle=PC_TINT[c.lv];h.rr(cx-cw/2+5,cy+3,cw-10,ch-6,14);ctx.fill();} /* 0728ee (M-B): THE CARD WEARS THE SCREEN'S SHADE - each day its tier's quiet tile; the pips still carry the crowd */
+      if(c.lv){ctx.fillStyle=pcTint(c.lv);h.rr(cx-cw/2+5,cy+3,cw-10,ch-6,14);ctx.fill();} /* 0728ee (M-B): THE CARD WEARS THE SCREEN'S SHADE - each day its tier's tile in the screen's face (0728kl: Color or Quiet); the pips still carry the crowd */
       if(c.today){ctx.strokeStyle=C.accent;ctx.lineWidth=3;h.rr(cx-cw/2+8,cy+2,cw-16,ch-4,16);ctx.stroke();} /* 0728b: the ring sits cy+2\u2026cy+94, symmetric in the 96 row, clear of the pips (cy+80\u202686) */
       h.T(String(c.d),cx,cy+34,RD(700,34),(c.race?C.short:(c.hw?C.accent:C.ink)),"center"); /* 0727z: the cell scaled to the canvas */
       var sy=cy+50,gx=cx;
