@@ -774,6 +774,7 @@
   button.tf-mgc{border:0;cursor:pointer;font-family:var(--font-body)} button.tf-mgc:disabled{opacity:.45;cursor:default}
   .tf-selline{margin-top:9px;font:600 var(--fs-meta) var(--font-body);color:var(--accent);min-height:15px}
 .tf-yr{font-weight:500;opacity:.6} /* 0728km THE YEAR CLOSES ITS GROUP: the year at the end of its months, a shade lighter - a label on the group, never a wall between two months (O-B rejected) */
+.rpc .lbl .tf-yr{opacity:.8} /* 0728kn THE YEAR HOLDS ITS INK (owner glass Nov 5, 6:00 AM: "a tad light"; Y-A ruled 6:10): on the muted uppercase header the year keeps 80% - still a label, no longer faint; the accent pick line stays at .6 */
   .tf-lenrow{display:flex;gap:7px;margin-top:11px}
   .tf-len{flex:1;border:0;background:var(--accent-soft);color:var(--accent);font:700 var(--fs-meta) var(--font-body);border-radius:var(--r-el);padding:8px 0;cursor:pointer}
   .tf-len.on{background:var(--accent-fill);color:#fff}
@@ -2822,7 +2823,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728km</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kn</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -8982,7 +8983,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   var PC_TINT_Q=["","#f7f8fb","#eef0f6","#dee0eb","#cdd0de"]; /* 0728ee: the screen's --t1..--t4 at its own 45% on the white panel (0728dn's quiet tint) - 0728kl: the Quiet face */
   var PC_TINT_C=["","#a8edcb","#fbdeab","#ffc3b4","#ffbcbc"]; /* 0728kl THE CARD WEARS THE SCREEN'S SHADE, AGAIN (owner-ruled K-A, Nov 4, 2026, 9:24 PM): the Color face - the screen's C-80 hues (--c1..--c4) at the card's own 45% on its white panel, the very cells the owner is looking at; cards keep their own palette, so the same in Harbor */
   function pcTint(lv){var q=false;try{q=document.documentElement.classList.contains("cq");}catch(e){}return (q?PC_TINT_Q:PC_TINT_C)[lv]||"";} /* the card follows the screen's face (the html.cq class, read here - the Wrap's pwCrowdQuiet lives inside its own IIFE), never a constant of its own */
-  var PC_PIP={w:10,g:3,h:8}; /* 0728c: the room\u2019s 6\u00b71\u00b75 at the date\u2019s scale (\u00d7~1.6) \u2014 a meter on the card, not dots */ /* was {w:7,g:2,h:6} */ /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
+  var PC_PIP={w:10,g:3,h:8};
+  var PC_PIP_M={w:12.5,g:3.75,h:10}; /* 0728kn G-E: the month card's pip, a quarter bigger - the grid and the key wear the same glyph */ /* 0728c: the room\u2019s 6\u00b71\u00b75 at the date\u2019s scale (\u00d7~1.6) \u2014 a meter on the card, not dots */ /* was {w:7,g:2,h:6} */ /* 0728a: THE STRIP IS FOUR PIPS on the canvas too (the room's 6·1·5 × ~1.2); the tier is the lit count \u2014 ink lit, hair off */
   function pcMonthCardData(){ /* the month's field, from the same resolvers the room uses */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),today=tpToday(),pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m),d,cells=[],hols=[],hasHw=false,hasRace=false,pset={};
     for(d=1;d<=n;d++){var ds=tfDate(y,m,d),v=tfDEst(m,y,d),lv=(v!=null)?({short:1,medium:2,long:3,packed:4}[window.__avTier(v)]||0):0;
@@ -9009,27 +9011,27 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     h.T(D.title,L,196,RD(700,74),C.ink);
     h.T("Party nights, holidays and the crowd\u2019s pattern \u2014 hours as Disney posts them.",L,248,RB(500,27),C.muted);
     var y=290;
-    for(i=0;i<D.band.length&&i<3;i++){var b=D.band[i],tf=RB(600,24),tw=h.MW(b.t,tf)+78;ctx.fillStyle=C.card;h.rr(L,y,tw,44,22);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1.5;ctx.stroke();if(b.em)h.T(b.em,L+18,y+31,RB(500,22),C.ink);h.T(b.t,L+52,y+30,tf,C.ink);y+=54;}
+    for(i=0;i<D.band.length&&i<3;i++){var b=D.band[i],tf=RB(600,27),tw=h.MW(b.t,tf)+84;ctx.fillStyle=C.card;h.rr(L,y,tw,50,25);ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1.5;ctx.stroke();if(b.em)h.T(b.em,L+19,y+35,RB(500,25),C.ink);h.T(b.t,L+56,y+34,tf,C.ink);y+=60;} /* 0728kn G-E: the chips step up with the grid (27 in a 50 pill) */
     if(D.note){var nl=h.wrap(D.note,RB(500,24),R-L);for(i=0;i<nl.length&&i<2;i++){h.T(nl[i],L,y+24,RB(500,24),C.muted);y+=32;}y+=6;}
-    var rows=Math.ceil((D.fd+D.cells.length)/7),ch=96,gh=70+rows*ch; /* 0727z: the panel's height is the month's rows */
-    y+=6;ctx.fillStyle=C.card;h.rr(L,y,R-L,gh,22);ctx.fill();
-    var gl=L+22,gr=R-22,cw=(gr-gl)/7,py=y+40;
-    "SMTWTFS".split("").forEach(function(wd,j){h.T(wd,gl+cw*j+cw/2,py,RB(700,20),C.muted2,"center");});py+=24;
+    var rows=Math.ceil((D.fd+D.cells.length)/7),ch=114,gh=70+rows*ch; /* 0727z: the panel's height is the month's rows - 0728kn G-E: 114 tall (was 96); the card grows to fit (0728c (b)) */
+    y+=6;ctx.fillStyle=C.card;h.rr(L-24,y,R-L+48,gh,22);ctx.fill(); /* 0728kn THE PANEL TAKES THE GUTTER (owner-ruled G-E, Nov 5, 6:15 AM): the grid's panel bleeds 24 past the family's text edge each side - kc's law on the sheet's chart, now on the card; the title, legend and foot keep the 64 */
+    var gl=L-24+16,gr=R+24-16,cw=(gr-gl)/7,py=y+40;
+    "SMTWTFS".split("").forEach(function(wd,j){h.T(wd,gl+cw*j+cw/2,py,RB(700,22),C.muted2,"center");});py+=24;
     for(i=0;i<D.cells.length;i++){var c=D.cells[i],col=(D.fd+c.d-1)%7,row=Math.floor((D.fd+c.d-1)/7),cx=gl+cw*col+cw/2,cy=py+row*ch;
       if(c.lv){ctx.fillStyle=pcTint(c.lv);h.rr(cx-cw/2+5,cy+3,cw-10,ch-6,14);ctx.fill();} /* 0728ee (M-B): THE CARD WEARS THE SCREEN'S SHADE - each day its tier's tile in the screen's face (0728kl: Color or Quiet); the pips still carry the crowd */
       if(c.today){ctx.strokeStyle=C.accent;ctx.lineWidth=3;h.rr(cx-cw/2+8,cy+2,cw-16,ch-4,16);ctx.stroke();} /* 0728b: the ring sits cy+2\u2026cy+94, symmetric in the 96 row, clear of the pips (cy+80\u202686) */
-      h.T(String(c.d),cx,cy+34,RD(700,34),(c.race?C.short:(c.hw?C.accent:C.ink)),"center"); /* 0727z: the cell scaled to the canvas */
-      var sy=cy+50,gx=cx;
-      if(c.pe&&c.pe!=="ring"){h.T(c.pe,cx-(c.hd?14:0),sy+18,RB(500,26),C.ink,"center");gx=cx+16;}
+      h.T(String(c.d),cx,cy+40,RD(700,40),(c.race?C.short:(c.hw?C.accent:C.ink)),"center"); /* 0727z: the cell scaled to the canvas - 0728kn: 40 in the 114 cell */
+      var sy=cy+60,gx=cx;
+      if(c.pe&&c.pe!=="ring"){h.T(c.pe,cx-(c.hd?14:0),sy+18,RB(500,30),C.ink,"center");gx=cx+16;}
       else if(c.pe==="ring"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(cx-(c.hd?14:0),sy+10,5,0,7);ctx.fill();gx=cx+16;}
       if(c.hd)h.diamondF(c.pe?gx:cx,sy+10,8,C.accent,3); /* 0728b (D): the frame, in the holiday's color */
-      if(c.lv){var px0=cx-(4*PC_PIP.w+3*PC_PIP.g)/2,pi;for(pi=0;pi<4;pi++)h.pill(px0+pi*(PC_PIP.w+PC_PIP.g),sy+30,PC_PIP.w,PC_PIP.h,pi<c.lv?C.ink:"rgba(25,26,46,.16)");}} /* 0728ee: the unlit pip darkens a step so it holds on the deepest tile */
+      if(c.lv){var px0=cx-(4*PC_PIP_M.w+3*PC_PIP_M.g)/2,pi;for(pi=0;pi<4;pi++)h.pill(px0+pi*(PC_PIP_M.w+PC_PIP_M.g),sy+34,PC_PIP_M.w,PC_PIP_M.h,pi<c.lv?C.ink:"rgba(25,26,46,.16)");}} /* 0728ee: the unlit pip darkens a step so it holds on the deepest tile */
     y+=gh+14;h.HL(y,C.hair);y+=6;
     for(i=0;i<D.legend.length&&i<5;i++){var g=D.legend[i];
-      if(g.g==="hw")h.T("15",L+12,y+30,RD(800,22),C.accent,"center");else if(g.g==="race")h.T("15",L+12,y+30,RD(800,22),C.short,"center");else if(g.g==="hol")h.diamondF(L+12,y+23,7,C.accent,3);else if(g.g==="pty"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(L+12,y+23,5,0,7);ctx.fill();}else h.T(g.g,L+12,y+31,RB(500,22),C.ink,"center");
-      var dw=h.MW(g.d,RB(500,22));h.T(g.d,R,y+30,RB(500,22),C.muted,"right");h.T(h.ell(g.n,RB(600,25),R-dw-24-(L+50)),L+50,y+31,RB(600,25),C.ink);y+=44;h.HL(y,C.rollhair);y+=2;}
-    y+=18;var kx=L,keys=["Light","Moderate","Busy","Packed"],kw=4*PC_PIP.w+3*PC_PIP.g,pj; /* 0728b: the card's key teaches the card's glyph \u2014 the same four pips, 1\u00b72\u00b73\u00b74 lit */
-    for(i=0;i<4;i++){for(pj=0;pj<4;pj++)h.pill(kx+pj*(PC_PIP.w+PC_PIP.g),y+4,PC_PIP.w,PC_PIP.h,pj<=i?C.ink:C.hair);h.T(keys[i],kx+kw+10,y+14,RB(600,22),C.muted);kx+=kw+10+h.MW(keys[i],RB(600,22))+30;}
+      if(g.g==="hw")h.T("15",L+12,y+32,RD(800,24),C.accent,"center");else if(g.g==="race")h.T("15",L+12,y+32,RD(800,24),C.short,"center");else if(g.g==="hol")h.diamondF(L+12,y+25,8,C.accent,3);else if(g.g==="pty"){ctx.fillStyle="#7a3fd1";ctx.beginPath();ctx.arc(L+12,y+25,5,0,7);ctx.fill();}else h.T(g.g,L+12,y+33,RB(500,24),C.ink,"center");
+      var dw=h.MW(g.d,RB(500,24));h.T(g.d,R,y+32,RB(500,24),C.muted,"right");h.T(h.ell(g.n,RB(600,27),R-dw-24-(L+50)),L+50,y+33,RB(600,27),C.ink);y+=48;h.HL(y,C.rollhair);y+=2;} /* 0728kn G-E: the legend rows step up (27/24 on 48) */
+    y+=18;var kx=L,keys=["Light","Moderate","Busy","Packed"],kw=4*PC_PIP_M.w+3*PC_PIP_M.g,pj; /* 0728b: the card's key teaches the card's glyph \u2014 the same four pips, 1\u00b72\u00b73\u00b74 lit */
+    for(i=0;i<4;i++){for(pj=0;pj<4;pj++)h.pill(kx+pj*(PC_PIP_M.w+PC_PIP_M.g),y+3,PC_PIP_M.w,PC_PIP_M.h,pj<=i?C.ink:C.hair);h.T(keys[i],kx+kw+10,y+15,RB(600,24),C.muted);kx+=kw+10+h.MW(keys[i],RB(600,24))+30;} /* 0728kn G-E: the key teaches the grid's bigger pip, labels 24 */
     h.foot(H,"Party nights only where the night list is verified","The strips are a pattern, never a forecast");
   }
   function pcDayCardData(ds){ /* the day's field: the sheet's rows, from the same reader */
@@ -9048,7 +9050,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function pcMonthCardH(D){ /* 0728c (b): THE CARD FITS ITS FIELD \u2014 the month card is as tall as its bands, note, rows, legend and key need, 1350 at least, the foot always clear of the key (the day card\u2019s law); mirrors pcDrawMonthCard\u2019s y arithmetic */
     var rows=Math.ceil((D.fd+D.cells.length)/7),bands=Math.min(D.band.length,3),nl=D.note?Math.min(2,Math.ceil(String(D.note).length/80)):0,lg=Math.min(D.legend.length,5);
-    var y=290+bands*54+(nl?nl*32+6:0)+6+(70+rows*96)+14+6+lg*46+18+28;
+    var y=290+bands*60+(nl?nl*32+6:0)+6+(70+rows*114)+14+6+lg*50+18+28; /* 0728kn G-E: mirrors the drawer (chips 60, cells 114, legend 50) */
     return Math.max(1350,y+40+160);}
   function pcDayGeo(D){ /* 0728ee (D-C3): four even tiles; a third line under any park's hours grows every tile; THIS DAY, when the day earns one, grows the card (square when it fits - 0727z's law) */
     var mx=0,i;for(i=0;i<D.parks.length;i++)mx=Math.max(mx,D.parks[i].ex.length);
