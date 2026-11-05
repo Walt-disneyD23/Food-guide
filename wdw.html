@@ -2686,7 +2686,8 @@
   .pc-cd.cc.past .d{color:var(--muted-2)}
   .pc-cd.cc.today{background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--accent)} .pc-cd.cc.today .d{color:var(--accent)}
   .pc-cd.cc.sel,.pc-cd.cc.sel.today{background:var(--accent-fill);box-shadow:none} .pc-cd.cc.sel.today{box-shadow:inset 0 0 0 2px var(--accent-fill),inset 0 0 0 3.5px rgba(255,255,255,.92)} /* 0728c: today, tapped \u2014 the ring the legend promises, in white, inside the fill */ .pc-cd.cc.sel .d,.pc-cd.cc.sel.today .d{color:#fff} .pc-cd.cc.sel .mk:after{box-shadow:inset 0 0 0 1.5px #fff} /* 0728b: a white frame on the fill */ /* 0727v: the tapped day wears the solid accent fill with a white date (the selected-pill grammar); today keeps its ring — before, the two read the same */
-  .pc-nav{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px} .pc-nav span{font:800 20px var(--font-display);letter-spacing:-.01em;color:var(--ink)} /* 0727v: the month in the display face, title case */
+  .pc-nav{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
+.pc-vp{overflow:hidden;touch-action:pan-y;position:relative} .pc-vp.anim{transition:height .28s cubic-bezier(.2,.8,.2,1)} .pc-track{display:flex;align-items:flex-start;width:300%;transform:translate3d(-33.3333%,0,0);will-change:transform} .pc-track.anim{transition:transform .28s cubic-bezier(.2,.8,.2,1)} .pc-page{flex:0 0 33.3333%;min-width:0} /* 0728ko THE MONTH RIDES A TRACK: three pages abreast, the middle one on screen; the viewport clips and wears the current page's height; the track follows the finger and settles with an ease-out */ .pc-nav span{font:800 20px var(--font-display);letter-spacing:-.01em;color:var(--ink)} /* 0727v: the month in the display face, title case */
   .pc-arr{font:800 26px var(--font-display);line-height:1;color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;width:42px;height:36px;cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0727v: grown for in-park thumbs */
   .pc-band{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px} .pc-band span{font:600 var(--fs-meta) var(--font-body);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--muted)} .pc-band span b{color:var(--ink);font-weight:700}
   .pc-note{font:500 var(--fs-small) var(--font-body);color:var(--muted);line-height:1.45;margin:0 0 10px}
@@ -2823,7 +2824,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kn</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ko</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -8891,7 +8892,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '</div>';
   }
   /* ===== 0727s THE CALENDAR — a place just to look (owner-ruled Sep 6–7; Name-S1 §7 addendum). Hours as Disney posts them, party nights by name where the windows are verified, holidays, festivals, the pattern's strip — any month Disney has published. Zero input: months swipe, a day taps open. ===== */
-  var pcYM=null,pcSel=null,pcWarm=false;
+  var pcYM=null,pcSel=null,pcWarm=false,pcBusy=false; /* 0728ko: pcBusy - a finger on the track or a slide in flight; arrivals wait */
   var PC_MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
   function pcShift(mo,k){var a=mo.split("-"),y=+a[0],m=+a[1]-1+k;while(m<0){m+=12;y--;}while(m>11){m-=12;y++;}return y+"-"+("0"+(m+1)).slice(-2);}
   function pcPublished(mo){var rec=tpSched[mo],k,d,last=null;if(!rec)return null;for(k in rec){for(d in rec[k]){if(rec[k][d]&&rec[k][d].open&&(!last||d>last))last=d;}}return last;} /* 0727w: null = loading · null-after-fetch handled by the caller via tpSched[mo] · otherwise the LAST published date — the horizon */
@@ -8915,11 +8916,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(fest)rows+='<div><i><span class="em">\ud83c\udf77</span></i><span><small class="pc-k">At EPCOT now</small>'+esc((window.__pwFestN||{})[fest.id]||fest.name)+'</span><small>through '+pcMD(fest.t)+'</small></div>';
     else if(next)rows+='<div><i><span class="em">\ud83c\udf77</span></i><span><small class="pc-k">Next at EPCOT</small>'+esc((window.__pwFestN||{})[next.id]||next.name)+'</span><small>from '+pcMD(next.f)+'</small></div>';
     return '<div class="rpc"><div class="tp-peb" style="margin-top:0">Coming up</div><div class="lgl pc-up">'+rows+'</div></div>';}
-  function pcMonthHTML(today){ /* THE MONTH in the family's cell (Name-S1 §7): today wears the window; the pattern's strip under every date (t-B); the week colors the date, the day wears a mark */
-    var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
-    var pub=pcPublished(pcYM),fetched=!!tpSched[pcYM],lastDs=tfDate(y,m,n);
-    h+='<div class="rpc"><div class="pc-nav"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>'; /* 0727v: the month in the display face; the arrows grown */
-    if(pcYM!==today.slice(0,7))h+='<button type="button" class="pc-home" data-pchome="1"><span class="chev">\u2039</span> Back to '+PC_MON[+today.slice(5,7)-1]+'</button>'; /* 0728dq THE WAY HOME (owner glass 9:51 PM Oct 1; ruled J-A on month-home-mock.html): a text link in the Share link's dress, under the title, ONLY away from the current month - at rest the header is untouched; the \u2039 \u203a row stays a title, not a toolbar (0727y s-B) */
+  function pcMonthBody(ym,today){ /* 0728ko THE MONTH RIDES A TRACK (owner Nov 5, 2026, 6:10 AM: "swipe with your finger to the other months"; 6:15: "a nice fluid movement"): the month's page - band, note, grid, key, legend - for ANY month, so the track can carry the neighbours beside the one on screen; the nav, the share door and the basis stay on the card */
+    var a=ym.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
+    var pub=pcPublished(ym),fetched=!!tpSched[ym],lastDs=tfDate(y,m,n);
     var band='';fests.forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     parties.forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(band)h+='<div class="pc-band">'+band+'</div>';
@@ -8943,6 +8942,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(pset["\ud83c\udf84"])lg+='<div><i><span class="em">\ud83c\udf84</span></i><span>MK Christmas party night</span><small>select nights</small></div>';
     if(pset["ring"])lg+='<div><i><b class="pty"></b></i><span>MK party night</span><small>which party isn\u2019t named yet</small></div>';
     h+='<div class="tf-callg lgl">'+lg+'</div>';
+    return h;}
+  function pcNbArrive(){if(rpView==="cal"&&!pcBusy)renderPulsePage();} /* 0728ko: a neighbour's hours arrive - repaint the track while the finger is off it */
+  function pcMonthHTML(today){ /* THE MONTH in the family's cell (Name-S1 §7): today wears the window; the pattern's strip under every date (t-B); the week colors the date, the day wears a mark - 0728ko: the month's page rides a three-page track (prev - this - next), the neighbours pre-rendered and their hours pre-fetched */
+    var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,h='';
+    h+='<div class="rpc"><div class="pc-nav"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>'; /* 0727v: the month in the display face; the arrows grown */
+    if(pcYM!==today.slice(0,7))h+='<button type="button" class="pc-home" data-pchome="1"><span class="chev">\u2039</span> Back to '+PC_MON[+today.slice(5,7)-1]+'</button>'; /* 0728dq THE WAY HOME (owner glass 9:51 PM Oct 1; ruled J-A on month-home-mock.html): a text link in the Share link's dress, under the title, ONLY away from the current month - at rest the header is untouched; the \u2039 \u203a row stays a title, not a toolbar (0727y s-B) */
+    tpFetchMonth(pcShift(pcYM,-1),pcNbArrive);tpFetchMonth(pcShift(pcYM,1),pcNbArrive); /* 0728ko: the neighbours' hours warm behind the page, so the month that slides in is whole */
+    h+='<div class="pc-vp"><div class="pc-track">'+[-1,0,1].map(function(k){var ym=k?pcShift(pcYM,k):pcYM;return '<div class="pc-page'+(k?'':' cur')+'" data-ym="'+ym+'">'+pcMonthBody(ym,today)+'</div>';}).join('')+'</div></div>';
     h+='<button class="pw-share pc-mdoor" type="button" data-pcshare="month">'+'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this month</button>'; /* 0728ee (B-C, owner-ruled Oct 4 on cal-door-B.png): the month's door is the family's full-width door, in the text link's old seat above the fine print; the day sheet keeps its glyph. Was 0727y s-B, a text link */
     h+='<div class="tf-basis">Hours as Disney publishes them, via ThemeParks.wiki \u00b7 party nights only where the night list is verified \u00b7 the strips are a pattern, never a forecast \u00b7 the week colors the date, the day wears a mark \u00b7 tap a day for its hours</div></div>';
     return h;}
@@ -9090,8 +9097,26 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       pvOpen({alts:[{cv:cv}],fname:fname,shareTitle:title}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
+  function pcSwipeBind(el){ /* 0728ko THE MONTH RIDES A TRACK: a finger moves the page; a release settles it. The track only claims a touch that is clearly sideways (8 px of travel, then |dx| > 1.5|dy|) - a vertical pan and a tap are the browser's (touch-action:pan-y). On release: past a third of the width, or faster than .5 px/ms, the page turns; otherwise it springs back. The viewport wears the current page's height and eases to the landing page's. */
+    var vp=el.querySelector(".pc-vp"),tr=vp&&vp.querySelector(".pc-track");if(!vp||!tr)return;
+    var sx=0,sy=0,st=0,dx=0,mode=0,W=0;
+    function cur(){return tr.querySelector(".pc-page.cur");}
+    function setH(){var c=cur();if(c)vp.style.height=c.offsetHeight+"px";}
+    setH();
+    vp.addEventListener("touchstart",function(e){if(e.touches.length!==1||tr.classList.contains("anim"))return;var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now();dx=0;mode=0;W=vp.clientWidth;},{passive:true});
+    vp.addEventListener("touchmove",function(e){if(!st)return;var t=e.touches[0],mx=t.clientX-sx,my=t.clientY-sy;if(!mode){if(Math.abs(mx)<8&&Math.abs(my)<8)return;mode=(Math.abs(mx)>Math.abs(my)*1.5)?1:-1;if(mode===1){pcBusy=true;setH();}}if(mode!==1)return;dx=mx;tr.style.transform="translate3d("+(-W+dx)+"px,0,0)";},{passive:true});
+    function end(){if(!st)return;var dt=Math.max(1,Date.now()-st),v=dx/dt,dir=0,was=mode;st=0;mode=0;if(was!==1)return;if(Math.abs(dx)>W*.34||(Math.abs(dx)>24&&Math.abs(v)>.5))dir=dx<0?1:-1;pcSlide(dir,vp,tr,W);}
+    vp.addEventListener("touchend",end,{passive:true});vp.addEventListener("touchcancel",end,{passive:true});
+    el.__pcSlide=function(dir){if(tr.classList.contains("anim"))return;W=vp.clientWidth;pcBusy=true;setH();pcSlide(dir,vp,tr,W);};}
+  function pcSlide(dir,vp,tr,W){ /* 0728ko: settle to the landing page (dir -1 - 0 - 1), then re-seat the track centred on the new month */
+    var pages=tr.querySelectorAll(".pc-page"),tgt=pages[1+dir],done=false;
+    function fin(){if(done)return;done=true;tr.classList.remove("anim");vp.classList.remove("anim");pcBusy=false;if(dir){pcYM=pcShift(pcYM,dir);pcSel=null;renderPulsePage();}else{tr.style.transform="";vp.style.height=cur9()+"px";}}
+    function cur9(){var c=tr.querySelector(".pc-page.cur");return c?c.offsetHeight:0;}
+    tr.addEventListener("transitionend",fin,{once:true});setTimeout(fin,340);
+    requestAnimationFrame(function(){tr.classList.add("anim");vp.classList.add("anim");vp.style.height=(tgt?tgt.offsetHeight:cur9())+"px";tr.style.transform="translate3d("+(-W-dir*W)+"px,0,0)";});}
   function pcBind(el){
-    el.querySelectorAll("[data-pcm]").forEach(function(b){b.addEventListener("click",function(){pcYM=pcShift(pcYM,+b.getAttribute("data-pcm"));pcSel=null;renderPulsePage();});});
+    el.querySelectorAll("[data-pcm]").forEach(function(b){b.addEventListener("click",function(){var k=+b.getAttribute("data-pcm");if(el.__pcSlide)el.__pcSlide(k);else{pcYM=pcShift(pcYM,k);pcSel=null;renderPulsePage();}});}); /* 0728ko: the arrows ride the same slide as the finger (ONE MOTION GRAMMAR) */
+    pcSwipeBind(el);
     el.querySelectorAll("[data-pchome]").forEach(function(b){b.addEventListener("click",function(){var t9=tpToday();pcYM=t9.slice(0,7);pcSel=t9;renderPulsePage();});}); /* 0728dq: home is the arrival - this month, today's sheet open (0727t) */
     el.querySelectorAll("[data-pcshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();pcShareCard(b.getAttribute("data-pcshare"));});}); /* 0727y: the two doors */
     el.querySelectorAll("[data-pcd]").forEach(function(b){b.addEventListener("click",function(){var ds=b.getAttribute("data-pcd");pcSel=(pcSel===ds)?null:ds;var sh=el.querySelector(".pc-sheet"),t0=sh?null:null;renderPulsePage();var s2=el.querySelector(".pc-sheet");if(s2&&pcSel)s2.scrollIntoView({block:"end",behavior:"smooth"});});});} /* 0727w: the sheet's BOTTOM lands above the tab bar (scroll-margin-bottom carries the shell's pad) */
