@@ -773,6 +773,7 @@
   .tf-mgc.on{outline:2px solid var(--accent);outline-offset:1.5px} /* Cut D (D-2): the ask */
   button.tf-mgc{border:0;cursor:pointer;font-family:var(--font-body)} button.tf-mgc:disabled{opacity:.45;cursor:default}
   .tf-selline{margin-top:9px;font:600 var(--fs-meta) var(--font-body);color:var(--accent);min-height:15px}
+.tf-yr{font-weight:500;opacity:.6} /* 0728km THE YEAR CLOSES ITS GROUP: the year at the end of its months, a shade lighter - a label on the group, never a wall between two months (O-B rejected) */
   .tf-lenrow{display:flex;gap:7px;margin-top:11px}
   .tf-len{flex:1;border:0;background:var(--accent-soft);color:var(--accent);font:700 var(--fs-meta) var(--font-body);border-radius:var(--r-el);padding:8px 0;cursor:pointer}
   .tf-len.on{background:var(--accent-fill);color:#fff}
@@ -2821,7 +2822,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kl</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728km</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -8514,6 +8515,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   var TF_FEST={fw:"Food & Wine",holidays:"Festival of the Holidays",arts:"Festival of the Arts",fg:"Flower & Garden"};
   function tfYFor(m){ /* next occurrence: strictly-future months this year; the current month and earlier roll to next (funnel-playable ratified) */
     var t=tpToday(),cm=+t.slice(5,7)-1,cy=+t.slice(0,4);return m>cm?cy:cy+1;}
+  function tfOrdCmp(a,c){return (tfYFor(a)*12+a)-(tfYFor(c)*12+c);} /* 0728km THE FUNNEL ORDERS ITS MONTHS BY THE TRIP (owner glass Nov 4, 2026, 9:57 PM: Dec - Jan - Feb picked in November read January - February - December - "almost makes me feel like it's looking at next December"): the selection is ordered by each month's next occurrence, the one tfYFor resolves - one sort at the source; the line, the ACROSS header, the bars, the solver and the chips all walk tfSel as stored (ORDER MUST BE EARNED) */
+  function tfPickLabel(){ /* 0728km THE YEAR CLOSES ITS GROUP (owner-ruled O-E, 10:30 PM; O-B - the year between two months - rejected 10:19 "looks odd"): the months grouped by the year they fall in, a run inside a year dashed (0727c: the dash is a run, the dot is a list), the year named at the END of its group and only when the pick crosses New Year - March - May stays as it was; SAME QUESTION SAME SENTENCE: the S1 line and the S2 header speak this one sentence */
+    var s=tfSel.slice().sort(tfOrdCmp),groups=[],g=null,i;
+    for(i=0;i<s.length;i++){var m=s[i],y=tfYFor(m);if(!g||g.y!==y){g={y:y,runs:[]};groups.push(g);}
+      var r=g.runs[g.runs.length-1];if(r&&r.b===m-1)r.b=m;else g.runs.push({a:m,b:m});}
+    var multi=groups.length>1;
+    return groups.map(function(g){var t=g.runs.map(function(r){return r.a===r.b?TF_MFULL[r.a]:TF_MFULL[r.a]+" \u2013 "+TF_MFULL[r.b];}).join(" \u00b7 ");return multi?t+' <span class="tf-yr">'+g.y+"</span>":t;}).join(" \u00b7 ");}
   function tfMP(m){ /* one month's ORDINARY pools from the day lens \u2014 the forecast voice de-mixed (L2 Cut 1, H2); dow pools are Sun-first at the source now (day atoms), the old cell translation seam retired with its source */
     var L=(typeof window.__tfL==="function")?window.__tfL():null;if(!L)return null;
     var P=L.ordP(m+1);
@@ -8696,7 +8704,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=0;i<12;i++){var t=L.t3(i),r=(t&&t.v!=null)?Math.round(t.v):null;
       h+='<button type="button" class="tf-mgc'+(tfSel.indexOf(i)>=0?' on':'')+(r!=null?' l'+TF_LV[window.__avTier(r)]:'')+'" data-tfmon="'+i+'"'+(r==null?' disabled':'')+'><i>'+TF_MN[i]+'</i><b>'+(r!=null?r:'\u2013')+'</b><span class="s"></span></button>';} /* 0728d (B): the tier is a class, the number is ink, the pips say the band */
     h+='</div>'+(typeof window.__avKey==="function"?window.__avKey():'')+'<div class="tf-keytruth">Minutes of average posted wait \u00b7 resort-wide, on the resort\u2019s own scale.</div>';
-    h+='<div class="tf-selline">'+(tfSel.length?tfSel.map(function(m){return TF_MFULL[m];}).join(" \u00b7 "):'')+'</div>';
+    h+='<div class="tf-selline">'+(tfSel.length?tfPickLabel():'')+'</div>'; /* 0728km: the one sentence (THE YEAR CLOSES ITS GROUP) */
     h+='<div class="tf-lenrow">'+[["3 days",3],["5 days",5],["7 days",7],["Custom\u2026",0]].map(function(o){
       var on=o[1]?(!tfCust&&tfLen===o[1]):tfCust;
       return '<button type="button" class="tf-len'+(on?' on':'')+'" data-tflen="'+o[1]+'">'+o[0]+'</button>';}).join('')+'</div>';
@@ -8711,7 +8719,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(typeof window.__avGo==="function")window.__avGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
       if(typeof window.__slGo==="function")window.__slGo(function(){if(tfOpen&&window.__tfL())renderPulsePage();});
       return h+'<div class="rpc"><div class="lbl">The fits</div><div class="tf-read">Warming up the record\u2026</div></div>';}
-    var lbl=tfSel.length===1?TF_MFULL[tfSel[0]]:(tfSel.length===tfSel[tfSel.length-1]-tfSel[0]+1)?TF_MFULL[tfSel[0]]+" \u2013 "+TF_MFULL[tfSel[tfSel.length-1]]:tfSel.map(function(m){return TF_MFULL[m];}).join(" \u00b7 "); /* 0727c THE RANGE NAMES ITS MONTHS: the dash is a run, the dot is a list \u2014 the S1 selection line\u2019s own sentence; Jan + Dec read JANUARY \u2013 DECEMBER on the card (owner glass Sep 1) */
+    var lbl=tfPickLabel(); /* 0727c THE RANGE NAMES ITS MONTHS: the dash is a run, the dot is a list \u2014 0728km: the sentence moved into tfPickLabel, grouped by year (THE YEAR CLOSES ITS GROUP); the old adjacency test (last-first+1) could never fold a Nov \u00b7 Dec \u00b7 Jan pick */
     h+='<div class="rpc"><div class="lbl">Across '+lbl+'</div>';
     h+='<div class="tf-band" style="grid-template-columns:repeat('+(tfSel.length*3)+',1fr)">';
     var i,tfBandAw=0; /* 0726c (a-A): did any segment ribbon? the legend renders only then */for(i=0;i<tfSel.length;i++){var m=tfSel[i],P=tfMP(m);
@@ -9281,7 +9289,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     el.querySelectorAll("[data-tfback]").forEach(function(b){b.addEventListener("click",function(){tfOpen=false;renderPulsePage();rpTop();});});
     el.querySelectorAll("[data-tfback2]").forEach(function(b){b.addEventListener("click",function(){tfOpen="s1";renderPulsePage();rpTop();});});
     var tfsh=el.querySelector("[data-tfshare]");if(tfsh)tfsh.addEventListener("click",function(){tfShareCard();}); /* 0727a: the Plan card\u2019s door */
-    el.querySelectorAll("[data-tfmon]").forEach(function(b){b.addEventListener("click",function(){var m=+b.getAttribute("data-tfmon"),x=tfSel.indexOf(m);if(x>=0)tfSel.splice(x,1);else{tfSel.push(m);tfSel.sort(function(a,c){return a-c;});}renderPulsePage();});});
+    el.querySelectorAll("[data-tfmon]").forEach(function(b){b.addEventListener("click",function(){var m=+b.getAttribute("data-tfmon"),x=tfSel.indexOf(m);if(x>=0)tfSel.splice(x,1);else{tfSel.push(m);tfSel.sort(tfOrdCmp);}renderPulsePage();});});
     el.querySelectorAll("[data-tflen]").forEach(function(b){b.addEventListener("click",function(){var v=+b.getAttribute("data-tflen");if(v){tfCust=false;tfLen=v;}else{tfCust=true;tfLen=Math.min(14,Math.max(2,tfLen));}renderPulsePage();});});
     el.querySelectorAll("[data-tfstp]").forEach(function(b){b.addEventListener("click",function(){tfLen=Math.min(14,Math.max(2,tfLen+ +b.getAttribute("data-tfstp")));renderPulsePage();});});
     el.querySelectorAll("[data-tfgo]").forEach(function(b){b.addEventListener("click",function(){if(tfSel.length){tfOpen="s2";renderPulsePage();rpTop();}});});
