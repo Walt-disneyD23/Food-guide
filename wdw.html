@@ -2824,7 +2824,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ko</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kp</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -8919,6 +8919,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function pcMonthBody(ym,today){ /* 0728ko THE MONTH RIDES A TRACK (owner Nov 5, 2026, 6:10 AM: "swipe with your finger to the other months"; 6:15: "a nice fluid movement"): the month's page - band, note, grid, key, legend - for ANY month, so the track can carry the neighbours beside the one on screen; the nav, the share door and the basis stay on the card */
     var a=ym.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
     var pub=pcPublished(ym),fetched=!!tpSched[ym],lastDs=tfDate(y,m,n);
+    if(ym!==today.slice(0,7))h+='<button type="button" class="pc-home" data-pchome="1"><span class="chev">\u2039</span> Back to '+PC_MON[+today.slice(5,7)-1]+'</button>'; /* 0728dq THE WAY HOME (J-A) — 0728kp THE DOOR RIDES WITH ITS PAGE (owner glass Nov 5, 6:56 AM: the link appeared above the track at the landing and pushed December down): the link is the page's, so it slides in with the month it names; the home month's page has none */
     var band='';fests.forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     parties.forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(band)h+='<div class="pc-band">'+band+'</div>';
@@ -8947,7 +8948,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function pcMonthHTML(today){ /* THE MONTH in the family's cell (Name-S1 §7): today wears the window; the pattern's strip under every date (t-B); the week colors the date, the day wears a mark - 0728ko: the month's page rides a three-page track (prev - this - next), the neighbours pre-rendered and their hours pre-fetched */
     var a=pcYM.split("-"),y=+a[0],m=+a[1]-1,h='';
     h+='<div class="rpc"><div class="pc-nav"><button type="button" class="pc-arr" data-pcm="-1" aria-label="Earlier month">\u2039</button><span>'+PC_MON[m]+' '+y+'</span><button type="button" class="pc-arr" data-pcm="1" aria-label="Later month">\u203a</button></div>'; /* 0727v: the month in the display face; the arrows grown */
-    if(pcYM!==today.slice(0,7))h+='<button type="button" class="pc-home" data-pchome="1"><span class="chev">\u2039</span> Back to '+PC_MON[+today.slice(5,7)-1]+'</button>'; /* 0728dq THE WAY HOME (owner glass 9:51 PM Oct 1; ruled J-A on month-home-mock.html): a text link in the Share link's dress, under the title, ONLY away from the current month - at rest the header is untouched; the \u2039 \u203a row stays a title, not a toolbar (0727y s-B) */
+    /* 0728kp THE DOOR RIDES WITH ITS PAGE: the home link moved into pcMonthBody - it slides in with the month it names */
     tpFetchMonth(pcShift(pcYM,-1),pcNbArrive);tpFetchMonth(pcShift(pcYM,1),pcNbArrive); /* 0728ko: the neighbours' hours warm behind the page, so the month that slides in is whole */
     h+='<div class="pc-vp"><div class="pc-track">'+[-1,0,1].map(function(k){var ym=k?pcShift(pcYM,k):pcYM;return '<div class="pc-page'+(k?'':' cur')+'" data-ym="'+ym+'">'+pcMonthBody(ym,today)+'</div>';}).join('')+'</div></div>';
     h+='<button class="pw-share pc-mdoor" type="button" data-pcshare="month">'+'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this month</button>'; /* 0728ee (B-C, owner-ruled Oct 4 on cal-door-B.png): the month's door is the family's full-width door, in the text link's old seat above the fine print; the day sheet keeps its glyph. Was 0727y s-B, a text link */
@@ -9097,14 +9098,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       pvOpen({alts:[{cv:cv}],fname:fname,shareTitle:title}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
-  function pcSwipeBind(el){ /* 0728ko THE MONTH RIDES A TRACK: a finger moves the page; a release settles it. The track only claims a touch that is clearly sideways (8 px of travel, then |dx| > 1.5|dy|) - a vertical pan and a tap are the browser's (touch-action:pan-y). On release: past a third of the width, or faster than .5 px/ms, the page turns; otherwise it springs back. The viewport wears the current page's height and eases to the landing page's. */
+  function pcSwipeBind(el){ /* 0728ko THE MONTH RIDES A TRACK: a finger moves the page; a release settles it. The track only claims a touch that is clearly sideways (6 px of travel, then |dx| > 1.5|dy|) - a vertical pan and a tap are the browser's (touch-action:pan-y). On release: past a third of the width, or faster than .5 px/ms, the page turns; otherwise it springs back. The viewport wears the current page's height and eases to the landing page's. */
     var vp=el.querySelector(".pc-vp"),tr=vp&&vp.querySelector(".pc-track");if(!vp||!tr)return;
     var sx=0,sy=0,st=0,dx=0,mode=0,W=0;
     function cur(){return tr.querySelector(".pc-page.cur");}
     function setH(){var c=cur();if(c)vp.style.height=c.offsetHeight+"px";}
     setH();
     vp.addEventListener("touchstart",function(e){if(e.touches.length!==1||tr.classList.contains("anim"))return;var t=e.touches[0];sx=t.clientX;sy=t.clientY;st=Date.now();dx=0;mode=0;W=vp.clientWidth;},{passive:true});
-    vp.addEventListener("touchmove",function(e){if(!st)return;var t=e.touches[0],mx=t.clientX-sx,my=t.clientY-sy;if(!mode){if(Math.abs(mx)<8&&Math.abs(my)<8)return;mode=(Math.abs(mx)>Math.abs(my)*1.5)?1:-1;if(mode===1){pcBusy=true;setH();}}if(mode!==1)return;dx=mx;tr.style.transform="translate3d("+(-W+dx)+"px,0,0)";},{passive:true});
+    vp.addEventListener("touchmove",function(e){if(!st)return;var t=e.touches[0],mx=t.clientX-sx,my=t.clientY-sy;if(!mode){if(Math.abs(mx)<6&&Math.abs(my)<6)return;mode=(Math.abs(mx)>Math.abs(my)*1.5)?1:-1;if(mode===1){pcBusy=true;setH();}}if(mode!==1)return;if(e.cancelable)e.preventDefault();dx=mx;tr.style.transform="translate3d("+(-W+dx)+"px,0,0)";},{passive:false}); /* 0728kp THE TRACK OWNS ITS TOUCH (owner glass Nov 5, 6:56 AM: a fast thumb wandered up and down): the claim comes at 6 px, inside Safari's own scroll threshold, and from then on every move of that touch is cancelled so the page cannot pan under the slide; a touch that reads vertical is never claimed and scrolls as before */
     function end(){if(!st)return;var dt=Math.max(1,Date.now()-st),v=dx/dt,dir=0,was=mode;st=0;mode=0;if(was!==1)return;if(Math.abs(dx)>W*.34||(Math.abs(dx)>24&&Math.abs(v)>.5))dir=dx<0?1:-1;pcSlide(dir,vp,tr,W);}
     vp.addEventListener("touchend",end,{passive:true});vp.addEventListener("touchcancel",end,{passive:true});
     el.__pcSlide=function(dir){if(tr.classList.contains("anim"))return;W=vp.clientWidth;pcBusy=true;setH();pcSlide(dir,vp,tr,W);};}
