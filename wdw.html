@@ -1388,8 +1388,8 @@
     --sh-soft:0 4px 12px -4px rgba(0,0,0,.42); /* 0713w: Harbor's door-read is the border — the lift is garnish */
     --ink:#e7eef4; --muted:#9db0c0; --muted-2:#6f8496;
     --accent:#8b87ff; --accent-soft:rgba(139,135,255,.18); --seg-on:rgba(139,135,255,.18); --accent-fill:#4f46e5; --toast-glass:rgba(18,32,44,.78);
-    --hm0:#1c2440; --hm1:#2a3163; --hm2:#3c3f96; --hm3:#5a52cf; --hm4:#8b87ff;
-    --hmt0:#9db0c0; --hmt1:#9db0c0; --hmt2:#0a141d; --hmt3:#0a141d; --hmt4:#0a141d;
+    --hm0:#2c3660; --hm1:#3d4590; --hm2:#5553c0; --hm3:#7a72ea; --hm4:#aeaaff; /* 0728kz HARBOR, LIFTED: the week card's ramp, the same five values (one ramp, two homes) */
+    --hmt0:#ffffff; --hmt1:#ffffff; --hmt2:#ffffff; --hmt3:#ffffff; --hmt4:#0a141d;
     --t1:#1e2c39; --t2:#2c3d4c; --t3:#4a5d6e; --t4:#7f93a6; --ringc:#b4b0ff; /* 0728e (B): the ramp in Harbor \u2014 lighter = busier, since ink is light here */ /* Cut C (C-2): soft dark \u2014 dimmer, not paler; ringc needs LIGHTER in dark */
     --pip-off:#3b4954; /* 0728a: the unlit pip in Harbor (ink at ~20% on the card) */ --bar1:#33424e; --bar2:#4f6070; --bar3:#8ea0b0; --bar4:#e7eef4; /* 0728d (E): the ramp in Harbor \u2014 ink is light here, so it flips with the theme */
  --c1:#35bf7e; --c2:#d9a33a; --c3:#e86e4e; --c4:#e45d5f; --cb1:#35bf7e; --cb2:#d9a33a; --cb3:#e86e4e; --cb4:#e45d5f; /* 0728kk: the hues in Harbor, a step deeper so the ink stays light */
@@ -2831,7 +2831,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ky</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kz</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15917,7 +15917,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
 
       function wkGrid(bx,by,bw,G){ /* 0728iz THE GRID SHAPE (owner Oct 28, 12:56 PM: "maybe make another version with the graph? 2 to choose from on the preview"): the ride page's hour-by-hour week, as the page draws it \u2014 the hour header, seven day rows, the hm steps with the number in every cell (COLOR NEVER CARRIES ALONE), the red underline where a 5-min down window touched the hour, the striped dn cell where no wait was posted, dashed cells for the days to come, today's dot; the page's own key and caption beneath. Returns the block's height. */
-        var FILL=["#1c2440","#2a3163","#3c3f96","#5a52cf","#8b87ff"],INK=["#9db0c0","#c3c9ff","#ffffff","#ffffff","#0a141d"],DD=G.days,h0=G.h0,h1=G.h1,nh=h1-h0+1,lab=74,gap=5,cw=Math.floor((bw-lab-gap*(nh-1))/nh),chh=Math.round(cw*0.92),hdr=34,i,h,k,x,ry,cx,vals,av,tch,st;
+        var FILL=["#2c3660","#3d4590","#5553c0","#7a72ea","#aeaaff"],INK=["#ffffff","#ffffff","#ffffff","#ffffff","#0a141d"],/* 0728kz HARBOR, LIFTED (owner-ruled B, Nov 6 3:11 PM): the floor two shades up, white ink to the fourth step - the same five values as html.dark's --hm tokens (one ramp, two homes) */DD=G.days,h0=G.h0,h1=G.h1,nh=h1-h0+1,lab=74,gap=5,cw=Math.floor((bw-lab-gap*(nh-1))/nh),chh=Math.round(cw*0.92),hdr=34,i,h,k,x,ry,cx,vals,av,tch,st;
         for(h=h0;h<=h1;h++)T(String(((h+11)%12)+1),bx+lab+(h-h0)*(cw+gap)+cw/2,by+22,IN("600",20),C.muted2,"center");
         for(i=0;i<7;i++){x=DD[i];ry=by+hdr+i*(chh+gap);var lv=x.live&&!G.fin;
           T(RP_WD[i],bx,ry+chh/2,IN(lv?"700":"600",22),lv?C.accent:C.muted,"left","middle");
