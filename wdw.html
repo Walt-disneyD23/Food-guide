@@ -2366,6 +2366,8 @@
   .mr-rh .tog{width:51px;height:31px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;flex:none;-webkit-tap-highlight-color:transparent} /* 0728ho: the iOS switch's own size */
   .mr-rh .tog::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
   .mr-rh .tog.on{background:var(--accent-fill)}
+  .set-row .tog{width:51px;height:31px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;flex:none;-webkit-tap-highlight-color:transparent} .set-row .tog::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s} .set-row .tog.on{background:var(--accent-fill)} .set-row .tog.on::after{left:22px} /* 0728kw: the fold's iOS switch, seated in Settings */
+  .mr-silent{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);padding:14px 16px 15px;margin-bottom:10px;display:flex;gap:13px;align-items:flex-start} .mr-silent .ic{flex:none;width:36px;height:36px;border-radius:50%;background:var(--card-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--accent)} .mr-silent .ic svg{width:18px;height:18px} .mr-silent .t{font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--ink);letter-spacing:-.01em} .mr-silent .s{font-size:var(--fs-body);color:var(--muted);line-height:1.5;margin-top:3px} .mr-silent .act{margin-top:10px;display:inline-block;background:var(--accent-fill);color:#fff;font:700 13px var(--font-body);padding:9px 14px;border-radius:999px;border:0;cursor:pointer} .mr-silent .act[disabled]{opacity:.55} /* 0728kw N-C THE SILENT-BELLS CARD (mocked on sheets.png) */
   .mr-rh .tog.on::after{left:22px}
   .mr-rh .sent{font-size:16px;gap:8px;margin-top:10px} .mr-rh select{font-size:17px;min-height:44px;padding:0 16px} .mr-rh .mr-fine{font-size:12.5px;margin-top:10px} /* 0728ho R-A: the sentence, the pickers and the fine print at #mrSheet's own sizes — SAME QUESTION SAME SENTENCE, now the same size */
   .mr-door{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border:1px solid rgba(139,135,255,.35);border-radius:var(--r-card);padding:13px 14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--sh-soft)}
@@ -2819,6 +2821,9 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     <div class="set-lab">Crowd color</div> <!-- 0728kk ONE BAND VOCABULARY, ONE SWITCH (owner-ruled Nov 4, 2026, 8:40-8:58 PM): Color is the default (the tier hues at 80% on Plan's crowd surfaces, the month wrap as it is); Quiet returns the grey ramp and gives the month wrap a slate face - "for people that may have color blindness" -->
     <div class="pg-seg" id="cqSeg" role="group" aria-label="Crowd color"><button type="button" data-cq="color" class="on">Color</button><button type="button" data-cq="quiet">Quiet</button></div>
     <div class="set-cap">Quiet drops the hues from the crowd calendars and the month wrap and keeps the dots — easier if colors are hard to tell apart.</div>
+    <div class="set-lab">Notifications</div> <!-- 0728kw THE FIRST BELL ASKS (owner, Nov 6 1:15 PM: "most apps have them there"): the master switch's expected home; one state with the YOUR RULES fold's toggle (both paint from settings.notif; the ladder is mrNotifOn) -->
+    <div class="set-rows"><div class="set-row" id="setNotifRow"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>Alerts on this phone</span><span class="tog" id="setNotif" role="switch" aria-label="Alerts on this phone"></span></div></div>
+    <div class="set-cap">Which rides, and at what wait, are set from the bell on each ride. Off means total silence.</div>
     <div class="set-lab">RideCue</div> <!-- 0728kj S-A THE STOREFRONT ROWS (owner-ruled Nov 4, 7:51 PM): Rate opens the App Store review page; Share hands the site to the iOS share sheet (Messages draws the banner from the site's own tags, Site-Spec 3). No What's new row - the store page carries it (owner, 7:54 PM) -->
     <div class="set-rows">
       <a class="set-row" id="setRate" href="https://apps.apple.com/us/app/ridecue/id6809073584?action=write-review" target="_blank" rel="noopener"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Rate RideCue</span><span class="v"><b class="lnk">App Store</b><i class="chv">›</i></span></a>
@@ -2826,7 +2831,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kv</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kw</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3268,6 +3273,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     store.set(CROWD_KEY,b.getAttribute("data-cq"));applyCrowd();
   });
   $("setDone").addEventListener("click",closeSetSheet); /* 0728bg: Done closes the sheet, like the scrim */
+  $("setNotif").addEventListener("click",function(){mrNotifTap($("setNotif"));}); /* 0728kw: the Settings row is a door to the one switch */
   function closeSetSheet(){var p=$("setPop"),sc=$("setScrim");if(p.hasAttribute("hidden"))return;
     p.classList.remove("show");sc.classList.remove("show");
     setTimeout(function(){if(!p.classList.contains("show")){p.setAttribute("hidden","");sc.setAttribute("hidden","");}},290);
@@ -3275,6 +3281,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function openSetSheet(){closeStatusPop();closeIgSheet(); /* 0724q: one sheet at a time — the shared set-open lock stays honest */
     var p=$("setPop"),sc=$("setScrim");
     p.removeAttribute("hidden");sc.removeAttribute("hidden");sheetEdge(p); /* 0728kf: a re-opened Settings keeps its scroll, so the plate is read at the open */
+    if(typeof mrNotifPaint==="function"){var sn9=$("setNotif");if(sn9)setOn(sn9,!!(settings.notif&&notifGranted()));} /* 0728kw: the row reads the one state at the open */
     requestAnimationFrame(function(){p.classList.add("show");sc.classList.add("show");});
     document.body.classList.add("set-open");$("setBtn").classList.add("active");}
   $("setBtn").addEventListener("click",function(){
@@ -11524,6 +11531,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
   function mrW(n){var w=["zero","one","two","three","four","five","six","seven","eight","nine","ten"];return n<=10?w[n]:String(n);}
   function mrClk(t){var d=new Date(t),h=d.getHours(),m=d.getMinutes();return ((h%12)||12)+":"+(m<10?"0":"")+m+" "+(h>=12?"PM":"AM");}
   function mrStars(){return Object.keys(watch).filter(function(id){return roster[id];});}
+  function mrSilentHTML(all){ /* 0728kw THE FIRST BELL ASKS (N-C): bells armed, master off - the install is silent and the page says so once, atop, with the door; it leaves by itself when the switch flips (a true state, never dismissed by hand) */
+    if(settings.notif&&notifGranted())return "";var i;for(i=0;i<all.length;i++)if(armed[all[i]])break;if(i>=all.length)return "";
+    return '<div class="mr-silent"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><div><div class="t">Your bells are set, but this phone is silent.</div><div class="s">Notifications are off, so no alert can reach you. One tap turns them on \u2014 iOS asks once.</div><button type="button" class="act" id="mrSilentOn">Turn on notifications</button></div></div>';
+  }
   function mrOpNow(id){ /* 0722p V1-a: THE ONE OPERATING PREDICATE - hero and rows read the same room; park closed per schedule reads closed, same rule as groupOf/favModel */
     var lv=liveById[id],r=roster[id];
     if(!lv||lv.status!=="OPERATING")return false;
@@ -11755,7 +11766,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!all.length&&!Object.keys(resolved).length)return mrEmptyHTML();
     if(mrLens!=="ALL"&&!all.some(function(id){return roster[id].park===mrLens;}))mrLens="ALL"; /* the lens self-heals when its park loses its last star */
     var ids=mrLens==="ALL"?all:all.filter(function(id){return roster[id].park===mrLens;});
-    return mrHeroHTML(all)+mrChipsHTML()+mrShelfHTML()+mrPulseHTML(ids)+mrGroupsHTML(ids)+mrLogHTML()+mrRulesHTML()+mrPlanDoorHTML(); /* 0721b: THE INBOX OUTRANKS THE READOUT - the shelf (buttons, hand-clear) seats above the pulse (a glance); conditional furniture, absent on clean days */
+    return mrHeroHTML(all)+mrChipsHTML()+mrSilentHTML(all)+mrShelfHTML()+mrPulseHTML(ids)+mrGroupsHTML(ids)+mrLogHTML()+mrRulesHTML()+mrPlanDoorHTML(); /* 0721b: THE INBOX OUTRANKS THE READOUT - the shelf (buttons, hand-clear) seats above the pulse (a glance); conditional furniture, absent on clean days */
   }
   /* ===== Stage 2 (0719z): THE PULSE + THE LENS. Chips filter the page (pulse ·
      groups · resting line); THE SHELF IS A DUTY, NOT A VIEW — BACK UP never filters;
@@ -11892,6 +11903,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var th=el.querySelector("#mrThr");if(th)th.addEventListener("change",function(){settings.thresh=Math.max(0,+this.value||0);store.set("thresh",settings.thresh);resetAlerts();renderMyRidesPage();});
     var dn=el.querySelector("#mrDnup");if(dn)dn.addEventListener("click",function(){settings.dnup=!settings.dnup;store.set("dnup",settings.dnup);if(!settings.dnup)mrBlanketOff();renderMyRidesPage();});
     var nt=el.querySelector("#mrNotif");if(nt)nt.addEventListener("click",function(){mrNotifTap(nt);});
+    var so9=el.querySelector("#mrSilentOn");if(so9)so9.addEventListener("click",function(){so9.setAttribute("disabled","");mrNotifOn(function(ok,why){if(ok)pushToast("Alerts on","You'll get alerts even when the app is closed.");else if(why==="unsupported")pushToast("Not supported","This browser can't show notifications.");else pushToast("Notifications blocked","Allow them in your device's settings to get alerts.");mrNotifPaint();});}); /* 0728kw N-C: the card's door walks the same ladder */
     var ot=el.querySelector("#mrOtd");if(ot)ot.addEventListener("click",function(){settings.otd=!settings.otd;store.set("otd",settings.otd);renderMyRidesPage();}); /* 0728il: the flip stores, the chokepoint syncs (RULE_KEYS) */
   }
   function bindMrSheet(el){ /* 0728gs L-1: the rule sheet's own binder \u2014 once, on its body host (mrShHost); every door closes and repaints (C-1), the segment commits on tap as before */
@@ -11919,7 +11931,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       saveOverrides();if(!armed[id]){armed[id]=true;saveArmed();} /* the named side effect: setting the rule arms the bell (the fine print says so) */
       delete alertState[id];saveAlertState();updateAlertBadge();
       var sd3=el.querySelector("#mrShDef");if(sd3){if(overrides[id])sd3.removeAttribute("disabled");else sd3.setAttribute("disabled","");}
-      pushToast("Alert set",roster[id].name+ /* 0726b: the sink is textContent — esc() here double-escaped (owner glass: Na&#39;vi); the ✓ icon carries the mark, the bell stays the push channel's */" — "+nd+" "+nt+"m"+((overrides[id]&&(overrides[id].dir||overrides[id].thresh))?"":" (default)")); /* 0723h: SAME QUESTION SAME SENTENCE - the bell's voice; the sleep alone felt like nothing happened (owner) */
+      var tb9=roster[id].name+ /* 0726b: the sink is textContent — esc() here double-escaped (owner glass: Na&#39;vi); the ✓ icon carries the mark, the bell stays the push channel's */" — "+nd+" "+nt+"m"+((overrides[id]&&(overrides[id].dir||overrides[id].thresh))?"":" (default)"); /* 0723h: SAME QUESTION SAME SENTENCE - the bell's voice; the sleep alone felt like nothing happened (owner) */
+      if(settings.notif&&notifGranted())pushToast("Alert set",tb9);
+      else mrNotifOn(function(ok,why){if(ok)pushToast("Alert set",tb9);else pushToast("Alert set \u00b7 this phone is silent",tb9+(why==="unsupported"?". This browser can't show notifications.":". Allow notifications in Settings to hear it."));mrNotifPaint();}); /* 0728kw THE FIRST BELL ASKS (N-A): the tap that arms the first bell also turns the master on - the permission lands at the moment the guest wants an alert; denied, the receipt says the alert is set AND that the phone is silent, and where to fix it (HONESTY RULES: the bell never promises a ping the phone can't make) */
       mrCloseSheet();mrRepaint();}); /* 0728gs C-1: the door closes, the toast is the receipt */
     var off2=el.querySelector("#mrShOff");if(off2)off2.addEventListener("click",function(){var id=mrShId;if(!id||!armed[id])return;mrShOffTap(id);mrCloseSheet();mrRepaint();}); /* 0728gs SH-B: Turn alert off */
     var chg=function(){mrShGate(el);};var d3=el.querySelector("#mrShDir");if(d3)d3.addEventListener("change",chg);var t3=el.querySelector("#mrShThr");if(t3)t3.addEventListener("change",chg);
@@ -12020,7 +12034,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(th)th.innerHTML=threshOptions((o&&o.thresh)||settings.thresh);
     var st=el.querySelector("#mrShSet");if(st)st.textContent=armed[id]?"Save rule":"Turn alert on"; /* SH-A / SH-B: the primary names the arm or the change */
     var off=el.querySelector("#mrShOff");if(off){if(armed[id])off.removeAttribute("hidden");else off.setAttribute("hidden","");}
-    var fn=el.querySelector("#mrShFine");if(fn)fn.textContent="Pings once when the wait crosses this line."+(watch[id]?"":" Stars the ride too."); /* L-1: from Live an unstarred ride is starred by the arm (Rule A) */
+    var fn=el.querySelector("#mrShFine");if(fn)fn.innerHTML="Pings once when the wait crosses this line."+(watch[id]?"":" Stars the ride too.")+((settings.notif&&notifGranted())?"":" <b>Also turns on notifications for this phone</b> \u2014 iOS asks once."); /* L-1: from Live an unstarred ride is starred by the arm (Rule A) */ /* 0728kw N-A: THE BELL SHOWS THE RULE BEFORE IT ARMS - and what the tap will do; the clause shows only while the master is off (static words, no user text - innerHTML is safe here) */
     var dz=el.querySelector("#mrShDnZ");if(dz){if(watch[id])dz.removeAttribute("hidden");else dz.setAttribute("hidden","");} /* down & back-up rides a star (mrDnupFor); no segment for a ride not yet starred */
     var df=el.querySelector("#mrShDnF");if(df)df.textContent=settings.dnup?"on":"off";
     var sdb=el.querySelector("#mrShDef");if(sdb){if(o)sdb.removeAttribute("disabled");else sdb.setAttribute("disabled","");} /* 0722o U1-b: dimmed and asleep when the ride is already at defaults */
@@ -12040,28 +12054,25 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var sh=el.querySelector("#mrSheet"),sc=el.querySelector("#mrScrim");
     if(sh)sh.classList.remove("open");if(sc)sc.classList.remove("open");
   }
+  function mrNotifOn(cb){ /* 0728kw THE FIRST BELL ASKS (owner-ruled Nov 6, 1:23 PM): the ONE permission ladder - mrNotifTap's, lifted whole - behind every door to the master switch: the fold's toggle, the Settings row, the bell's first arm, the silent-bells card (ONE PHENOMENON ONE HOME, applied to a switch). Must run from a user tap. cb(ok, why) with why = "unsupported" | "blocked" | null; the state is written here, the doors only paint. */
+    var done=function(ok,why){if(ok){settings.notif=true;store.set("notif",true);}if(cb)cb(!!ok,why||null);};
+    if(typeof Notification==="undefined"&&!shellPush()){done(false,"unsupported");return;} /* 0728bw: the shell has no Notification object and needs none */
+    if(pushSupported()){enablePush().then(function(ok){done(!!ok,ok?null:"blocked");});return;}
+    if(notifPerm()==="granted"){done(true);return;}
+    Notification.requestPermission().then(function(p){done(p==="granted",p==="granted"?null:"blocked");});
+  }
+  function mrNotifOff(){settings.notif=false;store.set("notif",false);disablePush();pushSub=null;} /* 0728kw: the off path, one home too */
+  function mrNotifPaint(){var st=$("setNotif");if(st)setOn(st,!!(settings.notif&&notifGranted()));if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();} /* 0728kw: every door repaints from the one state */
   function mrNotifTap(el){
     /* Ported whole from the retired sheet's notifToggle binding: same permission
-       ladder, same copy; setOn aims at the mr master switch now. */
-    if(el.classList.contains("on")){
-      settings.notif=false;store.set("notif",false);setOn(el,false);
-      disablePush();pushSub=null;renderMyRidesPage();return;
-    }
-    if(typeof Notification==="undefined"&&!shellPush()){pushToast("Not supported","This browser can't show notifications.");return;} /* 0728bw: the shell has no Notification object and needs none */
-    if(pushSupported()){
-      enablePush().then(function(ok){
-        if(ok){settings.notif=true;store.set("notif",true);setOn(el,true);
-          pushToast("Alerts on","You'll get alerts even when the app is closed.");}
-        else{pushToast("Notifications blocked","Allow them in your device's settings to get alerts.");}
-        renderMyRidesPage();
-      });
-      return;
-    }
-    if(notifPerm()==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);renderMyRidesPage();}
-    else{Notification.requestPermission().then(function(p){
-      if(p==="granted"){settings.notif=true;store.set("notif",true);setOn(el,true);}
-      else{pushToast("Notifications blocked","Allow them in your browser's site settings to get alerts.");}
-      renderMyRidesPage();});}
+       ladder, same copy; setOn aims at the mr master switch now. 0728kw: the ladder lives in mrNotifOn; this is the toggle's own door (the fold's and the Settings row's) */
+    if(el.classList.contains("on")){mrNotifOff();setOn(el,false);mrNotifPaint();return;}
+    mrNotifOn(function(ok,why){
+      if(ok){setOn(el,true);pushToast("Alerts on","You'll get alerts even when the app is closed.");}
+      else if(why==="unsupported")pushToast("Not supported","This browser can't show notifications.");
+      else pushToast("Notifications blocked","Allow them in your device's settings to get alerts.");
+      mrNotifPaint();
+    });
   }
 
   function clearFilters(){
