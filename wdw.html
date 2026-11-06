@@ -1684,7 +1684,7 @@
   .pw-hero .prov{font-size:var(--fs-meta);color:var(--pwh-dim);margin-top:12px;padding-top:11px;border-top:1px solid var(--pwh-line)}
   .pw-badge.live{background:rgba(79,70,229,.1);color:var(--accent)}
   .pw-hero{background:linear-gradient(135deg,var(--pwh-bg),var(--pwh-bg2));border-radius:var(--r-card);padding:18px;color:#fff;margin-bottom:11px}
-  .pw-hero .k{font-size:var(--fs-meta);letter-spacing:.1em;text-transform:uppercase;color:var(--pwh-key);font-weight:700}
+  .pw-hero .k{font-size:var(--fs-meta);letter-spacing:.1em;text-transform:uppercase;color:var(--pwh-key);font-weight:700} .pw-hero .k .lvd{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3dd68c;margin-left:8px;vertical-align:1px} /* 0728la THE KICKER NAMES THE DAY AND ITS TENSE (owner-ruled K-A, Nov 6 3:18 PM): the live dot the week grid wears beside today's row */
   .pw-hero .l{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat);line-height:1.16;margin-top:7px}
   .pw-hero .ttl{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat-lg);line-height:1.05;margin-top:5px}
   .pw-hero .sub{font-size:var(--fs-small);color:var(--pwh-sub);margin-top:7px;line-height:1.45}
@@ -2831,7 +2831,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728kz</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728la</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -14403,7 +14403,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var isTod=(lastData&&lastData.dates&&lastData.dates[0]===etDate(0));
       var line="Headliners "+(live?"are averaging ":"averaged ")+pk.headAvg+" min"+(isWeek?" this week.":" "+pwDayWord(dateStr)+"."); /* 0713o: the date names the day */
       var sub2=pk.leastRel?(pk.leastRel.name+(live?" has had the roughest run so far, down ":" had the roughest run, down ")+pk.leastRel.downMinutes+" min."):(live?"Every ride holding up well so far.":"Every ride held up well.");
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+" · "+(isWeek?"this week":(pwVisitDate()?esc(pwMonDY(pwVisitDate())):esc(pwDayWord((lastData&&lastData.dates&&lastData.dates[0])||etDate(0)).replace(/^on /,""))))+" · "+(live?"so far":"final")+(live?'<i class="lvd" aria-hidden="true"></i>':'')+'</div><div class="ttl">'+esc(park)+'</div><div class="sub">'+esc(line)+" "+esc(sub2)+'</div>'+(isWeek?pwWeekParkStrip(lastData,park):"");
       var pkOut=0,pkOutMin=0;pk.rides.forEach(function(r){if(pwShow(r))return;pkOut+=r.downEvents||0;pkOutMin+=r.downMinutes||0;}); /* 0728hw ONE PHENOMENON ONE HOME (owner-ruled R-B Oct 22): Busiest leaves the row — its home is the Toughest line tile beneath; the seat is the park's outages so far (DOWN events, shows excluded, the landing's own sentence for one park) with the ride-hours lost beneath */
       html+='<div class="pw-meta"><div>Headliner avg <button type="button" class="pw-info-i" aria-label="How this is calculated">i</button><b>'+pk.headAvg+'m</b></div><div>Outages<b>'+pkOut+'</b><span class="nm">'+(pkOutMin>=60?Math.round(pkOutMin/60)+' ride-hour'+(Math.round(pkOutMin/60)===1?'':'s')+' lost':pkOutMin+' min lost')+'</span></div><div>Rides tracked<b>'+pk.n+'</b></div></div></div>';
       html+='<div class="pw-note" id="pwHeadInfo" hidden>Headliner avg — the average wait across this park\'s headliners (its marquee rides, ratified by RideCue) that ran'+(isWeek?" this week.":live?" so far today.":" that day.")+' An estimate from wait times, not official attendance.</div>';
@@ -16322,7 +16322,7 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
       var wayInR=pwWayNote("ride",rid); /* 0728hx: a landing tile's ride page returns to the landing */
       var html='<div class="pw-nav"><button class="pw-back" type="button" id="pwBackR"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to '+esc(wayInR?wayInR.label:park)+'</button>'+(hasProf?'<button class="pw-back" type="button" id="pwFullRec">Full record \u203a</button>':'')+'</div>';
       html+='<div class="pw-crumb"><b>Wrap</b> › '+esc(park)+' › '+esc(shortName(r.name))+(pwVisitDate()?' · '+esc(pwMonDY(pwVisitDate())):'')+'</div>';
-      html+='<div class="pw-hero"><div class="k">'+esc(park)+(isWeek?" · this week":(pwVisitDate()?" · "+esc(pwMonDY(pwVisitDate())):" · recap"))+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause,isWeek)))+'</div>';
+      html+='<div class="pw-hero"><div class="k">'+esc(park)+" · "+(isWeek?"this week":(pwVisitDate()?esc(pwMonDY(pwVisitDate())):esc(pwDayWord((lastData&&lastData.dates&&lastData.dates[0])||etDate(0)).replace(/^on /,""))))+" · "+(live?"so far":"final")+(live?'<i class="lvd" aria-hidden="true"></i>':'')+'</div><div class="ttl">'+esc(r.name)+'</div><div class="sub">'+esc(line+" "+(r._refurb?"Closed for planned work — no wait times to report.":rideSub(r,live,rClause,isWeek)))+'</div>';
       var band=(!isWeek)?pwSparkBand(r.id,su,(live&&lastTab==="today"&&!pwVisitDate())?rsTyp(r.id):null):""; /* 0728fr: today’s page draws today against its typical; a finished or visited day draws as it always has */
       html+=band+'</div>';
       if(!r._refurb){
