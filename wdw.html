@@ -2831,7 +2831,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lb</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lc</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15917,16 +15917,17 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
 
       function wkGrid(bx,by,bw,G){ /* 0728iz THE GRID SHAPE (owner Oct 28, 12:56 PM: "maybe make another version with the graph? 2 to choose from on the preview"): the ride page's hour-by-hour week, as the page draws it \u2014 the hour header, seven day rows, the hm steps with the number in every cell (COLOR NEVER CARRIES ALONE), the red underline where a 5-min down window touched the hour, the striped dn cell where no wait was posted, dashed cells for the days to come, today's dot; the page's own key and caption beneath. Returns the block's height. */
+        function wkHatch(x,y,w,h,r){ /* 0728lc THE CARD WEARS THE SHEET'S HATCH (owner-ruled B, Nov 7 9:19 AM: "getting that down box to match the sheet"): .rp-hmc.dn's 135deg stripes, the packed red at 34%, 3-on-3-off scaled x1.3 for the card, clipped to the cell; the 0.55 outline and the red "dn" stay */ var q;ctx.save();rr(x,y,w,h,r);ctx.clip();ctx.lineWidth=4;ctx.strokeStyle="rgba(226,59,84,0.34)";for(q=-h;q<w+h;q+=8){ctx.beginPath();ctx.moveTo(x+q+h,y);ctx.lineTo(x+q,y+h);ctx.stroke();}ctx.restore();}
         var FILL=["#2c3660","#3d4590","#5553c0","#7a72ea","#aeaaff"],INK=["#ffffff","#ffffff","#ffffff","#ffffff","#0a141d"],/* 0728kz HARBOR, LIFTED (owner-ruled B, Nov 6 3:11 PM): the floor two shades up, white ink to the fourth step - the same five values as html.dark's --hm tokens (one ramp, two homes) */DD=G.days,h0=G.h0,h1=G.h1,nh=h1-h0+1,lab=74,gap=5,cw=Math.floor((bw-lab-gap*(nh-1))/nh),chh=Math.round(cw*0.92),hdr=34,i,h,k,x,ry,cx,vals,av,tch,st;
         for(h=h0;h<=h1;h++)T(String(((h+11)%12)+1),bx+lab+(h-h0)*(cw+gap)+cw/2,by+22,IN("600",20),C.muted2,"center");
         for(i=0;i<7;i++){x=DD[i];ry=by+hdr+i*(chh+gap);var lv=x.live&&!G.fin;
           T(RP_WD[i],bx,ry+chh/2,IN(lv?"700":"600",22),lv?C.accent:C.muted,"left","middle");
           if(lv){ctx.beginPath();ctx.arc(bx+lab-16,ry+chh/2,5,0,Math.PI*2);ctx.fillStyle=C.green;ctx.fill();}
           for(h=h0;h<=h1;h++){cx=bx+lab+(h-h0)*(cw+gap);
-            if(x.future){ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.14)";rr(cx+0.75,ry+0.75,cw-1.5,chh-1.5,8);ctx.stroke();ctx.setLineDash([]);continue;}
             vals=[];for(k=0;k<(x.hm||[]).length;k++)if(x.hm[k]!=null&&Math.floor((x.hs+k)/2)===h)vals.push(x.hm[k]);
             tch=pwWkTouch(x,h);
-            if(!vals.length){if(tch){rr(cx,ry,cw,chh,8);ctx.fillStyle="rgba(226,59,84,0.16)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(226,59,84,0.55)";ctx.stroke();T("dn",cx+cw/2,ry+chh/2,IN("700",17),"#ff6b6b","center","middle");}
+            if(x.future||(lv&&x.nh!=null&&h>=x.nh&&!vals.length&&!tch)){ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.strokeStyle="rgba(255,255,255,0.14)";rr(cx+0.75,ry+0.75,cw-1.5,chh-1.5,8);ctx.stroke();ctx.setLineDash([]);continue;} /* 0728lc THE HOUR ARRIVES: the card's live row dashes the same hours the sheet does (SAME QUESTION SAME SENTENCE) */
+            if(!vals.length){if(tch){wkHatch(cx,ry,cw,chh,8);rr(cx,ry,cw,chh,8);ctx.lineWidth=1.5;ctx.strokeStyle="rgba(226,59,84,0.55)";ctx.stroke();T("dn",cx+cw/2,ry+chh/2,IN("700",17),"#ff6b6b","center","middle");}
               else{rr(cx,ry,cw,chh,8);ctx.fillStyle="rgba(255,255,255,0.035)";ctx.fill();}continue;}
             av=0;for(k=0;k<vals.length;k++)av+=vals[k];av=av/vals.length;st=rpHmStep(av);
             rr(cx,ry,cw,chh,8);ctx.fillStyle=FILL[st];ctx.fill();
@@ -15934,7 +15935,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
             if(tch){ctx.save();rr(cx,ry,cw,chh,8);ctx.clip();ctx.fillStyle="#e23b54";ctx.fillRect(cx,ry+chh-5,cw,5);ctx.restore();}}}
         var gridH=hdr+7*(chh+gap)+8,ky=by+gridH+30,kx=bx;
         rr(kx,ky-12,34,18,4);ctx.fillStyle=FILL[1];ctx.fill();ctx.fillStyle="#e23b54";ctx.fillRect(kx,ky+2,34,4);T("down for part of it",kx+44,ky+2,IN("500",21),C.muted,"left","middle");
-        kx+=44+ctx.measureText("down for part of it").width+34;rr(kx,ky-12,34,18,4);ctx.fillStyle="rgba(226,59,84,0.16)";ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle="rgba(226,59,84,0.55)";ctx.stroke();T("down, no wait posted",kx+44,ky+2,IN("500",21),C.muted,"left","middle");
+        kx+=44+ctx.measureText("down for part of it").width+34;wkHatch(kx,ky-12,34,18,4);rr(kx,ky-12,34,18,4);ctx.lineWidth=1.5;ctx.strokeStyle="rgba(226,59,84,0.55)";ctx.stroke();T("down, no wait posted",kx+44,ky+2,IN("500",21),C.muted,"left","middle");
         T(G.cap,bx,ky+56,IN("600",24),C.ink,"left");
         return gridH+92;
       }
@@ -16214,7 +16215,8 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
       var sls=Object.keys(hm).map(Number).sort(function(a,b){return a-b;}),hs=sls.length?sls[0]:null,arr=[],j,a;
       if(hs!=null)for(j=hs;j<=sls[sls.length-1];j++){if(!hm[j]){arr.push(null);continue;}a=hm[j].slice().sort(function(p,q){return p-q;});arr.push(a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2);}
       for(i=0;i<((t&&t.rides)||[]).length;i++)if(t.rides[i].id===rid){tr=t.rides[i];break;}
-      return {d:ds,live:true,hs:hs,hm:arr,dwn:dwn,dm:tr?(tr.downMinutes||0):0};
+      var nh=null;if(typeof tdNow==="function"){var nmin=tdNow();if(nmin<360)nmin+=1440;nh=Math.floor(nmin/60);} /* 0728lc THE HOUR ARRIVES (owner-ruled B, Nov 7 9:19 AM): the park-time hour in progress, from the one clock seam (tdNow); after-midnight carries (the tdIsoMin idiom) */
+      return {d:ds,live:true,hs:hs,hm:arr,dwn:dwn,dm:tr?(tr.downMinutes||0):0,nh:nh};
     }
     function pwWkDays(rid){ /* the ride's seven days in the Plan grid's day shape ({hs,hm,dwn}); a finished day with no record is blank (not operating), never a promise */
       var wk=lastData&&lastData.week;if(!wk||!wk.days)return null;
@@ -16256,9 +16258,9 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
         for(i=0;i<D.length;i++){x=D[i];var lv=x.live&&!fin;
           grid+='<i class="gt'+(lv?' today':'')+'">'+RP_WD[i]+(lv?'<span class="rp-reclive"></span>':'')+'</i>';
           for(h=h0;h<=h1;h++){
-            if(x.future){grid+='<b class="rp-hmc fut"></b>';continue;}
-            var vals=[];for(k=0;k<x.hm.length;k++)if(x.hm[k]!=null&&Math.floor((x.hs+k)/2)===h)vals.push(x.hm[k]);
+            var vals=[];for(k=0;k<(x.hm||[]).length;k++)if(x.hm[k]!=null&&Math.floor((x.hs+k)/2)===h)vals.push(x.hm[k]);
             var tch=pwWkTouch(x,h);
+            if(x.future||(lv&&x.nh!=null&&h>=x.nh&&!vals.length&&!tch)){grid+='<b class="rp-hmc fut"></b>';continue;} /* 0728lc THE HOUR ARRIVES (owner-ruled B): on today's row an hour not yet arrived, or in progress with nothing posted, is "to come" like Sat & Sun - never the not-operating blank */
             if(!vals.length){grid+=(tch?'<b class="rp-hmc dn" data-wk="'+i+'-'+h+'" data-dn="1">dn</b>':'<b class="rp-hmc" data-wk="'+i+'-'+h+'"></b>');continue;}
             var av=0;for(k=0;k<vals.length;k++)av+=vals[k];av=av/vals.length;
             grid+='<b class="rp-hmc s'+rpHmStep(av)+(tch?' pd':'')+'" data-wk="'+i+'-'+h+'"'+(tch?' data-dn="1"':'')+'>'+Math.round(av)+'</b>';}}
