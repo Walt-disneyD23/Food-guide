@@ -2834,7 +2834,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lh</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -4983,7 +4983,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(scope!=="all"&&r2.park!==scope)continue;
       if(isOpenNow(parkInfo[r2.park])===false)continue;
       var lv2=liveById[e.id];if(!lv2||lv2.status!=="OPERATING")continue;
-      res.push({id:e.id,nm:r2.name,pk:BANNER_MONO[r2.park]||"",w:(typeof lv2.wait==="number"?lv2.wait:null),at:e.at,since:e.since,tier:tierOf(lv2),kind:"re"});
+      var c9={id:e.id,nm:r2.name,pk:BANNER_MONO[r2.park]||"",w:(typeof lv2.wait==="number"?lv2.wait:null),at:e.at,since:e.since,tier:tierOf(lv2),kind:"re"},g9;
+        for(g9=0;g9<go.length;g9++)if(go[g9].id===e.id){c9.go=go[g9];go.splice(g9,1);break;} /* 0728lh ONE RIDE, ONE CARD: a ride that came back at a GO wait wears both words on one card - its verdict rides the reopen card and leaves the go list (every ride, starred or not) */
+        res.push(c9);
     }
     go.sort(function(a,b){return b.delta-a.delta;});rough.sort(function(a,b){return b.delta-a.delta;});
     var earned=go.length+rough.length;
@@ -5006,10 +5008,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(m.state==="quiet")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
     pfLastShare={cards:m.cards,days:m.days||0,moreN:m.moreN||0,scope:scope,pool:m.pool||null}; /* 0711g: the surface door reads scope+moreN too */
     var body=m.cards.map(function(c,ci){
-      var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':'<span class="pf-kick re">Just reopened</span>';
+      var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':(c.go?'<span><span class="pf-kick re">Just reopened</span><span class="pf-kick" style="opacity:.45;padding:0 7px">·</span><span class="pf-kick go">Go now</span></span>':'<span class="pf-kick re">Just reopened</span>'); /* 0728lh C-A: both kickers, each in its own ink, seated together (the mock's bytes) */
       var meta=c.kind==="re"
         ?('back up at <b>'+esc(fmtClock(new Date(c.at).toISOString())||"")+'</b> after a down period since '+esc(fmtClock(new Date(c.since).toISOString())||""))
         :('typically <b>'+c.typ+'</b> this half-hour'+pfMetaTail(c)+' · <b>'+c.delta+' '+(c.kind==="go"?"under":"over")+'</b>'+pfMetaR3(c)); /* 0727k m-B: the card says its basis; rung 3 earns its tail */
+      if(c.go)meta+='<br>typically <b>'+c.go.typ+'</b> this half-hour'+pfMetaTail(c.go)+' · <b>'+c.go.delta+' under</b>'+pfMetaR3(c.go); /* 0728lh C-A: the comeback leads, the deal beneath - GO NOW's own sentence, word for word (SAME QUESTION SAME SENTENCE) */
       var num=(typeof c.w==="number")?'<span class="pf-now '+c.tier+'">'+c.w+'<small> MIN</small></span>':'';
       return '<div class="pf-card"><div class="pf-top">'+kick+'<span class="pf-topr"><span class="pf-pk">'+esc(c.pk)+'</span>'+
         '<button class="pf-shr" type="button" data-ci="'+ci+'" aria-label="Share this callout">'+
@@ -5052,6 +5055,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT};
       if(typeof c.w==="number"){D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);D.basis="Wait is live \u00b7 down period timed from live status samples";}
       else{D.num="OPEN";D.sub="NO POSTED WAIT";D.numCol=pfTcol("short");D.basis="Down period timed from live status samples";}
+      if(c.go&&typeof c.w==="number"){D.k2="GO NOW";D.kc2=PW_CARD_ALT.green;D.d1=c.go.delta+" under";D.d2="typically "+c.go.typ+" min this half-hour"+pfMetaTail(c.go)+pfMetaR3(c.go);D.basis="Typical = this half-hour over "+(c.go.bw||("the last "+days+" days"))+" of live waits \u00b7 down period timed from live status samples";} /* 0728lh S-A: the merged card carries the second kicker and its ink, the deal's two fields, and a basis that labels both measures */
     }else{
       var go=c.kind==="go";
       D.kicker=go?"GO NOW":"ROUGH RIGHT NOW";D.kc=go?PW_CARD_ALT.green:"#ff9f6b";
@@ -5081,7 +5085,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
     rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
     T(D.date,R,184,IN("700",28),C.ink,"right");
-    LS("3px");T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),D.kc);LS("0px"); /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
+    LS("3px");if(D.k2){var k1=(D.kicker+" \u00b7 ").toUpperCase();T(k1,L,236,IN("800",28),D.kc);T((D.k2+" \u00b7 "+D.pk).toUpperCase(),L+MW(k1,IN("800",28)),236,IN("800",28),D.kc2);}else T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),D.kc);LS("0px"); /* 0728lh S-A: two kickers, two inks, one line */ /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
     y=317;var nl=wrap2(D.nm,CW,SG("700",66));for(i=0;i<nl.length;i++)T(nl[i],L,y+i*72,SG("700",66),C.ink);y+=(nl.length-1)*72;
     y+=24;hair(y);
     var ns=(D.num==="OPEN")?120:168,top=y+40,base=top+Math.round(ns*0.78); /* the hero: 168 under the family head (was 210 on the square), its baseline seated at four-fifths of its size */
@@ -5098,6 +5102,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var dl=wrap2(D.d2,rw,IN("500",28),2);for(i=0;i<dl.length;i++)T(dl[i],R,base-10+i*34,IN("500",28),C.muted,"right"); /* the receipt keeps its words: two lines beside the hero (a party clause rides here) */
     }
     y=base+52;
+    if(D.tl&&D.d1){y+=30;hair(y);T(D.d1,L,y+64,IN("800",42),C.ink);T(D.d2,R,y+62,IN("500",28),C.muted,"right");y+=52;} /* 0728lh S-A: the timeline keeps its seat beside the number; the deal sits on its own row beneath a hairline */
     y+=48;hair(y); /* ONE FOOTER HAND */
     var b1=wrap2(D.basis,CW-270,IN("500",26),3),bl=0;for(bl=0;bl<b1.length;bl++)T(b1[bl],L,y+59+bl*34,IN("500",26),C.muted2); /* the basis keeps its words \u2014 up to three lines beside the site */
     T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
@@ -5130,7 +5135,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      beside the site), ONE FOOTER HAND, self-sized in two passes. C-B (grouped by park) rejected by the owner's own reasoning: the page caps at five, so a park group
      would read as a census when it is a cut. The per-park share already exists \u2014 the door shares what the chip row shows (pfLastShare.scope). ===== */
   function pfParkModel(s){
-    var scope=s.scope,cards=s.cards,unusualN=s.moreN,i;
+    var scope=s.scope,cards=(function(a){var o=a.slice();a.forEach(function(c){if(c.kind==="re"&&c.go){var k=0;while(k<o.length&&(o[k].kind==="re"||o[k].delta>=c.go.delta))k++;o.splice(k,0,c.go);}});return o;})(s.cards),unusualN=s.moreN,i; /* 0728lh: the surface card is untouched - a folded card's verdict unfolds back into its own row, seated by its departure among the rest (THE ORDER IS EARNED); a feed with nothing folded passes through as it came */
     for(i=0;i<cards.length;i++)if(cards[i].kind!=="re")unusualN++;
     var shown=cards.slice(0,5),tailN=s.moreN+Math.max(0,cards.length-5);
     var hasRe=false;
