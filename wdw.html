@@ -2834,7 +2834,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lf</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lg</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -4947,13 +4947,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }).catch(function(){});
   }
   function pfTick(){ /* once per poll, beside checkAlerts(): park-wide down→up, 2-poll-confirmed runs */
+    var now=Date.now(),gap=8*60*1000; /* 0728lg THE PHONE VOUCHES ONLY FOR WHAT IT WATCHED: one missed poll of grace (the poll runs 3-5 min); past it the page was asleep and its clocks are its own, not the ride's */
     Object.keys(roster).forEach(function(id){
       if(roster[id].kind!=="ride")return;
       var lv=liveById[id];if(!lv)return;
-      if(lv.status==="DOWN"){var run=pfRuns[id]||(pfRuns[id]={ticks:0,since:Date.now()});run.ticks++;}
+      if(lv.status==="DOWN"){var run=pfRuns[id];if(!run||now-run.last>gap)run=pfRuns[id]={ticks:0,since:now};run.ticks++;run.last=now;} /* 0728lg: a down seen again after a nap starts the run over - the phone did not watch the ride stay down */
       else{
         var r=pfRuns[id];
-        if(r&&r.ticks>=2&&lv.status==="OPERATING"){pfReopens.push({id:id,at:Date.now(),since:r.since});if(pfReopens.length>10)pfReopens=pfReopens.slice(-10);}
+        if(r&&r.ticks>=2&&lv.status==="OPERATING"&&now-r.last<=gap){pfReopens.push({id:id,at:now,since:r.since});if(pfReopens.length>10)pfReopens=pfReopens.slice(-10);}
         if(r)delete pfRuns[id];
       }
     });
@@ -11732,7 +11733,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!p.length)return "<i>"+rows.length+"</i>";if(o)p.push("<i>"+o+"</i> more");return p.join(" · ");
   }
   function mrLogHTML(){
-    var L=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}).slice(-40).reverse(); /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
+    var A9=(store.get("alertLog",[])||[]).filter(function(e){return e.ev==="moved-home"||mrEvWord[e.ev];}),tk9=mrDayKey(Date.now()),nT9=A9.filter(function(e){return mrDayKey(e.t)===tk9;}).length,L=A9.slice(-Math.max(40,nT9)).reverse(); /* 0728lg THE DAY'S COUNT IS THE DAY'S: Today is never capped - the list, its count, the by-kind sentence and the chip all read every row of today; older days still fill the 40 */ /* 0719y: the log lists alerts, not engine ticks — rebreak breadcrumbs keep banking quietly for diagnosis */
     if(!L.length)return "";
     var days=[],cur=null,i;
     for(i=0;i<L.length;i++){var k=mrDayKey(L[i].t);if(!cur||cur.k!==k){cur={k:k,w:mrDayWord(L[i].t),rows:[]};days.push(cur);}cur.rows.push(L[i]);}
