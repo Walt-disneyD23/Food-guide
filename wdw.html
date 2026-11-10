@@ -2860,7 +2860,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lp</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lq</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -8902,8 +8902,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function wrap(s,f,mw){var ws=String(s).split(" "),ln="",o=[],k;for(k=0;k<ws.length;k++){var t2=(ln?ln+" ":"")+ws[k];if(MW(t2,f)>mw&&ln){o.push(ln);ln=ws[k];}else ln=t2;}if(ln)o.push(ln);return o;}
     function ink(t){return C[t]||C.muted2;}
     ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
-    SP("MY PLAN \u00b7 "+D.range.toUpperCase(),L,100,RB(800,30),C.accent,4); /* the kicker names the range; the product waits for the fine print (G logic) */
-    SP("3-YEAR RECORD",R,100,RB(700,26),C.ink,2,"right");T("as of "+D.stampDate,R,132,RB(600,22),C.muted,"right");
+    var kk="MY PLAN \u00b7 "+D.range.toUpperCase(),kz=30;while(kz>24&&SW(kk,RB(800,kz),4)>R-L)kz--; /* 0728lq THE CARD'S TOP LINE KEEPS ITS LANE (owner glass Nov 10, 2026: the kicker ran through the stamp; K-A): the kicker has the full width, shrinks to 24, then wraps at a dot */
+    var kl=[kk];if(SW(kk,RB(800,kz),4)>R-L){var kp=kk.split(" \u00b7 "),kn="",ko=[],kq;for(kq=0;kq<kp.length;kq++){var k2=kn?kn+" \u00b7 "+kp[kq]:kp[kq];if(SW(k2,RB(800,kz),4)>R-L&&kn){ko.push(kn+" \u00b7");kn=kp[kq];}else kn=k2;}ko.push(kn);kl=ko;}
+    for(i=0;i<kl.length;i++)SP(kl[i],L,100+i*38,RB(800,kz),C.accent,4);
+    var KY=(kl.length-1)*38;if(KY)ctx.translate(0,KY); /* each extra kicker line pushes the card down; the height follows through KX */ /* the kicker names the range; the product waits for the fine print (G logic) */
+    SP("3-YEAR RECORD",R,190,RB(700,26),C.ink,2,"right");T("as of "+D.stampDate,R,222,RB(600,22),C.muted,"right"); /* 0728lq K-A: the stamp joins the title's line */
     T("When I\u2019d go",L,214,RD(700,66),C.ink); /* (b) B-1: the door asks When should we go? \u2014 the card answers */
     var n=D.band.length,sw=n?((R-L)+10)/n-10:0;
     for(i=0;i<n;i++){var b=D.band[i],bx=L+i*(sw+10),cx=bx+sw/2,bh=Math.max(10,Math.min(120,b.h));
@@ -8916,7 +8919,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function kItems(){var o=[],k;for(k=0;k<D.key.length;k++)o.push({sw:D.key[k].tier,w:D.key[k].word,r:D.key[k].range});if(D.awKey)o.push({sw:"aw",w:D.awKey,r:""});return o;}
     var KW=4*PC_PIP.w+3*PC_PIP.g; /* 0728d: the key's swatch is the meter */
     items=kItems();
-    var kx=L,KX=0;for(i=0;i<items.length;i++){var it=items[i];var iw=(it.sw==="aw"?24:KW+6)+MW(it.w,RB(600,kf))+(it.r?6+MW(it.r,RB(500,kf)):0);if(kx+iw>R){kx=L;KX+=34;ctx.translate(0,34);} /* a second row only when it must; everything below rides the translate */
+    var KG=14;ctx.translate(0,KG);var kx=L,KX=KY+KG;for(i=0;i<items.length;i++) /* 0728lq: the key rides 14 lower - the labels above it grew at 0728ir and the key never moved */ {var it=items[i];var iw=(it.sw==="aw"?24:KW+6)+MW(it.w,RB(600,kf))+(it.r?6+MW(it.r,RB(500,kf)):0);if(kx+iw>R){kx=L;KX+=34;ctx.translate(0,34);} /* a second row only when it must; everything below rides the translate */
       if(it.sw==="aw"){ctx.fillStyle=C.bar3;rr(kx,461,18,18,5);ctx.fill();ctx.fillStyle=C.accent;rr(kx+3,465,12,3,2);ctx.fill();kx+=24;}else{var lk=TF_LV[it.sw]||0,pk;for(pk=0;pk<4;pk++){rr(kx+pk*(PC_PIP.w+PC_PIP.g),466,PC_PIP.w,PC_PIP.h,PC_PIP.h/2);ctx.fillStyle=pk<lk?C.ink:C.hair;ctx.fill();}kx+=KW+6;} /* 0728d: the key teaches the meter (1\u00b72\u00b73\u00b74 lit) and the ramp's chip; +16 */
       T(it.w,kx,476,RB(600,kf),C.muted);kx+=MW(it.w,RB(600,kf));
       if(it.r){kx+=6;T(it.r,kx,476,RB(500,kf),C.muted2);kx+=MW(it.r,RB(500,kf));}
