@@ -2834,7 +2834,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lh</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728li</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3662,7 +3662,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var chain=parks.length?Promise.resolve():(discoverParks().then(function(){return Promise.all([fetchRoster(),fetchSchedule()]);}));
     return chain.then(fetchLive).then(function(){
       done9=true;clearTimeout(slow9);if(liveState==="error")setPulse("ok");
-      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();sbSweep();updateAlertBadge();scheduleConfirm(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
+      usingFallback=false;lastUpdated=new Date();scheduleNext();pfTick();rdLtgTick();if(typeof tyPollTick==="function")tyPollTick();render();checkAlerts();sbSweep();updateAlertBadge();scheduleConfirm();if(typeof pfRecTick==="function")pfRecTick(); /* 0721f: the badge counts the REAL roster - the boot count ran against static ids and nothing re-counted when the live roster landed (the 5:20 blank-badge specimen) */ /* 0718s: the lightning feed rides the poll, self-throttled */
       if(navTab==="myrides"&&typeof renderMyRidesPage==="function")renderMyRidesPage();
       rsWarm(); /* 0728kc THE DAY IS WARM BEFORE THE TAP: every live poll warms the ride sheet's day copy (the file is 40-130 KB; the poll already pulls ~230 KB a cycle); nothing in the background */
       if(typeof wlDue==="function"&&wlDue())wlOpen(); /* 0728kh THE FIRST RUN: the welcome rises once, after the first live paint (wlOpen is idempotent; a dismissal retires it) */
@@ -4958,6 +4958,60 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         if(r)delete pfRuns[id];
       }
     });
+  }
+  var pfRec=null,pfInc=null,pfWakeAt=0,pfTickAt=0; /* 0728li THE RECORD WEARS THE CLOCK (owner-ruled B-3, Nov 10, 2026): after a nap the phone vouches for nothing (0728lg) - the Worker watched. pfRec is today's day record (the five-minute rows, every ride); pfInc is this phone's ledger (the /save echo, minute-true) */
+  function pfRecReopens(rec,inc,now,etMin){ /* pure: the comebacks the Worker's records prove, newest 20 minutes - [{id,at,since}] in ms. THE DAY RECORD: a ride that ran, then sat DOWN for two rows or more, then posts a running row - every row of the run and its comeback within ten minutes of the row before (a gap is the record not watching: the transition hour, a Worker pause); CLOSED or an absent row between is a scheduled opening, never a comeback; a ride with no running row before the run opened late and gets no card. THE LEDGER: the ride's newest entry, closed by a comeback (u, never n), five minutes or more - its clocks win where it names the same comeback (within six minutes) or the rows have not caught up; with no day record to say the ride ran, the ledger alone seats nothing */
+    var out={},MIN=60000,base=now-(now%MIN),snap=rec&&rec.snap,ids=null,rows=null,col,i;
+    function ms(t){return base-(etMin-t)*MIN;}
+    function cd(i,c){var w=rows[i].w;return (w&&c<w.length)?w[c]:null;}
+    function op(v){return v!==null&&(v>=0||v===-4);}
+    if(snap&&snap.ids&&snap.rows&&snap.rows.length){ids=snap.ids;rows=snap.rows;
+      for(col=0;col<ids.length;col++){
+        var j=-1;for(i=rows.length-1;i>=1;i--){if(op(cd(i,col))&&cd(i-1,col)===-1){j=i;break;}}
+        if(j<0)continue;
+        var s=j-1;while(s>0&&cd(s-1,col)===-1)s--;
+        if(j-s<2)continue;
+        var ran=false,ok=true;for(i=0;i<s;i++){if(op(cd(i,col))){ran=true;break;}}
+        if(!ran)continue;
+        for(i=s;i<=j;i++){var g=rows[i].t-rows[i-1].t;if(!(g>0&&g<=10)){ok=false;break;}}
+        if(!ok)continue;
+        var age=etMin-rows[j].t;if(age<0||age>20)continue;
+        out[ids[col]]={id:ids[col],at:ms(rows[j].t),since:ms(rows[s].t)};
+      }
+    }
+    if(rows&&inc&&inc.length){var seen={};
+      for(i=inc.length-1;i>=0;i--){var e=inc[i];if(!e||seen[e.id])continue;seen[e.id]=1;
+        if(!e.u||e.n||!(e.u-e.d>=5*MIN)||e.u>now||now-e.u>20*MIN)continue;
+        var o=out[e.id];
+        if(o){if(e.u>=o.at-6*MIN)out[e.id]={id:e.id,at:e.u,since:e.d};continue;}
+        var c=ids.indexOf(e.id),dm=etMin-Math.round((now-e.d)/MIN),rb=false;
+        if(c<0)continue;
+        for(var k=0;k<rows.length&&rows[k].t<dm;k++){if(op(cd(k,c))){rb=true;break;}}
+        if(rb)out[e.id]={id:e.id,at:e.u,since:e.d};
+      }
+    }
+    return Object.keys(out).map(function(k){return out[k];}).sort(function(a,b){return a.at-b.at;});
+  }
+  function pfRecMerge(now){ /* the record's comebacks take their seats in the one reopen list. A comeback the phone watched keeps the phone's card (its since moves back only when the record shows the down began more than ten minutes before the phone first saw it - the phone joined mid-run); a recorded seat takes a truer clock when one arrives (the ledger's minute over the row's mark); one seat per ride, the newest. True when the list changed */
+    var rr=pfRecReopens(pfRec,pfInc,now,pfEtMin()),ch=false,W=10*60*1000,i,k;
+    for(i=0;i<rr.length;i++){var e=rr[i],hit=null;if(!roster[e.id]||roster[e.id].kind!=="ride")continue; /* rides only, as pfTick */
+      for(k=0;k<pfReopens.length;k++){var x=pfReopens[k];if(x.id===e.id&&Math.abs(x.at-e.at)<=W){hit=x;break;}}
+      if(hit){if(hit.rec){if(hit.at!==e.at||hit.since!==e.since){hit.at=e.at;hit.since=e.since;ch=true;}}else if(e.since<hit.since-W){hit.since=e.since;ch=true;}continue;}
+      pfReopens.push({id:e.id,at:e.at,since:e.since,rec:1});ch=true;
+    }
+    if(ch){pfReopens.sort(function(a,b){return a.at-b.at;});var keep={},o2=[];for(i=pfReopens.length-1;i>=0;i--){if(keep[pfReopens[i].id])continue;keep[pfReopens[i].id]=1;o2.unshift(pfReopens[i]);}pfReopens=o2.slice(-10);}
+    return ch;
+  }
+  function pfRecShow(){ /* a record arrived (the day record's read, the ledger's echo): seat what it proves and repaint the callouts' three homes - only when the list changed */
+    try{if(pfRecMerge(Date.now())){if(typeof renderMyRidesPage==="function")renderMyRidesPage();renderPulsePage();if(typeof render==="function")render();}}catch(e){}
+  }
+  function pfRecTick(){ /* once per poll, after pfTick and the poll's own render (what the record seats repaints itself, only on a change): a wake is the first poll or a poll past lg's gap; for ten minutes after a wake the day record is read (dnRecFetch keeps it to once per five minutes) - a phone that watched the whole time never asks */
+    var now=Date.now(),gap=8*60*1000;
+    if(!pfTickAt||now-pfTickAt>gap)pfWakeAt=now;
+    pfTickAt=now;
+    if(now-pfWakeAt>10*60*1000)return;
+    try{dnRecFetch().then(function(rec){pfRec=rec;pfRecShow();})["catch"](function(){});}catch(e){}
+    pfRecShow();
   }
   function pfCallouts(scope){
     var scopeParks=scope==="all"?PARK_DEF.map(function(p){return p.key;}):[scope];
@@ -12428,7 +12482,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(d&&d.downs)mergeWorkerDowns(d.downs,d.downsRb);
         if(d&&d.ups)mergeWorkerUps(d.ups); /* 0728je THE DIARY CLOSES WHAT IT OPENS (Worker v3.35) */
         if(d&&d.reopens)mergeWorkerReopens(d.reopens);
-        bumpEchoWm(d);
+        bumpEchoWm(d);if(d&&d.inc){pfInc=d.inc;pfRecShow();} /* 0728li THE RECORD WEARS THE CLOCK: the ledger the diary just read is kept for the reopen card - its minute over the day record's row */
       }).catch(function(e){console.error("syncPush failed",e);});
     });
   }
