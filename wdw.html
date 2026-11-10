@@ -2369,13 +2369,13 @@
   .mr-day.closed .chv{transform:rotate(-90deg)}
   .mr-vd{color:var(--long);font-weight:600}.mr-vu{color:var(--short);font-weight:600}.mr-vh{color:var(--accent);font-weight:600} /* 0721u R2: verb tint — color seconds the words, never carries alone */
   .mr-rh{background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh-soft);margin-bottom:10px;padding:0 14px}
-  .mr-rh .rhhd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0;cursor:pointer}
+  .mr-rh .rhhd{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:3px;min-height:64px;box-sizing:border-box;padding:11px 0;cursor:pointer} /* 0728lr R-A (owner-ruled Nov 10, 2026): the fold takes Recent alerts' shape (0728jh F-B) - the title, the readout beneath, the chevron on the right */
   .mr-rh.open .rhhd{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px} /* 0723e/f: earned by the open body; risen to breathe (owner-tuned) */
-  .mr-rh .cap{font-family:var(--font-display);font-weight:700;font-size:var(--fs-caps);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2)}
-  .mr-rh .ro{flex:1;font-size:15px;color:var(--muted);text-align:right}
+  .mr-rh .cap{grid-column:1;grid-row:1;font-family:var(--font-display);font-weight:700;font-size:var(--fs-title);color:var(--ink)}
+  .mr-rh .ro{grid-column:1;grid-row:2;font-size:var(--fs-body);color:var(--muted);text-align:left}
   .mr-rh .ro b{color:var(--ink)}
   .mr-rh .ro .c{white-space:nowrap} /* 0728hp: a clause never breaks inside itself */
-  .mr-rh .chv{color:var(--muted-2);font-weight:700;transition:transform .18s} .mr-rh .sw.mr-setdoor{cursor:pointer;-webkit-tap-highlight-color:transparent} .mr-rh .sw.mr-setdoor .chev{color:var(--muted-2);font-size:26px;line-height:1;flex:none;margin-right:6px} /* 0728ld: the fold's door wears the Plan door's chevron (THE DOOR WEARS ONE CHEVRON) */
+  .mr-rh .chv{grid-column:2;grid-row:1/3;color:var(--muted-2);font-weight:700;transition:transform .18s} .mr-rh .sw.mr-setdoor{cursor:pointer;-webkit-tap-highlight-color:transparent} .mr-rh .sw.mr-setdoor .chev{color:var(--muted-2);font-size:26px;line-height:1;flex:none;margin-right:6px} /* 0728ld: the fold's door wears the Plan door's chevron (THE DOOR WEARS ONE CHEVRON) */
   .mr-rh.open .chv{transform:rotate(90deg)}
   .mr-rh .body{display:none;padding-bottom:16px}
   .mr-rh.open .body{display:block}
@@ -2860,7 +2860,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lq</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lr</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -14446,7 +14446,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         +'</div>';
       }
 
-      html+='<div class="pw-sec">By park · tap for the full breakdown</div>';
+      html+='<div class="lv-ch pc-ch"><div class="lv-l"><div class="lv-ttl">By park</div></div></div>'; /* 0728lr WRAP AND THE RULES FOLD TAKE THE TITLE (owner-ruled Nov 10, 2026): the section name wears the chapter title; the tap hint retires - every row carries its chevron */
       c.parks.forEach(function(p){
         var fl=""; /* 0728gf W-2: the unlabelled pill retired from the by-park row — the ride it named has its own labelled line */
         var ctx=(p.busiest?'<div class="ln"><span class="k">Busiest</span><span class="n">'+esc(p.busiest.name)+'</span><span class="v">'+p.busiest.avgWait+'m avg</span></div>':'')+
@@ -14521,7 +14521,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(pk.drop)html+=tileV("Biggest swing",'<span class="u">low</span> '+(pk.drop.sw?pk.drop.sw.lo:pk.drop.minWait)+'m',"pw-s",pk.drop.name,"off a "+(pk.drop.sw?pk.drop.sw.hi:pk.drop.maxWait)+" peak",null,pk.drop.id,park);
       html+='</div>';
 
-      html+='<div class="pw-sec">Every ride · sorted by avg wait</div>';
+      html+='<div class="lv-ch pc-ch"><div class="lv-l"><div class="lv-kick">Sorted by avg wait</div><div class="lv-ttl">Every ride</div></div></div>';
       pk.rides.forEach(function(r){
         var noAvg=(r.avgWait==null);
         var allDown=noAvg&&r.operatingMinutes===0; /* never operated while tracked — earns the DOWN chip */
@@ -16380,7 +16380,7 @@ foot:(pk.busiest&&pk.busiest.suPk!=null?"Peak = highest wait that held 25+ min":
       var last=D[0].d,fut=[];for(i=0;i<D.length;i++){if(D[i].future)fut.push(RP_WD[i]);else last=D[i].d;}
       var span=RP_WD[0]+' '+rpDay(D[0].d)+' \u2013 '+RP_WD[D.length-1-fut.length]+' '+rpDay(last);
       var fine=span+(fin?'':' so far'+(fut.length?' \u00b7 '+(fut.length===1?fut[0]:fut.length===2?fut[0]+' &amp; '+fut[1]:fut[0]+'\u2013'+fut[fut.length-1])+' to come':''))+' \u00b7 each cell one hour of the day itself (n\u22482 half-hour readings)';
-      return '<div class="rpc wkv"><div class="lbl">This week \u00b7 hour by hour</div>'+body+'<div class="rp-ddcap">'+cap+'</div><div class="wk-fine">'+fine+'</div></div>';
+      return '<div class="lv-ch pc-ch"><div class="lv-l"><div class="lv-ttl">Hour by hour</div></div></div><div class="rpc wkv">'+body /* 0728lr H-B: the title leaves the card; no kicker - the hero above already says THIS WEEK */ +'<div class="rp-ddcap">'+cap+'</div><div class="wk-fine">'+fine+'</div></div>';
     }
     function pwWkBind(wv,r){ /* the cell tap reads the hour; THE TILES LIGHT THE GRID — Outages / Reliability ring every down cell, Peak / Lowest ring their own hour; a second tap clears */
       var hm=wv.querySelector(".wk-hm"),rd=$id("wkRead");if(!hm||!rd)return;
