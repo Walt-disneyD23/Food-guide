@@ -1263,6 +1263,9 @@
   #upNextCard .ux-card>.ux-pks:first-child{margin-top:2px}
   body.pt-park #upNextCard .ux-card>.ux-typ{margin-top:2px}
   body.pt-park #banners>.lv-ch-pk{display:none}
+  /* 0728lk MY RIDES GETS CHAPTERS (owner-ruled M-A on mr-letters.png, Nov 10, 2026): every room's title leaves its card and wears Live's chapter title - no kicker, the roster stays calm. Re-rules 0722s H-b's three inks: one title voice */
+  .mr-ch{margin:24px 0 9px}
+  .mr-ch+.mr-grp>.mr-rw:first-child,.mr-ch+.mr-pulse>.mr-prow:first-child{border-top:0}
   .pb-row{display:flex;align-items:center;gap:12px;padding:13px 14px 13px 16px;min-height:48px;box-sizing:border-box;cursor:pointer;border-top:1px solid var(--line)} /* 0728cj: the tick retired (D2) \u2014 the left inset it carried is the row's own */
   .pb-tick{display:none} /* 0728cj: retired */
   /* 0722d: pb-t1..4 are semantic markers only — the tick's paint arrives inline from s.crowd.color, the crowd family's ONE SOURCE (aura lineage). Two palettes on one phenomenon was owner-caught on glass; band tokens stay for ride tiers. */
@@ -2851,7 +2854,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lk</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -11741,6 +11744,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       ((bellCan(r,lv)||armed[id])?'<button class="mr-bell'+(armed[id]?' on':'')+'" data-id="'+esc(id)+'" type="button" title="Alerts">'+MR_BELL+'</button>':'<span class="mr-nobell"></span>')+ /* 0728hq W-A: an OPEN ride with no number wears no bell (the column keeps its width); an armed row keeps its door */
       '</div>';
   }
+  function mrHead(t){return '<div class="lv-ch mr-ch"><div class="lv-l"><div class="lv-ttl">'+t+'</div></div></div>';} /* 0728lk MY RIDES GETS CHAPTERS: the room's title, outside its card - Live's chapter title, no kicker */
   function mrGroupsHTML(ids){
     var taught=false,taughtSh=false; /* INSTRUCTION ONCE IS TEACHING, THRICE IS NOISE — the first unarmed row on the page carries the line; 0728hl: the shows' lane teaches once in its own words */
     return PARK_DEF.map(function(p){
@@ -11752,7 +11756,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       sh.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);});
       var dn=here.filter(function(id){var lv=liveById[id];return lv&&lv.status==="DOWN";});
       here=dn.concat(here.filter(function(id){var lv=liveById[id];return !(lv&&lv.status==="DOWN");})); /* down-first, stable — honest ordering, no control */
-      return '<div class="mr-grp"><div class="hd">'+esc(p.key)+'</div>'+here.map(function(id){
+      return mrHead(esc(p.key))+'<div class="mr-grp">'+here.map(function(id){
         var lvT=liveById[id],teach=!taught&&!armed[id]&&bellCan(roster[id],lvT)&&!(lvT&&lvT.status==="DOWN"&&(reopen[id]||mrDnupFor(id))); /* 0728hq: a row with no bell never teaches "tap the bell" */if(teach)taught=true; /* 0728gs: a covered down row carries no bell line, so the one teaching line passes it; a cold down row teaches with its own "tap the bell" */
         return mrRowHTML(id,teach);
       }).join("")+(sh.length?'<div class="hd mr-lane-sh">Shows &amp; experiences</div>'+sh.map(function(id){
@@ -11767,7 +11771,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     if(!dn.length&&!bk.length)return "";
     dn.sort(function(a,b){return roster[a].name.localeCompare(roster[b].name);});
     bk.sort(function(a,b){return (resolved[a]||0)-(resolved[b]||0);}); /* 0721e: the story reads oldest first */
-    var h='<div class="mr-room"><div class="mr-roomhd">DOWN &amp; BACK UP</div>';
+    var h=mrHead('Down &amp; back up')+'<div class="mr-room">'; /* 0728lk: the room's name in the guide's own case */
     if(dn.length){
       h+='<div class="mr-zone zd">DOWN NOW</div>'+dn.map(function(id){
         var cov=!!(reopen[id]||(watch[id]&&mrDnupFor(id)));
@@ -11913,7 +11917,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }).join("");
     var rest=mrRestLine(ids,m.cards);
     if(!rows&&!rest)return "";
-    return '<div class="mr-pulse"><div class="cap">Your callouts</div>'+rows+rest+'</div>';
+    return mrHead('Your callouts')+'<div class="mr-pulse">'+rows+rest+'</div>';
   }
   function mrBellTap(id){ /* 0728gs THE BELL IS THE RIDE'S ALERT DOOR, EVERYWHERE (owner-ruled Oct 14: "when you tap the bell a pop up opens, you could quickly confirm and set the alert as is, or change the rule then confirm" \u2014 "having to tap the pill to change it is confusing"): the bell shows the rule before it arms; Cut 3's one-tap arm is traded for a read promise. The arm rides the sheet's Turn alert on / Save rule (mrShSetTap), the disarm its Turn alert off (mrShOffTap); Rule A's star-and-arm rides Turn alert on. Live's .flagbtn and My Rides' .mr-bell both land here. */
     var r=roster[id];
