@@ -1246,6 +1246,23 @@
   .pb-hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 10px}
   .pb-eb{font-family:var(--font-display);font-weight:600;font-size:var(--fs-caps);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
   .pb-k{font-size:var(--fs-caps);font-weight:600;letter-spacing:.08em;color:var(--muted-2);text-transform:uppercase}
+  /* 0728lj LIVE GETS CHAPTERS (owner-ruled A, then P-A · H-A · S-A on lj-letters.png, Nov 10, 2026): each part of Live wears a kicker and a title outside its card, with room above; Share is a round door beside the title. Live only - Today's board keeps .pb-hd */
+  .lv-ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 6px;margin:28px 0 10px}
+  .lv-l{min-width:0}
+  .lv-kick{font-family:var(--font-body);font-size:var(--fs-caps);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-variant-numeric:tabular-nums;min-height:14px;margin-bottom:4px}
+  .lv-ttl{font-family:var(--font-display);font-weight:700;font-size:var(--fs-stat-lg);letter-spacing:-.01em;line-height:1.12;color:var(--ink)}
+  .lv-r{flex:none;display:flex;align-items:center;gap:10px;padding-bottom:1px}
+  .lv-leg{font-size:var(--fs-caps);font-weight:600;letter-spacing:.08em;color:var(--muted-2);text-transform:uppercase;padding-bottom:5px}
+  .lv-shr{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--accent);box-shadow:var(--shadow-sm);cursor:pointer;padding:0}
+  .lv-shr:active{background:var(--accent-fill);color:#fff}
+  .lv-kick .pf-clock{color:inherit}
+  .lv-kick .hl-tabs{display:inline-flex}
+  .lv-kick .hl-tab{margin-top:0;padding:0 0 2px}
+  #banners>.pb-board>.pb-row:first-child{border-top:0}
+  #cpCard .favcard>.pf-card:first-child,body.pt-park #cpCard .cp-seg+.pf-card{border-top:0}
+  #upNextCard .ux-card>.ux-pks:first-child{margin-top:2px}
+  body.pt-park #upNextCard .ux-card>.ux-typ{margin-top:2px}
+  body.pt-park #banners>.lv-ch-pk{display:none}
   .pb-row{display:flex;align-items:center;gap:12px;padding:13px 14px 13px 16px;min-height:48px;box-sizing:border-box;cursor:pointer;border-top:1px solid var(--line)} /* 0728cj: the tick retired (D2) \u2014 the left inset it carried is the row's own */
   .pb-tick{display:none} /* 0728cj: retired */
   /* 0722d: pb-t1..4 are semantic markers only — the tick's paint arrives inline from s.crowd.color, the crowd family's ONE SOURCE (aura lineage). Two palettes on one phenomenon was owner-caught on glass; band tokens stay for ride tiers. */
@@ -2834,7 +2851,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728li</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728lj</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -4411,6 +4428,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      the transient no-base beat it rides the Hot lines head so scope never
      vanishes. hlScope keeps its persisted life (the Jul-10 re-feel note
      stands - session-only remains a two-line change). */
+  function lvHead(k,t,r){return '<div class="lv-ch"><div class="lv-l"><div class="lv-kick">'+k+'</div><div class="lv-ttl">'+t+'</div></div>'+(r?'<div class="lv-r">'+r+'</div>':'')+'</div>';} /* 0728lj LIVE GETS CHAPTERS: the one chapter head - kicker, title, and what rides the title's line (a legend, a Share door) */
   function renderCrowdPulse(){
     var el=document.getElementById("cpCard");if(!el)return;
     if(typeof pfEnsureBase==="function")pfEnsureBase();
@@ -4426,7 +4444,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         '<span class="pf-now '+it.tier+'">'+it.wait+'<small> MIN</small></span></span></div>'; /* 0721t: the right rail rhymes with Crowd Pulse (owner pick B) — pf-now/pf-pk faces verbatim, share seat omitted (no card behind it) */
     }).join(""):'<div class="hl-empty">'+hlEmptyLine(hlScope)+'</div>';
     var feed=pfFeedHTML(hlScope,seg);
-    el.innerHTML=feed+'<div class="favcard pg-list"><div class="fc-head"><span class="sec-lab">Hot lines'+((typeof ptNm==="function")?ptNm(hlScope):"")+'</span>'+tabs+'</div>'+(feed?'':seg)+body+'</div>';
+    el.innerHTML=feed+lvHead(tabs,'Hot lines'+((typeof ptNm==="function")?ptNm(hlScope):""),'')+'<div class="favcard pg-list">'+(feed?'':seg)+body+'</div>'; /* 0728lj H-A: the lens switch sits in the kicker seat */
     el.querySelectorAll(".hl-tab").forEach(function(b){b.addEventListener("click",function(){
       hlLens=b.getAttribute("data-lens");renderCrowdPulse();});});
     el.querySelectorAll("[data-cpscope]").forEach(function(b){b.addEventListener("click",function(){ /* scoped binder - the 0719r lesson; hlScope keeps its name + persistence */
@@ -4517,7 +4535,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var now=Date.now(),res=uxRows(now,uxState.pk,uxState.all),cap=uxState.open?15:5,next=res.next.slice(0,cap);
     uxLast={now:now,pk:uxState.pk,all:uxState.all,next:res.next};
     var uxNm=(typeof ptNm==="function")?ptNm(uxState.pk):""; /* 0728gd: on a park tab the heading names the park */
-    var h='<div class="ux-card"><div class="ux-k"><span>UP NEXT'+(uxNm?uxNm.toUpperCase():' &middot; LIVE SHOWS')+'</span><span>'+esc(uxClk(now))+'</span></div>';
+    var h=lvHead('Up next \u00b7 '+esc(uxClk(now)),'Live shows'+uxNm,res.next.length?'<button class="lv-shr ux-share" type="button" aria-label="'+esc(uxState.pk==="all"?"Share all four parks":"Share the "+(BANNER_MONO[uxState.pk]||uxState.pk)+" lineup")+'"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg></button>':'')+'<div class="ux-card">'; /* 0728lj: the head's own words, re-seated - Up next + the clock over Live shows; S-A the door's words are its spoken label and follow the park chip; no start left, no door */
     h+='<div class="ux-pks"><button type="button" data-uxpk="all"'+(uxState.pk==="all"?' class="on"':'')+'>ALL</button>';
     PARK_DEF.forEach(function(p){h+='<button type="button" data-uxpk="'+esc(p.key)+'"'+(uxState.pk===p.key?' class="on"':'')+'>'+esc(BANNER_MONO[p.key]||p.key)+'</button>';});
     h+='</div><div class="ux-typ"><button type="button" data-uxall="0"'+(uxState.all?'':' class="on"')+'>PERFORMANCES</button><button type="button" data-uxall="1"'+(uxState.all?' class="on"':'')+'>EVERYTHING</button></div>';
@@ -4530,7 +4548,6 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
           h+='<div class="ux-row dim"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>STARTED '+ago+'M AGO</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});}
       h+='</div>';
       if(res.next.length>5)h+='<button type="button" class="ux-more">'+(uxState.open?'Fewer shows \u25B4':'More shows \u25BE')+'</button>';
-      if(res.next.length)h+='<button class="pw-share ux-share" type="button">'+'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> '+esc(uxState.pk==="all"?"Share all four parks":"Share the "+(BANNER_MONO[uxState.pk]||uxState.pk)+" lineup")+'</button>'; /* 0728ec R5 + R7: the Callouts door, its words follow the park chip; no start left, no door */
     }
     h+='</div>';
     el.innerHTML=h;
@@ -4789,7 +4806,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     elBanners.innerHTML="";bannerEls={};
     /* 0728gd: pbToggle (0721y) retired — ptGo is the sole writer of the selected park */
     pbSegA=document.createElement("div");pbSegA.className="pb-board";
-    pbSegA.innerHTML='<div class="pb-hd"><span class="pb-eb">The four parks</span><span class="pb-k">Headliners \u00b7 All rides</span></div>'; /* S2-a eyebrow; LABELS MOVE WITH VALUES — the column label seats once; its \u24d8 explainer stays in the expanded fine print */
+    pbSegA.innerHTML=""; /* 0728lj: the board's head left the card - the chapter head mounts before it (below) */ /* S2-a eyebrow; LABELS MOVE WITH VALUES — the column label seats once; its \u24d8 explainer stays in the expanded fine print */
     pbWrapX=document.createElement("div");pbWrapX.className="bnr-wrap pb-xwrap";pbWrapX.hidden=true; /* E1-a: the die-cut shadow survives ONLY on the expanded card */
     pbSegB=document.createElement("div");pbSegB.className="pb-board pb-cont";pbSegB.hidden=true;
     BANNERS.forEach(function(def){
@@ -4821,6 +4838,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         row:row,rowSub:row&&row.querySelector(".pb-sub"),rowRR:row&&row.querySelector(".pb-rr")}; /* 0728ca: the paint replaces the whole column; 0728cj: rowTick retired with the tick (D2) */
     });
     pbFine=document.createElement("div");pbFine.className="pb-fine";pbFine.innerHTML='Crowd words are each park\u2019s own scale \u00b7 est.';pbSegA.appendChild(pbFine); /* 0728cq H3: the panel's fine print, once, under the four rows */
+    var lvh=document.createElement("div");lvh.innerHTML=lvHead('Walt Disney World','The four parks','<span class="lv-leg">Headliners \u00b7 All rides</span>');lvh=lvh.firstChild;lvh.className="lv-ch lv-ch-pk";elBanners.appendChild(lvh); /* 0728lj P-A: the hero's own words for the kicker; LABELS MOVE WITH VALUES - the column legend still sits over the tile column */
     elBanners.appendChild(pbSegA);elBanners.appendChild(pbWrapX);elBanners.appendChild(pbSegB);
     var rdw=document.createElement("div");rdw.className="rdwrap";rdw.id="rdRead";
     (function(){var ar=bannerEls["all"]&&bannerEls["all"].root.querySelector(".banner-art");var hd=ar&&ar.querySelector(".banner-head");if(ar&&hd)ar.insertBefore(rdw,hd.nextSibling);var sb=ar&&ar.querySelector(".rb-share");if(sb)sb.addEventListener("click",function(ev){ev.stopPropagation();rbShareCard();});})(); /* door B (RB-Spec): the glyph is the only door; the hero stays a pure read (0718k) */ /* L-32 Cut 2: the read seats directly under the head — above anything that mounts into the art later */
@@ -5053,13 +5071,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var m=pfCallouts(scope);
     if(m.state==="nobase")return "";
     var clock=fmtClock(new Date().toISOString())||"";
-    var head='<div class="fc-head"><span class="sec-lab">Callouts'+((typeof ptNm==="function")?ptNm(scope):"")+'</span><span class="sec-lab pf-clock">'+esc(clock)+'</span></div>';
-    if(m.state==="closed")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">'+(clRoom("Callouts",scope)||'Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.')+'</div></div>'; /* 0728jp: the shared clause leads; the old sentence is the floor when the schedule proves no open */
+    var lvN=(m.state==="cards")?(m.cards.length+(m.moreN||0)):0; /* 0728lj: the kicker's count is the hero door's own (SAME QUESTION SAME SENTENCE) */
+    var head=lvHead((lvN?lvN+' callout'+(lvN===1?'':'s')+' \u00b7 ':'')+'<span class="pf-clock">'+esc(clock)+'</span>','Callouts'+((typeof ptNm==="function")?ptNm(scope):""),lvN?'<button class="lv-shr pf-share-park" type="button" aria-label="Share the callouts"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg></button>':''); /* 0728lj S-A: the surface door rides the title's line - cards state only, as the slab was */
+    if(m.state==="closed")return head+'<div class="favcard pg-list">'+seg+'<div class="pf-quiet">'+(clRoom("Callouts",scope)||'Closed right now — callouts return when '+(scope==="all"?"the parks open":"the park opens")+'.')+'</div></div>'; /* 0728jp: the shared clause leads; the old sentence is the floor when the schedule proves no open */
     var basis=m.moreN>0
       ?'<div class="pf-basis">Showing the biggest departures from typical · '+esc(m.pool.short)+'</div>'
       :'<div class="pf-basis">Typical = '+esc(m.pool.txt)+(m.state==="quiet"?'':' · quiet when nothing’s unusual')+'</div>'; /* 0727k b-A + basis (LABELS MOVE WITH VALUES): the line names each pool it drank — the ordinary window's own count, or the season's party nights */
-    if(m.state==="thin")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
-    if(m.state==="quiet")return '<div class="favcard pg-list">'+head+seg+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
+    if(m.state==="thin")return head+'<div class="favcard pg-list">'+seg+'<div class="pf-quiet">Not enough history for this hour yet.</div>'+basis+'</div>';
+    if(m.state==="quiet")return head+'<div class="favcard pg-list">'+seg+'<div class="pf-quiet">Nothing unusual — the parks are running close to typical.</div>'+basis+'</div>';
     pfLastShare={cards:m.cards,days:m.days||0,moreN:m.moreN||0,scope:scope,pool:m.pool||null}; /* 0711g: the surface door reads scope+moreN too */
     var body=m.cards.map(function(c,ci){
       var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':(c.go?'<span><span class="pf-kick re">Just reopened</span><span class="pf-kick" style="opacity:.45;padding:0 7px">·</span><span class="pf-kick go">Go now</span></span>':'<span class="pf-kick re">Just reopened</span>'); /* 0728lh C-A: both kickers, each in its own ink, seated together (the mock's bytes) */
@@ -5074,9 +5093,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         '<div class="pf-mid"><div class="pf-l"><div class="pf-nm">'+esc(c.nm)+'</div><div class="pf-meta">'+meta+'</div></div>'+num+'</div></div>';
     }).join("");
     var more=m.moreN>0?'<div class="pf-more">+ '+m.moreN+' more running unusual right now</div>':"";
-    var shareBtn='<button class="pw-share pf-share-park" type="button">'+ /* 0711g: surface door — cards state only */
-      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share the callouts</button>';
-    return '<div class="favcard pg-list">'+head+seg+body+more+basis+shareBtn+'</div>';
+    return head+'<div class="favcard pg-list">'+seg+body+more+basis+'</div>';
   }
   /* ===== 0711f: V1 share card pipeline — the story door's payload. emitCard-family plumbing
      (fonts.ready → toBlob → canShare/download), PW_CARD_ALT jewel palette, model/paint/emit
