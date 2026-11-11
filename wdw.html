@@ -1600,6 +1600,29 @@
     /* 0728mb THE CHIP SAYS CLOSED, THE LINE SAYS WHEN */ .pb-shut{flex:none;min-width:80px;box-sizing:border-box;text-align:center;padding:9px 8px;border-radius:12px;background:color-mix(in srgb,var(--ink) 5%,var(--card));color:var(--muted);font:700 10px var(--font-display);letter-spacing:.09em;text-transform:uppercase} .pb-board .pb-row.pb-slim.closed .pb-nm{color:var(--muted)}
     .ty-board .pb-row.pb-slim.off{opacity:1} .ty-board .pb-slim.off .pb-m,.ty-board .pb-slim.off .pb-chv{opacity:.62} /* T-2 (owner-ruled 9:24 PM): the done day dims its words, never the chip that has to be read at arm's length */
     .pb-slim .ty-tags{display:flex;gap:6px;margin:6px 0 0 15px} .pb-slim .ty-tags .ty-planned,.pb-slim .ty-tags .ty-bvtag{margin:0;vertical-align:0} .pb-slim .pb-chv{margin-left:0}
+    /* 0728mc LIVE TAKES ITS TYPE (D-1 + S-2 + K-1, owner-ruled on his phone through the type specimen, Tue Nov 10, 2026; the exact rules judged on the second specimen 9:43 PM, "def different but I like the change"; stage 2 of the rollout). Every rule names its class and is scoped to Live's page (#banners), so no other tab moves - except THE ONE BOARD (Scope B, 9:46 PM): the four-parks board, its title and rows, on Today too. Labels in caps keep their weight (ruled: Labels stay). The specificity of #banners beats the older dress wherever it sits */
+    #banners .lv-ttl,.lv-ch:has(+.ty-board) .lv-ttl{font-weight:800;letter-spacing:-.022em}
+    #banners .pf-nm,#banners .fc-nm{font-weight:700;letter-spacing:-.022em}
+    #banners .pf-card.pf-hero .pf-nm,#banners .ux-hero .pf-nm{font-weight:800}
+    #banners .pf-meta{letter-spacing:-.008em} #banners .pf-meta b{white-space:nowrap} /* 0728me THE SMALLER SCREEN KEEPS ITS SIZE: a bold figure and its word stay together (52 over was left with over alone on a line) */
+    #banners .pb-slim .pb-x,.ty-board .pb-row.pb-slim .ty-sub,.ty-board .pb-row.pb-slim .ty-eel{letter-spacing:-.008em}
+    /* 0728me THE SMALLER SCREEN KEEPS ITS SIZE (W-1, owner-ruled Tue Nov 10, 2026, 10:27 PM on standard-iphone.png; "i want to make sure it looks nice on the standard size iphone as well"): S-2's 12% was judged on a 440-point screen. On a 393-point screen it cost a line on most rows - park rows broke after a hanging dot, Hot lines names ran to three lines. The larger sizes are for screens at least 420 points wide; narrower screens keep their sizes and still take D-1's weights and K-1's spacing. The page asks only how wide it is being drawn; no device is named */
+    @media (min-width:420px){
+      #banners .lv-ttl,.lv-ch:has(+.ty-board) .lv-ttl,#banners .pf-card.pf-hero .pf-nm,#banners .ux-hero .pf-nm{font-size:calc(var(--fs-stat-lg)*1.12)}
+      #banners .pf-nm,#banners .fc-nm,#banners .ux-card .ux-nm{font-size:calc(var(--fs-title)*1.12)} /* .ux-card: the show name's own rule sits later in the file at equal weight (RENDER BEFORE THE BLESS caught it) */
+      #banners .pf-meta,#banners .ux-then{font-size:calc(var(--fs-meta)*1.12)}
+      #banners .pf-card.pf-hero .pf-meta,#banners .ux-hero .pf-meta,#banners .pb-slim .pb-x,.ty-board .pb-row.pb-slim .ty-sub,.ty-board .pb-row.pb-slim .ty-eel{font-size:calc(var(--fs-small)*1.12)}
+    }
+    #banners .pb-slim .pb-nm,.ty-board .pb-row.pb-slim .pb-nm{font-weight:700;letter-spacing:-.022em}
+    #banners .banner-name,#banners .banner-stat .bs-v,#banners .pf-now,#banners .ux-ht,#banners .ux-tm b,#banners .lstat .v,.pb-board .pb-slim .pb-chip b{font-weight:800}
+    #banners .fc-nm .pf-pk{letter-spacing:-.08px}
+    /* 0728mc LIVE TAKES ITS TYPE - LIVE SHOWS, MATCHED (field-born on the specimen, 9:46 PM: "I'm not in love with the live shows section. It feels different from the rest of the page"; "much better" 9:50 PM): the show names take the ride names' size, weight and spacing, the then line the supporting lines'; the section meets the page's edges and its cards wear the page's shadow */
+    #banners #upNextCard{margin-left:0;margin-right:0} #banners .ux-card{box-shadow:var(--shadow-sm);padding-left:14px;padding-right:14px}
+    #banners .ux-nm{font-weight:700;font-size:var(--fs-title);letter-spacing:-.022em} #banners .ux-then{font-weight:400;letter-spacing:-.008em}
+    /* 0728md THE NAME LEADS THE SHOW (T-B): the time column moves to the right and takes the number's voice; the park tag rides the name; the Just started label takes the row's hairline */
+    #upNextCard .ux-row{padding:10px 0} #upNextCard .ux-sec+.ux-row{border-top:1px solid var(--line)}
+    #upNextCard .ux-tm{flex:none;min-width:64px} #upNextCard .ux-tm b{font-size:17px;white-space:nowrap;font-variant-numeric:normal} #upNextCard .ux-tm span{white-space:nowrap}
+    #upNextCard .ux-nm .ux-pk{margin-left:7px;letter-spacing:.02em} #upNextCard .ux-sec{color:var(--muted);padding:12px 0 2px;margin-top:0}
   .icon-btn{width:40px;height:40px;border-radius:var(--r-tile);border:1px solid var(--line);background:var(--card);
     color:var(--ink);font-size:var(--fs-lead);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-sm);transition:.15s}
   .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -2895,7 +2918,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mb</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728me</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -4597,10 +4620,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var x0=next[0],rest9=next.length>1||res.started.length>0||res.next.length>3; /* 0728lx A HERO PER CHAPTER (B, cut 4 of 4): the lead in its own card - the row's own words, its clock at 52px; a second card only when there is something to put in it */
       h+=(x0?'<div class="ux-card ux-hero"><div class="pf-top"><span class="ux-hk">'+x0.mk+' '+esc(uxRel(x0.t-now))+'</span><span class="pf-pk">'+esc(x0.pk)+'</span></div><div class="pf-mid"><div class="pf-l"><div class="pf-nm">'+esc(x0.nm)+'</div>'+(x0.l2!=null?'<div class="pf-meta">then '+esc(uxClk(x0.l2))+(x0.ln>1?' \u00b7 +'+(x0.ln-1)+' later':'')+'</div>':'')+'</div><span class="ux-ht">'+esc(uxClk(x0.t)).replace(/ (AM|PM)$/,'<small> $1</small>')+'</span></div>'+(rest9?'</div>':''):'')+(rest9?'<div class="ux-card ux-rest">':(x0?'':'<div class="ux-card ux-rest">'));
       h+='<div class="ux-rows">';
-      next.slice(x0?1:0).forEach(function(x){h+='<div class="ux-row"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>'+esc(uxRel(x.t-now))+'</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+(x.l2!=null?'<span class="ux-then">then '+esc(uxClk(x.l2))+(x.ln>1?' \u00b7 +'+(x.ln-1)+' later':'')+'</span>':'')+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});
+      next.slice(x0?1:0).forEach(function(x){h+='<div class="ux-row"><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'<span class="ux-pk">'+esc(x.pk)+'</span>'+(x.l2!=null?'<span class="ux-then">then '+esc(uxClk(x.l2))+(x.ln>1?' \u00b7 +'+(x.ln-1)+' later':'')+'</span>':'')+'</span><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>'+esc(uxRel(x.t-now))+'</span></span></div>';}); /* 0728md THE NAME LEADS THE SHOW (T-B, owner-ruled on his phone through the specimen, Tue Nov 10, 2026, 10:02 PM, after "I'm not in love with the live shows section. It feels different from the rest of the page"): the row reads the way the page's other rows do - the name leads with its park tag, the number sits on the right - here the start and its countdown */
       if(res.started.length){h+='<div class="ux-sec">JUST STARTED</div>';
         res.started.forEach(function(x){var ago=Math.max(1,Math.round((now-x.t)/60000));
-          h+='<div class="ux-row dim"><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>STARTED '+ago+'M AGO</span></span><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'</span><span class="ux-pk">'+esc(x.pk)+'</span></div>';});}
+          h+='<div class="ux-row dim"><span class="ux-ic">'+x.mk+'</span><span class="ux-nm">'+esc(x.nm)+'<span class="ux-pk">'+esc(x.pk)+'</span></span><span class="ux-tm"><b>'+esc(uxClk(x.t))+'</b><span>STARTED '+ago+'M AGO</span></span></div>';});}
       h+='</div>';
       if(res.next.length>3)h+='<button type="button" class="ux-more">'+(uxState.open?'Fewer shows \u25B4':'More shows \u25BE')+'</button>';
     }
@@ -10984,7 +11007,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       body='<div class="ty-sub">'+(swp?(((swp.em&&swp.word!=="Party")?swp.em+' ':'')+'<b class="win">'+esc(swp.word)+'</b> \u00b7 to '+rpClk(swp.c)+' \u00b7 '+tw): /* 0728dp THE HERO CARRIES THE EMBLEM (owner-ruled Oct 1): the party's pumpkin or tree is on the hero line just above, so the row says the word alone; the moon stays - the hero never names Extended Evening. The word and its close take the row's own dot. */(tw+(cl?('to '+cl):'open now')+pw+' \u00b7 '))+(dn>0?(dn+' down'):'all running')+'</div>';
       if(inf.open&&Date.now()<new Date(inf.open).getTime()&&inf.extras){ /* 0720s (C, owner-lettered): the morning credential - a row never claims open-for-all before the published open */
         var ee=null,ei;for(ei=0;ei<inf.extras.length;ei++){var ex=inf.extras[ei];if(ex.open&&ex.close&&Date.now()>=new Date(ex.open).getTime()&&Date.now()<=new Date(ex.close).getTime()){ee=ex;break;}}
-        if(ee)body+='<div class="ty-eel">\ud83c\udf9f <b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 all guests at '+tyClkIso(inf.open)+'.</div>';
+        if(ee)body+='<div class="ty-eel"><b class="win">'+esc(ee.desc||"Early Entry")+' now</b> \u2014 '+('all guests at '+tyClkIso(inf.open)+'.').replace(/ /g,"\u00a0")+'</div>'; /* 0728me THE SMALLER SCREEN KEEPS ITS SIZE: the ticket mark leaves the row (owner, 10:18 PM: "what if you removed the ticket icon" - the last emoji on the board, and the room the larger line needed); THE CLAUSE WRAPS WHOLE (0728dp) - where the screen is too narrow for the sentence it breaks at the dash, never inside "all guests at 9 AM." */
       }
       else if(!swp&&inf.open&&Date.now()>=new Date(inf.open).getTime()){if(pt9)body+='<div class="ty-eel"><b class="win">Party tonight</b> \u2014 '+tyClkPair(pt9.o,pt9.c)+'.</div>';var tn3=tyTonight(pk);if(tn3)body+='<div class="ty-eel">'+(tn3.em?tn3.em+' ':'')+'<b class="win">'+esc(tn3.word)+' tonight</b> \u2014 '+tyClkPair(tn3.o,tn3.c)+'.</div>';} /* 0720v (S5b Cut 2): the evening sibling of the morning credential line - one grammar, both ends of the day */
       hl='<span class="pb-rr" data-pbproof="'+esc(pk)+'">'+pbChipHTML(av,true)+'</span>'; /* 0728ck: the column is the proof card's door */ /* 0728cj E3: both numbers; 0728ca THE TILE (supersedes 0722e's ink average): the label still seats once in the header (LABELS MOVE WITH VALUES); a null average is the dash in the column */
