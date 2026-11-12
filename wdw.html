@@ -1628,6 +1628,22 @@
       #pgMyRides .typ,#pgPulse .rp-door .sub,#pgPulse .pl-cell .sub{font-size:12.9px}
       #pgMyRides .mr-rl{font-size:14.6px}
     }
+    /* 0728mn PLAN'S PAGES TAKE THEIR TYPE (the inner pages' type, Plan first; owner-ruled on his phone through the Plan-pages type specimen, Thu Nov 12, 2026, 11:05 AM: "I agree with your leans" - the Rope Drop Board B, the calendar, the saved trip, the ride list, the ride profile, My morning and Compare C). Live's type carried into Plan's rooms: titles, the page heads and the big numbers at 800; names and titles tightened, sentences tightened; from 420 points of width up (W-1) the names and titles 12% larger on every page and the sentences 12% larger everywhere but the Rope Drop Board, whose sentence column is narrow beside the number (B - the Today board's reason). Every rule names its class under #pgPulse, so no other surface moves; the mock's sizes are kept as mocked. The grids, charts, tables and tiles keep their type */
+    #pgPulse .lv-ttl,#pgPulse .rd-sechead,#pgPulse .rp-hero h2,#pgPulse .tp-wd,#pgPulse .tp-wd .wd,#pgPulse .pc-nav span{font-weight:800;letter-spacing:-.022em}
+    #pgPulse .rd-nm,#pgPulse .fc-nm,#pgPulse .rp-park .nm,#pgPulse .rm-nm,#pgPulse .rc-lchip .nm,#pgPulse .m>.hd,#pgPulse .rp-rrow .l>.d,#pgPulse .tp-tt{letter-spacing:-.022em}
+    #pgPulse .hstat .v,#pgPulse .pw-tile .v,#pgPulse .fc-w{font-weight:800}
+    #pgPulse .rd-ctx,#pgPulse .m>.why,#pgPulse .rp-take,#pgPulse .rp-hero .sub,#pgPulse .rd-seccap,#pgPulse .pc-lead,#pgPulse .rp-rrow .l>.m,#pgPulse .tp-ts,#pgPulse .rpc>p{letter-spacing:-.008em}
+    @media (min-width:420px){
+      #pgPulse .lv-ttl,#pgPulse .rd-sechead{font-size:27px}
+      #pgPulse .rp-hero h2{font-size:29px}
+      #pgPulse .rd-nm,#pgPulse .rm-nm{font-size:16.8px}
+      #pgPulse .fc-nm,#pgPulse .m>.hd,#pgPulse .rc-lchip .nm,#pgPulse .rp-rrow .l>.d{font-size:15.1px}
+      #pgPulse .m>.why{font-size:12.9px}
+      #pgPulse .rp-rrow .l>.m{font-size:14px}
+      #pgPulse .rp-take,#pgPulse .rp-hero .sub,#pgPulse .rpc>p{font-size:15.1px}
+      #pgPulse .pc-lead{font-size:15.7px}
+      #pgPulse .rp-hero:has(~ .rd-sechead) .sub{font-size:var(--fs-body)} /* the Rope Drop Board keeps its sentences (B): its hero's line with them; .rd-ctx and .rd-seccap take no size here */
+    }
     #banners .pb-slim .pb-nm,.ty-board .pb-row.pb-slim .pb-nm{font-weight:700;letter-spacing:-.022em}
     #banners .banner-name,#banners .banner-stat .bs-v,#banners .pf-now,#banners .ux-ht,#banners .ux-tm b,#banners .lstat .v,.pb-board .pb-slim .pb-chip b{font-weight:800}
     #banners .fc-nm .pf-pk{letter-spacing:-.08px}
@@ -2934,7 +2950,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mm</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mo</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -6057,7 +6073,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       var edge=(it.cls==="flat")?'<span class="rm-edge mut">flat typical</span>':(it.cls==="never")?'<span class="rm-edge mut">'+(rmTouch(it.cv)===null?'never a walk-on':'not at the open')+'</span>'
         :(it.cv.allday?'<span class="rm-edge">all day</span>'
         :'<span class="rm-edge">until '+rpClk(it.cv.front)+'</span>');
-      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
+      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+'\u00a0<span class="fs">\u2605</span></div>'+edge+ /* 0728mo THE STAR RIDES WITH THE LAST WORD (owner-ruled Thu Nov 12, 2026, 11:13 AM, hold and glue; found on the 0728mn render of My evening at 440 - Big Thunder Mountain Railroad with its star alone on a second line): the name and its star are joined by a no-break space, 0728mf's G-1 applied to the star, so where the row is too narrow the last word comes down with it */ '</div><div class="rm-lane rail">'+cells+'</div></div>';
     }
     return '<div class="lv-ch pc-ch"><div class="lv-l"><div class="lv-kick">9 AM \u2013 1 PM</div><div class="lv-ttl">Their mornings, side by side</div></div></div><div class="rpc">'+rmKeyHTML()+
       '<div class="rm-axis"><span>9A</span><span>10A</span><span>11A</span><span>12P</span><span>1P</span></div>'+rows+
@@ -6178,7 +6194,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         cells+=(m==null)?'<i class="sp"></i>':'<i class="t-'+rpTierCls(m)+(m<=(it.ev.walk||10)?' wo':'')+'"></i>';}
       var edge=it.ev.ne?'<span class="rm-edge mut">eases, never a walk-on</span>'
         :(it.ev.hold===false?'<span class="rm-edge">walk-on around '+rpClk(it.ev.wk)+'</span>':it.ev.wk<=win.a?'<span class="rm-edge">walk-on from the start</span>':'<span class="rm-edge">walk-on after '+rpClk(it.ev.wk)+'</span>'); /* 0719p: the lane speaks the from-start voice too */
-      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+' <span class="fs">\u2605</span></div>'+edge+'</div><div class="rm-lane rail">'+cells+'</div></div>';
+      rows+='<div class="rm-item"><div class="rm-top"><div class="rm-nm">'+esc(it.nm)+'\u00a0<span class="fs">\u2605</span></div>'+edge+ /* 0728mo THE STAR RIDES WITH THE LAST WORD (owner-ruled Thu Nov 12, 2026, 11:13 AM, hold and glue; found on the 0728mn render of My evening at 440 - Big Thunder Mountain Railroad with its star alone on a second line): the name and its star are joined by a no-break space, 0728mf's G-1 applied to the star, so where the row is too narrow the last word comes down with it */ '</div><div class="rm-lane rail">'+cells+'</div></div>';
     }
     var ax='',t;for(t=win.a;t<=win.b;t+=60)ax+='<span>'+meAx(t)+'</span>';
     return '<div class="lv-ch pc-ch"><div class="lv-l"><div class="lv-kick">'+rpClk(win.a)+' \u2013 '+rpClk(win.b)+'</div><div class="lv-ttl">Their evenings, side by side</div></div></div><div class="rpc">'+rmKeyHTML()+
