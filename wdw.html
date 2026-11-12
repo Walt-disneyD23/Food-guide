@@ -2934,7 +2934,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ml</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mm</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -14390,7 +14390,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!fin)return pwLeadLive(h,c,d,ds,card);
       if(c.parks.length<4)return h;
       var f=pwLeadFacts(c,d),k=pwLeadKind(f,ds,pwPrevDig[pwLeadPrev(ds)]),t=pwLeadLine(f,k.kind,card?"":pwDayWord(ds),card);
-      if(!t||(card&&t.l.length>58))return h; /* a card's headline has two lines: a sentence that would not fit yields to the stock line */
+      if(!t)return h; /* 0728mm THE HEADLINE STEPS DOWN BEFORE IT LOSES A WORD (owner-ruled A Thu Nov 12, 2026, 10:33 AM; field-born on IMG_6732): the card follows the page on a long line too - the 58-character count is retired; the painter measures the sentence and steps its size down (D.hstep) */
       return {k:h.k,l:t.l,sub:t.sub};
     }
     function hero(c,seed,isWeek,fin,forCard){
@@ -16135,16 +16135,16 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!D.kpark){rr(bx,by,bw+30,bh,20);ctx.fillStyle=D.badge==="FINAL"?"rgba(61,214,140,0.16)":"rgba(125,123,255,0.20)";ctx.fill();
       T(D.badge,bx+(bw+30)/2,by+bh/2,IN("700",22),D.badge==="FINAL"?C.green:"#b9b6ff","center","middle");
       if(asofT)T(asofT,Math.min(bx+(bw+30)/2,R-aw/2),by+bh+24,IN("500",20),C.muted2,"center");} /* 0728ir R-A: the right column stands only where the family head does not */
-      var hy=288+TY,hl=wrap2(D.line,R-L,SG("700",54)); /* 0728ja: the headline and everything after it ride below a two-line title */
+      var hy=288+TY,hl=wrap2(D.line,R-L,SG("700",54));var hz=54,hp=62;if(D.hstep){var hs9=[54,48,44],hq9,hn9=2;for(hq9=0;hq9<hs9.length;hq9++){hz=hs9[hq9];if(wrap2(D.line,R-L,SG("700",hz),9).length<=2)break;}if(wrap2(D.line,R-L,SG("700",hz),9).length>2)hn9=3;hp=Math.round(hz*62/54);hl=wrap2(D.line,R-L,SG("700",hz),hn9);} /* 0728mm THE HEADLINE STEPS DOWN BEFORE IT LOSES A WORD (A; the title's law, 0728hg, reaches the headline): a card that asks (D.hstep - the Wrap card) measures its headline and steps 54 -> 48 -> 44 to keep it on two lines, the pitch following the size; a sentence the smallest step cannot hold takes a third line; a card that does not ask draws as it always has */ /* 0728ja: the headline and everything after it ride below a two-line title */
       for(var i=0;i<hl.length;i++){ /* 0728gj E-2 THE NUMBER WEARS ITS BAND (owner-ruled Oct 13 on live-card-head-mock.png): a lead (D.lead) opens the first line in its own colour — the wait in its band, "Down right now." in the card's red — and the rest of the line is ink; a card with no lead draws as it always has */
-        if(i===0&&D.lead&&hl[0].indexOf(D.lead.t)===0){T(D.lead.t,L,hy,SG("700",54),D.lead.c,"left");ctx.font=SG("700",54);T(hl[0].slice(D.lead.t.length),L+ctx.measureText(D.lead.t).width,hy,SG("700",54),C.ink,"left");}
-        else T(hl[i],L,hy+i*62,SG("700",54),C.ink,"left");}
-      var ah=hy+hl.length*62;
+        if(i===0&&D.lead&&hl[0].indexOf(D.lead.t)===0){T(D.lead.t,L,hy,SG("700",hz),D.lead.c,"left");ctx.font=SG("700",hz);T(hl[0].slice(D.lead.t.length),L+ctx.measureText(D.lead.t).width,hy,SG("700",hz),C.ink,"left");}
+        else T(hl[i],L,hy+i*hp,SG("700",hz),C.ink,"left");}
+      var ah=hy+hl.length*hp;
       if(D.pill){ /* 0728gj E-3: the feed's callout rides the headline — a pill after its last line (the mock's bytes: 44 tall, 22 radius, a 16% wash of its colour; the label bold, the receipt after a dot), or on its own line below when the headline fills the width */
-        var pl=D.pill,py=hy+(hl.length-1)*62;ctx.font=SG("700",54);var hw=ctx.measureText(hl[hl.length-1]).width;
+        var pl=D.pill,py=hy+(hl.length-1)*hp;ctx.font=SG("700",hz);var hw=ctx.measureText(hl[hl.length-1]).width;
         ctx.font=IN("700",22);var lw=ctx.measureText(pl.lab).width,rs=pl.rec?"\u00b7 "+pl.rec:"";ctx.font=IN("600",22);var rw=rs?ctx.measureText(rs).width+8:0;
         var pw=16+lw+rw+16,px=L+hw+22;
-        if(px+pw>R){px=L;py=ah;ah+=62;}
+        if(px+pw>R){px=L;py=ah;ah+=hp;}
         rr(px,py-36,pw,44,22);ctx.fillStyle=(pl.c==="#3dd68c")?"rgba(61,214,140,0.16)":(pl.c==="#ff9f6b")?"rgba(255,159,107,0.16)":"rgba(150,161,242,0.16)";ctx.fill();
         T(pl.lab,px+16,py-14,IN("700",22),pl.c,"left","middle");if(rs)T(rs,px+16+lw+8,py-14,IN("600",22),pl.c,"left","middle");
       }
@@ -16445,7 +16445,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         sb={name:c.story.name,park:c.story.park,hi:ssw.hi,lo:ssw.lo,hiT:pwClk(ssw.hiT),loT:pwClk(ssw.loT),
             chip:(ssw.near&&ssw.downMin?(ssw.downN>1?(ssw.downMin+" min of holds \u2014 last ended "+pwClk(ssw.downEnd)):(ssw.downMin+"-min hold ended "+pwClk(ssw.downEnd))):null)};}
       var wrT=isWeek?fmtRange((d.week&&[d.week.mon,d.week.sun])||d.dates):fmtDate(dateStr); /* 0728ia THE WRAP DOOR NAMES ITS WEEK: the card’s title, once, for the headline and the share title */
-      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:wrT,badge:pwBadge(d,isWeek),line:h.l,sub:h.sub,tiles:tiles,story:sb,wk:isWeek,wkpic:isWeek?pwWkPic(d,c.busiestPark.park):null,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — "+(isWeek?"This week · ":"")+wrT});
+      pwEmitSized({W:1080,H:0,tk:1.36,ts:32,title:wrT,badge:pwBadge(d,isWeek),line:h.l,hstep:true,sub:h.sub,tiles:tiles,story:sb,wk:isWeek,wkpic:isWeek?pwWkPic(d,c.busiestPark.park):null,foot:(c.longestPeak&&c.longestPeak.suPk!=null?"Peak = highest wait that held 25+ min":null),foot2:(c.longestPeak&&c.longestPeak.suPk!=null?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-wrap-"+dateStr+".png",shareTitle:"RideCue — "+(isWeek?"This week · ":"")+wrT});
     }
 
     function shareParkCard(park){
