@@ -1381,6 +1381,7 @@
     border:1px solid var(--muted-2);color:var(--muted);background:none;padding:0;cursor:pointer;
     position:relative;font:700 var(--fs-caps)/1 system-ui,sans-serif;letter-spacing:0;text-transform:none}
   .lstat .info-i::after{content:"";position:absolute;inset:-8px}
+  .lst-door{cursor:pointer} .lst-door.lit{outline:2px solid var(--accent);outline-offset:2px} .lstat .lbl .car{font-style:normal;font-size:11px;color:var(--muted)} /* 0728mk THE TILE IS THE DOOR */
   .info-note+.presult{margin-top:14px}
   .spread{padding:2px 0 14px;border-bottom:1px solid var(--line);margin:16px 0 14px}
   .spread .k{display:block}
@@ -1976,6 +1977,7 @@
   .pw-rrow .nm{font-weight:600;font-size:var(--fs-body);line-height:1.2}
   .pw-rrow .ctx{font-size:var(--fs-caps);color:var(--muted);margin-top:2px}
   .pw-msg{text-align:center;color:var(--muted);font-size:var(--fs-body);padding:38px 16px;line-height:1.5}
+  #wrapView .pw-quiet{margin-top:18px} /* 0728mk THE WRAP SAYS WHEN IT STARTS */
   .pw-foot{font-size:var(--fs-caps);color:var(--muted-2);margin:14px 2px 0;line-height:1.5;text-align:center}
   /* weather chip (sits inside the dark hero) */
   .pw-chip{display:flex;align-items:center;gap:8px;margin-top:13px;padding:9px 12px;border-radius:var(--r-tile);background:rgba(99,102,241,.18);border:1px solid rgba(129,140,248,.32)}
@@ -2932,7 +2934,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ml</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3630,15 +3632,15 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   },true);
   window.addEventListener("scroll",closeStatusPop,{passive:true});window.ppShl().addEventListener("scroll",closeStatusPop,{passive:true});
   /* ---- 0728ck THE TILE'S PROOF: the proof card, the status card's grammar verbatim ---- */
-  function closeProofPop(){var p=$("proofPop");if(!p||p.hasAttribute("hidden"))return;p.setAttribute("hidden","");p.setAttribute("data-pk","");var l=document.querySelector(".pb-chip.lit");if(l)l.classList.remove("lit");}
+  function closeProofPop(){var p=$("proofPop");if(!p||p.hasAttribute("hidden"))return;p.setAttribute("hidden","");p.setAttribute("data-pk","");var l=document.querySelector(".pb-chip.lit,.lst-door.lit");if(l)l.classList.remove("lit");}
   document.addEventListener("click",function(e){ /* capture phase: a tap on a tile column opens the card under it (and never expands the row beneath); a tap-out is swallowed whole; the bare dash (a closed park) is no door — 0728cs: the labeled dash (open park, below the floor) IS one, the card says why it dashes */
     var p=$("proofPop");if(!p)return;
     var d=e.target&&e.target.closest?e.target.closest("[data-pbproof]"):null;
-    if(d){var tile=d.querySelector(".pb-chip");if(!tile){if(!p.hasAttribute("hidden")){e.stopPropagation();e.preventDefault();closeProofPop();}return;} /* 0728cs THE FLOOR IS A DOOR \u00b7 0728dp THE TAP-OUT IS SWALLOWED WHOLE (owner glass 9:34 PM Oct 1: closing the card over a closed park's dash opened EPCOT's row): a column that is no door still dismisses an open card, and the tap goes no further */
+    if(d){var tile=d.querySelector(".pb-chip")||(d.classList.contains("lst-door")?d:null);if(!tile){if(!p.hasAttribute("hidden")){e.stopPropagation();e.preventDefault();closeProofPop();}return;} /* 0728cs THE FLOOR IS A DOOR \u00b7 0728dp THE TAP-OUT IS SWALLOWED WHOLE (owner glass 9:34 PM Oct 1: closing the card over a closed park's dash opened EPCOT's row): a column that is no door still dismisses an open card, and the tap goes no further */
       e.stopPropagation();e.preventDefault();
       var pk=d.getAttribute("data-pbproof"),was=!p.hasAttribute("hidden")&&p.getAttribute("data-pk")===pk;closeProofPop();if(was)return;
-      var html=pbProofHTML(pk);if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
-      var r=d.getBoundingClientRect();p.style.maxHeight="";p.classList.remove("clip","end");p.scrollTop=0;p.style.top=Math.round(r.bottom+8)+"px";p.removeAttribute("hidden");tile.classList.add("lit");
+      var html=pbProofHTML(pk,d.classList.contains("lst-door")?"tile":"chip");if(!html)return;p.innerHTML=html;p.setAttribute("data-pk",pk);
+      var r=d.getBoundingClientRect();p.style.maxHeight="";p.classList.remove("clip","end");p.scrollTop=0;p.style.top=Math.round(r.bottom+8)+"px";if(d.classList.contains("lst-door")){p.style.left=Math.round(r.left)+"px";p.style.right="auto";}else{p.style.left="";p.style.right="";} /* 0728mk: opened from a tile, the card sits under the tile's left edge; from a chip it keeps its right-hand seat */ p.removeAttribute("hidden");tile.classList.add("lit");
       pbProofPlace(p,r); /* 0728cl THE CARD FITS */
       return;}
     if(p.hasAttribute("hidden"))return;
@@ -4839,13 +4841,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     for(i=0;i<4;i++){var lit=(i+1===on);h+='<span class="kc k'+(i+1)+(lit?' on':'')+'">'+(lit?'<span class="now">now</span>':'')+'<b><i></i>'+W[i]+'</b><em>'+rg[i]+'</em></span>';}
     return h+'</div><div class="pp-keycap">'+esc(pk)+(/s$/.test(pk)?'\u2019':'\u2019s')+' own scale \u00b7 all-rides average, minutes.</div>'; /* a name ending in s takes the bare apostrophe */
   }
-  function pbProofHTML(pk){ /* 0728ck THE TILE'S PROOF \u00b7 0728co THE TIER (tier-states-mock.html, owner: "looks great"): the card lists every headliner with its state where the wait would be; first line N of M; the floor sentence under two; the refurb clause; the hero's lightning line (rdLtgClause \u2014 same function, same gates, observed never causal); the footer defines the word */
+  function pbProofHTML(pk,w9){w9=w9||"chip"; /* 0728mk THE TILE IS THE DOOR: the card names the thing that opened it - the chip on the four-parks rows, the tile on a park page */ /* 0728ck THE TILE'S PROOF \u00b7 0728co THE TIER (tier-states-mock.html, owner: "looks great"): the card lists every headliner with its state where the wait would be; first line N of M; the floor sentence under two; the refurb clause; the hero's lightning line (rdLtgClause \u2014 same function, same gates, observed never causal); the footer defines the word */
     var h=pbHeadliners(pk);if(!h.list.length)return '';
     var T=headTier(pk),n=h.run.length,M=h.tot,b=(T.avg===null)?null:tierOfWait(T.avg),allAvg=tyAllAvg(pk),st=bannerStats(pk),i,list='<ul class="pp-hl">';
     var L9=h.list.map(function(x9,i9){return {x:x9,i:i9};}).sort(function(p9,q9){var po=(p9.x.st==="open"),qo=(q9.x.st==="open");if(po!==qo)return po?-1:1;if(po&&q9.x.wait!==p9.x.wait)return q9.x.wait-p9.x.wait;return p9.i-q9.i;}); /* 0728dp THE PROOF LEADS WITH WHAT DRIVES THE NUMBER (owner glass 9:34 PM Oct 1, ruled O-B): longest wait first; rides that are not posting follow, in ratified order; pbHeadliners keeps the ratified order for every other reader */
     for(i=0;i<L9.length;i++){var x=L9[i].x;list+='<li'+(x.st==="open"?'':' class="off"')+'><span>'+esc(x.name)+'</span>'+(x.st==="open"?'<span class="wt" style="--wb:var(--'+tierOfWait(x.wait)+')">'+x.wait+'<span class="u">m</span></span>':'<span class="st '+x.st+'">'+(x.st==="nowait"?"No wait":x.st==="refurb"?"Refurb":x.st==="down"?"Down":"Closed")+'</span>')+'</li>';}
     list+='</ul>';
-    var desc=(n>=2)?'<b>'+n+' of '+M+'</b> headliners running \u2014 their average is the chip\u2019s number.':'<b>'+n+' of '+M+'</b> running \u2014 too few for an honest average; the chip shows a dash until two are.';
+    var desc=(n>=2)?'<b>'+n+' of '+M+'</b> headliners running \u2014 their average is the '+w9+'\u2019s number.':'<b>'+n+' of '+M+'</b> running \u2014 too few for an honest average; the '+w9+' shows a dash until two are.';
     if(h.refurb.length)desc+=' <b>'+esc(h.refurb.map(function(x){return x.name;}).join(', '))+'</b> '+(h.refurb.length===1?'is':'are')+' in refurbishment.';
     var allLine=(allAvg===null||allAvg===undefined)?'no rides posting waits right now':'<b>'+allAvg+'m</b> average across the <b>'+h.open+'</b> open';
     var crowd=(st&&st.crowd)?' \u00b7 crowd <b style="color:'+esc(st.crowd.color)+'">'+esc(st.crowd.label)+'</b> \u00b7 est.':'';
@@ -9893,7 +9895,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       '<div class="lstat"><div class="lbl">Longest ride</div><div class="v">'+(s.max===null?'\u2013':s.max+'<span class="u">m</span>')+'</div><div class="ctx">'+(mm.max?esc(mm.max.n):'')+'</div></div>';
     { /* 0718u: park-only since 0718k — the Busiest tile swept; bannerStats' busiest model stays for the ledgered re-seat */
       var info=parkInfo[key],line;
-      if(info&&info.open&&info.close)line=fmtClock(info.open)+" \u2013 "+fmtClock(info.close);
+      if(info&&info.open&&info.close)line=fmtClock(info.open)+"\u2013"+fmtClock(info.close); /* 0728mk THE HOURS WEAR ONE DASH (owner, Thu Nov 12, 2026, 8:52 AM; seen on IMG_6723): the Hours cell spaced its dash where its neighbours do not */
       else if(usingFallback)line="Hours load with live feed";
       else line="Hours unavailable";
       var cells=[]; /* 0728lu THE HOURS TILE USES ITS WIDTH (owner-ruled H-C Nov 10, 2026, 3:15 PM: "lets rule hc and move forward"): every window the schedule lists is a cell - a label over a value at the hours' own size; a verified party wears the row's word (0728dp: Party, never the schedule's Ticketed Event); the resident festival is a cell; a pair of clocks that shares a meridiem says it once (pbStripAm, the row's own typography) */
@@ -9905,12 +9907,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     /* 0728gh M-3: Headliner avg and Crowd are tiles in the face's own grid (they were the fine-print row). Each keeps its ⓘ; the headliner tile says how many are running, which is what its ⓘ has always promised. No crowd read → the headliner tile takes the row. */
     /* 0728lu S-B (owner Nov 10, 2026, 3:37 PM: "i would lean S-B"): the all-rides average takes its own tile beside the headliner average, each number in its band's ink (the park row's split, said on the page a tap lands on); Crowd takes the row beneath. A closed park has no all-rides tile, as it has no crowd tile. */
     var ar9=(s.isOpen===true&&s.avg!==null&&s.avg!==undefined);
-    tiles+='<div class="lstat lst-f'+((s.crowd||ar9)?'':' wide')+'"><div class="lbl"><span>Headliner avg</span><button type="button" class="info-i" data-info="headPark" aria-label="How this is calculated">i</button></div>'+
+    tiles+='<div class="lstat lst-f lst-door'+((s.crowd||ar9)?'':' wide')+'" role="button" data-pbproof="'+esc(key)+'"><div class="lbl"><span>Headliner avg</span><i class="car">\u25be</i></div>'+ /* 0728mk THE TILE IS THE DOOR (K-B, owner-ruled Thu Nov 12, 2026, 8:37 AM on sheet-K; his idea, 8:03 AM: "making the headliner avg box clickable on that landing page, pulling up the pop up that happens on live"): the whole tile opens the Headliners pop-up, open park or closed; the caret takes the info button's seat (the chip's own cue) and the pop-up's footer keeps the definition. K-C (the info button stays, the running line is the door) not chosen */
       '<div class="v'+(s.headAvg===null?'':' lst-bi')+'"'+(s.headAvg===null?'':' style="--b:var(--'+tierOfWait(s.headAvg)+')"')+'>'+(s.headAvg===null?'\u2013':s.headAvg+'<span class="u">m</span>')+'</div><div class="ctx">'+(s.headTot?(s.headRun+' of '+s.headTot+' running'):'')+'</div></div>'+
       (ar9?'<div class="lstat lst-f"><div class="lbl"><span>All rides avg</span></div><div class="v lst-bi" style="--b:var(--'+tierOfWait(s.avg)+')">'+s.avg+'<span class="u">m</span></div><div class="ctx">'+(s.open?s.open+' rides open':'')+'</div></div>':'')+
       (s.crowd?'<div class="lstat lst-f'+(ar9?' wide':'')+'"><div class="lbl"><span>Crowd \u00b7 est.</span><button type="button" class="info-i" data-info="crowd" aria-label="How this is estimated">i</button></div>'+
         '<div class="v txt" style="color:'+s.crowd.color+'">'+s.crowd.label+'</div><div class="ctx"></div></div>':'');
-    tiles+=tSL; /* 0728lu THE DAY LEADS (owner-ruled L-B Nov 10, 2026, 3:01 PM): Hours first, the averages and the crowd, then Shortest / Longest */
+    if(s.isOpen!==false)tiles+=tSL; /* 0728mk THE CLOSED PARK DROPS ITS EMPTY TILES (C-B, owner-ruled Thu Nov 12, 2026, 8:37 AM on sheet-C; field-born on IMG_6723, Magic Kingdom at 4:22 AM): a closed park has no shortest or longest ride, and two tiles holding a dash said so twice; they leave while the park is closed. The headliner tile stays (it is the pop-up's door). C-C (all three leave) not chosen */ /* 0728lu THE DAY LEADS (owner-ruled L-B Nov 10, 2026, 3:01 PM): Hours first, the averages and the crowd, then Shortest / Longest */
     var face='<div class="lstat-grid">'+tiles+'</div>';
     var fine=""; /* 0728gh: the fine-print row retired into the two tiles above */
     /* Wait spread: how many open attractions sit in each band; tap a band to filter the list. */
@@ -13065,7 +13067,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function land(d){renderWrap(d,"visit:profile:"+ds);if(rid)showRide(rid,park);}
       if(pwDayCache[ds]){land(pwDayCache[ds]);return;}
       var wv=$id("wrapView");if(wv){wv.innerHTML=tabsHTML("profile")+'<div class="pw-msg">Loading the day\u2026</div>';wireTabs();}
-      fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}).then(function(d){
+      Promise.all([fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}),pwPrevFetch(pwLeadPrev(ds))]).then(function(rs9){var d=rs9[0]; /* 0728ml: a visited day reads its day before too */
         pwCleanData(d);
         pwDayCache[ds]=d;
         if(active&&curTab==="profile")land(d);
@@ -14044,7 +14046,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var wv=$id("wrapView");if(!wv)return;
       if(pwDayCache[ds]){renderWrap(pwDayCache[ds],"visit:"+from+":"+ds);if(park){pwWayIn=wayIn?{kind:"park",key:park,tab:"visit:"+from+":"+ds,label:wayIn.label,go:wayIn.go}:null;showDetail(park);}return;}
       wv.innerHTML=tabsHTML(from)+'<div class="pw-msg">Loading the day\u2026</div>';wireTabs();
-      fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}).then(function(d){
+      Promise.all([fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}),pwPrevFetch(pwLeadPrev(ds))]).then(function(rs9){var d=rs9[0]; /* 0728ml: a visited day reads its day before too */
         pwCleanData(d);
         pwDayCache[ds]=d;
         if(active&&curTab===from){renderWrap(d,"visit:"+from+":"+ds);if(park){pwWayIn=wayIn?{kind:"park",key:park,tab:"visit:"+from+":"+ds,label:wayIn.label,go:wayIn.go}:null;showDetail(park);}}
@@ -14106,7 +14108,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var url=WRAP_URL+"/history";
       if(tab==="yesterday")url+="?date="+etDate(1);
       else url+="?date="+etDate(0);
-      fetch(url).then(function(r){return r.json();}).then(function(d){
+      Promise.all([fetch(url).then(function(r){return r.json();}),pwPrevFetch(etDate(tab==="yesterday"?2:1))]).then(function(rs9){var d=rs9[0]; /* 0728ml: the day before's digest rides beside the day, so the headline knows what led yesterday before it first paints */
         pwCleanData(d);
         cache[tab]=d;cacheAt[tab]=Date.now();if(active&&curTab===tab)renderWrap(d,tab);
       })["catch"](function(){
@@ -14303,6 +14305,93 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       }
       else if(pk&&pk.worst)h.sub+=" "+tally;
       return h;
+    }
+    /* ===== 0728ml THE DAY LEADS WITH ITS OWN NEWS (owner-ruled Thu Nov 12, 2026, 8:57-9:34 AM: G-2 the gate, P-C the turn, the card follows the page; field-born on IMG_6726, 8:15 AM - Animal Kingdom "drawing the biggest crowds" with one park open - and on a finished day's headline that "repeats": one park led 43 of the 45 days on file) =====
+       LIVE: no park is called busiest until every park that opens today is past its published opening AND the top two stand 5 or more apart (waits post in 5-minute steps; the week's floor, 0728mj). Before that the morning's lines take turns by the date; a tie says so.
+       FINAL: five everyday kinds take turns by the calendar (busiest, a peak, the spread, a drop, the calm end), so two days running never share one. An outlier jumps the queue - a weather verdict (the weather card's own, never a second bar), a 150+ peak, a clean 110+ drop, 47+ outages - unless it is the kind either neighbouring day is due, or it also qualified the day before (pwPrevDig: that day's stored digest, read beside the day).
+       A drop is a clean one: it ends at 10 or more and takes four hours or less. A walk-on never leads: a posted 0 in a day's totals is often a ride reopening. Every number is the page's own (compute, pwSwingMap, pwSustained, wxChip). */
+    var PW_LEAD_ROT=["busiest","peak","spread","drop","calm"],PW_LEAD_BAR={peak:150,drop:110,outages:47,gap:5},pwPrevDig={};
+    function pwLeadDayN(ds){return Math.round(Date.UTC(+ds.slice(0,4),+ds.slice(5,7)-1,+ds.slice(8,10))/864e5);}
+    function pwLeadPrev(ds){return new Date(Date.UTC(+ds.slice(0,4),+ds.slice(5,7)-1,+ds.slice(8,10)-1)).toISOString().slice(0,10);}
+    function pwLeadSlot(n){return PW_LEAD_ROT[((n%5)+5)%5];}
+    function pwPrevFetch(ds){ /* the day before's stored digest; never rejects - a miss leaves the day unknown and the turn stands */
+      if(pwPrevDig[ds]!==undefined)return Promise.resolve(pwPrevDig[ds]);
+      return fetch(WRAP_URL+"/digest?from="+ds+"&to="+ds).then(function(r){return r.json();}).then(function(j){var a=(j&&j.digests)||[],g=false,i;for(i=0;i<a.length;i++){if(a[i]&&a[i].d===ds)g=a[i];}pwPrevDig[ds]=g;return g;})["catch"](function(){return null;});
+    }
+    function pwLeadOutDig(g){ /* the outlier kinds a stored day qualified for */
+      var o=[],w=g.wx||{},pk=0,dr=0,id,r;
+      if((w.precipIn||0)>=1||w.worstCode===65||w.worstCode===82||w.worstCode>=95||(w.gustMax||0)>=35||(w.loF!=null&&w.loF<=40))o.push("weather");
+      for(id in (g.rides||{})){r=g.rides[id];if(MAIN.indexOf(r.p)<0)continue;
+        if(r.su&&r.su.pk>pk)pk=r.su.pk;
+        if(r.sw&&r.sw.lo>=10&&(r.sw.loT-r.sw.hiT)<=240&&r.sw.drop>dr)dr=r.sw.drop;}
+      if(dr>=PW_LEAD_BAR.drop)o.push("drop");
+      if(pk>=PW_LEAD_BAR.peak)o.push("peak");
+      var roll=(typeof window.__pwDayRoll==="function")?window.__pwDayRoll(g):null;if(roll&&roll.dn>=PW_LEAD_BAR.outages)o.push("outages");
+      return o;
+    }
+    function pwLeadFacts(c,d){ /* a finished day's facts, each by the model that already prints it */
+      var f={parks:c.parks,peak:null,drop:null,dn:0,dm:0,nd:0,wx:null},lp=c.longestPeak,pool=realRides(d).filter(function(r){return !pwExcluded(r);}),sw=pwSwingMap(d),i,r,b;
+      if(lp){var su=(lp.suPk!=null)?pwSustained(lp.id,d):null;f.peak={n:lp.name,p:lp.park,pk:(lp.suPk!=null?lp.suPk:lp.maxWait),at:su?su.peakAt:null};if(f.peak.pk==null)f.peak=null;}
+      for(i=0;i<pool.length;i++){r=pool[i];
+        if(r.downEvents>0){f.dn+=r.downEvents;f.dm+=r.downMinutes||0;f.nd++;}
+        b=pwShow(r)?null:sw[r.id];if(b&&b.lo>=10&&(b.loT-b.hiT)<=240&&(!f.drop||b.drop>f.drop.drop))f.drop={n:r.name,p:r.park,drop:b.drop,hi:b.hi,lo:b.lo,hiT:b.hiT,loT:b.loT};}
+      var ch=wxChip(d,false);if(ch&&ch.kind!=="hold"&&ch.text)f.wx=ch.text;
+      return f;
+    }
+    function pwLeadOut(f){var o=[];if(f.wx)o.push("weather");if(f.drop&&f.drop.drop>=PW_LEAD_BAR.drop)o.push("drop");if(f.peak&&f.peak.pk>=PW_LEAD_BAR.peak)o.push("peak");if(f.dn>=PW_LEAD_BAR.outages)o.push("outages");return o;}
+    function pwLeadKind(f,ds,prev){ /* prev: the day before's digest; false = none on file; null/undefined = not known, so only the day's own turn may lead */
+      var n=pwLeadDayN(ds),s=pwLeadSlot(n);
+      if(s==="drop"&&!f.drop)s="busiest"; /* no clean drop: busiest is never that slot's neighbour */
+      if(s==="peak"&&!f.peak)s="calm";    /* no peak on file: the calm end is never that slot's neighbour */
+      var a=pwLeadSlot(n-1),b=pwLeadSlot(n+1),o=pwLeadOut(f),known=(prev!==undefined&&prev!==null),po=prev?pwLeadOutDig(prev):[],i;
+      for(i=0;i<o.length;i++){
+        if(o[i]===s)return {kind:s,out:true};
+        if(known&&o[i]!==a&&o[i]!==b&&po.indexOf(o[i])<0)return {kind:o[i],out:true};}
+      return {kind:s,out:false};
+    }
+    function pwLeadLine(f,k,dw,card){ /* dw: the day word ("yesterday", "on Nov 6"), empty on a card - a frozen picture says when in its badge */
+      var P=f.parks,top=P[0],nx=P[1],bot=P[P.length-1],tie=(top.headAvg-nx.headAvg<PW_LEAD_BAR.gap),dws=dw?(" "+dw):"",bz=tie?(top.park+" and "+nx.park+" ran neck and neck"):("Busiest park: "+top.park),x;
+      if(k==="busiest")return tie?{l:top.park+" and "+nx.park+" ran neck and neck"+dws+".",sub:"Headliners averaged "+top.headAvg+" and "+nx.headAvg+" min."}:null; /* five or more apart: the stock line stands, tense and day word its own */
+      if(k==="spread")return {l:top.park+" ran "+(top.headAvg-bot.headAvg)+" min hotter than "+bot.park+".",sub:"Headliners averaged "+top.headAvg+" min at "+top.park+", "+bot.headAvg+" at "+bot.park+"."};
+      if(k==="calm")return {l:bot.park+" was the easy park"+dws+".",sub:"Headliners averaged "+bot.headAvg+" min. "+top.park+" was busiest at "+top.headAvg+"."};
+      if(k==="peak"){x=f.peak;return {l:x.n+" peaked at "+x.pk+" min.",sub:x.p+(x.at!=null?", at "+pwClk(x.at):"")+". "+bz+"."};}
+      if(k==="drop"){x=f.drop;return {l:x.n+" fell from "+x.hi+" to "+x.lo+" min"+((!card&&(x.loT-x.hiT)<=120)?" in under two hours":"")+".",sub:pwClk(x.hiT)+" to "+pwClk(x.loT)+", "+x.p+". "+bz+"."};}
+      if(k==="outages")return {l:f.dn+" outages across "+f.nd+" rides"+dws+".",sub:Math.round(f.dm/60)+" ride-hours lost. "+bz+"."};
+      if(k==="weather")return {l:f.wx+".",sub:bz+". Headliners averaged "+top.headAvg+" min."};
+      return null;
+    }
+    function pwLeadLive(h,c,d,ds,card){ /* a day still running: the gate, then the tie; before the gate, the morning's lines */
+      var pb=(d&&d.parksByDate&&d.parksByDate[ds])||null,now=Date.now(),P=c.parks,open=[],rest=[],i,k,t;
+      if(pb){for(i=0;i<MAIN.length;i++){k=pb[MAIN[i]];if(!k||!k.open)continue;t=new Date(k.open).getTime();(now>=t?open:rest).push({p:MAIN[i],t:t,o:k.open,c:k.close});}}
+      var gate=pb?(rest.length===0&&open.length>0):(P.length===MAIN.length);
+      if(gate){
+        if(P.length>1&&P[0].headAvg-P[1].headAvg<PW_LEAD_BAR.gap)return {k:h.k,l:P[0].park+" and "+P[1].park+" are running neck and neck"+(card?".":" so far."),sub:"Headliners averaging "+P[0].headAvg+" and "+P[1].headAvg+" min."};
+        return h;}
+      function clk(iso){var q=(typeof fmtClock==="function")?fmtClock(iso):null;return q||"";}
+      function names(a){var n=a.map(function(x){return x.p;});return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" and "+n[n.length-1];}
+      var NW=["","One park","Two parks","Three parks","Four parks"],L=[],gl=null,lp=c.longestPeak,pk=lp?(lp.suPk!=null?lp.suPk:lp.maxWait):null,v=null,lead;
+      rest.sort(function(x,y){return x.t-y.t;});
+      if(rest.length){var same=rest.every(function(x){return x.t===rest[0].t;}),last=rest[rest.length-1];
+        var rp=(rest.length===1?rest[0].p+" opens ":NW[rest.length]+" open ")+(same?"at ":"by ")+clk(last.o)+".";
+        gl=open.length?(names(open)+(open.length===1?" is":" are")+" open. "+rp):(rest[0].p+" opens first, at "+clk(rest[0].o)+".");}
+      if(gl&&!card)L.push({l:gl,sub:"The busiest park is named once every park is open."});
+      if(lp&&pk!=null)L.push({l:lp.name+" has the longest line so far — "+pk+" min.",sub:lp.park+"."+(gl&&!card?" "+gl:"")});
+      if(!card&&open.length+rest.length>0){var all=open.concat(rest),mx=0,late=[];all.forEach(function(x){var ct=x.c?new Date(x.c).getTime():0;if(ct>mx){mx=ct;late=[x];}else if(ct===mx&&ct)late.push(x);});
+        if(late.length&&late.length<all.length)L.push({l:names(late)+(late.length===1?" is":" are")+" open latest tonight, to "+clk(late[0].c)+".",sub:gl||""});}
+      try{v=(typeof vdVerdict==="function")?vdVerdict():null;}catch(e9){v=null;}
+      if(v&&v.state&&v.state!=="none"&&!v.party){lead=(v.weekday?v.weekday+" ":"")+v.dayPart;
+        L.push(v.state==="quiet"?{l:"A quiet "+lead+" so far — headliners near their typical.",sub:gl&&!card?gl:""}:{l:"Headliners are about "+v.n+" min "+(v.state==="over"?"over":"under")+" a typical "+lead+".",sub:gl&&!card?gl:""});}
+      if(!L.length)return {k:h.k,l:"The parks are opening.",sub:"The busiest park is named once every park is open."};
+      t=L[((pwLeadDayN(ds)%L.length)+L.length)%L.length];
+      return {k:h.k,l:t.l,sub:t.sub};
+    }
+    function pwDayLead(h,c,d,ds,fin,card){ /* the day's headline: hero() writes the stock line, this decides whether the day has something better to say */
+      if(!c||!c.parks||!c.parks.length)return h;
+      if(!fin)return pwLeadLive(h,c,d,ds,card);
+      if(c.parks.length<4)return h;
+      var f=pwLeadFacts(c,d),k=pwLeadKind(f,ds,pwPrevDig[pwLeadPrev(ds)]),t=pwLeadLine(f,k.kind,card?"":pwDayWord(ds),card);
+      if(!t||(card&&t.l.length>58))return h; /* a card's headline has two lines: a sentence that would not fit yields to the stock line */
+      return {k:h.k,l:t.l,sub:t.sub};
     }
     function hero(c,seed,isWeek,fin,forCard){
       var pk=c.busiestPark;
@@ -14536,10 +14625,12 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       html+='<div class="pw-date"><div><div class="d">'+esc(dLine)+'</div><div class="s">'+esc(dSub)+'</div></div><span class="pw-badges">'+pwRecBadge(d,isWeek)+badge+'</span></div>';
 
       if(!c.busiestPark){
-        html+='<div class="pw-msg">Not enough data logged for this day yet. Once the parks have been open a while, the Wrap fills in.</div>';
+        var b9=(tab==="today"&&typeof clBack==="function")?clBack("all"):null; /* 0728mk THE WRAP SAYS WHEN IT STARTS (W-B, owner-ruled Thu Nov 12, 2026, 8:37 AM on sheet-W, his words 8:37 AM: "it should say the wrap starts filling in, not fills in, as it may not be complete"; field-born on IMG_6722, 4:21 AM): before any park opens, Today's empty Wrap wears the quiet rooms' card and Live's own clause (clBack); with a park open and the data thin, the old sentence stands in the same card. W-C (a door to Yesterday) not chosen */
+        html+='<div class="favcard pg-list pw-quiet"><div class="pf-quiet">'+(b9?'The Wrap starts filling in after '+b9.room+'.':'Not enough data logged for this day yet. Once the parks have been open a while, the Wrap fills in.')+'</div></div>';
         wv.innerHTML=html;wireTabs();return;
       }
       var h=hero(c,dateStr,isWeek,fin);
+      if(!isWeek)h=pwDayLead(h,c,d,dateStr,fin,false); /* 0728ml THE DAY LEADS WITH ITS OWN NEWS: the day's headline passes the gate and the turn (pwDayLead); the week keeps its own lead */
       if(isWeek&&d.week)h=pwWkLead(h,d.week,c.busiestPark); /* 0728mj THE GAP EARNS THE SENTENCE: the week's lead and its tally are one function's work (pwWkLead) */
       var chip=isWeek?null:wxChip(d,live);
       var ltgOn=!isWeek&&!!(d.ltg&&d.ltg.samples&&d.ltg.samples.some(function(s){return s.n>0;}));
@@ -16339,7 +16430,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var tab=lastTab,isWeek=(tab==="week"),d=lastData,c=compute(d);
       if(!c.busiestPark)return;
       var dateStr=(d.dates&&d.dates[0])||etDate(tab==="yesterday"?1:0);
-      var h=hero(c,dateStr,isWeek,isWeek?pwWeekFin(d):isFinal(d),true),tiles=[]; /* 0728hb: the week's own fin (gz's one predicate) */
+      var h=hero(c,dateStr,isWeek,isWeek?pwWeekFin(d):isFinal(d),true),tiles=[];if(!isWeek)h=pwDayLead(h,c,d,dateStr,isFinal(d),true); /* 0728ml: the card follows the page (owner-ruled); before the gate it speaks only what holds on a frozen picture */ /* 0728hb: the week's own fin (gz's one predicate) */
       var live=!isFinal(d);
       var wxKind=(!isWeek)?(function(){var ch=wxChip(d,live);return (ch&&(ch.kind==="storm"||ch.kind==="wind"||ch.kind==="rain"))?ch.kind:null;})():null,wxX=wxKind?wxDerive(d):null;
       if(c.toughest)tiles.push({label:"TOUGHEST LINE",pre:"avg",big:String(c.toughest.avgWait),post:"m",cls:tier(c.toughest.avgWait),name:c.toughest.name,ctx:c.toughest.park});
