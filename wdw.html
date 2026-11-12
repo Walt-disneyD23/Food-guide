@@ -1644,6 +1644,10 @@
       #pgPulse .pc-lead{font-size:15.7px}
       #pgPulse .rp-hero:has(~ .rd-sechead) .sub{font-size:var(--fs-body)} /* the Rope Drop Board keeps its sentences (B): its hero's line with them; .rd-ctx and .rd-seccap take no size here */
     }
+    /* 0728mp THE CLOCK STAYS WHOLE · A ONE SITS WITH ITS NEIGHBOURS · LAST GETS ITS ROOM (owner-ruled Thu Nov 12, 2026, 11:51 AM on plan-glass-fixes-440 and its phone specimen: "good with all your leans there"; field-born on the 0728mo glass, IMG_6736-6755). The clock: .rp-nb, written by rpNbDom. The one: the profile's and the Board's hero numbers, the Board's times and Compare's table drop the fixed-width figures - the phone's rounded 1 is narrow and sat apart from its neighbour (17/28, 10 AM, 61m); the table's figures are right-aligned, so their ends still meet. LAST: the Save-for-last label takes its own width, as the time labels do (it overran its 22 px seat and touched the name) */
+    #pgPulse .rp-nb{white-space:nowrap}
+    #pgPulse .rp-hero .hstat .v,#pgPulse .rd-edge,#pgPulse .rc-tbl td{font-variant-numeric:proportional-nums}
+    #pgPulse .rm-rec .row .n.last{width:auto;min-width:22px}
     #banners .pb-slim .pb-nm,.ty-board .pb-row.pb-slim .pb-nm{font-weight:700;letter-spacing:-.022em}
     #banners .banner-name,#banners .banner-stat .bs-v,#banners .pf-now,#banners .ux-ht,#banners .ux-tm b,#banners .lstat .v,.pb-board .pb-slim .pb-chip b{font-weight:800}
     #banners .fc-nm .pf-pk{letter-spacing:-.08px}
@@ -2950,7 +2954,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mo</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mp</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -9384,6 +9388,16 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     el.querySelectorAll("[data-pchome]").forEach(function(b){b.addEventListener("click",function(){var t9=tpToday();pcYM=t9.slice(0,7);pcSel=t9;renderPulsePage();});}); /* 0728dq: home is the arrival - this month, today's sheet open (0727t) */
     el.querySelectorAll("[data-pcshare]").forEach(function(b){b.addEventListener("click",function(e){e.stopPropagation();pcShareCard(b.getAttribute("data-pcshare"));});}); /* 0727y: the two doors */
     el.querySelectorAll("[data-pcd]").forEach(function(b){b.addEventListener("click",function(){var ds=b.getAttribute("data-pcd");pcSel=(pcSel===ds)?null:ds;var sh=el.querySelector(".pc-sheet"),t0=sh?null:null;renderPulsePage();var s2=el.querySelector(".pc-sheet");if(s2&&pcSel)s2.scrollIntoView({block:"end",behavior:"smooth"});});});} /* 0727w: the sheet's BOTTOM lands above the tab bar (scroll-margin-bottom carries the shell's pad) */
+  function rpNbDom(root){ /* 0728mp THE CLOCK STAYS WHOLE (owner-ruled Thu Nov 12, 2026, 11:51 AM on plan-glass-fixes-440; field-born on IMG_6751 - the ride profile's record reading "9:45" then "AM" on the next line after 0728mn's larger sentence): in Plan's sentences a clock or a clock range never breaks inside itself - each is wrapped whole (.rp-nb), so the line breaks before it. One pass over the painted page, at renderPulsePage's door: the builders' strings are untouched, and a card that reads the page's text reads the same words. The mock's pass, verbatim in its pattern */
+    if(!root||!root.querySelectorAll||!document.createTreeWalker)return;
+    var RX=/\b\d{1,2}(?::\d\d)?(?:\s(?:AM|PM))?[–-]\d{1,2}(?::\d\d)?\s(?:AM|PM)\b|\b\d{1,2}(?::\d\d)?\s(?:AM|PM)\b/g;
+    var els=root.querySelectorAll(".rd-ctx,.rp-rrow .l>.m,.m>.why,.rc-tbl td,.rp-take"),i,j;
+    for(i=0;i<els.length;i++){var w=document.createTreeWalker(els[i],4,null,false),ns=[],n;while((n=w.nextNode()))ns.push(n);
+      for(j=0;j<ns.length;j++){var t=ns[j],s=t.nodeValue,p=t.parentNode;if(!p||(p.className==="rp-nb"))continue;RX.lastIndex=0;if(!RX.test(s))continue;RX.lastIndex=0;
+        var f=document.createDocumentFragment(),at=0,m;
+        while((m=RX.exec(s))){if(m.index>at)f.appendChild(document.createTextNode(s.slice(at,m.index)));var sp=document.createElement("span");sp.className="rp-nb";sp.appendChild(document.createTextNode(m[0]));f.appendChild(sp);at=m.index+m[0].length;}
+        if(at<s.length)f.appendChild(document.createTextNode(s.slice(at)));p.replaceChild(f,t);}}
+  }
   function renderPulsePage(){
     /* Phase 3a (0710s): Hot-lines' new home — the 0710p pattern: painted before render()'s
        away-guard so polls refresh it on any tab; navGo fresh-paints on entry. Page grammar
@@ -9400,6 +9414,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else if(rpView==="trip"){rpEnsureDigs();tpEnsureSched();el.innerHTML=tpPageHTML();} /* L-29 (0714u): the trip rung - a new entry path feeds itself (Learning 45): digs + months ensured here */
     else if(rpView==="attr"){el.innerHTML=((rcIds||rpRide)?(rpEnsureDigs(),(rcIds?rcCompareHTML():rpProfileHTML())):(rpSub?(rpEnsureDigs(),(rpSub==="board"?rdBoardHTML():rpSub==="evening"?meEveningHTML():rpSub==="hours"?mdLandingHTML():rmMorningHTML())):rpAttrHTML()));} /* 0713p: park chips are a NOW filter - they leave with it \u00b7 0713r: the ride rung \u00b7 0714a: the board rung */
     else{rpView="plan";el.innerHTML=plLandingHTML();} /* Cut 2 (0719u): the Now room retired to LIVE as the CROWD PULSE section - a stray view value lands home, never blank */
+    rpNbDom(el); /* 0728mp THE CLOCK STAYS WHOLE: one pass over the freshly painted page, whichever room it is */
     var shR2=el.querySelector(".rc-sheet");if(shR2&&stR)shR2.scrollTop=stR; /* 0725s: the seat restored on the fresh sheet */
     el.querySelectorAll("[data-pl]").forEach(function(b){b.addEventListener("click",function(){ /* 0719r: the landing's doors - each re-homes an existing room; resets mirror the retired rail's leave semantics */
       var v=b.getAttribute("data-pl");
