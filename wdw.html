@@ -2110,6 +2110,8 @@
   .hi-door{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin:10px 0 16px;padding:9px 12px 9px 14px;border:1px solid var(--line);background:var(--card-2);border-radius:var(--r-pill);font-family:var(--font-body);cursor:pointer;text-align:left}
   .hi-door b{font-weight:700;font-size:var(--fs-small);color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .hi-door span{flex:none;font-weight:700;font-size:var(--fs-meta);color:var(--accent);white-space:nowrap}
+  /* 0728nc A RIDE IN REFURBISHMENT SAYS SO, WITH ITS DAY (owner on his own glass, Fri Nov 13, 2026, 1:38 PM: "Tiana's is down for refurbishment but was running the last 4 weeks so it shows up, as it should I suppose. Maybe an asterisk for any ride down for refurb? ... Maybe the same note on the picker too?"; ruled R-B on sheet 27, 1:45 PM: "I like all your leans my friend ... looks nice"). Words under the ride's name, in the Wrap's own phrase - no symbol to decode. Not chosen: R-A the REFURB flag and a sentence in the fine print, R-C an asterisk explained in the fine print */
+  .hi-rf{display:block;margin-top:2px;font-style:normal;font-weight:600;font-size:var(--fs-fine);line-height:1.25;letter-spacing:0;color:var(--muted-2)}
   .hi-sheet .hi-list{flex:1 1 auto;min-height:0;height:60vh;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))} /* 0728mt THE LIST SCROLLS: a touch that begins on the list is the list's own (sheetDragDismiss leaves it be - the sheet has no scroll room of its own, so it swallowed every upward drag); the sheet is dragged closed by its head; the list keeps one height whichever park is picked, and its scroll never chains to the page behind */
   .hi-sheet .hi-pks{margin:6px 0 2px}
   .hi-sheet .pk{font-size:var(--fs-caps);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);margin:12px 0 2px}
@@ -3074,7 +3076,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728na</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nc</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -14287,7 +14289,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       pwHiPool(g).forEach(function(r){
         if(r.hs==null||!r.hm||!r.hm.length)return;
         var pk=(g.parks||{})[r.park];if(!pk||!pk.open||!pk.close)return;
-        var o=pwHiMin(pk.open),c=pwHiMin(pk.close),face=(typeof tdFace==="function")?tdFace(ds,r.park):null,dw=r.dwn||[],j;if(c<=o)c+=1440;
+        var o=pwHiMin(pk.open),c=pwHiMin(pk.close),face=(typeof tdDigPt==="function")?tdDigPt(g,r.park):null,dw=r.dwn||[],j;if(c<=o)c+=1440; /* 0728nb THE DAY'S RECORD SAYS WHOSE NIGHT IT WAS (field-born, the owner's own glass Fri Nov 13, 2026: at 12:37 PM, fresh from a reload, Thursday's best deal was Space Mountain 15 against a typical 44 at 1 PM; at 1:23 PM the same finished day said Test Track 45 against 70, and Space Mountain had moved to 4:30 PM against 35). Thursday was a party night at Magic Kingdom, and the face used to be asked of the published month (tdFace), which the app only fetches for Today and Plan: until it arrived the ordinary pool answered, and afterwards the party pool did. The digest row carries its own published close and ticketed extras, so the face is read from the row (tdDigPt, the predicate the Worker and Live share) - one answer however the tab was reached. Fail-open as ever: no party pools on /baseline, or a sandbox without the predicate, reads the ordinary pool */
         for(j=0;j<r.hm.length;j++){var w=r.hm[j];if(w===null||w===undefined)continue;
           var k=r.hs+j,t=k*30;if(t<o||t+30>c)continue;
           var L=tdLadder(r.id,String(k),face),arr=L&&L.arr;if(!arr||arr.length<10)continue; /* the same ladder for that date as Live asks (a party night reads its own pool) */
@@ -14485,6 +14487,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         '<div class="hi-card">'+pwHiHd(mo+"’s most time down","mdown","most time down")+(dn||'<div class="hi-wait">No outage on record.</div>')+
         '<div class="hi-fine">Ride-hours lost, '+span+'. The feed says down, never why.</div></div>';
     }
+    /* 0728nc A RIDE IN REFURBISHMENT SAYS SO, WITH ITS DAY (R-B). Read from the page's own history, through yesterday - never the live feed, so it agrees with the badge. A day is a refurbishment day when the record reports refurbishment minutes and no minute open; the run is the unbroken string of such days ending yesterday. SINCE IS SAID ONLY WHEN ITS START IS ON FILE: the day before the run must hold the ride's record, else the line says "In refurbishment" and no date. The API's word is the status it reports, never a reason */
+    function pwHiRefurb(C,id){
+      if(!C||!C.by||!id)return null;
+      var ds=C.yd,first=null,n=0,g,r;
+      for(;;ds=pwHiAdd(ds,-1)){g=C.by[ds];r=g&&g.rides&&g.rides[id];if(!r||!(r.rm>0)||r.om>0)break;first=ds;n++;}
+      if(!first)return null;
+      return {since:r?first:null,n:n};
+    }
+    function pwHiRf(C,id){var f=pwHiRefurb(C,id);return f?'<em class="hi-rf">In refurbishment'+(f.since?' since '+esc(pwMonD(f.since)):'')+'</em>':'';}
     function pwHiWeeksModel(C){ /* every ride's day averages by weekday over the days on file in the past 28 (Mon first) */
       if(C.wm)return C.wm;
       var days=pwHiDays(C,C.win.w0),rides={};
@@ -14521,7 +14532,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var nm=esc(pwHiNm(id,r.n)),mx=v[hi];
       var head=(v[lo]===v[hi])?nm+': <span class="'+pwHiBand(mx)+'">averaged '+mx+' every day of the week.</span>'
         :nm+': <span class="'+pwHiBand(v[lo])+'">'+DF[lo]+' averaged '+v[lo]+'.</span> <span class="'+pwHiBand(v[hi])+'">'+DF[hi]+' averaged '+v[hi]+'.</span>';
-      return '<div class="hi-card">'+hd(r.p)+'<button class="hi-door" type="button" id="hiRide" aria-label="Change ride"><b>'+nm+'</b><span>Change ride ▾</span></button><div class="hi-h">'+head+'</div>'+
+      return '<div class="hi-card">'+hd(r.p)+'<button class="hi-door" type="button" id="hiRide" aria-label="Change ride"><b>'+nm+pwHiRf(C,id)+'</b><span>Change ride ▾</span></button><div class="hi-h">'+head+'</div>'+
         '<div class="hi-wd">'+v.map(function(x){return x===null?'<div class="c"><b class="hi-none">–</b></div>':'<div class="c"><b class="'+pwHiBand(x)+'">'+x+'</b><i class="hi-bg-'+tierOfWait(x)+'" style="height:'+Math.round(x/mx*112)+'px"></i></div>';}).join("")+'</div>'+
         '<div class="hi-wdl">'+DS.map(function(d){return '<span>'+d+'</span>';}).join("")+'</div>'+
         '<div class="hi-fine">Average posted wait across each day — '+(cn===cx?(NW[cn]||cn):(NW[cn]||cn)+' to '+(NW[cx]||cx))+' of each weekday. History, not a forecast.</div></div>';
@@ -14541,7 +14552,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpk="'+esc(p)+'"'+(p===pk?' class="on"':'')+'>'+esc(p)+'</button>';}).join("")+'</div>'+pwHiMnOut(C,parks)+
         '<div class="hi-h">'+(NW[k]||k)+' of its '+(nw[rows.length]||rows.length)+' headliners '+(k===1?'is':'are')+' typically shorter at 8 PM than at 10 AM.</div>'+
         '<div class="hi-mn h"><span class="n"></span><span class="c">10 AM</span><span class="ar" style="visibility:hidden">→</span><span class="c">8 PM</span><span class="d"></span></div>'+
-        rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(pwHiNm(x.id,x.n))+'</span><span class="chip hi-bg-'+tierOfWait(x.a)+'">'+x.a+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.p)+'">'+x.p+'</span><span class="d'+(x.a===x.p?' same':x.p>x.a?' more':'')+'">'+(x.a===x.p?'the same':x.a>x.p?(x.a-x.p)+' shorter':(x.p-x.a)+' longer')+'</span></div>';}).join("")+
+        rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(pwHiNm(x.id,x.n))+pwHiRf(C,x.id)+'</span><span class="chip hi-bg-'+tierOfWait(x.a)+'">'+x.a+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.p)+'">'+x.p+'</span><span class="d'+(x.a===x.p?' same':x.p>x.a?' more':'')+'">'+(x.a===x.p?'the same':x.a>x.p?(x.a-x.p)+' shorter':(x.p-x.a)+' longer')+'</span></div>';}).join("")+
         '<div class="hi-fine">Typical posted wait, the half-hour starting at each time, on nights the park is open past 8 PM.</div></div>';
     }
     function pwHiWeeksHTML(C){var W=pwHiWeeksModel(C);if(!W.days.length)return pwHiQuiet("Not enough days on file yet.");return pwHiDayByDayHTML(C)+pwHiMornNightHTML(C);}
@@ -14562,7 +14573,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var sh=h.querySelector(".pv-sheet"),sc=h.querySelector(".pv-scrim"),ls=h.querySelector(".hi-list");
       function paint(p){
         Array.prototype.forEach.call(h.querySelectorAll("[data-hpks]"),function(b){b.classList.toggle("on",b.getAttribute("data-hpks")===p);});
-        ls.innerHTML='<div class="pk">'+esc(p)+'</div>'+rows(p).map(function(r){return '<button class="rw'+(r.id===cur?' on':'')+'" type="button" data-hride="'+esc(r.id)+'"><span>'+esc(pwHiNm(r.id,r.n))+'</span>'+(r.id===cur?'<i>✓</i>':'')+'</button>';}).join("");
+        ls.innerHTML='<div class="pk">'+esc(p)+'</div>'+rows(p).map(function(r){return '<button class="rw'+(r.id===cur?' on':'')+'" type="button" data-hride="'+esc(r.id)+'"><span>'+esc(pwHiNm(r.id,r.n))+pwHiRf(C,r.id)+'</span>'+(r.id===cur?'<i>✓</i>':'')+'</button>';}).join("");
         ls.scrollTop=0;
         Array.prototype.forEach.call(ls.querySelectorAll("[data-hride]"),function(b){b.addEventListener("click",function(){pwHiRide=b.getAttribute("data-hride");pwHiSheetClose();if(active&&curTab==="hl"&&$id("hiJump"))pwHiRepaint();});});
       }
@@ -14615,7 +14626,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(!D.rows.length)return null;
       }else if(key==="wd"){
         var hh=one(".hi-h"),cs=all(".hi-wd .c"),mxh=0;if(!hh||!cs.length)return null;
-        D.who=tx(one("#hiRide b"));D.runs=[];
+        D.who=pwHiOwn(one("#hiRide b"));D.rf=tx(one("#hiRide .hi-rf"));D.runs=[]; /* 0728nc: the name is the door's own words; the refurbishment line rides beside it */
         Array.prototype.forEach.call(hh.childNodes,function(n){var t=String(n.nodeType===3?n.nodeValue:n.textContent);if(t)D.runs.push({t:t,band:n.nodeType===1?pwHiBandOf(n):null});});
         D.bars=cs.map(function(c){var b=one("b",c),i=one("i",c),h=i?pwHiPct(i,"height"):null;if(h!==null&&h>mxh)mxh=h;return {v:tx(b),band:pwHiBandOf(b),h:h};});
         D.bars.forEach(function(b){if(b.h!==null)b.h=mxh?b.h/mxh:0;}); /* the page's own heights, as shares of its tallest bar */
@@ -14624,7 +14635,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         D.sub=tx(one(".hi-seg button.on"));D.who=D.sub;
         D.cols=all(".hi-mn.h .c").map(function(el){return tx(el);});
         D.rows=all(".hi-mn").filter(function(el){return !el.classList.contains("h");}).map(function(el){var c=all(".chip",el),d=one(".d",el);
-          return {n:tx(one(".n",el)),a:tx(c[0]),ab:pwHiBandOf(c[0]),p:tx(c[1]),pb:pwHiBandOf(c[1]),d:tx(d),dk:(d&&d.classList.contains("same"))?"same":(d&&d.classList.contains("more"))?"more":"less"};});
+          return {n:pwHiOwn(one(".n",el)),rf:tx(one(".n .hi-rf",el)),a:tx(c[0]),ab:pwHiBandOf(c[0]),p:tx(c[1]),pb:pwHiBandOf(c[1]),d:tx(d),dk:(d&&d.classList.contains("same"))?"same":(d&&d.classList.contains("more"))?"more":"less"};});
         if(!D.rows.length)return null;
       }else return null;
       D.fname="ridecue-highlights-"+key+"-"+C.yd+".png";
@@ -14714,7 +14725,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           var w=Math.max(24,bw*(r.w===null?0:r.w)/100);
           if(D.key==="mdown")hat(bx,yy+106,w,24,12,ink(r.band));else{rr(bx,yy+106,w,24,12);ctx.fillStyle=ink(r.band);ctx.fill();}});
       }else if(D.key==="wd"){
-        if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");
+        if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");if(D.rf)T(D.rf,R,262,IN("600",24),C.muted2,"right"); /* 0728nc: the card carries the line - at the right of the park's own line */
         var hs,lines=null,un=[[]],hz=[52,48,44],q; /* THE CLAUSE IS THE BREAK: the name leads its first sentence, each sentence keeps a line; when a line cannot hold them the name takes its own */
         D.runs.forEach(function(r){var t=String(r.t).replace(/^\s+|\s+$/g,"");if(!t)return;un[un.length-1].push({t:t,band:r.band});if(r.band)un.push([]);});
         if(!un[un.length-1].length)un.pop();
@@ -14735,7 +14746,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(D.cols[0])caps(D.cols[0],xa+cW/2,y+62,22,C.muted2,"center");if(D.cols[1])caps(D.cols[1],xp+cW/2,y+62,22,C.muted2,"center");
         y+=80;n=D.rows.length;P=Math.min(132,Math.floor((fy-28-y)/n));var chh=Math.min(60,P-24),msz=fitAll(D.rows.map(function(r){return r.n;}),nW,IN,BW,[34,32,30,28]);
         D.rows.forEach(function(r,k){var yy=y+k*P,yc=yy+P/2,sz=msz;hair(yy);
-          T(ell(r.n,nW,IN(BW,sz)),L,yc+12,IN(BW,sz),C.ink);
+          T(ell(r.n,nW,IN(BW,sz)),L,yc+(r.rf?-3:12),IN(BW,sz),C.ink);if(r.rf)T(ell(r.rf,nW,IN("500",22)),L,yc+27,IN("500",22),C.muted2); /* 0728nc: the card carries the line under the name, as the page does */
           rr(xa,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.ab);ctx.fill();T(r.a,xa+cW/2,yc+13,SG(BW,36),"#0a1422","center");
           T("→",xa+cW+26,yc+11,IN("500",30),C.muted2,"center");
           rr(xp,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.pb);ctx.fill();T(r.p,xp+cW/2,yc+13,SG(BW,36),"#0a1422","center");
