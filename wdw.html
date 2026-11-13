@@ -3068,7 +3068,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728my</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mz</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15000,7 +15000,13 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       rest.sort(function(x,y){return x.t-y.t;});
       if(rest.length){var same=rest.every(function(x){return x.t===rest[0].t;}),last=rest[rest.length-1];
         var rp=(rest.length===1?rest[0].p+" opens ":NW[rest.length]+" open ")+(same?"at ":"by ")+clk(last.o)+".";
-        gl=open.length?(names(open)+(open.length===1?" is":" are")+" open. "+rp):(rest[0].p+" opens first, at "+clk(rest[0].o)+".");}
+        gl=open.length?(names(open)+(open.length===1?" is":" are")+" open. "+rp):(function(){ /* 0728mz THE FIRST GATE NAMES EVERY PARK AT IT, AND BOTH CLOCKS (field-born on the owner's glass, Fri Nov 13, 2026, 7:42 AM, IMG_6827: "Magic Kingdom opens first, at 8 AM." while Magic Kingdom and Animal Kingdom both opened at 8 and both had admitted Early Entry since 7:30; ruled E-B, 8:02 AM: "EB is the right move"). Every park at the first regular opening is named; where they share an Early Entry the line gives both clocks, in the Today board's own words - before it "open first - 7:30 AM Early Entry, all guests at 8 AM.", inside it "Early Entry now at ... - all guests at 8 AM." The app never guesses the reader's ticket. No shared Early Entry on the record: the plain sentence. The busiest-park gate still waits for every regular opening (G-2) */
+          var F=rest.filter(function(x){return x.t===rest[0].t;}),e0=null,ok=true;
+          F.forEach(function(x){var ee=null;((pb[x.p]&&pb[x.p].extras)||[]).forEach(function(e){if(!e||!e.open||!/early entry/i.test(e.description||e.desc||""))return;var te=new Date(e.open).getTime();if(te<x.t&&(!ee||te<ee.t))ee={t:te,o:e.open};});
+            if(!ee||(e0&&ee.t!==e0.t))ok=false;else e0=ee;});
+          var nm=names(F),vb=F.length===1?" opens first":" open first",at=clk(rest[0].o);
+          if(ok&&e0)return now>=e0.t?("Early Entry now at "+nm+" — all guests at "+at+"."):(nm+vb+" — "+clk(e0.o)+" Early Entry, all guests at "+at+".");
+          return nm+vb+", at "+at+".";})();}
       if(gl&&!card)L.push({l:gl,sub:"The busiest park is named once every park is open."});
       if(lp&&pk!=null)L.push({l:lp.name+" has the longest line so far — "+pk+" min.",sub:lp.park+"."+(gl&&!card?" "+gl:"")});
       if(!card&&open.length+rest.length>0){var all=open.concat(rest),mx=0,late=[];all.forEach(function(x){var ct=x.c?new Date(x.c).getTime():0;if(ct>mx){mx=ct;late=[x];}else if(ct===mx&&ct)late.push(x);});
