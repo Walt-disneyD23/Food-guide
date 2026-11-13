@@ -2000,9 +2000,9 @@
   #wrapView .pw-quiet{margin-top:18px} /* 0728mk THE WRAP SAYS WHEN IT STARTS */
   .pw-foot{font-size:var(--fs-caps);color:var(--muted-2);margin:14px 2px 0;line-height:1.5;text-align:center}
   /* 0728mq HIGHLIGHTS - the Wrap's fifth tab (owner-ruled Thu Nov 12, 2026: A, The Reel, chips on; the dress is the mock of record's, wrap-new-tab-2026-11-12 rig/mock.js, class for class - tokens only, so Harbor follows). The chips ride the app's own pin (.pg-stick); a chapter title is Live's (.lv-ttl) with its dates at the right */
-  .hi-ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 6px;margin:26px 0 10px;scroll-margin-top:54px}
+  .hi-ch{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:0 6px;margin:26px 0 10px;scroll-margin-top:calc(96px + env(safe-area-inset-top,0px))} /* 0728mt THE TITLE LANDS CLEAR OF THE FROST: under a pinned row the plate's frost runs 92px below the phone's top inset (sbSync: 48 full + 44 of fade), so the jump stops 96 plus the inset short and the chapter's title reads sharp */
   .hi-ch .w{font-size:var(--fs-caps);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);padding-bottom:5px;white-space:nowrap}
-  .hi-jump{margin:0 -2px 2px}.hi-jump+.hi-ch{margin-top:6px}
+  .controls-wrap.hi-cw{margin:calc(-1*env(safe-area-inset-top,0px) - 1px) -12px 2px;padding-bottom:10px}.hi-cw+.hi-ch{margin-top:6px} /* 0728mt: Live's sticky dress in the Wrap's 12px gutters - the plate reaches the glass edges; at rest the row keeps the seat it had (8px above, 10 below, 2 to the chapter): the 1px is the sentinel's own, cancelled here so the seat is the same with a status bar and without */
   .hi-frame{display:flex;justify-content:center;gap:6px}
   .hi-frame button{position:relative;border:0;margin:0;line-height:inherit;background:none;font-family:var(--font-body);font-size:var(--fs-caps);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);padding:4px 10px;border-radius:var(--r-pill);cursor:pointer;white-space:nowrap}
   .hi-frame button:after{content:"";position:absolute;left:-2px;right:-2px;top:-9px;bottom:-9px}
@@ -2056,6 +2056,7 @@
   .hi-bg-short{background:var(--short)}.hi-bg-medium{background:var(--medium)}.hi-bg-long{background:var(--long)}.hi-bg-packed{background:var(--packed)}
   .hi-none{color:var(--muted-2)}
   .hi-bar{height:11px;border-radius:6px;margin-top:6px}
+  .hi-bar.hi-hat{background:repeating-linear-gradient(135deg,var(--packed) 0 3px,color-mix(in srgb,var(--packed) 35%,var(--card)) 3px 6px)} /* the tape's own hatch */
   .hi-rk{display:flex;gap:10px;align-items:flex-start}
   .hi-rk .no{flex:none;width:17px;font-family:var(--font-display);font-weight:800;font-size:var(--fs-title);color:var(--muted-2);line-height:1.2;font-variant-numeric:tabular-nums}
   .hi-rk .bd{flex:1;min-width:0}
@@ -2076,12 +2077,15 @@
   .hi-door{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin:8px 0 12px;padding:9px 12px 9px 14px;border:1px solid var(--line);background:var(--card-2);border-radius:var(--r-pill);font-family:var(--font-body);cursor:pointer;text-align:left}
   .hi-door b{font-weight:700;font-size:var(--fs-small);color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .hi-door span{flex:none;font-weight:700;font-size:var(--fs-meta);color:var(--accent);white-space:nowrap}
-  .hi-sheet .hi-list{flex:1 1 auto;min-height:0;overflow-y:auto;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
-  .hi-sheet .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+  .hi-sheet .hi-list{flex:1 1 auto;min-height:0;height:60vh;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))} /* 0728mt THE LIST SCROLLS: a touch that begins on the list is the list's own (sheetDragDismiss leaves it be - the sheet has no scroll room of its own, so it swallowed every upward drag); the sheet is dragged closed by its head; the list keeps one height whichever park is picked, and its scroll never chains to the page behind */
+  .hi-sheet .hi-pks{margin:6px 0 2px}
   .hi-sheet .pk{font-size:var(--fs-caps);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);margin:12px 0 2px}
-  .hi-sheet .rw{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;margin:0;border:0;border-top:1px solid var(--line);background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-body);line-height:1.2;color:var(--ink);text-align:left;cursor:pointer}
+  .hi-sheet .rw{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;padding:13px 0;margin:0;border:0;border-top:1px solid var(--line);background:none;font-family:var(--font-body);font-weight:700;font-size:var(--fs-lead);line-height:1.2;color:var(--ink);text-align:left;cursor:pointer}
+   /* 0728mt: one park at a time leaves a column to itself - the rows step up to the lead size and a taller seat (owner, Nov 12 7:18 PM) */
+  .hi-sheet .hi-pks button{font-size:var(--fs-body);padding:11px 0}
   .hi-sheet .pk+.rw{border-top:0}
   .hi-sheet .rw.on{color:var(--accent)}.hi-sheet .rw i{flex:none;font-style:normal;color:var(--accent);font-weight:800}
+  .hi-note{font-size:var(--fs-fine);color:var(--muted-2);line-height:1.4;margin:7px 2px 9px}
   /* weather chip (sits inside the dark hero) */
   .pw-chip{display:flex;align-items:center;gap:8px;margin-top:13px;padding:9px 12px;border-radius:var(--r-tile);background:rgba(99,102,241,.18);border:1px solid rgba(129,140,248,.32)}
   .pw-chip .ic{font-size:var(--fs-title);line-height:1;flex:none}
@@ -3037,7 +3041,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ms</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728mt</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3389,7 +3393,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   function sheetDragDismiss(sh,sc,after){
     var sy=0,dy=0,drag=false,engaged=false,swallow=false;
     sh.addEventListener("touchstart",function(e){
-      if(e.target&&e.target.closest&&e.target.closest(".pw-scrub")){drag=false;return;} /* 0728gb: a touch that begins on a chart's lens is a read — the sheet does not take it for a drag */
+      if(e.target&&e.target.closest&&e.target.closest(".pw-scrub,.hi-list")){drag=false;return;} /* 0728gb: a touch that begins on a chart's lens is a read — the sheet does not take it for a drag */
       sy=e.touches[0].clientY;dy=0;engaged=false;drag=true;swallow=false;
     },{passive:true});
     sh.addEventListener("touchmove",function(e){
@@ -14311,7 +14315,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var wv=$id("wrapView"),C=pwHiC;if(!wv||!C)return;
       var yd=C.yd,W=C.win,g=C.by[yd]||null,mon=pwHiMonth(W.m1)+(W.whole?"":" so far");
       var html=tabsHTML("hl")+pwHiHead(C)+
-        '<div class="pg-stick hi-jump" id="hiJump"><div class="hi-frame"><button type="button" data-j="0" class="on">Yesterday</button><button type="button" data-j="1">'+esc(mon)+'</button><button type="button" data-j="2">Past four weeks</button></div></div>'+
+        '<div class="cw-sentinel" aria-hidden="true"></div><div class="controls-wrap hi-cw" id="hiJump"><div class="controls-inner"><div class="hi-frame"><button type="button" data-j="0" class="on">Yesterday</button><button type="button" data-j="1">'+esc(mon)+'</button><button type="button" data-j="2">Past four weeks</button></div></div></div>'+ /* 0728mt THE CHIPS PIN BELOW THE CLOCK (field-born on the owner's glass, IMG_6791/6792, Thu Nov 12, 2026, 7:05 PM: after a chip tap the chips sat under the clock, blurred, and the chapter's title landed under the frost): the row rides Live's sentinel + wrap + inner, as My Rides' chips do (0728jg), so sbSync and the plate read it and the phone's top inset rides as its padding - ONE GRAMMAR, THREE TABS. The older pin (.pg-stick) knew nothing of the status bar; nothing wears it now */
         pwHiCh(0,"Yesterday",pwHiWd(yd)+" · Final");
       if(g){var m=pwHiDayModel(g),deals=pwHiDeals(g,yd);
         html+=pwHiReceiptHTML(m,yd)+pwHiDealHTML(deals,yd)+pwHiDownHTML(m,yd);
@@ -14329,7 +14333,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     function pwHiSync(){ /* the lit chip follows the chapter on screen */
       var J=$id("hiJump");if(!J)return;
-      var chs=document.querySelectorAll("#wrapView .hi-ch"),a=0,i,line=J.getBoundingClientRect().bottom+30,sc=window.ppShl();
+      var chs=document.querySelectorAll("#wrapView .hi-ch"),a=0,i,line=J.getBoundingClientRect().bottom+62,sc=window.ppShl();
       for(i=0;i<chs.length;i++)if(chs[i].getBoundingClientRect().top<=line)a=i;
       if(sc&&chs.length&&sc.scrollTop>0&&sc.scrollTop+sc.clientHeight>=sc.scrollHeight-2)a=chs.length-1;
       var bs=J.querySelectorAll("button");for(i=0;i<bs.length;i++){if((+bs[i].getAttribute("data-j")===a)!==bs[i].classList.contains("on"))bs[i].classList.toggle("on");}
@@ -14348,6 +14352,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       });
       if(!pwHiOn){pwHiOn=true;try{var sc=window.ppShl();((sc===document.scrollingElement||sc===document.documentElement)?window:sc).addEventListener("scroll",pwHiSync,{passive:true});}catch(e){}}
       Array.prototype.forEach.call(wv.querySelectorAll(".hi-sh"),function(b){b.addEventListener("click",function(){pwHiShare(b);});}); /* 0728ms THE GLYPH IS THE DOOR: each summary opens its card in the preview sheet */
+      if(typeof mrPinBind==="function")mrPinBind(wv); /* 0728mt: the chips' sentinel is observed on every paint and the plate re-reads at once (My Rides' own binder) */
       pwHiWirePick();
       pwHiSync();
     }
@@ -14397,14 +14402,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     function pwHiMonthHTML(C){
       var m=pwHiMonthModel(C);if(!m.n)return pwHiQuiet("Not enough days on file yet.");
-      var span=pwHiSpan(m.days[0],m.days[m.n-1]),mx=m.peaks.length?m.peaks[0].hi:1,dx=m.down.length?m.down[0].dm:1;
+      var mo=esc(pwHiMonth(C.win.m1)),span=pwHiSpan(m.days[0],m.days[m.n-1]),mx=m.peaks.length?m.peaks[0].hi:1,dx=m.down.length?m.down[0].dm:1;
       var top=m.peaks.map(function(w,i){
         return '<div class="hi-r hi-rk hi-go"'+pwHiDoor(w.id,w.p,w.hiD)+'><div class="no">'+(i+1)+'</div><div class="bd"><div class="top"><div><div class="n">'+esc(w.n)+'</div><div class="s">'+esc(w.p)+' · '+pwHiWd(w.hiD)+' · '+rpClk(w.hiAt)+'</div></div><div class="v '+pwHiBand(w.hi)+'">'+w.hi+'<small>m</small></div></div><div class="hi-bar hi-bg-'+tierOfWait(w.hi)+'" style="width:'+(w.hi/mx*100).toFixed(1)+'%"></div></div></div>';}).join("");
       var dn=m.down.map(function(w,i){
-        return '<div class="hi-r hi-rk"><div class="no">'+(i+1)+'</div><div class="bd"><div class="top"><div><div class="n">'+esc(w.n)+'</div><div class="s">'+esc(w.p)+' · '+w.dn+(w.dn>1?' outages':' outage')+' · down '+w.dd+' of '+m.n+(m.n>1?' days':' day')+'</div></div><div class="v hi-packed">'+(w.dm/60).toFixed(1)+'<small>h</small></div></div><div class="hi-bar hi-bg-packed" style="width:'+(w.dm/dx*100).toFixed(1)+'%;opacity:.8"></div></div></div>';}).join("");
-      return '<div class="hi-card">'+pwHiHd("The five longest lines","top5","the five longest lines")+(top||'<div class="hi-wait">No peak on record.</div>')+
+        return '<div class="hi-r hi-rk"><div class="no">'+(i+1)+'</div><div class="bd"><div class="top"><div><div class="n">'+esc(w.n)+'</div><div class="s">'+esc(w.p)+' · '+w.dn+(w.dn>1?' outages':' outage')+' · down '+w.dd+' of '+m.n+(m.n>1?' days':' day')+'</div></div><div class="v hi-packed">'+(w.dm/60).toFixed(1)+'<small>h</small></div></div><div class="hi-bar hi-hat" style="width:'+(w.dm/dx*100).toFixed(1)+'%"></div></div></div>';}).join(""); /* 0728mt DOWN WEARS THE HATCH (owner on glass, IMG_6804: "It blends in with the bars above"): time down is hatched wherever the tab draws it - the day's tapes, the month's bars and the card - and a wait is solid */
+      return '<div class="hi-card">'+pwHiHd(mo+"’s five longest lines","top5","the five longest lines")+(top||'<div class="hi-wait">No peak on record.</div>')+
         '<div class="hi-fine">Each ride’s highest peak wait, '+span+'. Peak = the highest wait that held 25+ min.</div></div>'+
-        '<div class="hi-card">'+pwHiHd("Most time down","mdown","most time down")+(dn||'<div class="hi-wait">No outage on record.</div>')+
+        '<div class="hi-card">'+pwHiHd(mo+"’s most time down","mdown","most time down")+(dn||'<div class="hi-wait">No outage on record.</div>')+
         '<div class="hi-fine">Ride-hours lost, '+span+'. The feed says down, never why.</div></div>';
     }
     function pwHiWeeksModel(C){ /* every ride's day averages by weekday over the days on file in the past 28 (Mon first) */
@@ -14448,12 +14453,19 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         '<div class="hi-wdl">'+DS.map(function(d){return '<span>'+d+'</span>';}).join("")+'</div>'+
         '<div class="hi-fine">Average posted wait across each day — '+(cn===cx?(NW[cn]||cn):(NW[cn]||cn)+' to '+(NW[cx]||cx))+' of each weekday. History, not a forecast.</div></div>';
     }
+    function pwHiMnOut(C,parks){ /* 0728mt THE PAGE SAYS WHY A PARK IS LEFT OUT (owner on glass, Nov 12 7:10 PM: "on morning or night I don't see animal kingdom, is that because when it closes?"): a park with no 8 PM typical is named under the buttons, with what its own closing times on file show - history, never a reason the data cannot give */
+      var days=pwHiDays(C,C.win.w0),o=[];
+      MAIN.forEach(function(p){if(parks.indexOf(p)>=0)return;var late=0,n=0;
+        days.forEach(function(ds){var pk=((C.by[ds]||{}).parks||{})[p];if(!pk||!pk.open||!pk.close)return;var c=pwHiMin(pk.close);if(c<=pwHiMin(pk.open))c+=1440;n++;if(c>1200)late++;});
+        if(n)o.push(esc(p)+(late?" isn’t compared — too few nights open past 8 PM.":" isn’t compared — it closed by 8 PM every night."));});
+      return o.length?'<div class="hi-note">'+o.join(" ")+'</div>':"";
+    }
     function pwHiMornNightHTML(C){
       var parks=pwHiMnParks(),hd=pwHiHd("Morning or night","mn","morning or night");
       if(parks===null){pwHiBaseWait();return '<div class="hi-card">'+hd+'<div class="hi-wait">Typical waits haven’t loaded yet.</div></div>';}
       if(!parks.length)return "";
       var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk),k=rows.filter(function(x){return x.p<x.a;}).length,NW=["None","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"],nw=["no","one","two","three","four","five","six","seven","eight","nine"];
-      return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpk="'+esc(p)+'"'+(p===pk?' class="on"':'')+'>'+esc(p)+'</button>';}).join("")+'</div>'+
+      return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpk="'+esc(p)+'"'+(p===pk?' class="on"':'')+'>'+esc(p)+'</button>';}).join("")+'</div>'+pwHiMnOut(C,parks)+
         '<div class="hi-h">'+(NW[k]||k)+' of its '+(nw[rows.length]||rows.length)+' headliners '+(k===1?'is':'are')+' typically shorter at 8 PM than at 10 AM.</div>'+
         '<div class="hi-mn h"><span class="n"></span><span class="c">10 AM</span><span class="ar" style="visibility:hidden">→</span><span class="c">8 PM</span><span class="d"></span></div>'+
         rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(pwHiNm(x.id,x.n))+'</span><span class="chip hi-bg-'+tierOfWait(x.a)+'">'+x.a+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.p)+'">'+x.p+'</span><span class="d'+(x.a===x.p?' same':x.p>x.a?' more':'')+'">'+(x.a===x.p?'the same':x.a>x.p?(x.a-x.p)+' shorter':(x.p-x.a)+' longer')+'</span></div>';}).join("")+
@@ -14462,20 +14474,28 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwHiWeeksHTML(C){var W=pwHiWeeksModel(C);if(!W.days.length)return pwHiQuiet("Not enough days on file yet.");return pwHiDayByDayHTML(C)+pwHiMornNightHTML(C);}
     function pwHiRepaint(){var y=null;try{y=window.ppShl().scrollTop;}catch(e){}pwHiRender();if(y!=null){try{window.ppShl().scrollTop=y;}catch(e){}pwHiSync();}}
     function pwHiSheetClose(){var h=$id("hiHost");if(h)h.innerHTML="";document.body.classList.remove("pv-open");}
-    function pwHiSheet(){ /* the ride list wears the preview sheet's shell (td-scrim / td-sheet): every ride in the pool with a week on file, by park, the headliners first */
+    function pwHiSheet(){ /* the ride list wears the preview sheet's shell (td-scrim / td-sheet): every ride in the pool with a week on file, the headliners first. 0728mt ONE PARK AT A TIME (field-born on the owner's glass, IMG_6802, Thu Nov 12, 2026, 7:11 PM: "It won't scroll down any further ... Could probably neaten the layout a bit too"): four park buttons in My Rides' own letters, the picked park's rides in one column under them, opening on the park of the ride on the card; the head and the buttons stay put and the list scrolls under them */
       var C=pwHiC;if(!C)return;var W=pwHiWeeksModel(C),cur=pwHiRideNow(C),h=$id("hiHost");
       if(!h){h=document.createElement("div");h.id="hiHost";document.body.appendChild(h);}
-      var cols=MAIN.map(function(p){var seen={},list=[],id;
+      function rows(p){var seen={},list=[],rest=[],id;
         (HEADLINERS[p]||[]).forEach(function(x){if(W.rides[x.id]){list.push(W.rides[x.id]);seen[x.id]=1;}});
-        var rest=[];for(id in W.rides)if(W.rides[id].p===p&&!seen[id])rest.push(W.rides[id]);
-        rest.sort(function(a,b){return pwHiNm(a.id,a.n)<pwHiNm(b.id,b.n)?-1:1;});list=list.concat(rest);
-        return '<div><div class="pk">'+esc(p)+'</div>'+list.map(function(r){return '<button class="rw'+(r.id===cur?' on':'')+'" type="button" data-hride="'+esc(r.id)+'"><span>'+esc(pwHiNm(r.id,r.n))+'</span>'+(r.id===cur?'<i>✓</i>':'')+'</button>';}).join("")+'</div>';}).join("");
+        for(id in W.rides)if(W.rides[id].p===p&&!seen[id])rest.push(W.rides[id]);
+        rest.sort(function(a,b){return pwHiNm(a.id,a.n)<pwHiNm(b.id,b.n)?-1:1;});return list.concat(rest);}
+      var parks=MAIN.filter(function(p){return rows(p).length>0;}),pk=(cur&&W.rides[cur]&&parks.indexOf(W.rides[cur].p)>=0)?W.rides[cur].p:parks[0];
       h.innerHTML='<div class="td-scrim pv-scrim"></div><div class="td-sheet pv-sheet hi-sheet anim" role="dialog" aria-label="Day by day"><div class="rc-grab"></div>'+
         '<div class="help-h"><div><div class="help-title">Day by day</div><div class="pv-sub">Pick a ride to see its week.</div></div><button class="help-x" type="button" data-hx aria-label="Close">✕</button></div>'+
-        '<div class="hi-list"><div class="cols">'+cols+'</div></div></div>';
-      var sh=h.querySelector(".pv-sheet"),sc=h.querySelector(".pv-scrim");
+        '<div class="pg-seg hi-pks" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpks="'+esc(p)+'" aria-label="'+esc(p)+'">'+esc((typeof BANNER_MONO!=="undefined"&&BANNER_MONO[p])||p)+'</button>';}).join("")+'</div>'+
+        '<div class="hi-list"></div></div>';
+      var sh=h.querySelector(".pv-sheet"),sc=h.querySelector(".pv-scrim"),ls=h.querySelector(".hi-list");
+      function paint(p){
+        Array.prototype.forEach.call(h.querySelectorAll("[data-hpks]"),function(b){b.classList.toggle("on",b.getAttribute("data-hpks")===p);});
+        ls.innerHTML='<div class="pk">'+esc(p)+'</div>'+rows(p).map(function(r){return '<button class="rw'+(r.id===cur?' on':'')+'" type="button" data-hride="'+esc(r.id)+'"><span>'+esc(pwHiNm(r.id,r.n))+'</span>'+(r.id===cur?'<i>✓</i>':'')+'</button>';}).join("");
+        ls.scrollTop=0;
+        Array.prototype.forEach.call(ls.querySelectorAll("[data-hride]"),function(b){b.addEventListener("click",function(){pwHiRide=b.getAttribute("data-hride");pwHiSheetClose();if(active&&curTab==="hl"&&$id("hiJump"))pwHiRepaint();});});
+      }
+      Array.prototype.forEach.call(h.querySelectorAll("[data-hpks]"),function(b){b.addEventListener("click",function(){paint(b.getAttribute("data-hpks"));});});
       h.querySelector("[data-hx]").addEventListener("click",pwHiSheetClose);sc.addEventListener("click",pwHiSheetClose);
-      Array.prototype.forEach.call(h.querySelectorAll("[data-hride]"),function(b){b.addEventListener("click",function(){pwHiRide=b.getAttribute("data-hride");pwHiSheetClose();if(active&&curTab==="hl"&&$id("hiJump"))pwHiRepaint();});});
+      if(parks.length)paint(pk);
       if(typeof sheetDragDismiss==="function")sheetDragDismiss(sh,sc,pwHiSheetClose);
       document.body.classList.add("pv-open");
     }
