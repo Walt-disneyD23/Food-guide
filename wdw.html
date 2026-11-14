@@ -2112,6 +2112,24 @@
   .hi-door span{flex:none;font-weight:700;font-size:var(--fs-meta);color:var(--accent);white-space:nowrap}
   /* 0728nc A RIDE IN REFURBISHMENT SAYS SO, WITH ITS DAY (owner on his own glass, Fri Nov 13, 2026, 1:38 PM: "Tiana's is down for refurbishment but was running the last 4 weeks so it shows up, as it should I suppose. Maybe an asterisk for any ride down for refurb? ... Maybe the same note on the picker too?"; ruled R-B on sheet 27, 1:45 PM: "I like all your leans my friend ... looks nice"). Words under the ride's name, in the Wrap's own phrase - no symbol to decode. Not chosen: R-A the REFURB flag and a sentence in the fine print, R-C an asterisk explained in the fine print */
   .hi-rf{display:block;margin-top:2px;font-style:normal;font-weight:600;font-size:var(--fs-fine);line-height:1.25;letter-spacing:0;color:var(--muted-2)}
+  /* 0728nd THE TAB BECOMES TILES; A TILE OPENS ITS SUMMARY IN A SHEET (P-C: owner on the phone specimen, Fri Nov 13, 2026, 3:12 PM: "That's actually really nice! So much easier than having them all open. Works great"; K-A the ride list swaps into the same sheet, 3:34 PM: "Seems to work ok!"). Yesterday's three stay open; every later summary is a tile - its headline figure and an arrow - that opens the summary itself in a sheet with previous and next. The dress is the specimen's bytes (mkspec2.py). Not chosen: P-A the long run, P-B chapters that fold to a list, K-C the summaries with controls left open */
+  .hi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 26px}
+  .hi-tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:138px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:0 6px 18px -8px rgba(40,40,90,.14);padding:13px 13px 12px;margin:0;text-align:left;font-family:var(--font-body);cursor:pointer;color:var(--ink);-webkit-tap-highlight-color:transparent}
+  .hi-tile:active{transform:scale(.985)}
+  .hi-tile .k{font-size:var(--fs-caps);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-right:26px;line-height:1.3}
+  .hi-tile .v{display:block;font-family:var(--font-display);font-weight:800;font-size:40px;letter-spacing:-.03em;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums}
+  .hi-tile .v small{font-size:17px;margin-left:1px;letter-spacing:0}
+  .hi-tile .s{display:block;font-size:var(--fs-small);color:var(--muted-2);margin-top:5px;line-height:1.3}
+  .hi-tile .go{position:absolute;right:10px;top:9px;width:24px;height:24px;border-radius:50%;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);font-weight:800;font-size:16px;line-height:23px;text-align:center}
+  #hiHost .hi-list{height:auto;max-height:calc(100dvh - 200px);padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+  #hiHost .hi-list.pick{height:calc(100dvh - 200px)} /* THE LIST KEEPS ONE HEIGHT whichever park is picked (0728mt), so the park buttons never move under the finger */
+  #hiHost .hi-card{margin:4px 0 0;box-shadow:none;border:0;padding:4px 0 0;background:none}
+  #hiHost.away{display:none} /* S-A: the Share sheet takes the summary's place and hands back to it - never two sheets on the glass */
+  .hi-nav{display:flex;gap:8px;margin:16px 0 4px}
+  .hi-nav button{flex:1;min-width:0;border:1px solid var(--line);background:var(--card-2);color:var(--accent);font:700 var(--fs-small)/1.2 var(--font-body);padding:12px 10px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+  .hi-nav button[disabled]{visibility:hidden}
+  .hi-back{display:flex;align-items:center;gap:6px;border:0;background:none;padding:2px 0 12px;margin:0;font:700 var(--fs-small)/1 var(--font-body);color:var(--accent);cursor:pointer}
+  #hiHost .hi-pks{margin:0 0 6px}
   .hi-sheet .hi-list{flex:1 1 auto;min-height:0;height:60vh;overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))} /* 0728mt THE LIST SCROLLS: a touch that begins on the list is the list's own (sheetDragDismiss leaves it be - the sheet has no scroll room of its own, so it swallowed every upward drag); the sheet is dragged closed by its head; the list keeps one height whichever park is picked, and its scroll never chains to the page behind */
   .hi-sheet .hi-pks{margin:6px 0 2px}
   .hi-sheet .pk{font-size:var(--fs-caps);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);margin:12px 0 2px}
@@ -3076,7 +3094,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nd</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3403,10 +3421,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
     },"image/png");
   }
-  function pvClose(){if(pvEl)pvEl.innerHTML="";document.body.classList.remove("pv-open");}
+  var pvBack=null; /* 0728nd THE PREVIEW HANDS BACK (S-A, owner-ruled Fri Nov 13, 2026, 7:06 PM: "played with it, i think ill go with S-A for now"): a door that opened the preview from inside another sheet names its way home (o.back); every way the preview closes - the X, the dimmer, a pull - runs it once */
+  function pvClose(){var f=pvBack;pvBack=null;if(pvEl)pvEl.innerHTML="";document.body.classList.remove("pv-open");if(f)f();}
   function pvOpen(o){ /* o:{alts:[{cv,label,fname,shareTitle}],fname,shareTitle,key} — one alt, no chips */
     var alts=(o&&o.alts)||[];if(!alts.length||!alts[0].cv)return;
     if(!pvEl){pvEl=document.createElement("div");pvEl.id="pvHost";document.body.appendChild(pvEl);}
+    pvBack=(typeof o.back==="function")?o.back:null;
     var pick=0;if(alts.length>1&&o.key){var p=store.get("pvPick."+o.key,0);if(typeof p==="number"&&p>=0&&p<alts.length)pick=p;}
     function alt(i){var a=alts[i];return {cv:a.cv,fname:a.fname||o.fname||"ridecue-card.png",title:a.shareTitle||o.shareTitle||"RideCue"};}
     pvEl.innerHTML='<div class="td-scrim pv-scrim"></div><div class="td-sheet pv-sheet anim'+(alts.length>1?' two':'')+'" role="dialog" aria-label="Share"><div class="rc-grab"></div>'+
@@ -14252,7 +14272,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     window.__pwTodayFresh=pwTodayFresh;
     document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")pwTodayFresh(false);});
     /* ===== 0728mq HIGHLIGHTS - THE WRAP'S FIFTH TAB (owner-ruled Thu Nov 12, 2026, 4:14-5:20 PM on the wrap-new-tab sheets and the phone specimen: "I like the highlights tab" - A, The Reel: "just tried the tab you made, A is the way to go" - "yes, chips on" - the best deal's two guards: "im ok with those guards, and make sure its readable in simple terms" - rows are doors - the month's first day shows the month just ended). Blueprint: Highlights-Spec.md. ONE READ when the tab opens, never on every Wrap open (Wrap-Doctrine 1.2): /digest from the earlier of yesterday's month's first day and yesterday - 27, to yesterday; the baseline is the one the app already holds (pfBase). No Worker change. Every measure is one the Wrap already prints: the sustained peak (su.pk), the 20 / 45 / 70 bands (tierOfWait), a stop is an outage, the pool is the month board's (realRides, not pwExcluded, not pwShow). The chips JUMP; they never filter. This cut: the pill, the read, the head, the chips, the three chapters, Yesterday's three ===== */
-    var pwHiC=null,pwHiY=null,pwHiOn=false,pwHiIv=null,pwHiRide=null,pwHiPark=null,pwHiKeep=false;
+    var pwHiC=null,pwHiY=null,pwHiOn=false,pwHiIv=null,pwHiRide=null,pwHiPark=null,pwHiKeep=false,pwHiAt=null,pwHiTap=null,pwHiJmp=0;
     var PW_HI_SH='<svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     var PW_HI_SHORT={"1a2e70d9-50d5-4140-b69e-799e950f7d18":"Rise of the Resistance","6f6998e8-a629-412c-b964-2cb06af8e26b":"Tower of Terror","6e118e37-5002-408d-9d88-0b5d9cdb5d14":"Runaway Railway","34c4916b-989b-4ff1-a7e3-a6a846a3484f":"Smugglers Run","e516f303-e82d-4fd3-8fbf-8e6ab624cf89":"Rock ’n’ Roller Coaster","0d94ad60-72f0-4551-83a6-ebaecdd89737":"Winnie the Pooh","e3549451-b284-453d-9c31-e3b1207abd79":"Cosmic Rewind","de3309ca-97d5-4211-bffe-739fed47e92f":"Big Thunder Mountain","64a6915f-a835-4226-ba5c-8389fc4cade3":"Expedition Everest"}; /* the mock's short names, by ride id - where a name shares its line with a figure or leads a sentence (a park's best deal, Day by day's headline and its door, Morning or night's rows, the ride list); a ride's own row says the full name */
     function pwHiNm(id,nm){return PW_HI_SHORT[id]||nm;}
@@ -14348,7 +14368,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var last=null,k;if(C)for(k in C.by)if(k<=C.yd&&(last===null||k>last))last=k;
       return '<div class="pw-date"><div><div class="d">Highlights</div><div class="s">Walt Disney World</div></div>'+(last?'<span class="pw-badges"><span class="pw-badge">Through '+esc(pwMonD(last))+'</span></span>':'')+'</div>';
     }
-    function pwHiCh(i,t,w){return '<div class="hi-ch" id="hiCh'+i+'"><div class="lv-l"><div class="lv-ttl">'+esc(t)+'</div></div><div class="w">'+esc(w)+'</div></div>';}
+    function pwHiCh(i,t,w,n){var NW=["no","one","two","three","four","five","six"];return '<div class="hi-ch" id="hiCh'+i+'"><div class="lv-l"><div class="lv-ttl">'+esc(t)+'</div></div><div class="w">'+esc(w)+(n?'<span class="hi-n"> · '+(NW[n]||n)+(n===1?' summary':' summaries')+'</span>':'')+'</div></div>';} /* 0728nd: a chapter of tiles says how many summaries it holds, after its dates - the dates stay the line's own words (the cards read them) */
     /* 0728na THE HEADLINE (L-C, owner-ruled Fri Nov 13, 2026, 12:04 PM: "lets go with your lean, and cut now"). Five kinds take turns by the date - yesterday's longest line, its best deal, its longest time down, the month's longest line, the month's most time down. A kind with nothing to say is passed over, to a kind that is neither neighbouring day's turn where one can speak (the Wrap's own law, 0728ml: never the same kind two days running). A RECORD JUMPS THE QUEUE: when yesterday's longest line is also the month's - alone at the top, with a week of the month on file - it leads. Every kind is the first row of a summary on this page, read from the same models: THE HEADLINE AND THE PAGE NEVER DISAGREE. Level rows are named together (0728mu). Not chosen: L-A always yesterday's longest line; L-B the turns with no record */
     var PW_HI_LEADS=["line","deal","down","mline","mdown"];
     function pwHiLead(C,m,deals){
@@ -14390,9 +14410,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         html+=pwHiReceiptHTML(m,yd)+pwHiDealHTML(deals,yd)+pwHiDownHTML(m,yd);
         if(deals===null)pwHiBaseWait();}
       else html+=pwHiQuiet("Not enough data logged for this day yet.");
-      html+=pwHiCh(1,mon,fmtRange([W.m1,yd]))+pwHiMonthHTML(C)+pwHiCh(2,"The past four weeks",fmtRange([W.w0,yd]))+pwHiWeeksHTML(C)+
+      var mt=pwHiTiles(C,pwHiMonthHTML(C)),wt=pwHiTiles(C,pwHiWeeksHTML(C)); /* 0728nd THE TAB BECOMES TILES (P-C): the summaries are built as ever; a chapter shows a tile for each and keeps the summaries in its stow, for the sheet */
+      html+=pwHiCh(1,mon,fmtRange([W.m1,yd]),mt.n)+mt.h+pwHiCh(2,"The past four weeks",fmtRange([W.w0,yd]),wt.n)+wt.h+
         '<div class="pw-foot">History, never a promise · live data from ThemeParks.wiki</div>';
-      wv.innerHTML=top+pwHiHeroHTML(C,g?m:null,g?deals:null,mon,html)+html;wireTabs();pwHiWire(); /* 0728na: the hero sits under the head and over the pinned row; it is built last because its sentence reads the models the summaries are built from */
+      wv.innerHTML=top+pwHiHeroHTML(C,g?m:null,g?deals:null,mon,html)+html;wireTabs();pwHiWire();if(pwHiAt){var a9=pwHiAt;pwHiOpen(a9.key,true,a9.pick);} /* 0728nd: a repaint under an open sheet (a pick, a park, the typical waits landing) seats the fresh summary in it, in place */ /* 0728na: the hero sits under the head and over the pinned row; it is built last because its sentence reads the models the summaries are built from */
     }
     function pwHiBaseWait(){ /* the deal waits on the baseline the app is already fetching; it repaints once when it lands */
       if(pwHiIv)return;var n9=0;
@@ -14406,15 +14427,18 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       J.classList.toggle("on",!!sn&&sn.getBoundingClientRect().top<=ins+8); /* 0728na THE PINNED ROW ARRIVES AS THE HERO LEAVES (J-B): the sentinel under the hero has reached the row's seat below the clock (the phone's top inset rides in the row's own padding, as sbSync reads it), so the hero's own buttons are off the glass and the row takes over; scrolling back, the row leaves as the hero returns - never both */
       var chs=document.querySelectorAll("#wrapView .hi-ch"),a=0,i,line=J.getBoundingClientRect().bottom+62,sc=window.ppShl();
       for(i=0;i<chs.length;i++)if(chs[i].getBoundingClientRect().top<=line)a=i;
-      if(sc&&chs.length&&sc.scrollTop>0&&sc.scrollTop+sc.clientHeight>=sc.scrollHeight-2)a=chs.length-1;
+      if(sc&&chs.length&&sc.scrollTop>0&&sc.scrollTop+sc.clientHeight>=sc.scrollHeight-2){a=chs.length-1;
+        if(pwHiTap!==null&&chs[pwHiTap]){var r9=chs[pwHiTap].getBoundingClientRect();if(r9.top>=0&&r9.top<(window.innerHeight||sc.clientHeight))a=pwHiTap;}} /* 0728nd THE LIGHT FOLLOWS THE TAP (J-B, owner-ruled Fri Nov 13, 2026): with tiles the last chapters share one glass, so a jump runs out of page before its title reaches the top - the tapped chapter keeps the light while its title is on the glass; a hand scroll to the end lights the last, as ever */
+      else if(Date.now()-pwHiJmp>1200)pwHiTap=null;
       var bs=document.querySelectorAll("#hiJump button,#hiHero .hi-hj button");for(i=0;i<bs.length;i++){if((+bs[i].getAttribute("data-j")===a)!==bs[i].classList.contains("on"))bs[i].classList.toggle("on");}
     }
     function pwHiWire(){
       var wv=$id("wrapView");if(!wv)return;
       Array.prototype.forEach.call(wv.querySelectorAll("#hiJump button,#hiHero .hi-hj button"),function(b){b.addEventListener("click",function(){ /* a chip jumps; it never filters */
-        var j=+b.getAttribute("data-j"),ch=$id("hiCh"+j);
+        var j=+b.getAttribute("data-j"),ch=$id("hiCh"+j);pwHiTap=j;pwHiJmp=Date.now();
         if(j===0){try{window.ppShl().scrollTo({top:0,behavior:"smooth"});}catch(e){topw();}}
         else if(ch)ch.scrollIntoView({behavior:"smooth",block:"start"});
+        pwHiSync(); /* 0728nd: a tap that cannot move the page (it is already at its end) still moves the light */
       });});
       Array.prototype.forEach.call(wv.querySelectorAll(".hi-go"),function(el){
         function go(){pwHiGo(el.getAttribute("data-hds"),el.getAttribute("data-hrid"),el.getAttribute("data-hpark"));}
@@ -14424,13 +14448,15 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(!pwHiOn){pwHiOn=true;try{var sc=window.ppShl();((sc===document.scrollingElement||sc===document.documentElement)?window:sc).addEventListener("scroll",pwHiSync,{passive:true});}catch(e){}}
       Array.prototype.forEach.call(wv.querySelectorAll(".hi-sh"),function(b){b.addEventListener("click",function(){pwHiShare(b);});}); /* 0728ms THE GLYPH IS THE DOOR: each summary opens its card in the preview sheet */
       if(typeof mrPinBind==="function")mrPinBind(wv); /* 0728mt: the chips' sentinel is observed on every paint and the plate re-reads at once (My Rides' own binder) */
+      Array.prototype.forEach.call(wv.querySelectorAll(".hi-tile"),function(b){b.addEventListener("click",function(){pwHiOpen(b.getAttribute("data-hk"));});}); /* 0728nd A TILE IS A DOOR to its summary's sheet */
       pwHiWirePick();
       pwHiSync();
     }
     function pwHiGo(ds,rid,park){ /* A ROW IS A DOOR to that ride's day; its Back wears Highlights and comes home in one tap, to the row it left */
       var wv=$id("wrapView"),tab="visit:hl:"+ds;if(!wv||!ds||!rid)return;
+      var at=pwHiAt?pwHiAt.key:null;pwHiSheetClose(); /* 0728nd BACK COMES HOME TO THE ROW IT LEFT, AND THE ROW LIVES IN THE SHEET (G-B, owner-ruled Fri Nov 13, 2026): the sheet closes for the day's page and its Back opens the same summary again */
       try{pwHiY=window.ppShl().scrollTop;}catch(e){pwHiY=null;}
-      function land(d){renderWrap(d,tab);pwWayIn={kind:"ride",key:rid,tab:tab,label:"Highlights",go:function(){var y=pwHiY;pwHiKeep=true;loadTab("hl");if(y!=null){try{window.ppShl().scrollTop=y;}catch(e){}pwHiSync();}}};showRide(rid,park);}
+      function land(d){renderWrap(d,tab);pwWayIn={kind:"ride",key:rid,tab:tab,label:"Highlights",go:function(){var y=pwHiY;pwHiKeep=true;loadTab("hl");if(y!=null){try{window.ppShl().scrollTop=y;}catch(e){}pwHiSync();}if(at)pwHiOpen(at,true);}};showRide(rid,park);}
       if(pwDayCache[ds]){land(pwDayCache[ds]);return;}
       wv.innerHTML=tabsHTML("hl")+'<div class="pw-msg">Loading the day…</div>';wireTabs();
       Promise.all([fetch(WRAP_URL+"/history?date="+ds).then(function(r){return r.json();}),pwPrevFetch(pwLeadPrev(ds))]).then(function(rs9){var d=rs9[0];
@@ -14527,7 +14553,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var W=pwHiWeeksModel(C),id=pwHiRideNow(C),hd=function(pk){return pwHiHd("Day by day"+(pk?" · "+esc(pk):""),"wd","day by day");};
       if(!id)return '<div class="hi-card">'+hd("")+'<div class="hi-wait">Not enough days on file yet.</div></div>';
       var r=W.rides[id],DF=["Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays","Sundays"],DS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],NW=["no","one","two","three","four","five"];
-      var v=r.wd.map(function(a){if(!a.length)return null;var s=0;a.forEach(function(x){s+=x;});return Math.floor(s/a.length+0.5);}); /* the mean of that weekday's day averages, rounded half up */
+      var v=pwHiWdV(r); /* the mean of that weekday's day averages, rounded half up (0728nd: one maker, the tile reads the same seven) */
       var lo=-1,hi=-1,i,cn=null,cx=null;for(i=0;i<7;i++){if(v[i]===null)continue;if(lo<0||v[i]<v[lo])lo=i;if(hi<0||v[i]>v[hi])hi=i;var c=r.wd[i].length;if(cn===null||c<cn)cn=c;if(cx===null||c>cx)cx=c;}
       var nm=esc(pwHiNm(id,r.n)),mx=v[hi];
       var head=(v[lo]===v[hi])?nm+': <span class="'+pwHiBand(mx)+'">averaged '+mx+' every day of the week.</span>'
@@ -14557,32 +14583,82 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     }
     function pwHiWeeksHTML(C){var W=pwHiWeeksModel(C);if(!W.days.length)return pwHiQuiet("Not enough days on file yet.");return pwHiDayByDayHTML(C)+pwHiMornNightHTML(C);}
     function pwHiRepaint(){var y=null;try{y=window.ppShl().scrollTop;}catch(e){}pwHiRender();if(y!=null){try{window.ppShl().scrollTop=y;}catch(e){}pwHiSync();}}
-    function pwHiSheetClose(){var h=$id("hiHost");if(h)h.innerHTML="";document.body.classList.remove("pv-open");}
-    function pwHiSheet(){ /* the ride list wears the preview sheet's shell (td-scrim / td-sheet): every ride in the pool with a week on file, the headliners first. 0728mt ONE PARK AT A TIME (field-born on the owner's glass, IMG_6802, Thu Nov 12, 2026, 7:11 PM: "It won't scroll down any further ... Could probably neaten the layout a bit too"): four park buttons in My Rides' own letters, the picked park's rides in one column under them, opening on the park of the ride on the card; the head and the buttons stay put and the list scrolls under them */
-      var C=pwHiC;if(!C)return;var W=pwHiWeeksModel(C),cur=pwHiRideNow(C),h=$id("hiHost");
+    /* ===== 0728nd THE TAB BECOMES TILES; A TILE OPENS ITS SUMMARY IN A SHEET (P-C · K-A · S-A · G-B · D-A · W-A) ===== */
+    var PW_HI_TK={top5:"Five longest lines",mdown:"Most time down",wd:"Day by day",mn:"Morning or night"};
+    function pwHiWdV(r){return r.wd.map(function(a){if(!a.length)return null;var s=0;a.forEach(function(x){s+=x;});return Math.floor(s/a.length+0.5);});}
+    function pwHiFace(C,key){ /* A TILE'S HEADLINE FIGURE comes from its summary's own model, in the summary's own words: {v, u the unit, b the band, s its two lines}. Level rows are named as the summary's sentence names them and drop the day (SUPERLATIVES SHOW TRUE WINNERS). D-A: Day by day leads with the picked ride's calmest weekday average */
+      var m,w,r,v,lo=-1,hi=-1,i,DF=["Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays","Sundays"];
+      function nm(x){return pwHiNm(x.id,x.n);}
+      if(key==="top5"){m=pwHiMonthModel(C);if(!m.peaks.length)return null;w=pwHiWho(m.peaks,function(a,b){return a.hi===b.hi;},nm);
+        return {v:m.peaks[0].hi,u:"m",b:pwHiBand(m.peaks[0].hi),s:w.k>1?[w.s]:[w.s,pwHiWd(m.peaks[0].hiD)]};}
+      if(key==="mdown"){m=pwHiMonthModel(C);if(!m.down.length)return null;w=pwHiWho(m.down,function(a,b){return (a.dm/60).toFixed(1)===(b.dm/60).toFixed(1);},nm);
+        return {v:(m.down[0].dm/60).toFixed(1),u:"h",b:"hi-packed",s:w.k>1?[w.s]:[w.s,m.down[0].dd+' of '+m.n+(m.n>1?' days':' day')]};}
+      if(key==="wd"){var id=pwHiRideNow(C);if(!id)return null;r=pwHiWeeksModel(C).rides[id];v=pwHiWdV(r);
+        for(i=0;i<7;i++){if(v[i]===null)continue;if(lo<0||v[i]<v[lo])lo=i;if(hi<0||v[i]>v[hi])hi=i;}
+        if(lo<0)return null;
+        return {v:v[lo],u:"m",b:pwHiBand(v[lo]),s:[esc(pwHiNm(id,r.n)),v[lo]===v[hi]?'every day of the week':DF[lo]+' the calmest']};}
+      if(key==="mn"){var parks=pwHiMnParks();if(!parks||!parks.length)return null;var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk);
+        return {v:rows.filter(function(x){return x.p<x.a;}).length+' of '+rows.length,u:"",b:"",s:[esc(pk)+' headliners','shorter at 8 PM']};}
+      return null;
+    }
+    function pwHiTiles(C,h){ /* a chapter's summaries as tiles. The summaries are built as ever and wait in the chapter's stow (hidden), so the hero still counts them, the cards still read them and the sheet shows the summary itself - nothing is composed twice. W-A: a summary that is waiting keeps its tile - a dash and the summary's own sentence. A chapter with no summary to show keeps its quiet card */
+      var ps=h.split('<div class="hi-card">'),t="",n=0,i;
+      for(i=1;i<ps.length;i++){var k=/data-hcard="([a-z0-9]+)"/.exec(ps[i]),q=/<div class="hi-wait">([^<]*)<\/div>/.exec(ps[i]);if(!k||!PW_HI_TK[k[1]])continue;
+        var f=q?null:pwHiFace(C,k[1]);n++;
+        t+='<button type="button" class="hi-tile" data-hk="'+k[1]+'"><span class="go" aria-hidden="true">›</span><span class="k">'+PW_HI_TK[k[1]]+'</span><span><span class="v '+(f?f.b:'hi-none')+'">'+(f?f.v+(f.u?'<small>'+f.u+'</small>':''):'–')+'</span><span class="s">'+(f?f.s.join('<br>'):(q?q[1]:''))+'</span></span></button>';}
+      return n?{n:n,h:'<div class="hi-grid">'+t+'</div><div class="hi-stow" hidden>'+h+'</div>'}:{n:0,h:h};
+    }
+    function pwHiSheetClose(keep){var h=$id("hiHost"),a=pwHiAt;pwHiAt=null;
+      if(a&&a.card&&a.card.parentNode&&a.stow&&document.body.contains(a.stow))a.stow.appendChild(a.card); /* the summary goes home to its stow */
+      if(h){h.innerHTML="";if(keep!==true)h.classList.remove("away");}
+      if(keep!==true)document.body.classList.remove("pv-open");}
+    function pwHiOpen(key,still,pick){ /* THE SUMMARY ITSELF, CARRIED INTO THE SHEET: the tile's summary leaves the stow for the sheet (its doors, its share glyph and its controls travel with it), under a head that reads the chapter's own title and dates off the page and says which of how many; previous and next step through the chapter in place. still = no entrance (a step, a repaint, a way home); pick = the ride list was showing */
+      var wv=$id("wrapView"),h0=$id("hiHost"),l0=h0?h0.querySelector(".hi-list"):null,y=(still&&l0&&pwHiAt&&pwHiAt.key===key)?l0.scrollTop:0;
+      pwHiSheetClose(still===true);
+      var t=wv?wv.querySelector('.hi-tile[data-hk="'+key+'"]'):null,g=t?t.parentNode:null,ch=g?g.previousElementSibling:null,st=g?g.nextElementSibling:null,
+        gl=st?st.querySelector('.hi-sh[data-hcard="'+key+'"]'):null,card=(gl&&gl.closest)?gl.closest(".hi-card"):null;
+      if(!card||!ch){pwHiSheetClose();return;}
+      var ts=Array.prototype.slice.call(g.querySelectorAll(".hi-tile")),i=ts.indexOf(t),h=$id("hiHost");
       if(!h){h=document.createElement("div");h.id="hiHost";document.body.appendChild(h);}
+      function nb(b,d){var k=b?b.getAttribute("data-hk"):"";return '<button type="button" data-hgo="'+k+'"'+(b?'':' disabled')+'>'+(b?(d<0?'‹ ':'')+PW_HI_TK[k]+(d>0?' ›':''):'')+'</button>';}
+      h.innerHTML='<div class="td-scrim pv-scrim"></div><div class="td-sheet pv-sheet hi-sheet'+(still?'':' anim')+'" role="dialog" aria-label="'+PW_HI_TK[key]+'"><div class="rc-grab"></div>'+
+        '<div class="help-h"><div><div class="help-title">'+esc(pwHiTx(ch.querySelector(".lv-ttl")))+'</div><div class="pv-sub">'+esc(pwHiOwn(ch.querySelector(".w")))+' · '+(i+1)+' of '+ts.length+'</div></div><button class="help-x" type="button" data-hx aria-label="Close">✕</button></div>'+
+        '<div class="hi-list"><div class="hi-nav">'+nb(ts[i-1],-1)+nb(ts[i+1],1)+'</div></div></div>';
+      var sh=h.querySelector(".pv-sheet"),sc=h.querySelector(".pv-scrim"),ls=h.querySelector(".hi-list");
+      ls.insertBefore(card,ls.firstChild);pwHiAt={key:key,card:card,stow:st,pick:null};
+      Array.prototype.forEach.call(ls.querySelectorAll("[data-hgo]"),function(b){b.addEventListener("click",function(){pwHiOpen(b.getAttribute("data-hgo"),true);});});
+      h.querySelector("[data-hx]").addEventListener("click",function(){pwHiSheetClose();});sc.addEventListener("click",function(){pwHiSheetClose();});
+      if(typeof sheetDragDismiss==="function")sheetDragDismiss(sh,sc,pwHiSheetClose);
+      document.body.classList.add("pv-open");
+      if(y)ls.scrollTop=y;
+      if(pick)pwHiSheet(pick);
+    }
+    function pwHiSheet(pk0){ /* K-A THE RIDE LIST SWAPS INTO THE SAME SHEET (owner on the phone specimen, Fri Nov 13, 2026, 3:34 PM: "Seems to work ok!"): Change ride puts the park buttons and the list where the summary was - the head says Day by day · Pick a ride to see its week. - and a pick, or Back to the summary, returns to it; there is only ever one sheet. The list is 0728mt's: one park at a time, opening on the park of the ride on the card, the headliners first, every ride with a week on file. Not chosen: a second sheet over the first; K-C */
+      var C=pwHiC;if(!C)return;
+      if(!pwHiAt||pwHiAt.key!=="wd")pwHiOpen("wd",!!pwHiAt);
+      var h=$id("hiHost"),a=pwHiAt;if(!h||!a||a.key!=="wd")return;
+      var W=pwHiWeeksModel(C),cur=pwHiRideNow(C),ls=h.querySelector(".hi-list");
       function rows(p){var seen={},list=[],rest=[],id;
         (HEADLINERS[p]||[]).forEach(function(x){if(W.rides[x.id]){list.push(W.rides[x.id]);seen[x.id]=1;}});
         for(id in W.rides)if(W.rides[id].p===p&&!seen[id])rest.push(W.rides[id]);
         rest.sort(function(a,b){return pwHiNm(a.id,a.n)<pwHiNm(b.id,b.n)?-1:1;});return list.concat(rest);}
-      var parks=MAIN.filter(function(p){return rows(p).length>0;}),pk=(cur&&W.rides[cur]&&parks.indexOf(W.rides[cur].p)>=0)?W.rides[cur].p:parks[0];
-      h.innerHTML='<div class="td-scrim pv-scrim"></div><div class="td-sheet pv-sheet hi-sheet anim" role="dialog" aria-label="Day by day"><div class="rc-grab"></div>'+
-        '<div class="help-h"><div><div class="help-title">Day by day</div><div class="pv-sub">Pick a ride to see its week.</div></div><button class="help-x" type="button" data-hx aria-label="Close">✕</button></div>'+
-        '<div class="pg-seg hi-pks" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpks="'+esc(p)+'" aria-label="'+esc(p)+'">'+esc((typeof BANNER_MONO!=="undefined"&&BANNER_MONO[p])||p)+'</button>';}).join("")+'</div>'+
-        '<div class="hi-list"></div></div>';
-      var sh=h.querySelector(".pv-sheet"),sc=h.querySelector(".pv-scrim"),ls=h.querySelector(".hi-list");
-      function paint(p){
-        Array.prototype.forEach.call(h.querySelectorAll("[data-hpks]"),function(b){b.classList.toggle("on",b.getAttribute("data-hpks")===p);});
-        ls.innerHTML='<div class="pk">'+esc(p)+'</div>'+rows(p).map(function(r){return '<button class="rw'+(r.id===cur?' on':'')+'" type="button" data-hride="'+esc(r.id)+'"><span>'+esc(pwHiNm(r.id,r.n))+pwHiRf(C,r.id)+'</span>'+(r.id===cur?'<i>✓</i>':'')+'</button>';}).join("");
+      var parks=MAIN.filter(function(p){return rows(p).length>0;}),pk=(typeof pk0==="string"&&parks.indexOf(pk0)>=0)?pk0:(cur&&W.rides[cur]&&parks.indexOf(W.rides[cur].p)>=0)?W.rides[cur].p:parks[0];
+      if(!parks.length)return;
+      if(a.card.parentNode===ls&&document.body.contains(a.stow))a.stow.appendChild(a.card); /* the summary waits in its stow while the list has the sheet */
+      h.querySelector(".help-title").textContent="Day by day";h.querySelector(".pv-sub").textContent="Pick a ride to see its week.";ls.classList.add("pick");
+      ls.innerHTML='<button type="button" class="hi-back">‹ Back to the summary</button><div class="pg-seg hi-pks" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpks="'+esc(p)+'" aria-label="'+esc(p)+'">'+esc((typeof BANNER_MONO!=="undefined"&&BANNER_MONO[p])||p)+'</button>';}).join("")+'</div><div class="hi-rws"></div>';
+      var rw=ls.querySelector(".hi-rws");
+      function paint(p){a.pick=p;
+        Array.prototype.forEach.call(ls.querySelectorAll("[data-hpks]"),function(b){b.classList.toggle("on",b.getAttribute("data-hpks")===p);});
+        rw.innerHTML='<div class="pk">'+esc(p)+'</div>'+rows(p).map(function(r){return '<button class="rw'+(r.id===cur?' on':'')+'" type="button" data-hride="'+esc(r.id)+'"><span>'+esc(pwHiNm(r.id,r.n))+pwHiRf(C,r.id)+'</span>'+(r.id===cur?'<i>✓</i>':'')+'</button>';}).join("");
         ls.scrollTop=0;
-        Array.prototype.forEach.call(ls.querySelectorAll("[data-hride]"),function(b){b.addEventListener("click",function(){pwHiRide=b.getAttribute("data-hride");pwHiSheetClose();if(active&&curTab==="hl"&&$id("hiJump"))pwHiRepaint();});});
+        Array.prototype.forEach.call(rw.querySelectorAll("[data-hride]"),function(b){b.addEventListener("click",function(){pwHiRide=b.getAttribute("data-hride");a.pick=null;if(active&&curTab==="hl"&&$id("hiJump"))pwHiRepaint();else pwHiSheetClose();});});
       }
-      Array.prototype.forEach.call(h.querySelectorAll("[data-hpks]"),function(b){b.addEventListener("click",function(){paint(b.getAttribute("data-hpks"));});});
-      h.querySelector("[data-hx]").addEventListener("click",pwHiSheetClose);sc.addEventListener("click",pwHiSheetClose);
-      if(parks.length)paint(pk);
-      if(typeof sheetDragDismiss==="function")sheetDragDismiss(sh,sc,pwHiSheetClose);
-      document.body.classList.add("pv-open");
+      ls.querySelector(".hi-back").addEventListener("click",function(){pwHiOpen("wd",true);});
+      Array.prototype.forEach.call(ls.querySelectorAll("[data-hpks]"),function(b){b.addEventListener("click",function(){paint(b.getAttribute("data-hpks"));});});
+      paint(pk);
     }
+    /* ===== end 0728nd THE TILES ===== */
     function pwHiWirePick(){
       var wv=$id("wrapView");if(!wv)return;
       var d=$id("hiRide");if(d)d.addEventListener("click",pwHiSheet);
@@ -14600,8 +14676,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function all(sel,root){return Array.prototype.slice.call((root||card).querySelectorAll(sel));}
       function one(sel,root){return root===null?null:(root||card).querySelector(sel);}
       function tx(el){return pwHiTx(el);}
-      var ch=card.previousElementSibling;while(ch&&!(ch.classList&&ch.classList.contains("hi-ch")))ch=ch.previousElementSibling; /* the chapter the summary sits in: its title and its dates are the card's kicker */
-      var lab=tx(one(".hi-hd .nm")).split(" · "),when=ch?tx(one(".w",ch)):"";
+      var st9=(pwHiAt&&pwHiAt.card===card)?pwHiAt.stow:(card.closest?card.closest(".hi-stow"):null),ch=(st9||card).previousElementSibling;while(ch&&!(ch.classList&&ch.classList.contains("hi-ch")))ch=ch.previousElementSibling; /* 0728nd: a summary in a stow, or carried into the sheet, still stands under its chapter */ /* the chapter the summary sits in: its title and its dates are the card's kicker */
+      var lab=tx(one(".hi-hd .nm")).split(" · "),when=ch?pwHiOwn(one(".w",ch)):"";
       var D={W:1080,H:1350,key:key,title:lab[0],sub:lab[1]||"",who:"",kicker:(ch?tx(one(".lv-ttl",ch))+(when?" · ":""):"")+when,fine:tx(one(".hi-fine")),head:tx(one(".hi-h"))};
       if(key==="receipt"){
         D.parks=[];
@@ -14769,7 +14845,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
         pwHiDraw(ctx,D);
-        pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle});
+        var hs=(btn.closest&&btn.closest("#hiHost"))?$id("hiHost"):null;if(hs)hs.classList.add("away"); /* 0728nd THE PREVIEW TAKES THE SHEET'S PLACE AND HANDS BACK (S-A, owner-ruled Fri Nov 13, 2026, 7:06 PM): from inside the summary's sheet the one Share sheet every card uses stands alone on the glass, and closing it returns the summary where it was. Not chosen: S-B the summary closes first, S-C the card swaps into the sheet */
+        pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle,back:hs?function(){if(hs.firstChild){hs.classList.remove("away");document.body.classList.add("pv-open");}else hs.classList.remove("away");}:null});
       });
     }
     /* ===== end 0728ms HIGHLIGHTS: THE CARDS ===== */
