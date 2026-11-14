@@ -3171,7 +3171,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ng</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nh</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3280,6 +3280,7 @@ var PW_TIER={short:"#15a36b",medium:"#dc8a06",long:"#ef6c3b",packed:"#e23b54",do
 var PW_RIBBON={clear:"#fde68a",night:"#33488f",cloud:"#cbd5e1",storm:"#818cf8",rain:"#60a5fa",core:"#3b82f6"};
 var PW_CARD={ink:"#eaf3f2",muted:"#7d97a1",muted2:"#5f7882",green:"#3dd68c",packed:"#ff6b6b",busy:"#ff7a59",red:"#ff6b6b",violet:"#b69cff",line:"rgba(255,255,255,0.09)"};window.__pwCardInk=PW_CARD /* 0717p: the card inks export - the trip drawer speaks the SAME palette object (one source, the __pw idiom) */; /* drawSnapshot / drawDownGrouped */
 var PW_CARD_ALT={ink:"#eaf3f2",muted:"#9aa6c4",muted2:"#6b7da0",green:"#3dd68c",accent:"#96a1f2",line:"rgba(255,255,255,0.09)"}; /* drawStormCard / drawCard */
+function rcShortNm(id,nm){return (typeof window.__ppShort==="function")?window.__ppShort(id,nm):nm;} /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: a ride's short name where it shares its line with a big figure - the Highlights table (PW_HI_SHORT, by ride id) through the Wrap scope's own reader; a ride the table does not hold keeps its full name. ONE TABLE: the Live cards add no names of their own */
 function rcMark(ctx,x,y,s){ /* 0727n THE CARDS (owner-ruled c-B, Sep 6): the mark of record on the dark cards — the tile scaled to s (lit plate, long pale pill over the short green one, 61%, left-aligned); returns the x where the wordmark starts. One helper, five drawers. */
   var r=s*0.27,g=ctx.createLinearGradient(x,y,x+s,y+s);g.addColorStop(0,"#1b2d4d");g.addColorStop(1,"#10243a");
   function rp(px,py,pw,ph,pr,c){ctx.beginPath();ctx.moveTo(px+pr,py);ctx.arcTo(px+pw,py,px+pw,py+ph,pr);ctx.arcTo(px+pw,py+ph,px,py+ph,pr);ctx.arcTo(px,py+ph,px,py,pr);ctx.arcTo(px,py,px+pw,py,pr);ctx.closePath();ctx.fillStyle=c;ctx.fill();}
@@ -4907,7 +4908,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var clock=uxClk(ch.now),wd="",mo="",dy="";
     new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"long",month:"short",day:"numeric"}).formatToParts(new Date(ch.now)).forEach(function(x){if(x.type==="weekday")wd=x.value;if(x.type==="month")mo=x.value;if(x.type==="day")dy=x.value;});
     var date=wd+", "+mo+" "+dy;
-    var D={W:1080,stamp:clock,basis:["Showtimes as posted at "+clock+" \u00b7","they can change"]}; /* R6: THE CLAUSE IS THE BREAK */
+    var D={W:1080,stamp:clock,date:mo+" "+dy,basis:["Showtimes as posted at "+clock,"they can change"]}; /* R6: THE CLAUSE IS THE BREAK */
     if(ch.pk!=="all"){
       var meets=0;
       D.kind="A";
@@ -4932,7 +4933,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
         var rows=ch.next.filter(function(x){return x.park===pd.key;}),rest=rows.slice(3);
         var night=rest.filter(function(x){return x.mk===UX_NIGHT;}),m=rest.length-night.length; /* a nighttime show already among the three is not listed twice */
         function rw(x){return {t:uxClk(x.t),nm:x.nm};}
-        return {nm:pd.key.toUpperCase(),note:(pd.key==="Magic Kingdom"&&rows.length)?uxPartyNote(ch.now):null,rows:rows.slice(0,3).map(rw),night:night.map(rw),
+        return {nm:pd.key.toUpperCase(),hd:pd.key,note:(pd.key==="Magic Kingdom"&&rows.length)?uxPartyNote(ch.now):null,rows:rows.slice(0,3).map(rw),night:night.map(rw),
           more:m>0?"+"+m+" more"+(ch.all?"":" act"+(m===1?"":"s"))+" today":null,
           none:rows.length?null:(ch.all?"Nothing left today":"No shows left today")};
       });
@@ -4940,67 +4941,70 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     }
     return D;
   }
-  function uxDrawCard(ctx,D,H){ /* the dress is upnext-card-mock.html / upnext-c-mock.html at 3x: LIVE's navy field, PW_CARD_ALT inks, rcMark, the family footer */
+  function uxDrawCard(ctx,D,H){ /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY \u2014 Up Next (owner-ruled Sat Nov 14, 2026, 3:23 PM on sheets 70 and 71: "you did it again my friend, love them both!!"; U-B, heavier type in the old layout, not chosen): the family head on the dark field with an AS OF pill, not LIVE \u2014 showtimes are posted, not measured. One park (U-A): the next time is the number at the right, the later starts under the name as "then \u2026". All four parks: the parks as headings, each start at 900 with its act beside it; THE TONIGHT LINE keeps its gold. Returns where the card ends. */
     var W=D.W,C=PW_CARD_ALT,GOLD="#ffce5c",SOFT="#c8d2e8";
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
-    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";} /* BIG AND CHUNKY: a 900 line from 30 px up is drawn tighter where the phone's canvas can; every draw and every measure asks here, so a width is the width that is drawn */
+    function T(s,x,y,f,c,a,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);if(k)LS("0px");}
+    function MW(s,f,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);var w=ctx.measureText(s).width;if(k)LS("0px");return w;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
-    function sec(tx){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);LS("0px");y+=51;}
-    function note(n){if(!n)return;for(var q=0;q<n.length;q++){T(n[q],L,y+30,IN("500",28),SOFT);y+=38;}y+=8;} /* 0728ef P-A: the quiet ink - gold stays the nighttime shows' */
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function wrap2(s,mw,f,n){n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function fit(s,mw,FN,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,FN(wt,sz[k]))<=mw)break;return sz[k];} /* THE NAME STEPS DOWN BEFORE IT LOSES A WORD */
+    function fitAll(a,mw,FN,wt,sz){var m=sz[0];a.forEach(function(s){var z=fit(s,mw,FN,wt,sz);if(z<m)m=z;});return m;} /* one size for every name on a card: the rows stay even */
+    function big(s,x,top,sz,c,side,sc){ /* the hero: a figure on its own row with its words stacked beside it; it steps down until both fit the card. side = [[text,font,ink,line height]...] read bottom-up from the figure's baseline. Returns the baseline */
+      var i,sw=0,nw,g=sc||18;for(i=0;i<side.length;i++)sw=Math.max(sw,MW(side[i][0],side[i][1]));
+      for(;;){nw=MW(s,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+      var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+      T(s,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+      var yy=base-Math.round(sz*0.015);for(i=0;i<side.length;i++){T(side[i][0],x0+nw+g,yy,side[i][1],side[i][2]);yy-=side[i][3];}
+      return base;}
+    function note(n){if(!n)return;var nl=wrap2(n.join(" "),CW,IN("600",27),3),q;y+=4;for(q=0;q<nl.length;q++){y+=36;T(nl[q],L,y,IN("600",27),SOFT);}} /* the calendar's sentence wraps whole inside the card */ /* 0728ef P-A: the quiet ink - gold stays the nighttime shows' */
+    function clk(t,x,yy,sz,c,a){ /* a clock in two sizes: the digits large, the meridiem small beside them. Returns its width */
+      var m=/^(.*?)\s*(AM|PM)$/.exec(t),d=m?m[1]:t,ap=m?m[2]:"",df=SG("900",sz),af=SG("900",Math.max(26,Math.round(sz*0.36))),dw=MW(d,df),aw=ap?5+MW(ap,af):0;
+      if(a==="right"){if(ap)T(ap,x,yy,af,c,"right");T(d,x-aw,yy,df,c,"right");}else{T(d,x,yy,df,c);if(ap)T(ap,x+dw+5,yy,af,c);}
+      return dw+aw;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
     rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
     var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
     var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j;
     var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
-    T(D.stamp,R,139,IN("700",28),C.ink,"right");
-    LS("3px");T(D.kicker,L,218,IN("800",28),C.accent);LS("0px");
-    var tl=wrapW(D.title,CW,SG("700",66));y=299;
-    for(i=0;i<tl.length;i++)T(tl[i],L,y+i*76,SG("700",66),C.ink);
-    y+=(tl.length-1)*76+62;
-    T(D.sub,L,y,IN("500",30),C.muted);y+=10;
+    rcPill(ctx,R,"AS OF "+D.stamp,"rgba(255,255,255,0.07)",SOFT,false);
+    T(D.date,R,184,IN("700",28),C.ink,"right");
+    LS("3px");T(D.kicker,L,236,IN("800",28),C.accent);LS("0px");
+    var tz=fit(D.title,CW,SG,"900",[84,76,70,64]);y=244+tz;T(ell(D.title,CW,SG("900",tz)),L,y,SG("900",tz),C.ink);
+    y+=50;T(D.sub,L,y,IN("600",32),C.muted);
     if(D.kind==="A"){
-      sec(D.head);note(D.note);
-      var TX=L+78,TWD=R-TX,fr=IN("500",30),fb=IN("700",30),gap=MW(" ",fr),dotw=MW(" \u00b7",fr);
+      y+=34;hair(y);y+=50;T(D.head,L,y,IN("800",26),C.muted2,"left","3.1px");T("next",R,y,IN("700",26),C.muted2,"right");note(D.note);y+=10;
+      var TX=L+60,tmx=0;D.rows.forEach(function(r){var k,t=r.run[0];for(k=0;k<r.run.length&&!/(AM|PM)$/.test(t);k++)if(/(AM|PM)$/.test(r.run[k]))t=r.run[0]+r.run[k].slice(-3);r.t0=t;var m=/^(.*?)\s*(AM|PM)$/.exec(t);tmx=Math.max(tmx,MW(m?m[1]:t,SG("900",84))+(m?5+MW(m[2],SG("900",30)):0));}); /* the next start keeps its own meridiem: the run strips one only where the next clock carries the same */
+      var NW=R-tmx-28-TX,nz=48;D.rows.forEach(function(r){if(wrap2(r.nm,NW,SG("900",48),9).length>2)nz=42;});
       for(i=0;i<D.rows.length;i++){
-        var r=D.rows[i];y+=18;
-        var nl=wrapW(r.nm,TWD,IN("600",35));
-        T(r.mk,L+27,y+32,IN("500",36),C.muted,"center");
-        for(j=0;j<nl.length;j++){T(nl[j],TX,y+32,IN("600",35),C.ink);y+=43;}
-        y+=3;
-        var x=TX; /* a run wraps at its dots: the dot ends the line it closes, a time is never split */
-        for(j=0;j<r.run.length;j++){
-          var f=j===0?fb:fr,tw=MW(r.run[j],f),last=j===r.run.length-1;
-          if(x>TX&&x+tw+(last?0:dotw)>R){x=TX;y+=45;}
-          T(r.run[j],x,y+32,f,j===0?C.green:C.muted);x+=tw;
-          if(!last){T(" \u00b7",x,y+32,fr,C.muted);x+=dotw+gap;}
-        }
-        y+=45+18;
+        var r=D.rows[i],y0=y;if(i)hair(y);
+        var nl=wrap2(r.nm,NW,SG("900",nz),5),rest=r.run.slice(1),tl=rest.length?wrap2("then "+rest.join("\u00a0\u00b7 "),NW,IN("600",29),12):[]; /* every start left today, as ever: the run wraps at its dots - the dot closes the line it ends, a time is never split, no start is dropped */
+        y+=20;T(r.mk,L,y+nz-6,IN("500",38),C.muted);
+        for(j=0;j<nl.length;j++){y+=nz+2;T(nl[j],TX,y,SG("900",nz),C.ink);}
+        for(j=0;j<tl.length;j++){y+=38;T(tl[j],TX,y,IN("600",29),C.muted);}
+        y+=24;clk(r.t0,R,Math.round((y0+y)/2)+30,84,C.green,"right");
       }
     }else{
-      var NX=L+228,NW=R-NX;
+      var NX=L+236,NW2=R-NX,cz=40;
       for(i=0;i<D.secs.length;i++){
-        var s=D.secs[i];sec(s.nm);note(s.note);
-        if(s.none){T(s.none,L,y+42,IN("500",30),C.muted2);y+=65;}
-        for(j=0;j<s.rows.length;j++){T(s.rows[j].t,L,y+42,SG("800",33),C.ink);T(ell(s.rows[j].nm,NW,IN("500",34)),NX,y+42,IN("500",34),SOFT);y+=65;}
-        if(s.more){T(s.more,NX,y+30,IN("500",27),C.muted2);y+=38;}
-        if(s.night.length)y+=15;
+        var s=D.secs[i];y+=34;hair(y);y+=58;T(s.hd||s.nm,L,y,SG("900",40),C.ink);note(s.note);y+=8;
+        if(s.none){y+=52;T(s.none,L,y,IN("600",30),C.muted2);}
+        for(j=0;j<s.rows.length;j++){var rl=wrap2(s.rows[j].nm,NW2,SG("800",cz),5),q;y+=62;clk(s.rows[j].t,L,y,46,C.ink);for(q=0;q<rl.length;q++)T(rl[q],NX,y+q*(cz+6),SG("800",cz),C.ink);y+=(rl.length-1)*(cz+6);} /* a long act takes a second line before it loses a word */
+        if(s.more){y+=42;T(s.more,NX,y,IN("600",27),C.muted2);}
         for(j=0;j<s.night.length;j++){ /* THE TONIGHT LINE: time in gold, mark + name in ink; the name wraps whole */
-          T(s.night[j].t,L,y+42,SG("800",33),GOLD);
-          var gl=wrapW(UX_NIGHT+" "+s.night[j].nm,NW,IN("500",34)),k;
-          for(k=0;k<gl.length;k++)T(gl[k],NX,y+42+k*43,IN("500",34),C.ink);
-          y+=22+gl.length*43;
+          var gl=wrap2(UX_NIGHT+" "+s.night[j].nm,NW2,SG("800",cz),5),k;y+=66;clk(s.night[j].t,L,y,46,GOLD);
+          for(k=0;k<gl.length;k++)T(gl[k],NX,y+k*(cz+6),SG("800",cz),C.ink);y+=(gl.length-1)*(cz+6);
         }
       }
     }
-    y+=48;hair(y); /* ONE FOOTER HAND */
-    T(D.basis[0],L,y+59,IN("500",26),C.muted2);T(D.basis[1],L,y+93,IN("500",26),C.muted2);
+    y+=40;hair(y); /* ONE FOOTER HAND */
+    T(D.basis[0],L,y+59,IN("500",24),C.muted2);T(D.basis[1],L,y+93,IN("500",24),C.muted2);
     T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
     T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
     ctx.restore();
@@ -5012,10 +5016,10 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;
-      var ctx=rcDay(cv.getContext("2d")); /* 0728is THE LIVE CARD WEARS DAYLIGHT */
+      var ctx=cv.getContext("2d"); /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: this door no longer asks for Daylight (D-A, Oct 27, overturned for the Live page's share cards by the owner, Sat Nov 14, 2026: "this was before the big and chunky era ... if its big enough, i think were ok with the dark") */
       var Hf=Math.ceil(uxDrawCard(ctx,D,6000));
       cv.height=Hf; /* resizing resets the context state */
-      ctx=rcDay(cv.getContext("2d"));
+      ctx=cv.getContext("2d");
       uxDrawCard(ctx,D,Hf);
       pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
     });
@@ -5481,40 +5485,56 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     p.forEach(function(x){if(x.type==="weekday")wd=x.value;if(x.type==="month")mo=x.value;if(x.type==="day")dy=x.value;});
     return clock+" \u00b7 "+(wd+" "+mo+" "+dy).toUpperCase();
   }
-  function pfCardModel(c,days,stamp,pkFull){ /* 0728iu THE CALLOUT CARD WEARS THE FAMILY'S HAND (owner-ruled A + K-2 Tue Oct 27, 2026, 8:20 PM on audit/out/cu1-sheet.png + cu1-A-kicker.png): the family head's fields ride the model \u2014 the park alone (for the kicker), the pill's time, the date; the square's H leaves (the card sizes itself at its door). The kind keeps its own ink on the kicker (kc): THE KICKER WEARS THE KIND on this card, whose subject is the kind, not the surface \u2014 the one family card whose kicker changes ink (K-2; "can always pull it back"). */
+  function pfCardModel(c,days,stamp,pkFull){ /* 0728iu THE CALLOUT CARD WEARS THE FAMILY'S HAND (owner-ruled A + K-2 Tue Oct 27, 2026, 8:20 PM on audit/out/cu1-sheet.png + cu1-A-kicker.png): the family head's fields ride the model \u2014 the park alone (for the kicker), the pill's time, the date; the square's H leaves (the card sizes itself at its door). The kind keeps its own ink on the kicker (kc): THE KICKER WEARS THE KIND on this card, whose subject is the kind, not the surface \u2014 the one family card whose kicker changes ink (K-2; "can always pull it back"). 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY (owner-ruled Sat Nov 14, 2026, 2:39\u20132:47 PM on sheets 63\u201366): the model also carries the chunky hero's parts \u2014 hero {typ, lab, strike, d, ink} for a GO NOW, a ROUGH RIGHT NOW (X-A: its typical is not struck) and a reopening that is also a GO NOW; a reopening's tape (g0, g1: the down stretch as shares of the park's day) when the park's hours are known. Every word is one the card already said. */
     var now=new Date();
-    var D={W:1080,stamp:stamp,nm:c.nm,pk:pkFull,park:pkFull+" \u00b7 Walt Disney World",
+    var D={W:1080,stamp:stamp,nm:rcShortNm(c.id,c.nm),pk:pkFull,park:pkFull+" \u00b7 Walt Disney World",
       time:now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"}),
       date:now.toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"}),
-      fname:"ridecue-callouts-"+c.kind+".png",shareTitle:"RideCue \u2014 "+c.nm,tl:null,d1:null,d2:null};
+      fname:"ridecue-callouts-"+c.kind+".png",shareTitle:"RideCue \u2014 "+c.nm,tl:null,d1:null,d2:null,hero:null};
+    function lab(x){var a=["typically this half-hour"],t=pfMetaTail(x).replace(/^\s+/,""),r3=pfMetaR3(x).replace(/^\s*\u00b7\s*/,"");if(t)a.push(t);if(r3)a.push(r3);return a;} /* the typical's label, a clause a line: the party clause and the rung-3 disclosure ride it as they rode the receipt */
     if(c.kind==="re"){
       D.kicker="JUST REOPENED";D.kc=PW_CARD_ALT.accent;
       var dnT=fmtClock(new Date(c.since).toISOString())||"",upT=fmtClock(new Date(c.at).toISOString())||"";
       var dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
-      D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT};
+      D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT,g0:null,g1:null};
+      var inf=(typeof parkInfo!=="undefined"&&parkInfo[pkFull])||null;
+      if(inf&&inf.open&&inf.close){var om=pfMinOf(new Date(inf.open).getTime()),cm=pfMinOf(new Date(inf.close).getTime()),u1=pfMinOf(c.at),u0;if(cm<=om)cm+=1440;if(u1<om)u1+=1440;u0=u1-dur;
+        if(cm-om>=60&&u1>om&&u0<cm){D.tl.g0=Math.max(0,(u0-om)/(cm-om));D.tl.g1=Math.min(1,(u1-om)/(cm-om));}} /* the tape is the park's posted day; a reopening outside it draws no tape */
       if(typeof c.w==="number"){D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);D.basis="Wait is live \u00b7 down period timed from live status samples";}
       else{D.num="OPEN";D.sub="NO POSTED WAIT";D.numCol=pfTcol("short");D.basis="Down period timed from live status samples";}
-      if(c.go&&typeof c.w==="number"){D.k2="GO NOW";D.kc2=PW_CARD_ALT.green;D.d1=c.go.delta+" under";D.d2="typically "+c.go.typ+" min this half-hour"+pfMetaTail(c.go)+pfMetaR3(c.go);D.basis="Typical = this half-hour over "+(c.go.bw||("the last "+days+" days"))+" of live waits \u00b7 down period timed from live status samples";} /* 0728lh S-A: the merged card carries the second kicker and its ink, the deal's two fields, and a basis that labels both measures */
+      if(c.go&&typeof c.w==="number"){D.k2="GO NOW";D.kc2=PW_CARD_ALT.green;D.d1=c.go.delta+" under";D.d2="typically "+c.go.typ+" min this half-hour"+pfMetaTail(c.go)+pfMetaR3(c.go);D.basis="Typical = this half-hour over "+(c.go.bw||("the last "+days+" days"))+" of live waits \u00b7 down period timed from live status samples";
+        D.hero={typ:String(c.go.typ),lab:lab(c.go),strike:true,d:D.d1,ink:PW_CARD_ALT.green};} /* 0728lh S-A: the merged card carries the second kicker and its ink, the deal's two fields, and a basis that labels both measures */
     }else{
       var go=c.kind==="go";
       D.kicker=go?"GO NOW":"ROUGH RIGHT NOW";D.kc=go?PW_CARD_ALT.green:"#ff9f6b";
       D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);
       D.d1=c.delta+(go?" under":" over");D.d2="typically "+c.typ+" min this half-hour"+pfMetaTail(c)+pfMetaR3(c); /* 0727k m-B: the clause travels through the share door */ /* 0711j: one unit, worked hardest here \u2014 a shared card is first contact */
       D.basis="Typical = this half-hour over "+(c.bw||("the last "+days+" days"))+" of live waits";
+      D.hero={typ:String(c.typ),lab:lab(c),strike:go,d:D.d1,ink:D.kc}; /* X-A: a ROUGH card's typical stands unstruck \u2014 the strike says "beaten", and a rough wait has not beaten its typical */
     }
     return D;
   }
-  function pfDrawCard(ctx,D,H){ /* 0728iu THE CALLOUT CARD WEARS THE FAMILY'S HAND \u2014 the mock's bytes (audit/cu1-mock.js: head + drawA + foot, V "A", kicker K-2) as the spec of the dress; the hero stays: today's middle (the number in its band, MIN NOW, the receipt on the right; the reopen timeline) under the family head, the card ending where its words end. Returns where the card ends. */
+  function pfDrawCard(ctx,D,H){ /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY (owner-ruled Sat Nov 14, 2026 on sheets 63\u201366: the chunky layout 2:39 PM "those look great! I dont think i'd change a thing"; B the dark family for all three kinds 2:42 PM; X-A 2:45 PM; the three extra cases 2:47 PM): the family head as 0728iu drew it, on the dark field it was always painted on (the Daylight door is no longer asked); under it the Best Deal hero \u2014 the typical with its label beside it (struck on a GO NOW, plain on a ROUGH), the wait on its own row with "min now", the receipt as a sentence; a reopening leads with its tape of the park's day. The kicker keeps the kind's ink (K-2), the number is still the subject (A, Oct 27), the card ends where its words end. Returns where the card ends. */
     var W=D.W,C=PW_CARD_ALT;
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";} /* BIG AND CHUNKY: a 900 line from 30 px up is drawn tighter where the phone's canvas can; every draw and every measure asks here, so a width is the width that is drawn */
+    function T(s,x,y,f,c,a,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);if(k)LS("0px");}
+    function MW(s,f,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);var w=ctx.measureText(s).width;if(k)LS("0px");return w;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
-    function wrap2(s,mw,f,n){n=n||2;ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function wrap2(s,mw,f,n){n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function fit(s,mw,FN,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,FN(wt,sz[k]))<=mw)break;return sz[k];} /* THE NAME STEPS DOWN BEFORE IT LOSES A WORD */
+    function fitAll(a,mw,FN,wt,sz){var m=sz[0];a.forEach(function(s){var z=fit(s,mw,FN,wt,sz);if(z<m)m=z;});return m;} /* one size for every name on a card: the rows stay even */
+    function big(s,x,top,sz,c,side,sc){ /* the hero: a figure on its own row with its words stacked beside it; it steps down until both fit the card. side = [[text,font,ink,line height]...] read bottom-up from the figure's baseline. Returns the baseline */
+      var i,sw=0,nw,g=sc||18;for(i=0;i<side.length;i++)sw=Math.max(sw,MW(side[i][0],side[i][1]));
+      for(;;){nw=MW(s,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+      var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+      T(s,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+      var yy=base-Math.round(sz*0.015);for(i=0;i<side.length;i++){T(side[i][0],x0+nw+g,yy,side[i][1],side[i][2]);yy-=side[i][3];}
+      return base;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
     rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
@@ -5524,26 +5544,35 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
     rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
     T(D.date,R,184,IN("700",28),C.ink,"right");
-    LS("3px");if(D.k2){var k1=(D.kicker+" \u00b7 ").toUpperCase();T(k1,L,236,IN("800",28),D.kc);T((D.k2+" \u00b7 "+D.pk).toUpperCase(),L+MW(k1,IN("800",28)),236,IN("800",28),D.kc2);}else T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),D.kc);LS("0px"); /* 0728lh S-A: two kickers, two inks, one line */ /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
-    y=317;var nl=wrap2(D.nm,CW,SG("700",66));for(i=0;i<nl.length;i++)T(nl[i],L,y+i*72,SG("700",66),C.ink);y+=(nl.length-1)*72;
-    y+=24;hair(y);
-    var ns=(D.num==="OPEN")?120:168,top=y+40,base=top+Math.round(ns*0.78); /* the hero: 168 under the family head (was 210 on the square), its baseline seated at four-fifths of its size */
-    T(D.num,L,base,SG("700",ns),D.numCol);
-    LS("5px");T(D.sub,L+4,base+44,IN("800",26),C.muted2);LS("0px");
-    var nw=MW(D.num,SG("700",ns))+40,rw=R-(L+nw);
+    LS("3px");if(D.k2){var k1=(D.kicker+" \u00b7 "+D.pk+" \u00b7 ").toUpperCase();T(k1,L,236,IN("800",28),D.kc);T(D.k2.toUpperCase(),L+MW(k1,IN("800",28)),236,IN("800",28),D.kc2);}else T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),D.kc);LS("0px"); /* 0728lh S-A: two kickers, two inks, one line; 0728nh: the second kind closes the line, after the park (sheet 66) */ /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
+    var ns=fit(D.nm,CW,SG,"900",[72,66,60]),nl=wrap2(D.nm,CW,SG("900",ns));y=250+ns;for(i=0;i<nl.length;i++)T(nl[i],L,y+i*(ns+2),SG("900",ns),C.ink);y+=(nl.length-1)*(ns+2); /* the name steps down, then takes a second line; the card grows */
+    function typ(ts,gap){ /* the typical in the quiet ink with its label beside it, a clause a line; struck in the card's red only where the wait has beaten it */
+      var h=D.hero,tb=y+gap+Math.round(ts*0.74),tw=MW(h.typ,SG("900",ts),(-ts*0.05).toFixed(1)+"px"),lx=L+tw+34,lf=IN("700",34),ll=[],k;
+      h.lab.forEach(function(s){ll=ll.concat(wrap2(s,R-lx,lf,2));});
+      T(h.typ,L,tb,SG("900",ts),"rgba(154,166,196,0.55)","left",(-ts*0.05).toFixed(1)+"px");
+      if(h.strike){var mx=L+tw/2,my=tb-Math.round(ts*0.35),hx=(tw/2+10)*0.990,hy=(tw/2+10)*0.139;ctx.strokeStyle="#ff6b6b";ctx.lineWidth=13;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(mx-hx,my+hy);ctx.lineTo(mx+hx,my-hy);ctx.stroke();ctx.lineCap="butt";}
+      var l0=tb-Math.round(ts*0.35)-Math.round(ll.length*42/2)+34;for(k=0;k<ll.length;k++)T(ll[k],lx,l0+k*42,lf,C.muted);
+      y=Math.max(tb,l0+(ll.length-1)*42);}
+    function rc(){var h=D.hero,rs=fit(h.d+" its own typical",CW,SG,"900",[48,44,40]),dw=MW(h.d,SG("900",rs))+Math.round(rs*0.27);y+=44+rs;T(h.d,L,y,SG("900",rs),h.ink);T("its own typical",L+dw,y,SG("700",rs),C.ink);} /* the receipt as a sentence: COLOR NEVER CARRIES ALONE */
+    var mn=[["now",SG("900",76),0,72],["min",SG("900",76),0,72]];
+    function side(c,a){return a.map(function(s){return [s[0],s[1],c,s[3]];});}
     if(D.tl){
-      LS("4px");T(D.tl.cap,R,top+22,IN("800",24),C.accent,"right");LS("0px");
-      T(D.tl.dn,R-176,top+76,SG("700",40),C.ink,"right");LS("2px");T("WENT DOWN",R,top+76,IN("800",22),C.muted2,"right");LS("0px");
-      T("\u2193",R-64,top+116,IN("700",30),C.muted2,"right");
-      T(D.tl.up,R-176,top+166,SG("700",40),C.ink,"right");LS("2px");T("BACK UP",R,top+166,IN("800",22),C.muted2,"right");LS("0px");
+      y+=44+26;T(D.tl.cap,L,y,IN("800",26),C.muted,"left","3px");
+      if(D.tl.g0!=null){y+=16;rr(L,y,CW,86,22);ctx.fillStyle="rgba(255,255,255,0.10)";ctx.fill();
+        var sx=L+CW*D.tl.g0,sw=Math.max(14,CW*(D.tl.g1-D.tl.g0));if(sx+sw>R)sx=R-sw;
+        ctx.save();rr(L,y,CW,86,22);ctx.clip();ctx.beginPath();ctx.rect(sx,y,sw,86);ctx.clip();ctx.strokeStyle="#ff6b6b";ctx.lineWidth=14;for(i=sx-100;i<sx+sw+20;i+=40){ctx.beginPath();ctx.moveTo(i,y+96);ctx.lineTo(i+106,y-10);ctx.stroke();}ctx.restore(); /* the down stretch, hatched in the card's red on the tape of the park's day */
+        y+=86;}
+      y+=16+38;var ef=SG("900",38),et=SG("700",38);
+      T("Down",L,y,ef,C.ink);T(D.tl.dn,L+MW("Down",ef)+11,y,et,C.muted);
+      T(D.tl.up,R,y,et,C.muted,"right");T("Back",R-MW(D.tl.up,et)-11,y,ef,C.ink,"right");
+      if(D.hero){typ(130,36);y=big(D.num,L,y+16,330,D.hero.ink,side(D.hero.ink,mn),22);rc();}
+      else if(D.num==="OPEN"){y=big(D.num,L,y+34,215,D.numCol,side(D.numCol,[["wait",SG("900",64),0,60],["posted",SG("900",64),0,60],["no",SG("900",64),0,60]]),22);}
+      else{y=big(D.num,L,y+34,330,D.numCol,side(D.numCol,mn),22);}
     }else{
-      T(D.d1,R,base-54,IN("800",42),C.ink,"right");
-      var dl=wrap2(D.d2,rw,IN("500",28),2);for(i=0;i<dl.length;i++)T(dl[i],R,base-10+i*34,IN("500",28),C.muted,"right"); /* the receipt keeps its words: two lines beside the hero (a party clause rides here) */
+      typ(170,44);y=big(D.num,L,y+26,470,D.hero.ink,side(D.hero.ink,mn),22);rc();
     }
-    y=base+52;
-    if(D.tl&&D.d1){y+=30;hair(y);T(D.d1,L,y+64,IN("800",42),C.ink);T(D.d2,R,y+62,IN("500",28),C.muted,"right");y+=52;} /* 0728lh S-A: the timeline keeps its seat beside the number; the deal sits on its own row beneath a hairline */
-    y+=48;hair(y); /* ONE FOOTER HAND */
-    var b1=wrap2(D.basis,CW-270,IN("500",26),3),bl=0;for(bl=0;bl<b1.length;bl++)T(b1[bl],L,y+59+bl*34,IN("500",26),C.muted2); /* the basis keeps its words \u2014 up to three lines beside the site */
+    y+=44;hair(y); /* ONE FOOTER HAND */
+    var bmw=CW-MW("Data: ThemeParks.wiki",IN("500",25))-28,bz=fit(D.basis,bmw,IN,"500",[26,24,23,22,21]),b1;if(MW(D.basis,IN("500",bz))>bmw)bz=24;b1=wrap2(D.basis,bmw,IN("500",bz),3);var bl=0;for(bl=0;bl<b1.length;bl++)T(b1[bl],L,y+59+bl*34,IN("500",bz),C.muted2); /* the basis keeps its words \u2014 it steps down to stay on one line beside the credit; a basis too long for that takes up to three lines at 24 */
     T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
     T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
     ctx.restore();
@@ -5554,7 +5583,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var dr=draw||pfDrawCard;cv.width=D.W;cv.height=2000;
-      var h1=dr(rcDay(cv.getContext("2d")),D,2000);cv.height=h1;dr(rcDay(cv.getContext("2d")),D,h1); /* 0728is THE LIVE CARD WEARS DAYLIGHT: the single callout card is a live card too */
+      var h1=dr(cv.getContext("2d"),D,2000);cv.height=h1;dr(cv.getContext("2d"),D,h1); /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: this door no longer asks for Daylight (D-A, Oct 27, overturned for the Live page's share cards by the owner, Sat Nov 14, 2026: "this was before the big and chunky era ... if its big enough, i think were ok with the dark") */ /* 0728is THE LIVE CARD WEARS DAYLIGHT: the single callout card is a live card too */
       pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet \u2014 one lifecycle */
     });
   }
@@ -5580,13 +5609,13 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var hasRe=false;
     var rows=shown.map(function(c){
       var re=c.kind==="re";if(re)hasRe=true;
-      var dl;
+      var dl,db="";
       if(re){
         var upT=fmtClock(new Date(c.at).toISOString())||"",dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
-        dl="back up at "+upT+" \u00b7 down "+dur+" min";
-      }else dl="typically "+c.typ+" min \u00b7 "+c.delta+(c.kind==="go"?" under":" over"); /* 0711j: the label lives at card level (basis line); rows reference the defined term \u2014 not a cut, a move */
+        dl="back at "+upT+" \u00b7 down "+dur+" min";
+      }else{dl="typically "+c.typ+" \u00b7 ";db=c.delta+(c.kind==="go"?" under":" over");} /* 0711j: the label lives at card level (basis line); rows reference the defined term \u2014 not a cut, a move. 0728nh M-A: the receipt in two parts \u2014 the typical in the quiet ink, the departure in the strong one; the unit rides the big number */
       return {num:(typeof c.w==="number"?String(c.w):"\u2014"),numCol:(typeof c.w==="number"?pfTcol(c.tier):PW_CARD_ALT.muted2),
-        nm:c.nm,dl:dl,k:(c.kind==="go"?"GO NOW":c.kind==="rough"?"ROUGH":"REOPENED"),
+        nm:rcShortNm(c.id,c.nm),dl:dl,db:db,k:(c.kind==="go"?"GO NOW":c.kind==="rough"?"ROUGH":"REOPENED"),
         kc:(c.kind==="go"?PW_CARD_ALT.green:c.kind==="rough"?"#ff9f6b":PW_CARD_ALT.accent),
         park:(roster[c.id]||{}).park||""}; /* 0728ir: the ride's park rides the row (printed at the ALL scope only) */
     });
@@ -5601,17 +5630,27 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       fname:"ridecue-callouts-"+pk.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",
       shareTitle:"RideCue \u2014 "+pk+" callouts"};
   }
-  function pfDrawParkCard(ctx,D,H){ /* the family hand \u2014 the mock's bytes (audit/callouts-mock.js, cuMockDraw V "A") as the spec of the dress; returns where the card ends */
+  function pfDrawParkCard(ctx,D,H){ /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY \u2014 M-A, chunky rows (owner-ruled Sat Nov 14, 2026, 3:06 PM on sheet 67: "im good with MA"; M-B, a hero and four rows, not chosen \u2014 it needs a rule for which callout is the best): the family head on the dark field; each row says its kind in the kind's ink with the park beside it, the ride at 900, the receipt, and the wait large at the right in its band. C-A (Oct 26) stands: the page's own order, five rows at most with the feed's tail, no regrouping by park, the park printed at the ALL scope only. Returns where the card ends. */
     var W=D.W,C=PW_CARD_ALT;
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";} /* BIG AND CHUNKY: a 900 line from 30 px up is drawn tighter where the phone's canvas can; every draw and every measure asks here, so a width is the width that is drawn */
+    function T(s,x,y,f,c,a,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);if(k)LS("0px");}
+    function MW(s,f,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);var w=ctx.measureText(s).width;if(k)LS("0px");return w;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
-    function wrap2(s,mw,f,n){n=n||2;ctx.font=f;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function wrap2(s,mw,f,n){n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function fit(s,mw,FN,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,FN(wt,sz[k]))<=mw)break;return sz[k];} /* THE NAME STEPS DOWN BEFORE IT LOSES A WORD */
+    function fitAll(a,mw,FN,wt,sz){var m=sz[0];a.forEach(function(s){var z=fit(s,mw,FN,wt,sz);if(z<m)m=z;});return m;} /* one size for every name on a card: the rows stay even */
+    function big(s,x,top,sz,c,side,sc){ /* the hero: a figure on its own row with its words stacked beside it; it steps down until both fit the card. side = [[text,font,ink,line height]...] read bottom-up from the figure's baseline. Returns the baseline */
+      var i,sw=0,nw,g=sc||18;for(i=0;i<side.length;i++)sw=Math.max(sw,MW(side[i][0],side[i][1]));
+      for(;;){nw=MW(s,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+      var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+      T(s,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+      var yy=base-Math.round(sz*0.015);for(i=0;i<side.length;i++){T(side[i][0],x0+nw+g,yy,side[i][1],side[i][2]);yy-=side[i][3];}
+      return base;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
     rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
@@ -5622,23 +5661,23 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
     T(D.date,R,184,IN("700",28),C.ink,"right");
     LS("3px");T(("CALLOUTS \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),C.accent);LS("0px");
-    y=317;T("Running unusual",L,y,SG("700",66),C.ink);
-    T(D.count,L,y+48,IN("500",30),C.muted);y+=48;
-    y+=24;hair(y);
-    function row(r,withPark){ /* the N2 row: the number in its band ink, MIN under it, the name, the kicker and its receipt; the park on the right at the ALL scope */
-      y+=22;var nx=L+150,pw=0;
-      if(withPark&&r.park){pw=MW(r.park,IN("500",24))+24;T(r.park,R,y+36,IN("500",24),C.muted,"right");}
-      var ln=wrap2(r.nm,CW-150-pw,IN("700",34));
-      T(r.num,L,y+44,SG("800",54),r.numCol);LS("2px");T("MIN",L+2,y+72,IN("800",20),C.muted2);LS("0px");
-      for(var j=0;j<ln.length;j++)T(ln[j],nx,y+36+j*40,IN("700",34),C.ink);
-      var dy=y+36+(ln.length-1)*40+36;LS("2px");var kf=IN("800",22),kw=MW(r.k,kf);T(r.k,nx,dy,kf,r.kc);LS("0px");
-      T(ell(r.dl,R-(nx+kw+16),IN("500",26)),nx+kw+16,dy,IN("500",26),C.muted);
-      y=dy+26;}
-    for(i=0;i<D.rows.length;i++){if(i)hair(y);row(D.rows[i],D.scope==="all");}
-    if(D.tailN>0){y+=10;hair(y);T("+ "+D.tailN+" more running unusual right now",L,y+44,IN("600",26),C.muted);y+=44;}
-    y+=48;hair(y); /* ONE FOOTER HAND */
-    var b1=wrap2(D.basis,CW-270,IN("500",26),3),bl=0;for(bl=0;bl<b1.length;bl++)T(b1[bl],L,y+59+bl*34,IN("500",26),C.muted2); /* the basis keeps its words \u2014 up to three lines beside the site; a fourth would ellipsize */
-    if(D.basis2){T(ell(D.basis2,CW-270,IN("500",26)),L,y+59+bl*34,IN("500",26),C.muted2);bl++;}
+    y=322;T("Running unusual",L,y,SG("900",76),C.ink);
+    T(D.count,L,y+50,IN("600",32),C.muted);y+=50+30;
+    var nf=SG("900",128),uf=SG("900",34),nmx=0;D.rows.forEach(function(r){nmx=Math.max(nmx,MW(r.num,nf,"-6.4px")+(r.num==="\u2014"?0:6+MW("min",uf)));});
+    var nsz=fitAll(D.rows.map(function(r){return r.nm;}),CW-nmx-24,SG,"900",[50,46,42,38]),df=IN("600",30),dbf=IN("800",30);
+    function row(r,withPark){ /* M-A: the kind and its park, the name, the receipt; the wait at the right in its band, its unit beside it */
+      hair(y);var kf=IN("800",23),kw=MW(r.k,kf,"2.8px");T(r.k,L,y+45,kf,r.kc,"left","2.8px");
+      if(withPark&&r.park)T(r.park,L+kw+12,y+45,IN("700",24),C.muted2);
+      T(ell(r.nm,CW-nmx-24,SG("900",nsz)),L,y+99,SG("900",nsz),C.ink);
+      var dw=MW(r.dl,df);T(ell(r.dl,CW-nmx-24,df),L,y+139,df,C.muted);if(r.db)T(r.db,L+dw,y+139,dbf,C.ink);
+      if(r.num==="\u2014")T(r.num,R,y+112,SG("900",72),r.numCol,"right");
+      else{T("min",R,y+131,uf,r.numCol,"right");T(r.num,R-MW("min",uf)-6,y+131,nf,r.numCol,"right","-6.4px");}
+      y+=172;}
+    for(i=0;i<D.rows.length;i++)row(D.rows[i],D.scope==="all");
+    if(D.tailN>0){hair(y);T("+ "+D.tailN+" more running unusual right now",L,y+50,IN("600",28),C.muted);y+=76;}
+    hair(y); /* ONE FOOTER HAND */
+    var bmw=CW-MW("Data: ThemeParks.wiki",IN("500",25))-28,bz=fit(D.basis,bmw,IN,"500",[26,24,23,22,21]),b1;if(MW(D.basis,IN("500",bz))>bmw)bz=24;b1=wrap2(D.basis,bmw,IN("500",bz),3);var bl=0;for(bl=0;bl<b1.length;bl++)T(b1[bl],L,y+59+bl*34,IN("500",bz),C.muted2); /* the basis keeps its words \u2014 it steps down to stay on one line beside the credit; a basis too long for that takes up to three lines at 24 */
+    if(D.basis2){T(ell(D.basis2,bmw,IN("500",bz)),L,y+59+bl*34,IN("500",bz),C.muted2);bl++;}
     T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
     T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
     ctx.restore();
@@ -5651,7 +5690,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     fr.then(function(){
       var D=pfParkModel(s);
       var cv=document.createElement("canvas");cv.width=D.W;cv.height=2400;
-      var h1=pfDrawParkCard(rcDay(cv.getContext("2d")),D,2400);cv.height=h1;pfDrawParkCard(rcDay(cv.getContext("2d")),D,h1); /* 0728is THE LIVE CARD WEARS DAYLIGHT */ /* two-pass self-size, the family's way */
+      var h1=pfDrawParkCard(cv.getContext("2d"),D,2400);cv.height=h1;pfDrawParkCard(cv.getContext("2d"),D,h1); /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: this door no longer asks for Daylight (D-A, Oct 27, overturned for the Live page's share cards by the owner, Sat Nov 14, 2026: "this was before the big and chunky era ... if its big enough, i think were ok with the dark") */ /* 0728is THE LIVE CARD WEARS DAYLIGHT */ /* two-pass self-size, the family's way */
       pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet \u2014 one lifecycle */
     });
   }
@@ -9526,12 +9565,12 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   }
   function pcMonthCardH(D){ /* THE CARD FITS ITS FIELD (0728c (b)): the month card is as tall as its note, rows, tiles, bands, named lines and marks need, 1350 at least; mirrors pcDrawMonthCard's y arithmetic, and measures nothing */
     var rows=Math.ceil((D.fd+D.cells.length)/7),bands=Math.min(D.band.length,3),nl=D.note?Math.min(2,Math.ceil(String(D.note).length/62)):0,P=pcMonthParts(D);
-    var y=336+nl*34+rows*126+22+(P.pat?104+30:8)+bands*42+P.lines*42;
+    var y=336+nl*34+(nl?12:0)+rows*126+22+(P.pat?104+30:8)+bands*42+P.lines*42;
     return Math.max(1350,y+(P.marks.length?92:38)+122);}
   function pcDrawMonthCard(ctx,D){ /* 1080 wide, as tall as its field. C-B+: dark tiles, the date in the big letters, the tier a bar whose length and color both say it; Z-A: four count tiles are the legend and the month's sum */
     var P=pcMonthParts(D),Q=(pcJewel()===PC_JEWEL_Q),H=D.H||pcMonthCardH(D),h=pcFrame(ctx,D,H,"Party nights only where the night list is verified",P.pat?(Q?"The bars are a pattern, never a forecast":"The colors are a pattern, never a forecast"):""),C=h.C,L=h.L,R=h.R,CW=h.CW,BW=h.BW,T=h.T,MW=h.MW,SG=h.SG,IN=h.IN,rr=h.rr,TI=pcJewel(),ACC="#b9c0ff",i,y;
     T(h.ell(P.pat?"The crowd’s pattern, party nights and holidays.":"Party nights and holidays.",CW,IN("500",32)),L,262,IN("500",32),C.muted);
-    y=296;if(D.note){var nl=h.wrap(D.note,CW,IN("500",25));for(i=0;i<nl.length&&i<2;i++){T(nl[i],L,y+20,IN("500",25),C.muted);y+=34;}}
+    y=296;if(D.note){var nl=h.wrap(D.note,CW,IN("500",25));for(i=0;i<nl.length&&i<2;i++){T(nl[i],L,y+20,IN("500",25),C.muted);y+=34;}y+=12;} /* 0728nh A LITTLE AIR UNDER THE NOTE (owner glass of 0728ng, January: the hours note sat close to the weekday letters; ruled 2:10 PM "good with those leans") */
     var gy=y+40,cwc=CW/7,chc=126,rows=Math.ceil((D.fd+D.cells.length)/7);
     "SMTWTFS".split("").forEach(function(wd,j){T(wd,L+cwc*j+cwc/2,gy-16,IN("700",22),C.muted2,"center");});
     D.cells.forEach(function(c){var col=(D.fd+c.d-1)%7,row=Math.floor((D.fd+c.d-1)/7),x=L+cwc*col+4,yy=gy+row*chc+4,w=cwc-8,hh=chc-8,mx=x+w/2;
@@ -10289,8 +10328,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     Promise.all([fr,dnRecFetch()]).then(function(got){
       var D=pkCardModel(key,got[1]);
-      var cv=document.createElement("canvas");cv.width=D.W;cv.height=2400;
-      var h1=pkDrawCard(rcDay(cv.getContext("2d")),D,2400);cv.height=h1;pkDrawCard(rcDay(cv.getContext("2d")),D,h1); /* 0728is THE LIVE CARD WEARS DAYLIGHT */ /* two-pass self-size, the family's way */
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=3200;
+      var h1=pkDrawCard(cv.getContext("2d"),D,3200);cv.height=h1;pkDrawCard(cv.getContext("2d"),D,h1); /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: this door no longer asks for Daylight (D-A, Oct 27, overturned for the Live page's share cards by the owner, Sat Nov 14, 2026: "this was before the big and chunky era ... if its big enough, i think were ok with the dark") */ /* 0728is THE LIVE CARD WEARS DAYLIGHT */ /* two-pass self-size, the family's way */
       pvOpen({alts:[{cv:cv}],fname:"ridecue-"+key.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",shareTitle:"RideCue — "+key}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
@@ -10302,10 +10341,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       var r=roster[id],lv=liveById[id];if(!r||!lv||r.kind!=="ride"||r.park!==key)return;
       var closed=isOpenNow(parkInfo[r.park])===false;
       if(lv.status==="OPERATING")open++;
-      if(lv.status==="DOWN")down.push({id:id,nm:r.name,c:dnSinceWord(id,since)});
-      else if(!closed&&lv.status==="OPERATING"&&lv.wait!=null)longs.push({nm:r.name,w:lv.wait});
+      if(lv.status==="DOWN")down.push({id:id,nm:rcShortNm(id,r.name),c:dnSinceWord(id,since)});
+      else if(!closed&&lv.status==="OPERATING"&&lv.wait!=null)longs.push({nm:rcShortNm(id,r.name),w:lv.wait});
     });
-    down.sort(function(a,b){return a.nm.localeCompare(b.nm);});longs.sort(function(a,b){return b.w-a.w;});
+    down.sort(function(a,b){return roster[a.id].name.localeCompare(roster[b.id].name);});longs.sort(function(a,b){return b.w-a.w;});
     var chips=[],ee=null;(info.extras||[]).forEach(function(x){if(x&&/early entry/i.test(x.desc||"")&&x.open){ee={kind:"ee",tx:"Early Entry · "+(fmtClock(x.open)||"")+(x.close?" – "+(fmtClock(x.close)||""):"")};}});
     if(ee)chips.push(ee);if(cell)cell.chips.forEach(function(c){chips.push(c);});
     var now=new Date();
@@ -10315,16 +10354,27 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       time:now.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"}),
       date:now.toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"})};
   }
-  function pkDrawCard(ctx,D,H){ /* the family hand — the mock's bytes (audit/park-mock.js, pkMockDraw V "B") as the spec of the dress; returns where the card ends */
+  function pkDrawCard(ctx,D,H){ /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY — P-A, the headliner average is the hero (owner-ruled Sat Nov 14, 2026, 3:16 PM on sheet 68: "wow, those look great too!! Love your leans"; P-B, the three stats equal and the longest lines carrying the biggest numbers, not chosen): the family head on the dark field; the park's headliner average as the giant number in its band; crowd est. · rides open · down now in a small row under it; Down now and Longest lines as chunky rows; Hours & events. Returns where the card ends. */
     var W=D.W,C=PW_CARD_ALT;
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";} /* BIG AND CHUNKY: a 900 line from 30 px up is drawn tighter where the phone's canvas can; every draw and every measure asks here, so a width is the width that is drawn */
+    function T(s,x,y,f,c,a,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);if(k)LS("0px");}
+    function MW(s,f,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);var w=ctx.measureText(s).width;if(k)LS("0px");return w;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function wrap2(s,mw,f,n){n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function fit(s,mw,FN,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,FN(wt,sz[k]))<=mw)break;return sz[k];} /* THE NAME STEPS DOWN BEFORE IT LOSES A WORD */
+    function fitAll(a,mw,FN,wt,sz){var m=sz[0];a.forEach(function(s){var z=fit(s,mw,FN,wt,sz);if(z<m)m=z;});return m;} /* one size for every name on a card: the rows stay even */
+    function big(s,x,top,sz,c,side,sc){ /* the hero: a figure on its own row with its words stacked beside it; it steps down until both fit the card. side = [[text,font,ink,line height]...] read bottom-up from the figure's baseline. Returns the baseline */
+      var i,sw=0,nw,g=sc||18;for(i=0;i<side.length;i++)sw=Math.max(sw,MW(side[i][0],side[i][1]));
+      for(;;){nw=MW(s,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+      var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+      T(s,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+      var yy=base-Math.round(sz*0.015);for(i=0;i<side.length;i++){T(side[i][0],x0+nw+g,yy,side[i][1],side[i][2]);yy-=side[i][3];}
+      return base;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
     rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
@@ -10335,31 +10385,32 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     rcPill(ctx,R,"LIVE · "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
     T(D.date,R,184,IN("700",28),C.ink,"right");
     LS("3px");T("LIVE BOARD · WALT DISNEY WORLD",L,236,IN("800",28),C.accent);LS("0px");
-    y=317;T(D.park,L,y,SG("700",66),C.ink);
-    if(D.hours){T(D.hours,L,y+48,IN("500",30),C.muted);y+=48;}
-    y+=24;hair(y);y+=22;var top=y;
-    var stats=[{k:"Crowd",v:D.crowd?D.crowd.label:"—",c:D.crowd?D.crowd.color:C.ink,u:D.crowd?"est.":""},{k:"Headliner avg",v:D.avg!=null?String(D.avg):"—",u:D.avg!=null?"min":""},{k:"Rides open",v:String(D.open),u:""}],n=stats.length;
-    for(i=0;i<n;i++){var st=stats[i],al=i===0?"left":(i===n-1?"right":"center"),sx=i===0?L:(i===n-1?R:L+CW/2);LS("2px");T(st.k.toUpperCase(),sx,top+22,IN("600",21),C.muted2,al);LS("0px");
-      var vf=SG("800",52),vw=MW(st.v,vf),uw=st.u?MW(st.u,IN("500",24))+10:0,x0=al==="left"?sx:al==="right"?sx-vw-uw:sx-(vw+uw)/2;
-      T(st.v,x0,top+22+27+52,vf,st.c||C.ink,"left");if(st.u)T(st.u,x0+vw+10,top+22+27+52,IN("500",24),C.muted2,"left");} /* one baseline for the three values; the Crowd estimate wears its tier ink and says est. */
-    y=top+22+27+52+10;
-    function section(label,right){y+=40;hair(y);y+=14;LS("1.6px");T(label,L,y+30,IN("700",24),C.green);LS("0px");if(right)T(right,R,y+30,IN("600",22),C.muted2,"right");y+=40;}
+    var tz=fit(D.park,CW,SG,"900",[84,76,68]);y=244+tz;T(ell(D.park,CW,SG("900",tz)),L,y,SG("900",tz),C.ink);
+    if(D.hours){T(D.hours,L,y+50,IN("600",32),C.muted);y+=50;}
+    var hc=D.avg!=null?pfTcol(tierOfWait(D.avg)):C.muted2,lf=SG("700",30);
+    if(D.avg!=null)y=big(String(D.avg),L,y+30,300,hc,[["average now",lf,C.muted,34],["headliner",lf,C.muted,44],["min",SG("900",50),hc,0]],16);else{y+=74;T("No headliner average right now",L,y,SG("700",34),C.muted);} /* the hero: the headliner average in its band (the park tile's own measure and ink) */
+    y+=22;var px=L,pv=SG("900",54),pl=IN("600",30); /* the small row: one baseline for the three values; the Crowd estimate wears its tier ink and says est. */
+    function pair(v,vc,u,lab){var vw=MW(v,pv),uw=u?10+MW(u,IN("600",24)):0;T(v,px,y+50,pv,vc);if(u)T(u,px+vw+10,y+50,IN("600",24),C.muted2);T(lab,px,y+88,pl,C.muted);px+=Math.max(vw+uw,MW(lab,pl))+56;}
+    if(D.crowd)pair(D.crowd.label,D.crowd.color,"est.","crowd");
+    pair(String(D.open),C.ink,"","rides open");pair(String(D.down.length),C.ink,"","down now");
+    y+=88;
+    function section(label,right,rc){y+=34;hair(y);y+=50;T(label,L,y,IN("800",26),C.muted2,"left","3.1px");if(right)T(right,R,y,IN("700",26),rc||C.muted2,"right");y+=10;}
     section("DOWN NOW",D.down.length?(D.down.length+" down"):"none");
-    if(!D.down.length){y+=18;T("Every ride running",L,y+32,IN("500",28),C.muted);y+=52;}
-    for(i=0;i<D.down.length;i++){var r=D.down[i];if(i)hair(y);y+=18;ctx.beginPath();ctx.arc(L+9,y+22,8,0,7);ctx.fillStyle="#ff6b6b";ctx.fill();
-      var cs=D.witnessed?r.c:"",cwid=cs?MW(cs,IN("500",26))+24:0;T(ell(r.nm,CW-34-cwid,IN("700",31)),L+34,y+32,IN("700",31),C.ink);if(cs)T(cs,R,y+32,IN("500",26),C.muted,"right");y+=52;}
-    y+=8;
+    if(!D.down.length){T("Every ride running",L,y+44,IN("600",32),C.muted);y+=62;}
+    var dsz=fitAll(D.down.map(function(r){return r.nm;}),CW-38-(D.witnessed?250:0),SG,"900",[48,44,40,36]);
+    for(i=0;i<D.down.length;i++){var r=D.down[i];if(i)hair(y);
+      ctx.beginPath();ctx.arc(L+10,y+41,10,0,7);ctx.fillStyle="#ff6b6b";ctx.fill();
+      var cs=D.witnessed?r.c:"",cwid=cs?MW(cs,IN("700",30))+24:0;var dl=wrap2(r.nm,CW-38-cwid,SG("900",dsz)),dk;for(dk=0;dk<dl.length;dk++)T(dl[dk],L+38,y+57+dk*(dsz+4),SG("900",dsz),C.ink);if(cs)T(cs,R,y+53,IN("700",30),C.muted,"right");y+=84+(dl.length-1)*(dsz+4);} /* a long name takes a second line before it loses a word */
     section("LONGEST LINES",D.longs.length?"right now":"");
-    for(i=0;i<D.longs.length;i++){var q=D.longs[i];if(i)hair(y);y+=18;var tin=pfTcol(tierOfWait(q.w));
-      ctx.beginPath();ctx.arc(L+9,y+22,8,0,7);ctx.fillStyle=tin;ctx.fill();
-      var ws=String(q.w),wf=SG("700",34),ww=MW(ws,wf)+MW(" m",IN("500",22));T(ell(q.nm,CW-34-ww-24,IN("700",31)),L+34,y+32,IN("700",31),C.ink);T("m",R,y+32,IN("500",22),C.muted,"right");T(ws,R-MW("m",IN("500",22))-6,y+32,wf,tin,"right");y+=52;}
-    y+=8;
+    var nf=SG("900",112),uf=SG("900",32),nmx=0;D.longs.forEach(function(q){nmx=Math.max(nmx,MW(String(q.w),nf,"-5.6px")+6+MW("min",uf));});
+    var lsz=fitAll(D.longs.map(function(q){return q.nm;}),CW-nmx-24,SG,"900",[48,44,40,36]);
+    for(i=0;i<D.longs.length;i++){var q=D.longs[i],tin=pfTcol(tierOfWait(q.w));if(i)hair(y);
+      T(ell(q.nm,CW-nmx-24,SG("900",lsz)),L,y+86,SG("900",lsz),C.ink);T("min",R,y+108,uf,tin,"right");T(String(q.w),R-MW("min",uf)-6,y+108,nf,tin,"right","-5.6px");y+=132;}
     if(D.chips.length){section("HOURS & EVENTS","");
-      for(i=0;i<D.chips.length;i++){var c3=D.chips[i];if(i)hair(y);y+=18;var emo2=c3.kind==="party"?"🎃 ":c3.kind==="holiday"?"🎄 ":"";T(emo2+c3.tx,L,y+32,IN("600",28),C.ink);y+=52;}
-      y+=8;}
-    y+=48;hair(y); /* ONE FOOTER HAND */
-    if(D.witnessed){T("Crowd is an estimate from live wait times · since = the",L,y+59,IN("500",26),C.muted2);T("first five-minute reading it was down",L,y+93,IN("500",26),C.muted2);}
-    else T("Crowd is an estimate from live wait times",L,y+59,IN("500",26),C.muted2);
+      for(i=0;i<D.chips.length;i++){var c3=D.chips[i],emo2=c3.kind==="party"?"🎃 ":c3.kind==="holiday"?"🎄 ":"";T(emo2+c3.tx,L,y+48,IN("700",34),C.ink);y+=62;}}
+    y+=30;hair(y); /* ONE FOOTER HAND: a clause a line (THE CLAUSE IS THE BREAK) */
+    T("Crowd is an estimate from live wait times",L,y+59,IN("500",24),C.muted2);
+    if(D.witnessed)T("since = the first five-minute reading it was down",L,y+93,IN("500",24),C.muted2);
     T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
     T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
     ctx.restore();
@@ -10389,6 +10440,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var s=bannerStats("all");
     var pc=(typeof bkParksClause==="function")?bkParksClause():null;
     var D={W:1080,stamp:fmtClock(new Date(now).toISOString())||"",
+      time:new Date(now).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",timeZone:"America/New_York"}),date:new Date(now).toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"}), /* 0728nh: the family head's pill and date */
       fname:"ridecue-resort-board.png",shareTitle:"RideCue \u2014 Resort Board",
       headAvg:(s&&s.headAvg!=null)?s.headAvg:null,
       parksClause:pc?pc.txt:null,
@@ -10479,13 +10531,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(dn.total&&!allClosed){
         if(!dn.down.length)D.down={total:0,shown:[],more:0};
         else{
-          var groups={};dn.down.forEach(function(r){(groups[r.park]=groups[r.park]||[]).push(r.name);});
-          var order=Object.keys(groups).map(function(k){return {k:k,rides:groups[k].slice().sort()};})
+          var groups={};dn.down.forEach(function(r){(groups[r.park]=groups[r.park]||[]).push({n:r.name,s:rcShortNm(r.id,r.name)});});
+          var order=Object.keys(groups).map(function(k){return {k:k,rides:groups[k].slice().sort(function(a,b){return a.n<b.n?-1:a.n>b.n?1:0;})};})
             .sort(function(a,b){return b.rides.length-a.rides.length||a.k.localeCompare(b.k);});
           var shown=[],i=0,added=true;
           while(shown.length<6&&added){
             added=false;
-            order.forEach(function(g){if(i<g.rides.length&&shown.length<6){shown.push({nm:g.rides[i],pk:BANNER_MONO[g.k]||g.k});added=true;}});
+            order.forEach(function(g){if(i<g.rides.length&&shown.length<6){shown.push({nm:g.rides[i].s,pk:BANNER_MONO[g.k]||g.k,park:g.k});added=true;}});
             i++;
           }
           D.down={total:dn.down.length,shown:shown,more:Math.max(0,dn.down.length-shown.length)};
@@ -10498,7 +10550,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         var res=uxRows(now,"all",false);
         if(res.next.length){
           var within=res.next.filter(function(x){return x.t<=now+7200000;});
-          var rows3=res.next.slice(0,3).map(function(x){return {t:uxClk(x.t),nm:x.nm,pk:x.pk};});
+          var rows3=res.next.slice(0,3).map(function(x){return {t:uxClk(x.t),nm:x.nm,pk:x.pk,park:x.park};});
           var extra=Math.max(0,within.length-rows3.length);
           D.shows={rows:rows3,more:extra>0?{n:extra,by:uxClk(within[within.length-1].t)}:null};
         }
@@ -10506,16 +10558,28 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     }catch(e){}
     return D;
   }
-  function rbDrawCard(ctx,D,H){
+  function rbDrawCard(ctx,D,H){ /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY \u2014 R-A, the resort's average is the hero (owner-ruled Sat Nov 14, 2026, 3:16 PM on sheet 69; R-B, the parks in two-by-two tiles, not chosen): the family head with the LIVE pill and the date; the resort's headliner average as the giant number in its band, the verdict sentence under it; the four parks as chunky rows, hours and the published windows on one line under each name, CALMEST RIGHT NOW in words; then Down right now and Up next. Every organ is still clause-earned (RB-Spec): an absent truth drops its organ and the card self-sizes. Returns where the card ends. */
     var W=D.W,C=PW_CARD_ALT;
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"\u2026").width>mw)s=s.slice(0,-1);return s+"\u2026";}
-    function segsW(segs){var t=0,i;for(i=0;i<segs.length;i++)t+=MW(segs[i][0],segs[i][1]);return t;}
-    function segLines(segs,mw){ /* mixed-weight word wrap — the read's rows, card-sized */
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";} /* BIG AND CHUNKY: a 900 line from 30 px up is drawn tighter where the phone's canvas can; every draw and every measure asks here, so a width is the width that is drawn */
+    function T(s,x,y,f,c,a,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);if(k)LS("0px");}
+    function MW(s,f,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);var w=ctx.measureText(s).width;if(k)LS("0px");return w;}
+    function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function wrap2(s,mw,f,n){n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function fit(s,mw,FN,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,FN(wt,sz[k]))<=mw)break;return sz[k];} /* THE NAME STEPS DOWN BEFORE IT LOSES A WORD */
+    function fitAll(a,mw,FN,wt,sz){var m=sz[0];a.forEach(function(s){var z=fit(s,mw,FN,wt,sz);if(z<m)m=z;});return m;} /* one size for every name on a card: the rows stay even */
+    function big(s,x,top,sz,c,side,sc){ /* the hero: a figure on its own row with its words stacked beside it; it steps down until both fit the card. side = [[text,font,ink,line height]...] read bottom-up from the figure's baseline. Returns the baseline */
+      var i,sw=0,nw,g=sc||18;for(i=0;i<side.length;i++)sw=Math.max(sw,MW(side[i][0],side[i][1]));
+      for(;;){nw=MW(s,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+      var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+      T(s,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+      var yy=base-Math.round(sz*0.015);for(i=0;i<side.length;i++){T(side[i][0],x0+nw+g,yy,side[i][1],side[i][2]);yy-=side[i][3];}
+      return base;}
+    function segLines(segs,mw){ /* mixed-weight word wrap */
       var words=[],i,j;
       for(i=0;i<segs.length;i++){
         var parts=String(segs[i][0]).split(" ");
@@ -10542,18 +10606,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       }
       return y-lh;
     }
-    function hair(y){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke();}
-    function chip(x,y,ch2){ /* published-window chips: EE violet / party orange+emoji / festival mint / other accent */
-      var ink=ch2.kind==="ee"?"#b69cff":ch2.kind==="party"||ch2.kind==="holiday"?"#ffb060":ch2.kind==="fest"?"#7ee0c0":"#96a1f2";
-      var emo=ch2.kind==="party"?"\uD83C\uDF83":ch2.kind==="holiday"?"\uD83C\uDF84":null;
-      var f=IN("600",23),h2=42,padx=18,ew=emo?32:0;
-      var tx2=ell(ch2.tx,336-2*padx-ew,f),w2=MW(tx2,f);
-      function ra(hex,a){var r2=parseInt(hex.slice(1,3),16),g2=parseInt(hex.slice(3,5),16),b2=parseInt(hex.slice(5,7),16);return "rgba("+r2+","+g2+","+b2+","+a+")";}
-      rr(x,y,w2+2*padx+ew,h2,21);ctx.fillStyle=ra(ink,0.12);ctx.fill();ctx.strokeStyle=ra(ink,0.28);ctx.lineWidth=2;ctx.stroke();
-      if(emo){ctx.font=IN("500",25);ctx.fillStyle=ink;ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(emo,x+padx-2,y+h2/2);}
-      ctx.font=f;ctx.fillStyle=ink;ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(tx2,x+padx+ew,y+h2/2);
-      ctx.textBaseline="alphabetic";
-    }
+    function chipInk(k){return k==="ee"?"#b69cff":k==="party"||k==="holiday"?"#ffb060":k==="fest"?"#7ee0c0":"#96a1f2";} /* the published windows' inks: EE violet / party orange / festival mint / other accent */
+    function section(label,right,rc,rf){y+=34;hair(y);y+=50;T(label,L,y,IN("800",26),C.muted2,"left","3.1px");if(right)T(right,R,y,rf||IN("700",26),rc||C.muted2,"right");y+=10;}
     var BODY="#aab6cf",INKW="#eaf3f2";
     function bseg(t){return [t,IN("700",35),INKW];}
     function rseg(t){return [t,IN("500",35),BODY];}
@@ -10562,58 +10616,42 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
     var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#10243a");g.addColorStop(.6,"#0c1a2c");g.addColorStop(1,"#0a1422");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
     var gl=ctx.createRadialGradient(W/2,cy,40,W/2,cy,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
-    var L=cx+58,R=cx+cw-58,CW=R-L;
-    /* header */
-    var wx=rcMark(ctx.raw||ctx,L,86,58);T("Ride",wx,132,SG("800",48),C.ink);var pw2=MW("Ride",SG("800",48));T("Cue",wx+pw2,132,SG("500",48),C.muted);
-    var sw=MW(D.stamp?"Live \u00b7 "+D.stamp:"Live",IN("500",30));
-    T(D.stamp?"Live \u00b7 "+D.stamp:"Live",R,128,IN("500",30),C.muted,"right");
-    ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(R-sw-18,118,8,0,7);ctx.fill();
-    /* title zone — stat raised into the lane under the stamp (owner mark-up) */
-    var y=240;
-    var statS=(D.headAvg!=null)?String(D.headAvg):"\u2013";
-    var nw2=MW(statS,SG("800",64)),sx=R-nw2-((D.headAvg!=null)?(8+MW("m",IN("500",26))):0);
-    T(statS,sx,y-30,SG("800",64),C.ink);
-    if(D.headAvg!=null)T("m",sx+nw2+8,y-30,IN("500",26),C.muted);
-    T("HEADLINER AVG",R,y+4,IN("600",22),C.muted2,"right");
-    var wxLane=0; /* 0728hu THE CARD WEARS THE HERO'S LANE (owner-ruled A Oct 22): the sky under the stat, as the hero seats it — glyph + temperature, the feels-like beneath only when it differs; the sub-line yields to this lane */
-    if(D.wx){
-      var WXI={clear:"\u2600\ufe0f",night:"\ud83c\udf19",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"}; /* the hero's own table (rdWxPaint) */
-      var wxT=D.wx.tF+"\u00b0",wxTF=SG("800",44),wxGF=IN("500",40),wxW=MW(wxT,wxTF),wxG=WXI[D.wx.cl]||"",wxGW=wxG?52:0; /* 0728hv THE EMOJI IS NOT MEASURED: a fixed 52 px box for the 40 px glyph (owner glass Oct 22 12:53 PM — iOS drew the right-aligned sun over the first digit; measureText lies for a colour emoji) */
-      T(wxT,R,y+62,wxTF,C.ink,"right");if(wxG)T(wxG,R-wxW-14-wxGW,y+60,wxGF,C.ink,"left"); /* the glyph is anchored on its LEFT edge, in its box */
-      wxLane=wxW+(wxG?14+wxGW:0);
-      if(D.wx.fF!=null&&D.wx.fF!==D.wx.tF){var wxF="feels "+D.wx.fF+"\u00b0";T(wxF,R,y+98,IN("500",26),C.muted,"right");wxLane=Math.max(wxLane,MW(wxF,IN("500",26)));}
-      wxLane+=40;
-    }
-    T(ell("Walt Disney World",sx-L-36,SG("800",72)),L,y,SG("800",72),C.ink);
-    /* the hero's own sub law (0718r): one line when it fits, break AFTER the
-       parks clause when it doesn't — est. never separates from its value (0709r) */
-    var l1=[],l2=[];
-    if(D.parksClause)l1.push([D.parksClause,IN("500",32),C.muted]);
-    if(D.ridesOpen)l2.push([D.ridesOpen+" rides open",IN("500",32),C.muted]);
-    if(D.crowd){l2.push([(l2.length?"  \u00b7  ":"")+"crowd ",IN("500",32),C.muted]);l2.push([D.crowd.label,IN("700",32),D.crowd.color]);l2.push([" \u00b7 est.",IN("500",32),C.muted]);}
+    var L=cx+58,R=cx+cw-58,CW=R-L,y,i;
+    var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+    rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
+    T(D.date,R,184,IN("700",28),C.ink,"right");
+    LS("3px");T("RESORT BOARD",L,236,IN("800",28),C.accent);LS("0px");
+    y=328;T("Walt Disney World",L,y,SG("900",84),C.ink);
+    /* the hero's own sub law (0718r): one line when it fits, break AFTER the parks clause when it doesn't \u2014 est. never separates from its value (0709r) */
+    var sf=IN("600",32),l1=[],l2=[];
+    if(D.parksClause)l1.push([D.parksClause,sf,C.muted]);
+    if(D.ridesOpen)l2.push([D.ridesOpen+" rides open",sf,C.muted]);
+    if(D.crowd){l2.push([(l2.length?" \u00b7 ":"")+"crowd ",sf,C.muted]);l2.push([D.crowd.label,IN("800",32),D.crowd.color]);l2.push([" \u00b7 est.",sf,C.muted]);}
     function segRun(x,yy,segs){var si;for(si=0;si<segs.length;si++){T(segs[si][0],x,yy,segs[si][1],segs[si][2]);x+=MW(segs[si][0],segs[si][1]);}}
-    var joined=l1.concat(l1.length&&l2.length?[["  \u00b7  ",IN("500",32),C.muted]]:[]).concat(l2);
+    function segsW(segs){var t=0,si;for(si=0;si<segs.length;si++)t+=MW(segs[si][0],segs[si][1]);return t;}
+    var joined=l1.concat(l1.length&&l2.length?[[" \u00b7 ",sf,C.muted]]:[]).concat(l2);
     if(joined.length){
-      if(segsW(joined)<=CW-wxLane){segRun(L,y+52,joined);y=y+52+18;} /* 0728hu: the lane takes its width from the line */
-      else if(l1.length&&l2.length){segRun(L,y+52,l1);segRun(L,y+94,l2);y=y+94+18;}
-      else{segRun(L,y+52,joined.length?[[ell(joined.map(function(s){return s[0];}).join(""),CW-wxLane,IN("500",32)),IN("500",32),C.muted]]:[]);y=y+52+18;}
-    }else y=y+52+18;
-    /* verdict marquee — the read's own engine, three states, fit-step 58->46 */
+      if(segsW(joined)<=CW||!(l1.length&&l2.length)){y+=50;segRun(L,y,joined);}
+      else{y+=50;segRun(L,y,l1);y+=42;segRun(L,y,l2);}
+    }
+    if(D.wx){ /* 0728hu the sky rides the card through the hero's own gated door; 0728nh: it sits on the line under the sub. THE EMOJI IS NOT MEASURED (0728hv): a fixed box for the glyph, anchored on its left edge */
+      var WXI={clear:"\u2600\ufe0f",night:"\ud83c\udf19",cloud:"\u2601\ufe0f",storm:"\u26a1",rain:"\ud83c\udf27\ufe0f",core:"\u26c8\ufe0f"},wxG=WXI[D.wx.cl]||"";
+      y+=42;if(wxG)T(wxG,L,y-1,IN("500",30),C.ink);
+      T(D.wx.tF+"\u00b0"+((D.wx.fF!=null&&D.wx.fF!==D.wx.tF)?" \u00b7 feels "+D.wx.fF+"\u00b0":""),L+(wxG?44:0),y,sf,C.muted);
+    }
+    var hc=rbBandCol(D.headAvg),lf=SG("700",30);
+    if(D.headAvg!=null)y=big(String(D.headAvg),L,y+30,300,hc,[["average now",lf,C.muted,34],["headliner",lf,C.muted,44],["min",SG("900",50),hc,0]],16);
+    else{y+=74;T("No headliner average right now",L,y,SG("700",34),C.muted);}
+    /* the verdict \u2014 the read's own engine, three states, as one sentence */
     if(D.verdict){
-      y+=76;
-      var v2=D.verdict,lead=(v2.weekday?v2.weekday+" ":"")+v2.dayPart,ms;
+      var v2=D.verdict,lead=(v2.weekday?v2.weekday+" ":"")+v2.dayPart,vb=SG("800",40),vr=SG("700",40);
       var msegs=v2.state==="quiet"
-        ?[["A quiet "+lead,null,C.ink]]
-        :[["Headliners ",null,C.ink],["about "+v2.n+" min "+v2.state,null,(v2.state==="over"?"#ffb197":"#7ef0bd")],[" typical",null,C.ink]];
-      for(ms=58;ms>46;ms-=4){var tot=0,mi;for(mi=0;mi<msegs.length;mi++)tot+=MW(msegs[mi][0],SG("800",ms));if(tot<=CW)break;}
-      var fsegs=msegs.map(function(sg){return [sg[0],SG("800",ms),sg[2]];});
-      y=drawSegs(L,y,fsegs,CW,Math.round(ms*1.28));
-      y+=44;
-      T(v2.state==="quiet"?"headliners near their typical":"this "+lead,L,y,IN("500",32),C.muted);
-      y+=34;
-    }else{y+=40;}
-    hair(y);y+=30; /* one separator discipline: a hair BETWEEN blocks; the footer owns its own */
-    /* resort-event rows + lightning — the tonight seat's and the ledger's own gates */
+        ?[["A quiet "+lead+" ",vb,C.ink],["headliners near their typical",vr,C.muted]]
+        :[["Headliners ",vr,C.ink],["about "+v2.n+" min "+v2.state+" ",vb,(v2.state==="over"?"#ffb197":"#7ef0bd")],["typical ",vr,C.ink],["this "+lead,vr,C.muted]];
+      y=drawSegs(L,y+28+40,msegs,CW,50);
+    }
+    /* resort-event rows + lightning \u2014 the tonight seat's and the ledger's own gates */
+    if(D.race||D.ltg){y+=34;hair(y);y+=30;}
     if(D.race){
       y+=31;
       ctx.fillStyle=C.green;rr(L+4,y-26,12,30,6);ctx.fill();
@@ -10627,93 +10665,78 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       T("\u26a1",L,y,IN("500",33),"#fbbf24");
       y=drawSegs(L+60,y,[bseg("Lightning within 10 mi"),rseg(" \u2014 "),bseg(D.ltg.n+" strike"+(D.ltg.n===1?"":"s")),rseg(" "+(D.ltg.w===60?"in the last hour":"in the last "+D.ltg.w+" minutes")+".")],R-(L+60),50);
     }
-    if(D.race||D.ltg){y+=36;hair(y);y+=30;}
-    /* THE PARKS — 2x2 even cells: full name, avg (band ramp), hours, chips */
-    y+=24;T("THE PARKS",L,y,IN("600",27),C.muted2);y+=28;
-    var maxChips=0,pi;for(pi=0;pi<D.parks.length;pi++)maxChips=Math.max(maxChips,D.parks[pi].chips.length);
-    var gap=28,cellw=(CW-gap)/2,cellh=166+(maxChips?50*maxChips:0);
-    var calm=null;for(pi=0;pi<D.parks.length;pi++){var a2=D.parks[pi].avg;if(a2!=null&&(calm==null||a2<calm))calm=a2;}
+    /* THE PARKS \u2014 chunky rows: the name, the hours and the published windows on one line under it, the headliner average in its band at the right */
+    section("THE PARKS","headliner average");
+    var pi,calm=null,nf=SG("900",112),uf=SG("900",32),nmx=0;
+    for(pi=0;pi<D.parks.length;pi++){var a2=D.parks[pi].avg;if(a2!=null&&(calm==null||a2<calm))calm=a2;nmx=Math.max(nmx,a2!=null?MW(String(a2),nf,"-5.6px")+6+MW("min",uf):MW("\u2013",SG("900",72)));}
     for(pi=0;pi<D.parks.length;pi++){
-      var P2=D.parks[pi],cx0=L+(pi%2)*(cellw+gap),cy0=y+Math.floor(pi/2)*(cellh+gap);
-      rr(cx0,cy0,cellw,cellh,26);ctx.fillStyle="rgba(255,255,255,0.045)";ctx.fill();
-      var px=cx0+30,pr=cx0+cellw-30;
-      var isCalm=(P2.avg!=null&&P2.avg===calm);
-      var avgw=0;
-      if(P2.avg!=null){
-        var vs=String(P2.avg);avgw=MW(vs,SG("800",54))+6+MW("m",IN("500",24));
-        T(vs,pr-avgw,cy0+62,SG("800",54),rbBandCol(P2.avg));
-        T("m",pr-MW("m",IN("500",24)),cy0+62,IN("500",24),C.muted);
-      }else{avgw=MW("\u2013",SG("800",54));T("\u2013",pr-avgw,cy0+62,SG("800",54),C.muted2);}
-      var lane=(pr-avgw-20)-px-(isCalm?26:0),ns;
-      for(ns=32;ns>25;ns--){if(MW(P2.nm,SG("800",ns))<=lane)break;}
-      if(isCalm){ctx.fillStyle=C.green;ctx.beginPath();ctx.arc(px+8,cy0+52,8,0,7);ctx.fill();T(ell(P2.nm,lane,SG("800",ns)),px+26,cy0+60,SG("800",ns),C.green);}
-      else T(ell(P2.nm,lane,SG("800",ns)),px,cy0+60,SG("800",ns),C.muted);
+      var P2=D.parks[pi],isCalm=(P2.avg!=null&&P2.avg===calm),y0=y;if(pi)hair(y);
+      y+=16;if(isCalm){y+=27;T("CALMEST RIGHT NOW",L,y,IN("800",23),C.green,"left","2.8px");} /* COLOR NEVER CARRIES ALONE: the calmest park is named in words */
+      y+=50;T(ell(P2.nm,CW-nmx-24,SG("900",48)),L,y,SG("900",48),C.ink);
       var hrs,hcol; /* the time-aware pair (B + A2): open -> hours; pre-open -> the day ahead; done -> status + the published fact; else TBA */
-      if(P2.st==="open"){hrs=P2.open+" \u2013 "+P2.close;hcol="#c8d2e8";}
-      else if(P2.st==="pre"){hrs="Opens at "+P2.open;hcol="#c8d2e8";}
+      if(P2.st==="open"){hrs=P2.open+" \u2013 "+P2.close;hcol=C.muted;}
+      else if(P2.st==="pre"){hrs="Opens at "+P2.open;hcol=C.muted;}
       else if(P2.st==="done"){hrs="Closed \u00b7 "+P2.open+" \u2013 "+P2.close;hcol=C.muted2;}
       else{hrs="Hours TBA";hcol=C.muted2;}
-      var hsz;for(hsz=30;hsz>24;hsz--){if(MW(hrs,IN("500",hsz))<=cellw-60)break;} /* measure-right-first: the line fits its cell before it prints */
-      T(ell(hrs,cellw-60,IN("500",hsz)),px,cy0+116,IN("500",hsz),hcol);
-      if(P2.longest&&P2.st==="open")T("\u263d",px+MW(hrs,IN("500",hsz))+12,cy0+116,IN("500",34),"#f5e6a8"); /* grown a notch (owner, Aug 4); prints only on the open hours form */
-      var cyc=cy0+144,ci;
-      for(ci=0;ci<P2.chips.length;ci++){chip(px,cyc,P2.chips[ci]);cyc+=50;}
+      var hf=IN("600",29),cf=IN("800",29),hs=[[hrs,hf,hcol]],ci;
+      if(P2.longest&&P2.st==="open")hs.push([" \u263d",hf,"#f5e6a8"]);
+      for(ci=0;ci<P2.chips.length;ci++){var c2=P2.chips[ci];hs.push([" \u00b7 ",hf,C.muted]);hs.push([(c2.kind==="party"?"\ud83c\udf83 ":c2.kind==="holiday"?"\ud83c\udf84 ":"")+c2.tx,cf,chipInk(c2.kind)]);}
+      y=drawSegs(L,y+38,hs,CW-nmx-24,38);y+=20;
+      var nb=Math.round((y0+y)/2)+40;
+      if(P2.avg!=null){var pc=rbBandCol(P2.avg);T("min",R,nb,uf,pc,"right");T(String(P2.avg),R-MW("min",uf)-6,nb,nf,pc,"right","-5.6px");}
+      else T("\u2013",R,nb-14,SG("900",72),C.muted2,"right");
     }
-    y=y+2*cellh+gap;
-    if(D.early){y+=44;T(ell(D.early,CW,IN("500",26)),L,y,IN("500",26),C.muted2);}
-    /* DOWN RIGHT NOW — the banner's truth, diversified cap */
+    if(D.early){y+=40;var es=wrap2(D.early,CW,IN("600",27),2);for(i=0;i<es.length;i++){T(es[i],L,y+i*34,IN("600",27),C.muted2);}y+=(es.length-1)*34;}
+    /* DOWN RIGHT NOW \u2014 the banner's truth, diversified cap */
     if(D.down){
-      y+=44;hair(y);y+=30;
-      y+=24;T("DOWN RIGHT NOW",L,y,IN("600",27),C.muted2);
-      if(D.down.total>0)T(String(D.down.total),R,y,SG("800",32),"#ff6b6b","right");
-      y+=50;
+      section("DOWN RIGHT NOW",D.down.total>0?String(D.down.total):"","#ff6b6b",SG("900",34));
       if(!D.down.total){
-        ctx.fillStyle="#7ef0bd";ctx.beginPath();ctx.arc(L+11,y+18,9,0,7);ctx.fill();
-        drawSegs(L+48,y+28,[bseg("Everything\u2019s running"),rseg(" \u2014 no rides down right now.")],R-(L+48),50);
-        y+=44;
+        ctx.fillStyle="#7ef0bd";ctx.beginPath();ctx.arc(L+10,y+34,10,0,7);ctx.fill();
+        y=drawSegs(L+38,y+46,[bseg("Everything\u2019s running"),rseg(" \u2014 no rides down right now.")],R-(L+38),50);
       }else{
-        var di;
+        var di,pmx=0,pf2=IN("700",27);D.down.shown.forEach(function(x){pmx=Math.max(pmx,MW(x.park||x.pk,pf2));});
+        var dz=fitAll(D.down.shown.map(function(x){return x.nm;}),CW-38-pmx-24,SG,"900",[40,36,34]);
         for(di=0;di<D.down.shown.length;di++){
-          var dr=D.down.shown[di],ry=y+di*60;
-          ctx.fillStyle="#ff8fa0";ctx.beginPath();ctx.arc(L+11,ry+21,9,0,7);ctx.fill();
-          T(ell(dr.nm,R-90-(L+48),IN("700",34)),L+48,ry+36,IN("700",34),C.ink);
-          T(dr.pk,R,ry+36,IN("600",27),C.muted,"right");
+          var dr=D.down.shown[di];y+=60;
+          ctx.fillStyle="#ff6b6b";ctx.beginPath();ctx.arc(L+10,y-13,10,0,7);ctx.fill();
+          T(ell(dr.nm,CW-38-pmx-24,SG("900",dz)),L+38,y,SG("900",dz),C.ink);
+          T(dr.park||dr.pk,R,y-2,pf2,C.muted,"right");
         }
-        y+=D.down.shown.length*60+8;
-        if(D.down.more>0){T("+"+D.down.more+" more down",L+48,y+24,IN("700",29),"#ff6b6b");y+=26;}
+        if(D.down.more>0){y+=48;T("+"+D.down.more+" more down",L+38,y,IN("800",29),"#ff6b6b");}
       }
     }
-    /* UP NEXT ACROSS THE PARKS — the board's own arithmetic */
+    /* UP NEXT ACROSS THE PARKS \u2014 the board's own arithmetic */
     if(D.shows){
-      y+=44;hair(y);y+=30;
-      y+=24;T("UP NEXT ACROSS THE PARKS",L,y,IN("600",27),C.muted2);y+=52;
-      var tcol2=185,si2;
+      section("UP NEXT ACROSS THE PARKS","");
+      var tcol2=190,si2,sz2=fitAll(D.shows.rows.map(function(x){return x.nm;}),R-(L+tcol2),IN,"700",[36,33,30]);
       for(si2=0;si2<D.shows.rows.length;si2++){
-        var sr2=D.shows.rows[si2],ry2=y+si2*62;
-        T(sr2.t,L,ry2+38,SG("800",33),C.ink);
-        T(ell(sr2.nm,R-90-(L+tcol2),IN("500",34)),L+tcol2,ry2+38,IN("500",34),"#c8d2e8");
-        T(sr2.pk,R,ry2+38,IN("600",27),C.muted,"right");
+        var sr2=D.shows.rows[si2];y+=si2?88:58;
+        T(sr2.t,L,y,SG("900",40),C.ink);
+        T(ell(sr2.nm,R-(L+tcol2),IN("700",sz2)),L+tcol2,y,IN("700",sz2),C.ink);
+        T(sr2.park||sr2.pk,L+tcol2,y+34,IN("600",25),C.muted2); /* the park under the name: the name keeps the row's width */
       }
-      y+=D.shows.rows.length*62+6;
-      if(D.shows.more){T("+"+D.shows.more.n+" more act"+(D.shows.more.n===1?"":"s")+" by "+D.shows.more.by,L+tcol2,y+18,IN("500",27),C.muted2);y+=22;}
+      y+=34;
+      if(D.shows.more){y+=46;T("+"+D.shows.more.n+" more act"+(D.shows.more.n===1?"":"s")+" by "+D.shows.more.by,L+tcol2,y,IN("600",27),C.muted2);}
     }
-    /* footer — emitCard family; every credit clause-earned */
-    y+=48;var fy=y;hair(fy);
-    if(D.crowd)T("Crowd is an estimate from live wait times",L,fy+42,IN("500",23),C.muted2);
-    T("ridecue.live",R,fy+38,IN("700",28),C.green,"right");
-    T("Data: ThemeParks.wiki"+(D.wx?" \u00b7 Weather: Vaisala Xweather":(D.ltg?" \u00b7 Lightning: Vaisala Xweather":"")),R,fy+70,IN("500",22),C.muted2,"right"); /* 0728hu: the sky on the card credits its source; one Xweather clause (the weather read carries the lightning) */
+    /* footer \u2014 the family's; every credit clause-earned */
+    y+=44;var fy=y;hair(fy);
+    var cr2=D.wx?"Weather: Vaisala Xweather":(D.ltg?"Lightning: Vaisala Xweather":"");
+    if(D.crowd)T("Crowd is an estimate from live wait times",L,fy+(cr2?128:98),IN("500",24),C.muted2);
+    T("ridecue.live",R,fy+62,IN("700",31),C.green,"right");
+    T("Data: ThemeParks.wiki",R,fy+98,IN("500",25),C.muted2,"right");
+    if(cr2)T(cr2,R,fy+128,IN("500",25),C.muted2,"right"); /* 0728hu: the sky on the card credits its source; one Xweather clause (the weather read carries the lightning) */
     ctx.restore();
-    return fy+70+28+36;
+    return fy+(cr2?128:98)+52+36;
   }
   function rbShareCard(){ /* the family lifecycle (fonts.ready -> two-pass self-size -> toBlob -> canShare/download) */
     var D=rbModel();
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){
       var cv=document.createElement("canvas");cv.width=D.W;cv.height=4400;
-      var ctx=rcDay(cv.getContext("2d")); /* 0728is THE LIVE CARD WEARS DAYLIGHT */
+      var ctx=cv.getContext("2d"); /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: this door no longer asks for Daylight (D-A, Oct 27, overturned for the Live page's share cards by the owner, Sat Nov 14, 2026: "this was before the big and chunky era ... if its big enough, i think were ok with the dark") */
       var Hf=Math.ceil(rbDrawCard(ctx,D,4400));
       cv.height=Hf; /* resizing resets the context state */
-      ctx=rcDay(cv.getContext("2d"));
+      ctx=cv.getContext("2d");
       rbDrawCard(ctx,D,Hf);
       pvOpen({alts:[{cv:cv}],fname:D.fname,shareTitle:D.shareTitle}); /* 0728hz: the preview sheet — one lifecycle */
     });
@@ -10754,9 +10777,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(!r||!lv||r.kind!=="ride")return;
       if(lv.status==="OPERATING")open++;
       if(lv.status!=="DOWN")return;
-      (byPark[r.park]=byPark[r.park]||[]).push({id:id,nm:r.name,c:dnSinceWord(id,since)});
+      (byPark[r.park]=byPark[r.park]||[]).push({id:id,nm:rcShortNm(id,r.name),fn:r.name,c:dnSinceWord(id,since)});
     });
-    var groups=Object.keys(byPark).map(function(pk){return {park:pk,rides:byPark[pk].sort(function(a,b){return a.nm.localeCompare(b.nm);})};});
+    var groups=Object.keys(byPark).map(function(pk){return {park:pk,rides:byPark[pk].sort(function(a,b){return a.fn.localeCompare(b.fn);})};});
     groups.sort(function(a,b){return (b.rides.length-a.rides.length)||a.park.localeCompare(b.park);});
     var count=groups.reduce(function(a,g){return a+g.rides.length;},0);
     var now=new Date();
@@ -10770,21 +10793,32 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     Promise.all([fr,dnRecFetch()]).then(function(got){
       var D=dnCardModel(got[1]);if(!D.count)return;
-      var cv=document.createElement("canvas");cv.width=D.W;cv.height=2000;
-      var h1=dnDrawCard(rcDay(cv.getContext("2d")),D,2000);cv.height=h1;dnDrawCard(rcDay(cv.getContext("2d")),D,h1); /* 0728is THE LIVE CARD WEARS DAYLIGHT */ /* two-pass self-size, the family's way */
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=6000;
+      var h1=dnDrawCard(cv.getContext("2d"),D,6000);cv.height=h1;dnDrawCard(cv.getContext("2d"),D,h1); /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY: this door no longer asks for Daylight (D-A, Oct 27, overturned for the Live page's share cards by the owner, Sat Nov 14, 2026: "this was before the big and chunky era ... if its big enough, i think were ok with the dark") */ /* 0728is THE LIVE CARD WEARS DAYLIGHT */ /* two-pass self-size, the family's way */
       pvOpen({alts:[{cv:cv}],fname:"ridecue-down.png",shareTitle:"RideCue \u2014 Down right now"}); /* 0728hz: the preview sheet — one lifecycle */
     });
   }
-  function dnDrawCard(ctx,D,H){ /* the family hand — the mock's bytes (mock/dnsince/rig2.js, V-D) as the spec of the dress; returns where the card ends */
-    var W=D.W,C=PW_CARD_ALT;
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function dnDrawCard(ctx,D,H){ /* 0728nh THE LIVE CARDS JOIN THE CHUNKY FAMILY \u2014 Down right now (owner-ruled Sat Nov 14, 2026 on sheet 72: "looks great as well!"): the family head on the dark field with the card's red glow kept at its top; the count is the hero in red ("4 rides down / right now, across 2 parks"), rides open under it, the parks as headings, each down ride a chunky row with its since clock (V-D, Oct 25: THE SNAPSHOT IS THE WITNESS). Returns where the card ends. */
+    var W=D.W,C=PW_CARD_ALT,RED="#ff6b6b";
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
     function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";} /* BIG AND CHUNKY: a 900 line from 30 px up is drawn tighter where the phone's canvas can; every draw and every measure asks here, so a width is the width that is drawn */
+    function T(s,x,y,f,c,a,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);if(k)LS("0px");}
+    function MW(s,f,ls){ctx.font=f;var k=ls||TR(f);if(k)LS(k);var w=ctx.measureText(s).width;if(k)LS("0px");return w;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
-    function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function wrap2(s,mw,f,n){n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;}
+    function fit(s,mw,FN,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,FN(wt,sz[k]))<=mw)break;return sz[k];} /* THE NAME STEPS DOWN BEFORE IT LOSES A WORD */
+    function fitAll(a,mw,FN,wt,sz){var m=sz[0];a.forEach(function(s){var z=fit(s,mw,FN,wt,sz);if(z<m)m=z;});return m;} /* one size for every name on a card: the rows stay even */
+    function big(s,x,top,sz,c,side,sc){ /* the hero: a figure on its own row with its words stacked beside it; it steps down until both fit the card. side = [[text,font,ink,line height]...] read bottom-up from the figure's baseline. Returns the baseline */
+      var i,sw=0,nw,g=sc||18;for(i=0;i<side.length;i++)sw=Math.max(sw,MW(side[i][0],side[i][1]));
+      for(;;){nw=MW(s,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+      var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+      T(s,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+      var yy=base-Math.round(sz*0.015);for(i=0;i<side.length;i++){T(side[i][0],x0+nw+g,yy,side[i][1],side[i][2]);yy-=side[i][3];}
+      return base;}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
     rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
@@ -10792,21 +10826,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var gl=ctx.createRadialGradient(W/2,cy-40,40,W/2,cy-40,cw*0.8);gl.addColorStop(0,"rgba(255,107,107,0.09)");gl.addColorStop(1,"rgba(255,107,107,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
     var L=cx+58,R=cx+cw-58,CW=R-L,y,i,j;
     var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
-    rcPill(ctx,R,"LIVE · "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green); /* 0728ir ONE PILL: the dot and the text anchor LEFT inside the pill — one helper for the family (owner 9:03 PM Oct 26: "the green dot needs to move over to the left a bit, its about touching the L") */
-    T(D.date,R,184,IN("700",28),C.ink,"right"); /* the pill rides the wordmark's row; the date sits under it, clear of the kicker (owner 2:31 PM: the pill clipped the kicker's D) */
-    LS("3px");T("DOWN RIGHT NOW · WALT DISNEY WORLD",L,236,IN("800",28),C.accent);LS("0px");
-    y=317;T("Down right now",L,y,SG("700",66),C.ink);
-    y+=24;hair(y);y+=22;var top=y,stats=[{k:"Down right now",v:String(D.count)},{k:"Parks affected",v:String(D.parks)},{k:"Rides open",v:String(D.open)}],n=stats.length;
-    for(i=0;i<n;i++){var st=stats[i],al=i===0?"left":(i===n-1?"right":"center"),sx=i===0?L:(i===n-1?R:L+CW/2);LS("2px");T(st.k.toUpperCase(),sx,top+22,IN("600",21),C.muted2,al);LS("0px");T(st.v,sx,top+22+27+52,SG("800",52),i===0?"#ff6b6b":C.ink,al);} /* one baseline for the three values */
-    y=top+22+27+52+10;
-    for(i=0;i<D.groups.length;i++){var G=D.groups[i];y+=40;hair(y);y+=14;LS("1.6px");T(G.park.toUpperCase(),L,y+30,IN("700",24),C.green);LS("0px");T(G.rides.length+" down",R,y+30,IN("600",22),C.muted2,"right");y+=40;
-      for(j=0;j<G.rides.length;j++){var r=G.rides[j];if(j)hair(y);y+=18;
-        ctx.beginPath();ctx.arc(L+9,y+22,8,0,7);ctx.fillStyle="#ff6b6b";ctx.fill();
-        var cs=D.witnessed?r.c:"",cwid=cs?MW(cs,IN("500",26))+24:0;T(ell(r.nm,CW-34-cwid,IN("700",31)),L+34,y+32,IN("700",31),C.ink);if(cs)T(cs,R,y+32,IN("500",26),C.muted,"right");y+=52;}
-      y+=8;}
-    y+=48;hair(y); /* ONE FOOTER HAND */
-    if(D.witnessed){T("Down = temporarily unavailable · since = the first",L,y+59,IN("500",26),C.muted2);T("five-minute reading it was down",L,y+93,IN("500",26),C.muted2);}
-    else T("Down = temporarily unavailable",L,y+59,IN("500",26),C.muted2);
+    rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green); /* 0728ir ONE PILL */
+    T(D.date,R,184,IN("700",28),C.ink,"right");
+    LS("3px");T("DOWN RIGHT NOW \u00b7 WALT DISNEY WORLD",L,236,IN("800",28),C.accent);LS("0px");
+    var lf=SG("700",30);
+    y=big(String(D.count),L,236+34,300,RED,[[D.parks===1?"1 park":D.parks+" parks",lf,C.muted,34],["right now, across",lf,C.muted,44],[D.count===1?"ride down":"rides down",SG("900",50),RED,0]],16);
+    y+=22;T(String(D.open),L,y+50,SG("900",54),C.ink);T("rides open",L,y+88,IN("600",30),C.muted);y+=88;
+    var all=[];D.groups.forEach(function(G){G.rides.forEach(function(r){all.push(r.nm);});});
+    var dsz=fitAll(all,CW-38-(D.witnessed?250:0),SG,"900",[48,44,40,36]);
+    for(i=0;i<D.groups.length;i++){var G=D.groups[i];y+=34;hair(y);y+=58;T(G.park,L,y,SG("900",40),C.ink);T(G.rides.length+" down",R,y,IN("700",26),C.muted2,"right");y+=6;
+      for(j=0;j<G.rides.length;j++){var r=G.rides[j];if(j)hair(y);
+        ctx.beginPath();ctx.arc(L+10,y+41,10,0,7);ctx.fillStyle=RED;ctx.fill();
+        var cs=D.witnessed?r.c:"",cwid=cs?MW(cs,IN("700",30))+24:0;var dl=wrap2(r.nm,CW-38-cwid,SG("900",dsz)),dk;for(dk=0;dk<dl.length;dk++)T(dl[dk],L+38,y+57+dk*(dsz+4),SG("900",dsz),C.ink);if(cs)T(cs,R,y+53,IN("700",30),C.muted,"right");y+=84+(dl.length-1)*(dsz+4);} /* a long name takes a second line before it loses a word */}
+    y+=30;hair(y); /* ONE FOOTER HAND: a clause a line */
+    T("Down = temporarily unavailable",L,y+59,IN("500",24),C.muted2);
+    if(D.witnessed)T("since = the first five-minute reading it was down",L,y+93,IN("500",24),C.muted2);
     T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
     T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
     ctx.restore();
@@ -14386,7 +14420,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     var pwLv=null,pwLvWin="6",PW_LV_K=["lvx","lvbw","lvll","lvdn","lvmo","lvrf"]; /* 0728ne THE LONG VIEW: the Worker's answer {yd, st load|ok|build|miss, a}, the picked window, the six summaries in their order */
     var PW_HI_SH='<svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     var PW_HI_SHORT={"1a2e70d9-50d5-4140-b69e-799e950f7d18":"Rise of the Resistance","6f6998e8-a629-412c-b964-2cb06af8e26b":"Tower of Terror","6e118e37-5002-408d-9d88-0b5d9cdb5d14":"Runaway Railway","34c4916b-989b-4ff1-a7e3-a6a846a3484f":"Smugglers Run","e516f303-e82d-4fd3-8fbf-8e6ab624cf89":"Rock ’n’ Roller Coaster","0d94ad60-72f0-4551-83a6-ebaecdd89737":"Winnie the Pooh","e3549451-b284-453d-9c31-e3b1207abd79":"Cosmic Rewind","de3309ca-97d5-4211-bffe-739fed47e92f":"Big Thunder Mountain","64a6915f-a835-4226-ba5c-8389fc4cade3":"Expedition Everest"}; /* the mock's short names, by ride id - where a name shares its line with a figure or leads a sentence (a park's best deal, Day by day's headline and its door, Morning or night's rows, the ride list); a ride's own row says the full name */
-    function pwHiNm(id,nm){return PW_HI_SHORT[id]||nm;}
+    function pwHiNm(id,nm){return PW_HI_SHORT[id]||nm;} window.__ppShort=pwHiNm; /* 0728nh: lent to the Live cards (rcShortNm) */
     function pwHiAdd(ds,n){return new Date(Date.UTC(+ds.slice(0,4),+ds.slice(5,7)-1,+ds.slice(8,10)+n)).toISOString().slice(0,10);}
     function pwHiWin(yd){ /* the one read's window, and the month chapter's: the month is YESTERDAY's month, so on the 1st it is the month just ended, whole (owner-ruled Nov 12) */
       var m1=yd.slice(0,8)+"01",w0=pwHiAdd(yd,-27),from=m1<w0?m1:w0,last=pwHiAdd(pwHiAdd(m1,31).slice(0,8)+"01",-1);
@@ -14429,7 +14463,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           if(c-t<=60)continue; /* GUARD 1 - not the park's last hour: more than 60 minutes of its day are left when the half-hour starts */
           if(dw.some(function(s){return s[0]<=t+30&&s[1]>=t-60;}))continue; /* GUARD 2 - not after an outage: no down span touches the hour before the half-hour, or the half-hour itself */
           var typ=Math.round(q.med),ww=Math.round(w);
-          out.push({id:r.id,nm:r.name,park:r.park,t:t,w:ww,typ:typ,under:typ-ww});
+          out.push({id:r.id,nm:r.name,park:r.park,t:t,w:ww,typ:typ,under:typ-ww,pt:(L.rung===1||L.rung===2)}); /* 0728nh THE DEAL SAYS WHOSE TYPICAL IT IS (owner, Sat Nov 14, 2026, 10:07-10:10 AM: "wondering if it should say on party days? In the app too" ... "yes, we can make a note to change that in the app"): pt = the party pool answered (the ladder's rung 1 or 2, Live's own test - pfMetaTail). A finished day is over, so the word is the pool's proper name, "on party days" */
         }
       });
       out.sort(function(a,b){return (b.under-a.under)||(a.t-b.t)||(a.nm<b.nm?-1:1);});
@@ -14456,10 +14490,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(deals===null)return '<div class="hi-card">'+hd+'<div class="hi-wait">Typical waits haven’t loaded yet.</div>'+fine+'</div>';
       var best={},d=deals[0]||null,i;for(i=0;i<deals.length;i++)if(!best[deals[i].park])best[deals[i].park]=deals[i];
       var rows=MAIN.map(function(p){var x=best[p];
-        return x?'<div class="hi-pl hi-go"'+pwHiDoor(x.id,x.park,ds)+'><div><div class="k">'+esc(p)+'</div><div class="n">'+esc(pwHiNm(x.id,x.nm))+'</div></div><span class="v '+pwHiBand(x.w)+'">'+x.w+'m at '+rpClk(x.t)+' · typically '+x.typ+'</span></div>'
+        return x?'<div class="hi-pl hi-go"'+pwHiDoor(x.id,x.park,ds)+'><div><div class="k">'+esc(p)+'</div><div class="n">'+esc(pwHiNm(x.id,x.nm))+'</div></div><span class="v '+pwHiBand(x.w)+'">'+x.w+'m at '+rpClk(x.t)+' · typically '+x.typ+(x.pt?' on party days':'')+'</span></div>'
           :'<div class="hi-pl none"><div><div class="k">'+esc(p)+'</div><div class="n">No standout deal</div></div></div>';}).join("");
       return '<div class="hi-card">'+hd+
-        (d?'<div class="hi-go"'+pwHiDoor(d.id,d.park,ds)+'><div class="hi-deal"><div class="typ">'+d.typ+'</div><div class="tc">typically,<br>at '+rpClk(d.t)+'</div><div class="num '+pwHiBand(d.w)+'">'+d.w+'<small>min</small></div></div>'+
+        (d?'<div class="hi-go"'+pwHiDoor(d.id,d.park,ds)+'><div class="hi-deal"><div class="typ">'+d.typ+'</div><div class="tc">typically,<br>at '+rpClk(d.t)+(d.pt?'<br>on party days':'')+'</div><div class="num '+pwHiBand(d.w)+'">'+d.w+'<small>min</small></div></div>'+
           '<div class="hi-dn">'+esc(d.nm)+'</div><div class="hi-ds"><b class="'+pwHiBand(d.w)+'">'+d.under+' under</b> its own typical · '+rpClk(d.t)+' · '+esc(d.park)+'</div></div><div class="hi-rule"></div>':'')+
         rows+fine+'</div>';
     }
@@ -14888,7 +14922,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         t.lvll={v:a.hi,u:"m",b:B(a.hi),s:[esc(pwHiNm(a.id,a.n)),a.when]};})();
       /* 4 (D-A: five hatched bars, the worst the whole rail) */
       (function(){var D=M.dn,a=D[0];if(!a){c.lvdn=quiet("Most time down","lvdn","most time down","No outage on record.");return;}
-        c.lvdn='<div class="hi-card">'+pwHiHd("Most time down","lvdn","most time down")+pwHiSay(esc(pwHiNm(a.id,a.n))+' was down <span class="hi-packed">'+a.h+' hours</span> — '+a.dd+' of '+S.days+' days.')+
+        c.lvdn='<div class="hi-card">'+pwHiHd("Most time down","lvdn","most time down")+pwHiSay(esc(pwHiNm(a.id,a.n))+' was down <span class="hi-packed">'+a.h+' hours</span> — '+a.dd+'\u00a0of\u00a0'+S.days+'\u00a0days.')+ /* 0728nh THE DAY COUNT STAYS TOGETHER (owner glass of 0728ng: six months broke "— 161 / of 166 days."; ruled 2:10 PM) */
           D.map(function(w,i){return '<div class="hi-r'+(i?"":" f")+'"><div class="top"><div><div class="n">'+esc(w.n)+rf(w.nt)+'</div><div class="s">'+esc(w.p)+' · '+w.dc+' outages on '+w.dd+' days</div></div><div class="v hi-packed">'+w.h+'<small>h</small></div></div><div class="hi-bar hi-hat" style="width:'+(w.dm/a.dm*100).toFixed(1)+'%"></div></div>';}).join("")+
           '<div class="hi-fine">Ride-hours lost, rounded to the hour, '+M.span+'. The feed says down, never why.</div></div>';
         t.lvdn={v:a.h,u:"h",b:"hi-packed",s:[esc(pwHiNm(a.id,a.n)),a.dd+" of "+S.days+" days"]};})();
@@ -15056,7 +15090,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         y=262;var h=D.hero;
         if(h){var bs=466,tw=MW(h.typ,SG(BW,112)),uw2=MW(h.u,SG(BW,60));
           T(h.typ,L,bs,SG(BW,112),C.muted2);ctx.strokeStyle="#ff6b6b";ctx.lineWidth=9;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(L-8,bs-26);ctx.lineTo(L+tw+8,bs-56);ctx.stroke();ctx.lineCap="butt"; /* the typical, struck through */
-          for(i=0;i<h.tc.length;i++)T(h.tc[i],L+tw+26,bs-44+i*38,IN("500",30),C.muted);
+          for(i=0;i<h.tc.length;i++)T(h.tc[i],L+tw+26,bs-44-(h.tc.length-2)*19+i*38,IN("500",30),C.muted); /* 0728nh: a third line (on party days) keeps the label centred on the struck figure */
           T(h.u,R,bs,SG(BW,60),ink(h.band),"right");T(h.num,R-uw2-8,bs,SG(BW,280),ink(h.band),"right");
           var ns=fit(h.name,CW,SG,BW,[60,52,46]),nl=wrap2(h.name,CW,SG(BW,ns),2);y=bs+90;
           for(i=0;i<nl.length;i++)T(nl[i],L,y+i*(ns+6),SG(BW,ns),C.ink);y+=(nl.length-1)*(ns+6);
@@ -15066,7 +15100,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         n=D.rows.length;P=Math.min(150,(fy-30-y)/n);
         D.rows.forEach(function(r,k){var yy=y+k*P,vw=r.v?MW(r.v,IN(BW,30)):0;
           caps(r.k,L,yy+P/2-18,22,C.muted2);
-          if(r.v){T(r.v,R,yy+P/2+26,IN(BW,30),ink(r.band),"right");T(ell(r.n,CW-vw-28,IN(BW,36)),L,yy+P/2+26,IN(BW,36),C.ink);}
+          if(r.v){var vz=fit(r.v,CW*0.56,IN,BW,[30,27,24]),nz2;vw=MW(r.v,IN(BW,vz));nz2=fit(r.n,CW-vw-28,IN,BW,[36,32,28]);T(r.v,R,yy+P/2+26,IN(BW,vz),ink(r.band),"right");T(ell(r.n,CW-vw-28,IN(BW,nz2)),L,yy+P/2+26,IN(BW,nz2),C.ink);} /* 0728nh: a row that says "on party days" steps its figure and its name down before either loses a word */
           else T(r.n,L,yy+P/2+26,IN("500",36),C.muted2);});
       }else if(D.key==="down"){
         n=D.rows.length;y=246;P=n>1?Math.min(200,(fy-36-34-132-y)/(n-1)):0;var vmx=0;D.rows.forEach(function(r){vmx=Math.max(vmx,MW(r.v,SG(BW,54)));});
