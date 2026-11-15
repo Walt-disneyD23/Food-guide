@@ -3171,7 +3171,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nm</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nn</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -5560,7 +5560,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var wx=rcMark(ctx.raw||ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
     rcPill(ctx,R,"LIVE \u00b7 "+D.time,"rgba(61,214,140,0.16)","#9fe8c4",C.green);
     T(D.date,R,184,IN("700",28),C.ink,"right");
-    LS("3px");if(D.k2){var k1=(D.kicker+" \u00b7 "+D.pk+" \u00b7 ").toUpperCase();T(k1,L,236,IN("800",28),D.kc);T(D.k2.toUpperCase(),L+MW(k1,IN("800",28)),236,IN("800",28),D.kc2);}else T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",28),D.kc);LS("0px"); /* 0728lh S-A: two kickers, two inks, one line; 0728nh: the second kind closes the line, after the park (sheet 66) */ /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
+    LS("3px");var kz=28,kF=(D.kicker+" \u00b7 "+D.pk+(D.k2?" \u00b7 "+D.k2:"")).toUpperCase();while(kz>20&&MW(kF,IN("800",kz))>CW)kz--; /* 0728nn THE KICKER STEPS DOWN BEFORE IT LOSES A LETTER (owner glass of 0728nm, Sat Nov 14, 2026, 10:35 PM: Slinky Dog Dash\u2019s card read "JUST REOPENED \u00b7 HOLLYWOOD STUDIOS \u00b7 ROUGH RIGHT NO" - the longest kicker the fold can make ran off the card): the whole line is measured at its tracking and the type steps down from 28 until it holds the card\u2019s width; a kicker that fits draws at 28 as before */if(D.k2){var k1=(D.kicker+" \u00b7 "+D.pk+" \u00b7 ").toUpperCase();T(k1,L,236,IN("800",kz),D.kc);T(D.k2.toUpperCase(),L+MW(k1,IN("800",kz)),236,IN("800",kz),D.kc2);}else T((D.kicker+" \u00b7 "+D.pk).toUpperCase(),L,236,IN("800",kz),D.kc);LS("0px"); /* 0728lh S-A: two kickers, two inks, one line; 0728nh: the second kind closes the line, after the park (sheet 66) */ /* K-2: the kind's own ink (green GO NOW \u00b7 orange ROUGH RIGHT NOW \u00b7 accent JUST REOPENED), as the callouts rows wear it */
     var ns=fit(D.nm,CW,SG,"900",[72,66,60]),nl=wrap2(D.nm,CW,SG("900",ns));y=250+ns;for(i=0;i<nl.length;i++)T(nl[i],L,y+i*(ns+2),SG("900",ns),C.ink);y+=(nl.length-1)*(ns+2); /* the name steps down, then takes a second line; the card grows */
     function typ(ts,gap){ /* the typical in the quiet ink with its label beside it, a clause a line; struck in the card's red only where the wait has beaten it */
       var h=D.hero,tb=y+gap+Math.round(ts*0.74),tw=MW(h.typ,SG("900",ts),(-ts*0.05).toFixed(1)+"px"),lx=L+tw+34,lf=IN("700",34),ll=[],k;
@@ -17330,8 +17330,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var wx=rcMark(ctx.raw||ctx,L,102,54);P("Ride",wx,143,SG("700",45),C.ink);P("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
         rcPill(ctx,R,"RIGHT NOW · "+X.time,"rgba(125,123,255,0.20)","#b9b6ff","#b9b6ff");
         P(X.date,R,184,IN("700",28),C.ink,"right");
-        var k1=("LIVE RIDE · "+X.park).toUpperCase();
-        if(X.k2){k1+=" · ";P(k1,L,236,IN("800",28),C.accent,"left","3px");P(X.k2,L+MW(k1,IN("800",28),"3px"),236,IN("800",28),X.kc2,"left","3px");}else P(k1,L,236,IN("800",28),C.accent,"left","3px"); /* the verdict in words and in its ink: COLOR NEVER CARRIES ALONE */
+        var k1=("LIVE RIDE · "+X.park).toUpperCase();var kz=28;while(kz>20&&MW(k1+(X.k2?" \u00b7 "+X.k2:""),IN("800",kz),"3px")>CW)kz--; /* 0728nn THE KICKER STEPS DOWN BEFORE IT LOSES A LETTER: the same step on this card (its longest line ended at the very edge on his glass) */
+        if(X.k2){k1+=" · ";P(k1,L,236,IN("800",kz),C.accent,"left","3px");P(X.k2,L+MW(k1,IN("800",kz),"3px"),236,IN("800",kz),X.kc2,"left","3px");}else P(k1,L,236,IN("800",kz),C.accent,"left","3px"); /* the verdict in words and in its ink: COLOR NEVER CARRIES ALONE */
         var ns=fit(X.nm,CW,SG,"900",[72,66,60]),nl=wr(X.nm,CW,SG("900",ns));y=250+ns;for(i=0;i<nl.length;i++)P(nl[i],L,y+i*(ns+2),SG("900",ns),C.ink);y+=(nl.length-1)*(ns+2);
         var mn=[["now",SG("900",76),72],["min",SG("900",76),72]],rn=[["now",SG("900",76),72],["right",SG("900",76),72]];
         if(X.hero){var h=X.hero,ts=130,tb=y+36+Math.round(ts*0.74),tw=MW(h.typ,SG("900",ts),(-ts*0.05).toFixed(1)+"px"),lx=L+tw+34,lf=IN("700",34),ll=[];
