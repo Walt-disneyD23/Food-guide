@@ -3171,7 +3171,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728np</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nq</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -5514,7 +5514,9 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT,g0:null,g1:null};if(c.mid){D.tl.cap="";D.tl.dn="";} /* 0728nk T-A: no down-period length, no Down clock and (below) no tape - only Back */
       var inf=(typeof parkInfo!=="undefined"&&parkInfo[pkFull])||null;
       if(inf&&inf.open&&inf.close){var om=pfMinOf(new Date(inf.open).getTime()),cm=pfMinOf(new Date(inf.close).getTime()),u1=pfMinOf(c.at),u0;if(cm<=om)cm+=1440;if(u1<om)u1+=1440;u0=u1-dur;
-        if(!c.mid&&cm-om>=60&&u1>om&&u0<cm){D.tl.g0=Math.max(0,(u0-om)/(cm-om));D.tl.g1=Math.min(1,(u1-om)/(cm-om));}} /* the tape is the park's posted day; a reopening outside it draws no tape */
+        var ct9=new Date(inf.close).getTime(),lw9=null,cx9=cm;(inf.extras||[]).forEach(function(x9){if(!x9||!x9.close)return;var xt9=new Date(x9.close).getTime();if(xt9>ct9&&(!lw9||xt9>lw9.t))lw9={t:xt9,d:x9.desc||""};});if(lw9)cx9=cm+Math.round((lw9.t-ct9)/60000);
+        if(!c.mid&&cm-om>=60&&u1>om&&u0<cx9){D.tl.g0=Math.max(0,(u0-om)/(cx9-om));D.tl.g1=Math.min(1,(u1-om)/(cx9-om));
+          if(lw9){var pn9=(typeof tdPartyOfInfo==="function"&&typeof tyDs==="function")?tdPartyOfInfo(inf,tyDs()):null,pe9=(pn9&&typeof tyEvParty==="function")?tyEvParty(pkFull):null;D.tl.gm=(cm-om)/(cx9-om);D.tl.pl=pn9?"PARTY HOURS":(lw9.d||"Late hours").toUpperCase();D.tl.pe=(pe9&&pe9.em)||"";}}} /* 0728nq THE TAPE RUNS TO THE END OF THE NIGHT (owner glass Sat Nov 14, 2026, 10:41 PM: Slinky Dog Dash, down 8:32-10:22 PM on a party night, drew no bar; ruled Sun Nov 15 on sheets 100-102, B-B and L-B): the tape is the park's posted day and, on a night with a later window, runs on to that window's close (the latest extra closing after the park, as tySweep reads it); gm is where the park day ends, pl names the stretch after it - PARTY HOURS on a night the hours themselves make a party (tdPartyOfInfo, the predicate behind "on party nights"), else the window's own name - and pe is the event's own emblem only when the events table places a party at this park (tyEvParty: never a guessed costume). A reopening outside the whole night draws no tape */
       if(typeof c.w==="number"){D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);D.basis=c.mid?"Wait is live \u00b7 back-up time from live status samples":"Wait is live \u00b7 down period timed from live status samples";}
       else{D.num="OPEN";D.sub="NO POSTED WAIT";D.numCol=pfTcol("short");D.basis=c.mid?"Back-up time from live status samples":"Down period timed from live status samples";}
       if(c.go&&typeof c.w==="number"){D.k2="GO NOW";D.kc2=PW_CARD_ALT.green;D.d1=c.go.delta+" under";D.d2="typically "+c.go.typ+" min this half-hour"+pfMetaTail(c.go)+pfMetaR3(c.go);D.basis="Typical = this half-hour over "+(c.go.bw||("the last "+days+" days"))+" of live waits \u00b7 "+(c.mid?"back-up time":"down period timed")+" from live status samples";
@@ -5575,9 +5577,12 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     function side(c,a){return a.map(function(s){return [s[0],s[1],c,s[3]];});}
     if(D.tl){
       if(D.tl.cap){y+=44+26;T(D.tl.cap,L,y,IN("800",26),C.muted,"left","3px");}else y+=30; /* 0728nk T-A: no cap when the start is not known */
-      if(D.tl.g0!=null){y+=16;rr(L,y,CW,86,22);ctx.fillStyle="rgba(255,255,255,0.10)";ctx.fill();
+      if(D.tl.g0!=null){y+=16;var gx9=(D.tl.gm!=null)?L+CW*D.tl.gm:null,pcs9=(gx9!==null&&gx9-5-L>=40&&R-gx9-5>=40)?[[L,gx9-5-L],[gx9+5,R-gx9-5]]:[[L,CW]],pq9;
+        ctx.fillStyle="rgba(255,255,255,0.10)";for(pq9=0;pq9<pcs9.length;pq9++){rr(pcs9[pq9][0],y,pcs9[pq9][1],86,22);ctx.fill();} /* 0728nq L-B: on a night with a later window the tape is two pieces, broken where the park day ends - no line, so nothing reads as a clock */
         var sx=L+CW*D.tl.g0,sw=Math.max(14,CW*(D.tl.g1-D.tl.g0));if(sx+sw>R)sx=R-sw;
-        ctx.save();rr(L,y,CW,86,22);ctx.clip();ctx.beginPath();ctx.rect(sx,y,sw,86);ctx.clip();ctx.strokeStyle="#ff6b6b";ctx.lineWidth=14;for(i=sx-100;i<sx+sw+20;i+=40){ctx.beginPath();ctx.moveTo(i,y+96);ctx.lineTo(i+106,y-10);ctx.stroke();}ctx.restore(); /* the down stretch, hatched in the card's red on the tape of the park's day */
+        for(pq9=0;pq9<pcs9.length;pq9++){ctx.save();rr(pcs9[pq9][0],y,pcs9[pq9][1],86,22);ctx.clip();ctx.beginPath();ctx.rect(sx,y,sw,86);ctx.clip();ctx.strokeStyle="#ff6b6b";ctx.lineWidth=14;for(i=sx-100;i<sx+sw+20;i+=40){ctx.beginPath();ctx.moveTo(i,y+96);ctx.lineTo(i+106,y-10);ctx.stroke();}ctx.restore();}
+        if(pcs9.length===2&&D.tl.pl){var pf9=IN("800",24),pw9=MW(D.tl.pl,pf9)+3*D.tl.pl.length,ew9=D.tl.pe?40:0,cr9=D.tl.cap?L+MW(D.tl.cap,IN("800",26))+3*D.tl.cap.length+40:L,pr9=Math.min(R,Math.max(pcs9[1][0]+pcs9[1][1]/2+(pw9+ew9)/2,cr9+pw9+ew9));if(pw9+ew9>pcs9[1][1])pr9=R;
+          T(D.tl.pl,pr9,y-16,pf9,C.muted,"right","3px");if(D.tl.pe)T(D.tl.pe,pr9-pw9-12,y-16,IN("800",26),C.ink,"right");} /* 0728nq B-B: the stretch after the park day is named on the cap's line, centred over its own piece; a name wider than its piece sits at the card's edge */ /* the down stretch, hatched in the card's red on the tape of the park's day */
         y+=86;}
       y+=16+38;var ef=SG("900",38),et=SG("700",38);
       if(D.tl.dn){T("Down",L,y,ef,C.ink);T(D.tl.dn,L+MW("Down",ef)+11,y,et,C.muted);
