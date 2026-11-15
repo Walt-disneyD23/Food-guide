@@ -3171,7 +3171,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nk</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nl</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -11000,6 +11000,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     else{o.line="Open right now.";o.lead={t:o.line,c:"#3dd68c"};} /* open with no posted wait (a trail, a meet): the sheet's OPEN word, in its green */
     var c=has?rsFeedHit(rid):null;
     if(c)o.pill={lab:rsKick(c.kind).toUpperCase(),rec:(c.kind==="re")?null:(c.delta+" "+(c.kind==="go"?"under":"over")),c:(c.kind==="go")?"#3dd68c":(c.kind==="rough")?"#ff9f6b":PW_CARD_ALT.accent};
+    if(c&&c.kind!=="re"){var t9=(typeof pfMetaTail==="function")?pfMetaTail(c).replace(/^\s+/,""):"",r9=(typeof pfMetaR3==="function")?pfMetaR3(c).replace(/^\s*\u00b7\s*/,""):"",lb9=["typically this half-hour"];if(t9)lb9.push(t9);if(r9)lb9.push(r9); /* 0728nl THE LIVE RIDE CARD JOINS THE CHUNKY FAMILY (owner-ruled Sat Nov 14, 2026 on sheets 88\u201392: L-C 9:20 PM "LC looks great"; the cases 9:30 PM "those look wonderful!!"): the single callout card's hero, from the same feed card - the typical with its label (a clause a line, as pfCardModel's lab says it), struck only on a GO NOW (X-A), the receipt, the kind's ink; the basis line only where the feed names its window */
+      o.hero={typ:String(c.typ),lab:lb9,strike:c.kind==="go",d:o.pill.rec,ink:o.pill.c};o.basis=c.bw?("Typical = this half-hour over "+c.bw+" of live waits"):null;}
     if(st==="DOWN"){if(rd.why){var w9=rsDownWhy(rd.why);o.sub=w9.charAt(0).toUpperCase()+w9.slice(1);}} /* the sheet's own sentence after "Down right now ·", standing alone under the headline that already says it */
     else{var rr9=(typeof tyRowRead==="function")?tyRowRead(rid):null; /* 0728ks THE CARD COPIES THE SHEET'S BOX: a ride seated on today's board sends the row's own sentence and its TYPICAL LOW footer, as the sheet shows them (THE SHEET REPEATS THE ROW, 0728ju); an unseated ride reads as before */
       if(rr9&&rr9.text){o.sub=rr9.text;o.fl=rr9.fl||null;}
@@ -13382,13 +13384,25 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         tiles.push({label:"RELIABILITY",pre:"",big:(r.uptimePct!=null?r.uptimePct+"%":"—"),post:"uptime",cls:relCls(r),name:(r.downMinutes>0?"Up vs. down":"No downtime"),ctx:(r.downMinutes>0?r.downMinutes+" min down":"ran clean")});
         tiles.push({label:"OUTAGES",pre:"",big:r.downEvents+"×",post:"",cls:(r.downEvents>0?"pw-l":"pw-s"),name:pwOutName(r,cClause,cKind),ctx:(r.downMinutes>0?r.downMinutes+" min total":"clean run")});
       }
+      var s4=null,nw9=new Date(); /* 0728nl THE LIVE RIDE CARD JOINS THE CHUNKY FAMILY (owner-ruled Sat Nov 14, 2026 on sheets 88\u201392: L-C 9:20 PM "LC looks great"; the cases 9:30 PM "those look wonderful!!"): the day as four figures (L-C), from the values the four tiles read - the peak and the low in their bands with their clocks, the uptime, the down periods with their total; 0 where the day was logged and nothing went down, a dash only where nothing was logged */
+      if(r&&d){var live4=!isFinal(d),pu4=su?su.peak:r.maxWait,lo4=su?su.low:r.minWait,pt4=su?pwClk(su.peakAt):(r.peakAt?fmtTime(r.peakAt):""),lt4=su?pwClk(su.lowAt):(r.minAt?fmtTime(r.minAt):""),nv4=live4?"no waits yet":"no waits posted",dm4=r.downMinutes||0,de4=r.downEvents||0,up4=(r.uptimePct!=null);
+        s4=[(pu4==null)?{big:"\u2013",cls:"pw-n",lab:nv4}:{big:String(pu4),cls:tier(pu4),lab:"peak"+(pt4?" \u00b7 "+pt4:"")},
+          (lo4==null)?{big:"\u2013",cls:"pw-n",lab:nv4}:{big:String(lo4),cls:tier(lo4),lab:"low"+(lt4?" \u00b7 "+lt4:"")},
+          {big:(up4?r.uptimePct+"%":"\u2013"),cls:(up4?relCls(r):"pw-n"),lab:"uptime"},
+          (!up4)?{big:"\u2013",cls:"pw-n",lab:"down periods"}:{big:String(de4),cls:(de4>0?"pw-l":"pw-s"),lab:(de4>0?("down"+(dm4>0?" \u00b7 "+(dm4<60?dm4+" min":Math.floor(dm4/60)+"h"+(dm4%60?" "+(dm4%60)+"m":"")):"")):"down periods")}];
+        s4.forEach(function(q){q.one=/^\d$/.test(q.big);});}
+      var ln4=String(o.line||"").replace(/\.$/,""),rn4=/ right now$/.test(ln4),isN4=!!(o.lead&&/^\d+$/.test(o.lead.t)),ft4=[];
+      if(o.hero&&o.basis)ft4.push(o.basis);if(su)ft4.push("Peak & Lowest = waits that held 25+ min \u00b7 Reliability logged every 2 min");
+      var lrc={time:nw9.toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}),date:nw9.toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"}),
+        park:o.kpark||"",k2:o.pill?o.pill.lab:null,kc2:o.pill?o.pill.c:null,nm:titleName(o.name),hero:(isN4&&o.hero)?o.hero:null,num:isN4?o.lead.t:null,numCol:(o.lead&&o.lead.c)||PW_CARD_ALT.ink,
+        word:isN4?null:(rn4?ln4.slice(0,-10):ln4),tail:(!isN4&&rn4)?1:0,sub:o.sub||"",fl:o.fl||null,s4:s4,foot:ft4};
       var ds=(d&&d.dates&&d.dates[0])||etDate(0);
-      return {W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(o.name),kpark:o.kpark,badge:"RIGHT NOW",line:o.line,lead:o.lead,pill:o.pill,sub:o.sub,subBox:!!o.sub,fl:o.fl||null,band:bm,tiles:tiles,ll:o.ll,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-now-"+ds+".png",shareTitle:"RideCue — "+o.name};
+      return {W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(o.name),kpark:o.kpark,badge:"RIGHT NOW",line:o.line,lead:o.lead,pill:o.pill,sub:o.sub,subBox:!!o.sub,fl:o.fl||null,band:bm,tiles:tiles,ll:o.ll,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-now-"+ds+".png",shareTitle:"RideCue — "+o.name,lrc:lrc}; /* 0728nl: the chunky painter reads lrc; the fields before it are the card as it was sent (the tiles stay pinned to the Wrap ride card's) */
     }
     function pwEmitSized(D){ /* 0728gq THE FAMILY SPEAKS UP: every share card that sets a type scale sizes itself here (the resort, park and ride Wrap cards joined the live ride card). The card sizes itself: one measuring pass on a scratch canvas (drawCard reports where its content ends, D.end), then the real emit at that height — the two-line read, a pill on its own line and the lane block all move the footer, which the Wrap card never had to ask about */
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
-      fr.then(function(){try{var mc=document.createElement("canvas");mc.width=1080;mc.height=2400;D.H=2400;D.end=null;drawCard(D.kpark?rcDay(mc.getContext("2d")):mc.getContext("2d"),D);}catch(e){}
-        D.H=Math.round((D.end||1050)+(D.ll?((D.tk&&D.tk>1)?366:344):204));emitCard(D);}); /* 0728gl C: the taller lane block (140) asks 366 */
+      fr.then(function(){try{var mc=document.createElement("canvas");mc.width=1080;mc.height=2400;D.H=2400;D.end=null;drawCard((D.kpark&&!D.lrc)?rcDay(mc.getContext("2d")):mc.getContext("2d"),D);}catch(e){}
+        D.H=D.lrc?Math.round(D.end||1050):Math.round((D.end||1050)+(D.ll?((D.tk&&D.tk>1)?366:344):204));emitCard(D);}); /* 0728nl: the chunky painter reports the whole card (the lane and the footer are inside its count) */ /* 0728gl C: the taller lane block (140) asks 366 */
     }
     function pwEmitPair(A,B,key){ /* 0728iz TWO SHAPES ON THE SHEET (the Compare card\u2019s grammar, 0728ib): two self-sized cards from drawCard, the sheet\u2019s chips named by each shape, the pick remembered per key */
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
@@ -17274,7 +17288,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
 
     /* ---- Share cards: one shared dark-card renderer for Wrap / park / ride ---- */
     function emitCard(D){
-      var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;var ctx=D.kpark?rcDay(cv.getContext("2d")):cv.getContext("2d"); /* 0728is THE LIVE CARD WEARS DAYLIGHT: a card that names its park (the live ride card, the show card) is live; the Wrap cards keep Harbor */
+      var cv=document.createElement("canvas");cv.width=D.W;cv.height=D.H;var ctx=(D.kpark&&!D.lrc)?rcDay(cv.getContext("2d")):cv.getContext("2d"); /* 0728nl: the live ride card is in the chunky dark family now; the show card keeps Daylight */ /* 0728is THE LIVE CARD WEARS DAYLIGHT: a card that names its park (the live ride card, the show card) is live; the Wrap cards keep Harbor */
       var fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
       fr.then(function(){
         drawCard(ctx,D);
@@ -17291,6 +17305,72 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function T(s,x,y,f,c,a,b){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline=b||"alphabetic";ctx.fillText(s,x,y);}
       function ell(s,mw,f){ctx.font=f;if(ctx.measureText(s).width<=mw)return s;while(s.length>1&&ctx.measureText(s+"…").width>mw)s=s.slice(0,-1);return s+"…";}
       function wrap2(s,mw,f,n){ctx.font=f;n=n||2;var ws=String(s).split(" "),ln=[],cur="";for(var i=0;i<ws.length;i++){var t=cur?cur+" "+ws[i]:ws[i];if(ctx.measureText(t).width>mw&&cur){ln.push(cur);cur=ws[i];}else cur=t;}if(cur)ln.push(cur);if(ln.length>n){ln=ln.slice(0,n-1).concat([ell(ln.slice(n-1).join(" "),mw,f)]);}return ln;} /* 0728gq: n lines at most (two unless asked), the last ellipsized */
+      if(D.lrc){lrcPaint();return;} /* 0728nl: the live ride card has its own painter; every other card draws below as it always has */
+      function lrcPaint(){ /* 0728nl THE LIVE RIDE CARD JOINS THE CHUNKY FAMILY (owner-ruled Sat Nov 14, 2026 on sheets 88\u201392: L-C 9:20 PM "LC looks great"; the cases 9:30 PM "those look wonderful!!"): the live ride card in the family's chunky dark dress, every state saying what the card already said. The family head (the wordmark, the RIGHT NOW pill, the date); the kicker LIVE RIDE · <park> with the feed's verdict closing the line in its own ink (the pill it rode retires); the name at 900; the hero - the feed's typical with its label (struck on a GO NOW only), the wait on its own row with "min now", the receipt as a sentence - or the wait alone in its band, or the status word in the number's seat; the read in its box with the row's TYPICAL LOW footer; L-C, the day as four figures on one row, a single digit one digit to the right, a green 0 over "down periods" on a clean day and a dash only where nothing was logged; the day's chart (bandBlock, the Wrap ride card's own); the lane as posted; the footer. Sets D.end to the card's height. */
+        var X=D.lrc,i,k,y;
+        function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+        function TR(f){var m=/^(\d+) (\d+)px/.exec(f);return (m&&m[1]==="900"&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"";}
+        function P(t,x,yy,f,c,a,ls){ctx.font=f;var q=ls||TR(f);if(q)LS(q);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(t,x,yy);if(q)LS("0px");}
+        function MW(t,f,ls){ctx.font=f;var q=ls||TR(f);if(q)LS(q);var w=ctx.measureText(t).width;if(q)LS("0px");return w;}
+        function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
+        function wr(t,mw,f,n){n=n||2;var ws=String(t).split(" "),ln=[],cur="",q,u,e;for(q=0;q<ws.length;q++){u=cur?cur+" "+ws[q]:ws[q];if(MW(u,f)>mw&&cur){ln.push(cur);cur=ws[q];}else cur=u;}if(cur)ln.push(cur);if(ln.length>n){e=ln.slice(n-1).join(" ");while(e.length>1&&MW(e+"…",f)>mw)e=e.slice(0,-1);ln=ln.slice(0,n-1).concat([e+"…"]);}return ln;} /* the painter's own wrap: a width is the width that is drawn (the 900 lines are tracked tighter) */
+        function fit(t,mw,FN,wt,sz){var q;for(q=0;q<sz.length-1;q++)if(MW(t,FN(wt,sz[q]))<=mw)break;return sz[q];}
+        function big(t,x,top,sz,c,side,sc){var q,sw=0,nw,g=sc||18;for(q=0;q<side.length;q++)sw=Math.max(sw,MW(side[q][0],side[q][1]));
+          for(;;){nw=MW(t,SG("900",sz),(-sz*0.05).toFixed(1)+"px");if(x+nw+g+sw<=R||sz<=120)break;sz-=10;}
+          var base=top+Math.round(sz*0.74),x0=x-Math.round(sz*0.03);
+          P(t,x0,base,SG("900",sz),c,"left",(-sz*0.05).toFixed(1)+"px");
+          var yy=base-Math.round(sz*0.015);for(q=0;q<side.length;q++){P(side[q][0],x0+nw+g,yy,side[q][1],c);yy-=side[q][2];}
+          return base;}
+        ctx.clearRect(0,0,W,H);
+        var cx=36,cy=36,cw=W-72,ch=H-72;
+        rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
+        var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+        var gl=ctx.createRadialGradient(W/2,cy-40,40,W/2,cy-40,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
+        var L=cx+58,R=cx+cw-58,CW=R-L;
+        var wx=rcMark(ctx.raw||ctx,L,102,54);P("Ride",wx,143,SG("700",45),C.ink);P("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
+        rcPill(ctx,R,"RIGHT NOW · "+X.time,"rgba(125,123,255,0.20)","#b9b6ff","#b9b6ff");
+        P(X.date,R,184,IN("700",28),C.ink,"right");
+        var k1=("LIVE RIDE · "+X.park).toUpperCase();
+        if(X.k2){k1+=" · ";P(k1,L,236,IN("800",28),C.accent,"left","3px");P(X.k2,L+MW(k1,IN("800",28),"3px"),236,IN("800",28),X.kc2,"left","3px");}else P(k1,L,236,IN("800",28),C.accent,"left","3px"); /* the verdict in words and in its ink: COLOR NEVER CARRIES ALONE */
+        var ns=fit(X.nm,CW,SG,"900",[72,66,60]),nl=wr(X.nm,CW,SG("900",ns));y=250+ns;for(i=0;i<nl.length;i++)P(nl[i],L,y+i*(ns+2),SG("900",ns),C.ink);y+=(nl.length-1)*(ns+2);
+        var mn=[["now",SG("900",76),72],["min",SG("900",76),72]],rn=[["now",SG("900",76),72],["right",SG("900",76),72]];
+        if(X.hero){var h=X.hero,ts=130,tb=y+36+Math.round(ts*0.74),tw=MW(h.typ,SG("900",ts),(-ts*0.05).toFixed(1)+"px"),lx=L+tw+34,lf=IN("700",34),ll=[];
+          h.lab.forEach(function(q){ll=ll.concat(wr(q,R-lx,lf,2));});
+          P(h.typ,L,tb,SG("900",ts),"rgba(154,166,196,0.55)","left",(-ts*0.05).toFixed(1)+"px");
+          if(h.strike){var mx=L+tw/2,my=tb-Math.round(ts*0.35),hx=(tw/2+10)*0.990,hy=(tw/2+10)*0.139;ctx.strokeStyle="#ff6b6b";ctx.lineWidth=13;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(mx-hx,my+hy);ctx.lineTo(mx+hx,my-hy);ctx.stroke();ctx.lineCap="butt";}
+          var l0=tb-Math.round(ts*0.35)-Math.round(ll.length*42/2)+34;for(k=0;k<ll.length;k++)P(ll[k],lx,l0+k*42,lf,C.muted);
+          y=Math.max(tb,l0+(ll.length-1)*42);
+          y=big(X.num,L,y+16,330,h.ink,mn,22);
+          var rs=fit(h.d+" its own typical",CW,SG,"900",[48,44,40]),dw=MW(h.d,SG("900",rs))+Math.round(rs*0.27);y+=44+rs;P(h.d,L,y,SG("900",rs),h.ink);P("its own typical",L+dw,y,SG("700",rs),C.ink);}
+        else if(X.num!==null)y=big(X.num,L,y+34,330,X.numCol,mn,22);
+        else if(X.tail)y=big(X.word,L,y+34,200,X.numCol,rn,22); /* the status word in the number's seat, "right now" where "min now" stands */
+        else{var wz=fit(X.word,CW,SG,"900",[100,92,84,76]);y+=40+wz;P(X.word,L,y,SG("900",wz),X.numCol);}
+        if(X.sub){var sf=IN("500",31),sl=wr(X.sub,CW-52,sf,4),bh=33+sl.length*42+(X.fl?66:0),by=y+40;
+          rr(L,by,CW,bh,20);ctx.fillStyle="rgba(255,255,255,0.05)";ctx.fill();ctx.lineWidth=2;ctx.strokeStyle="rgba(255,255,255,0.10)";ctx.stroke();
+          for(i=0;i<sl.length;i++)P(sl[i],L+26,by+53+i*42,sf,"#c9d3e6");
+          if(X.fl){var fy=by+33+sl.length*42,fl1=String(X.fl.l).toUpperCase(),flw=MW(fl1,IN("800",24),"2.4px"),fz=fit(String(X.fl.c),CW-52-flw-24,IN,"800",[28,26,24,22]);
+            ctx.strokeStyle="rgba(255,255,255,0.10)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,fy);ctx.lineTo(R,fy);ctx.stroke();
+            P(fl1,L+26,fy+42,IN("800",24),C.muted,"left","2.4px");P(String(X.fl.c),R-26,fy+43,IN("800",fz),"#b3bbf7","right");}
+          y=by+bh;}
+        if(X.s4){y+=36;hair(y);var cw4=(CW-54)/4,fb=y+92,lz=25,zw=MW("0",SG("900",76)); /* L-C: one row of four, the figure over its label */
+          X.s4.forEach(function(q){var z=fit(q.lab,cw4,IN,"600",[25,24,23,22,21]);if(z<lz)lz=z;});
+          for(i=0;i<X.s4.length;i++){var q4=X.s4[i],x4=L+i*(cw4+18);P(q4.big,x4+(q4.one?zw:0),fb,SG("900",76),tcol(q4.cls));P(q4.lab,x4,fb+38,IN("600",lz),"#b9c4dd");} /* a single digit sits one digit to the right (owner, 9:20 PM: "it hugs the uptime number"); its label keeps the column's edge */
+          y=fb+38;}
+        if(D.band){y+=34;y+=bandBlock(L,y,CW,D.band);}
+        if(D.ll){var l=D.ll,lt=l.at?("Earliest time "+l.at):(l.full?"Full right now":"Not offered right now"),rt=l.price?null:(l.stamp?("as posted "+l.stamp):null); /* the lane as posted: the card's own words, in the row dress */
+          y+=30;hair(y);P("LIGHTNING LANE · "+(l.k==="single"?"SINGLE PASS":"MULTI PASS"),L,y+48,IN("800",22),C.muted,"left","2.4px");
+          var rW=l.price?MW(l.price,SG("900",54))+26:(rt?MW(rt,IN("500",26))+26:0);
+          P(ell(lt,CW-rW,SG("700",38)),L,y+94,SG("700",38),C.ink);
+          if(l.price)P(l.price,R,y+88,SG("900",54),C.ink,"right");else if(rt)P(rt,R,y+92,IN("500",26),C.muted2,"right");
+          y+=104;}
+        y+=40;hair(y);
+        var bmw=CW-MW("Data: ThemeParks.wiki",IN("500",25))-28,fl2=[],bl;(X.foot||[]).forEach(function(q){fl2=fl2.concat(wr(q,bmw,IN("500",23),2));});
+        for(bl=0;bl<fl2.length;bl++)P(fl2[bl],L,y+59+bl*34,IN("500",23),C.muted2);
+        P("ridecue.live",R,y+62,IN("700",31),C.green,"right");
+        P("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+        ctx.restore();
+        D.end=y+Math.max(98,59+(fl2.length-1)*34+8)+52+36;
+      }
 
       ctx.clearRect(0,0,W,H);
       var cx=36,cy=36,cw=W-72,ch=H-72;
