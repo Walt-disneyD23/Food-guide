@@ -3171,7 +3171,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nl</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nm</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -13390,11 +13390,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           (lo4==null)?{big:"\u2013",cls:"pw-n",lab:nv4}:{big:String(lo4),cls:tier(lo4),lab:"low"+(lt4?" \u00b7 "+lt4:"")},
           {big:(up4?r.uptimePct+"%":"\u2013"),cls:(up4?relCls(r):"pw-n"),lab:"uptime"},
           (!up4)?{big:"\u2013",cls:"pw-n",lab:"down periods"}:{big:String(de4),cls:(de4>0?"pw-l":"pw-s"),lab:(de4>0?("down"+(dm4>0?" \u00b7 "+(dm4<60?dm4+" min":Math.floor(dm4/60)+"h"+(dm4%60?" "+(dm4%60)+"m":"")):"")):"down periods")}];
-        s4.forEach(function(q){q.one=/^\d$/.test(q.big);});}
+        s4.forEach(function(q,i4){q.one=(i4===3)&&/^\d$/.test(q.big);});} /* 0728nm (owner glass of 0728nl, Sat Nov 14, 2026; ruled 10:08 PM: "I\u2019m good with all three of those leans") THE NUDGE IS THE DOWN COUNT\u2019S: he asked for it there (9:20 PM); Jingle Cruise\u2019s low of 5 had moved off its label too */
       var ln4=String(o.line||"").replace(/\.$/,""),rn4=/ right now$/.test(ln4),isN4=!!(o.lead&&/^\d+$/.test(o.lead.t)),ft4=[];
-      if(o.hero&&o.basis)ft4.push(o.basis);if(su)ft4.push("Peak & Lowest = waits that held 25+ min \u00b7 Reliability logged every 2 min");
+      if(o.hero&&o.basis)ft4.push(o.basis);if(su){ft4.push("Peak & Lowest = waits that held 25+ min");ft4.push("Reliability logged every 2 min");} /* 0728nm THE FINE PRINT KEEPS ITS LINES: a sentence a line */
       var lrc={time:nw9.toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}),date:nw9.toLocaleDateString("en-US",{month:"short",day:"numeric",timeZone:"America/New_York"}),
-        park:o.kpark||"",k2:o.pill?o.pill.lab:null,kc2:o.pill?o.pill.c:null,nm:titleName(o.name),hero:(isN4&&o.hero)?o.hero:null,num:isN4?o.lead.t:null,numCol:(o.lead&&o.lead.c)||PW_CARD_ALT.ink,
+        park:o.kpark||"",k2:o.pill?o.pill.lab:null,kc2:o.pill?o.pill.c:null,nm:rcShortNm(o.rid,titleName(o.name)), /* 0728nm THE CARD SAYS THE SHORT NAME: the Highlights table, as the callout cards read it (ONE TABLE) - "Tower of Terror" */hero:(isN4&&o.hero)?o.hero:null,num:isN4?o.lead.t:null,numCol:(o.lead&&o.lead.c)||PW_CARD_ALT.ink,
         word:isN4?null:(rn4?ln4.slice(0,-10):ln4),tail:(!isN4&&rn4)?1:0,sub:o.sub||"",fl:o.fl||null,s4:s4,foot:ft4};
       var ds=(d&&d.dates&&d.dates[0])||etDate(0);
       return {W:1080,H:0,tk:1.36,ts:32,lane:lane,lgIv:lgIv,title:titleName(o.name),kpark:o.kpark,badge:"RIGHT NOW",line:o.line,lead:o.lead,pill:o.pill,sub:o.sub,subBox:!!o.sub,fl:o.fl||null,band:bm,tiles:tiles,ll:o.ll,foot:(su?"Peak & Lowest = waits that held 25+ min":null),foot2:(su?"Reliability logged every 2 min":null),link:"ridecue.live",fname:"ridecue-ride-now-"+ds+".png",shareTitle:"RideCue — "+o.name,lrc:lrc}; /* 0728nl: the chunky painter reads lrc; the fields before it are the card as it was sent (the tiles stay pinned to the Wrap ride card's) */
@@ -17364,8 +17364,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           if(l.price)P(l.price,R,y+88,SG("900",54),C.ink,"right");else if(rt)P(rt,R,y+92,IN("500",26),C.muted2,"right");
           y+=104;}
         y+=40;hair(y);
-        var bmw=CW-MW("Data: ThemeParks.wiki",IN("500",25))-28,fl2=[],bl;(X.foot||[]).forEach(function(q){fl2=fl2.concat(wr(q,bmw,IN("500",23),2));});
-        for(bl=0;bl<fl2.length;bl++)P(fl2[bl],L,y+59+bl*34,IN("500",23),C.muted2);
+        var bmw=CW-MW("Data: ThemeParks.wiki",IN("500",25))-28,fl2=[],bl;var fz2=23;(X.foot||[]).forEach(function(q){var z=fit(q,bmw,IN,"500",[23,22,21]);if(z<fz2)fz2=z;}); /* 0728nm (owner glass of 0728nl, Sat Nov 14, 2026; ruled 10:08 PM: "I\u2019m good with all three of those leans") THE FINE PRINT KEEPS ITS LINES: a sentence a line; the lines step down together (23 to 21) until each holds one line beside the credit, and a sentence 21 cannot hold breaks into two EVEN lines - never one word alone ("...days of live / waits" on his glass) */
+        function bal(q,f){if(MW(q,f)<=bmw)return [q];var ws=q.split(" "),best=null,bi,ba,bb,bd;for(bi=1;bi<ws.length;bi++){ba=ws.slice(0,bi).join(" ");bb=ws.slice(bi).join(" ");if(MW(ba,f)<=bmw&&MW(bb,f)<=bmw){bd=Math.abs(MW(ba,f)-MW(bb,f));if(best===null||bd<best[0])best=[bd,ba,bb];}}return best?[best[1],best[2]]:wr(q,bmw,f,2);}
+        (X.foot||[]).forEach(function(q){fl2=fl2.concat(bal(q,IN("500",fz2)));});
+        for(bl=0;bl<fl2.length;bl++)P(fl2[bl],L,y+59+bl*34,IN("500",fz2),C.muted2);
         P("ridecue.live",R,y+62,IN("700",31),C.green,"right");
         P("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
         ctx.restore();
