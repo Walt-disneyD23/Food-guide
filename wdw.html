@@ -3171,7 +3171,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nk</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -5304,7 +5304,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      Typicals display as integers; delta chips derive from DISPLAYED numbers so the
      on-screen math always checks. Reopens: own 2-poll-confirmed tracker (pfTick),
      own writer, own state — never reads the alerts engine’s prevStatus/rebreak. */
-  var pfBase=null,pfBaseAt=0,pfRuns={},pfReopens=[];
+  var pfBase=null,pfBaseAt=0,pfRuns={},pfReopens=[],pfOk={}; /* 0728nk: pfOk - when this phone last saw each ride not DOWN */
   var pfAllOpen=false; /* 0728lv: Callouts' door - the chapter shows its lead and two more until it is opened (session state, as Live shows' More shows) */
   var pfLastShare={cards:[],days:0}; /* 0711f: the story door's lookup — written only by pfFeedHTML, read only by the .pf-shr click */
   function pfEtMin(){ /* ET minutes since midnight — mirrors the Worker’s etMinutes() so bucket keys align */
@@ -5329,15 +5329,25 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     Object.keys(roster).forEach(function(id){
       if(roster[id].kind!=="ride")return;
       var lv=liveById[id];if(!lv)return;
-      if(lv.status==="DOWN"){var run=pfRuns[id];if(!run||now-run.last>gap)run=pfRuns[id]={ticks:0,since:now};run.ticks++;run.last=now;} /* 0728lg: a down seen again after a nap starts the run over - the phone did not watch the ride stay down */
+      if(lv.status==="DOWN"){var run=pfRuns[id];if(!run||now-run.last>gap)run=pfRuns[id]={ticks:0,since:now,mid:(pfOk[id]&&now-pfOk[id]<=gap)?0:1};run.ticks++;run.last=now;} /* 0728nk THE CARD CLAIMS ONLY THE START IT KNOWS (owner glass, Sat Nov 14, 2026: Winnie the Pooh read "since 5:45 PM" at 6:00 and "since 5:31 PM" at 6:15; the record says 5:21. Ruled T-A 6:32 PM: "I like your lean with TA"): mid = the ride was already DOWN when the phone first looked (it opened or woke onto the outage) - run.since is then when the phone looked, not when the ride went down */ /* 0728lg: a down seen again after a nap starts the run over - the phone did not watch the ride stay down */
       else{
         var r=pfRuns[id];
-        if(r&&r.ticks>=2&&lv.status==="OPERATING"&&now-r.last<=gap){pfReopens.push({id:id,at:now,since:r.since});if(pfReopens.length>10)pfReopens=pfReopens.slice(-10);}
-        if(r)delete pfRuns[id];
+        if(r&&r.ticks>=2&&lv.status==="OPERATING"&&now-r.last<=gap){pfReopens.push({id:id,at:now,since:r.since,mid:r.mid?1:0});if(pfReopens.length>10)pfReopens=pfReopens.slice(-10);if(r.mid)pfWakeAt=now;} /* 0728nk: a comeback whose start the phone does not know reopens the ten-minute window in which the Worker's day rows are read, so the row can supply it (this function still reads no rows itself) */
+        if(r)delete pfRuns[id];pfOk[id]=now;
       }
     });
   }
   var pfRec=null,pfInc=null,pfWakeAt=0,pfTickAt=0; /* 0728li THE RECORD WEARS THE CLOCK (owner-ruled B-3, Nov 10, 2026): after a nap the phone vouches for nothing (0728lg) - the Worker watched. pfRec is today's day record (the five-minute rows, every ride); pfInc is this phone's ledger (the /save echo, minute-true) */
+  function pfRunStart(rows,col,i){ /* 0728nk A MISSED READING DOES NOT END A DOWN PERIOD (the Worker's 5:25 PM read of Magic Kingdom failed on Nov 14, 2026; three rides down across it - Winnie the Pooh, Under the Sea, Big Thunder - had their start read as 5:31 PM; ruled 7:29 PM): the row where the DOWN run holding row i began. A reading the record does not have (null: the park's read failed, or the row is shorter than the roster) between two DOWN readings no more than ten minutes apart is part of the run - the same ten minutes the record's own gap rule allows; a longer silence is the record not watching, and the run starts after it. ONE READER: the comeback's clock (pfRecReopens) and the Down right now card's since (dnSinceMap) both ask here, so they cannot disagree */
+    function v(k){var w=rows[k].w;return (w&&col<w.length&&w[col]!==undefined)?w[col]:null;}
+    var s=i,k,g;
+    for(;;){
+      if(s>0&&v(s-1)===-1){s--;continue;}
+      k=s-1;while(k>=0&&v(k)===null)k--;
+      if(k>=0&&k<s-1&&v(k)===-1){g=rows[s].t-rows[k].t;if(g>0&&g<=10){s=k;continue;}}
+      return s;
+    }
+  }
   function pfRecReopens(rec,inc,now,etMin){ /* pure: the comebacks the Worker's records prove, newest 20 minutes - [{id,at,since}] in ms. THE DAY RECORD: a ride that ran, then sat DOWN for two rows or more, then posts a running row - every row of the run and its comeback within ten minutes of the row before (a gap is the record not watching: the transition hour, a Worker pause); CLOSED or an absent row between is a scheduled opening, never a comeback; a ride with no running row before the run opened late and gets no card. THE LEDGER: the ride's newest entry, closed by a comeback (u, never n), five minutes or more - its clocks win where it names the same comeback (within six minutes) or the rows have not caught up; with no day record to say the ride ran, the ledger alone seats nothing */
     var out={},MIN=60000,base=now-(now%MIN),snap=rec&&rec.snap,ids=null,rows=null,col,i;
     function ms(t){return base-(etMin-t)*MIN;}
@@ -5347,7 +5357,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       for(col=0;col<ids.length;col++){
         var j=-1;for(i=rows.length-1;i>=1;i--){if(op(cd(i,col))&&cd(i-1,col)===-1){j=i;break;}}
         if(j<0)continue;
-        var s=j-1;while(s>0&&cd(s-1,col)===-1)s--;
+        var s=pfRunStart(rows,col,j-1); /* 0728nk: the one reader - a missed reading inside the run does not end it */
         if(j-s<2)continue;
         var ran=false,ok=true;for(i=0;i<s;i++){if(op(cd(i,col))){ran=true;break;}}
         if(!ran)continue;
@@ -5372,9 +5382,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
   }
   function pfRecMerge(now){ /* the record's comebacks take their seats in the one reopen list. A comeback the phone watched keeps the phone's card (its since moves back only when the record shows the down began more than ten minutes before the phone first saw it - the phone joined mid-run); a recorded seat takes a truer clock when one arrives (the ledger's minute over the row's mark); one seat per ride, the newest. True when the list changed */
     var rr=pfRecReopens(pfRec,pfInc,now,pfEtMin()),ch=false,W=10*60*1000,i,k;
+    try{var fzq=(pfRec&&typeof dnSinceMap==="function")?dnSinceMap(pfRec):null,fz1=pfEtMin(),fz2=now-(now%60000); /* 0728nk THE FILL: while a ride the phone joined mid-outage is still down, the day record already holds the run's first DOWN row (the Down right now card's since). The run takes that clock and is no longer mid - only when the record's start is not later than the phone's first look (six minutes of grace, a row's width); "down since park open" fills nothing */
+      if(fzq)Object.keys(pfRuns).forEach(function(fzi){var fzr=pfRuns[fzi],fzm=fzq[fzi];if(!fzr||!fzr.mid||!fzm||typeof fzm.t!=="number")return;var fzt=fz2-(fz1-fzm.t)*60000;if(fzt<=fzr.since+6*60000){fzr.since=Math.min(fzr.since,fzt);fzr.mid=0;}});}catch(fzx){}
     for(i=0;i<rr.length;i++){var e=rr[i],hit=null;if(!roster[e.id]||roster[e.id].kind!=="ride")continue; /* rides only, as pfTick */
       for(k=0;k<pfReopens.length;k++){var x=pfReopens[k];if(x.id===e.id&&Math.abs(x.at-e.at)<=W){hit=x;break;}}
-      if(hit){if(hit.rec){if(hit.at!==e.at||hit.since!==e.since){hit.at=e.at;hit.since=e.since;ch=true;}}else if(e.since<hit.since-W){hit.since=e.since;ch=true;}continue;}
+      if(hit){if(hit.rec){if(hit.at!==e.at||hit.since!==e.since){hit.at=e.at;hit.since=e.since;ch=true;}}else if(hit.mid||e.since<hit.since-W){hit.since=e.since;hit.mid=0;ch=true;}continue;} /* 0728nk: a card that did not know its start takes the record's, whatever the distance */
       pfReopens.push({id:e.id,at:e.at,since:e.since,rec:1});ch=true;
     }
     if(ch){pfReopens.sort(function(a,b){return a.at-b.at;});var keep={},o2=[];for(i=pfReopens.length-1;i>=0;i--){if(keep[pfReopens[i].id])continue;keep[pfReopens[i].id]=1;o2.unshift(pfReopens[i]);}pfReopens=o2.slice(-10);}
@@ -5415,7 +5427,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       if(scope!=="all"&&r2.park!==scope)continue;
       if(isOpenNow(parkInfo[r2.park])===false)continue;
       var lv2=liveById[e.id];if(!lv2||lv2.status!=="OPERATING")continue;
-      var c9={id:e.id,nm:r2.name,pk:BANNER_MONO[r2.park]||"",w:(typeof lv2.wait==="number"?lv2.wait:null),at:e.at,since:e.since,tier:tierOf(lv2),kind:"re"},g9;
+      var c9={id:e.id,nm:r2.name,pk:BANNER_MONO[r2.park]||"",w:(typeof lv2.wait==="number"?lv2.wait:null),at:e.at,since:e.since,mid:e.mid?1:0,tier:tierOf(lv2),kind:"re"},g9;
         for(g9=0;g9<go.length;g9++)if(go[g9].id===e.id){c9.go=go[g9];go.splice(g9,1);break;} /* 0728lh ONE RIDE, ONE CARD: a ride that came back at a GO wait wears both words on one card - its verdict rides the reopen card and leaves the go list (every ride, starred or not) */
         if(!c9.go)for(g9=0;g9<rough.length;g9++)if(rough[g9].id===e.id){c9.rough=rough[g9];rough.splice(g9,1);break;} /* 0728ni ONE RIDE, ONE CARD, ROUGH TOO (owner glass of 0728nh, Sat Nov 14, 2026, 4:38 PM: Cosmic Rewind sat twice, JUST REOPENED and ROUGH RIGHT NOW; ruled F-A 4:50 PM on sheets 79-81: "I like it! lets do it"): a ride that came back at a ROUGH wait wears both words on one card too - its verdict rides the reopen card and leaves the rough list. A ride is never both (the two bars cannot both hold); go is asked first, rough only when it missed */
         res.push(c9);
@@ -5453,7 +5465,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var L9=pfLead(m),body=m.cards.map(function(c,ci){
       var kick=c.kind==="go"?'<span class="pf-kick go">Go now</span>':c.kind==="rough"?'<span class="pf-kick rough">Rough right now</span>':(c.go?'<span><span class="pf-kick re">Just reopened</span><span class="pf-kick" style="opacity:.45;padding:0 7px">·</span><span class="pf-kick go">Go now</span></span>':c.rough?'<span><span class="pf-kick re">Just reopened</span><span class="pf-kick" style="opacity:.45;padding:0 7px">·</span><span class="pf-kick rough">Rough right now</span></span>':'<span class="pf-kick re">Just reopened</span>'); /* 0728ni: the ROUGH comeback seats its two kickers as the GO comeback does (0728lh C-A's bytes, the second word in its own ink) */ /* 0728lh C-A: both kickers, each in its own ink, seated together (the mock's bytes) */
       var meta=c.kind==="re"
-        ?('back up at <b>'+esc(fmtClock(new Date(c.at).toISOString())||"")+'</b> after a down period since '+esc(fmtClock(new Date(c.since).toISOString())||""))
+        ?('back up at <b>'+esc(fmtClock(new Date(c.at).toISOString())||"")+'</b>'+(c.mid?'':' after a down period since '+esc(fmtClock(new Date(c.since).toISOString())||""))) /* 0728nk T-A: a comeback whose start the phone does not know says only when the ride came back */
         :('typically <b>'+c.typ+'</b> this half-hour'+pfMetaTail(c)+' · <b>'+c.delta+' '+(c.kind==="go"?"under":"over")+'</b>'+pfMetaR3(c)); /* 0727k m-B: the card says its basis; rung 3 earns its tail */
       if(c.go)meta+='<br>typically <b>'+c.go.typ+'</b> this half-hour'+pfMetaTail(c.go)+' · <b>'+c.go.delta+' under</b>'+pfMetaR3(c.go); /* 0728lh C-A: the comeback leads, the deal beneath - GO NOW's own sentence, word for word (SAME QUESTION SAME SENTENCE) */
       if(c.rough)meta+='<br>typically <b>'+c.rough.typ+'</b> this half-hour'+pfMetaTail(c.rough)+' · <b>'+c.rough.delta+' over</b>'+pfMetaR3(c.rough); /* 0728ni: the comeback leads, the rough read beneath - ROUGH RIGHT NOW's own sentence, word for word (SAME QUESTION SAME SENTENCE) */
@@ -5498,15 +5510,15 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       D.kicker="JUST REOPENED";D.kc=PW_CARD_ALT.accent;
       var dnT=fmtClock(new Date(c.since).toISOString())||"",upT=fmtClock(new Date(c.at).toISOString())||"";
       var dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
-      D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT,g0:null,g1:null};
+      D.tl={cap:dur+" MIN DOWN PERIOD",dn:dnT,up:upT,g0:null,g1:null};if(c.mid){D.tl.cap="";D.tl.dn="";} /* 0728nk T-A: no down-period length, no Down clock and (below) no tape - only Back */
       var inf=(typeof parkInfo!=="undefined"&&parkInfo[pkFull])||null;
       if(inf&&inf.open&&inf.close){var om=pfMinOf(new Date(inf.open).getTime()),cm=pfMinOf(new Date(inf.close).getTime()),u1=pfMinOf(c.at),u0;if(cm<=om)cm+=1440;if(u1<om)u1+=1440;u0=u1-dur;
-        if(cm-om>=60&&u1>om&&u0<cm){D.tl.g0=Math.max(0,(u0-om)/(cm-om));D.tl.g1=Math.min(1,(u1-om)/(cm-om));}} /* the tape is the park's posted day; a reopening outside it draws no tape */
-      if(typeof c.w==="number"){D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);D.basis="Wait is live \u00b7 down period timed from live status samples";}
-      else{D.num="OPEN";D.sub="NO POSTED WAIT";D.numCol=pfTcol("short");D.basis="Down period timed from live status samples";}
-      if(c.go&&typeof c.w==="number"){D.k2="GO NOW";D.kc2=PW_CARD_ALT.green;D.d1=c.go.delta+" under";D.d2="typically "+c.go.typ+" min this half-hour"+pfMetaTail(c.go)+pfMetaR3(c.go);D.basis="Typical = this half-hour over "+(c.go.bw||("the last "+days+" days"))+" of live waits \u00b7 down period timed from live status samples";
+        if(!c.mid&&cm-om>=60&&u1>om&&u0<cm){D.tl.g0=Math.max(0,(u0-om)/(cm-om));D.tl.g1=Math.min(1,(u1-om)/(cm-om));}} /* the tape is the park's posted day; a reopening outside it draws no tape */
+      if(typeof c.w==="number"){D.num=String(c.w);D.sub="MIN NOW";D.numCol=pfTcol(c.tier);D.basis=c.mid?"Wait is live \u00b7 back-up time from live status samples":"Wait is live \u00b7 down period timed from live status samples";}
+      else{D.num="OPEN";D.sub="NO POSTED WAIT";D.numCol=pfTcol("short");D.basis=c.mid?"Back-up time from live status samples":"Down period timed from live status samples";}
+      if(c.go&&typeof c.w==="number"){D.k2="GO NOW";D.kc2=PW_CARD_ALT.green;D.d1=c.go.delta+" under";D.d2="typically "+c.go.typ+" min this half-hour"+pfMetaTail(c.go)+pfMetaR3(c.go);D.basis="Typical = this half-hour over "+(c.go.bw||("the last "+days+" days"))+" of live waits \u00b7 "+(c.mid?"back-up time":"down period timed")+" from live status samples";
         D.hero={typ:String(c.go.typ),lab:lab(c.go),strike:true,d:D.d1,ink:PW_CARD_ALT.green};} /* 0728lh S-A: the merged card carries the second kicker and its ink, the deal's two fields, and a basis that labels both measures */
-      if(c.rough&&typeof c.w==="number"){D.k2="ROUGH RIGHT NOW";D.kc2="#ff9f6b";D.d1=c.rough.delta+" over";D.d2="typically "+c.rough.typ+" min this half-hour"+pfMetaTail(c.rough)+pfMetaR3(c.rough);D.basis="Typical = this half-hour over "+(c.rough.bw||("the last "+days+" days"))+" of live waits \u00b7 down period timed from live status samples";
+      if(c.rough&&typeof c.w==="number"){D.k2="ROUGH RIGHT NOW";D.kc2="#ff9f6b";D.d1=c.rough.delta+" over";D.d2="typically "+c.rough.typ+" min this half-hour"+pfMetaTail(c.rough)+pfMetaR3(c.rough);D.basis="Typical = this half-hour over "+(c.rough.bw||("the last "+days+" days"))+" of live waits \u00b7 "+(c.mid?"back-up time":"down period timed")+" from live status samples";
         D.hero={typ:String(c.rough.typ),lab:lab(c.rough),strike:false,d:D.d1,ink:"#ff9f6b"};} /* 0728ni ONE RIDE, ONE CARD, ROUGH TOO (owner glass of 0728nh, Sat Nov 14, 2026, 4:38 PM: Cosmic Rewind sat twice, JUST REOPENED and ROUGH RIGHT NOW; ruled F-A 4:50 PM on sheets 79-81: "I like it! lets do it"): the merged card for a ROUGH comeback - the tape and clocks stay, then the typical (unstruck, X-A), the wait, and the departure in ROUGH's own ink */
     }else{
       var go=c.kind==="go";
@@ -5561,14 +5573,15 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var mn=[["now",SG("900",76),0,72],["min",SG("900",76),0,72]];
     function side(c,a){return a.map(function(s){return [s[0],s[1],c,s[3]];});}
     if(D.tl){
-      y+=44+26;T(D.tl.cap,L,y,IN("800",26),C.muted,"left","3px");
+      if(D.tl.cap){y+=44+26;T(D.tl.cap,L,y,IN("800",26),C.muted,"left","3px");}else y+=30; /* 0728nk T-A: no cap when the start is not known */
       if(D.tl.g0!=null){y+=16;rr(L,y,CW,86,22);ctx.fillStyle="rgba(255,255,255,0.10)";ctx.fill();
         var sx=L+CW*D.tl.g0,sw=Math.max(14,CW*(D.tl.g1-D.tl.g0));if(sx+sw>R)sx=R-sw;
         ctx.save();rr(L,y,CW,86,22);ctx.clip();ctx.beginPath();ctx.rect(sx,y,sw,86);ctx.clip();ctx.strokeStyle="#ff6b6b";ctx.lineWidth=14;for(i=sx-100;i<sx+sw+20;i+=40){ctx.beginPath();ctx.moveTo(i,y+96);ctx.lineTo(i+106,y-10);ctx.stroke();}ctx.restore(); /* the down stretch, hatched in the card's red on the tape of the park's day */
         y+=86;}
       y+=16+38;var ef=SG("900",38),et=SG("700",38);
-      T("Down",L,y,ef,C.ink);T(D.tl.dn,L+MW("Down",ef)+11,y,et,C.muted);
-      T(D.tl.up,R,y,et,C.muted,"right");T("Back",R-MW(D.tl.up,et)-11,y,ef,C.ink,"right");
+      if(D.tl.dn){T("Down",L,y,ef,C.ink);T(D.tl.dn,L+MW("Down",ef)+11,y,et,C.muted);
+      T(D.tl.up,R,y,et,C.muted,"right");T("Back",R-MW(D.tl.up,et)-11,y,ef,C.ink,"right");}
+      else{T("Back",L,y,ef,C.ink);T(D.tl.up,L+MW("Back",ef)+11,y,et,C.muted);} /* 0728nk T-A: Back alone, at the left */
       if(D.hero){typ(130,36);y=big(D.num,L,y+16,330,D.hero.ink,side(D.hero.ink,mn),22);rc();}
       else if(D.num==="OPEN"){y=big(D.num,L,y+34,215,D.numCol,side(D.numCol,[["wait",SG("900",64),0,60],["posted",SG("900",64),0,60],["no",SG("900",64),0,60]]),22);}
       else{y=big(D.num,L,y+34,330,D.numCol,side(D.numCol,mn),22);}
@@ -5612,11 +5625,11 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var shown=cards.slice(0,5),tailN=s.moreN+Math.max(0,cards.length-5);
     var hasRe=false;
     var rows=shown.map(function(c){
-      var re=c.kind==="re";if(re)hasRe=true;
+      var re=c.kind==="re";if(re&&!c.mid&&!c.go&&!c.rough)hasRe=true; /* 0728nk: the "Down periods timed" line is earned only by a row that states a down period */
       var dl,db="";
       if(re){
         var upT=fmtClock(new Date(c.at).toISOString())||"",dur=pfMinOf(c.at)-pfMinOf(c.since);if(dur<0)dur+=1440;
-        dl="back at "+upT+" \u00b7 down "+dur+" min";var v8=c.go||c.rough;if(v8){dl="back at "+upT+" \u00b7 typically "+v8.typ+" \u00b7 ";db=v8.delta+(c.go?" under":" over");} /* 0728ni: a folded row trades "down N min" for the typical and the departure (the down period stays on the single card and the page) */
+        dl=c.mid?"back at "+upT:"back at "+upT+" \u00b7 down "+dur+" min";var v8=c.go||c.rough;if(v8){dl="back at "+upT+" \u00b7 typically "+v8.typ+" \u00b7 ";db=v8.delta+(c.go?" under":" over");} /* 0728ni: a folded row trades "down N min" for the typical and the departure (the down period stays on the single card and the page) */
       }else{dl="typically "+c.typ+" \u00b7 ";db=c.delta+(c.kind==="go"?" under":" over");} /* 0711j: the label lives at card level (basis line); rows reference the defined term \u2014 not a cut, a move. 0728nh M-A: the receipt in two parts \u2014 the typical in the quiet ink, the departure in the strong one; the unit rides the big number */
       return {num:(typeof c.w==="number"?String(c.w):"\u2014"),numCol:(typeof c.w==="number"?pfTcol(c.tier):PW_CARD_ALT.muted2),
         nm:rcShortNm(c.id,c.nm),dl:dl,db:db,k2:(re?(c.go?"GO NOW":c.rough?"ROUGH":""):""),kc2:(c.go?PW_CARD_ALT.green:"#ff9f6b"),k:(c.kind==="go"?"GO NOW":c.kind==="rough"?"ROUGH":"REOPENED"),
@@ -10768,7 +10781,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var ids=snap.ids,rows=snap.rows,col,i;
     for(col=0;col<ids.length;col++){
       var last=rows[rows.length-1].w;if(!last||col>=last.length||last[col]!==-1)continue;
-      var start=rows.length-1;for(i=rows.length-2;i>=0;i--){var w=rows[i].w;if(!w||col>=w.length||w[col]!==-1)break;start=i;}
+      var start=pfRunStart(rows,col,rows.length-1); /* 0728nk: the one reader (pfRunStart) - the since no longer restarts at a missed reading */
       var ran=false;for(i=0;i<start;i++){var w2=rows[i].w;if(w2&&col<w2.length&&(w2[col]>=0||w2[col]===-4)){ran=true;break;}}
       out[ids[col]]=ran?{t:rows[start].t}:{open:true};
     }
@@ -10934,7 +10947,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return null;
   }
   function rsReceipt(c){ /* 0728gj K-2: the feed's receipt in the feed's words (pfFeedHTML's meta line — SAME QUESTION SAME SENTENCE), as one plain sentence */
-    if(c.kind==="re")return "back up at "+(fmtClock(new Date(c.at).toISOString())||"")+" after a down period since "+(fmtClock(new Date(c.since).toISOString())||"")+".";
+    if(c.kind==="re")return "back up at "+(fmtClock(new Date(c.at).toISOString())||"")+(c.mid?"":" after a down period since "+(fmtClock(new Date(c.since).toISOString())||""))+"."; /* 0728nk T-A: SAME QUESTION SAME SENTENCE */
     return "\u2014 "+c.delta+(c.kind==="go"?" under":" over")+" typical"+pfMetaTail(c)+pfMetaR3(c)+"."; /* 0728gl D THE BOARD'S SENTENCE (owner-ruled Oct 14 on gl-box-D.png): the Today board's own GO voice (tyGoCards: "GO NOW — N under typical."), the same judge and the same delta; ROUGH in its mirror (the board crowns no ROUGH — this is the GO sentence's shape, not a borrowed line); the feed's party tails ride along (disclosure follows the data). The half-hour typical no longer repeats the read that follows. */
   }
   function rsKick(k){return k==="go"?"Go now":k==="rough"?"Rough right now":"Just reopened";} /* the feed's three kickers, the feed's words */
