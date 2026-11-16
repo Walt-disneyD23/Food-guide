@@ -2217,6 +2217,9 @@
   /* 0728ns THE VERDICT LEADS (H-B, owner-ruled Mon Nov 16, 2026, 9:02 AM, sheet 106): Morning or night says its verdict large in the accent; the counting sentence steps down under it */
   .hi-v{font-family:var(--font-display);font-weight:900;letter-spacing:-.035em;font-size:clamp(32px,10vw,42px);line-height:1;color:var(--accent);margin:2px 0 10px;text-wrap:balance}
   html:root .hi-h.hi-hs{font-size:17px;font-weight:700;letter-spacing:-.012em;line-height:1.3}
+  /* 0728nu P-B: Day by day's headline is its two sentences, a line each, a size up */
+  .hi-hw span{display:block}
+  html:root .hi-h.hi-hw{font-size:clamp(26px,7.4vw,32px);line-height:1.08;letter-spacing:-.035em;text-wrap:balance}
   html:root .hi-r .v,html:root .hi-rc .it .v,html:root .hi-wd .c b,html:root .hi-mn .chip,html:root .hi-ex b.big,html:root .hi-xe .v,html:root .hi-top .v,html:root .hi-bw .v,html:root .hi-xp .c b,html:root .hi-rk .no,html:root .hi-rl .v,html:root .hi-deal .num,html:root .hi-deal .typ,html:root .hi-r .v small{font-weight:900}
   html:root .hi-dn,html:root .hi-xe .d,html:root .hi-bw .d,html:root .hi-top .d{font-weight:900;letter-spacing:-.03em}
   /* weather chip (sits inside the dark hero) */
@@ -3174,7 +3177,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nt</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nu</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -14486,7 +14489,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         rs.forEach(function(r){if(pkTop===null||r.su.pk>pkTop)pkTop=r.su.pk;});
         if(pkTop===null)return;
         if(top===null||pkTop>top)top=pkTop;
-        parks.push({park:p,open:(pk&&pk.open)?pwHiMin(pk.open):null,close:(pk&&pk.close)?pwHiMin(pk.close):null,peak:pkTop,rides:rs.filter(function(r){return r.su.pk===pkTop;})}); /* ties are listed */
+        parks.push({park:p,open:(pk&&pk.open)?pwHiMin(pk.open):null,close:(pk&&pk.close)?pwHiMin(pk.close):null,peak:pkTop,pt:(typeof tdDigPt==="function")?!!tdDigPt(g,p):false,rides:rs.filter(function(r){return r.su.pk===pkTop;})}); /* ties are listed */
       });
       pool.forEach(function(r){if((r.downEvents||0)>0&&(r.downMinutes||0)>0)down.push(r);});
       down.sort(function(a,b){return (b.downMinutes-a.downMinutes)||(b.downEvents-a.downEvents)||(a.name<b.name?-1:1);});
@@ -14519,21 +14522,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
     function pwHiQuiet(tx){return '<div class="favcard pg-list pw-quiet"><div class="pf-quiet">'+tx+'</div></div>';}
     function pwHiReceiptHTML(m,ds){
       var items=m.parks.map(function(p){
-        return '<div class="pk">'+esc(p.park)+(p.open!=null&&p.close!=null?'<span>'+rpClk(p.open)+' – '+rpClk(p.close)+'</span>':'')+'</div>'+p.rides.map(function(r){
+        return '<div class="pk">'+esc(p.park)+(p.open!=null&&p.close!=null?'<span>'+rpClk(p.open)+' – '+rpClk(p.close)+(p.pt?' · party night':'')+'</span>':'')+'</div>'+p.rides.map(function(r){
           return '<div class="it hi-go"'+pwHiDoor(r.id,r.park,ds)+'><div class="n">'+esc(r.name)+'<small>'+rpClk(r.su.pkAt)+'</small></div><div class="v '+pwHiBand(p.peak)+'">'+p.peak+'<small>m</small></div></div>';}).join("");}).join("");
-      var dn=m.down[0];
-      return '<div class="hi-card hi-rc">'+pwHiHd("The day’s receipt","receipt","the day’s receipt")+'<div class="hi-h">Each park’s peak wait.</div>'+items+
+      var dn=m.down[0],pn=m.parks.filter(function(p){return p.pt&&p.close!=null;});
+      return '<div class="hi-card hi-rc">'+pwHiHd("The day’s receipt","receipt","the day’s receipt")+'<div class="hi-h">Each park’s highest wait that held 25+ minutes.</div>'+items+
         '<div class="hi-rule"></div>'+
         (m.top!=null?'<div class="hi-ex"><span>Longest line of the day</span><b class="big '+pwHiBand(m.top)+'">'+m.top+'m</b></div>':'')+
         (dn?'<div class="hi-ex"><span>Most time down</span><b>'+esc(pwHiNm(dn.id,dn.name))+' · '+rpDtFmt(dn.downMinutes)+'</b></div>':'')+
         (m.dn!=null?'<div class="hi-ex"><span>Outages, all four parks</span><b>'+(m.dn?m.dn+' · '+Math.round(m.dm/60)+(Math.round(m.dm/60)===1?' ride-hour lost':' ride-hours lost'):'none')+'</b></div>':'')+
-        '<div class="hi-fine">Peak = the highest wait that held 25+ min.</div></div>';
+        '<div class="hi-fine">'+(pn.length?'Party night: '+pn.map(function(p){return esc(p.park)+' closed to day guests at '+rpClk(p.close);}).join(', ')+'. ':'')+'History, never a promise.</div></div>'; /* 0728nu THE CARD SAYS WHAT A PEAK IS, AND WHOSE NIGHT IT WAS (owner, Mon Nov 16, 2026, 2:12 PM: "people need to understand these are sustained times, not blips ... a 55 min wait at MK being a peak, although it was a party day ... should have a line on there when it happens?"; ruled on sheet 117, 2:16 PM): the definition is the summary's headline; a park whose night was a party's says so beside its hours, and the fine print says what that means - its close, never a cause */
     }
     function pwHiDealHTML(deals,ds){
       var hd=pwHiHd("Best deal of the day","deal","the best deal of the day"),fine='<div class="hi-fine">The biggest gap under a ride’s typical wait for that time of day. A park’s last hour and the hour after a ride reopens don’t count.</div>';
       if(deals===null)return '<div class="hi-card">'+hd+'<div class="hi-wait">Typical waits haven’t loaded yet.</div>'+fine+'</div>';
       var best={},d=deals[0]||null,i;for(i=0;i<deals.length;i++)if(!best[deals[i].park])best[deals[i].park]=deals[i];
-      var rows=MAIN.map(function(p){var x=best[p];
+      var rows=MAIN.filter(function(p){return !d||p!==d.park;}).map(function(p){var x=best[p]; /* 0728nu R-B THE HERO'S PARK LEAVES THE ROWS (owner, 2:04 PM: "it repeats, top then bottom again"): the hero is its own park's best, so the rows are the other parks */
         return x?'<div class="hi-pl hi-go"'+pwHiDoor(x.id,x.park,ds)+'><div><div class="k">'+esc(p)+'</div><div class="n">'+esc(pwHiNm(x.id,x.nm))+'</div></div><span class="v '+pwHiBand(x.w)+'">'+x.w+'m at '+rpClk(x.t)+' · typically '+x.typ+(x.pt?' on party days':'')+'</span></div>'
           :'<div class="hi-pl none"><div><div class="k">'+esc(p)+'</div><div class="n">No standout deal</div></div></div>';}).join("");
       return '<div class="hi-card">'+hd+
@@ -14750,9 +14753,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var v=pwHiWdV(r); /* the mean of that weekday's day averages, rounded half up (0728nd: one maker, the tile reads the same seven) */
       var lo=-1,hi=-1,i,cn=null,cx=null;for(i=0;i<7;i++){if(v[i]===null)continue;if(lo<0||v[i]<v[lo])lo=i;if(hi<0||v[i]>v[hi])hi=i;var c=r.wd[i].length;if(cn===null||c<cn)cn=c;if(cx===null||c>cx)cx=c;}
       var nm=esc(pwHiNm(id,r.n)),mx=v[hi];
-      var head=(v[lo]===v[hi])?nm+': <span class="'+pwHiBand(mx)+'">averaged '+mx+' every day of the week.</span>'
-        :nm+': <span class="'+pwHiBand(v[lo])+'">'+DF[lo]+' averaged '+v[lo]+'.</span> <span class="'+pwHiBand(v[hi])+'">'+DF[hi]+' averaged '+v[hi]+'.</span>';
-      return '<div class="hi-card">'+hd(r.p)+'<button class="hi-door" type="button" id="hiRide" aria-label="Change ride"><b>'+nm+pwHiRf(C,id)+'</b><span>Change ride ▾</span></button><div class="hi-h">'+head+'</div>'+
+      var head=(v[lo]===v[hi])?'<span class="'+pwHiBand(mx)+'">Averaged '+mx+' every day of the week.</span>'
+        :'<span class="'+pwHiBand(v[lo])+'">'+DF[lo]+' averaged '+v[lo]+'.</span> <span class="'+pwHiBand(v[hi])+'">'+DF[hi]+' averaged '+v[hi]+'.</span>'; /* 0728nu P-B (owner-ruled Mon Nov 16, 2026, 1:53 PM on sheet 114): the page's headline is the sentences alone, a line each - the door just above says the ride; the card names it from the door */
+      return '<div class="hi-card">'+hd(r.p)+'<button class="hi-door" type="button" id="hiRide" aria-label="Change ride"><b>'+nm+pwHiRf(C,id)+'</b><span>Change ride ▾</span></button><div class="hi-h hi-hw">'+head+'</div>'+
         '<div class="hi-wd">'+v.map(function(x){return x===null?'<div class="c"><b class="hi-none">–</b></div>':'<div class="c"><b class="'+pwHiBand(x)+'">'+x+'</b><i class="hi-bg-'+tierOfWait(x)+'" style="height:'+Math.round(x/mx*112)+'px"></i></div>';}).join("")+'</div>'+
         '<div class="hi-wdl">'+DS.map(function(d){return '<span>'+d+'</span>';}).join("")+'</div>'+
         '<div class="hi-fine">Average posted wait across each day — '+(cn===cx?(NW[cn]||cn):(NW[cn]||cn)+' to '+(NW[cx]||cx))+' of each weekday. History, not a forecast.</div></div>';
@@ -15011,7 +15014,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         D.title="Best day of the week";D.head="Each park’s calmest weekday, by headliner average.";D.fine="Each park’s headliner average by weekday — "+M.bw.of+" of each. History, not a forecast.";
         D.rows=M.bw.rows.map(function(r){return {park:r.p,day:r.ties.length>1?r.ties.map(function(i){return DS[i];}).join(" · "):DF[r.b],v:String(r.v[r.b]),band:T(r.v[r.b]),line:"Busiest: "+(r.hiT.length>1?r.hiT.map(function(i){return DS[i];}).join(" · "):DF[r.mx])+" · "+r.v[r.mx]+" min"};});
       }else if(key==="lvll"){var a=M.ll[0];if(!a)return null;
-        D.title="The five longest lines";D.head="Each ride’s highest peak wait.";D.fine="Each ride’s highest peak wait, "+M.span+". Peak = the highest wait that held 25+ min.";
+        D.title="The five longest lines";D.head="Each ride’s highest wait that held 25+ minutes.";D.fine="Each ride’s highest sustained wait, "+M.span+".";
         D.hero={k:"The longest line",n:pwHiNm(a.id,a.n),v:String(a.hi),u:"m",band:T(a.hi),s:[a.p,a.when+" · "+a.at],rf:a.nt};
         D.rows=M.ll.slice(1).map(function(w,i){return {no:String(i+2),n:pwHiNm(w.id,w.n),s:w.p+" · "+w.when+" · "+w.at,v:String(w.hi),u:"m",band:T(w.hi),rf:w.nt};});
       }else if(key==="lvdn"){var d0=M.dn[0];if(!d0)return null;
@@ -15074,7 +15077,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
             tape:all(".hi-tape i",el).map(function(i){return [pwHiPct(i,"left"),pwHiPct(i,"width")];})};});
         D.ax=all(".hi-ax span").map(function(el){return {t:tx(el),x:pwHiPct(el,"left")};});
         if(!D.rows.length)return null;
-        if(key==="top5"){var a5=D.rows.shift(),s5=a5.s.split(" · ");D.head="Each ride’s highest peak wait.";D.hero={k:"The longest line",n:a5.n,v:a5.v,u:a5.u,band:a5.band,s:[s5[0],s5.slice(1).join(" · ")]};} /* 0728nt L-A: the month's five longest lines is drawn as the long view's - the first is the hero, the others follow */
+        if(key==="top5"){var a5=D.rows.shift(),s5=a5.s.split(" · ");D.head="Each ride’s highest wait that held 25+ minutes.";D.fine=D.fine.replace(/\s*Peak = .*$/,"").replace("highest peak wait","highest sustained wait");D.hero={k:"The longest line",n:a5.n,v:a5.v,u:a5.u,band:a5.band,s:[s5[0],s5.slice(1).join(" · ")]};} /* 0728nt L-A: the month's five longest lines is drawn as the long view's - the first is the hero, the others follow */
         if(key==="mdown"){var w5=D.rows[0].w||100;D.head="Total time each ride was reported down.";D.rows.forEach(function(r){r.w=(r.w||0)/w5;});} /* D-B: the long view's five hatched bars, the longest the whole rail */
       }else if(key==="wd"){
         var hh=one(".hi-h"),cs=all(".hi-wd .c"),mxh=0;if(!hh||!cs.length)return null;
@@ -15174,7 +15177,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");if(D.rf)T(D.rf,R,262,IN("600",24),C.muted2,"right"); /* 0728nc: the card carries the line - at the right of the park's own line */
         var wR=[],wN="",wH=[80,74,68,62,56],wZ=56,wL=[],q;
         D.runs.forEach(function(r){var t=String(r.t).replace(/^\s+|\s+$/g,"");if(!t)return;if(r.band)wR.push({t:t.charAt(0).toUpperCase()+t.slice(1),band:r.band});else wN+=(wN?" ":"")+t;});
-        wN=wN.replace(/:$/,"");var wNz=fit(wN,CW,SG,BW,[56,50,46,42]);T(ell(wN,CW,SG(BW,wNz)),L,336,SG(BW,wNz),C.ink);
+        wN=wN.replace(/:$/,"")||D.who||"";var wNz=fit(wN,CW,SG,BW,[56,50,46,42]);T(ell(wN,CW,SG(BW,wNz)),L,336,SG(BW,wNz),C.ink);
         for(q=0;q<wH.length;q++)if(wR.every(function(u){return MW(u.t,SG(BW,wH[q]))<=CW;})){wZ=wH[q];break;} /* every sentence keeps a line where it can; the letters step down before a sentence breaks */
         wR.forEach(function(u){wrap2(u.t,CW,SG(BW,wZ),2).forEach(function(l){wL.push({t:l,band:u.band});});});
         wL.forEach(function(ln,k){T(ln.t,L,356+(k+1)*(wZ+6),SG(BW,wZ),ink(ln.band));});
@@ -15294,7 +15297,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       /* ONE FOOTER HAND: the summary's own fine print at the left, a sentence a line (THE CLAUSE IS THE BREAK - a lone long sentence breaks at a comma); the site and the credit at the right */
       var fs=(String(D.fine||"").match(/[^.!?]+[.!?]*/g)||[]).map(function(x){return x.replace(/^\s+|\s+$/g,"").replace(/\.$/,"");}).filter(function(x){return x;}),f1=fs[0]||"",f2="History, never a promise";
       var site="ridecue.live",cred="Data: ThemeParks.wiki",m1=CW-MW(site,IN("700",26))-28,m2=CW-MW(cred,IN("500",20))-28;
-      if(fs.length>1)f2=fs.slice(1).join(". ");
+      if(fs.length>1)f2=fs.slice(1).join(". ");else if(f1===f2)f2=""; /* 0728nu: a fine print that is only the family's closing line says it once */
       else if(MW(f1,IN("500",22))>m1){var cl=f1.split(", "),a1=cl.shift();while(cl.length>1&&MW(a1+", "+cl[0]+",",IN("500",22))<=m1)a1+=", "+cl.shift();if(cl.length){f1=a1+",";f2=cl.join(", ");}}
       hair(fy);
       var z1=fit(f1,m1,IN,"500",[22,21,20,19,18]),z2=fit(f2,m2,IN,"500",[20,19,18]); /* the fine print steps down before it loses a word */
