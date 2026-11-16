@@ -2214,6 +2214,9 @@
   html:root .hi-xp .c b{font-size:17px;line-height:32px}
   html:root .hi-wk{height:40px}
   html:root .hi-h,html:root .hi-say{font-weight:900;letter-spacing:-.03em}
+  /* 0728ns THE VERDICT LEADS (H-B, owner-ruled Mon Nov 16, 2026, 9:02 AM, sheet 106): Morning or night says its verdict large in the accent; the counting sentence steps down under it */
+  .hi-v{font-family:var(--font-display);font-weight:900;letter-spacing:-.035em;font-size:clamp(32px,10vw,42px);line-height:1;color:var(--accent);margin:2px 0 10px;text-wrap:balance}
+  html:root .hi-h.hi-hs{font-size:17px;font-weight:700;letter-spacing:-.012em;line-height:1.3}
   html:root .hi-r .v,html:root .hi-rc .it .v,html:root .hi-wd .c b,html:root .hi-mn .chip,html:root .hi-ex b.big,html:root .hi-xe .v,html:root .hi-top .v,html:root .hi-bw .v,html:root .hi-xp .c b,html:root .hi-rk .no,html:root .hi-rl .v,html:root .hi-deal .num,html:root .hi-deal .typ,html:root .hi-r .v small{font-weight:900}
   html:root .hi-dn,html:root .hi-xe .d,html:root .hi-bw .d,html:root .hi-top .d{font-weight:900;letter-spacing:-.03em}
   /* weather chip (sits inside the dark hero) */
@@ -3171,7 +3174,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728nr</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ns</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -14761,13 +14764,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(n)o.push(esc(p)+(late?" isn’t compared — too few nights open past 8 PM.":" isn’t compared — it closed by 8 PM every night."));});
       return o.length?'<div class="hi-note">'+o.join(" ")+'</div>':"";
     }
+    function pwHiMnSay(k,j,n,NW,nw){ /* 0728ns H-B: a plain verdict (.hi-v) over the counting sentence (.hi-h, which the card still reads). The count is the side with more rides; an even count is a split and says both; rides the same at both times are in neither count */
+      var w=function(c,cap){return cap?(NW[c]||c):(nw[c]||c);},tl=" at 8 PM than at 10 AM",v,h;
+      if(k>j){v="Nights are shorter here.";h=w(k,1)+" of its "+w(n)+" headliners "+(k===1?"is":"are")+" typically shorter"+tl+".";}
+      else if(j>k){v="Mornings are shorter here.";h=w(j,1)+" of its "+w(n)+" headliners "+(j===1?"is":"are")+" typically longer"+tl+".";}
+      else if(k){v="It’s a split.";h=w(k,1)+" of its "+w(n)+" headliners "+(k===1?"is":"are")+" typically shorter"+tl+", "+w(j)+" longer.";}
+      else{v="No difference here.";h="Its headliners are typically the same at 8 PM as at 10 AM.";}
+      return '<div class="hi-v">'+v+'</div><div class="hi-h hi-hs">'+h+'</div>';
+    }
     function pwHiMornNightHTML(C){
       var parks=pwHiMnParks(),hd=pwHiHd("Morning or night","mn","morning or night");
       if(parks===null){pwHiBaseWait();return '<div class="hi-card">'+hd+'<div class="hi-wait">Typical waits haven’t loaded yet.</div></div>';}
       if(!parks.length)return "";
-      var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk),k=rows.filter(function(x){return x.p<x.a;}).length,NW=["None","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"],nw=["no","one","two","three","four","five","six","seven","eight","nine"];
+      var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk),k=rows.filter(function(x){return x.p<x.a;}).length,mnJ=rows.filter(function(x){return x.p>x.a;}).length,NW=["None","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"],nw=["no","one","two","three","four","five","six","seven","eight","nine"];
       return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpk="'+esc(p)+'"'+(p===pk?' class="on"':'')+'>'+esc(p)+'</button>';}).join("")+'</div>'+pwHiMnOut(C,parks)+
-        '<div class="hi-h">'+(NW[k]||k)+' of its '+(nw[rows.length]||rows.length)+' headliners '+(k===1?'is':'are')+' typically shorter at 8 PM than at 10 AM.</div>'+
+        pwHiMnSay(k,mnJ,rows.length,NW,nw)+ /* 0728ns THE VERDICT LEADS, THE COUNT FOLLOWS THE MAJORITY (owner glass Mon Nov 16, 2026, 8:53 AM: "Three of its eight headliners are typically shorter at 8 PM" at a park where five are longer - "a little odd"; ruled H-B on sheet 106, 9:02 AM) */
         '<div class="hi-mn h"><span class="n"></span><span class="c">10 AM</span><span class="ar" style="visibility:hidden">→</span><span class="c">8 PM</span><span class="d"></span></div>'+
         rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(pwHiNm(x.id,x.n))+pwHiRf(C,x.id)+'</span><span class="chip hi-bg-'+tierOfWait(x.a)+'">'+x.a+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.p)+'">'+x.p+'</span><span class="d'+(x.a===x.p?' same':x.p>x.a?' more':'')+'">'+(x.a===x.p?'the same':x.a>x.p?(x.a-x.p)+' shorter':(x.p-x.a)+' longer')+'</span></div>';}).join("")+
         '<div class="hi-fine">Typical posted wait, the half-hour starting at each time, on nights the park is open past 8 PM.</div></div>';
@@ -14790,7 +14801,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(lo<0)return null;
         return {v:v[lo],u:"m",b:pwHiBand(v[lo]),s:[esc(pwHiNm(id,r.n)),v[lo]===v[hi]?'every day of the week':DF[lo]+' the calmest']};}
       if(key==="mn"){var parks=pwHiMnParks();if(!parks||!parks.length)return null;var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk);
-        return {v:rows.filter(function(x){return x.p<x.a;}).length+' of '+rows.length,u:"",b:"",s:[esc(pk)+' headliners','shorter at 8 PM']};}
+        var mnFk=rows.filter(function(x){return x.p<x.a;}).length,mnFj=rows.filter(function(x){return x.p>x.a;}).length;
+        return {v:(mnFj>mnFk?mnFj:mnFk)+' of '+rows.length,u:"",b:"",s:[esc(pk)+' headliners',mnFj>mnFk?'longer at 8 PM':'shorter at 8 PM']};} /* 0728ns: the tile counts the side the summary's sentence counts */
       return null;
     }
     function pwHiTiles(C,h){ /* a chapter's summaries as tiles. The summaries are built as ever and wait in the chapter's stow (hidden), so the hero still counts them, the cards still read them and the sheet shows the summary itself - nothing is composed twice. W-A: a summary that is waiting keeps its tile - a dash and the summary's own sentence. A chapter with no summary to show keeps its quiet card */
@@ -15069,7 +15081,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         D.bars.forEach(function(b){if(b.h!==null)b.h=mxh?b.h/mxh:0;}); /* the page's own heights, as shares of its tallest bar */
         D.days=all(".hi-wdl span").map(function(el){return tx(el);});
       }else if(key==="mn"){
-        D.sub=tx(one(".hi-seg button.on"));D.who=D.sub;
+        D.sub=tx(one(".hi-seg button.on"));D.who=D.sub;D.mnv=tx(one(".hi-v"));
         D.cols=all(".hi-mn.h .c").map(function(el){return tx(el);});
         D.rows=all(".hi-mn").filter(function(el){return !el.classList.contains("h");}).map(function(el){var c=all(".chip",el),d=one(".d",el);
           return {n:pwHiOwn(one(".n",el)),rf:tx(one(".n .hi-rf",el)),a:tx(c[0]),ab:pwHiBandOf(c[0]),p:tx(c[1]),pb:pwHiBandOf(c[1]),d:tx(d),dk:(d&&d.classList.contains("same"))?"same":(d&&d.classList.contains("more"))?"more":"less"};});
@@ -15177,16 +15189,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           if(D.days[k])caps(D.days[k],x0+bwd/2,base+44,22,C.muted2,"center");});
       }else if(D.key==="mn"){
         if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");
-        var mz=[50,46,42],ms=50,hl;for(i=0;i<mz.length;i++){ms=mz[i];if(wrap2(nb(D.head),CW,SG(BW,ms),9).length<=2)break;}
-        hl=bal(nb(D.head),CW,SG(BW,ms),3);y=336;for(i=0;i<hl.length;i++)T(hl[i],L,y+i*(ms+10),SG(BW,ms),C.ink);y+=(hl.length-1)*(ms+10);
+        var mz=[50,46,42],ms=50,hl,mnCo=62,mnRo=80;
+        if(D.mnv){var mnVz=[92,84,76,68],mnVs=92,mnVl; /* 0728ns H-B: the verdict at the card's weight in the lavender of the family's hero figures, two lines at most, stepping down before it loses a word; the counting sentence under it at 700 28, evened; the rows take what is left, their tiles up to 72 tall where the park is short of rows */
+          for(i=0;i<mnVz.length;i++){mnVs=mnVz[i];if(wrap2(nb(D.mnv),CW,SG(BW,mnVs),9).length<=2)break;}
+          mnVl=bal(nb(D.mnv),CW,SG(BW,mnVs),2);y=270+Math.round(mnVs*0.9);for(i=0;i<mnVl.length;i++)T(mnVl[i],L,y+i*Math.round(mnVs*0.95),SG(BW,mnVs),"#b4bcff");y+=(mnVl.length-1)*Math.round(mnVs*0.95);
+          hl=bal(nb(D.head),CW,IN("700",28),2);for(i=0;i<hl.length;i++)T(hl[i],L,y+48+i*36,IN("700",28),C.ink);y+=48+(hl.length-1)*36;mnCo=46;mnRo=62;
+        }else{for(i=0;i<mz.length;i++){ms=mz[i];if(wrap2(nb(D.head),CW,SG(BW,ms),9).length<=2)break;}
+          hl=bal(nb(D.head),CW,SG(BW,ms),3);y=336;for(i=0;i<hl.length;i++)T(hl[i],L,y+i*(ms+10),SG(BW,ms),C.ink);y+=(hl.length-1)*(ms+10);}
         var dW=180,cW=108,xp=R-dW-cW,xa=xp-52-cW,nW=xa-L-18;
-        if(D.cols[0])caps(D.cols[0],xa+cW/2,y+62,22,C.muted2,"center");if(D.cols[1])caps(D.cols[1],xp+cW/2,y+62,22,C.muted2,"center");
-        y+=80;n=D.rows.length;P=Math.min(132,Math.floor((fy-28-y)/n));var chh=Math.min(60,P-24),msz=fitAll(D.rows.map(function(r){return r.n;}),nW,IN,BW,[34,32,30,28]);
+        if(D.cols[0])caps(D.cols[0],xa+cW/2,y+mnCo,22,C.muted2,"center");if(D.cols[1])caps(D.cols[1],xp+cW/2,y+mnCo,22,C.muted2,"center");
+        y+=mnRo;n=D.rows.length;P=Math.min(132,Math.floor((fy-28-y)/n));var chh=Math.min(D.mnv?72:60,P-24),mnCz=chh>=68?44:36,msz=fitAll(D.rows.map(function(r){return r.n;}),nW,IN,BW,[34,32,30,28]);
         D.rows.forEach(function(r,k){var yy=y+k*P,yc=yy+P/2,sz=msz;hair(yy);
           T(ell(r.n,nW,IN(BW,sz)),L,yc+(r.rf?-3:12),IN(BW,sz),C.ink);if(r.rf)T(ell(r.rf,nW,IN("500",22)),L,yc+27,IN("500",22),C.muted2); /* 0728nc: the card carries the line under the name, as the page does */
-          rr(xa,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.ab);ctx.fill();T(r.a,xa+cW/2,yc+13,SG(BW,36),"#0a1422","center");
+          rr(xa,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.ab);ctx.fill();T(r.a,xa+cW/2,yc+(mnCz===44?16:13),SG(BW,mnCz),"#0a1422","center");
           T("→",xa+cW+26,yc+11,IN("500",30),C.muted2,"center");
-          rr(xp,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.pb);ctx.fill();T(r.p,xp+cW/2,yc+13,SG(BW,36),"#0a1422","center");
+          rr(xp,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.pb);ctx.fill();T(r.p,xp+cW/2,yc+(mnCz===44?16:13),SG(BW,mnCz),"#0a1422","center");
           T(r.d,R,yc+10,IN(BW,28),r.dk==="less"?"#3dd68c":r.dk==="more"?"#ff9f6b":C.muted,"right");});
       }
       /* ---- 0728ne THE LONG VIEW'S SIX MIDDLES (owner-ruled Fri Nov 13, 2026, sheets 24-33: "each card sort of has its own personality" - no two share a shape; W-B, L, D-A, M-B, the log; T-2 and G-1 on sheet 49, 10:19 PM). The ruled rig's bytes on the painter's own helpers, frame, head and foot ---- */
