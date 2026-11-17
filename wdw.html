@@ -3106,6 +3106,7 @@
   .pc-nav span{font-size:24px;letter-spacing:-.02em}
   .pc-page .tf-calh i{font-weight:800;letter-spacing:.06em}
   .pc-page .tf-cal{gap:4px}
+  .pc-tap{font:600 13px/1.3 var(--font-body);color:var(--muted);text-align:center;margin:4px 0 8px} /* 0728oo THE TAP SITS OVER THE GRID (owner Nov 17, 2026, T-B on sheet 216) */
   .pc-cd.cc .d{font-size:11px;font-weight:800;justify-self:start;padding-left:5px;letter-spacing:-.01em;text-align:left}
   .pc-cd.cc .mk{justify-self:center;align-self:center;transform:scale(1.55);transform-origin:center 40%}
   .pc-page .pc-cd.cc.pn .mk:before{filter:drop-shadow(0 0 .6px rgba(20,24,40,.95)) drop-shadow(0 0 .6px rgba(20,24,40,.95)) drop-shadow(0 1px 1px rgba(20,24,40,.35))} /* 0728on (owner glass Nov 17, 2026, IMG_7292): the planner's edge (0728om) on this calendar's marks too - SAME QUESTION SAME SENTENCE; the size stays */
@@ -3303,7 +3304,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728on</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728oo</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -9712,7 +9713,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(band)h+='<div class="pc-band">'+band+'</div>';
     if(fetched&&!pub)h+='<div class="pc-note">Disney hasn\u2019t published '+PC_MON[m]+'\u2019s hours yet \u2014 the month below shows the verified lists.</div>';
     else if(fetched&&pub<lastDs)h+='<div class="pc-note">Disney has published '+PC_MON[m]+'\u2019s hours through '+pcMD(pub)+' \u2014 later days show the verified lists only.</div>'; /* 0728nw: the pattern left the page with the pips */ /* 0727w: a partly published month names its horizon (THE LADDER NEVER ENDS ON SILENCE) */
-    h+='<div class="tf-calh"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></div><div class="tf-cal">';
+    h+='<div class="pc-tap">Tap a day for its hours</div><div class="tf-calh"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></div><div class="tf-cal">';
     for(d=0;d<fd;d++)h+='<span></span>';
     var hasHw=false,hols=[],hasRace=false,pset={},hsn=pcHsNights(),hasHs=false,hasAh=false,hasMl=false,fwd=[]; /* 0728nw: no tier is read here any more - the crowd is the crowd calendar's */
     for(d=1;d<=n;d++){var ds=tfDate(y,m,d);
@@ -9748,7 +9749,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     tpFetchMonth(pcShift(pcYM,-1),pcNbArrive);tpFetchMonth(pcShift(pcYM,1),pcNbArrive); /* 0728ko: the neighbours' hours warm behind the page, so the month that slides in is whole */
     h+='<div class="pc-vp"><div class="pc-track">'+[-1,0,1].map(function(k){var ym=k?pcShift(pcYM,k):pcYM;return '<div class="pc-page'+(k?'':' cur')+'" data-ym="'+ym+'">'+pcMonthBody(ym,today)+'</div>';}).join('')+'</div></div>';
     h+='<button class="pw-share pc-mdoor" type="button" data-pcshare="month">'+'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7"/></svg> Share this month</button>'; /* 0728ee (B-C, owner-ruled Oct 4 on cal-door-B.png): the month's door is the family's full-width door, in the text link's old seat above the fine print; the day sheet keeps its glyph. Was 0727y s-B, a text link */
-    h+='<div class="tf-basis">Hours as Disney publishes them, via ThemeParks.wiki \u00b7 party nights only where the night list is verified \u00b7 the week colors the date, the day wears a mark \u00b7 tap a day for its hours</div></div>'; /* 0728nw: the strips' clause left with them */
+    h+='<div class="tf-basis">Hours as Disney publishes them, via ThemeParks.wiki \u00b7 party nights only where the night list is verified \u00b7 the week colors the date, the day wears a mark</div></div>'; /* 0728nw: the strips' clause left with them */
     return h;}
   function pcSheetHTML(ds,today){ /* THE DAY SHEET: published hours per park (tpHoursHTML — Early Entry, Extended Evening, Event from the feed), the party by name, the festival running */
     var a=ds.split("-"),y=+a[0],m=+a[1]-1,h='',i,night=window.__pwEvN&&window.__pwEvN.dates&&window.__pwEvN.dates[ds],pn=night?(pcPartyName(ds)||'MK party night'):null,em=night?tfPartyEm(ds):"";
