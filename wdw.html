@@ -3059,7 +3059,7 @@
   .pc-cd.cc .d{font-size:11px;font-weight:800;justify-self:start;padding-left:5px;letter-spacing:-.01em;text-align:left}
   .pc-cd.cc .mk{justify-self:center;align-self:center;transform:scale(1.55);transform-origin:center 40%}
   .tf-callg.lgl .pc-c{display:block;font:500 12.5px var(--font-body);color:var(--muted);text-align:left}
-  .tph.cal-hero{margin:0 0 14px}
+  .tph.cal-hero{margin:0 0 14px} .tph.cal-hero h2+.hr,.tph.cal-hero .sub+.hr{margin-top:12px} /* 0728oh THE RULE KEEPS ITS DISTANCE (owner glass Nov 17, 2026, IMG_7252): the first row's rule stood on the sub-line */
   .tph.cal-hero .hr{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--pwh-line);font:600 15px var(--font-body);color:var(--pwh-ink)}
   .tph.cal-hero .hr .g{width:22px;text-align:center;font-size:17px;flex:0 0 22px}
   .tph.cal-hero .hr .n{flex:1;min-width:0}
@@ -3252,7 +3252,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728og</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728oh</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -9589,21 +9589,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(T)for(i=0;i<T.events.length;i++){var e=T.events[i];if(e.type!=="festival")continue;for(j=0;j<e.windows.length;j++){var w=e.windows[j];if(!(w.v==="vv"||w.v==="v"))continue;
       if(w.from<=today&&today<=w.to&&(!fest||w.to<fest.t))fest={name:e.name,id:e.id,f:w.from,t:w.to};else if(w.from>today&&(!next||w.from<next.f))next={name:e.name,id:e.id,f:w.from,t:w.to};}}
     var shw=[],ta=today.split("-");pcWins("show",+ta[0],+ta[1]-1).forEach(function(w){var e=pcEv(w.id);if(w.f<=today&&today<=w.t&&e&&e.park==="EP")shw.push(w.name);}); /* K-A: the show running at EPCOT tonight rides the festival's row */
-    if(fest)it.push({k:"fest",d:null,nm:((window.__pwFestN||{})[fest.id]||fest.name)+(shw.length?" \u00b7 "+shw[0]+" nightly":""),g:'<span class="em">\ud83c\udf77</span>',lab:"At EPCOT now",w:"through "+pcMD(fest.t)});
-    else if(next)it.push({k:"fest",d:next.f,nm:(window.__pwFestN||{})[next.id]||next.name,g:'<span class="em">\ud83c\udf77</span>',lab:"Next at EPCOT",sub:"At EPCOT, through "+pcMD(next.t)+".",w:"from "+pcMD(next.f),from:1});
+    if(fest)it.push({k:"fest",d:null,nm:((window.__pwFestN||{})[fest.id]||fest.name)+(shw.length?" \u00b7 "+shw[0]+" nightly":""),g:'<span class="em">'+pcFestEm(fest.id)+'</span>',lab:"At EPCOT now",w:"through "+pcMD(fest.t)});
+    else if(next)it.push({k:"fest",d:next.f,nm:(window.__pwFestN||{})[next.id]||next.name,g:'<span class="em">'+pcFestEm(next.id)+'</span>',lab:"Next at EPCOT",sub:"At EPCOT, through "+pcMD(next.t)+".",w:"from "+pcMD(next.f),from:1});
     return it;}
   function pcUpHTML(today){ /* 0728nw THE HERO IS WHAT'S NEXT (H, owner Nov 16, 2026, 8:07 PM on sheet 135: "I do like V2 with the hero. Much nicer"): Coming up is the page's hero in the Plan landing's dark dress - the soonest dated item is the headline, in the day sheet's own sentence; the others are its rows. On a tie the order is Magic Kingdom, Hollywood Studios, the holiday, the festival. Was the u-A rail in a card (0728lm) */
     var it=pcUpItems(today),lead=null,i,rows='',hl,sub='';
     for(i=0;i<it.length;i++)if(it[i].d&&(!lead||it[i].d<lead.d))lead=it[i];
     if(lead){hl=esc(lead.nm)+(lead.from?' from '+pcMD(lead.d):(lead.d===today?(lead.night?' tonight':' today'):' on '+tpWDn(lead.d).slice(0,3)+' '+pcMD(lead.d)))+'.';sub=lead.sub||'';}
     else hl='Nothing on the lists yet.';
-    for(i=0;i<it.length;i++){if(it[i]===lead)continue;rows+='<div class="hr"><span class="g">'+it[i].g+'</span><span class="n"><small>'+it[i].lab+'</small>'+esc(it[i].nm)+'</span>'+(it[i].w?'<span class="w">'+it[i].w+'</span>':'')+'</div>';}
+    for(i=0;i<it.length;i++){if(it[i]===lead)continue;rows+='<div class="hr"><span class="g">'+it[i].g+'</span><span class="n"><small>'+it[i].lab+'</small>'+esc(it[i].nm).replace(/ \u00b7 /g," \u00b7\u00a0")+'</span>'+(it[i].w?'<span class="w">'+it[i].w+'</span>':'')+'</div>';}
     return '<div class="tph pl-tph cal-hero"><div class="eb">Plan \u00b7 Hours &amp; events \u00b7 coming up</div><h2>'+hl+'</h2>'+(sub?'<div class="sub">'+sub+'</div>':'')+rows+'</div>';}
   function pcMonthBody(ym,today){ /* 0728ko THE MONTH RIDES A TRACK (owner Nov 5, 2026, 6:10 AM: "swipe with your finger to the other months"; 6:15: "a nice fluid movement"): the month's page - band, note, grid, key, legend - for ANY month, so the track can carry the neighbours beside the one on screen; the nav, the share door and the basis stay on the card */
     var a=ym.split("-"),y=+a[0],m=+a[1]-1,n=tfDim(y,m),fd=new Date(y,m,1).getDay(),d,h='',pev=tfPartyMap(m,y),races=pcWins("race",y,m),parties=pcWins("party",y,m),fests=pcWins("festival",y,m);
     var pub=pcPublished(ym),fetched=!!tpSched[ym],lastDs=tfDate(y,m,n);
     if(ym!==today.slice(0,7))h+='<button type="button" class="pc-home" data-pchome="1"><span class="chev">\u2039</span> Back to '+PC_MON[+today.slice(5,7)-1]+'</button>'; /* 0728dq THE WAY HOME (J-A) — 0728kp THE DOOR RIDES WITH ITS PAGE (owner glass Nov 5, 6:56 AM: the link appeared above the track at the landing and pushed December down): the link is the page's, so it slides in with the month it names; the home month's page has none */
-    var band='';fests.forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
+    var band='';fests.forEach(function(w){band+='<span>'+pcFestEm(w.id)+' <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     parties.forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(pcWins("night",y,m).some(function(w){return w.id==="jollywood";}))band+='<span>\u2728 <b>Jollywood Nights</b> \u00b7 select nights</span>'; /* 0728nw (N-B): Hollywood Studios' ticketed nights get a chip beside Magic Kingdom's */
     var oth=pcOther(),mAh=false,mMl=[],dq; /* 0728oe: the other nights' chips - one for After Hours, one for each Moonlight Magic night (it is one night at one park), the show by its dates, the fireworks by their holiday's name */
@@ -9662,13 +9662,14 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=0;i<TP_PARKS.length;i++){var p=TP_PARKS[i][0],sub='';
       if(p==="Magic Kingdom"&&pn)sub='<span class="pc-sub">'+(em&&em!=="ring"?em+' ':'')+esc(pn)+' \u00b7 closes to day guests early</span>';
       if(p==="Hollywood Studios"&&pcHsNights()[ds])sub='<span class="pc-sub">\u2728 Jollywood Nights \u00b7 closes to day guests early</span>'; /* 0728nw: SAME QUESTION SAME SENTENCE */
-      if(p==="EPCOT"&&fests.length)sub+='<span class="pc-sub">\ud83c\udf77 '+fests.map(function(w){return esc((window.__pwFestN||{})[w.id]||w.name);}).join(' \u00b7 ')+'</span>';
+      if(p==="EPCOT"&&fests.length)sub+='<span class="pc-sub">'+fests.map(function(w){return pcFestEm(w.id)+' '+esc((window.__pwFestN||{})[w.id]||w.name);}).join(' \u00b7 ')+'</span>';
       var pk2=TP_PARKS[i][1]; /* 0728oe THE CARD NAMES IT, THE PAGE EXPLAINS IT: the day's row writes the other nights out - the hours and the entry time, the place, the showtimes - from the table's own fields */
       (oth[ds]||[]).forEach(function(x){if(x.p!==pk2)return;var w=pcWinOf(x.id,ds);
         if(x.k==="ah")sub+='<span class="pc-sub">🌙 Disney After Hours'+(w&&w.hours?' · '+w.hours[0]+' to '+w.hours[1]:'')+' · separate ticket'+(w&&w.entry?', entry from '+w.entry:'')+'</span>';
         else sub+='<span class="pc-sub">🌕 Disney Vacation Club Moonlight Magic · for DVC members, by registration</span>';});
       pcWins("show",y,m).forEach(function(w){var e=pcEv(w.id),ww=pcWinOf(w.id,ds);if(!e||e.park!==pk2||!ww)return;sub+='<span class="pc-sub">🕯️ '+esc(w.name)+(e.place?' · '+esc(e.place):'')+(ww.times?' · '+pcClocks(ww.times):'')+(ds===ww.to?' · last night':'')+'</span>';});
       pcFwOn(ds).forEach(function(x){if(x.p!==pk2)return;var e=pcEv(x.id),ww=pcWinOf(x.id,ds);sub+='<span class="pc-sub">🎆 '+esc(e&&e.show?e.show+', the '+x.name:x.name)+(ww&&ww.times?' · '+pcClocks(ww.times):'')+(pcGap(x.f,x.t)===1?' · also '+pcMD(ds===x.f?x.t:x.f):'')+'</span>';});
+      sub=sub.replace(/ \u00b7 /g," \u00b7\u00a0"); /* 0728oh THE DOT RIDES ITS CLAUSE (0728gs's law, on the day's lines): a line breaks before a dot, never after it */
       h+='<div class="pc-hr"><div><b>'+esc(p)+'</b>'+sub+'</div>'+tpHoursHTML(ds,p)+'</div>';} /* 0727t: the cache is keyed by the park's display name — the key tpFetchMonth writes (shortName), never the code */
     h+='</div>';return h;}
   function pcPageHTML(){
@@ -9761,7 +9762,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var band='',pset={};
     if(p==="MK")pcWins("party",y,m).forEach(function(w){band+='<span>'+(TF_PARTY_EM[w.id]||'')+' <b>'+esc(w.name)+'</b> \u00b7 select nights</span>';});
     if(p==="HS"&&Object.keys(pcHsNights()).some(function(q){return q.slice(0,7)===ccYM;}))band+='<span>\u2728 <b>Jollywood Nights</b> \u00b7 select nights</span>';
-    if(p==="EP")pcWins("festival",y,m).forEach(function(w){band+='<span>\ud83c\udf77 <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
+    if(p==="EP")pcWins("festival",y,m).forEach(function(w){band+='<span>'+pcFestEm(w.id)+' <b>'+esc((window.__pwFestN||{})[w.id]||w.name)+'</b> \u00b7 '+pcMD(w.f)+' \u2013 '+pcMD(w.t)+'</span>';});
     if(band)h+='<div class="pc-band">'+band+'</div>';
     h+='<div class="tf-calh"><i>S</i><i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i></div><div class="tf-cal">';
     for(d=0;d<fd;d++)h+='<span></span>';
@@ -9854,7 +9855,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var pub=pcPublished(pcYM),fetched=!!tpSched[pcYM],note="";
     if(fetched&&!pub)note="Disney hasn\u2019t published "+PC_MON[m]+"\u2019s hours yet \u2014 this is the pattern and the verified lists.";
     else if(fetched&&pub<tfDate(y,m,n))note="Disney has published "+PC_MON[m]+"\u2019s hours through "+pcMD(pub)+".";
-    var band=[];fests.forEach(function(w){band.push({em:"\ud83c\udf77",t:((window.__pwFestN||{})[w.id]||w.name)+" \u00b7 "+pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
+    var band=[];fests.forEach(function(w){band.push({em:pcFestEm(w.id),t:((window.__pwFestN||{})[w.id]||w.name)+" \u00b7 "+pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
     parties.forEach(function(w){band.push({em:TF_PARTY_EM[w.id]||"",t:w.name+" \u00b7 select nights"});});
     var bem={};band.slice(0,3).forEach(function(b){if(b.em)bem[b.em]=1;}); /* 0728ee (M-C): a party its chip already names with its glyph is not named again in the legend */
     var legend=[];if(hasHw)legend.push({g:"hw",n:"Holiday week",d:"dates in accent"});hols.forEach(function(x){legend.push({g:"hol",n:x[0],d:PC_MON[m].slice(0,3)+" "+x[1]});});
@@ -9951,7 +9952,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=0;i<TP_PARKS.length;i++){var p=TP_PARKS[i][0],r=rec&&rec[p]&&rec[p][ds],ex=[],note="";
       if(r&&r.open){var EEN={EE:"Early Entry",EEH:"Extended Evening",EVT:"Event"},j;for(j=0;j<(r.ext||[]).length;j++){var x=r.ext[j];ex.push((EEN[x.k]||x.k)+" "+tpClk(x.o)+(((x.k==="EEH"||x.k==="EVT")&&x.c)?" \u2013 "+tpClk(x.c):""));}}
       if(p==="Magic Kingdom"&&pn)note=(em&&em!=="ring"?em+" ":"")+pn+" \u00b7 closes to day guests early";
-      if(p==="EPCOT"&&fests.length)note="\ud83c\udf77 "+fests.map(function(w){return (window.__pwFestN||{})[w.id]||w.name;}).join(" \u00b7 ");
+      if(p==="EPCOT"&&fests.length)note=fests.map(function(w){return pcFestEm(w.id)+" "+((window.__pwFestN||{})[w.id]||w.name);}).join(" \u00b7 ");
       parks.push({name:p,hours:(r&&r.open)?(tpClk(r.open)+" \u2013 "+tpClk(r.close)):(rec?"Not in the published schedule yet":"Schedule loading\u2026"),pub:!!(r&&r.open),ex:ex,note:note});}
     var extra=[];if(hol)extra.push({g:"hol",n:hol,d:""});/* 0728ee: the festival rides EPCOT's tile - not said again under THIS DAY */races.forEach(function(w){extra.push({g:"race",n:w.name,d:pcMD(w.f)+" \u2013 "+pcMD(w.t)});});
     var v=tfDEst(m,y,+a[2]),lv=(v!=null&&typeof window.__avTier==="function")?({short:1,medium:2,long:3,packed:4}[window.__avTier(v)]||0):0; /* 0728ee: the day's pattern, from the month card's own resolver */
@@ -9992,6 +9993,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
      Hours & events' "Share this month" paints this card: the month's nights on the grid, what is on in a list, the holidays, and - for a month Disney has not posted - what the same month held the year before.
      The mock's painter (mock-d/mockhe-r.html) on the build's own frame. Verified lists and gated windows only; no crowd claim. ===== */
   var PC_EVC_FEST={holidays:"\ud83c\udf81",arts:"\ud83c\udfa8",fg:"\ud83c\udf37",fw:"\ud83c\udf77"},PC_EVC_ICE="#8fe3ff";
+  function pcFestEm(id){return PC_EVC_FEST[id]||"\ud83c\udf77";} /* 0728oh THE PAGE WEARS THE CARD'S GLYPH (owner glass Nov 17, 2026, IMG_7252/7255: the Festival of the Holidays wore the wine glass on the page and the gift on the card): one reader for every seat that names a festival - the chips, the day's row, Coming up, the crowd page and the cards */
   function pcEvSpan(f,t,ym,every){ /* how a window sits in a month: all month, to its end, from its start, or its dates */
     var a=f.slice(0,7)<ym,b=t.slice(0,7)>ym,e=every?"every night ":"";
     if(a&&b)return every?"every night":"all month";
@@ -10018,7 +10020,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(E.ahN){var wh=ahP.length===1?"at "+pcParkOf(ahP[0]):"across "+["","","two","three","four"][ahP.length]+" parks";
       L.push(["\ud83c\udf19","Disney After Hours"," \u00b7 "+E.ahN+nn(E.ahN)+" "+wh,"ah"]);cand(E.ahN,["After Hours"+nn(E.ahN),wh]);}
     E.ml.forEach(function(x){L.push(["\ud83c\udf15","Moonlight Magic"," \u00b7 "+pcParkOf(x[0])+" \u00b7 DVC members \u00b7 "+mon+" "+x[1],"ml"]);});
-    E.fest.forEach(function(w){var e=pcEv(w.id);L.push([PC_EVC_FEST[w.id]||"\ud83c\udf77",(window.__pwFestN||{})[w.id]||w.name," \u00b7 "+pcParkOf(e?e.park:"")+" \u00b7 "+pcEvSpan(w.f,w.t,ym),"fest:"+w.id]);});
+    E.fest.forEach(function(w){var e=pcEv(w.id);L.push([pcFestEm(w.id),(window.__pwFestN||{})[w.id]||w.name," \u00b7 "+pcParkOf(e?e.park:"")+" \u00b7 "+pcEvSpan(w.f,w.t,ym),"fest:"+w.id]);});
     E.show.forEach(function(w){var e=pcEv(w.id);L.push(["\ud83d\udd6f\ufe0f",w.name," \u00b7 "+pcParkOf(e?e.park:"")+" \u00b7 "+pcEvSpan(w.f,w.t,ym,true),"show:"+w.id]);});
     E.race.forEach(function(w){L.push(["\ud83c\udfc3",w.name," \u00b7 "+pcEvSpan(w.f,w.t,ym),"race:"+w.id]);});
     E.fw.forEach(function(w){var g=fwn[w.name];if(!g){g=fwn[w.name]={f:w.f,t:w.t,id:w.id};fwk.push(w.name);}if(w.f<g.f)g.f=w.f;if(w.t>g.t)g.t=w.t;});
