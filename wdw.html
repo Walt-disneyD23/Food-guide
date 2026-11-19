@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ot</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ou</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3631,13 +3631,14 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
      pvPick.<key>). The sub-line is the card's own share title — no new copy. The native share sheet opens from the button, so iOS keeps its gesture. ===== */
   var pvEl=null;
   function pvSub(t){return String(t||"").replace(/^RideCue(\s*—\s*|$)/,"");}
-  function pvShare(cv,fname,title){ /* the family lifecycle, verbatim, once */
-    cv.toBlob(function(blob){
+  function pvShare(cv,fname,title,file0){ /* the family lifecycle, verbatim, once - 0728ou: a file made ahead (the printable page's PDF) leaves through the same door */
+    function send(blob){
       if(!blob){if(typeof pushToast==="function")pushToast("Couldn't make image","Try again in a moment");return;}
-      var file=new File([blob],fname,{type:"image/png"});
+      var file=new File([blob],fname,{type:"image/png"});if(file0)file=file0;
       if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:title})["catch"](function(){});} /* 0728jk THE CARD CARRIES ITS OWN LINK (owner glass Sun Nov 1, 2026: the iOS sheet read "1 Link and 1 Image" and lost Save Image; ruled S-A): the share hands iOS the picture alone - a mixed file+url payload is a bundle to iOS and the photo actions (Save Image, Save to Photos) leave the sheet. The door still travels: every card footer prints the site (THE CARDS PROVE). Retires 0728ce THE DOOR RIDES WITH THE CARD */
       else{var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();if(typeof pushToast==="function")pushToast("Card saved","Check your downloads / photos");}
-    },"image/png");
+    }
+    if(file0)send(file0);else cv.toBlob(send,"image/png");
   }
   var pvBack=null; /* 0728nd THE PREVIEW HANDS BACK (S-A, owner-ruled Fri Nov 13, 2026, 7:06 PM: "played with it, i think ill go with S-A for now"): a door that opened the preview from inside another sheet names its way home (o.back); every way the preview closes - the X, the dimmer, a pull - runs it once */
   function pvClose(){var f=pvBack;pvBack=null;if(pvEl)pvEl.innerHTML="";document.body.classList.remove("pv-open");if(f)f();}
@@ -3646,20 +3647,20 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     if(!pvEl){pvEl=document.createElement("div");pvEl.id="pvHost";document.body.appendChild(pvEl);}
     pvBack=(typeof o.back==="function")?o.back:null;
     var pick=0;if(alts.length>1&&o.key){var p=store.get("pvPick."+o.key,0);if(typeof p==="number"&&p>=0&&p<alts.length)pick=p;}
-    function alt(i){var a=alts[i];return {cv:a.cv,fname:a.fname||o.fname||"ridecue-card.png",title:a.shareTitle||o.shareTitle||"RideCue"};}
+    function alt(i){var a=alts[i],fn=a.fname||o.fname||"ridecue-card.png";if(!a.cv&&a.make)a.cv=a.make();return {cv:a.cv,fname:a.pdf?fn.replace(/\.png$/,".pdf"):fn,title:a.shareTitle||o.shareTitle||"RideCue",pdf:!!a.pdf,src:a};} /* 0728ou: an alt may be made on its first showing (make) and may leave as a PDF under the card's own name (pdf, prep) */
     pvEl.innerHTML='<div class="td-scrim pv-scrim"></div><div class="td-sheet pv-sheet anim'+(alts.length>1?' two':'')+'" role="dialog" aria-label="Share"><div class="rc-grab"></div>'+
       '<div class="help-h"><div><div class="help-title">Share</div><div class="pv-sub"></div></div><button class="help-x" type="button" data-pv-x aria-label="Close">✕</button></div>'+
       '<div class="pv-card"><img alt=""></div>'+
-      (alts.length>1?'<div class="mr-seg pv-seg">'+alts.map(function(a,i){return '<b data-pv-alt="'+i+'">'+esc(a.label||("Card "+(i+1)))+'</b>';}).join("")+'</div>':'')+
+      (alts.length>1?'<div class="mr-seg pv-seg">'+alts.map(function(a,i){return '<b data-pv-alt="'+i+'">'+esc(a.label||(!i&&o.first)||("Card "+(i+1)))+'</b>';}).join("")+'</div>':'')+
       '<button class="pw-share pv-share" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share card</button></div>';
     var sh=pvEl.querySelector(".pv-sheet"),sc=pvEl.querySelector(".pv-scrim"),img=pvEl.querySelector(".pv-card img"),sub=pvEl.querySelector(".pv-sub"),chips=pvEl.querySelectorAll("[data-pv-alt]");
-    function show(i){pick=i;var a=alt(i);img.src=a.cv.toDataURL("image/png");sub.textContent=pvSub(a.title);
+    function show(i){pick=i;var a=alt(i);if(a.pdf){var pc=document.createElement("canvas");pc.width=1320;pc.height=1020;pc.getContext("2d").drawImage(a.cv,0,0,1320,1020);img.src=pc.toDataURL("image/jpeg",0.85);if(!a.src.file&&a.src.prep)a.src.file=a.src.prep(a.cv,a.fname);}else img.src=a.cv.toDataURL("image/png");pvEl.querySelector(".pv-share").lastChild.nodeValue=a.pdf?"Share page (PDF)":"Share card";sub.textContent=pvSub(a.title);
       Array.prototype.forEach.call(chips,function(b){b.classList.toggle("on",+b.getAttribute("data-pv-alt")===i);});}
     show(pick);
     Array.prototype.forEach.call(chips,function(b){b.addEventListener("click",function(){var i=+b.getAttribute("data-pv-alt");show(i);if(o.key)store.set("pvPick."+o.key,i);});});
     pvEl.querySelector("[data-pv-x]").addEventListener("click",pvClose);
     sc.addEventListener("click",pvClose);
-    pvEl.querySelector(".pv-share").addEventListener("click",function(){var a=alt(pick);pvShare(a.cv,a.fname,a.title);});
+    pvEl.querySelector(".pv-share").addEventListener("click",function(){var a=alt(pick),f=a.pdf?a.src.file:null;if(f&&!(navigator.canShare&&navigator.canShare({files:[f]})))f=null;pvShare(a.cv,f?a.fname:a.fname.replace(/\.pdf$/,".png"),a.title,f);} /* 0728ou: the page leaves as its PDF; a phone that will not take a PDF gets it as a picture */);
     sheetDragDismiss(sh,sc,pvClose);
     document.body.classList.add("pv-open");
   }
@@ -9860,7 +9861,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
   function ccPageHTML(){
     var today=tpToday(),cur=today.slice(0,7),G,i,h;
     if(!ccPk){ccPk=store.get("ppCcPark","MK");if(!ccNm(ccPk))ccPk="MK";} /* ruling 6: the park last chosen here, Magic Kingdom the first time */
-    if(!ccYM)ccYM=cur;
+    if(!ccYM)ccYM=cur;tpFetchMonth(ccYM); /* 0728ou: the month's hours are asked for when its crowd page opens - the printable page prints them */
     if(!ccWarm){ccWarm=true; /* 0727u's law: a warm-up is asked for once, on arrival - the prefetch calls back synchronously once loaded */
       if(!((typeof window.__ccM==="function")&&window.__ccM())){var cb=function(){if(rpView==="ccal")renderPulsePage();};
         if(typeof window.__avGo==="function")window.__avGo(cb);if(typeof window.__slGo==="function")window.__slGo(cb);}}
@@ -9938,11 +9939,184 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(td){ctx.strokeStyle="#96a1f2";ctx.lineWidth=4;rr(lx+2,y+5,18,18,6);ctx.stroke();lx+=30;lab("Today");}
     if(anyLog||lx+MW("min = headliner avg",IN("700",22))<=L+CW)lab("min = headliner avg",C.muted); /* 0728op WHERE THE MINUTES ARE, THE MEASURE IS NAMED (owner Nov 17, 2026, K-A on sheet 220): the key quotes minutes on every month, so it names them on every month - a month ahead too, where the line has the room. Reopens 0728ob B15 (a month ahead wore no minute label) */
     h.done();}
+  function ccPrRows(B,dom,v,pk,evs,evWord,noWord){ /* 0728ou THE PAGE NEVER DISAGREES WITH THE CARD: the printable page's "What it means" rows, from the same bands and the same verdict the page and the card read. B: the month's bands (null = no reading); dom: the days the rows may speak of (true/false); v: G.verdict's answer; pk: the app's peak as [first,last] day indexes or null; evs: the park's own nights (true/false). Rows are [label,lead,rest]; each earns its slot or stays off */
+    var n=B.length,rows=[],used=[],i,j,k,sk=[],skip=null,go=null;
+    function ok(i){return dom[i]&&B[i]!=null;}
+    function cnt(ix){var c=[0,0,0,0];ix.forEach(function(q){c[B[q]]++;});return c;}
+    function span(a,b){var o=[],q;for(q=a;q<=b;q++)o.push(q);return o;}
+    function runP(ix){var lo=4,hi=-1;ix.forEach(function(q){if(B[q]<lo)lo=B[q];if(B[q]>hi)hi=B[q];});return lo===hi?CC_BW[lo]+" all "+ccNum(ix.length).toLowerCase()+" days":CC_BW[lo]+" to "+CC_BW[hi];}
+    for(i=0;i<n;i++)used.push(false);
+    if(pk&&span(pk[0],pk[1]).every(function(q){return ok(q)&&B[q]>=2;}))sk.push(pk);
+    for(i=0;i<n;i++){if(!ok(i)||B[i]!==3)continue;j=i;while(j+1<n&&ok(j+1)&&B[j+1]===3)j++;
+      if(j-i>=2&&!sk.some(function(s){return i<=s[1]&&s[0]<=j;}))sk.push([i,j]);i=j;}
+    sk.sort(function(a,b){return a[0]-b[0];});sk=sk.slice(0,2);
+    if(sk.length){var all=[];sk.forEach(function(s){all=all.concat(span(s[0],s[1]));});all.forEach(function(q){used[q]=true;});
+      skip=["Skip",sk,"Typically "+(sk.length===1?runP(all):ccTop2(cnt(all)))+"."];}
+    else{var iso=[];for(i=0;i<n;i++)if(ok(i)&&B[i]===3)iso.push(i);
+      if(iso.length>=1&&iso.length<=3){iso.forEach(function(q){used[q]=true;});skip=["Skip",iso.map(function(q){return [q,q];}),"Typically Packed."];}}
+    if(v&&v.k==="event"){var pd=[],R=Math.round;for(i=0;i<n;i++)if(ok(i)&&evs[i]&&!used[i])pd.push(i);
+      if(v.form==="logged")rows.push(["Go",ccCap(evWord)+".","So far they averaged "+R(v.e)+" min on the headliners."+(v.left>0?" "+ccNum(v.left)+" "+noWord+(v.left>1?"s":"")+" left.":"")]);
+      else if(pd.length)rows.push(["Go",ccCap(evWord)+".","Mostly "+ccTop2(cnt(pd))+", about "+R(v.e)+" min on the headliners."]);
+      pd.forEach(function(q){used[q]=true;});go=pd;}
+    else{var best=null;
+      for(i=0;i<n;i++)for(j=i+4;j<n;j++){var w=span(i,j),bad=false,two=false,nb=0;
+        for(k=0;k<w.length;k++){var q=w[k];if(!ok(q)||used[q]||B[q]===3){bad=true;break;}if(B[q]===2){nb++;if(k&&B[w[k-1]]===2){two=true;break;}}}
+        if(bad||two)break;
+        if(B[i]===2||B[j]===2||nb>Math.floor(w.length/7))continue;
+        var sum=0;w.forEach(function(q){sum+=B[q];});
+        if(!best||w.length>best.w.length||(w.length===best.w.length&&sum<best.sum))best={w:w,sum:sum,nb:nb};}
+      if(best){var c=cnt(best.w),whole=best.w.length===n,t;go=best.w;go.forEach(function(q){used[q]=true;});
+        t=(best.nb===0&&(c[0]===0||c[1]===0))?"Typically "+runP(go):"Mostly "+ccTop2([c[0],c[1],0,0]);
+        if(best.nb===1){for(k=0;k<go.length;k++)if(B[go[k]]===2)break;t+="; one Busy day, {d"+go[k]+"}.";}
+        else t+=best.nb?"; "+ccNum(best.nb).toLowerCase()+" Busy days.":".";
+        rows.push(["Go",whole?"Any day.":[[go[0],go[go.length-1]]],t]);}}
+    var rest=[];for(i=0;i<n;i++)if(ok(i)&&!used[i])rest.push(i);
+    if(rest.length>=3){
+      if(v&&v.k==="event")rows.push(["Busier","Days with no "+(noWord==="party night"?"party":noWord)+".",v.form==="logged"?"So far they averaged "+Math.round(v.o)+" min.":"Mostly "+ccTop2(cnt(rest))+", about "+Math.round(v.o)+" min."]);
+      else if(rows.length){var gs=0,rs=0;go.forEach(function(q){gs+=B[q];});rest.forEach(function(q){rs+=B[q];});
+        if(rs/rest.length>gs/go.length+0.25)rows.push(["Busier","Every other day.","Mostly "+ccTop2(cnt(rest))+"."]);else rows.push(["Other days","","Mostly "+ccTop2(cnt(rest))+"."]);}
+      else rows.push(["Mostly","",ccTop2(cnt(rest))+"; no easy stretch stands out."]);}
+    if(skip)rows.push(skip);
+    return rows;}
+  var CC_PR_EARLY={"🎄":"4 PM","✨":"5:30 PM"}; /* when a party ticket opens the gate, by the night's mark: Mickey's Very Merry Christmas Party 4 PM, Jollywood Nights 5:30 PM (2026 season; read Nov 18, 2026 from wdwmagic, wdwnt, disneytouristblog and others - Disney's own page is not reachable from the bench). A night whose mark is not here says nothing */
+  function ccPrData(G,p,ym,today){ /* the printable month page's field. Bands, minutes, cut-offs, headline, averages and peak are G.month / G.verdict / ccSay / G.cut - the crowd calendar's own readers; hours are the schedule the calendar fetched */
+    var D=G.month(G.M,p,ym,today),v=G.verdict(G.M,p,ym,today),say=ccSay(G,p,ym,today),y=+ym.slice(0,4),m=+ym.slice(5,7)-1,n=D.length,park=ccNm(p),rec=tpSched[ym],mon=PC_MON[m].slice(0,3),i,j,c=[0,0,0,0],B=[],dom=[],evs=[],cells=[],last=null,pub=pcPublished(ym);
+    function sh(min){var hh=Math.floor(min/60)%12||12,mm=min%60;return hh+(mm?":"+("0"+mm).slice(-2):"");}
+    function d2(q){return mon+" "+(q+1);}
+    function rg(s){return s[0]===s[1]?d2(s[0]):d2(s[0])+" – "+(s[1]+1);}
+    var hrs={},ee={},evh={},em="",fw=[],hol;
+    for(i=0;i<n;i++){var x=D[i],ds=x.ds,r=rec&&rec[park]&&rec[park][ds],h=tdHours(ds,park),cell={d:i+1,b:x.b,lg:x.lg,v:x.lg?Math.round(x.v):null,today:ds===today,em:x.ev?ccEm(p,ds):"",hr:null,pt:"",ho:"",fw:false};
+      B.push(x.b);dom.push(ds>today||ym>today.slice(0,7));evs.push(!!x.ev);if(x.b!=null&&!cell.today)c[x.b]++;if(x.lg)last=ds;
+      if(cell.em&&cell.em!=="ring"&&!em)em=cell.em;
+      hol=HOLIDAYS[ds];if(hol&&hol!=="Christmas week")cell.ho=hol;
+      if(pcFwOn(ds).some(function(f){if(f.p===p){if(fw.indexOf(f.name)<0)fw.push(f.name);return true;}return false;}))cell.fw=true;
+      if(h.o!=null&&h.c!=null){cell.hr=sh(h.o)+"–"+sh(h.c);var key=tpClk(r.open)+" – "+tpClk(r.close),bag=x.ev?evh:hrs;bag[key]=(bag[key]||0)+1;
+        var got=false;(r.ext||[]).forEach(function(q){if(!q.o)return;var o=rcEtMin(new Date(q.o)),cc=q.c?rcEtMin(new Date(q.c)):null;
+          if(q.k==="EE"){ee[tpClk(q.o)]=1;got=true;}
+          else if(q.k==="EVT"&&x.ev&&cc!=null){cell.pt=sh(o)+"–"+sh(cc);cell.ptc=tpClk(q.o)+" – "+tpClk(q.c);}
+          else if(q.k==="EEH"&&cc!=null&&!cell.pt)cell.pt="Ext. eve "+sh(o)+"–"+sh(cc);});
+        if(!got)ee[""]=1;}
+      cells.push(cell);}
+    function top(o){var k,b=null;for(k in o)if(!b||o[k]>o[b])b=k;return b;}
+    var strip=[],H=top(hrs),E=top(evh),nt=p==="HS"?"Jollywood Nights":"party",ptc=null;cells.forEach(function(q){if(q.ptc&&!ptc)ptc=q.ptc;});
+    if(H||E){if(H)strip.push([H,""]);if(E&&E!==H)strip.push([E.replace(/ [AP]M /," ").replace(/ [AP]M$/,""),"on "+(em&&em!=="ring"?em+" ":"")+nt+" days"]);if(ptc)strip.push([ptc,nt,true]);
+      var et=Object.keys(ee).filter(function(k){return k;});if(et.length)strip.push([et.join(" or "),"Early Entry",true,(!ee[""]&&et.length===1)?", every day posted so far":""]);}
+    var pk=v&&(v.k==="peak"?v:v.pk),pki=(pk&&!pk.past&&pk.f.slice(0,7)===ym&&pk.t.slice(0,7)===ym)?[+pk.f.slice(8)-1,+pk.t.slice(8)-1]:null;
+    var rows=ccPrRows(B,dom,v,pki,evs,p==="HS"?"Jollywood days":"party days",p==="HS"?"Jollywood night":"party night").map(function(r){
+      var lead=typeof r[1]==="string"?r[1]:r[1].map(rg).join(r[1].length>2?", ":" and ")+".";return [r[0],lead,r[2].replace(/\{d(\d+)\}/g,function(a,q){return d2(+q);})];});
+    var fd=new Date(y,m,1).getDay(),wk=[],a=0;while(a<n){var b=Math.min(n-1,a+(6-((fd+a)%7))),w=[0,0,0,0];for(j=a;j<=b;j++)if(B[j]!=null&&!cells[j].today)w[B[j]]++;wk.push([a===b?d2(a):mon+" "+(a+1)+"–"+(b+1),w]);a=b+1;}
+    var on=[],left=0,tot=0;for(i=0;i<n;i++)if(evs[i]){tot++;if(D[i].ds>=today)left++;}
+    if(tot&&(p==="MK"||p==="HS")){var nm=p==="HS"?"Jollywood Nights":(function(){for(var q=0;q<n;q++)if(evs[q]){var z=pcPartyName(D[q].ds);if(z)return z;}return "Party nights";})(),lastEv=0;for(i=0;i<n;i++)if(evs[i])lastEv=i;
+      on.push([em&&em!=="ring"?em:"",nm,(left<tot?left+" night"+(left===1?"":"s")+" left this month":tot+" night"+(tot===1?"":"s")+" to "+d2(lastEv))+" · a separate ticket"+(ptc?" · "+ptc:"")+(CC_PR_EARLY[em]?" · party guests can enter from "+CC_PR_EARLY[em]:"")+". Party nights often sell out: check Disney’s site for tickets."]);}
+    if(p==="EP")pcWins("festival",y,m).forEach(function(q){on.push([pcFestEm(q.id),(window.__pwFestN||{})[q.id]||q.name,q.t.slice(0,7)===ym?"daily to "+pcMD(q.t):"all month"]);});
+    if(fw.length){var fwd=[];cells.forEach(function(q){if(q.fw)fwd.push(d2(q.d-1));});on.push(["fw",fw[0],fwd.length>2?fwd.slice(0,-1).join(", ")+" and "+fwd[fwd.length-1]:fwd.join(" and ")]);}
+    var logged=!!last&&ym===today.slice(0,7);
+    return {p:p,park:park,loaded:!!rec,title:PC_MON[m]+" "+y,hl:say.hl,wk:wk,rows:rows,c:c,cut:G.cut[p],cells:cells,fd:fd,strip:strip,on:on,logged:logged,
+      printed:logged?["Printed "+tpWD3(today)+" "+pcMD(today)+".",pcMD(ym+"-01")+" – "+(+last.slice(8))+" show what RideCue logged each day. Later days show what is typical for the date."]:null,
+      foot:"Unofficial. Not affiliated with Disney. Crowds are typical for the date, from RideCue’s logged headliner waits: history, never a promise."+(pub?" Hours as posted "+pcMD(today)+", "+today.slice(0,4)+" (through "+pcMD(pub)+") and can change.":"")+" Wait data: ThemeParks.wiki.",slug:p.toLowerCase()+"-"+ym};}
+  var CC_PR_COL=["#15a36b","#dc8a06","#ef6c3b","#e23b54"],CC_PR_TINT=["#d9f3e6","#fbe9c6","#fddccb","#f9d0d6"],CC_PR_INK=["#0b6b45","#8a5600","#a8421c","#a81f36"]; /* the printed page's own inks: solid tiles that hold white type on paper, pale tiles for a logged day (M-2) */
+  function ccPrDraw(ctx,D){ /* the printable month page, US Letter on its side: 1056 x 816 units at 3.125 = 3300 x 2550, 300 to the inch. THE MOCK'S BYTES ARE THE SPEC OF THE DRESS: sheets 275-285 (side hero J, S1 flow, K-1 key, P-C hours strip, M-2 logged days, T-2/B party time, V-2 inks) */
+    var S=3.125,FF='px ui-rounded,system-ui,sans-serif',JW=PC_JEWEL,NAVY="#101a33",INKD="#141a2e",ACC="#5b53d6",PER="#96a1f2",i,j;
+    ctx.save();ctx.scale(S,S);ctx.fillStyle="#fff";ctx.fillRect(0,0,1056,816);ctx.textBaseline="alphabetic";
+    function F(w,s,ls){ctx.font=w+" "+s+FF;if("letterSpacing" in ctx)ctx.letterSpacing=(ls||0)+"px";}
+    function T(s,x,y,w,sz,c,al,ls){F(w,sz,ls);ctx.fillStyle=c;ctx.textAlign=al||"left";ctx.fillText(s,x,y);}
+    function MW(s,w,sz,ls){F(w,sz,ls);return ctx.measureText(s).width;}
+    function rr(x,y,w,h,r,c){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();if(c){ctx.fillStyle=c;ctx.fill();}}
+    function burst(cx,cy,sz,c){var k=sz/24,q;ctx.strokeStyle=c;ctx.lineCap="round";for(q=0;q<8;q++){var a=q*Math.PI/4,lg=q%2===0,r0=(lg?4.6:4.4)*k,r1=(lg?10.8:8.2)*k;ctx.lineWidth=(lg?2.6:2.3)*k;ctx.beginPath();ctx.moveTo(cx+Math.sin(a)*r0,cy-Math.cos(a)*r0);ctx.lineTo(cx+Math.sin(a)*r1,cy-Math.cos(a)*r1);ctx.stroke();}}
+    function pips(x,y,b,on,off){for(var q=0;q<4;q++)rr(x+q*8,y,6,9,3,q<=b?on:off);}
+    function bandOf(mn){var c=D.cut;return mn<=c[0]?0:mn<=c[1]?1:mn<=c[2]?2:3;}
+    function toks(s,base,wt,inks){ /* words, a band's word or a minute figure in its own ink */
+      var o=[];String(s).split(/(\d+ ?\s?min|Light|Moderate|Busy|Packed)/).forEach(function(part,ix){if(!part)return;var c=base,w=wt;
+        if(ix%2&&inks){var mm=/^(\d+)/.exec(part);c=inks[mm?bandOf(+mm[1]):CC_BW.indexOf(part)];w="800";part=part.replace(/\s/g," ");}
+        part.split(" ").forEach(function(wd,n,a){if(wd!==""||n<a.length-1)o.push({w:wd,c:c,wt:w,sp:n<a.length-1});});});
+      return o;}
+    function flow(tk,x,y,mw,sz,lh,draw){ /* word wrap; returns the y past the last line */
+      var cx=x,q,spw=MW(" ","600",sz);for(q=0;q<tk.length;q++){var t=tk[q],w=t.mark?sz+3:MW(t.w,t.wt,sz);
+        if(cx>x&&cx+w>x+mw+0.5){cx=x;y+=lh;}
+        if(draw){if(t.mark==="fw")burst(cx+sz/2,y-sz*0.36,sz*1.15,t.c);else T(t.w,cx,y,t.wt,sz,t.c);}
+        cx+=w+(t.sp?spw:0);}
+      return y+lh;}
+    /* ---- the hero */
+    rr(30,24,292,752,22,NAVY);
+    var y=58;T("WALT DISNEY WORLD · MONTH AT A",52,y,"800",10.5,PER,"left",1.68);T("GLANCE",52,y+13,"800",10.5,PER,"left",1.68);
+    y=112;var pw=D.park.split(" "),l1=D.park,l2="";if(MW(D.park,"900",38,-1.14)>248){l1=pw[0];l2=pw.slice(1).join(" ");}
+    T(l1,52,y,"900",38,"#fff","left",-1.14);if(l2){y+=36.1;T(l2,52,y,"900",38,"#fff","left",-1.14);}
+    y+=24;T(D.title,52,y,"800",19,"#b7c0de");
+    var hz=23;[23,21.5,20].some(function(q){hz=q;return MW(D.hl,"900",q)<=248;});if(MW(D.hl,"900",hz)>248)hz=23; /* the headline on one line when a size down will hold it */
+    y+=37;y=flow(toks(D.hl,"#b9c0ff","900"),52,y,248,hz,hz*1.08,true)-hz*1.08;
+    y+=24;T("WEEK BY WEEK",52,y,"900",8.5,PER,"left",1.19);
+    y+=9;D.wk.forEach(function(w){var tot=w[1][0]+w[1][1]+w[1][2]+w[1][3],bx=119,bw=181;T(w[0],52,y+11,"900",11.5,"#fff");
+      if(tot){ctx.save();rr(bx,y+0.5,bw,13,5);ctx.clip();var n=w[1].filter(function(q){return q>0;}).length,av=bw-(n-1)*2,cx=bx;for(var k=0;k<4;k++)if(w[1][k]){var sw=av*w[1][k]/tot;ctx.fillStyle=CC_PR_COL[k];ctx.fillRect(cx,y+0.5,sw,13);cx+=sw+2;}ctx.restore();}
+      y+=19;});
+    if(D.rows.length){y+=14;T("WHAT IT MEANS",52,y,"900",8.5,PER,"left",1.19);y+=18;
+      D.rows.forEach(function(r){var kc=r[0]==="Go"?JW[1]:(r[0]==="Skip"?JW[4]:"#fff"),kw=MW(r[0].toUpperCase(),"900",10,0.8),vx=Math.max(106,52+kw+10),tk=[];
+        T(r[0].toUpperCase(),52,y,"900",10,kc,"left",0.8);
+        if(r[1])tk=tk.concat(toks(r[1],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}));
+        tk=tk.concat(toks(r[2],"#d5dbf0","600",[JW[1],JW[2],JW[3],JW[4]]));
+        y=flow(tk,vx,y,300-vx,11,14.85,true)+6.7;});}
+    if(D.printed){var py=flow(toks(D.printed[0],"#fff","800").concat([{w:"",c:"#fff",wt:"600",sp:true}]).concat(toks(D.printed[1],"#aab6d8","600")),52,0,248,9.5,12.8,false),p0=652-py;
+      flow(toks(D.printed[0],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}).concat(toks(D.printed[1],"#aab6d8","600")),52,p0,248,9.5,12.8,true);}
+    T("DAYS · TYPICAL HEADLINER WAIT, MIN",176,670,"900",8.5,PER,"center",1.19);
+    var C=D.cut,RG=[C[0]+" and under",(C[0]+1)+"–"+C[1],(C[1]+1)+"–"+C[2],(C[2]+1)+" and up"];
+    for(i=0;i<4;i++){var kx=52+i*63.25;rr(kx,678,58.3,78,8,CC_PR_COL[i]);T(String(D.c[i]),kx+29.15,704,"900",22,"#fff","center");pips(kx+14.15,714,i,"#fff","rgba(255,255,255,.34)");
+      T(CC_BW[i].toUpperCase(),kx+29.15,735,"800",8,"#fff","center",0.48);T(RG[i],kx+29.15,748,"800",8.5,"#fff","center");}
+    /* ---- the hours strip */
+    rr(338,24,688,25,10,"#f1f2f9");T("HOURS",350,40,"900",9,ACC,"left",1.35);
+    var sx=401,sy=40.5;
+    if(!D.strip.length)T(D.loaded?"Disney hasn’t posted this month’s hours yet.":"The hours didn’t load. Close this sheet and open it again.",sx,sy,"600",10.4,INKD);
+    else D.strip.forEach(function(s,n){var a=s[2]?s[1]:s[0],b=s[2]?s[0]:s[1],tail=s[3]||"",w=MW(a,s[2]?"600":"900",10.4)+(b?MW(" "+b,s[2]?"900":"600",10.4):0)+MW(tail,"600",10.4);
+      if(sx+w>1014&&tail){w-=MW(tail,"600",10.4);tail="";}if(sx+w>1014)return;
+      if(n){T("·",sx-9,sy,"600",10.4,"#9aa1bb","center");}
+      T(a,sx,sy,s[2]?"600":"900",10.4,INKD);sx+=MW(a,s[2]?"600":"900",10.4);if(b){T(" "+b,sx,sy,s[2]?"900":"600",10.4,INKD);sx+=MW(" "+b,s[2]?"900":"600",10.4);}
+      if(tail){T(tail,sx,sy,"600",10.4,INKD);sx+=MW(tail,"600",10.4);}sx+=18;});
+    /* ---- the month */
+    var DW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],PX=99.15,RN=Math.ceil((D.fd+D.cells.length)/7),TH=Math.min(112,(584-(RN-1)*6)/RN),small=TH<100;
+    for(i=0;i<7;i++)T(DW[i],344+i*PX,66,"800",9.5,"#8088a3","left",1.14);
+    D.cells.forEach(function(d,ix){var col=(D.fd+ix)%7,row=Math.floor((D.fd+ix)/7),x=338+col*PX,ty=74+row*(TH+6),w=93.1,bot=ty+TH,b=d.b,ds=small?22:27;
+      var bg,ink="#fff",pale=d.lg&&b!=null;
+      if(d.today){bg="#fff";ink=NAVY;}else if(b==null){bg="#eef0f6";ink="#8088a3";}else if(pale){bg=CC_PR_TINT[b];ink=CC_PR_INK[b];}else bg=CC_PR_COL[b];
+      rr(x,ty,w,TH,13,bg);if(d.today){ctx.lineWidth=3;ctx.strokeStyle=NAVY;rr(x+1.5,ty+1.5,w-3,TH-3,11.5);ctx.stroke();}
+      T(String(d.d),x+9,ty+7+ds*0.84,"900",ds,ink,"left",-0.54);
+      var mx=x+w-8;if(d.em&&d.em!=="ring"){T(d.em,mx,ty+(small?24:28),"400",small?20:25,ink,"right");mx-=small?24:29;}
+      if(d.fw)burst(mx-11,ty+17,22,d.today||pale||b==null?ACC:"#fff");
+      if(d.ho)T(d.ho.toUpperCase(),x+9,ty+7+ds+10,"900",7.5,ink,"left",0.45);
+      if(d.today){T("Today",x+9,bot-37,"900",11,ink);T("still counting",x+9,bot-24,"800",9,ink);return;}
+      if(b==null)return;
+      if(pale){T(String(d.v),x+9,bot-37,"900",14,ink);T(" min",x+9+MW(String(d.v),"900",14),bot-37,"800",9,ink);T(CC_BW[b].toUpperCase(),x+9,bot-12,"900",8,ink,"left",0.32);return;}
+      pips(x+9,bot-17,b,"#fff","rgba(255,255,255,.34)");T(CC_BW[b].toUpperCase(),x+9,bot-22,"900",9,"#fff","left",0.27);
+      if(d.hr){var hy=d.pt?bot-54:bot-37;T(d.hr,x+9,hy,"900",14,"#fff");
+        if(d.pt){T(d.pt,x+9,bot-38,"800",11.5,"#fff","left",-0.115);if(d.em&&d.em!=="ring"&&/^\d/.test(d.pt))T(d.em,x+9+MW(d.pt,"800",11.5,-0.115)+3,bot-38.5,"400",9.5,"#fff");}}
+      else if(D.loaded){ctx.globalAlpha=0.78;T("hours tba",x+9,bot-37,"800",10,"#fff");ctx.globalAlpha=1;}});
+    /* ---- the boxes */
+    var read=D.logged?[[["A number","b"],[" is the headliner average RideCue logged that day. ",""],["Pips","b"],[" are the typical crowd for a day still ahead.",""]],[["History, never a promise.",""]]]:[[["Each tile is one day: the park’s hours, and its typical crowd as a color, a word and pips.",""]],[["Crowds are typical for the date, from RideCue’s logged headliner waits. History, never a promise.",""]]];
+    function para(parts,x,yy,mw){var tk=[];parts.forEach(function(q){tk=tk.concat(toks(q[0],INKD,q[1]?"900":"600"));});return flow(tk,x,yy,mw,10.6,14.31,true)+3;}
+    var bx2=D.on.length?716.9:338,bw2=D.on.length?309.1:688;
+    if(D.on.length){rr(338,674.8,370.9,101.2,14,"#f1f2f9");T(("What’s on at "+D.park).toUpperCase(),352,694.3,"900",10,ACC,"left",1.5);var oy=711.5;
+      D.on.forEach(function(o){var tk=[];if(o[0]==="fw")tk.push({mark:"fw",c:ACC,sp:true});else if(o[0])tk.push({w:o[0],c:INKD,wt:"400",sp:true});
+        tk=tk.concat(toks(o[1],INKD,"900").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}));tk=tk.concat(toks("· "+o[2],INKD,"600"));oy=flow(tk,352,oy,343,10.6,14.31,true)+3;});}
+    rr(bx2,674.8,bw2,101.2,14,"#f1f2f9");T("HOW TO READ IT",bx2+14,694.3,"900",10,ACC,"left",1.5);var ry=711.5;read.forEach(function(q){ry=para(q,bx2+14,ry,bw2-28);});
+    /* ---- the foot */
+    flow(toks(D.foot,"#7a819b","600"),30,791,822,8.5,10,true);T("RideCue · ridecue.live",1026,799,"900",14,INKD,"right");
+    ctx.restore();}
+  function ccPrPdf(jpg,w,h){ /* one page, one picture, no library: a JPEG laid edge to edge on US Letter sideways (792 x 612 points) */
+    var parts=[],off=[],pos=0,i;
+    function put(x){var a=x;if(typeof x==="string"){a=new Uint8Array(x.length);for(var q=0;q<x.length;q++)a[q]=x.charCodeAt(q)&255;}parts.push(a);pos+=a.length;}
+    function obj(n,body){off[n]=pos;put(n+" 0 obj\n"+body+"\nendobj\n");}
+    put("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
+    obj(1,"<< /Type /Catalog /Pages 2 0 R >>");obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+    obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>");
+    off[4]=pos;put("4 0 obj\n<< /Type /XObject /Subtype /Image /Width "+w+" /Height "+h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n");put(jpg);put("\nendstream\nendobj\n");
+    var c="q 792 0 0 612 0 0 cm /Im0 Do Q";obj(5,"<< /Length "+c.length+" >>\nstream\n"+c+"\nendstream");
+    var xr=pos,t="xref\n0 6\n0000000000 65535 f \n";for(i=1;i<=5;i++)t+=("0000000000"+off[i]).slice(-10)+" 00000 n \n";
+    put(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF\n");
+    return new Blob(parts,{type:"application/pdf"});}
+  function ccPrFile(cv,fname){ /* the page as a PDF file, made when the page is first shown so the share sheet opens inside the tap. The JPEG is read off the canvas as a data URL - the family's one toBlob stays in pvShare */
+    try{var u=cv.toDataURL("image/jpeg",0.92),b=atob(u.slice(u.indexOf(",")+1)),a=new Uint8Array(b.length),i;for(i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new File([ccPrPdf(a,cv.width,cv.height)],fname,{type:"application/pdf"});}catch(e){return null;}}
   function ccShareCard(){ /* the calendar cards' lifecycle verbatim: fonts.ready, the canvas, the preview sheet */
     var G=(typeof window.__ccM==="function")?window.__ccM():null,today=tpToday();if(!G||!G.verdict(G.M,ccPk,ccYM,today))return;
     var D=ccCardData(G,ccPk,ccYM,today),fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
-    fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);
-      pvOpen({alts:[{cv:cv}],fname:"ridecue-crowd-"+D.slug+".png",shareTitle:"RideCue \u2014 "+D.park+", "+D.title});});}
+    fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);var more=[];if(ccYM>=today.slice(0,7))more.push({label:"Printable page",pdf:true,prep:ccPrFile,make:function(){var c2=document.createElement("canvas");c2.width=3300;c2.height=2550;ccPrDraw(c2.getContext("2d"),ccPrData(G,ccPk,ccYM,today));return c2;}}); /* 0728ou THE MONTH PRINTS (B-A): this month and the months ahead offer the printable page beside the card */
+      pvOpen({alts:[{cv:cv}].concat(more),first:"Card",fname:"ridecue-crowd-"+D.slug+".png",shareTitle:"RideCue \u2014 "+D.park+", "+D.title});});}
   function ccBind(el){
     function go(){renderPulsePage();}
     el.querySelectorAll("[data-ccpk]").forEach(function(b){b.addEventListener("click",function(){ccPk=b.getAttribute("data-ccpk");store.set("ppCcPark",ccPk);ccSel=null;go();});});
