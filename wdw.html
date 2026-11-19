@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pa</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pb</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -7070,92 +7070,98 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
     var dtBasis="",dtc=box.querySelector(".rp-dtcard");if(dtc){var nx=dtc.nextElementSibling;while(nx&&!nx.querySelector(".pf-basis"))nx=nx.nextElementSibling;if(nx)dtBasis=tx(nx.querySelector(".pf-basis"));}
     var days=null;if(rel){days=[];for(i=0;i<rel.series.length;i++){var d=rel.series[i];days.push({lab:d.lab,dm:d.dm,tier:d.dm===0?"short":d.dm<=30?"medium":d.dm<=120?"long":"packed",txt:d.dm===0?"":rpDtFmt(d.dm)});}}
     var sl=name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"ride";
-    return {W:1080,name:name,star:star,park:park,badge:(ebp[0]||"").toUpperCase(),pool:ebp.slice(1).join(" · "),date:new Date().toLocaleDateString("en-US",{timeZone:TZ,month:"short",day:"numeric"}),
+    var wd=rpWinDs(rpWin).list,m4=/^last (\d+) (weeks|days)$/i.exec(ebp[0]||""), /* 0728pb THE PROFILE PAIR JOINS THE CHUNKY FAMILY: the kicker says the window as Highlights says it, with its dates - the eyebrow's own words otherwise */
+      win=(m4?"The past "+((+m4[1]===4&&/weeks/i.test(m4[2]))?"four":m4[1])+" "+m4[2].toLowerCase():(ebp[0]||"").replace(/^./,function(c9){return c9.toUpperCase();}))+(ebp.length>1?" \u00b7 "+ebp.slice(1).join(" \u00b7 "):"")+((rpWin==="all"&&wd.length)?" \u00b7 "+rpDay(wd[0])+(wd.length>1?" \u2013 "+rpDay(wd[wd.length-1]):""):"");
+    return {W:1080,H:1350,win:win,name:name,star:star,park:park,badge:(ebp[0]||"").toUpperCase(),pool:ebp.slice(1).join(" · "),date:new Date().toLocaleDateString("en-US",{timeZone:TZ,month:"short",day:"numeric"}),
       stats:stats,takeShape:shapeR,takeClean:cleanR,chips:chips,cv:cv,shapeBasis:shapeBasis,
       rel:rel,days:days,tiles:tiles,dtWindow:dtBasis.split(" · ")[0],
       fname:"ridecue-profile-"+sl,shareTitle:"RideCue — "+name+" · "+park};
   }
-  function rpcDrawCard(ctx,D,H,shape){ /* shape: "shape" | "downtime"; returns where the card ends */
-    var W=D.W,C=PW_CARD_ALT,SOFT="#c8d2e8",GOLD="#ffce5c";
-    function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function rpcDrawCard(ctx,D,H,shape){ /* shape: "shape" | "downtime"; returns where the card ends.
+       0728pb THE PROFILE PAIR JOINS THE CHUNKY FAMILY (owner-ruled Thu Nov 19, 2026, 2:01-2:07 PM on sheets 329-333: D-A "love D-A for the downtime card"; P-D "agree, PD is nice" - the numbers lead and the chips speak under them, so a headliner with one chip still reads whole; L-B "agree with your lean, lets do it" - the line wears the wait bands and the chart names its own marks, after "what does the shading mean around it?"; and on the downtime row, "just doesnt seem centered" - both stat rows space by their content, 0728jc's law).
+       The Highlights frame: 1080 x 1350, the window in the kicker with its dates, 900-weight figures. Every word is still the page's own (THE CARD READS THE GLASS); the takeaway paragraph leaves the Shape card - the figures and the chips' sentences say all of it. */
+    var W=D.W,C=PW_CARD_ALT,GOLD="#ffce5c",MINT="#9bf7c9",BW="900",L=94,R=W-94,CW=R-L,y,i,q;H=D.H||1350;var fy=H-36-86;
+    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function F(f,ls){ctx.font=f;var m=/^(\d+) (\d+)px/.exec(f);LS(ls||((m&&m[1]===BW&&+m[2]>=30)?(-(+m[2])*0.03).toFixed(2)+"px":"0px"));} /* the family's tracking on the heavy face */
+    function rr(x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
     function SG(w,s){return w+" "+s+'px ui-rounded,system-ui,sans-serif';}
     function IN(w,s){return w+" "+s+'px -apple-system,BlinkMacSystemFont,system-ui,sans-serif';}
-    function T(s,x,y,f,c,a){ctx.font=f;ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
-    function MW(s,f){ctx.font=f;return ctx.measureText(s).width;}
-    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
-    function LS(v){if("letterSpacing" in ctx)ctx.letterSpacing=v;}
+    function T(s,x,y,f,c,a,ls){F(f,ls);ctx.fillStyle=c;ctx.textAlign=a||"left";ctx.textBaseline="alphabetic";ctx.fillText(s,x,y);}
+    function MW(s,f,ls){F(f,ls);return ctx.measureText(s).width;}
     function hair(yy){ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(R,yy);ctx.stroke();}
-    function sec(tx,rt){y+=42;hair(y);y+=36;LS("2.4px");T(tx,L,y+24,IN("600",27),C.muted2);var lw=MW(tx,IN("600",27))*1.12;LS("0px");if(rt&&lw+MW(rt,IN("500",26))+40<CW)T(rt,R,y+24,IN("500",26),C.muted,"right");y+=51;} /* the right word yields to the label */
-    function runsPara(rs,sz,lh){ /* the takeaway's runs, bold kept, wrapped word by word across the two faces */
-      var fb=IN("700",sz),fn=IN("500",sz),x=L,k,q;y+=Math.round(lh*0.8);
-      for(k=0;k<rs.length;k++){var f=rs[k].b?fb:fn,ws=rs[k].t.trim().split(/\s+/).filter(function(w){return w;});
-        for(q=0;q<ws.length;q++){var w=ws[q],lead=q>0||(k>0&&(/\s$/.test(rs[k-1].t)||/^\s/.test(rs[k].t))),ww=MW(w,f),sp=MW(" ",f);
-          if(x>L&&x+(lead?sp:0)+ww>R){x=L;y+=lh;lead=false;}
-          if(lead&&x>L)x+=sp;T(w,x,y,f,rs[k].b?C.ink:SOFT);x+=ww;}}
-      y+=Math.round(lh*0.35);}
+    function ell(s,mw,f){if(MW(s,f)<=mw)return s;while(s.length>1&&MW(s+"…",f)>mw)s=s.slice(0,-1);return s+"…";}
+    function fit(s,mw,Ff,wt,sz){var k;for(k=0;k<sz.length-1;k++)if(MW(s,Ff(wt,sz[k]))<=mw)break;return sz[k];}
+    function wrapW(s,mw,f){var ws=String(s).split(" "),ln=[],cur="",k;for(k=0;k<ws.length;k++){var t=cur?cur+" "+ws[k]:ws[k];if(MW(t,f)>mw&&cur){ln.push(cur);cur=ws[k];}else cur=t;}if(cur)ln.push(cur);return ln;}
+    function caps(s,x,y,sz,c,a,ls){T(String(s).toUpperCase(),x,y,IN("700",sz),c,a,ls||"2px");}
+    function row(it,top,sz,lz){ /* THE ROW SPACES BY ITS CONTENT (0728jc), now on both shapes: each stat is measured - its label or its figure, whichever is wider - and the leftover splits evenly into the gaps; the first sits on the left margin, the last flush right */
+      var n=it.length,w=[],sum=0,us=Math.round(sz*0.5),by=top+Math.round(sz*0.95),k,g,cx=L;if(!n)return;
+      for(k=0;k<n;k++){it[k].vw=MW(it[k].v,SG(BW,sz));it[k].uw=it[k].u?MW(it[k].u,SG(BW,us))+2:0;w[k]=Math.max(MW(it[k].k.toUpperCase(),IN("700",lz),"2px"),it[k].vw+it[k].uw);sum+=w[k];}
+      g=n>1?Math.max(0,(CW-sum)/(n-1)):0;
+      for(k=0;k<n;k++){var last=(k===n-1&&g>0),x0=last?R-it[k].vw-it[k].uw:cx;caps(it[k].k,last?R:cx,top,lz,C.muted2,last?"right":"left");
+        T(it[k].v,x0,by,SG(BW,sz),it[k].c||C.ink);if(it[k].u)T(it[k].u,x0+it[k].vw+2,by,SG(BW,us),it[k].c||C.ink);cx+=w[k]+g;}}
     ctx.clearRect(0,0,W,H);
     var cx=36,cy=36,cw=W-72,ch=H-72;
-    rr(cx,cy,cw,ch,60);ctx.save();ctx.clip();
-    var g=ctx.createLinearGradient(cx,cy,cx+Math.round(ch*0.27),cy+ch);g.addColorStop(0,"#173039");g.addColorStop(.45,"#122438");g.addColorStop(1,"#0f1a33");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
-    var L=cx+58,R=cx+cw-58,CW=R-L,y,i,q;
-    var wx=rcMark(ctx,L,102,54);T("Ride",wx,143,SG("700",45),C.ink);T("Cue",wx+MW("Ride",SG("700",45)),143,SG("500",45),C.muted);
-    T(D.date,R,139,IN("700",28),C.ink,"right");
-    var bw=MW(D.badge,IN("700",22))+40;ctx.fillStyle="rgba(150,161,242,0.18)";rr(R-bw,160,bw,42,21);ctx.fill();LS("1px");T(D.badge,R-20,189,IN("700",22),"#c3c9ff","right");LS("0px");
-    if(D.pool)T(D.pool,R,236,IN("500",22),C.muted2,"right");
-    LS("3px");T("RIDE PROFILE · "+D.park.toUpperCase(),L,218,IN("800",28),C.accent);LS("0px");
-    y=299;var nf=SG("700",66),nm=D.name,nw=MW(nm,nf),room=CW-(D.star?70:0);if(nw>room){nf=SG("700",54);nw=MW(nm,nf);}if(nw>room){while(nm.length>1&&MW(nm+"…",nf)>room)nm=nm.slice(0,-1);nm+="…";nw=MW(nm,nf);}
-    T(nm,L,y,nf,C.ink);if(D.star)T("★",L+nw+20,y-2,SG("700",50),GOLD);
+    rr(cx,cy,cw,ch,64);ctx.save();ctx.clip();
+    var g=ctx.createLinearGradient(cx,cy,cx+cw,cy+ch);g.addColorStop(0,"#10243a");g.addColorStop(.6,"#0c1a2c");g.addColorStop(1,"#0a1422");ctx.fillStyle=g;ctx.fillRect(cx,cy,cw,ch);
+    var gl=ctx.createRadialGradient(W/2,cy,40,W/2,cy,cw*0.8);gl.addColorStop(0,"rgba(61,214,140,0.10)");gl.addColorStop(1,"rgba(61,214,140,0)");ctx.fillStyle=gl;ctx.fillRect(cx,cy,cw,ch);
+    var wx=rcMark(ctx,L,86,53);T("Ride",wx,128,SG("700",44),C.ink);T("Cue",wx+MW("Ride",SG("700",44)),128,SG("500",44),C.muted);
+    if(D.win)T(ell(D.win,R-(wx+MW("RideCue",SG("700",44)))-40,IN("600",23)),R,124,IN("600",23),MINT,"right"); /* the window, with its dates - the Highlights kicker's seat */
+    T(("RIDE PROFILE · "+D.park).toUpperCase(),L,204,IN("800",24),C.accent,"left","3px");
+    var room=CW-(D.star?64:0),ns=fit(D.name,room,SG,BW,[66,58,52,46,40]),nm=ell(D.name,room,SG(BW,ns));T(nm,L,278,SG(BW,ns),C.ink);if(D.star)T("★",L+MW(nm,SG(BW,ns))+16,274,SG("700",46),GOLD);
+    var f1="",f2="";
     if(shape==="shape"){
-      if(D.stats.length){y+=28;hair(y);y+=22;var top=y;
-        for(i=0;i<D.stats.length;i++){var st=D.stats[i],al=i===0?"left":(i===D.stats.length-1?"right":"center"),sx=i===0?L:(i===D.stats.length-1?R:L+CW/2);
-          LS("2px");T(st.k.toUpperCase(),sx,top+22,IN("600",21),C.muted2,al);LS("0px");T(st.v,sx,top+22+62,SG("800",52),C.ink,al);} /* one line of labels, one baseline of values */
-        y=top+22+62+10;}
-      if(D.takeShape.length){sec("PLANNING TAKEAWAY");y-=10;runsPara(D.takeShape,31,44);}
-      if(D.cv){var cv=D.cv,bs=cv.bs,N=bs.length;
-        sec("SHAPE OF THE LINE","band = the middle half of days");y-=6;
-        var chx=L,chy=y;for(i=0;i<D.chips.length;i++){var c=D.chips[i],cf=IN("700",24),cwid=MW(c.t,cf)+40;if(chx>L&&chx+cwid>R){chx=L;chy+=56;}
-          ctx.fillStyle=c.crest?"rgba(240,162,27,0.14)":"rgba(61,214,140,0.14)";rr(chx,chy,cwid,44,22);ctx.fill();T(c.t,chx+20,chy+30,cf,c.crest?GOLD:"#9bf7c9");chx+=cwid+14;}
-        y=chy+44+30;
-        var GH=300,gT=y,gB=y+GH-30,mx=40;for(i=0;i<N;i++)if(bs[i].hi+8>mx)mx=bs[i].hi+8;mx=Math.ceil(mx/10)*10;
-        function Y(v){return gB-(gB-gT)*v/mx;}function X(i2){return L+CW*(i2+0.5)/N;}
-        var WK=cv.walk||10;for(var tv=10;tv<=mx;tv+=10){ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,Y(tv));ctx.lineTo(R,Y(tv));ctx.stroke();if(Math.abs(tv-WK)>=5)T(tv+"m",R,Y(tv)-8,IN("600",20),C.muted2,"right");} /* a tick beside the walk-on line yields to it */
-        ctx.save();ctx.setLineDash([8,8]);ctx.strokeStyle=C.green;ctx.globalAlpha=0.7;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,Y(WK));ctx.lineTo(R,Y(WK));ctx.stroke();ctx.restore();T("walk-on "+WK+"m",L,Y(WK)-8,IN("600",20),"#9bf7c9");
-        ctx.beginPath();ctx.moveTo(X(0),Y(bs[0].hi));for(i=1;i<N;i++)ctx.lineTo(X(i),Y(bs[i].hi));for(i=N-1;i>=0;i--)ctx.lineTo(X(i),Y(bs[i].lo));ctx.closePath();ctx.fillStyle="rgba(150,161,242,0.18)";ctx.fill();
-        ctx.beginPath();ctx.moveTo(X(0),Y(bs[0].med));for(i=1;i<N;i++)ctx.lineTo(X(i),Y(bs[i].med));ctx.strokeStyle=C.accent;ctx.lineWidth=5;ctx.lineJoin="round";ctx.stroke();
+      /* P-D: the three figures lead, each wait in its band's color; the chips speak under them as sentences, calm in green and the crest in gold */
+      row(D.stats.map(function(s9){var m=/^(\d+)m$/.exec(s9.v);return {k:s9.k,v:m?m[1]:s9.v,u:m?"m":"",c:m?RPC_TIER[tierOfWait(+m[1])]:C.ink};}),330,96,22);
+      var ls=D.chips.map(function(c){return {t:c.t.replace(" · "," ")+".",c:c.crest?GOLD:RPC_TIER.short};}),zs=[58,52,48,44],wz=44;
+      for(q=0;q<zs.length;q++)if(ls.every(function(u){return MW(u.t,SG(BW,zs[q]))<=CW;})){wz=zs[q];break;}
+      y=478;ls.forEach(function(u){y+=wz+8;T(ell(u.t,CW,SG(BW,wz)),L,y,SG(BW,wz),u.c);});
+      if(D.cv){var cv=D.cv,bs=cv.bs,N=bs.length,gT=y+96,gB=fy-70,mx=40,WK=cv.walk||10,tv;
+        for(i=0;i<N;i++)if(bs[i].hi+8>mx)mx=bs[i].hi+8;var stp=mx>60?20:10;mx=Math.ceil(mx/stp)*stp; /* a tall chart steps its ticks by twenty */
+        var Y=function(v){return gB-(gB-gT)*v/mx;},X=function(i2){return L+CW*(i2+0.5)/N;};
+        /* L-B: the chart names its own marks (owner, Nov 19: "what does the shading mean around it?") */
+        var lx=L,ly=gT-34;ctx.strokeStyle=C.ink;ctx.lineWidth=8;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(lx+4,ly);ctx.lineTo(lx+40,ly);ctx.stroke();ctx.lineCap="butt";
+        T("Typical wait",lx+54,ly+8,IN("700",23),C.ink);lx+=54+MW("Typical wait",IN("700",23))+34;
+        ctx.fillStyle="rgba(255,255,255,0.16)";rr(lx,ly-12,44,24,6);ctx.fill();T("Where half the days landed",lx+56,ly+8,IN("700",23),C.muted);
+        for(tv=stp;tv<=mx;tv+=stp){ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(L,Y(tv));ctx.lineTo(R,Y(tv));ctx.stroke();if(Math.abs(tv-WK)>=5)T(tv+"m",R,Y(tv)-9,IN("700",22),C.muted2,"right");} /* a tick beside the walk-on line yields to it */
+        ctx.save();ctx.setLineDash([10,9]);ctx.strokeStyle=C.green;ctx.globalAlpha=0.75;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(L,Y(WK));ctx.lineTo(R,Y(WK));ctx.stroke();ctx.restore();
+        var wl="walk-on "+WK+"m",nz=Math.min(N,Math.ceil((MW(wl,IN("800",22))+12)/(CW/N))+1),hv=34*mx/(gB-gT),
+          free=function(a9,lo9,hi9){var k9,mn=1e9,mxm=-1e9;for(k9=a9;k9<a9+nz&&k9<N;k9++){if(bs[k9].med<mn)mn=bs[k9].med;if(bs[k9].med>mxm)mxm=bs[k9].med;}return mxm<lo9-1||mn>hi9+1;},
+          ws=free(0,WK,WK+hv)?0:free(N-nz,WK,WK+hv)?1:free(0,WK-hv,WK)?2:free(N-nz,WK-hv,WK)?3:0;
+        T(wl,ws%2?R:L,Y(WK)+(ws>1?27:-10),IN("800",22),MINT,ws%2?"right":"left"); /* the walk-on word takes the seat the typical line leaves clear: over its line at the left as ever, then over it at the right, then under it */
+        ctx.beginPath();ctx.moveTo(X(0),Y(bs[0].hi));for(i=1;i<N;i++)ctx.lineTo(X(i),Y(bs[i].hi));for(i=N-1;i>=0;i--)ctx.lineTo(X(i),Y(bs[i].lo));ctx.closePath();ctx.fillStyle="rgba(255,255,255,0.10)";ctx.fill();
+        ctx.lineWidth=8;ctx.lineJoin="round";ctx.lineCap="round";
+        for(i=0;i<N-1;i++){ctx.beginPath();ctx.moveTo(X(i),Y(bs[i].med));ctx.lineTo(X(i+1),Y(bs[i+1].med));ctx.strokeStyle=RPC_TIER[tierOfWait(Math.max(bs[i].med,bs[i+1].med))];ctx.stroke();} /* L-B: the typical line in the wait bands' colors, a stretch at a time (ONE BAND VOCABULARY) */
+        ctx.lineCap="butt";
         var cand=[540,720,900,1080,1260,1440],tk=[];for(i=0;i<cand.length;i++){var t=cand[i];if(t<bs[0].t||t>bs[N-1].t)continue;for(q=0;q<N;q++)if(bs[q].t===t){tk.push({x:X(q),s:rpClk(t)});break;}}
-        for(i=0;i<tk.length;i++)T(tk[i].s,tk[i].x,gB+36,IN("600",22),C.muted2,i===0&&tk[i].x-L<40?"left":(i===tk.length-1&&R-tk[i].x<40?"right":"center"));
-        y=gB+36+16;}
+        for(i=0;i<tk.length;i++)caps(tk[i].s,tk[i].x,gB+40,22,C.muted2,i===0&&tk[i].x-L<40?"left":(i===tk.length-1&&R-tk[i].x<40?"right":"center"),"1.5px");}
+      f1=String(D.shapeBasis||"").split(" · ")[0];f2="Shaded = the middle half of days";
     }else{
-      if(D.takeClean.length){sec("PLANNING TAKEAWAY");y-=10;runsPara(D.takeClean,31,44);}
-      if(D.days){sec("DOWNTIME BY DAY",D.dtWindow.toLowerCase());y-=4;
-        var BL=22,GL=L-BL,GW=CW+BL*2,gap=8,tw=(GW-gap*6)/7,th=88,row=0,col=0;
-        for(i=0;i<D.days.length;i++){var d=D.days[i],x0=GL+col*(tw+gap),y0=y+row*(th+gap);
-          ctx.fillStyle=d.dm===0?"rgba(61,214,140,0.16)":RPC_TIER[d.tier];rr(x0,y0,tw,th,16);ctx.fill();
-          var ink=d.dm===0?"#9bf7c9":(d.tier==="packed"?"#ffffff":"#1a1200");LS("0px");T(d.lab,x0+10,y0+24,IN("600",17),d.dm===0?"rgba(155,247,201,0.75)":ink);
-          if(d.dm===0){ctx.strokeStyle="#9bf7c9";ctx.lineWidth=4;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(x0+tw/2-11,y0+54);ctx.lineTo(x0+tw/2-3,y0+62);ctx.lineTo(x0+tw/2+12,y0+46);ctx.stroke();}
-          else T(d.txt,x0+tw/2,y0+66,IN("700",27),ink,"center");
-          col++;if(col===7){col=0;row++;}}
-        y+=(row+(col?1:0))*(th+gap)-gap+26;
-        var key=[["rgba(61,214,140,0.5)","clean"],[RPC_TIER.medium,"under 30m"],[RPC_TIER.long,"under 2h"],[RPC_TIER.packed,"over 2h"]],kx=L;
-        for(i=0;i<key.length;i++){ctx.fillStyle=key[i][0];rr(kx,y,28,14,4);ctx.fill();T(key[i][1],kx+40,y+14,IN("600",22),C.muted);kx+=MW(key[i][1],IN("600",22))+62;}
-        y+=24;}
-      var row4=[];for(i=0;i<D.stats.length;i++)if(/^Clean days/i.test(D.stats[i].k))row4.push({k:"Clean days",v:D.stats[i].v,ctx:""});
-      for(i=0;i<D.tiles.length;i++){var tl=D.tiles[i];if(/^On strike/i.test(tl.k))continue;row4.push({k:tl.k.replace(/^Most down in a day$/i,"Most in a day"),v:tl.v,ctx:tl.ctx});}
-      if(row4.length){y+=30;hair(y);y+=22;var t4=y,sw=CW/row4.length;
-        var w4=[],sum4=0;for(i=0;i<row4.length;i++){LS("1.8px");var lw4=MW(row4[i].k.toUpperCase(),IN("600",20));LS("0px");w4[i]=Math.max(lw4,MW(row4[i].v,SG("800",46)),row4[i].ctx?MW(row4[i].ctx,IN("500",21)):0);sum4+=w4[i];}
-        var g4=row4.length>1?Math.max(0,(CW-sum4)/(row4.length-1)):0,cx4=L; /* 0728jc THE ROW SPACES BY ITS CONTENT (owner glass Oct 28, 9:03 PM: the gap between Outages and Hours down): each stat is measured (its widest of label, value, caption) and the leftover splits evenly into the gaps \u2014 ih\u2019s ends still touch the margins, the eye now sees equal air; a row too wide for its gaps butts the columns rather than overlapping */
-        for(i=0;i<row4.length;i++){var nI=row4.length-1,sx=(i===nI&&g4>0)?R:cx4,al=(i===nI&&g4>0)?"right":"left";cx4+=w4[i]+g4; /* 0728ih THE ROW REACHES THE EDGE: first left, last right \u2014 the middle now sits where its content and the even gaps put it (0728jc) */
-          LS("1.8px");T(row4[i].k.toUpperCase(),sx,t4+22,IN("600",20),C.muted2,al);LS("0px");T(row4[i].v,sx,t4+22+58,SG("800",46),C.ink,al);if(row4[i].ctx)T(row4[i].ctx,sx,t4+22+58+34,IN("500",21),C.muted2,al);}
-        y=t4+22+58+34+8;}
+      /* D-A: the clean clause is the headline, in the clean tiles' green; what follows its dash sits under it */
+      var full=D.takeClean.map(function(r9){return r9.t;}).join("").replace(/^\s+|\s+$/g,""),pp=full.split(" — "),hd=pp[0].replace(/\.$/,"")+".",sub=pp.length>1?pp.slice(1).join(" — "):"";
+      y=278;
+      if(full){var hz=fit(hd,CW,SG,BW,[76,70,64,58,52]),hl=MW(hd,SG(BW,hz))<=CW?[hd]:wrapW(hd,CW,SG(BW,hz));if(hl.length>2)hl=[hl[0],ell(hl.slice(1).join(" "),CW,SG(BW,hz))];
+        for(i=0;i<hl.length;i++){y+=Math.round(hz*1.16);T(hl[i],L,y,SG(BW,hz),RPC_TIER.short);}
+        if(sub){y+=50;T(ell(sub.charAt(0).toUpperCase()+sub.slice(1),CW,IN("700",29)),L,y,IN("700",29),C.ink);}}
+      if(D.days){y+=62;caps("Downtime by day",L,y,22,C.muted2);
+        var gy=y+20,nd=D.days.length,rows=Math.ceil(nd/7),gap=10,tw=(CW-gap*6)/7,th=Math.max(60,Math.min(106,Math.floor((fy-266-gy-(rows-1)*gap)/rows))),col=0,rw=0;
+        for(i=0;i<nd;i++){var d=D.days[i],x0=L+col*(tw+gap),y0=gy+rw*(th+gap);
+          ctx.fillStyle=d.dm===0?"rgba(61,214,140,0.16)":RPC_TIER[d.tier];rr(x0,y0,tw,th,20);ctx.fill();
+          var ink=d.dm===0?MINT:(d.tier==="packed"?"#ffffff":"#1a1200");T(d.lab,x0+12,y0+30,IN("700",19),d.dm===0?"rgba(155,247,201,0.8)":ink);
+          if(d.dm===0){var ty=y0+Math.round(th*0.62);ctx.strokeStyle=MINT;ctx.lineWidth=6;ctx.lineCap="round";ctx.lineJoin="round";ctx.beginPath();ctx.moveTo(x0+tw/2-14,ty);ctx.lineTo(x0+tw/2-4,ty+10);ctx.lineTo(x0+tw/2+15,ty-11);ctx.stroke();ctx.lineCap="butt";}
+          else T(d.txt,x0+tw/2,y0+Math.round(th*0.755),SG(BW,fit(d.txt,tw-14,SG,BW,[32,28,25])),ink,"center");
+          col++;if(col===7){col=0;rw++;}}
+        var ky=gy+rows*(th+gap)-gap+30,key=[["rgba(61,214,140,0.5)","clean"],[RPC_TIER.medium,"under 30m"],[RPC_TIER.long,"under 2h"],[RPC_TIER.packed,"over 2h"]],kx=L;
+        for(i=0;i<key.length;i++){ctx.fillStyle=key[i][0];rr(kx,ky,32,18,6);ctx.fill();T(key[i][1],kx+44,ky+17,IN("700",23),C.muted);kx+=MW(key[i][1],IN("700",23))+78;}}
+      var r3=[];for(i=0;i<D.tiles.length;i++){var tl=D.tiles[i];if(/^On strike/i.test(tl.k))continue;r3.push({k:tl.k.replace(/^Most down in a day$/i,"Most in a day")+(tl.ctx?" · "+tl.ctx:""),v:tl.v});} /* the clean count is the headline now; strike days stay on the page */
+      if(r3.length){hair(fy-178);row(r3,fy-146,62,21);}
+      f1="Each tile is a day it ran, with its minutes lost";f2="Refurb days excluded";
     }
-    y+=48;hair(y); /* ONE FOOTER HAND */
-    var bt=(shape==="shape")?D.shapeBasis:(D.dtWindow?D.dtWindow+" · each tile a day it ran · its minutes lost · refurb days excluded":"");
-    var bl=wrapW(bt,CW-300,IN("500",26));if(bl.length>2)bl=wrapW(bt.split(" · ").slice(0,2).join(" · "),CW-300,IN("500",26));if(bl.length>2)bl=wrapW(bt.split(" · ")[0],CW-300,IN("500",26)); /* two lines beside the credit; the tail clauses yield */
-    T(bl[0]||"",L,y+59,IN("500",26),C.muted2);T(bl[1]||"",L,y+93,IN("500",26),C.muted2);
-    T("ridecue.live",R,y+62,IN("700",31),C.green,"right");
-    T("Data: ThemeParks.wiki",R,y+98,IN("500",25),C.muted2,"right");
+    hair(fy); /* ONE FOOTER HAND, the family's */
+    var site="ridecue.live",cred="Data: ThemeParks.wiki",m1=CW-MW(site,IN("700",26))-28,m2=CW-MW(cred,IN("500",20))-28,z1=fit(f1,m1,IN,"500",[21,20,19,18]);
+    T(ell(f1,m1,IN("500",z1)),L,fy+36,IN("500",z1),C.muted2);T(ell(f2,m2,IN("500",20)),L,fy+66,IN("500",20),C.muted2);
+    T(site,R,fy+36,IN("700",26),C.green,"right");T(cred,R,fy+66,IN("500",20),C.muted2,"right");
     ctx.restore();
-    return y+98+52+36;
+    return H;
   }
   function rpcShareCard(){ /* the family lifecycle: fonts.ready → two-pass self-size, twice → the sheet with both shapes */
     var D=rpcCardModel();if(!D)return;
