@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ow</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ox</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -10036,7 +10036,54 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(draw){if(t.mark==="fw")burst(cx+sz/2,y-sz*0.36,sz*1.15,t.c);else T(t.w,cx,y,t.wt,sz,t.c);}
         cx+=w+(t.sp?spw:0);}
       return y+lh;}
-    /* ---- the hero */
+    if(D.all){ /* ---- 0728ox ALL FOUR PARKS (owner H-B2; sheets 258, 271, 279): the same side hero, four small calendars, one key, one What's on box */
+      var IK=[JW[1],JW[2],JW[3],JW[4]],ay,az,al,PX4=48.283,TW=45.3;
+      function pp(x,y,b,on,off,oa){for(var q=0;q<4;q++){ctx.globalAlpha=q<=b?1:(oa||1);rr(x+q*7,y,5,7,2.5,q<=b?on:off);}ctx.globalAlpha=1;}
+      rr(30,24,292,752,22,NAVY);
+      T("WALT DISNEY WORLD · MONTH AT A",52,58,"800",10.5,PER,"left",1.68);T("GLANCE",52,71,"800",10.5,PER,"left",1.68);
+      T("All four parks",52,106,"900",36,"#fff","left",-1.08);T(D.title,52,133,"800",19,"#b7c0de");
+      az=25;[25,23,21.5].some(function(q){az=q;return flow(toks(D.hl,"#b9c0ff","900"),52,0,248,q,q*1.08,false)<=q*1.08*2+0.5;});al=az*1.08;
+      ay=flow(toks(D.hl,"#b9c0ff","900"),52,175,248,az,al,true)-al+az*0.24;
+      ay+=23;T("WEEK BY WEEK · ALL FOUR PARKS",52,ay,"900",10,PER,"left",1.5);ay+=12;
+      D.wk.forEach(function(w){var tot=w[1][0]+w[1][1]+w[1][2]+w[1][3],bx=126,bw=174;T(w[0],52,ay+12.5,"900",13,"#fff");
+        if(tot){ctx.save();rr(bx,ay,bw,16,6);ctx.clip();var nn=w[1].filter(function(q){return q>0;}).length,av=bw-(nn-1)*2,cx=bx;for(var k=0;k<4;k++)if(w[1][k]){var sw=av*w[1][k]/tot;ctx.fillStyle=CC_PR_COL[k];ctx.fillRect(cx,ay,sw,16);cx+=sw+2;}ctx.restore();}
+        T(w[2],bx,ay+27.5,"700",10,"#aab6d8");ay+=33;});
+      var rb=ay-17;
+      if(D.rows.length){ay+=22;T("WHAT IT MEANS",52,ay,"900",10,PER,"left",1.5);ay+=22;
+        D.rows.forEach(function(r){var kc=r[0]==="Go"?JW[1]:(r[0]==="Skip"?JW[4]:"#fff"),kw=MW(r[0].toUpperCase(),"900",12,0.96),vx=Math.max(112,52+kw+9),tk=[];
+          T(r[0].toUpperCase(),52,ay,"900",12,kc,"left",0.96);
+          if(r[1])tk=tk.concat(toks(r[1],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}));
+          tk=tk.concat(toks(r[2],"#d5dbf0","600",IK));
+          ay=flow(tk,vx,ay,300-vx,11.5,15.525,true);rb=ay-11.5;ay+=7.5;});}
+      if(D.tips.length){var ty0=rb+16,fit=[],yy=ty0+40;
+        D.tips.forEach(function(t){var tk=toks(t[0],"#fff","900").map(function(u,n,a){if(n===a.length-1)u.sp=true;return u;}).concat(toks(t[1],"#d5dbf0","600",t[2]?IK:null)),e=flow(tk,52,yy,248,11.5,15.87,false);
+          if(e-15.87+4<=766){fit.push([tk,yy]);yy=e+5;}});
+        if(fit.length){ctx.fillStyle="#2a3760";ctx.fillRect(52,ty0,248,1);T("GOOD TO KNOW",52,ty0+21,"900",10,PER,"left",1.5);fit.forEach(function(f){flow(f[0],52,f[1],248,11.5,15.87,true);});}}
+      /* the note and the one key */
+      var kx=1026;for(i=3;i>=0;i--){var kw2=9+30+6+MW(CC_BW[i],"800",10.5)+9;kx-=kw2;rr(kx,24,kw2,21,8,CC_PR_COL[i]);pips(kx+9,30,i,"#fff","rgba(255,255,255,.34)");T(CC_BW[i],kx+45,38.3,"800",10.5,"#fff");kx-=6;}
+      var nz=10.5;while(nz>8&&MW(D.note,"600",nz)>kx-340-8)nz-=0.25;T(D.note,340,38,"600",nz,"#59607a");
+      /* the four calendars */
+      var RN4=Math.ceil((D.fd+D.parks[0].cells.length)/7),TH4=RN4<=5?43:(227-(RN4-1)*3)/RN4,sm=TH4<40,DL=["S","M","T","W","T","F","S"];
+      D.parks.forEach(function(pk,px){var ox=px%2?691:340,oy=px<2?54:369.3,nw=MW(pk.name,"900",19,-0.19),hx=ox;
+        T(pk.name,ox,oy+18,"900",19,INKD,"left",-0.19);
+        if(pk.light>0){var lt=pk.light+" Light day"+(pk.light===1?"":"s"),lw=MW(lt,"900",10)+16;rr(ox+nw+9,oy+2.5,lw,18,7,CC_PR_COL[0]);T(lt,ox+nw+17,oy+15,"900",10,"#fff");}
+        pk.hours.forEach(function(q){T(q[0],hx,oy+34.5,q[1]?"800":"600",10,q[1]?INKD:"#59607a");hx+=MW(q[0],q[1]?"800":"600",10);});
+        for(j=0;j<7;j++)T(DL[j],ox+j*PX4+TW/2,oy+49,"800",8,"#8088a3","center",0.32);
+        pk.cells.forEach(function(d,ix){var col=(D.fd+ix)%7,row=Math.floor((D.fd+ix)/7),x=ox+col*PX4,ty=oy+55+row*(TH4+3),b=d.b,pale=d.lg&&b!=null,bg=b==null?"#eef0f6":pale?CC_PR_TINT[b]:CC_PR_COL[b],ink=b==null?"#8088a3":pale?CC_PR_INK[b]:"#fff",mx=x+TW-4;
+          rr(x,ty,TW,TH4,9,bg);if(d.today){ctx.lineWidth=2.5;ctx.strokeStyle=NAVY;rr(x+1.25,ty+1.25,TW-2.5,TH4-2.5,8);ctx.stroke();}
+          T(String(d.d),x+6,ty+(sm?15.5:18.5),"900",14,ink);
+          if(d.em&&d.em!=="ring"){T(d.em,mx,ty+(sm?14:15.5),"400",sm?11:13,ink,"right");mx-=sm?13:15;}
+          if(d.fw)burst(mx-7,ty+(sm?10:11.5),sm?13:15,pale||b==null?ACC:"#fff");
+          if(b!=null){if(pale)pp(x+6,ty+TH4-(sm?12:17),b,ink,ink,0.28);else pp(x+6,ty+TH4-(sm?12:17),b,"#fff","rgba(255,255,255,.34)");}});});
+      /* what's on */
+      rr(340,681.5,686,94.5,14,"#f1f2f9");T("WHAT’S",354,726,"900",10,ACC,"left",1.5);T("ON",354,738,"900",10,ACC,"left",1.5);
+      if(!D.on.length)T("Nothing extra on the calendar this month.",423.4,733,"600",10.6,INKD);
+      else{var oy2=700,its=D.on.slice(0,4);for(i=0;i<its.length;i+=2){var e2=oy2;[its[i],its[i+1]].forEach(function(o,c){if(!o)return;var tk=[],x0=c?726.7:423.4,e;
+          if(o.em==="fw")tk.push({mark:"fw",c:ACC,sp:true});else if(o.em&&o.em!=="ring")tk.push({w:o.em,c:INKD,wt:"400",sp:true});
+          tk=tk.concat(toks(o.name,INKD,"900")).concat(toks(o.tail,INKD,"600"));e=flow(tk,x0,oy2,285,10.6,14.31,true);
+          if(o.sub)e=flow(toks(o.sub,"#59607a","600"),x0,e,285,10.6,14.31,true);if(e>e2)e2=e;});oy2=e2+2;}}
+    }
+    if(!D.all){ /* ---- the hero */
     rr(30,24,292,752,22,NAVY);
     var y=58;T("WALT DISNEY WORLD · MONTH AT A",52,y,"800",10.5,PER,"left",1.68);T("GLANCE",52,y+13,"800",10.5,PER,"left",1.68);
     y=112;var pw=D.park.split(" "),l1=D.park,l2="";if(MW(D.park,"900",38,-1.14)>248){l1=pw[0];l2=pw.slice(1).join(" ");}
@@ -10095,9 +10142,65 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       D.on.forEach(function(o){var tk=[];if(o[0]==="fw")tk.push({mark:"fw",c:ACC,sp:true});else if(o[0])tk.push({w:o[0],c:INKD,wt:"400",sp:true});
         tk=tk.concat(toks(o[1],INKD,"900").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}));tk=tk.concat(toks("· "+o[2],INKD,"600"));oy=flow(tk,352,oy,343,10.6,14.31,true)+3;});}
     rr(bx2,674.8,bw2,101.2,14,"#f1f2f9");T("HOW TO READ IT",bx2+14,694.3,"900",10,ACC,"left",1.5);var ry=711.5;read.forEach(function(q){ry=para(q,bx2+14,ry,bw2-28);});
-    /* ---- the foot */
+    } /* ---- the foot */
     flow(toks(D.foot,"#7a819b","600"),30,791,822,8.5,10,true);T("RideCue · ridecue.live",1026,799,"900",14,INKD,"right");
     ctx.restore();}
+  function ccPrAllRows(Bs,dom,names){ /* 0728ox THE MONTH PRINTS, ALL FOUR PARKS (owner H-B2, Nov 18, 2026): the all-parks page's "What it means" rows, from the four parks' own bands - the same bands their own pages and cards read. Bs: four arrays of bands by day (null = no reading); dom: the days the rows may speak of. A day counts only when all four parks have a reading. Skip: three days or more running with every park Packed, stretched over the days beside it when all but one are (failing that, three days running with all but one). Go: the longest stretch of five days or more with no park Packed, its ends trimmed of days when all but one park run Busy or worse. Mixed: what is left */
+    var n=dom.length,P=Bs.length,rows=[],used=[],sk=[],i,j,q,skip=null,best=null,all=[];
+    function ok(d){if(!dom[d])return false;for(var k=0;k<P;k++)if(Bs[k][d]==null)return false;return true;}
+    function at(d,lo){var k,c=0;for(k=0;k<P;k++)if(Bs[k][d]>=lo)c++;return c;}
+    function span(a,b){var o=[],d;for(d=a;d<=b;d++)o.push(d);return o;}
+    function cnt(ix){var c=[0,0,0,0];ix.forEach(function(d){for(var k=0;k<P;k++)c[Bs[k][d]]++;});return c;}
+    for(i=0;i<n;i++){used.push(false);if(ok(i))all.push(i);}
+    [P,P-1].some(function(need){for(i=0;i<n;i++){if(!ok(i)||at(i,3)<need)continue;j=i;while(j+1<n&&ok(j+1)&&at(j+1,3)>=need)j++;if(j-i>=2){if(need===P){while(i>0&&ok(i-1)&&at(i-1,3)>=P-1)i--;while(j+1<n&&ok(j+1)&&at(j+1,3)>=P-1)j++;}sk.push([i,j,need]);}i=j;}return sk.length>0;});
+    sk=sk.slice(0,2);
+    if(sk.length){var sd=[];sk.forEach(function(s){sd=sd.concat(span(s[0],s[1]));});sd.forEach(function(d){used[d]=true;});
+      skip=["Skip",sk.map(function(s){return [s[0],s[1]];}),cnt(sd)[3]===sd.length*P?"Typically Packed at every park.":sk[0][2]===P?"Typically Packed at nearly every park.":"Typically Packed at most parks."];}
+    for(i=0;i<n;i++){if(!ok(i)||used[i]||at(i,3)>0)continue;j=i;while(j+1<n&&ok(j+1)&&!used[j+1]&&at(j+1,3)===0)j++;
+      var a=i,b=j;while(a<=b&&at(a,2)>=P-1)a++;while(b>=a&&at(b,2)>=P-1)b--;
+      if(b-a>=4&&(!best||b-a>best[1]-best[0]))best=[a,b];i=j;}
+    var whole=false;
+    if(best){var gd=span(best[0],best[1]),gc=cnt(gd);gd.forEach(function(d){used[d]=true;});whole=gd.length===all.length;
+      rows.push(["Go",whole?"Any day.":[best],(gc[0]+gc[1])*2>gd.length*P?"No park is typically Packed; most days are Light or Moderate.":"No park is typically Packed; Busy days are common."]);}
+    var rest=all.filter(function(d){return !used[d];});
+    if(rest.length>=3){var rc=cnt(rest),pk=[];for(q=0;q<P;q++)if(rest.some(function(d){return Bs[q][d]===3;}))pk.push(names[q]);
+      var one=rest[rest.length-1]-rest[0]+1===rest.length,part=dom.some(function(v){return !v;});
+      if(rows.length||skip)rows.push(["Mixed",one?[[rest[0],rest[rest.length-1]]]:"Other days.","Mostly "+ccTop2(rc)+(pk.length&&ccTop2(rc).indexOf(CC_BW[3])<0?"; Packed days at "+(pk.length===P?"every park":pk.length>2?pk.slice(0,-1).join(", ")+" and "+pk[pk.length-1]:pk.join(" and "))+".":".")]);
+      else rows.push(part?["Days left","","Mostly "+ccTop2(rc)+"; no easy stretch stands out."]:["Mostly","",ccTop2(rc)+"; no easy stretch stands out."]);}
+    if(skip)rows.push(skip);
+    return {rows:rows,hl:best?(whole?{k:"any"}:{k:"go",r:best}):sk.length?{k:"peak",r:sk[0]}:{k:"mix",c:cnt(all)}};}
+  function ccPrAllData(G,ym,today){ /* the all-parks page's field: four single-park fields (ccPrData - the crowd calendar's own readers) laid side by side, plus what only the four together can say */
+    var PS=["MK","EP","HS","AK"],Ds=PS.map(function(p){return ccPrData(G,p,ym,today);}),y=+ym.slice(0,4),m=+ym.slice(5,7)-1,mon=PC_MON[m].slice(0,3),n=Ds[0].cells.length,i,k,dom=[],Bs=Ds.map(function(D){return D.cells.map(function(c){return c.b;});}),names=Ds.map(function(D){return D.park;});
+    function d2(q){return mon+" "+(q+1);}
+    function rg(s){return s[0]===s[1]?d2(s[0]):d2(s[0])+" – "+(s[1]+1);}
+    for(i=0;i<n;i++){var ds=ym+"-"+("0"+(i+1)).slice(-2);dom.push(ds>=today||ym>today.slice(0,7));}
+    var R=ccPrAllRows(Bs,dom,names),h=R.hl,hl=h.k==="go"?"The easiest stretch is "+rg(h.r)+".":h.k==="any"?"No park is typically Packed.":h.k==="peak"?"The peak is "+rg(h.r)+".":"Mostly "+ccTop2(h.c)+".";
+    var rows=R.rows.map(function(r){return [r[0],typeof r[1]==="string"?r[1]:r[1].map(rg).join(r[1].length>2?", ":" and ")+".",r[2]];});
+    var wk=Ds[0].wk.map(function(w,x){var c=[0,0,0,0],t;Ds.forEach(function(D){for(var b=0;b<4;b++)c[b]+=D.wk[x][1][b];});t=c[0]+c[1]+c[2]+c[3];
+      return [w[0],c,t?(c[0]?c[0]+" of "+t+" Light":"None Light")+" · "+(c[3]?c[3]+" Packed":"none Packed"):""];});
+    var tips=[],WD=["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"],ws=[],tot=0,tn=0,bw=-1;
+    for(k=0;k<7;k++)ws.push({s:0,n:0,l:0,d:0});
+    for(i=0;i<n;i++){if(!dom[i])continue;var w=ws[(Ds[0].fd+i)%7],full=true;Bs.forEach(function(B){if(B[i]==null)full=false;});if(!full)continue;w.d++;Bs.forEach(function(B){w.s+=B[i];w.n++;if(B[i]===0)w.l++;tot+=B[i];tn++;});}
+    for(k=0;k<7;k++)if(ws[k].d>=3&&(bw<0||ws[k].s/ws[k].n<ws[bw].s/ws[bw].n))bw=k;
+    if(bw>=0&&tn&&ws[bw].s/ws[bw].n<=tot/tn-0.35&&ws[bw].l>0)tips.push([WD[bw]+":","the lightest day of the week across the four parks, "+ws[bw].l+" of "+ws[bw].n+" park-days Light.",true]);
+    var on=[],fwd={},fwn="";
+    Ds.forEach(function(D,x){var p=PS[x],v=G.verdict(G.M,p,ym,today),em="",evn=0,left=0,last=-1,ptc="",full="";
+      D.cells.forEach(function(c,q){if(c.fw){(fwd[q]=fwd[q]||[]).push(p);}
+        if(!c.em)return;evn++;last=q;if(dom[q])left++;if(c.em!=="ring"&&!em)em=c.em;if(c.ptc&&!ptc)ptc=c.ptc;if(!full&&p==="MK")full=pcPartyName(ym+"-"+("0"+(q+1)).slice(-2))||"";});
+      D.on.forEach(function(o){if(o[0]==="fw"&&!fwn)fwn=o[1];});
+      var nm=p==="HS"?"Jollywood Nights":/Christmas/.test(full)?"Christmas Party":/Halloween/.test(full)?"Halloween Party":(full||"Party nights"),word=p==="HS"?"Jollywood":"party";
+      D.short=nm;D.em=em;
+      if(evn&&(p==="MK"||p==="HS")){on.push({em:em,name:nm,tail:" · "+D.park+" · "+(left<evn?left+" night"+(left===1?"":"s")+" left this month":evn+" night"+(evn===1?"":"s")+" to "+d2(last).replace(" ","\u00a0")).replace("this month","this\u00a0month"),sub:(ptc?ptc:"A separate ticket")+(CC_PR_EARLY[em]?" · party guests enter from "+CC_PR_EARLY[em]:"")});
+        if(v&&v.k==="event"&&v.e<v.o)tips.push([D.park+":",(em?em+" ":"")+(v.form==="logged"?word+" days have run lighter so far, about "+Math.round(v.e)+" min on the headliners against "+Math.round(v.o)+".":word+" days run lighter, about "+Math.round(v.e)+" min on the headliners against "+Math.round(v.o)+"."),false]);}});
+    var fk=Object.keys(fwd).map(Number).sort(function(a,b){return a-b;});
+    if(fk.length)on.push({em:"fw",name:fwn||"Fireworks",tail:fk.slice(0,4).map(function(q){return " · "+(d2(q)+" "+fwd[q].join(", ")).replace(/ /g,"\u00a0");}).join(""),sub:""});
+    Ds[1].on.forEach(function(o){if(o[0]!=="fw")on.push({em:o[0],name:o[1],tail:" · "+Ds[1].park+" · "+o[2],sub:""});});
+    var parks=Ds.map(function(D){var s=D.strip,hh=[];
+      if(s.length&&!s[0][2]){hh.push(["Hours ",0],[s[0][0],1]);if(s[1]&&!s[1][2]&&/^on /.test(s[1][1]))hh.push([" · ",0],[s[1][0],1],[" "+s[1][1].replace(/party days$/,D.short+" days"),0]);}
+      else hh.push([D.loaded?"Hours not posted yet":"Hours didn’t load",0]);
+      return {name:D.park,light:D.c[0],hours:hh,cells:D.cells};});
+    return {all:true,title:Ds[0].title,hl:hl,wk:wk,rows:rows,tips:tips,parks:parks,fd:Ds[0].fd,on:on,logged:Ds[0].logged,loaded:Ds[0].loaded,
+      note:Ds[0].logged?"Printed "+tpWD3(today)+" "+pcMD(today)+". Pale tiles are days already logged.":"Each tile is one park on one day: its typical crowd.",foot:Ds[0].foot,slug:"all-"+ym};}
   function ccPrPdf(jpg,w,h){ /* one page, one picture, no library: a JPEG laid edge to edge on US Letter sideways (792 x 612 points) */
     var parts=[],off=[],pos=0,i;
     function put(x){var a=x;if(typeof x==="string"){a=new Uint8Array(x.length);for(var q=0;q<x.length;q++)a[q]=x.charCodeAt(q)&255;}parts.push(a);pos+=a.length;}
@@ -10126,6 +10229,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var G=(typeof window.__ccM==="function")?window.__ccM():null,today=tpToday();if(!G||!G.verdict(G.M,ccPk,ccYM,today))return;
     var D=ccCardData(G,ccPk,ccYM,today),fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
     fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);var more=[];if(ccYM>=today.slice(0,7))more.push({label:"Printable page",pdf:true,prep:ccPrFile,make:function(){var c2=document.createElement("canvas");var pd=ccPrData(G,ccPk,ccYM,today);c2.width=3300;c2.height=2550;ccPrDraw(c2.getContext("2d"),pd);c2.__pr=pd;return c2;}}); /* 0728ou THE MONTH PRINTS (B-A): this month and the months ahead offer the printable page beside the card */
+      if(more.length&&["MK","EP","HS","AK"].every(function(q){return !!G.verdict(G.M,q,ccYM,today);})){more[0].label="This park";more.push({label:"All four parks",pdf:true,prep:ccPrFile,fname:"ridecue-crowd-all-"+ccYM+".png",shareTitle:"RideCue — All four parks, "+D.title,make:function(){var pd=ccPrAllData(G,ccYM,today),c3=document.createElement("canvas");c3.width=3300;c3.height=2550;ccPrDraw(c3.getContext("2d"),pd);c3.__pr=pd;return c3;}});} /* 0728ox ALL FOUR PARKS: when every park has a reading for the month the sheet offers three faces - Card, This park, All four parks */
       pvOpen({alts:[{cv:cv}].concat(more),first:"Card",fname:"ridecue-crowd-"+D.slug+".png",shareTitle:"RideCue \u2014 "+D.park+", "+D.title});});}
   function ccBind(el){
     function go(){renderPulsePage();}
