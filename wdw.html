@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728oz</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pa</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -10011,7 +10011,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(p==="EP")pcWins("festival",y,m).forEach(function(q){on.push([pcFestEm(q.id),(window.__pwFestN||{})[q.id]||q.name,(function(a,z){return a&&z?"daily, "+pcMD(q.f)+" – "+pcMD(q.t):a?"daily from "+pcMD(q.f):z?"daily to "+pcMD(q.t):"all month";})(q.f.slice(0,7)===ym&&+q.f.slice(8)>1,q.t.slice(0,7)===ym)]);}); /* 0728ov: a festival that opens after the 1st says when (the owner's PDF said "all month" of one that opens Nov 27) */
     if(fw.length){var fwd=[];cells.forEach(function(q){if(q.fw)fwd.push(d2(q.d-1));});on.push(["fw",fw[0],fwd.length>2?fwd.slice(0,-1).join(", ")+" and "+fwd[fwd.length-1]:fwd.join(" and ")]);}
     var logged=!!last&&ym===today.slice(0,7);
-    return {p:p,park:park,loaded:!!rec,title:PC_MON[m]+" "+y,hl:say.hl,wk:wk,rows:rows,c:c,cut:G.cut[p],cells:cells,fd:fd,strip:strip,on:on,logged:logged,
+    return {p:p,park:park,loaded:!!rec,title:PC_MON[m]+" "+y,hl:say.hl,wk:wk,rows:rows,c:c,cut:G.cut[p],cells:cells,fd:fd,strip:strip,on:on,logged:logged,adv:logged?pcMD(today)+(+today.slice(8)<n?" – "+n:""):null, /* 0728pa THE HERO SAYS WHICH DAYS IT MEANS: the days the rows speak of, for the heading */
       printed:logged?["Printed "+tpWD3(today)+" "+pcMD(today)+".",pcMD(ym+"-01")+" – "+(+last.slice(8))+" show what RideCue logged each day. Later days show what is typical for the date."]:null,
       foot:"Unofficial. Not affiliated with Disney. Crowds are typical for the date, from RideCue’s logged headliner waits: history, never a promise."+(pub?" Hours as posted "+pcMD(today)+", "+today.slice(0,4)+" (through "+pcMD(pub)+") and can change.":"")+" Wait data: ThemeParks.wiki.",slug:p.toLowerCase()+"-"+ym};}
   var CC_PR_TXT="#101a33",CC_PR_OFF="rgba(16,26,51,.22)",CC_PR_COL=["#3dd68c","#ffce5c","#ff9f6b","#ff6b6b"], /* 0728oy THE PAGE WEARS THE CARD'S COLORS (owner C-C, Nov 18, 2026 10:46 PM; sheet 295): the four are PC_JEWEL's, the share card's and the calendar's, with dark type on them as the card has - the amber and the orange of the first pages sat too close to tell apart */ CC_PR_TINT=["#d9f3e6","#fbe9c6","#fddccb","#f9d0d6"],CC_PR_INK=["#0b6b45","#8a5600","#a8421c","#a81f36"]; /* the printed page's own inks: solid tiles that hold white type on paper, pale tiles for a logged day (M-2) */
@@ -10036,6 +10036,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(draw){if(t.mark==="fw")burst(cx+sz/2,y-sz*0.36,sz*1.15,t.c);else T(t.w,cx,y,t.wt,sz,t.c);}
         cx+=w+(t.sp?spw:0);}
       return y+lh;}
+    /* 0728pa THE HERO SAYS WHICH DAYS IT MEANS (owner T-4, Nov 19, 2026 8:44 AM; sheets 312-313): on a month in progress a marked line sits under the finished weeks - a week is finished when every day of it is logged; the bars keep their full strength */
+    function wkPast(x){var cs=D.all?D.parks[0].cells:D.cells,a=0,k=0,b,q;while(a<cs.length){b=Math.min(cs.length-1,a+(6-((D.fd+a)%7)));if(k===x){for(q=a;q<=b;q++)if(!cs[q].lg||cs[q].today)return false;return true;}a=b+1;k++;}return false;}
+    function wkDiv(x,yy){if(!D.logged||x<1||!wkPast(x-1)||wkPast(x))return 0;var tx="LOGGED ABOVE · STILL AHEAD BELOW",tw=MW(tx,"900",7,1.0);ctx.fillStyle="#3a4a7a";ctx.fillRect(52,yy+3,248,1);ctx.fillStyle=NAVY;ctx.fillRect(176-tw/2-6,yy-2,tw+12,11);T(tx,176,yy+6,"900",7,"#8f9ac4","center",1.0);return 15;}
     if(D.all){ /* ---- 0728ox ALL FOUR PARKS (owner H-B2; sheets 258, 271, 279): the same side hero, four small calendars, one key, one What's on box */
       var IK=[JW[1],JW[2],JW[3],JW[4]],ay,az,al,PX4=48.283,TW=45.3;
       function pp(x,y,b,on,off,oa){for(var q=0;q<4;q++){ctx.globalAlpha=q<=b?1:(oa||1);rr(x+q*7,y,5,7,2.5,q<=b?on:off);}ctx.globalAlpha=1;}
@@ -10045,19 +10048,20 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       az=25;[25,23,21.5].some(function(q){az=q;return flow(toks(D.hl,"#b9c0ff","900"),52,0,248,q,q*1.08,false)<=q*1.08*2+0.5;});al=az*1.08;
       ay=flow(toks(D.hl,"#b9c0ff","900"),52,175,248,az,al,true)-al+az*0.24;
       ay+=23;T("WEEK BY WEEK · ALL FOUR PARKS",52,ay,"900",10,PER,"left",1.5);ay+=12;
-      D.wk.forEach(function(w){var tot=w[1][0]+w[1][1]+w[1][2]+w[1][3],bx=126,bw=174;T(w[0],52,ay+12.5,"900",13,"#fff");
+      D.wk.forEach(function(w,wx){ay+=wkDiv(wx,ay);var tot=w[1][0]+w[1][1]+w[1][2]+w[1][3],bx=126,bw=174;T(w[0],52,ay+12.5,"900",13,"#fff");
         if(tot){ctx.save();rr(bx,ay,bw,16,6);ctx.clip();var nn=w[1].filter(function(q){return q>0;}).length,av=bw-(nn-1)*2,cx=bx;for(var k=0;k<4;k++)if(w[1][k]){var sw=av*w[1][k]/tot;ctx.fillStyle=CC_PR_COL[k];ctx.fillRect(cx,ay,sw,16);cx+=sw+2;}ctx.restore();}
         T(w[2],bx,ay+27.5,"700",10,"#aab6d8");ay+=33;});
       var rb=ay-17;
-      if(D.rows.length){ay+=22;T("WHAT IT MEANS",52,ay,"900",10,PER,"left",1.5);ay+=22;
+      if(D.rows.length){ay+=22;T("WHAT IT MEANS"+(D.adv?" · "+D.adv.toUpperCase():""),52,ay,"900",10,PER,"left",1.5);ay+=22;
         D.rows.forEach(function(r){var kc=r[0]==="Go"?JW[1]:(r[0]==="Skip"?JW[4]:"#fff"),kw=MW(r[0].toUpperCase(),"900",12,0.96),vx=Math.max(112,52+kw+9),tk=[];
           T(r[0].toUpperCase(),52,ay,"900",12,kc,"left",0.96);
           if(r[1])tk=tk.concat(toks(r[1],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}));
           tk=tk.concat(toks(r[2],"#d5dbf0","600",IK));
           ay=flow(tk,vx,ay,300-vx,11.5,15.525,true);rb=ay-11.5;ay+=7.5;});}
+      var pn=0;if(D.printed){var ptk=function(){return toks(D.printed[0],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}).concat(toks(D.printed[1],"#aab6d8","600"));},ph=flow(ptk(),52,0,248,9.5,12.8,false);flow(ptk(),52,773-ph,248,9.5,12.8,true);pn=ph+12;} /* 0728pa (owner N-A): the all-parks hero carries the one-park page's own note, in the same seat; Good to know gives way to it */
       if(D.tips.length){var ty0=rb+16,fit=[],yy=ty0+40;
         D.tips.forEach(function(t){var tk=toks(t[0],"#fff","900").map(function(u,n,a){if(n===a.length-1)u.sp=true;return u;}).concat(toks(t[1],"#d5dbf0","600",t[2]?IK:null)),e=flow(tk,52,yy,248,11.5,15.87,false);
-          if(e-15.87+4<=766){fit.push([tk,yy]);yy=e+5;}});
+          if(e-15.87+4<=766-pn){fit.push([tk,yy]);yy=e+5;}});
         if(fit.length){ctx.fillStyle="#2a3760";ctx.fillRect(52,ty0,248,1);T("GOOD TO KNOW",52,ty0+21,"900",10,PER,"left",1.5);fit.forEach(function(f){flow(f[0],52,f[1],248,11.5,15.87,true);});}}
       /* the note and the one key */
       var kx=1026;for(i=3;i>=0;i--){var kw2=9+30+6+MW(CC_BW[i],"800",10.5)+9;kx-=kw2;rr(kx,24,kw2,21,8,CC_PR_COL[i]);pips(kx+9,30,i,CC_PR_TXT,CC_PR_OFF);T(CC_BW[i],kx+45,38.3,"800",10.5,CC_PR_TXT);kx-=6;}
@@ -10092,10 +10096,10 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var hz=23;[23,21.5,20].some(function(q){hz=q;return MW(D.hl,"900",q)<=248;});if(MW(D.hl,"900",hz)>248)hz=23; /* the headline on one line when a size down will hold it */
     y+=37;y=flow(toks(D.hl,"#b9c0ff","900"),52,y,248,hz,hz*1.08,true)-hz*1.08;
     y+=24;T("WEEK BY WEEK",52,y,"900",8.5,PER,"left",1.19);
-    y+=9;D.wk.forEach(function(w){var tot=w[1][0]+w[1][1]+w[1][2]+w[1][3],bx=119,bw=181;T(w[0],52,y+11,"900",11.5,"#fff");
+    y+=9;D.wk.forEach(function(w,wx){y+=wkDiv(wx,y);var tot=w[1][0]+w[1][1]+w[1][2]+w[1][3],bx=119,bw=181;T(w[0],52,y+11,"900",11.5,"#fff");
       if(tot){ctx.save();rr(bx,y+0.5,bw,13,5);ctx.clip();var n=w[1].filter(function(q){return q>0;}).length,av=bw-(n-1)*2,cx=bx;for(var k=0;k<4;k++)if(w[1][k]){var sw=av*w[1][k]/tot;ctx.fillStyle=CC_PR_COL[k];ctx.fillRect(cx,y+0.5,sw,13);cx+=sw+2;}ctx.restore();}
       y+=19;});
-    if(D.rows.length){y+=14;T("WHAT IT MEANS",52,y,"900",8.5,PER,"left",1.19);y+=18;
+    if(D.rows.length){y+=14;T("WHAT IT MEANS"+(D.adv?" · "+D.adv.toUpperCase():""),52,y,"900",8.5,PER,"left",1.19);y+=18;
       D.rows.forEach(function(r){var kc=r[0]==="Go"?JW[1]:(r[0]==="Skip"?JW[4]:"#fff"),kw=MW(r[0].toUpperCase(),"900",10,0.8),vx=Math.max(106,52+kw+10),tk=[];
         T(r[0].toUpperCase(),52,y,"900",10,kc,"left",0.8);
         if(r[1])tk=tk.concat(toks(r[1],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}));
@@ -10200,8 +10204,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(s.length&&!s[0][2]){hh.push(["Hours ",0],[s[0][0],1]);if(s[1]&&!s[1][2]&&/^on /.test(s[1][1]))hh.push([" · ",0],[s[1][0],1],[" "+s[1][1].replace(/party days$/,D.short+" days"),0]);}
       else hh.push([D.loaded?"Hours not posted yet":"Hours didn’t load",0]);
       return {name:D.park,light:D.c[0],hours:hh,cells:D.cells};});
-    return {all:true,title:Ds[0].title,hl:hl,wk:wk,rows:rows,tips:tips,parks:parks,fd:Ds[0].fd,on:on,logged:Ds[0].logged,loaded:Ds[0].loaded,
-      note:Ds[0].logged?"Printed "+tpWD3(today)+" "+pcMD(today)+". Pale tiles are days already logged.":"Each tile is one park on one day: its typical crowd.",foot:Ds[0].foot,slug:"all-"+ym};}
+    return {all:true,title:Ds[0].title,hl:hl,wk:wk,rows:rows,tips:tips,parks:parks,fd:Ds[0].fd,on:on,logged:Ds[0].logged,loaded:Ds[0].loaded,adv:Ds[0].adv,printed:Ds[0].printed,
+      note:Ds[0].logged?"Each tile is one park on one day.":"Each tile is one park on one day: its typical crowd.",foot:Ds[0].foot,slug:"all-"+ym};}
   function ccPrPdf(jpg,w,h){ /* one page, one picture, no library: a JPEG laid edge to edge on US Letter sideways (792 x 612 points) */
     var parts=[],off=[],pos=0,i;
     function put(x){var a=x;if(typeof x==="string"){a=new Uint8Array(x.length);for(var q=0;q<x.length;q++)a[q]=x.charCodeAt(q)&255;}parts.push(a);pos+=a.length;}
