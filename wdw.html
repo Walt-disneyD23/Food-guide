@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ou</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ov</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -9975,7 +9975,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       if(v&&v.k==="event")rows.push(["Busier","Days with no "+(noWord==="party night"?"party":noWord)+".",v.form==="logged"?"So far they averaged "+Math.round(v.o)+" min.":"Mostly "+ccTop2(cnt(rest))+", about "+Math.round(v.o)+" min."]);
       else if(rows.length){var gs=0,rs=0;go.forEach(function(q){gs+=B[q];});rest.forEach(function(q){rs+=B[q];});
         if(rs/rest.length>gs/go.length+0.25)rows.push(["Busier","Every other day.","Mostly "+ccTop2(cnt(rest))+"."]);else rows.push(["Other days","","Mostly "+ccTop2(cnt(rest))+"."]);}
-      else rows.push(["Mostly","",ccTop2(cnt(rest))+"; no easy stretch stands out."]);}
+      else rows.push(dom.some(function(q){return !q;})?["Days left","","Mostly "+ccTop2(cnt(rest))+"; no easy stretch stands out."]:["Mostly","",ccTop2(cnt(rest))+"; no easy stretch stands out."]);} /* 0728ov THE ROW NAMES ITS DAYS (owner A, Nov 18, 2026 9:24 PM): on a month in progress the row counts only the days still ahead, and says so - the card's sentence counts the whole month */
     if(skip)rows.push(skip);
     return rows;}
   var CC_PR_EARLY={"🎄":"4 PM","✨":"5:30 PM"}; /* when a party ticket opens the gate, by the night's mark: Mickey's Very Merry Christmas Party 4 PM, Jollywood Nights 5:30 PM (2026 season; read Nov 18, 2026 from wdwmagic, wdwnt, disneytouristblog and others - Disney's own page is not reachable from the bench). A night whose mark is not here says nothing */
@@ -9986,7 +9986,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function rg(s){return s[0]===s[1]?d2(s[0]):d2(s[0])+" – "+(s[1]+1);}
     var hrs={},ee={},evh={},em="",fw=[],hol;
     for(i=0;i<n;i++){var x=D[i],ds=x.ds,r=rec&&rec[park]&&rec[park][ds],h=tdHours(ds,park),cell={d:i+1,b:x.b,lg:x.lg,v:x.lg?Math.round(x.v):null,today:ds===today,em:x.ev?ccEm(p,ds):"",hr:null,pt:"",ho:"",fw:false};
-      B.push(x.b);dom.push(ds>today||ym>today.slice(0,7));evs.push(!!x.ev);if(x.b!=null&&!cell.today)c[x.b]++;if(x.lg)last=ds;
+      B.push(x.b);dom.push(ds>=today||ym>today.slice(0,7));evs.push(!!x.ev);if(x.b!=null)c[x.b]++; /* 0728ov TODAY IS A DAY (owner 9:30 PM): today counts as the card counts it - a typical day, in the key, the week bars and the rows */if(x.lg)last=ds;
       if(cell.em&&cell.em!=="ring"&&!em)em=cell.em;
       hol=HOLIDAYS[ds];if(hol&&hol!=="Christmas week")cell.ho=hol;
       if(pcFwOn(ds).some(function(f){if(f.p===p){if(fw.indexOf(f.name)<0)fw.push(f.name);return true;}return false;}))cell.fw=true;
@@ -10004,11 +10004,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     var pk=v&&(v.k==="peak"?v:v.pk),pki=(pk&&!pk.past&&pk.f.slice(0,7)===ym&&pk.t.slice(0,7)===ym)?[+pk.f.slice(8)-1,+pk.t.slice(8)-1]:null;
     var rows=ccPrRows(B,dom,v,pki,evs,p==="HS"?"Jollywood days":"party days",p==="HS"?"Jollywood night":"party night").map(function(r){
       var lead=typeof r[1]==="string"?r[1]:r[1].map(rg).join(r[1].length>2?", ":" and ")+".";return [r[0],lead,r[2].replace(/\{d(\d+)\}/g,function(a,q){return d2(+q);})];});
-    var fd=new Date(y,m,1).getDay(),wk=[],a=0;while(a<n){var b=Math.min(n-1,a+(6-((fd+a)%7))),w=[0,0,0,0];for(j=a;j<=b;j++)if(B[j]!=null&&!cells[j].today)w[B[j]]++;wk.push([a===b?d2(a):mon+" "+(a+1)+"–"+(b+1),w]);a=b+1;}
+    var fd=new Date(y,m,1).getDay(),wk=[],a=0;while(a<n){var b=Math.min(n-1,a+(6-((fd+a)%7))),w=[0,0,0,0];for(j=a;j<=b;j++)if(B[j]!=null)w[B[j]]++;wk.push([a===b?d2(a):mon+" "+(a+1)+"–"+(b+1),w]);a=b+1;}
     var on=[],left=0,tot=0;for(i=0;i<n;i++)if(evs[i]){tot++;if(D[i].ds>=today)left++;}
     if(tot&&(p==="MK"||p==="HS")){var nm=p==="HS"?"Jollywood Nights":(function(){for(var q=0;q<n;q++)if(evs[q]){var z=pcPartyName(D[q].ds);if(z)return z;}return "Party nights";})(),lastEv=0;for(i=0;i<n;i++)if(evs[i])lastEv=i;
       on.push([em&&em!=="ring"?em:"",nm,(left<tot?left+" night"+(left===1?"":"s")+" left this month":tot+" night"+(tot===1?"":"s")+" to "+d2(lastEv))+" · a separate ticket"+(ptc?" · "+ptc:"")+(CC_PR_EARLY[em]?" · party guests can enter from "+CC_PR_EARLY[em]:"")+". Party nights often sell out: check Disney’s site for tickets."]);}
-    if(p==="EP")pcWins("festival",y,m).forEach(function(q){on.push([pcFestEm(q.id),(window.__pwFestN||{})[q.id]||q.name,q.t.slice(0,7)===ym?"daily to "+pcMD(q.t):"all month"]);});
+    if(p==="EP")pcWins("festival",y,m).forEach(function(q){on.push([pcFestEm(q.id),(window.__pwFestN||{})[q.id]||q.name,(function(a,z){return a&&z?"daily, "+pcMD(q.f)+" – "+pcMD(q.t):a?"daily from "+pcMD(q.f):z?"daily to "+pcMD(q.t):"all month";})(q.f.slice(0,7)===ym&&+q.f.slice(8)>1,q.t.slice(0,7)===ym)]);}); /* 0728ov: a festival that opens after the 1st says when (the owner's PDF said "all month" of one that opens Nov 27) */
     if(fw.length){var fwd=[];cells.forEach(function(q){if(q.fw)fwd.push(d2(q.d-1));});on.push(["fw",fw[0],fwd.length>2?fwd.slice(0,-1).join(", ")+" and "+fwd[fwd.length-1]:fwd.join(" and ")]);}
     var logged=!!last&&ym===today.slice(0,7);
     return {p:p,park:park,loaded:!!rec,title:PC_MON[m]+" "+y,hl:say.hl,wk:wk,rows:rows,c:c,cut:G.cut[p],cells:cells,fd:fd,strip:strip,on:on,logged:logged,
@@ -10016,7 +10016,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       foot:"Unofficial. Not affiliated with Disney. Crowds are typical for the date, from RideCue’s logged headliner waits: history, never a promise."+(pub?" Hours as posted "+pcMD(today)+", "+today.slice(0,4)+" (through "+pcMD(pub)+") and can change.":"")+" Wait data: ThemeParks.wiki.",slug:p.toLowerCase()+"-"+ym};}
   var CC_PR_COL=["#15a36b","#dc8a06","#ef6c3b","#e23b54"],CC_PR_TINT=["#d9f3e6","#fbe9c6","#fddccb","#f9d0d6"],CC_PR_INK=["#0b6b45","#8a5600","#a8421c","#a81f36"]; /* the printed page's own inks: solid tiles that hold white type on paper, pale tiles for a logged day (M-2) */
   function ccPrDraw(ctx,D){ /* the printable month page, US Letter on its side: 1056 x 816 units at 3.125 = 3300 x 2550, 300 to the inch. THE MOCK'S BYTES ARE THE SPEC OF THE DRESS: sheets 275-285 (side hero J, S1 flow, K-1 key, P-C hours strip, M-2 logged days, T-2/B party time, V-2 inks) */
-    var S=3.125,FF='px ui-rounded,system-ui,sans-serif',JW=PC_JEWEL,NAVY="#101a33",INKD="#141a2e",ACC="#5b53d6",PER="#96a1f2",i,j;
+    var S=ctx.canvas.width/1056,FF='px ui-rounded,system-ui,sans-serif',JW=PC_JEWEL,NAVY="#101a33",INKD="#141a2e",ACC="#5b53d6",PER="#96a1f2",i,j;
     ctx.save();ctx.scale(S,S);ctx.fillStyle="#fff";ctx.fillRect(0,0,1056,816);ctx.textBaseline="alphabetic";
     function F(w,s,ls){ctx.font=w+" "+s+FF;if("letterSpacing" in ctx)ctx.letterSpacing=(ls||0)+"px";}
     function T(s,x,y,w,sz,c,al,ls){F(w,sz,ls);ctx.fillStyle=c;ctx.textAlign=al||"left";ctx.fillText(s,x,y);}
@@ -10057,9 +10057,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     if(D.printed){var py=flow(toks(D.printed[0],"#fff","800").concat([{w:"",c:"#fff",wt:"600",sp:true}]).concat(toks(D.printed[1],"#aab6d8","600")),52,0,248,9.5,12.8,false),p0=652-py;
       flow(toks(D.printed[0],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}).concat(toks(D.printed[1],"#aab6d8","600")),52,p0,248,9.5,12.8,true);}
     T("DAYS · TYPICAL HEADLINER WAIT, MIN",176,670,"900",8.5,PER,"center",1.19);
-    var C=D.cut,RG=[C[0]+" and under",(C[0]+1)+"–"+C[1],(C[1]+1)+"–"+C[2],(C[2]+1)+" and up"];
+    var C=D.cut,RG=[C[0]+" and under",(C[0]+1)+"–"+C[1],(C[1]+1)+"–"+C[2],(C[2]+1)+" and up"];var rz=8.5;while(rz>6.5&&RG.some(function(q){return MW(q,"800",rz)>52;}))rz-=0.25; /* 0728ov: the four captions share the largest size that keeps every one inside its tile (the phone's rounded face runs wider than the bench's) */
     for(i=0;i<4;i++){var kx=52+i*63.25;rr(kx,678,58.3,78,8,CC_PR_COL[i]);T(String(D.c[i]),kx+29.15,704,"900",22,"#fff","center");pips(kx+14.15,714,i,"#fff","rgba(255,255,255,.34)");
-      T(CC_BW[i].toUpperCase(),kx+29.15,735,"800",8,"#fff","center",0.48);T(RG[i],kx+29.15,748,"800",8.5,"#fff","center");}
+      T(CC_BW[i].toUpperCase(),kx+29.15,735,"800",8,"#fff","center",0.48);T(RG[i],kx+29.15,748,"800",rz,"#fff","center");}
     /* ---- the hours strip */
     rr(338,24,688,25,10,"#f1f2f9");T("HOURS",350,40,"900",9,ACC,"left",1.35);
     var sx=401,sy=40.5;
@@ -10074,13 +10074,13 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=0;i<7;i++)T(DW[i],344+i*PX,66,"800",9.5,"#8088a3","left",1.14);
     D.cells.forEach(function(d,ix){var col=(D.fd+ix)%7,row=Math.floor((D.fd+ix)/7),x=338+col*PX,ty=74+row*(TH+6),w=93.1,bot=ty+TH,b=d.b,ds=small?22:27;
       var bg,ink="#fff",pale=d.lg&&b!=null;
-      if(d.today){bg="#fff";ink=NAVY;}else if(b==null){bg="#eef0f6";ink="#8088a3";}else if(pale){bg=CC_PR_TINT[b];ink=CC_PR_INK[b];}else bg=CC_PR_COL[b];
+      /* 0728ov: today wears its own day */if(b==null){bg="#eef0f6";ink="#8088a3";}else if(pale){bg=CC_PR_TINT[b];ink=CC_PR_INK[b];}else bg=CC_PR_COL[b];
       rr(x,ty,w,TH,13,bg);if(d.today){ctx.lineWidth=3;ctx.strokeStyle=NAVY;rr(x+1.5,ty+1.5,w-3,TH-3,11.5);ctx.stroke();}
       T(String(d.d),x+9,ty+7+ds*0.84,"900",ds,ink,"left",-0.54);
       var mx=x+w-8;if(d.em&&d.em!=="ring"){T(d.em,mx,ty+(small?24:28),"400",small?20:25,ink,"right");mx-=small?24:29;}
-      if(d.fw)burst(mx-11,ty+17,22,d.today||pale||b==null?ACC:"#fff");
-      if(d.ho)T(d.ho.toUpperCase(),x+9,ty+7+ds+10,"900",7.5,ink,"left",0.45);
-      if(d.today){T("Today",x+9,bot-37,"900",11,ink);T("still counting",x+9,bot-24,"800",9,ink);return;}
+      if(d.fw)burst(mx-11,ty+17,22,pale||b==null?ACC:"#fff");
+      var cap=((d.today?"Today":"")+(d.today&&d.ho?" · ":"")+(d.ho||"")).toUpperCase(),cz=7.5;if(cap){while(cz>5.5&&MW(cap,"900",cz,cz*0.06)>w-17)cz-=0.25;T(cap,x+9,ty+7+ds+(d.pt?8:10),"900",cz,ink,"left",cz*0.06);} /* 0728ov: the cap line says Today, and the holiday with it, at a size that fits the tile */
+      /* 0728ov TODAY IS A DAY: under its ring, today is drawn as the day it is - typical, as the share card draws it */
       if(b==null)return;
       if(pale){T(String(d.v),x+9,bot-37,"900",14,ink);T(" min",x+9+MW(String(d.v),"900",14),bot-37,"800",9,ink);T(CC_BW[b].toUpperCase(),x+9,bot-12,"900",8,ink,"left",0.32);return;}
       pips(x+9,bot-17,b,"#fff","rgba(255,255,255,.34)");T(CC_BW[b].toUpperCase(),x+9,bot-22,"900",9,"#fff","left",0.27);
@@ -10111,11 +10111,11 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     put(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF\n");
     return new Blob(parts,{type:"application/pdf"});}
   function ccPrFile(cv,fname){ /* the page as a PDF file, made when the page is first shown so the share sheet opens inside the tap. The JPEG is read off the canvas as a data URL - the family's one toBlob stays in pvShare */
-    try{var u=cv.toDataURL("image/jpeg",0.92),b=atob(u.slice(u.indexOf(",")+1)),a=new Uint8Array(b.length),i;for(i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new File([ccPrPdf(a,cv.width,cv.height)],fname,{type:"application/pdf"});}catch(e){return null;}}
+    try{var u=cv.toDataURL("image/jpeg",0.95),b=atob(u.slice(u.indexOf(",")+1)),a=new Uint8Array(b.length),i;for(i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new File([ccPrPdf(a,cv.width,cv.height)],fname,{type:"application/pdf"});}catch(e){return null;}}
   function ccShareCard(){ /* the calendar cards' lifecycle verbatim: fonts.ready, the canvas, the preview sheet */
     var G=(typeof window.__ccM==="function")?window.__ccM():null,today=tpToday();if(!G||!G.verdict(G.M,ccPk,ccYM,today))return;
     var D=ccCardData(G,ccPk,ccYM,today),fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
-    fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);var more=[];if(ccYM>=today.slice(0,7))more.push({label:"Printable page",pdf:true,prep:ccPrFile,make:function(){var c2=document.createElement("canvas");c2.width=3300;c2.height=2550;ccPrDraw(c2.getContext("2d"),ccPrData(G,ccPk,ccYM,today));return c2;}}); /* 0728ou THE MONTH PRINTS (B-A): this month and the months ahead offer the printable page beside the card */
+    fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);var more=[];if(ccYM>=today.slice(0,7))more.push({label:"Printable page",pdf:true,prep:ccPrFile,make:function(){var c2=document.createElement("canvas");c2.width=4400;c2.height=3400;ccPrDraw(c2.getContext("2d"),ccPrData(G,ccPk,ccYM,today));return c2;}}); /* 0728ou THE MONTH PRINTS (B-A): this month and the months ahead offer the printable page beside the card */
       pvOpen({alts:[{cv:cv}].concat(more),first:"Card",fname:"ridecue-crowd-"+D.slug+".png",shareTitle:"RideCue \u2014 "+D.park+", "+D.title});});}
   function ccBind(el){
     function go(){renderPulsePage();}
