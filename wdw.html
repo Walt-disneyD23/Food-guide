@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ov</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ow</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -3654,7 +3654,7 @@ function alertIds(){var s={};[armed,reopen,reopenOnly,resolved].forEach(function
       (alts.length>1?'<div class="mr-seg pv-seg">'+alts.map(function(a,i){return '<b data-pv-alt="'+i+'">'+esc(a.label||(!i&&o.first)||("Card "+(i+1)))+'</b>';}).join("")+'</div>':'')+
       '<button class="pw-share pv-share" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share card</button></div>';
     var sh=pvEl.querySelector(".pv-sheet"),sc=pvEl.querySelector(".pv-scrim"),img=pvEl.querySelector(".pv-card img"),sub=pvEl.querySelector(".pv-sub"),chips=pvEl.querySelectorAll("[data-pv-alt]");
-    function show(i){pick=i;var a=alt(i);if(a.pdf){var pc=document.createElement("canvas");pc.width=1320;pc.height=1020;pc.getContext("2d").drawImage(a.cv,0,0,1320,1020);img.src=pc.toDataURL("image/jpeg",0.85);if(!a.src.file&&a.src.prep)a.src.file=a.src.prep(a.cv,a.fname);}else img.src=a.cv.toDataURL("image/png");pvEl.querySelector(".pv-share").lastChild.nodeValue=a.pdf?"Share page (PDF)":"Share card";sub.textContent=pvSub(a.title);
+    function show(i){pick=i;var a=alt(i);if(a.pdf){var pc=document.createElement("canvas");pc.width=1320;pc.height=1020;pc.getContext("2d").drawImage(a.cv,0,0,1320,1020);img.src=pc.toDataURL("image/jpeg",0.85);if(!a.src.file&&a.src.prep&&!a.src.busy){a.src.busy=1;setTimeout(function(){a.src.file=a.src.prep(a.cv,a.fname);},250);} /* 0728ow: the PDF is made a beat after the page is on screen, so the sheet shows its preview first */}else img.src=a.cv.toDataURL("image/png");pvEl.querySelector(".pv-share").lastChild.nodeValue=a.pdf?"Share page (PDF)":"Share card";sub.textContent=pvSub(a.title);
       Array.prototype.forEach.call(chips,function(b){b.classList.toggle("on",+b.getAttribute("data-pv-alt")===i);});}
     show(pick);
     Array.prototype.forEach.call(chips,function(b){b.addEventListener("click",function(){var i=+b.getAttribute("data-pv-alt");show(i);if(o.key)store.set("pvPick."+o.key,i);});});
@@ -10015,9 +10015,9 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       printed:logged?["Printed "+tpWD3(today)+" "+pcMD(today)+".",pcMD(ym+"-01")+" – "+(+last.slice(8))+" show what RideCue logged each day. Later days show what is typical for the date."]:null,
       foot:"Unofficial. Not affiliated with Disney. Crowds are typical for the date, from RideCue’s logged headliner waits: history, never a promise."+(pub?" Hours as posted "+pcMD(today)+", "+today.slice(0,4)+" (through "+pcMD(pub)+") and can change.":"")+" Wait data: ThemeParks.wiki.",slug:p.toLowerCase()+"-"+ym};}
   var CC_PR_COL=["#15a36b","#dc8a06","#ef6c3b","#e23b54"],CC_PR_TINT=["#d9f3e6","#fbe9c6","#fddccb","#f9d0d6"],CC_PR_INK=["#0b6b45","#8a5600","#a8421c","#a81f36"]; /* the printed page's own inks: solid tiles that hold white type on paper, pale tiles for a logged day (M-2) */
-  function ccPrDraw(ctx,D){ /* the printable month page, US Letter on its side: 1056 x 816 units at 3.125 = 3300 x 2550, 300 to the inch. THE MOCK'S BYTES ARE THE SPEC OF THE DRESS: sheets 275-285 (side hero J, S1 flow, K-1 key, P-C hours strip, M-2 logged days, T-2/B party time, V-2 inks) */
-    var S=ctx.canvas.width/1056,FF='px ui-rounded,system-ui,sans-serif',JW=PC_JEWEL,NAVY="#101a33",INKD="#141a2e",ACC="#5b53d6",PER="#96a1f2",i,j;
-    ctx.save();ctx.scale(S,S);ctx.fillStyle="#fff";ctx.fillRect(0,0,1056,816);ctx.textBaseline="alphabetic";
+  function ccPrDraw(ctx,D,S0,T0){ /* the printable month page, US Letter on its side: 1056 x 816 units at 3.125 = 3300 x 2550, 300 to the inch. THE MOCK'S BYTES ARE THE SPEC OF THE DRESS: sheets 275-285 (side hero J, S1 flow, K-1 key, P-C hours strip, M-2 logged days, T-2/B party time, V-2 inks) */
+    var S=S0||ctx.canvas.width/1056,FF='px ui-rounded,system-ui,sans-serif',JW=PC_JEWEL,NAVY="#101a33",INKD="#141a2e",ACC="#5b53d6",PER="#96a1f2",i,j;
+    ctx.save();ctx.scale(S,S);if(T0)ctx.translate(-T0[0],-T0[1]);ctx.fillStyle="#fff";ctx.fillRect(0,0,1056,816);ctx.textBaseline="alphabetic"; /* 0728ow THE PAGE IS DRAWN IN QUARTERS: S0 a scale of the caller's choosing, T0 the corner (in page units) this canvas starts at */
     function F(w,s,ls){ctx.font=w+" "+s+FF;if("letterSpacing" in ctx)ctx.letterSpacing=(ls||0)+"px";}
     function T(s,x,y,w,sz,c,al,ls){F(w,sz,ls);ctx.fillStyle=c;ctx.textAlign=al||"left";ctx.fillText(s,x,y);}
     function MW(s,w,sz,ls){F(w,sz,ls);return ctx.measureText(s).width;}
@@ -10104,18 +10104,28 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     function obj(n,body){off[n]=pos;put(n+" 0 obj\n"+body+"\nendobj\n");}
     put("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
     obj(1,"<< /Type /Catalog /Pages 2 0 R >>");obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
-    obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>");
-    off[4]=pos;put("4 0 obj\n<< /Type /XObject /Subtype /Image /Width "+w+" /Height "+h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpg.length+" >>\nstream\n");put(jpg);put("\nendstream\nendobj\n");
-    var c="q 792 0 0 612 0 0 cm /Im0 Do Q";obj(5,"<< /Length "+c.length+" >>\nstream\n"+c+"\nendstream");
-    var xr=pos,t="xref\n0 6\n0000000000 65535 f \n";for(i=1;i<=5;i++)t+=("0000000000"+off[i]).slice(-10)+" 00000 n \n";
-    put(t+"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF\n");
+    var ims=(jpg&&jpg.length&&jpg[0]&&jpg[0].j)?jpg:[{j:jpg,w:w,h:h,m:"792 0 0 612 0 0"}],N=ims.length,xo="",c=""; /* 0728ow: one picture edge to edge, or a list of pictures each with its own place on the page (m: the PDF matrix) */
+    for(i=0;i<N;i++){xo+="/Im"+i+" "+(4+i)+" 0 R"+(i<N-1?" ":"");c+=(i?" ":"")+"q "+ims[i].m+" cm /Im"+i+" Do Q";}
+    obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /XObject << "+xo+" >> >> /Contents "+(4+N)+" 0 R >>");
+    for(i=0;i<N;i++){off[4+i]=pos;put((4+i)+" 0 obj\n<< /Type /XObject /Subtype /Image /Width "+ims[i].w+" /Height "+ims[i].h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+ims[i].j.length+" >>\nstream\n");put(ims[i].j);put("\nendstream\nendobj\n");}
+    obj(4+N,"<< /Length "+c.length+" >>\nstream\n"+c+"\nendstream");
+    var xr=pos,t="xref\n0 "+(5+N)+"\n0000000000 65535 f \n";for(i=1;i<=4+N;i++)t+=("0000000000"+off[i]).slice(-10)+" 00000 n \n";
+    put(t+"trailer\n<< /Size "+(5+N)+" /Root 1 0 R >>\nstartxref\n"+xr+"\n%%EOF\n");
     return new Blob(parts,{type:"application/pdf"});}
   function ccPrFile(cv,fname){ /* the page as a PDF file, made when the page is first shown so the share sheet opens inside the tap. The JPEG is read off the canvas as a data URL - the family's one toBlob stays in pvShare */
-    try{var u=cv.toDataURL("image/jpeg",0.95),b=atob(u.slice(u.indexOf(",")+1)),a=new Uint8Array(b.length),i;for(i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new File([ccPrPdf(a,cv.width,cv.height)],fname,{type:"application/pdf"});}catch(e){return null;}}
+    function jb(c){var u=c.toDataURL("image/jpeg",0.92),b=atob(u.slice(u.indexOf(",")+1)),a=new Uint8Array(b.length),i;for(i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+    function one(){try{return new File([ccPrPdf(jb(cv),cv.width,cv.height)],fname,{type:"application/pdf"});}catch(e){return null;}}
+    var D=cv.__pr;if(!D)return one();
+    try{var W=8800,H=6800,tw=4408,th=3408,S=W/1056,k=792/W,tc=document.createElement("canvas"),ims=[],r,q; /* 0728ow THE PAGE IS DRAWN IN QUARTERS (owner Z-C, Nov 18, 2026 9:52 PM): 800 to the inch. No phone holds a canvas 8800 x 6800, so one canvas of 4408 x 3408 is drawn four times, each quarter lapping its neighbors by 16 dots so no seam shows; a phone that cannot do it falls back to the one picture */
+      function n4(v){return String(Math.round(v*10000)/10000);}
+      tc.width=tw;tc.height=th;
+      for(r=0;r<2;r++)for(q=0;q<2;q++){var x0=q?W-tw:0,y0=r?H-th:0;ccPrDraw(tc.getContext("2d"),D,S,[x0/S,y0/S]);ims.push({j:jb(tc),w:tw,h:th,m:n4(tw*k)+" 0 0 "+n4(th*k)+" "+n4(x0*k)+" "+n4((H-y0-th)*k)});}
+      tc.width=tc.height=1;
+      return new File([ccPrPdf(ims)],fname,{type:"application/pdf"});}catch(e){return one();}}
   function ccShareCard(){ /* the calendar cards' lifecycle verbatim: fonts.ready, the canvas, the preview sheet */
     var G=(typeof window.__ccM==="function")?window.__ccM():null,today=tpToday();if(!G||!G.verdict(G.M,ccPk,ccYM,today))return;
     var D=ccCardData(G,ccPk,ccYM,today),fr=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
-    fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);var more=[];if(ccYM>=today.slice(0,7))more.push({label:"Printable page",pdf:true,prep:ccPrFile,make:function(){var c2=document.createElement("canvas");c2.width=4400;c2.height=3400;ccPrDraw(c2.getContext("2d"),ccPrData(G,ccPk,ccYM,today));return c2;}}); /* 0728ou THE MONTH PRINTS (B-A): this month and the months ahead offer the printable page beside the card */
+    fr.then(function(){var cv=document.createElement("canvas");cv.width=1080;cv.height=D.H;ccDrawCard(cv.getContext("2d"),D);var more=[];if(ccYM>=today.slice(0,7))more.push({label:"Printable page",pdf:true,prep:ccPrFile,make:function(){var c2=document.createElement("canvas");var pd=ccPrData(G,ccPk,ccYM,today);c2.width=3300;c2.height=2550;ccPrDraw(c2.getContext("2d"),pd);c2.__pr=pd;return c2;}}); /* 0728ou THE MONTH PRINTS (B-A): this month and the months ahead offer the printable page beside the card */
       pvOpen({alts:[{cv:cv}].concat(more),first:"Card",fname:"ridecue-crowd-"+D.slug+".png",shareTitle:"RideCue \u2014 "+D.park+", "+D.title});});}
   function ccBind(el){
     function go(){renderPulsePage();}
