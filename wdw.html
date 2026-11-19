@@ -3084,7 +3084,7 @@
   .pc-cd.cc.sel,.pc-cd.cc.sel.today{background:var(--accent-fill);box-shadow:none} .pc-cd.cc.sel.today{box-shadow:inset 0 0 0 2px var(--accent-fill),inset 0 0 0 3.5px rgba(255,255,255,.92)} /* 0728c: today, tapped \u2014 the ring the legend promises, in white, inside the fill */ .pc-cd.cc.sel .d,.pc-cd.cc.sel.today .d{color:#fff} .pc-cd.cc.sel .mk:after{box-shadow:inset 0 0 0 1.5px #fff} /* 0728b: a white frame on the fill */ /* 0727v: the tapped day wears the solid accent fill with a white date (the selected-pill grammar); today keeps its ring — before, the two read the same */
   .pc-nav{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
 .pc-vp{overflow:hidden;touch-action:pan-y;position:relative} .pc-vp.anim{transition:height .28s cubic-bezier(.2,.8,.2,1)} .pc-track{display:flex;align-items:flex-start;width:300%;transform:translate3d(-33.3333%,0,0);will-change:transform} .pc-track.anim{transition:transform .28s cubic-bezier(.2,.8,.2,1)} .pc-page{flex:0 0 33.3333%;min-width:0} /* 0728ko THE MONTH RIDES A TRACK: three pages abreast, the middle one on screen; the viewport clips and wears the current page's height; the track follows the finger and settles with an ease-out */ .pc-nav span{font:800 20px var(--font-display);letter-spacing:-.01em;color:var(--ink)} /* 0727v: the month in the display face, title case */
-  .pc-arr{font:800 26px var(--font-display);line-height:1;color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;width:42px;height:36px;cursor:pointer;-webkit-tap-highlight-color:transparent} /* 0727v: grown for in-park thumbs */
+  .pc-arr{font:800 26px var(--font-display);font-size:0;line-height:1;color:var(--accent);background:var(--accent-soft);border:0;border-radius:50%;width:40px;height:40px;padding:0;position:relative;flex:none;cursor:pointer;-webkit-tap-highlight-color:transparent}.pc-arr:before{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;border-left:2.6px solid currentColor;border-bottom:2.6px solid currentColor;border-radius:1.5px;transform:translate(-30%,-50%) rotate(45deg)}.pc-arr[aria-label="Later month"]:before{transform:translate(-70%,-50%) rotate(-135deg)} /* 0728oy THE ARROW SITS IN A CIRCLE (owner R-B, Nov 18, 2026 10:46 PM; sheet 296): a true circle and a thinner, drawn arrow - on the crowd calendar, Hours & events and the Wrap month, one control */ /* 0727v: grown for in-park thumbs */
   .pc-band{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px} .pc-band span{font:600 var(--fs-meta) var(--font-body);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--muted)} .pc-band span b{color:var(--ink);font-weight:700}
   .pc-note{font:500 var(--fs-small) var(--font-body);color:var(--muted);line-height:1.45;margin:0 0 10px}
   .pc-lead{font-size:15px;line-height:1.45;color:var(--muted)}
@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ox</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728oy</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -10014,7 +10014,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     return {p:p,park:park,loaded:!!rec,title:PC_MON[m]+" "+y,hl:say.hl,wk:wk,rows:rows,c:c,cut:G.cut[p],cells:cells,fd:fd,strip:strip,on:on,logged:logged,
       printed:logged?["Printed "+tpWD3(today)+" "+pcMD(today)+".",pcMD(ym+"-01")+" – "+(+last.slice(8))+" show what RideCue logged each day. Later days show what is typical for the date."]:null,
       foot:"Unofficial. Not affiliated with Disney. Crowds are typical for the date, from RideCue’s logged headliner waits: history, never a promise."+(pub?" Hours as posted "+pcMD(today)+", "+today.slice(0,4)+" (through "+pcMD(pub)+") and can change.":"")+" Wait data: ThemeParks.wiki.",slug:p.toLowerCase()+"-"+ym};}
-  var CC_PR_COL=["#15a36b","#dc8a06","#ef6c3b","#e23b54"],CC_PR_TINT=["#d9f3e6","#fbe9c6","#fddccb","#f9d0d6"],CC_PR_INK=["#0b6b45","#8a5600","#a8421c","#a81f36"]; /* the printed page's own inks: solid tiles that hold white type on paper, pale tiles for a logged day (M-2) */
+  var CC_PR_TXT="#101a33",CC_PR_OFF="rgba(16,26,51,.22)",CC_PR_COL=["#3dd68c","#ffce5c","#ff9f6b","#ff6b6b"], /* 0728oy THE PAGE WEARS THE CARD'S COLORS (owner C-C, Nov 18, 2026 10:46 PM; sheet 295): the four are PC_JEWEL's, the share card's and the calendar's, with dark type on them as the card has - the amber and the orange of the first pages sat too close to tell apart */ CC_PR_TINT=["#d9f3e6","#fbe9c6","#fddccb","#f9d0d6"],CC_PR_INK=["#0b6b45","#8a5600","#a8421c","#a81f36"]; /* the printed page's own inks: solid tiles that hold white type on paper, pale tiles for a logged day (M-2) */
   function ccPrDraw(ctx,D,S0,T0){ /* the printable month page, US Letter on its side: 1056 x 816 units at 3.125 = 3300 x 2550, 300 to the inch. THE MOCK'S BYTES ARE THE SPEC OF THE DRESS: sheets 275-285 (side hero J, S1 flow, K-1 key, P-C hours strip, M-2 logged days, T-2/B party time, V-2 inks) */
     var S=S0||ctx.canvas.width/1056,FF='px ui-rounded,system-ui,sans-serif',JW=PC_JEWEL,NAVY="#101a33",INKD="#141a2e",ACC="#5b53d6",PER="#96a1f2",i,j;
     ctx.save();ctx.scale(S,S);if(T0)ctx.translate(-T0[0],-T0[1]);ctx.fillStyle="#fff";ctx.fillRect(0,0,1056,816);ctx.textBaseline="alphabetic"; /* 0728ow THE PAGE IS DRAWN IN QUARTERS: S0 a scale of the caller's choosing, T0 the corner (in page units) this canvas starts at */
@@ -10032,7 +10032,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       return o;}
     function flow(tk,x,y,mw,sz,lh,draw){ /* word wrap; returns the y past the last line */
       var cx=x,q,spw=MW(" ","600",sz);for(q=0;q<tk.length;q++){var t=tk[q],w=t.mark?sz+3:MW(t.w,t.wt,sz);
-        if(cx>x&&cx+w>x+mw+0.5){cx=x;y+=lh;}
+        var nx=tk[q+1],pu=/^[.,;:!?]+$/,w2=w+(!t.sp&&nx&&pu.test(nx.w||"")?MW(nx.w,nx.wt,sz):0);if(cx>x&&cx+w2>x+mw+0.5&&!pu.test(t.w||"")){cx=x;y+=lh;} /* 0728oy: a full stop never starts a line - the word before it goes down with it */
         if(draw){if(t.mark==="fw")burst(cx+sz/2,y-sz*0.36,sz*1.15,t.c);else T(t.w,cx,y,t.wt,sz,t.c);}
         cx+=w+(t.sp?spw:0);}
       return y+lh;}
@@ -10060,21 +10060,21 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
           if(e-15.87+4<=766){fit.push([tk,yy]);yy=e+5;}});
         if(fit.length){ctx.fillStyle="#2a3760";ctx.fillRect(52,ty0,248,1);T("GOOD TO KNOW",52,ty0+21,"900",10,PER,"left",1.5);fit.forEach(function(f){flow(f[0],52,f[1],248,11.5,15.87,true);});}}
       /* the note and the one key */
-      var kx=1026;for(i=3;i>=0;i--){var kw2=9+30+6+MW(CC_BW[i],"800",10.5)+9;kx-=kw2;rr(kx,24,kw2,21,8,CC_PR_COL[i]);pips(kx+9,30,i,"#fff","rgba(255,255,255,.34)");T(CC_BW[i],kx+45,38.3,"800",10.5,"#fff");kx-=6;}
+      var kx=1026;for(i=3;i>=0;i--){var kw2=9+30+6+MW(CC_BW[i],"800",10.5)+9;kx-=kw2;rr(kx,24,kw2,21,8,CC_PR_COL[i]);pips(kx+9,30,i,CC_PR_TXT,CC_PR_OFF);T(CC_BW[i],kx+45,38.3,"800",10.5,CC_PR_TXT);kx-=6;}
       var nz=10.5;while(nz>8&&MW(D.note,"600",nz)>kx-340-8)nz-=0.25;T(D.note,340,38,"600",nz,"#59607a");
       /* the four calendars */
       var RN4=Math.ceil((D.fd+D.parks[0].cells.length)/7),TH4=RN4<=5?43:(227-(RN4-1)*3)/RN4,sm=TH4<40,DL=["S","M","T","W","T","F","S"];
       D.parks.forEach(function(pk,px){var ox=px%2?691:340,oy=px<2?54:369.3,nw=MW(pk.name,"900",19,-0.19),hx=ox;
         T(pk.name,ox,oy+18,"900",19,INKD,"left",-0.19);
-        if(pk.light>0){var lt=pk.light+" Light day"+(pk.light===1?"":"s"),lw=MW(lt,"900",10)+16;rr(ox+nw+9,oy+2.5,lw,18,7,CC_PR_COL[0]);T(lt,ox+nw+17,oy+15,"900",10,"#fff");}
+        if(pk.light>0){var lt=pk.light+" Light day"+(pk.light===1?"":"s"),lw=MW(lt,"900",10)+16;rr(ox+nw+9,oy+2.5,lw,18,7,CC_PR_COL[0]);T(lt,ox+nw+17,oy+15,"900",10,CC_PR_TXT);}
         pk.hours.forEach(function(q){T(q[0],hx,oy+34.5,q[1]?"800":"600",10,q[1]?INKD:"#59607a");hx+=MW(q[0],q[1]?"800":"600",10);});
         for(j=0;j<7;j++)T(DL[j],ox+j*PX4+TW/2,oy+49,"800",8,"#8088a3","center",0.32);
-        pk.cells.forEach(function(d,ix){var col=(D.fd+ix)%7,row=Math.floor((D.fd+ix)/7),x=ox+col*PX4,ty=oy+55+row*(TH4+3),b=d.b,pale=d.lg&&b!=null,bg=b==null?"#eef0f6":pale?CC_PR_TINT[b]:CC_PR_COL[b],ink=b==null?"#8088a3":pale?CC_PR_INK[b]:"#fff",mx=x+TW-4;
+        pk.cells.forEach(function(d,ix){var col=(D.fd+ix)%7,row=Math.floor((D.fd+ix)/7),x=ox+col*PX4,ty=oy+55+row*(TH4+3),b=d.b,pale=d.lg&&b!=null,bg=b==null?"#eef0f6":pale?CC_PR_TINT[b]:CC_PR_COL[b],ink=b==null?"#8088a3":pale?CC_PR_INK[b]:CC_PR_TXT,mx=x+TW-4;
           rr(x,ty,TW,TH4,9,bg);if(d.today){ctx.lineWidth=2.5;ctx.strokeStyle=NAVY;rr(x+1.25,ty+1.25,TW-2.5,TH4-2.5,8);ctx.stroke();}
           T(String(d.d),x+6,ty+(sm?15.5:18.5),"900",14,ink);
           if(d.em&&d.em!=="ring"){T(d.em,mx,ty+(sm?14:15.5),"400",sm?11:13,ink,"right");mx-=sm?13:15;}
-          if(d.fw)burst(mx-7,ty+(sm?10:11.5),sm?13:15,pale||b==null?ACC:"#fff");
-          if(b!=null){if(pale)pp(x+6,ty+TH4-(sm?12:17),b,ink,ink,0.28);else pp(x+6,ty+TH4-(sm?12:17),b,"#fff","rgba(255,255,255,.34)");}});});
+          if(d.fw)burst(mx-7,ty+(sm?10:11.5),sm?13:15,pale||b==null?ACC:ink);
+          if(b!=null){if(pale)pp(x+6,ty+TH4-(sm?12:17),b,ink,ink,0.28);else pp(x+6,ty+TH4-(sm?12:17),b,ink,CC_PR_OFF);}});});
       /* what's on */
       rr(340,681.5,686,94.5,14,"#f1f2f9");T("WHAT’S",354,726,"900",10,ACC,"left",1.5);T("ON",354,738,"900",10,ACC,"left",1.5);
       if(!D.on.length)T("Nothing extra on the calendar this month.",423.4,733,"600",10.6,INKD);
@@ -10105,8 +10105,8 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
       flow(toks(D.printed[0],"#fff","800").map(function(t,n,a){if(n===a.length-1)t.sp=true;return t;}).concat(toks(D.printed[1],"#aab6d8","600")),52,p0,248,9.5,12.8,true);}
     T("DAYS · TYPICAL HEADLINER WAIT, MIN",176,670,"900",8.5,PER,"center",1.19);
     var C=D.cut,RG=[C[0]+" and under",(C[0]+1)+"–"+C[1],(C[1]+1)+"–"+C[2],(C[2]+1)+" and up"];var rz=8.5;while(rz>6.5&&RG.some(function(q){return MW(q,"800",rz)>52;}))rz-=0.25; /* 0728ov: the four captions share the largest size that keeps every one inside its tile (the phone's rounded face runs wider than the bench's) */
-    for(i=0;i<4;i++){var kx=52+i*63.25;rr(kx,678,58.3,78,8,CC_PR_COL[i]);T(String(D.c[i]),kx+29.15,704,"900",22,"#fff","center");pips(kx+14.15,714,i,"#fff","rgba(255,255,255,.34)");
-      T(CC_BW[i].toUpperCase(),kx+29.15,735,"800",8,"#fff","center",0.48);T(RG[i],kx+29.15,748,"800",rz,"#fff","center");}
+    for(i=0;i<4;i++){var kx=52+i*63.25;rr(kx,678,58.3,78,8,CC_PR_COL[i]);T(String(D.c[i]),kx+29.15,704,"900",22,CC_PR_TXT,"center");pips(kx+14.15,714,i,CC_PR_TXT,CC_PR_OFF);
+      T(CC_BW[i].toUpperCase(),kx+29.15,735,"800",8,CC_PR_TXT,"center",0.48);T(RG[i],kx+29.15,748,"800",rz,CC_PR_TXT,"center");}
     /* ---- the hours strip */
     rr(338,24,688,25,10,"#f1f2f9");T("HOURS",350,40,"900",9,ACC,"left",1.35);
     var sx=401,sy=40.5;
@@ -10121,19 +10121,19 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=0;i<7;i++)T(DW[i],344+i*PX,66,"800",9.5,"#8088a3","left",1.14);
     D.cells.forEach(function(d,ix){var col=(D.fd+ix)%7,row=Math.floor((D.fd+ix)/7),x=338+col*PX,ty=74+row*(TH+6),w=93.1,bot=ty+TH,b=d.b,ds=small?22:27;
       var bg,ink="#fff",pale=d.lg&&b!=null;
-      /* 0728ov: today wears its own day */if(b==null){bg="#eef0f6";ink="#8088a3";}else if(pale){bg=CC_PR_TINT[b];ink=CC_PR_INK[b];}else bg=CC_PR_COL[b];
+      /* 0728ov: today wears its own day */if(b==null){bg="#eef0f6";ink="#8088a3";}else if(pale){bg=CC_PR_TINT[b];ink=CC_PR_INK[b];}else{bg=CC_PR_COL[b];ink=CC_PR_TXT;}
       rr(x,ty,w,TH,13,bg);if(d.today){ctx.lineWidth=3;ctx.strokeStyle=NAVY;rr(x+1.5,ty+1.5,w-3,TH-3,11.5);ctx.stroke();}
       T(String(d.d),x+9,ty+7+ds*0.84,"900",ds,ink,"left",-0.54);
       var mx=x+w-8;if(d.em&&d.em!=="ring"){T(d.em,mx,ty+(small?24:28),"400",small?20:25,ink,"right");mx-=small?24:29;}
-      if(d.fw)burst(mx-11,ty+17,22,pale||b==null?ACC:"#fff");
+      if(d.fw)burst(mx-11,ty+17,22,pale||b==null?ACC:ink);
       var cap=((d.today?"Today":"")+(d.today&&d.ho?" · ":"")+(d.ho||"")).toUpperCase(),cz=7.5;if(cap){while(cz>5.5&&MW(cap,"900",cz,cz*0.06)>w-17)cz-=0.25;T(cap,x+9,ty+7+ds+(d.pt?8:10),"900",cz,ink,"left",cz*0.06);} /* 0728ov: the cap line says Today, and the holiday with it, at a size that fits the tile */
       /* 0728ov TODAY IS A DAY: under its ring, today is drawn as the day it is - typical, as the share card draws it */
       if(b==null)return;
       if(pale){T(String(d.v),x+9,bot-37,"900",14,ink);T(" min",x+9+MW(String(d.v),"900",14),bot-37,"800",9,ink);T(CC_BW[b].toUpperCase(),x+9,bot-12,"900",8,ink,"left",0.32);return;}
-      pips(x+9,bot-17,b,"#fff","rgba(255,255,255,.34)");T(CC_BW[b].toUpperCase(),x+9,bot-22,"900",9,"#fff","left",0.27);
-      if(d.hr){var hy=d.pt?bot-54:bot-37;T(d.hr,x+9,hy,"900",14,"#fff");
-        if(d.pt){T(d.pt,x+9,bot-38,"800",11.5,"#fff","left",-0.115);if(d.em&&d.em!=="ring"&&/^\d/.test(d.pt))T(d.em,x+9+MW(d.pt,"800",11.5,-0.115)+3,bot-38.5,"400",9.5,"#fff");}}
-      else if(D.loaded){ctx.globalAlpha=0.78;T("hours tba",x+9,bot-37,"800",10,"#fff");ctx.globalAlpha=1;}});
+      pips(x+9,bot-17,b,ink,CC_PR_OFF);T(CC_BW[b].toUpperCase(),x+9,bot-22,"900",9,ink,"left",0.27);
+      if(d.hr){var hy=d.pt?bot-54:bot-37;T(d.hr,x+9,hy,"900",14,ink);
+        if(d.pt){T(d.pt,x+9,bot-38,"800",11.5,ink,"left",-0.115);if(d.em&&d.em!=="ring"&&/^\d/.test(d.pt))T(d.em,x+9+MW(d.pt,"800",11.5,-0.115)+3,bot-38.5,"400",9.5,ink);}}
+      else if(D.loaded){ctx.globalAlpha=0.78;T("hours tba",x+9,bot-37,"800",10,ink);ctx.globalAlpha=1;}});
     /* ---- the boxes */
     var read=D.logged?[[["A number","b"],[" is the headliner average RideCue logged that day. ",""],["Pips","b"],[" are the typical crowd for a day still ahead.",""]],[["History, never a promise.",""]]]:[[["Each tile is one day: the park’s hours, and its typical crowd as a color, a word and pips.",""]],[["Crowds are typical for the date, from RideCue’s logged headliner waits. History, never a promise.",""]]];
     function para(parts,x,yy,mw){var tk=[];parts.forEach(function(q){tk=tk.concat(toks(q[0],INKD,q[1]?"900":"600"));});return flow(tk,x,yy,mw,10.6,14.31,true)+3;}
@@ -10194,7 +10194,7 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
         if(v&&v.k==="event"&&v.e<v.o)tips.push([D.park+":",(em?em+" ":"")+(v.form==="logged"?word+" days have run lighter so far, about "+Math.round(v.e)+" min on the headliners against "+Math.round(v.o)+".":word+" days run lighter, about "+Math.round(v.e)+" min on the headliners against "+Math.round(v.o)+"."),false]);}});
     var fk=Object.keys(fwd).map(Number).sort(function(a,b){return a-b;});
     if(fk.length)on.push({em:"fw",name:fwn||"Fireworks",tail:fk.slice(0,4).map(function(q){return " · "+(d2(q)+" "+fwd[q].join(", ")).replace(/ /g,"\u00a0");}).join(""),sub:""});
-    Ds[1].on.forEach(function(o){if(o[0]!=="fw")on.push({em:o[0],name:o[1],tail:" · "+Ds[1].park+" · "+o[2],sub:""});});
+    Ds[1].on.forEach(function(o){if(o[0]!=="fw")on.push({em:o[0],name:o[1],tail:" · "+Ds[1].park+" · "+o[2].replace(/([A-Z][a-z][a-z]) (\d)/g,"$1\u00a0$2"),sub:""}); /* 0728oy: a date stays whole */});
     var parks=Ds.map(function(D){var s=D.strip,hh=[];
       if(s.length&&!s[0][2]){hh.push(["Hours ",0],[s[0][0],1]);if(s[1]&&!s[1][2]&&/^on /.test(s[1][1]))hh.push([" · ",0],[s[1][0],1],[" "+s[1][1].replace(/party days$/,D.short+" days"),0]);}
       else hh.push([D.loaded?"Hours not posted yet":"Hours didn’t load",0]);
