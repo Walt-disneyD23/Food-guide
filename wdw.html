@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728oy</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728oz</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -10154,14 +10154,15 @@ function tdPartWord(){ /* 0719l: clause-earned day-part — unmapped windows sta
     for(i=0;i<n;i++){used.push(false);if(ok(i))all.push(i);}
     [P,P-1].some(function(need){for(i=0;i<n;i++){if(!ok(i)||at(i,3)<need)continue;j=i;while(j+1<n&&ok(j+1)&&at(j+1,3)>=need)j++;if(j-i>=2){if(need===P){while(i>0&&ok(i-1)&&at(i-1,3)>=P-1)i--;while(j+1<n&&ok(j+1)&&at(j+1,3)>=P-1)j++;}sk.push([i,j,need]);}i=j;}return sk.length>0;});
     sk=sk.slice(0,2);
+    if(!sk.length){for(i=0;i<n;i++){if(!ok(i)||at(i,2)<P)continue;j=i;while(j+1<n&&ok(j+1)&&at(j+1,2)>=P)j++;if(j-i>=2&&cnt(span(i,j))[3]*3>=(j-i+1)*P)sk.push([i,j,0]);i=j;}sk=sk.slice(0,2);} /* 0728oz: failing a run of Packed days, three days or more with every park Busy or worse - a third of those park-days Packed - is a Skip too (Presidents' week, Thanksgiving week: every park's own page skips them) */
     if(sk.length){var sd=[];sk.forEach(function(s){sd=sd.concat(span(s[0],s[1]));});sd.forEach(function(d){used[d]=true;});
-      skip=["Skip",sk.map(function(s){return [s[0],s[1]];}),cnt(sd)[3]===sd.length*P?"Typically Packed at every park.":sk[0][2]===P?"Typically Packed at nearly every park.":"Typically Packed at most parks."];}
+      skip=["Skip",sk.map(function(s){return [s[0],s[1]];}),cnt(sd)[3]===sd.length*P?"Typically Packed at every park.":sk[0][2]===P?"Typically Packed at nearly every park.":sk[0][2]===0?"Typically Busy to Packed at every park.":"Typically Packed at most parks."];}
     for(i=0;i<n;i++){if(!ok(i)||used[i]||at(i,3)>0)continue;j=i;while(j+1<n&&ok(j+1)&&!used[j+1]&&at(j+1,3)===0)j++;
       var a=i,b=j;while(a<=b&&at(a,2)>=P-1)a++;while(b>=a&&at(b,2)>=P-1)b--;
       if(b-a>=4&&(!best||b-a>best[1]-best[0]))best=[a,b];i=j;}
     var whole=false;
     if(best){var gd=span(best[0],best[1]),gc=cnt(gd);gd.forEach(function(d){used[d]=true;});whole=gd.length===all.length;
-      rows.push(["Go",whole?"Any day.":[best],(gc[0]+gc[1])*2>gd.length*P?"No park is typically Packed; most days are Light or Moderate.":"No park is typically Packed; Busy days are common."]);}
+      rows.push(["Go",whole?"Any day.":[best],(gc[0]+gc[1])*2>gd.length*P?"No park is typically Packed; most days are "+(gc[0]&&gc[1]?CC_BW[0]+" or "+CC_BW[1]:CC_BW[gc[0]?0:1])+".":"No park is typically Packed; Busy days are common."]);} /* 0728oz THE ROW SAYS ONLY WHAT IS THERE: a stretch with no Light day says Moderate, not Light or Moderate (the owner's February page) */
     var rest=all.filter(function(d){return !used[d];});
     if(rest.length>=3){var rc=cnt(rest),pk=[];for(q=0;q<P;q++)if(rest.some(function(d){return Bs[q][d]===3;}))pk.push(names[q]);
       var one=rest[rest.length-1]-rest[0]+1===rest.length,part=dom.some(function(v){return !v;});
