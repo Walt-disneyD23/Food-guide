@@ -2148,16 +2148,17 @@
   .hi-wd .c b{font-family:var(--font-display);font-weight:800;font-size:var(--fs-lead);line-height:1;margin-bottom:5px;font-variant-numeric:tabular-nums}
   .hi-wd .c i{display:block;width:100%;border-radius:8px 8px 3px 3px}
   /* 0728pe THE RIDE KEEPS ITS OWN DAY - EARLY ENTRY KEEPS ITS OWN SEAT (owner-ruled Fri Nov 20, 2026: S-C, P-B, E-3): Typical day in The past four weeks - a bar a half-hour of the park's regular hours in the band's own colour, the lowest and the highest wearing their figures; a rail in the accent under the shortest hours (the verdict's own colour, never a band's); Early Entry in its own seat ahead of a dashed line where regular hours begin; the tile takes a full row and shows the bars before the tap */
-  .hi-td{display:flex;align-items:flex-end;gap:3px;height:150px;margin-top:20px}
+  .hi-td{display:flex;align-items:flex-end;gap:3px;height:150px;margin-top:20px;position:relative} /* 0728pf: positioned, so Early Entry's divider hangs from the bars' own box */
+  .hi-td.hasee::before{content:"";position:absolute;left:36.5px;top:0;bottom:0;width:1.5px;pointer-events:none;background:repeating-linear-gradient(to bottom,var(--muted-2) 0,var(--muted-2) 4px,transparent 4px,transparent 8px)} /* 0728pf THE DIVIDER DRAWS ON EVERY GLASS: painted where the mock's border stood, at the seat's right edge - a dashed border drew as one dot on iOS Safari */
   .hi-td .c{flex:1;position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
   .hi-td .c i{display:block;width:100%;border-radius:4px 4px 2px 2px}
   .hi-td .c b{position:absolute;left:50%;transform:translateX(-50%);font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
   .hi-td .c.e0 b{left:0;transform:none}.hi-td .c.e1 b{left:auto;right:0;transform:none}
-  .hi-td .ee{flex:0 0 38px;margin-right:7px;border-right:1.5px dashed var(--muted-2)}.hi-td .ee i{width:12px}
-  .hi-tdr{display:flex;gap:3px;margin-top:6px;height:5px}.hi-tdr span{flex:1}.hi-tdr span.on{background:var(--accent);margin:0 -1.5px}.hi-tdr span.on.a{border-radius:3px 0 0 3px;margin-left:0}.hi-tdr span.on.z{border-radius:0 3px 3px 0;margin-right:0}.hi-tdr span.on.a.z{border-radius:3px}
+  .hi-td .ee{flex:0 0 38px;margin-right:7px}.hi-td .ee i{width:12px}
+  .hi-tdr{display:flex;gap:3px;margin-top:6px;height:5px}.hi-tdr span{flex:1;position:relative}.hi-tdr span.on{background:var(--accent)}.hi-tdr span.on.a{border-radius:3px 0 0 3px}.hi-tdr span.on.z{border-radius:0 3px 3px 0}.hi-tdr span.on.a.z{border-radius:3px}.hi-tdr span.on:not(.z)::after{content:"";position:absolute;top:0;bottom:0;left:calc(100% - 1px);width:5px;background:var(--accent)} /* 0728pf THE RAIL SITS UNDER ITS BARS: a span a bar, each as wide as its bar; a run bridges its 3px gaps by painting over them - negative margins slid the spans together and left the rail short */
   .hi-tdl{position:relative;height:16px;margin-top:6px}.hi-tdl span{position:absolute;top:0;font-size:var(--fs-micro);font-weight:700;letter-spacing:.06em;color:var(--muted-2);text-transform:uppercase;white-space:nowrap}.hi-tdl span.end{right:0}
-  .hi-tdr.hasee,.hi-tdl.hasee{margin-left:46px}.hi-tdl.hasee{height:26px}
-  .hi-tdl .eel{left:-46px;width:38px;text-align:center;white-space:normal;line-height:1.15;letter-spacing:.04em}
+  .hi-tdr.hasee,.hi-tdl.hasee{margin-left:48px} /* 0728pf: the seat (38) + its margin (7) + the gap (3) */.hi-tdl.hasee{height:26px}
+  .hi-tdl .eel{left:-48px;width:38px;text-align:center;white-space:normal;line-height:1.15;letter-spacing:.04em}
   .hi-eel{margin-top:8px;font-size:var(--fs-meta);font-weight:700;color:var(--muted)}
   .hi-tile.wide{grid-column:1/-1;min-height:126px;display:grid;grid-template-columns:1fr 1.15fr;grid-template-rows:auto 1fr;column-gap:14px}
   .hi-tile.wide .k{grid-column:1/-1}
@@ -3328,7 +3329,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pe</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pf</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15791,7 +15792,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       function lift(i){var t=hs[i];if(i>0&&hs[i-1]>t)t=hs[i-1];if(i<n-1&&hs[i+1]>t)t=hs[i+1];return t;} /* a figure wider than its bar clears its neighbours */
       return '<div class="hi-card">'+hd(m.p)+door+
         '<div class="hi-v">'+m.v+'</div><div class="hi-h hi-hs">'+m.h+'</div>'+(m.ee?'<div class="hi-eel">Early Entry, '+m.ee.t.replace(" "," ")+': typically '+m.ee.v+' min.</div>':'')+
-        '<div class="hi-td" data-hrs="'+m.open+' – '+m.close+'" data-pool="'+esc(m.pool)+'">'+(m.ee?'<div class="c ee '+pwHiBand(m.ee.v)+'" data-v="'+m.ee.v+'"><b style="bottom:'+(eh+5)+'px">'+m.ee.v+'</b><i class="hi-bg-'+m.ee.band+'" style="height:'+eh+'px"></i></div>':'')+
+        '<div class="hi-td'+(m.ee?' hasee':'')+'" data-hrs="'+m.open+' – '+m.close+'" data-pool="'+esc(m.pool)+'">'+(m.ee?'<div class="c ee '+pwHiBand(m.ee.v)+'" data-v="'+m.ee.v+'"><b style="bottom:'+(eh+5)+'px">'+m.ee.v+'</b><i class="hi-bg-'+m.ee.band+'" style="height:'+eh+'px"></i></div>':'')+
         m.bars.map(function(x,i){if(x.v===null)return '<div class="c" data-v=""></div>';var mk=(i===m.loI||i===m.hiI);
           return '<div class="c'+(mk&&i===0?' e0':mk&&i===n-1?' e1':'')+'" data-v="'+x.v+'"'+(x.calm?' data-calm="1"':'')+'>'+(mk?'<b class="'+pwHiBand(x.v)+'" style="bottom:'+(lift(i)+5)+'px">'+x.v+'</b>':'')+'<i class="hi-bg-'+x.band+'" style="height:'+hs[i]+'px"></i></div>';}).join("")+'</div>'+
         '<div class="hi-tdr'+(m.ee?' hasee':'')+'">'+m.bars.map(function(x,i){return '<span'+(x.calm?' class="on'+((!i||!m.bars[i-1].calm)?' a':'')+((i===n-1||!m.bars[i+1].calm)?' z':'')+'"':'')+'></span>';}).join("")+'</div>'+
