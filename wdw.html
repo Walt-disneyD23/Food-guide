@@ -3329,7 +3329,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pf</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pg</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15772,10 +15772,14 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var open=rpClk(H.o),close=rpClk(H.c%1440),v,h,cv=[],rv=[];
       if(flat){v="Steady all day.";h="Typically "+rng(s)+" min from "+open+" to "+close+".";}
       else{
-        if(lead||tail)bars.forEach(function(x,j){x.calm=(j<lead||j>=n-tail);});else bars[loI].calm=true;
-        v=(lead&&tail)?"Shortest before "+pwTdClk(k0+lead)+" and after "+pwTdClk(k1-tail)+".":lead?"Shortest before "+pwTdClk(k0+lead)+".":tail?"Shortest after "+pwTdClk(k1-tail)+".":"Shortest at "+pwTdClk(bars[loI].k)+".";
+        /* 0728pg A WALK-ON SAYS SO (owner 6:39 PM Nov 20, 2026): with no easing at either end, a ride whose lowest typical wait is in the short band and holds for more than half its day is "Short most of the day." - naming one clock ("Shortest at 9 AM.") on a ride that sits at 5 minutes till closing told the guest nothing. The rail marks every half-hour at that low */
+        var nLo=bars.filter(function(x){return x.v===lo;}).length,most=!lead&&!tail&&tierOfWait(lo)==="short"&&nLo*2>s.length;
+        if(lead||tail)bars.forEach(function(x,j){x.calm=(j<lead||j>=n-tail);});else if(most)bars.forEach(function(x){x.calm=(x.v===lo);});else bars[loI].calm=true;
+        v=(lead&&tail)?"Shortest before "+pwTdClk(k0+lead)+" and after "+pwTdClk(k1-tail)+".":lead?"Shortest before "+pwTdClk(k0+lead)+".":tail?"Shortest after "+pwTdClk(k1-tail)+".":most?"Short most of the day.":"Shortest at "+pwTdClk(bars[loI].k)+".";
         bars.forEach(function(x){if(x.v!==null)(x.calm?cv:rv).push(x.v);});
-        h="Typically "+rng(cv)+" min then, "+rng(rv)+" the rest of the day.";}
+        /* 0728pg THE REST OF THE DAY NEVER REPEATS THE LOW (owner 6:39 PM Nov 20, 2026): when the rest of the day reaches down to the shortest hours' own figures ("34 to 40 min then, 40 to 55"; "5 min then, 5 to 20"; "30 min then, 26 to 50") it is given by its top alone - "up to 55 the rest of the day". Two ranges that stand apart are both still said */
+        var rLo=Math.min.apply(null,rv),rHi=Math.max.apply(null,rv),cHi=Math.max.apply(null,cv);
+        h=most?"Typically "+lo+" min, up to "+hi+" at its busiest.":"Typically "+rng(cv)+" min then, "+((rLo<=cHi)?"up to "+rHi:rng(rv))+" the rest of the day.";}
       var lab=[],kf=k0;while(kf%2)kf++;for(k=kf;k<k1;k+=6)if((k1-k)/n>0.17)lab.push({i:k-k0,t:pwTdClk(k)});
       var ek=(H.ee!==null)?Math.floor(H.ee/30):null,ev=(ek!==null&&ek<k0)?typ(ek):null; /* E-3: a ride with no posted waits in that half-hour has no seat */
       var on=(pfBase.ord&&pfBase.ord[r.p]!=null)?pfBase.ord[r.p]:(pfBase.days||28);
