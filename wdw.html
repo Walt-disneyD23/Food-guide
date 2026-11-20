@@ -3311,7 +3311,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pc</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pd</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15687,8 +15687,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var v=pwHiWdV(r); /* the mean of that weekday's day averages, rounded half up (0728nd: one maker, the tile reads the same seven) */
       var lo=-1,hi=-1,i,cn=null,cx=null;for(i=0;i<7;i++){if(v[i]===null)continue;if(lo<0||v[i]<v[lo])lo=i;if(hi<0||v[i]>v[hi])hi=i;var c=r.wd[i].length;if(cn===null||c<cn)cn=c;if(cx===null||c>cx)cx=c;}
       var nm=esc(pwHiNm(id,r.n)),mx=v[hi];
-      var head=(v[lo]===v[hi])?'<span class="'+pwHiBand(mx)+'">Averaged '+mx+' every day of the week.</span>'
-        :'<span class="'+pwHiBand(v[lo])+'">'+DF[lo]+' averaged '+v[lo]+'.</span> <span class="'+pwHiBand(v[hi])+'">'+DF[hi]+' averaged '+v[hi]+'.</span>'; /* 0728nu P-B (owner-ruled Mon Nov 16, 2026, 1:53 PM on sheet 114): the page's headline is the sentences alone, a line each - the door just above says the ride; the card names it from the door */
+      /* 0728pd THE SENTENCE NAMES ITS UNIT - A TIE NAMES EVERY WINNER (owner on his own Day by day card for Pirates of the Caribbean, Fri Nov 20, 2026, 5:48 AM - Thursday and Sunday both printed 11, the headline said "Thursdays averaged 11." - and sheet 344, 5:59 AM: "I'm good with these leans", M-A and T-A). The figure says min, held to its number by a no-break space (THE LAST WORD STAYS WITH ITS MINUTES). Weekdays that print the same lowest, or the same highest, figure are all named, in full, as the Almanac's weekday note names them; past three the sentence counts them, since four names will not hold two lines on the card. Before: the first day of the week to print the figure stood alone (SUPERLATIVES SHOW TRUE WINNERS) */
+      var los=[],his=[],N4=["","","","","Four","Five","Six"];for(i=0;i<7;i++){if(v[i]===null)continue;if(v[i]===v[lo])los.push(i);if(v[i]===v[hi])his.push(i);}
+      function who(ix){var ns=ix.map(function(k9){return DF[k9];});return ns.length===1?ns[0]:ns.length>3?N4[ns.length]+' days':ns.slice(0,-1).join(', ')+' and '+ns[ns.length-1];}
+      var head=(v[lo]===v[hi])?'<span class="'+pwHiBand(mx)+'">Averaged '+mx+'\u00a0min every day of the week.</span>'
+        :'<span class="'+pwHiBand(v[lo])+'">'+who(los)+' averaged '+v[lo]+'\u00a0min.</span> <span class="'+pwHiBand(v[hi])+'">'+who(his)+' averaged '+v[hi]+'\u00a0min.</span>'; /* 0728nu P-B (owner-ruled Mon Nov 16, 2026, 1:53 PM on sheet 114): the page's headline is the sentences alone, a line each - the door just above says the ride; the card names it from the door */
       return '<div class="hi-card">'+hd(r.p)+'<button class="hi-door" type="button" id="hiRide" aria-label="Change ride"><b>'+nm+pwHiRf(C,id)+'</b><span>Change ride ▾</span></button><div class="hi-h hi-hw">'+head+'</div>'+
         '<div class="hi-wd">'+v.map(function(x){return x===null?'<div class="c"><b class="hi-none">–</b></div>':'<div class="c"><b class="'+pwHiBand(x)+'">'+x+'</b><i class="hi-bg-'+tierOfWait(x)+'" style="height:'+Math.round(x/mx*112)+'px"></i></div>';}).join("")+'</div>'+
         '<div class="hi-wdl">'+DS.map(function(d){return '<span>'+d+'</span>';}).join("")+'</div>'+
@@ -15736,7 +15739,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       if(key==="wd"){var id=pwHiRideNow(C);if(!id)return null;r=pwHiWeeksModel(C).rides[id];v=pwHiWdV(r);
         for(i=0;i<7;i++){if(v[i]===null)continue;if(lo<0||v[i]<v[lo])lo=i;if(hi<0||v[i]>v[hi])hi=i;}
         if(lo<0)return null;
-        return {v:v[lo],u:"m",b:pwHiBand(v[lo]),s:[esc(pwHiNm(id,r.n)),v[lo]===v[hi]?'every day of the week':DF[lo]+' the calmest']};}
+        var lt=[],D3=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],N5=["","","","","four","five","six"];for(i=0;i<7;i++)if(v[i]!==null&&v[i]===v[lo])lt.push(i); /* 0728pd A TIE NAMES EVERY WINNER, on the tile too: one calmest day keeps its full name; two or three are named short so the line holds; past three it counts them, as the summary's sentence does */
+        return {v:v[lo],u:"m",b:pwHiBand(v[lo]),s:[esc(pwHiNm(id,r.n)),v[lo]===v[hi]?'every day of the week':(lt.length===1?DF[lo]:lt.length>3?N5[lt.length]+' days':lt.slice(0,-1).map(function(k9){return D3[k9];}).join(', ')+' and '+D3[lt[lt.length-1]])+' the calmest']};}
       if(key==="mn"){var parks=pwHiMnParks();if(!parks||!parks.length)return null;var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk);
         var mnFk=rows.filter(function(x){return x.p<x.a;}).length,mnFj=rows.filter(function(x){return x.p>x.a;}).length;
         return {v:(mnFj>mnFk?mnFj:mnFk)+' of '+rows.length,u:"",b:"",s:[esc(pk)+' headliners',mnFj>mnFk?'longer at 8 PM':'shorter at 8 PM']};} /* 0728ns: the tile counts the side the summary's sentence counts */
@@ -15891,7 +15895,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
             '<div class="hi-xp">'+e.h.map(function(h,i){return '<span class="c"><i>'+AB[i]+'</i><b class="'+BG(h)+'">'+h+'</b></span>';}).join("")+'</div>'+
             (e.top?'<div class="hi-ex"><span>Longest line</span><b>'+esc(e.top.who)+'\u00a0·\u00a0<span class="'+B(e.top.pk)+'">'+e.top.pk+'\u00a0min</span></b></div>':''); /* the figure stays with the name it belongs to: a long pair of names breaks between names, never before the minutes */
         }
-        c.lvx='<div class="hi-card">'+pwHiHd("Busiest day, calmest day","lvx","busiest day, calmest day")+pwHiSay('<span class="hi-sn '+B(x.hi.v)+'">'+x.hi.date+' averaged '+x.hi.v+'.</span> <span class="hi-sn '+B(x.lo.v)+'">'+x.lo.date+' averaged '+x.lo.v+'.</span>')+
+        c.lvx='<div class="hi-card">'+pwHiHd("Busiest day, calmest day","lvx","busiest day, calmest day")+pwHiSay('<span class="hi-sn '+B(x.hi.v)+'">'+x.hi.date+' averaged '+x.hi.v+'\u00a0min.</span> <span class="hi-sn '+B(x.lo.v)+'">'+x.lo.date+' averaged '+x.lo.v+'\u00a0min.</span>')+
           end(x.hi)+'<div class="hi-rule"></div>'+end(x.lo)+'<div class="hi-fine">Each day’s headliner average across the four parks. History, never a promise.</div></div>';
         t.lvx={v:'<span class="'+B(x.hi.v)+'">'+x.hi.v+'</span><span class="hi-none"> · </span><span class="'+B(x.lo.v)+'">'+x.lo.v+'</span><small class="hi-none">m</small>',u:"",b:"",s:["busiest "+x.hi.date,"calmest "+x.lo.date]};})();
       /* 2 */
@@ -15918,7 +15922,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         t.lvdn={v:a.h,u:"h",b:"hi-packed",s:[esc(pwHiNm(a.id,a.n)),a.dd+" of "+S.days+" days"]};})();
       /* 5 (M-B: all four parks; the month so far dashed) */
       (function(){var m=M.mo;if(!m){c.lvmo=quiet("Month by month · All four parks","lvmo","month by month","Not enough days on file yet.");return;}
-        var n=m.v.length,n12=n>7?" n12":"",h=m.flat?'<span class="hi-sn '+B(m.hi8)+'">Every month averaged '+(m.lo8===m.hi8?m.hi8:m.lo8+' to '+m.hi8)+'.</span>':'<span class="hi-sn '+B(m.v[m.lo])+'">'+m.name[m.lo]+' averaged '+m.v[m.lo]+'.</span> <span class="hi-sn '+B(m.v[m.hi])+'">'+m.name[m.hi]+' averaged '+m.v[m.hi]+'.</span>'; /* 0728nf (H-A): each sentence is one piece */
+        var n=m.v.length,n12=n>7?" n12":"",h=m.flat?'<span class="hi-sn '+B(m.hi8)+'">Every month averaged '+(m.lo8===m.hi8?m.hi8:m.lo8+' to '+m.hi8)+'\u00a0min.</span>':'<span class="hi-sn '+B(m.v[m.lo])+'">'+m.name[m.lo]+' averaged '+m.v[m.lo]+'\u00a0min.</span> <span class="hi-sn '+B(m.v[m.hi])+'">'+m.name[m.hi]+' averaged '+m.v[m.hi]+'\u00a0min.</span>'; /* 0728nf (H-A): each sentence is one piece */
         c.lvmo='<div class="hi-card">'+pwHiHd("Month by month · All four parks","lvmo","month by month")+'<div class="hi-h">'+h+'</div>'+
           '<div class="hi-wd mo'+n12+'">'+m.v.map(function(x,i){return '<div class="c"><b class="'+B(x)+'">'+x+'</b><i class="'+(m.part[i]?B(x)+" part":BG(x))+'" style="height:'+Math.round(x/m.mx*112)+'px"></i></div>';}).join("")+'</div>'+
           '<div class="hi-wdl mo'+n12+'">'+m.m3.map(function(x,i){return '<span>'+x+(m.note[i]?'<em>'+m.note[i]+'</em>':'')+'</span>';}).join("")+'</div>'+
@@ -15956,7 +15960,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         D.rows=M.dn.map(function(w){return {n:pwHiNm(w.id,w.n),s:w.p+" · "+w.dc+" outages on "+w.dd+" days",v:w.h,u:"h",band:"packed",w:w.dm/d0.dm,rf:w.nt};});
       }else if(key==="lvmo"){var m=M.mo;if(!m)return null;
         D.title="Month by month";D.sub="All four parks · headliner average";D.fine="The four parks’ headliner average across each day, by month. History, not a forecast.";
-        D.runs=m.flat?[{t:"Every month averaged "+(m.lo8===m.hi8?m.hi8:m.lo8+" to "+m.hi8)+".",band:T(m.hi8)}]:[{t:m.name[m.lo]+" averaged "+m.v[m.lo]+".",band:T(m.v[m.lo])},{t:" ",band:null},{t:m.name[m.hi]+" averaged "+m.v[m.hi]+".",band:T(m.v[m.hi])}];
+        D.runs=m.flat?[{t:"Every month averaged "+(m.lo8===m.hi8?m.hi8:m.lo8+" to "+m.hi8)+"\u00a0min.",band:T(m.hi8)}]:[{t:m.name[m.lo]+" averaged "+m.v[m.lo]+"\u00a0min.",band:T(m.v[m.lo])},{t:" ",band:null},{t:m.name[m.hi]+" averaged "+m.v[m.hi]+"\u00a0min.",band:T(m.v[m.hi])}]; /* 0728pd THE SENTENCE NAMES ITS UNIT: the long view's averages say min, on the page and on the card (SAME QUESTION SAME SENTENCE) */
         D.bars=m.v.map(function(x,i){return {v:String(x),band:T(x),h:x/m.mx,part:m.part[i],note:m.note[i]};});D.days=m.m3;
       }else if(key==="lvrf"){var r=M.rf;if(!r)return null;var n=r.rows.length;
         D.title="The refurbishment log";D.head="Rides the feed reported closed for refurbishment.";D.fine="Closures of three days or more, as the feed reports them. History, never a promise.";
@@ -16112,7 +16116,8 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var wR=[],wN="",wH=[80,74,68,62,56],wZ=56,wL=[],q;
         D.runs.forEach(function(r){var t=String(r.t).replace(/^\s+|\s+$/g,"");if(!t)return;if(r.band)wR.push({t:t.charAt(0).toUpperCase()+t.slice(1),band:r.band});else wN+=(wN?" ":"")+t;});
         wN=wN.replace(/:$/,"")||D.who||"";var wNz=fit(wN,CW,SG,BW,[56,50,46,42]);T(ell(wN,CW,SG(BW,wNz)),L,336,SG(BW,wNz),C.ink);
-        for(q=0;q<wH.length;q++)if(wR.every(function(u){return MW(u.t,SG(BW,wH[q]))<=CW;})){wZ=wH[q];break;} /* every sentence keeps a line where it can; the letters step down before a sentence breaks */
+        var wF=wR.filter(function(u){return MW(u.t,SG(BW,wH[wH.length-1]))<=CW;});if(!wF.length)wF=wR; /* 0728pd: a sentence that cannot keep a line even at the smallest step (a tie's two or three names) folds inside itself, and no longer drags the other sentence down to the smallest letters - the size is set by the sentences that can keep a line */
+        for(q=0;q<wH.length;q++)if(wF.every(function(u){return MW(u.t,SG(BW,wH[q]))<=CW;})){wZ=wH[q];break;} /* every sentence keeps a line where it can; the letters step down before a sentence breaks */
         wR.forEach(function(u){wrap2(u.t,CW,SG(BW,wZ),2).forEach(function(l){wL.push({t:l,band:u.band});});});
         wL.forEach(function(ln,k){T(ln.t,L,356+(k+1)*(wZ+6),SG(BW,wZ),ink(ln.band));});
         var wB=fy-132,wM=Math.min(520,wB-(356+wL.length*(wZ+6))-126),wG=16,wBw=(CW-6*wG)/7;
