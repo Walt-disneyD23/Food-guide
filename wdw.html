@@ -2263,6 +2263,17 @@
 .hi-pk{display:block;font-style:normal;font-family:var(--font-body);font-size:var(--fs-micro);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-2);margin-top:2px}
 .hi-mn .c.w{display:flex;justify-content:center;white-space:nowrap;overflow:visible}
 .hi-sh[hidden]{display:none}
+.hi-es{padding:12px 0 11px;border-top:1px solid var(--line)}
+.hi-es .hi-mn{border-top:0;padding:0}
+.hi-es .ln{font-size:var(--fs-fine);font-weight:600;color:var(--muted-2);margin-top:5px;line-height:1.25}
+.hi-es .bars{position:relative;display:flex;align-items:flex-end;gap:2px;height:46px;margin-top:10px}
+.hi-es .bars span{flex:1;display:flex;align-items:flex-end;height:100%}
+.hi-es .bars span.ee{flex:0 0 10px;margin-right:7px}
+.hi-es .bars i{display:block;width:100%;border-radius:2px 2px 1px 1px}
+.hi-es .bars i.dim{opacity:.28}
+.hi-es .bars u{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed var(--muted-2);z-index:1}
+.hi-esl{display:flex;justify-content:space-between;font-size:var(--fs-micro);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);margin:4px 0 8px}
+.hi-esl span:nth-child(2){margin-right:auto;margin-left:14px}
 .hi-when{font-size:var(--fs-caps);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
   /* 0728ne EVERY SUMMARY STEPS UP (K-B+, owner-ruled Fri Nov 13, 2026, 9:16 PM, after "K-B seems like a happy medium? I do like K-C as well ... Want them to feel similar"): all thirteen summaries, on the page and in their sheets - B's sizes; the figures and the headline at the cards' weight (900); names at 800, so no name wraps that did not. Type and spacing only: the cards read the page's words, not its sizes; the tiles and the chapter titles are untouched. The rules keep the specimen's own specificity (html:root for its html.ck-b / html.ck-h), so the cascade is the one he ruled on. Not chosen: K-A as deployed, K-B without the weight, K-C big and black */
   html:root .hi-h,html:root .hi-say{font-size:23px;line-height:1.14;margin-bottom:18px}
@@ -3335,7 +3346,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pj</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pk</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15783,55 +15794,68 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         '<div class="hi-fine">'+fine+'</div></div>';
     }
     /* ===== 0728pi EARLY ENTRY PAYOFF (owner-ruled Fri Nov 20, 2026 on sheets 361-363: E-A one ride a park on All parks and E-B a park's top three as paired bars - "wow those are both really nice, with EB, it tells the story instantly"; the measure - "makes sense, and seems like the right way to do it. i like it"; the picker's short names, G-A). Which rides Early Entry helps most: the typical posted wait in the Early Entry half-hour against the first hour after regular opening. EACH DAY IS LINED UP BY ITS OWN OPENING (found at the cut: Magic Kingdom opens at 8 AM on some ordinary days and 9 AM on others, so one clock's half-hour is Early Entry on one day and regular hours on the next; read by the clock, Jungle Cruise - which never runs in Early Entry - showed a 5-minute "Early Entry" wait). The chapter's own days are read (the digests' half-hour tapes), ordinary days only (the fence the baseline keeps); a ride is compared when each of its three half-hours has 10 days or more, so a ride that does not run in Early Entry has no seat. Early Entry = the half-hour the schedule's own Early Entry begins; first hour = the higher of the first two regular half-hours; listed at 5 minutes saved or more ===== */
-    function pwHiEeBy(x,y){return (y.s-x.s)||(y.f-x.f)||(x.n<y.n?-1:1);} /* the biggest saving first; level savings go to the longer first hour, then the name */
-    function pwHiEeModel(C){ /* a read a park, built once for the day's read: {p, days its ordinary days with an Early Entry, n its rides compared, rows its top three, also the rides the three-row limit cut at the last row's own saving, top} */
+    function pwHiEeBy(x,y){return (y.s-x.s)||(y.f-x.f)||(x.n<y.n?-1:1);} /* the biggest saving first; level savings go to the higher daytime best, then the name */
+    /* ===== 0728pk EARLY ENTRY PAYOFF, THE WHOLE DAY (owner, Sat Nov 21, 2026: 5:42 AM the first-hour comparison "doesn't tell the whole story" and the floor wants to be bigger than 5; 5:59 AM a family that rope drops Early Entry is "most likely not staying for the full day", so a deal near closing is one they "may never see"; 6:21 AM on sheet 386 "That all looks nice ... Seems it" - R-4; 6:26 AM on sheet 388 "Yes KC is nice!" - K-C). THE MEASURE: a park's ordinary days with an Early Entry, each day lined up by its own opening and, for its last two hours, by its own closing. Typical = the middle posted wait, 10 days or the half-hour is not read. DAYTIME BEST = the ride's lowest typical half-hour from opening until two hours before closing. THE SAVING = daytime best - the Early Entry half-hour; a ride LEADS at 10 minutes or more. A ride the first-hour rule would credit (10 under the higher half of its first hour) whose saving is under 10 stays on the page in grey and never reaches a card. The strip is the park's middle day: its last four bars are the last two hours by each day's own closing, the bars before them count from opening and take a day's reading only while that day is still two hours from its own closing. ===== */
+    function pwHiEeModel(C){ /* a read a park, built once for the day's read: {p, days its ordinary days with an Early Entry, n its rides compared, lead the rides that lead, list lead then the rides in grey, top, ev each ride's Early Entry typical (Typical day reads it), ec the Early Entry clock when every counted day shares it} */
       if(C.ee)return C.ee;
-      var A={},W=pwHiWeeksModel(C),out=[];MAIN.forEach(function(p){A[p]={nd:0,acc:{}};});
+      var F=10,A={},W=pwHiWeeksModel(C),out=[];MAIN.forEach(function(p){A[p]={nd:0,len:[],ec:{},acc:{}};});
       pwHiDays(C,C.win.w0).forEach(function(ds){var g=C.by[ds],pool=null;
         MAIN.forEach(function(p){var pk=((g||{}).parks||{})[p];if(!pk||!pk.open||!pk.close)return;
           if(typeof tdPartyOfInfo==="function"&&tdPartyOfInfo(pk,ds))return;
-          var o=pwHiMin(pk.open),e=null;
+          var o=pwHiMin(pk.open),c=pwHiMin(pk.close),e=null;if(c<=o)c+=1440;
           (pk.extras||[]).forEach(function(x){if(x&&x.open&&x.close&&/early entry/i.test(String(x.description||x.name||""))&&pwHiMin(x.close)===o&&pwHiMin(x.open)<o)e=pwHiMin(x.open);});
           if(e===null)return;
-          var ke=Math.floor(e/30),k0=Math.ceil(o/30);if(ke>=k0)return;
-          A[p].nd++;if(!pool)pool=pwHiPool(g);
-          pool.forEach(function(r){if(r.park!==p||!r.hm||r.hs==null)return;
-            var a=A[p].acc[r.id]=A[p].acc[r.id]||{e:[],f0:[],f1:[]};
-            [["e",ke],["f0",k0],["f1",k0+1]].forEach(function(q){var v=r.hm[q[1]-r.hs];if(typeof v==="number")a[q[0]].push(v);});});});});
-      function typ(a){return a.length>=10?Math.round(pfQuartiles(a).med):null;}
-      MAIN.forEach(function(p){var rows=[],id;
-        for(id in A[p].acc){var a=A[p].acc[id],r=W.rides[id],e=typ(a.e),f0=typ(a.f0),f1=typ(a.f1);if(!r||e===null||f0===null||f1===null)continue;
-          rows.push({id:id,n:r.n,p:p,e:e,f:Math.max(f0,f1),s:Math.max(f0,f1)-e});}
+          var ke=Math.floor(e/30),k0=Math.ceil(o/30),k1=Math.floor(c/30);if(ke>=k0)return;
+          A[p].nd++;A[p].len.push(k1-k0);A[p].ec[e]=1;if(!pool)pool=pwHiPool(g);
+          pool.forEach(function(r){if(r.park!==p||!r.hm||r.hs==null)return;var a=A[p].acc[r.id]=A[p].acc[r.id]||{e:[],d:{},l:{}},j,v;
+            v=r.hm[ke-r.hs];if(typeof v==="number")a.e.push(v);
+            for(j=0;j<k1-k0-4;j++){v=r.hm[k0+j-r.hs];if(typeof v==="number")(a.d[j]=a.d[j]||[]).push(v);} /* from its own opening, until two hours before its own closing */
+            for(j=1;j<=4&&k1-j>=k0;j++){v=r.hm[k1-j-r.hs];if(typeof v==="number")(a.l[j]=a.l[j]||[]).push(v);}});});}); /* its last two hours, from its own closing */
+      function typ(a){return (a&&a.length>=10)?Math.round(pfQuartiles(a).med):null;}
+      MAIN.forEach(function(p){var rows=[],ev={},id,L=A[p].len.slice().sort(function(x,y){return x-y;}),len=L.length?L[Math.floor(L.length/2)]:0,late=len-4,ecs=Object.keys(A[p].ec);
+        for(id in A[p].acc){var a=A[p].acc[id],r=W.rides[id],e=typ(a.e),f0=typ(a.d[0]),f1=typ(a.d[1]);if(e!==null)ev[id]=e;if(!r||e===null||f0===null||f1===null)continue;
+          var t=[],k,v,alt=null,back=null;
+          for(k=0;k<len;k++){v=k<late?typ(a.d[k]):typ(a.l[len-k]);t.push(v);if(v===null)continue;if(k<late&&(alt===null||v<alt))alt=v;if(back===null&&v<e+F)back={k:k,v:v};}
+          if(alt===null)continue;
+          rows.push({id:id,n:r.n,p:p,e:e,f:alt,s:alt-e,s1:Math.max(f0,f1)-e,t:t,back:back,len:len});}
         if(!rows.length)return;
-        var pay=rows.filter(function(x){return x.s>=5;}).sort(pwHiEeBy);
-        out.push({p:p,days:A[p].nd,n:rows.length,rows:pay.slice(0,3),also:pay.slice(3).filter(function(x){return x.s===pay[2].s;}),top:pay[0]||null});});
+        var lead=rows.filter(function(x){return x.s>=F;}).sort(pwHiEeBy),rest=rows.filter(function(x){return x.s<F&&x.s1>=F;}).sort(function(x,y){return (y.s-x.s)||(y.s1-x.s1)||(x.n<y.n?-1:1);});
+        out.push({p:p,days:A[p].nd,n:rows.length,lead:lead,list:lead.concat(rest),top:lead[0]||null,ev:ev,ec:ecs.length===1?+ecs[0]:null});});
       return (C.ee=out);
     }
     function pwHiEeNow(E){var i;for(i=0;i<E.length;i++)if(E[i].p===pwHiPark)return E[i];return null;} /* the picked park's read (Go first or go last's own pick - one pick sets both); none picked is All parks */
-    function pwHiEarlyHTML(C){
+    function pwHiEarlyHTML(C){ /* R-4 (sheet 386): a ride's top line keeps the two chips and the saving, one line of words says when it is that short again, and the strip under it is its whole day. The card reads these nodes */
       var E=pwHiEeModel(C),hd=pwHiHd("Early Entry payoff","ee","early entry payoff");
       if(!E.length)return "";
-      var g=pwHiEeNow(E),nm=function(x){return pwHiNm(x.id,x.n);},rows,w,v,h,notes=[];
+      var g=pwHiEeNow(E),nm=function(x){return pwHiNm(x.id,x.n);},rows,top,v,h,notes=[];
       var out=MAIN.filter(function(p){return !E.some(function(q){return q.p===p;});}).map(function(p){return esc(p);});
-      if(g)rows=g.rows;
+      function when(k,len){return k===0?'at opening':k===1?'half an hour in':k<=3?'an hour in':k>=len-2?'the last hour':k>=len-4?'the last two hours':'about '+Math.round(k/2)+' hours in';}
+      function line(x){if(x.s>=10)return x.back?'Not this short again until '+when(x.back.k,x.len):'Never this short again';
+        if(!x.back)return '';
+        return x.back.k===0?'Still this short at opening':'Close to it again '+(x.back.k>=x.len-4?'in ':'')+when(x.back.k,x.len);}
+      function chip(w){return '<span class="chip hi-bg-'+tierOfWait(w)+'">'+w+'</span>';}
+      function strip(x){var mx=x.e,i;for(i=0;i<x.t.length;i++)if(x.t[i]!==null&&x.t[i]>mx)mx=x.t[i];var H=46,ly=Math.round(x.e/mx*H);
+        return '<div class="bars" aria-hidden="true"><u style="bottom:'+ly+'px"></u><span class="ee"><i class="hi-bg-'+tierOfWait(x.e)+'" style="height:'+Math.max(3,ly)+'px"></i></span>'+
+          x.t.map(function(tv){return '<span>'+(tv===null?'':'<i class="hi-bg-'+tierOfWait(tv)+(tv<x.e+10?'':' dim')+'" style="height:'+Math.max(3,Math.round(tv/mx*H))+'px"></i>')+'</span>';}).join("")+'</div>';}
+      if(g)rows=g.list;
       else{rows=E.filter(function(q){return q.top;}).map(function(q){return q.top;}).sort(pwHiEeBy);
         var dry=E.filter(function(q){return !q.top;}).map(function(q){return esc(q.p);});
-        if(rows.length&&dry.length)notes.push('No ride at '+pwHiGfList(dry)+' saves 5&nbsp;min or more.');}
-      if(rows.length){w=pwHiWho(rows,function(a,b){return a.s===b.s;},nm);
-        v='Early Entry pays most at '+w.s+'.';
-        h=w.k>1?'Each typically saves '+rows[0].s+'&nbsp;min on the first hour.':'Typically '+rows[0].e+'&nbsp;min before opening, '+rows[0].f+' in the first hour.';
-        if(g&&g.also.length)notes.push(pwHiGfList(g.also.map(function(x){return esc(nm(x));}))+(g.also.length>1?' also save ':' also saves ')+g.also[0].s+'.');} /* the three-row limit never hides a level saving without saying so */
-      else{hd=hd.replace('class="hi-sh"','class="hi-sh" hidden'); /* nothing to share: no card */
-        v=g?'Early Entry saves little here.':'Early Entry saves little.';h='No ride is typically 5&nbsp;min shorter before opening than in the first hour.';}
+        if(rows.length&&dry.length)notes.push('No ride at '+(dry.length>1?dry.slice(0,-1).join(', ')+' or '+dry[dry.length-1]:dry[0])+' is 10&nbsp;min shorter in Early Entry than its daytime best.');}
+      top=g?g.top:(rows[0]||null);
+      if(top){v=esc(nm(top))+' is shortest in Early Entry.';h='Typically '+top.e+'&nbsp;min. Its daytime best is '+top.f+'.';}
+      else{hd=hd.replace('class="hi-sh"','class="hi-sh" hidden'); /* nothing leads: no card */
+        v=g?'Early Entry is no shorter here.':'Early Entry is no shorter.';h='No ride is typically 10&nbsp;min shorter in Early Entry than its daytime best.';}
       notes.push('Early Entry is the early opening for guests of Disney Resort hotels and other select hotels.');
       return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks"><button type="button" data-hpk="" data-pn="All parks" aria-label="All parks"'+(g?'':' class="on"')+'>All</button>'+
         E.map(function(q){return '<button type="button" data-hpk="'+esc(q.p)+'" data-pn="'+esc(q.p)+'" aria-label="'+esc(q.p)+'"'+(g&&g.p===q.p?' class="on"':'')+'>'+PW_HI_PKS[q.p]+'</button>';}).join("")+'</div>'+
         (out.length?'<div class="hi-note">'+pwHiGfList(out)+(out.length>1?' aren’t':' isn’t')+' compared — too few ordinary days on file.</div>':'')+
         '<div class="hi-v">'+v+'</div><div class="hi-h hi-hs">'+h+'</div>'+
-        (rows.length?'<div class="hi-mn h"><span class="n"></span><span class="c">Early Entry</span><span class="ar" style="visibility:hidden">→</span><span class="c">First hour</span><span class="d"></span></div>':'')+
-        rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(nm(x))+(g?pwHiRf(C,x.id):'<em class="hi-pk">'+esc(x.p)+'</em>')+'</span><span class="chip hi-bg-'+tierOfWait(x.e)+'">'+x.e+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.f)+'">'+x.f+'</span><span class="d">saves '+x.s+'</span></div>';}).join("")+
+        (rows.length?'<div class="hi-mn h"><span class="n"></span><span class="c">Early Entry</span><span class="ar" style="visibility:hidden">→</span><span class="c">Daytime best</span><span class="d"></span></div>':'')+
+        rows.map(function(x){var ld=x.s>=10,ln=line(x);
+          return '<div class="hi-es"><div class="hi-mn" data-ld="'+(ld?1:0)+'" data-ln="'+ln+'" data-day="'+x.t.map(function(q){return q===null?'':q;}).join(',')+'"><span class="n">'+esc(nm(x))+(g?pwHiRf(C,x.id):'<em class="hi-pk">'+esc(x.p)+'</em>')+'</span>'+chip(x.e)+'<span class="ar">→</span>'+chip(x.f)+'<span class="d'+(ld?'':' same')+'">'+(ld?x.s+' shorter':x.s===0?'the same':Math.abs(x.s)+' apart')+'</span></div>'+(ln?'<div class="ln">'+ln+'</div>':'')+strip(x)+'</div>';}).join("")+
+        (rows.length?'<div class="hi-esl" aria-hidden="true"><span>Early Entry</span><span>Opening</span><span>Closing</span></div>':'')+
         notes.map(function(t){return '<div class="hi-note">'+t+'</div>';}).join("")+
-        '<div class="hi-fine">Typical posted wait in the Early Entry half-hour and the first hour after. '+(g?g.days+' ordinary days':'Ordinary days')+' of the past four weeks. History, not a forecast.</div></div>';
+        '<div class="hi-fine">Typical posted wait, a bar a half-hour from opening to closing, Early Entry first. The line is the Early Entry wait; a bar within 10&nbsp;min of it is in full colour. Daytime best is the lowest from opening until two hours before closing. '+(g?g.days+' ordinary days':'Ordinary days')+' of the past four weeks. History, not a forecast.</div></div>';
     }
     /* ===== 0728pi THEN AND NOW, a month apart (owner-ruled Fri Nov 20, 2026: the name N-B; "shorter" and "longer"; the two conditions and the eight-row rule - "ok, agree with leans"; All parks only - "id rather have it this way than park cards not worthy of a headline"; sheet 371 - "looking good my friend, lets build"). THE WORKER COUNTS, THE PAGE SAYS: GET /thennow (Worker v3.43) hands each ride's sums and counts for the last 28 days on file and the 28 before. A ride is compared when it is on the four-week page and both windows hold 20 counting days or more; each figure is rounded once (half up), a move is the difference of the two rounded figures, and 5 minutes counts ===== */
     var pwTn=null;
@@ -15924,10 +15948,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var rLo=Math.min.apply(null,rv),rHi=Math.max.apply(null,rv),cHi=Math.max.apply(null,cv);
         h=most?"Typically "+lo+" min, up to "+hi+" at its busiest.":"Typically "+rng(cv)+" min then, "+((rLo<=cHi)?"up to "+rHi:rng(rv))+" the rest of the day.";}
       var lab=[],kf=k0;while(kf%2)kf++;for(k=kf;k<k1;k+=6)if((k1-k)/n>0.17)lab.push({i:k-k0,t:pwTdClk(k)});
-      var ek=(H.ee!==null)?Math.floor(H.ee/30):null,ev=(ek!==null&&ek<k0)?typ(ek):null; /* E-3: a ride with no posted waits in that half-hour has no seat */
+      var E9=pwHiEeModel(C),eg=null,ev=null,ei;for(ei=0;ei<E9.length;ei++)if(E9[ei].p===r.p)eg=E9[ei];if(eg&&eg.ev[id]!=null)ev=eg.ev[id]; /* E-3: a ride with no posted waits in that half-hour has no seat. 0728pk ONE MEASURE, ONE FIGURE: Early Entry is read from Early Entry payoff's model - each day by its own Early Entry, never by the clock (at Magic Kingdom 8:30 is Early Entry on a 9 AM day and regular hours on an 8 AM day) - so this line and that summary cannot disagree; the clock is said only when every counted day shares it */
       var on=(pfBase.ord&&pfBase.ord[r.p]!=null)?pfBase.ord[r.p]:(pfBase.days||28);
       return {id:id,n:r.n,p:r.p,bars:bars,lo:lo,hi:hi,loI:loI,hiI:hiI,open:open,close:close,v:v,h:h,lab:lab,pool:tdOrdWord(on,!!pfBase.bv),
-        ee:(ev!==null)?{v:ev,band:tierOfWait(ev),t:rpClk(H.ee)}:null};
+        ee:(ev!==null)?{v:ev,band:tierOfWait(ev),t:(eg.ec!==null)?rpClk(eg.ec):""}:null};
     }
     function pwHiTypicalHTML(C){ /* the summary: the ride's door (Day by day's own pick - one pick sets both), the verdict over its sentence, Early Entry's line, a bar a half-hour, the rail, the hours. The card reads these nodes */
       var id=pwHiRideNow(C),hd=function(pk){return pwHiHd("Typical day"+(pk?" · "+esc(pk):""),"td","typical day");};
@@ -15938,7 +15962,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       var n=m.bars.length,mx=Math.max(m.hi,m.ee?m.ee.v:0),HH=118,hs=m.bars.map(function(x){return x.v===null?0:Math.max(4,Math.round(x.v/mx*HH));}),eh=m.ee?Math.max(4,Math.round(m.ee.v/mx*HH)):0;
       function lift(i){var t=hs[i];if(i>0&&hs[i-1]>t)t=hs[i-1];if(i<n-1&&hs[i+1]>t)t=hs[i+1];return t;} /* a figure wider than its bar clears its neighbours */
       return '<div class="hi-card">'+hd(m.p)+door+
-        '<div class="hi-v">'+m.v+'</div><div class="hi-h hi-hs">'+m.h+'</div>'+(m.ee?'<div class="hi-eel">Early Entry, '+m.ee.t.replace(" "," ")+': typically '+m.ee.v+' min.</div>':'')+
+        '<div class="hi-v">'+m.v+'</div><div class="hi-h hi-hs">'+m.h+'</div>'+(m.ee?'<div class="hi-eel">Early Entry'+(m.ee.t?', '+m.ee.t.replace(" "," "):'')+': typically '+m.ee.v+' min.</div>':'')+
         '<div class="hi-td'+(m.ee?' hasee':'')+'" data-hrs="'+m.open+' – '+m.close+'" data-pool="'+esc(m.pool)+'">'+(m.ee?'<div class="c ee '+pwHiBand(m.ee.v)+'" data-v="'+m.ee.v+'"><b style="bottom:'+(eh+5)+'px">'+m.ee.v+'</b><i class="hi-bg-'+m.ee.band+'" style="height:'+eh+'px"></i></div>':'')+
         m.bars.map(function(x,i){if(x.v===null)return '<div class="c" data-v=""></div>';var mk=(i===m.loI||i===m.hiI);
           return '<div class="c'+(mk&&i===0?' e0':mk&&i===n-1?' e1':'')+'" data-v="'+x.v+'"'+(x.calm?' data-calm="1"':'')+'>'+(mk?'<b class="'+pwHiBand(x.v)+'" style="bottom:'+(lift(i)+5)+'px">'+x.v+'</b>':'')+'<i class="hi-bg-'+x.band+'" style="height:'+hs[i]+'px"></i></div>';}).join("")+'</div>'+
@@ -15976,9 +16000,9 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         if(g9)return {v:(g9.k>g9.j?g9.k:g9.j)+' of '+g9.n,u:"",b:"",s:[esc(g9.p)+' headliners',g9.k>g9.j?'shorter in the last hour':g9.j>g9.k?'shorter in the first hour':'shorter at each end']};
         var gb=G9[0],gi;for(gi=1;gi<G9.length;gi++)if(Math.abs(G9[gi].f-G9[gi].l)>Math.abs(gb.f-gb.l))gb=G9[gi];
         return (gb.f!==gb.l)?{v:Math.abs(gb.f-gb.l),u:"m",b:"",s:[esc(gb.p),gb.f<gb.l?'shorter in its first hour':'shorter in its last hour']}:{v:G9.length,u:"",b:"",s:['parks compared','the same at both ends']};}
-      if(key==="ee"){var E9=pwHiEeModel(C);if(!E9.length)return null;var e9=pwHiEeNow(E9),t9=null; /* 0728pi: the ride Early Entry saves the most on - the picked park's, or the resort's */
+      if(key==="ee"){var E9=pwHiEeModel(C);if(!E9.length)return null;var e9=pwHiEeNow(E9),t9=null; /* 0728pi: the ride Early Entry saves the most on - the picked park's, or the resort's; 0728pk: the saving is against its daytime best, a ride leads at 10 */
         if(e9)t9=e9.top;else E9.forEach(function(q){if(q.top&&(!t9||pwHiEeBy(q.top,t9)<0))t9=q.top;});
-        return t9?{v:t9.s,u:"m",b:"",s:[esc(pwHiNm(t9.id,t9.n)),'saved by Early Entry']}:{v:"&lt;5",u:"m",b:"",s:[e9?esc(e9.p):'Every park','saved by Early Entry']};}
+        return t9?{v:t9.s,u:"m",b:"",s:[esc(pwHiNm(t9.id,t9.n)),'shorter in Early Entry']}:{v:"&lt;10",u:"m",b:"",s:[e9?esc(e9.p):'Every park','shorter in Early Entry']};}
       if(key==="tn"){var t7=pwTnModel(C);if(!t7||!t7.n)return null;var b7=t7.bigS?t7.S.length:t7.L.length,a7=t7.S.length+t7.L.length; /* 0728pi: the bigger side's count; a quiet month says how few moved */
         return a7<3?{v:a7,u:"",b:"",s:[a7===1?'ride moved':'rides moved','little has changed']}:{v:b7,u:"",b:"",s:[(b7===1?'ride ':'rides ')+(t7.bigS?'shorter':'longer'),'than a month ago']};}
       return null;
@@ -16283,6 +16307,11 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           return {n:pwHiOwn(one(".n",el)),rf:tx(one(".n .hi-rf",el)),s:tx(one(".n .hi-ps",el)),a:tx(c[0]),ab:pwHiBandOf(c[0]),p:tx(c[1]),pb:pwHiBandOf(c[1]),d:tx(d),dk:(d&&d.classList.contains("same"))?"same":(d&&d.classList.contains("more"))?"more":"less"};});
         if(key!=="mn"){var pk9=all(".hi-mn").filter(function(el){return !el.classList.contains("h");}).map(function(el){return tx(one(".n .hi-pk",el));});
           D.rows.forEach(function(r9,i9){r9.pk=pk9[i9]||"";if(key==="tn"||key==="lvtn")r9.rf=r9.pk;});
+          if(key==="ee"){var els9=all(".hi-mn").filter(function(el){return !el.classList.contains("h");}); /* 0728pk K-C: the card reads each row's day and its line off the page, holds only the rides that lead - three at most, and says so when more lead - and wears a fine print of its own (the page's is cut off on a card) */
+            D.rows.forEach(function(r9,i9){var dt=els9[i9].getAttribute("data-day");r9.t=dt?dt.split(",").map(function(q9){return q9===""?null:+q9;}):[];r9.s=els9[i9].getAttribute("data-ln")||"";r9.lead=els9[i9].getAttribute("data-ld")==="1";});
+            D.rows=D.rows.filter(function(r9){return r9.lead;});if(!D.rows.length)return null;
+            if(!D.all){var n9=D.rows.length;D.rows=D.rows.slice(0,3);if(n9>3)D.sub+=" · Top 3 of "+n9;}else D.sub+=" · Each park’s biggest";
+            var fd9=/(\d+ ordinary days) of the past four weeks/.exec(D.fine);D.fine="Typical posted wait by half-hour "+(fd9?"over "+fd9[1]:"on ordinary days")+", Early Entry first. Daytime best: the lowest before the last two hours. History, not a forecast.";}
           D.mnv=D.mnv.replace(/(\d) min/g,"$1\u00a0min");D.head=D.head.replace(/(\d) min/g,"$1\u00a0min");} /* 0728pi: the park under a ride's name (Then and now's card carries it in the line under the name); a figure keeps its unit on its line */
         if(!D.rows.length)return null;
       }else return null;
@@ -16398,28 +16427,35 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           D.bars.forEach(function(o,j){var xo=tx0+j*(tBw+tG);if(xo+tBw>xc-w9/2-6&&xo<xc+w9/2+6&&tHs[j]>t2)t2=tHs[j];});T(String(b.v),xc,tBot-t2-14,f9,ink(b.band),"center");});
         for(tk=0;tk<=tn;tk++){var tOn=tk<tn&&D.bars[tk].calm;if(tOn&&tA<0)tA=tk;if(!tOn&&tA>=0){rr(tx0+tA*(tBw+tG),tBot+14,(tk-tA)*(tBw+tG)-tG,10,5);ctx.fillStyle=tLav;ctx.fill();tA=-1;}}
         D.lab.forEach(function(l){caps(nb(l.t),tx0+l.i*(tBw+tG),tBot+66,22,C.muted2,"left","1.5px");});if(D.endT)caps(nb(D.endT),R,tBot+66,22,C.muted2,"right","1.5px");
-      }else if(D.key==="ee"){ /* 0728pi EARLY ENTRY PAYOFF (sheets 361-362): the verdict in the lavender over its sentence, as Go first or go last; All parks is a row a park (E-A) - the park in caps, the ride at the card's weight, what the half-hour saves, the two figures plain in their band inks; a park is a pair of bars a ride (E-B) on one scale, so the gap is the picture */
+      }else if(D.key==="ee"){ /* 0728pi EARLY ENTRY PAYOFF: the verdict in the lavender over its sentence, as Go first or go last; 0728pk: the rides under it are drawn as K-C in both views (All parks carries each ride's park) */
         if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");
-        var ez=[76,68,60,54],es=76,ev,eT,eP,emx=0;
+        var ez=[76,68,60,54],es=76,ev,eT;
         for(i=0;i<ez.length;i++){es=ez[i];if(wrap2(nb(D.mnv),CW,SG(BW,es),9).length<=2)break;}
         ev=bal(nb(D.mnv),CW,SG(BW,es),3);y=270+Math.round(es*0.9);for(i=0;i<ev.length;i++)T(ev[i],L,y+i*Math.round(es*0.95),SG(BW,es),"#b4bcff");y+=(ev.length-1)*Math.round(es*0.95);
         ev=bal(nb(D.head),CW,IN("700",28),2);for(i=0;i<ev.length;i++)T(ev[i],L,y+48+i*36,IN("700",28),C.ink);y+=48+(ev.length-1)*36;
         eT=y+30;n=D.rows.length;
         var efig=function(v,x,yy,sz,b){var f=SG(BW,sz),u=SG(BW,Math.round(sz*0.42)),w=MW(String(v),f),mw=MW("m",u),x0=x-w-mw-3;T(String(v),x0,yy,f,ink(b));T("m",x0+w+3,yy,u,ink(b));return w+mw+3;};
-        if(D.all){eP=Math.min(196,Math.floor((fy-16-eT)/n));
-          D.rows.forEach(function(r,k){var yy=eT+k*eP,m0=yy+eP/2,w1,w2,xa,nw,nz;hair(yy);
-            caps(r.pk,L,m0-43,21,"#b4bcff","left","2.6px");
-            w2=efig(r.p,R,m0+21,84,r.pb);caps(D.cols[1]||"",R,m0+59,18,C.muted2,"right","1.6px");
-            xa=R-Math.max(w2,150)-44;T("›",xa+16,m0+13,SG("700",56),C.muted2,"center");
-            w1=efig(r.a,xa-22,m0+21,84,r.ab);caps(D.cols[0]||"",xa-22,m0+59,18,C.muted2,"right","1.6px");
-            nw=xa-22-Math.max(w1,150)-26-L;nz=fit(r.n,nw,SG,BW,[46,42,38,34]);T(ell(r.n,nw,SG(BW,nz)),L,m0+13,SG(BW,nz),C.ink);
-            T(r.d+" min",L,m0+55,IN("600",26),C.muted);});
-        }else{eP=Math.min(250,Math.floor((fy-16-eT)/n));D.rows.forEach(function(r){emx=Math.max(emx,+r.a,+r.p);});
-          D.rows.forEach(function(r,k){var yy=eT+k*eP,m0=yy+eP/2,nw=CW-250,nz=fit(r.n,nw,SG,BW,[46,42,38,34]);hair(yy);
-            T(ell(r.n,nw,SG(BW,nz)),L,m0-50,SG(BW,nz),C.ink);T(r.d+" min",R,m0-52,IN("700",28),"#9bf7c9","right");
-            [[D.cols[0],r.a,r.ab],[D.cols[1],r.p,r.pb]].forEach(function(q,j){var by=m0-20+j*56,bw=Math.max(40,(CW-330)*(+q[1])/(emx||1));
-              caps(q[0]||"",L,by+30,19,C.muted,"left","1.6px");rr(L+190,by,bw,40,20);ctx.fillStyle=ink(q[2]);ctx.fill();T(q[1]+" min",L+190+bw+16,by+31,SG(BW,34),ink(q[2]));});});
-        }
+        var avail=fy-16-eT,GR="#9bf7c9"; /* 0728pk K-C (sheet 388): a ride is its day - the Early Entry bar in its own seat, a bar a half-hour to closing, a dashed line at the Early Entry wait; the bars within 10 minutes of it wear their band, the rest are slate (pale band colours went muddy on navy). The first ride is the hero: its two figures large over their labels, the saving large in green, a tall strip, its line under it. The others follow smaller */
+        var strip=function(r,x0,x1,top,by){var t=r.t||[],e=+r.a,mx=e,i;for(i=0;i<t.length;i++)if(t[i]!==null&&t[i]>mx)mx=t[i];
+          var H=by-top,eeW=Math.max(24,Math.round(H*0.16)),gp=4,xb=x0+eeW+18,bw=(x1-xb-(t.length-1)*gp)/(t.length||1),hh=function(w){return Math.max(6,Math.round(w/mx*H));},yl=by-hh(e);
+          rr(x0,by-hh(e),eeW,hh(e),6);ctx.fillStyle=ink(r.ab);ctx.fill();
+          t.forEach(function(w,j){if(w===null)return;rr(xb+j*(bw+gp),by-hh(w),bw,hh(w),5);ctx.fillStyle=(w>=e+10)?"#2a3a58":ink(tierOfWait(w));ctx.fill();});
+          ctx.save();ctx.setLineDash([8,8]);ctx.lineWidth=2;ctx.strokeStyle=C.muted2;ctx.beginPath();ctx.moveTo(x0,yl);ctx.lineTo(x1,yl);ctx.stroke();ctx.restore();};
+        var figs=function(r,yb,sz,cz){var w2=efig(r.p,R,yb,sz,r.pb);caps(D.cols[1]||"",R,yb+cz+12,cz,C.muted2,"right","1.4px");
+          var xa=R-Math.max(w2,sz*1.9)-Math.round(sz*0.55);T("›",xa+Math.round(sz*0.2),yb-Math.round(sz*0.1),SG("700",Math.round(sz*0.7)),C.muted2,"center");
+          var w1=efig(r.a,xa-Math.round(sz*0.28),yb,sz,r.ab);caps(D.cols[0]||"",xa-Math.round(sz*0.28),yb+cz+12,cz,C.muted2,"right","1.4px");return R-(xa-Math.round(sz*0.28)-Math.max(w1,sz*1.9));};
+        var words=function(r,x,yy,sz,x1){var a=r.d.replace(/^(\d+) /,"$1 min ")+" · ",f;while(sz>18&&MW(a,IN("700",sz))+MW(r.s||"",IN("500",sz))>x1-x)sz--; /* the line steps down before it loses a word ("the last two hours" is the longest) */
+          f=IN("700",sz);T(a,x,yy,f,GR);x+=MW(a,f);T(ell(r.s||"",x1-x,IN("500",sz)),x,yy,IN("500",sz),C.muted);};
+        var row=function(r,yy,eP){var pk=(D.all&&r.pk)?30:0,fw=figs(r,yy+70+pk,60,16),nz=fit(r.n,CW-fw-24,SG,BW,[44,40,36,32]);hair(yy);
+          if(pk)caps(r.pk,L,yy+34,20,"#b4bcff","left","2.6px");
+          T(ell(r.n,CW-fw-24,SG(BW,nz)),L,yy+56+pk,SG(BW,nz),C.ink);words(r,L,yy+92+pk,23,R-fw-22);strip(r,L,R,yy+116+pk,yy+eP-20);};
+        var r0=D.rows[0],hH=n===1?Math.min(640,avail):n===2?430:330,yb=eT+150,eP2=n>1?Math.min(250,Math.floor((avail-hH)/(n-1))):0,sx=L,fa=SG(BW,120),fu=SG(BW,50);hair(eT);
+        caps((D.all&&r0.pk?r0.pk+" · ":"")+r0.n,L,eT+38,21,"#b4bcff","left","2.6px");
+        T(r0.a,sx,yb,fa,ink(r0.ab));caps(D.cols[0]||"",sx,yb+34,17,C.muted2,"left","1.4px");sx+=MW(r0.a,fa)+4;T("m",sx,yb,fu,ink(r0.ab));sx+=MW("m",fu)+34;
+        T("›",sx,yb-12,SG("700",84),C.muted2);sx+=70;T(r0.p,sx,yb,fa,ink(r0.pb));caps(D.cols[1]||"",sx,yb+34,17,C.muted2,"left","1.4px");sx+=MW(r0.p,fa)+4;T("m",sx,yb,fu,ink(r0.pb));
+        T(r0.d.replace(/ .*$/,"")+" min",R,yb-40,SG(BW,64),GR,"right");T(r0.d.replace(/^\d+ /,""),R,yb+8,SG(BW,40),GR,"right");
+        strip(r0,L,R,yb+70,eT+hH-58);if(r0.s)T(ell(r0.s,CW,IN("500",24)),L,eT+hH-22,IN("500",24),C.muted);
+        D.rows.slice(1).forEach(function(r,k){row(r,eT+hH+k*eP2,eP2);});
       }else if(D.key==="mn"||D.key==="tn"||D.key==="lvtn"){ /* 0728pi: Then and now is drawn by the park view below - the filled boxes, the park under each name (sheets 368 and 371) */
         if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");
         if(D.all){ /* 0728ph GO FIRST OR GO LAST, All parks (sheet 364): the verdict in the lavender, up to three lines, stepping down before it loses a word; a row a park - its name in caps, its word at the card's weight, its count, the two figures plain in their band inks under the columns' own labels */
