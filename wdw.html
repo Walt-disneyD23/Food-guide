@@ -2258,6 +2258,8 @@
   .hi-tape.hi-rail i.on{background:var(--accent);border-radius:7px 0 0 7px}
   .hi-ds.lg{margin:-8px 0 4px}
   .hi-top .d .hi-rf{font-family:var(--font-body);margin-top:4px}
+  /* 0728ph GO FIRST OR GO LAST: a park's count under its name on All parks - the refurbishment line's own dress, its own class (the card reads the two apart) */
+  .hi-ps{display:block;margin-top:4px;font-style:normal;font-family:var(--font-body);font-weight:600;font-size:var(--fs-fine);line-height:1.25;letter-spacing:0;color:var(--muted-2)}
   /* 0728ne EVERY SUMMARY STEPS UP (K-B+, owner-ruled Fri Nov 13, 2026, 9:16 PM, after "K-B seems like a happy medium? I do like K-C as well ... Want them to feel similar"): all thirteen summaries, on the page and in their sheets - B's sizes; the figures and the headline at the cards' weight (900); names at 800, so no name wraps that did not. Type and spacing only: the cards read the page's words, not its sizes; the tiles and the chapter titles are untouched. The rules keep the specimen's own specificity (html:root for its html.ck-b / html.ck-h), so the cascade is the one he ruled on. Not chosen: K-A as deployed, K-B without the weight, K-C big and black */
   html:root .hi-h,html:root .hi-say{font-size:23px;line-height:1.14;margin-bottom:18px}
   html:root .hi-r .n,html:root .hi-rc .it .n{font-size:17px;font-weight:800}
@@ -3329,7 +3331,7 @@ try{var q=localStorage.getItem("ppCrowd");if(q&&JSON.parse(q)==="quiet")document
     </div>
     <div class="set-lab">About</div>
     <div class="set-rows">
-      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728pg</small></b></div>
+      <div class="set-row"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg></span>Version</span><b class="ver">1.1<small id="setBuild">build 0728ph</small></b></div>
       <button type="button" class="set-row" id="setWelcome"><span class="l"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg></span>Show the welcome</span><span class="v"><i class="chv">›</i></span></button> <!-- 0728kh: the first-run sheet, on request; 0728ki: the chevron is the character, not the escape - markup is not a JS string (the daughter's glass, 3:09 PM) -->
     </div>
     <div class="set-lab">Data</div>
@@ -15688,16 +15690,28 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       for(i=0;i<n;i++){var id=t[(k+i)%n];if(W.rides[id])return id;}
       return null;
     }
-    function pwHiMnParks(){ /* Morning or night is only for a park whose headliners have both half-hours on file (10 AM and 8 PM, 10+ days each) */
-      if(typeof pfBase==="undefined"||!pfBase||!pfBase.rides)return null;
-      var o=[];MAIN.forEach(function(p){var rows=pwHiMnRows(p);if(rows.length>=2)o.push(p);});return o;
-    }
-    function pwHiMnRows(p){
-      var rows=[];(HEADLINERS[p]||[]).forEach(function(h){var b=pfBase.rides[h.id],a=b&&b.b&&b.b["20"],e=b&&b.b&&b.b["40"];
-        if(a&&e&&a.length>=10&&e.length>=10)rows.push({id:h.id,n:h.name,a:Math.round(pfQuartiles(a).med),p:Math.round(pfQuartiles(e).med)});});
+    /* ===== 0728ph GO FIRST OR GO LAST (owner-ruled Fri Nov 20, 2026: F-B on sheets 364-365 - "this seems like the better one to have"; the park views in the family's filled boxes on sheet 366 - "these look good to me!"; the picker's short names and All parks first, G-A on sheet 363 - "good with those leans!"). It takes Morning or night's seat (the key stays mn: its tile, its sheet, its card). Each park's headliners in the park's own first hour against its own last hour - the first two and the last two half-hours of its regular day, the hours Typical day keeps (pwTdHours), the typical the baseline keeps (10+ ordinary days a half-hour). Not chosen: F-A both summaries (they ask the same question of the same rides and can disagree: 10 AM is not opening, and a park that closes by 8 PM was left out) ===== */
+    var PW_HI_PKS={"Magic Kingdom":"MK","EPCOT":"EPCOT","Hollywood Studios":"HS","Animal Kingdom":"AK"};
+    function pwHiGfRows(C,p){ /* a headliner is compared when all four half-hours have a typical on file; a = its first hour, p = its last (the mean of the two, rounded once, half up) */
+      var H=pwTdHours(C,p),rows=[];if(!H)return rows;
+      var k0=Math.ceil(H.o/30),k1=Math.floor(H.c/30);if(k1-k0<4)return rows;
+      function typ(b,k){var q=b.b[String(((k%48)+48)%48)];return (q&&q.length>=10)?Math.round(pfQuartiles(q).med):null;}
+      (HEADLINERS[p]||[]).forEach(function(h){var b=pfBase.rides[h.id];if(!b||!b.b)return;
+        var f0=typ(b,k0),f1=typ(b,k0+1),l0=typ(b,k1-2),l1=typ(b,k1-1);if(f0===null||f1===null||l0===null||l1===null)return;
+        rows.push({id:h.id,n:h.name,a:Math.floor((f0+f1)/2+0.5),p:Math.floor((l0+l1)/2+0.5)});});
       return rows.sort(function(x,y){return ((y.a-y.p)-(x.a-x.p))||(x.n<y.n?-1:1);}); /* by the size of the change */
     }
-    function pwHiParkNow(C,parks){var n=parks.length;if(pwHiPark&&parks.indexOf(pwHiPark)>=0)return pwHiPark;return parks[((pwLeadDayN(C.yd)%n)+n)%n];}
+    function pwHiGfPark(C,p){ /* a park's read: j headliners shorter in the first hour, k in the last; f and l its headliners averaged; the word needs the count and 5 minutes of the average on the same side */
+      var rows=pwHiGfRows(C,p),n=rows.length,j=0,k=0,sf=0,sl=0,H=pwTdHours(C,p);
+      rows.forEach(function(x){if(x.a<x.p)j++;else if(x.p<x.a)k++;sf+=x.a;sl+=x.p;});
+      var f=n?Math.floor(sf/n+0.5):0,l=n?Math.floor(sl/n+0.5):0;
+      return {p:p,rows:rows,n:n,j:j,k:k,f:f,l:l,w:(j>k&&l-f>=5)?"first":(k>j&&f-l>=5)?"last":"either",hrs:H?rpClk(H.o)+" to "+rpClk(H.c%1440):""};
+    }
+    function pwHiGfParks(C){ /* the parks with two headliners or more to compare; null while the baseline is still on its way */
+      if(typeof pfBase==="undefined"||!pfBase||!pfBase.rides)return null;
+      var o=[];MAIN.forEach(function(p){var g=pwHiGfPark(C,p);if(g.n>=2)o.push(g);});return o;
+    }
+    function pwHiGfNow(G){var i;for(i=0;i<G.length;i++)if(G[i].p===pwHiPark)return G[i];return null;} /* the picked park's read; none picked is All parks */
     function pwHiDayByDayHTML(C){
       var W=pwHiWeeksModel(C),id=pwHiRideNow(C),hd=function(pk){return pwHiHd("Day by day"+(pk?" · "+esc(pk):""),"wd","day by day");};
       if(!id)return '<div class="hi-card">'+hd("")+'<div class="hi-wait">Not enough days on file yet.</div></div>';
@@ -15715,31 +15729,54 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         '<div class="hi-wdl">'+DS.map(function(d){return '<span>'+d+'</span>';}).join("")+'</div>'+
         '<div class="hi-fine">Average posted wait across each day — '+(cn===cx?(NW[cn]||cn):(NW[cn]||cn)+' to '+(NW[cx]||cx))+' of each weekday. History, not a forecast.</div></div>';
     }
-    function pwHiMnOut(C,parks){ /* 0728mt THE PAGE SAYS WHY A PARK IS LEFT OUT (owner on glass, Nov 12 7:10 PM: "on morning or night I don't see animal kingdom, is that because when it closes?"): a park with no 8 PM typical is named under the buttons, with what its own closing times on file show - history, never a reason the data cannot give */
-      var days=pwHiDays(C,C.win.w0),o=[];
-      MAIN.forEach(function(p){if(parks.indexOf(p)>=0)return;var late=0,n=0;
-        days.forEach(function(ds){var pk=((C.by[ds]||{}).parks||{})[p];if(!pk||!pk.open||!pk.close)return;var c=pwHiMin(pk.close);if(c<=pwHiMin(pk.open))c+=1440;n++;if(c>1200)late++;});
-        if(n)o.push(esc(p)+(late?" isn’t compared — too few nights open past 8 PM.":" isn’t compared — it closed by 8 PM every night."));});
-      return o.length?'<div class="hi-note">'+o.join(" ")+'</div>':"";
+    function pwHiGfList(a){return a.length<2?a.join(""):a.slice(0,-1).join(", ")+" and "+a[a.length-1];}
+    function pwHiGfCount(g,NW,nw){ /* the park's count in a line, for its row on All parks */
+      var z=function(c){return c?nw[c]||c:"none";};
+      var of=function(c){return c===g.n?"All "+(nw[c]||c):(NW[c]||c)+" of "+(nw[g.n]||g.n);}; /* every one of them is "all five", never "five of five" */
+      if(g.w==="first")return of(g.j)+" headliners shorter in the first hour";
+      if(g.w==="last")return of(g.k)+" headliners shorter in the last hour";
+      if(!g.j&&!g.k)return "The same at both ends";
+      return g.j>=g.k?(NW[g.j]||g.j)+" shorter first, "+z(g.k)+" shorter last":(NW[g.k]||g.k)+" shorter last, "+z(g.j)+" shorter first";
     }
-    function pwHiMnSay(k,j,n,NW,nw){ /* 0728ns H-B: a plain verdict (.hi-v) over the counting sentence (.hi-h, which the card still reads). The count is the side with more rides; an even count is a split and says both; rides the same at both times are in neither count */
-      var w=function(c,cap){return cap?(NW[c]||c):(nw[c]||c);},tl=" at 8\u00a0PM than at 10\u00a0AM",v,h; /* 0728nt THE CLOCK STAYS WHOLE on the page too (his glass of 0728ns, 9:20 AM: the sentence broke between 8 and PM) */
-      if(k>j){v="Nights are shorter here.";h=w(k,1)+" of its "+w(n)+" headliners "+(k===1?"is":"are")+" typically shorter"+tl+".";}
-      else if(j>k){v="Mornings are shorter here.";h=w(j,1)+" of its "+w(n)+" headliners "+(j===1?"is":"are")+" typically longer"+tl+".";}
-      else if(k){v="It’s a split.";h=w(k,1)+" of its "+w(n)+" headliners "+(k===1?"is":"are")+" typically shorter"+tl+", "+w(j)+" longer.";}
-      else{v="No difference here.";h="Its headliners are typically the same at 8\u00a0PM as at 10\u00a0AM.";}
+    function pwHiGfSay(g,NW,nw){ /* a park's verdict (.hi-v) over its counting sentence (.hi-h, which the card reads). "Pays off" needs the count and the average on one side; a count and an average that disagree, or an even count, "depends on the ride"; otherwise the park is close at both ends */
+      var w=function(c,cap){return cap?(NW[c]||c):(nw[c]||c);},z=function(c){return c?w(c):"none";},n=g.n,j=g.j,k=g.k,v,h;
+      var of=function(c){return c===n?"All "+w(n)+" of its headliners are":w(c,1)+" of its "+w(n)+" headliners "+(c===1?"is":"are");}; /* every one of them is "all five", never "five of its five" */
+      if(g.w==="last"){v=esc(g.p)+" pays off last.";h=of(k)+" typically shorter in the last hour than the first.";}
+      else if(g.w==="first"){v=esc(g.p)+" pays off first.";h=of(j)+" typically shorter in the first hour than the last.";}
+      else if(!j&&!k){v="No difference here.";h="Its headliners are typically the same in the first hour as in the last.";}
+      else{v=(j===k||(j>k&&g.f-g.l>=5)||(k>j&&g.l-g.f>=5))?"It depends on the ride here.":"Close at both ends here.";
+        h=(j>=k)?w(j,1)+" of its "+w(n)+" headliners "+(j===1?"is":"are")+" shorter in the first hour, "+z(k)+" in the last.":w(k,1)+" of its "+w(n)+" headliners "+(k===1?"is":"are")+" shorter in the last hour, "+z(j)+" in the first.";}
       return '<div class="hi-v">'+v+'</div><div class="hi-h hi-hs">'+h+'</div>';
     }
-    function pwHiMornNightHTML(C){
-      var parks=pwHiMnParks(),hd=pwHiHd("Morning or night","mn","morning or night");
-      if(parks===null){pwHiBaseWait();return '<div class="hi-card">'+hd+'<div class="hi-wait">Typical waits haven’t loaded yet.</div></div>';}
-      if(!parks.length)return "";
-      var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk),k=rows.filter(function(x){return x.p<x.a;}).length,mnJ=rows.filter(function(x){return x.p>x.a;}).length,NW=["None","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"],nw=["no","one","two","three","four","five","six","seven","eight","nine"];
-      return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks">'+parks.map(function(p){return '<button type="button" data-hpk="'+esc(p)+'"'+(p===pk?' class="on"':'')+'>'+esc(p)+'</button>';}).join("")+'</div>'+pwHiMnOut(C,parks)+
-        pwHiMnSay(k,mnJ,rows.length,NW,nw)+ /* 0728ns THE VERDICT LEADS, THE COUNT FOLLOWS THE MAJORITY (owner glass Mon Nov 16, 2026, 8:53 AM: "Three of its eight headliners are typically shorter at 8 PM" at a park where five are longer - "a little odd"; ruled H-B on sheet 106, 9:02 AM) */
-        '<div class="hi-mn h"><span class="n"></span><span class="c">10 AM</span><span class="ar" style="visibility:hidden">→</span><span class="c">8 PM</span><span class="d"></span></div>'+
-        rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(pwHiNm(x.id,x.n))+pwHiRf(C,x.id)+'</span><span class="chip hi-bg-'+tierOfWait(x.a)+'">'+x.a+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.p)+'">'+x.p+'</span><span class="d'+(x.a===x.p?' same':x.p>x.a?' more':'')+'">'+(x.a===x.p?'the same':x.a>x.p?(x.a-x.p)+' shorter':(x.p-x.a)+' longer')+'</span></div>';}).join("")+
-        '<div class="hi-fine">Typical posted wait, the half-hour starting at each time, on nights the park is open past 8 PM.</div></div>';
+    function pwHiGfAllSay(G){ /* All parks: the parks that pay off at one end lead; the rest are named under them */
+      var pick=function(k){return G.filter(function(g){return g.w===k;}).map(function(g){return esc(g.p);});},F=pick("first"),L=pick("last"),E=pick("either"),v=[],h;
+      if(F.length)v.push(pwHiGfList(F)+(F.length>1?" pay":" pays")+" off first.");
+      if(L.length)v.push(pwHiGfList(L)+(L.length>1?" pay":" pays")+" off last.");
+      if(!v.length){v=["It’s close at every park."];h="No park’s headliners are clearly shorter in the first hour or the last.";}
+      else h=E.length?pwHiGfList(E)+(E.length>1?" are":" is")+" close at both ends.":"Each park’s headliners, averaged, in its first hour and its last.";
+      return '<div class="hi-v">'+v.join(" ")+'</div><div class="hi-h hi-hs">'+h+'</div>';
+    }
+    function pwHiGoFirstHTML(C){
+      var G=pwHiGfParks(C),hd=pwHiHd("Go first or go last","mn","go first or go last");
+      if(G===null){pwHiBaseWait();return '<div class="hi-card">'+hd+'<div class="hi-wait">Typical waits haven’t loaded yet.</div></div>';}
+      if(!G.length)return "";
+      var g=pwHiGfNow(G),NW=["None","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"],nw=["no","one","two","three","four","five","six","seven","eight","nine"];
+      var out=MAIN.filter(function(p){return !G.some(function(q){return q.p===p;});}).map(function(p){return esc(p);});
+      function ordN(p){return (pfBase.ord&&pfBase.ord[p]!=null)?pfBase.ord[p]:(pfBase.days||28);}
+      function pool(n){var t=tdOrdWord(n,!!pfBase.bv);return t.charAt(0).toUpperCase()+t.slice(1);}
+      var rowsH,fine;
+      if(g){rowsH=g.rows.map(function(x){return '<div class="hi-mn"><span class="n">'+esc(pwHiNm(x.id,x.n))+pwHiRf(C,x.id)+'</span><span class="chip hi-bg-'+tierOfWait(x.a)+'">'+x.a+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(x.p)+'">'+x.p+'</span><span class="d'+(x.a===x.p?' same':x.p>x.a?' more':'')+'">'+(x.a===x.p?'the same':x.a>x.p?(x.a-x.p)+' shorter':(x.p-x.a)+' longer')+'</span></div>';}).join("");
+        fine='Typical posted wait in the first hour and the last hour, '+g.hrs+'. '+pool(ordN(g.p))+'. History, not a forecast.';}
+      else{var S=G.slice().sort(function(x,y){return ((x.w==="either")-(y.w==="either"))||(Math.abs(y.f-y.l)-Math.abs(x.f-x.l));}),mn9=null; /* the parks that pay off at one end first, the widest gap leading; the rest in the same order */
+        G.forEach(function(q){var v9=ordN(q.p);if(mn9===null||v9<mn9)mn9=v9;});
+        rowsH=S.map(function(q){return '<div class="hi-mn"><span class="n">'+esc(q.p)+'<em class="hi-ps">'+pwHiGfCount(q,NW,nw)+'</em></span><span class="chip hi-bg-'+tierOfWait(q.f)+'">'+q.f+'</span><span class="ar">→</span><span class="chip hi-bg-'+tierOfWait(q.l)+'">'+q.l+'</span><span class="d'+(q.w==="either"?' same':'')+'">'+(q.w==="first"?'Go first':q.w==="last"?'Go last':'Either end')+'</span></div>';}).join("");
+        fine='Headliners averaged: typical posted wait in each park’s first and last hour. '+pool(mn9)+'. History, not a forecast.';}
+      return '<div class="hi-card">'+hd+'<div class="pg-seg hi-seg" role="group" aria-label="Parks"><button type="button" data-hpk="" data-pn="All parks" aria-label="All parks"'+(g?'':' class="on"')+'>All</button>'+
+        G.map(function(q){return '<button type="button" data-hpk="'+esc(q.p)+'" data-pn="'+esc(q.p)+'" aria-label="'+esc(q.p)+'"'+(g&&g.p===q.p?' class="on"':'')+'>'+PW_HI_PKS[q.p]+'</button>';}).join("")+'</div>'+
+        (out.length?'<div class="hi-note">'+pwHiGfList(out)+(out.length>1?' aren’t':' isn’t')+' compared — too few typical waits on file.</div>':'')+
+        (g?pwHiGfSay(g,NW,nw):pwHiGfAllSay(G))+
+        '<div class="hi-mn h"><span class="n"></span><span class="c">First hour</span><span class="ar" style="visibility:hidden">→</span><span class="c">Last hour</span><span class="d"></span></div>'+rowsH+
+        '<div class="hi-fine">'+fine+'</div></div>';
     }
     /* ===== 0728pe THE RIDE KEEPS ITS OWN DAY - EARLY ENTRY KEEPS ITS OWN SEAT. Typical day: the third summary of The past four weeks, born of the Nov 18 Instagram card for Mickey & Minnie's Runaway Railway ("its a nice looking card, we should think about adding it to the highlights in wrap") and cut after a creator's comment on the share cards (owner, Fri Nov 20, 2026, 1:33 PM: "We should put some more focus into that, maybe even adding some things on the highlights page"). RULED on sheets 348-352, his words: 4:57 PM "I agree with both leans!" (S-C the verdict: when to ride in the card's largest letters, one sentence of minutes, a rail under those hours; P-B the wide tile that shows the day's bars); 5:01 PM "good with all leans, except #2" (Magic Kingdom on ordinary days; every ride, on Day by day's own pick; the words as mocked; the tile last in its chapter); 5:02 PM "i like EB as well" and 5:10 PM "love E3 as well, thats perfect. And like you said, if a ride doesnt open for EE its just not there" (Early Entry is a solid bar in its own seat behind a dashed line where regular hours begin, with its own line; the verdict speaks for regular hours - the app never guesses the reader's ticket). Not chosen: S-A two ends, S-B three tiles, P-A a third small tile, E-A no Early Entry, E-C Early Entry inside the day, E-1 a pale bar, E-2 an outlined bar.
        THE RULE (Claude's thresholds under his ruled words): typical = the middle posted wait of each half-hour over the baseline's days (pfBase, the pool the ride profile reads: ordinary days, a party day fenced into its season), 10 days or the half-hour is not drawn - Morning or night's family. The window is the park's regular hours: the commonest opening and closing among its ordinary days in the chapter's window. The shortest hours are the half-hours at least 5 minutes and a fifth under the ride's own day median that run from opening or run to closing - LOWEST WAIT IS NOT BEST DEAL: the ride is read against its own day, never against a fixed line. A day that moves less than 10 minutes is steady. ===== */
@@ -15808,10 +15845,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
       return '<span class="mini" aria-hidden="true">'+m.bars.map(function(x){return x.v===null?'<i></i>':'<i class="hi-bg-'+x.band+'" style="height:'+Math.max(3,Math.round(x.v/m.hi*74))+'px"></i>';}).join("")+'</span>';
     }
     /* ===== end 0728pe THE RIDE KEEPS ITS OWN DAY ===== */
-    function pwHiWeeksHTML(C){var W=pwHiWeeksModel(C);if(!W.days.length)return pwHiQuiet("Not enough days on file yet.");return pwHiDayByDayHTML(C)+pwHiMornNightHTML(C)+pwHiTypicalHTML(C);} /* 0728pe: Typical day last - its wide tile sits under the two */
+    function pwHiWeeksHTML(C){var W=pwHiWeeksModel(C);if(!W.days.length)return pwHiQuiet("Not enough days on file yet.");return pwHiDayByDayHTML(C)+pwHiGoFirstHTML(C)+pwHiTypicalHTML(C);} /* 0728ph: Go first or go last in Morning or night's seat */ /* 0728pe: Typical day last - its wide tile sits under the two */
     function pwHiRepaint(){var y=null;try{y=window.ppShl().scrollTop;}catch(e){}pwHiRender();if(y!=null){try{window.ppShl().scrollTop=y;}catch(e){}pwHiSync();}}
     /* ===== 0728nd THE TAB BECOMES TILES; A TILE OPENS ITS SUMMARY IN A SHEET (P-C · K-A · S-A · G-B · D-A · W-A) ===== */
-    var PW_HI_TK={top5:"Five longest lines",mdown:"Most time down",wd:"Day by day",mn:"Morning or night",td:"Typical day",lvx:"Two extremes",lvbw:"Best weekday",lvll:"Five longest lines",lvdn:"Most time down",lvmo:"Month by month",lvrf:"Refurbishment log"};
+    var PW_HI_TK={top5:"Five longest lines",mdown:"Most time down",wd:"Day by day",mn:"Go first or go last",td:"Typical day",lvx:"Two extremes",lvbw:"Best weekday",lvll:"Five longest lines",lvdn:"Most time down",lvmo:"Month by month",lvrf:"Refurbishment log"};
     function pwHiWdV(r){return r.wd.map(function(a){if(!a.length)return null;var s=0;a.forEach(function(x){s+=x;});return Math.floor(s/a.length+0.5);});}
     function pwHiFace(C,key){ /* A TILE'S HEADLINE FIGURE comes from its summary's own model, in the summary's own words: {v, u the unit, b the band, s its two lines}. Level rows are named as the summary's sentence names them and drop the day (SUPERLATIVES SHOW TRUE WINNERS). D-A: Day by day leads with the picked ride's calmest weekday average */
       var m,w,r,v,lo=-1,hi=-1,i,DF=["Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays","Sundays"];
@@ -15827,9 +15864,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         var lt=[],D3=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],N5=["","","","","four","five","six"];for(i=0;i<7;i++)if(v[i]!==null&&v[i]===v[lo])lt.push(i); /* 0728pd A TIE NAMES EVERY WINNER, on the tile too: one calmest day keeps its full name; two or three are named short so the line holds; past three it counts them, as the summary's sentence does */
         return {v:v[lo],u:"m",b:pwHiBand(v[lo]),s:[esc(pwHiNm(id,r.n)),v[lo]===v[hi]?'every day of the week':(lt.length===1?DF[lo]:lt.length>3?N5[lt.length]+' days':lt.slice(0,-1).map(function(k9){return D3[k9];}).join(', ')+' and '+D3[lt[lt.length-1]])+' the calmest']};}
       if(key==="td"){var ti=pwHiRideNow(C),tm=ti?pwTdModel(C,ti):null;if(!tm)return null;return {v:tm.lo,u:"m",b:pwHiBand(tm.lo),s:[esc(pwHiNm(ti,tm.n)),tm.v.charAt(0).toLowerCase()+tm.v.slice(1).replace(/\.$/,"")]};} /* 0728pe: the lowest typical half-hour of regular hours leads, over the verdict in the tile's own lower case */
-      if(key==="mn"){var parks=pwHiMnParks();if(!parks||!parks.length)return null;var pk=pwHiParkNow(C,parks),rows=pwHiMnRows(pk);
-        var mnFk=rows.filter(function(x){return x.p<x.a;}).length,mnFj=rows.filter(function(x){return x.p>x.a;}).length;
-        return {v:(mnFj>mnFk?mnFj:mnFk)+' of '+rows.length,u:"",b:"",s:[esc(pk)+' headliners',mnFj>mnFk?'longer at 8 PM':'shorter at 8 PM']};} /* 0728ns: the tile counts the side the summary's sentence counts */
+      if(key==="mn"){var G9=pwHiGfParks(C);if(!G9||!G9.length)return null;var g9=pwHiGfNow(G9); /* 0728ph: a picked park counts the side its sentence counts; All parks leads with the park whose two ends are furthest apart (the first in park order when two are level) */
+        if(g9)return {v:(g9.k>g9.j?g9.k:g9.j)+' of '+g9.n,u:"",b:"",s:[esc(g9.p)+' headliners',g9.k>g9.j?'shorter in the last hour':g9.j>g9.k?'shorter in the first hour':'shorter at each end']};
+        var gb=G9[0],gi;for(gi=1;gi<G9.length;gi++)if(Math.abs(G9[gi].f-G9[gi].l)>Math.abs(gb.f-gb.l))gb=G9[gi];
+        return (gb.f!==gb.l)?{v:Math.abs(gb.f-gb.l),u:"m",b:"",s:[esc(gb.p),gb.f<gb.l?'shorter in its first hour':'shorter in its last hour']}:{v:G9.length,u:"",b:"",s:['parks compared','the same at both ends']};}
       return null;
     }
     function pwHiTiles(C,h){ /* a chapter's summaries as tiles. The summaries are built as ever and wait in the chapter's stow (hidden), so the hero still counts them, the cards still read them and the sheet shows the summary itself - nothing is composed twice. W-A: a summary that is waiting keeps its tile - a dash and the summary's own sentence. A chapter with no summary to show keeps its quiet card */
@@ -16122,10 +16160,10 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         D.fine="Typical posted wait by half-hour over "+(tb.getAttribute("data-pool")||"the past four weeks")+". History, not a forecast."; /* the card's hours sit beside the park's name; its fine print keeps the pool */
         if(!D.bars.some(function(b){return b.v!==null;}))return null;
       }else if(key==="mn"){
-        D.sub=tx(one(".hi-seg button.on"));D.who=D.sub;D.mnv=tx(one(".hi-v"));
+        var sb9=one(".hi-seg button.on");D.sub=sb9?(sb9.getAttribute("data-pn")||tx(sb9)):"";D.who=D.sub;D.mnv=tx(one(".hi-v"));D.all=!!sb9&&sb9.getAttribute("data-hpk")===""; /* 0728ph: the picker's buttons are short; the card says the view's full name. All parks is drawn as a row a park */
         D.cols=all(".hi-mn.h .c").map(function(el){return tx(el);});
         D.rows=all(".hi-mn").filter(function(el){return !el.classList.contains("h");}).map(function(el){var c=all(".chip",el),d=one(".d",el);
-          return {n:pwHiOwn(one(".n",el)),rf:tx(one(".n .hi-rf",el)),a:tx(c[0]),ab:pwHiBandOf(c[0]),p:tx(c[1]),pb:pwHiBandOf(c[1]),d:tx(d),dk:(d&&d.classList.contains("same"))?"same":(d&&d.classList.contains("more"))?"more":"less"};});
+          return {n:pwHiOwn(one(".n",el)),rf:tx(one(".n .hi-rf",el)),s:tx(one(".n .hi-ps",el)),a:tx(c[0]),ab:pwHiBandOf(c[0]),p:tx(c[1]),pb:pwHiBandOf(c[1]),d:tx(d),dk:(d&&d.classList.contains("same"))?"same":(d&&d.classList.contains("more"))?"more":"less"};});
         if(!D.rows.length)return null;
       }else return null;
       D.fname="ridecue-highlights-"+key+"-"+C.yd+".png";
@@ -16242,6 +16280,21 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
         D.lab.forEach(function(l){caps(nb(l.t),tx0+l.i*(tBw+tG),tBot+66,22,C.muted2,"left","1.5px");});if(D.endT)caps(nb(D.endT),R,tBot+66,22,C.muted2,"right","1.5px");
       }else if(D.key==="mn"){
         if(D.sub)T(D.sub.toUpperCase(),L,262,IN("800",24),C.accent,"left","3px");
+        if(D.all){ /* 0728ph GO FIRST OR GO LAST, All parks (sheet 364): the verdict in the lavender, up to three lines, stepping down before it loses a word; a row a park - its name in caps, its word at the card's weight, its count, the two figures plain in their band inks under the columns' own labels */
+          var gz=[76,68,60,54],gs=76,gv,gT,gP;
+          for(i=0;i<gz.length;i++){gs=gz[i];if(wrap2(nb(D.mnv),CW,SG(BW,gs),9).length<=3)break;}
+          gv=bal(nb(D.mnv),CW,SG(BW,gs),3);y=270+Math.round(gs*0.9);for(i=0;i<gv.length;i++)T(gv[i],L,y+i*Math.round(gs*0.95),SG(BW,gs),"#b4bcff");y+=(gv.length-1)*Math.round(gs*0.95);
+          gv=bal(nb(D.head),CW,IN("700",28),2);for(i=0;i<gv.length;i++)T(gv[i],L,y+48+i*36,IN("700",28),C.ink);y+=48+(gv.length-1)*36;
+          gT=y+30;n=D.rows.length;gP=Math.min(196,Math.floor((fy-16-gT)/n));
+          var gfig=function(v,x,yy,sz,b){var f=SG(BW,sz),u=SG(BW,Math.round(sz*0.42)),w=MW(String(v),f),mw=MW("m",u),x0=x-w-mw-3;T(String(v),x0,yy,f,ink(b));T("m",x0+w+3,yy,u,ink(b));return w+mw+3;};
+          D.rows.forEach(function(r,k){var yy=gT+k*gP,m0=yy+gP/2,w1,w2,xa,sw,sz9;hair(yy);
+            caps(r.n,L,m0-32,21,"#b4bcff","left","2.6px");
+            T(r.d,L,m0+18,SG(BW,46),r.dk==="same"?C.ink:"#9bf7c9");
+            w2=gfig(r.p,R,m0+22,72,r.pb);caps(D.cols[1]||"",R,m0+56,17,C.muted2,"right","1.4px");
+            xa=R-Math.max(w2,150)-44;T("›",xa+16,m0+14,SG("700",48),C.muted2,"center");
+            w1=gfig(r.a,xa-22,m0+22,72,r.ab);caps(D.cols[0]||"",xa-22,m0+56,17,C.muted2,"right","1.4px");
+            if(r.s){sw=xa-22-w1-26-L;sz9=fit(r.s,sw,IN,"600",[23,22,21,20]);T(ell(r.s,sw,IN("600",sz9)),L,m0+54,IN("600",sz9),C.muted);}}); /* the count takes the room the figures leave, stepping down before it loses a word */
+        }else{
         var mz=[50,46,42],ms=50,hl,mnCo=62,mnRo=80;
         if(D.mnv){var mnVz=[92,84,76,68],mnVs=92,mnVl; /* 0728ns H-B: the verdict at the card's weight in the lavender of the family's hero figures, two lines at most, stepping down before it loses a word; the counting sentence under it at 700 28, evened; the rows take what is left, their tiles up to 72 tall where the park is short of rows */
           for(i=0;i<mnVz.length;i++){mnVs=mnVz[i];if(wrap2(nb(D.mnv),CW,SG(BW,mnVs),9).length<=2)break;}
@@ -16258,6 +16311,7 @@ btn.addEventListener("click",function(ev){ev.stopPropagation();mrBellTap(btn.get
           T("→",xa+cW+26,yc+11,IN("500",30),C.muted2,"center");
           rr(xp,yc-chh/2,cW,chh,16);ctx.fillStyle=ink(r.pb);ctx.fill();T(r.p,xp+cW/2,yc+(mnCz===44?16:13),SG(BW,mnCz),"#0a1422","center");
           T(r.d,R,yc+10,IN(BW,28),r.dk==="less"?"#3dd68c":r.dk==="more"?"#ff9f6b":C.muted,"right");});
+        } /* end a park's view */
       }
       /* ---- 0728ne THE LONG VIEW'S SIX MIDDLES (owner-ruled Fri Nov 13, 2026, sheets 24-33: "each card sort of has its own personality" - no two share a shape; W-B, L, D-A, M-B, the log; T-2 and G-1 on sheet 49, 10:19 PM). The ruled rig's bytes on the painter's own helpers, frame, head and foot ---- */
       if(D.key==="lvmo"){ /* month by month: the Day by day card's shape, a bar per month */
